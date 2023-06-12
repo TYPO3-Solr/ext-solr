@@ -7,6 +7,15 @@
 Apache Solr for TYPO3 11.5
 ==========================
 
+Apache Solr for TYPO3 11.5.3
+============================
+
+This is a maintenance release for TYPO3 11.5, containing:
+
+- [BUGFIX] make CE search form in backend editable again by @rr-it in `#3626 <https://github.com/TYPO3-Solr/ext-solr/pull/3626>`__
+- [DOC] Fix wrong type for boostQuery in the docs and example by @dkd-kaehm in `#3e7ff72 <https://github.com/TYPO3-Solr/ext-solr/commit/3e7ff72b7bc8ddd9cb7f5b7e998a328773483dfb>`__
+- [TASK] Fix unit tests for 2023.06.07 by @dkd-kaehm in `#3695 <https://github.com/TYPO3-Solr/ext-solr/pull/3695>`__
+
 Apache Solr for TYPO3 11.5.2
 ============================
 
