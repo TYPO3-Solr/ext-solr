@@ -62,7 +62,7 @@ abstract class AbstractSolrService
     /**
      * Returns the Solarium client
      */
-    public function getClient(): ?Client
+    public function getClient(): Client
     {
         return $this->client;
     }
