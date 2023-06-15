@@ -159,7 +159,7 @@ class SearchResult extends Document
 
     public function getScore(): float
     {
-        return $this->fields['score'] ?? 0.0;
+        return (float)($this->fields['score'] ?? 0.0);
     }
 
     public function getUrl(): string
