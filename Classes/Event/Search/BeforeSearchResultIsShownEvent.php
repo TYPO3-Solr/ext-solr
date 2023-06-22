@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Event\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 
 /**
@@ -81,7 +80,7 @@ final class BeforeSearchResultIsShownEvent
         return $this->currentPage;
     }
 
-    protected function setPagination(PaginationInterface $pagination): void
+    public function setPagination(PaginationInterface $pagination): void
     {
         $this->pagination = $pagination;
     }
