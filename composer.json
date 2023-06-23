@@ -29,7 +29,7 @@
     "ext-simplexml": "*",
     "solarium/solarium": "6.2.7",
     "typo3/cms-backend": "*",
-    "typo3/cms-core": "12.4.*@dev",
+    "typo3/cms-core": "^v12.4.2",
     "typo3/cms-extbase": "*",
     "typo3/cms-fluid": "*",
     "typo3/cms-frontend": "*",
@@ -91,8 +91,8 @@
     "tests:setup": [
       "@tests:env",
       "@composer req --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
-      "rm -Rf .Build/vendor/typo3/cms-core",
-      "@composer update --prefer-source typo3/cms-core",
+      "@composer reinstall --prefer-source typo3/cms-core",
+      "@composer dump-autoload",
       "@tests:restore-git"
     ],
     "tests:unit": [
@@ -118,7 +118,6 @@
     },
     "typo3/cms": {
       "extension-key": "solr",
-      "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
     },
     "TYPO3-Solr": {
