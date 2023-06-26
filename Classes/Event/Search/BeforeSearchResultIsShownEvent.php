@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Event\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
+use TYPO3\CMS\Core\Pagination\PaginationInterface;
 
 /**
  * This event is triggered before adding the search result to the fluid template
@@ -31,7 +31,7 @@ final class BeforeSearchResultIsShownEvent
     private array $additionalFilters;
     private string $pluginNamespace;
     private array $arguments;
-    private ResultsPagination $pagination;
+    protected PaginationInterface $pagination;
     private int $currentPage;
 
     public function __construct(
@@ -39,7 +39,7 @@ final class BeforeSearchResultIsShownEvent
         array $additionalFilters,
         string $pluginNamespace,
         array $arguments,
-        ResultsPagination $pagination,
+        PaginationInterface $pagination,
         int $currentPage
     ) {
         $this->resultSet = $resultSet;
@@ -70,7 +70,7 @@ final class BeforeSearchResultIsShownEvent
         return $this->arguments;
     }
 
-    public function getPagination(): ResultsPagination
+    public function getPagination(): PaginationInterface
     {
         return $this->pagination;
     }
@@ -78,5 +78,10 @@ final class BeforeSearchResultIsShownEvent
     public function getCurrentPage(): int
     {
         return $this->currentPage;
+    }
+
+    public function setPagination(PaginationInterface $pagination): void
+    {
+        $this->pagination = $pagination;
     }
 }
