@@ -110,7 +110,7 @@ class Service
 
                 if ($isSingleValueField) {
                     // turn multi value field back into single value field
-                    $fieldValue = $fieldValue[0];
+                    $fieldValue = $fieldValue[0] ?? '';
                 }
 
                 $document->setField($fieldName, $fieldValue);
