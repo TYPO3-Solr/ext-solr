@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -59,7 +60,10 @@ class Util
             $additionalParameters = $mountPointParameter . '/' . $additionalParameters;
         }
 
-        return self::getDocumentId('pages', $uid, $uid, $additionalParameters);
+        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
+        $rootPageId = $rootPageResolver->getRootPageId($uid);
+
+        return self::getDocumentId('pages', $rootPageId, $uid, $additionalParameters);
     }
 
     /**
@@ -80,7 +84,7 @@ class Util
     ): string {
         /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $site = $siteRepository->getSiteByPageId($rootPageId);
+        $site = $siteRepository->getSiteByRootPageId($rootPageId);
         $siteHash = $site->getSiteHash();
 
         $documentId = $siteHash . '/' . $table . '/' . $uid;
