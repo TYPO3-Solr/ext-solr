@@ -663,3 +663,25 @@ Example:
             field = __solr_content
         }
     }
+
+**Solr claims to be not configured in backend context, although I did it well. What can be the reason?**
+
+Solr cannot read the configuration from access restricted pages, e. g. "only visible for logged in users".  
+Although access to your root page is not restricted, this can occur if the root page is a shortcut to a access restricted page.
+
+Does this make sense?
+Yes. If user is not logged in one can redirect to a login page with the help of an error handler. And after login one can re-redirect to a restricted page again. Please omit such scenarios.
+
+The reason for that:  
+
+With Typo3 10 and solr 11.0.1 it was possible for solr to read it's configuration from shortcut pages directly. With Typo3 11 and solr 11.5 these shortcuts are followed. And if the access to the destination of the shortcut is restricted, solr cannot read the configuration because solr is not logged in.
+
+The solution:
+
+If the root page is a shortcut, the destination MAY NOT be access restricted! This can e. g. be achieved in the following way.
+
+* The root page is a shortcut to the first subpage.
+* The first subpage is the login page, which is not access restricted. Instaed this page gets hidden if a user is logged in. And it redirects to the next access restricted page or subtree after successful login.
+* The next subpage is the access restricted page or subtree.
+
+This way already logged in users will be redirected directly to the restricted page / subtree, because the login page is hidden and so the restricted page is the first subpage now.
