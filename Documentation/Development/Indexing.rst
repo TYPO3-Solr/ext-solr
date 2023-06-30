@@ -208,7 +208,7 @@ If external data should be indexed or the RecordIndexer is not required, it is p
            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
            $site = $siteRepository->getSiteByRootPageId($rootPageId);
 
-               /** @var $document Document */
+           /** @var Document $document */
            $document = GeneralUtility::makeInstance(Document::class);
 
            // required fields
