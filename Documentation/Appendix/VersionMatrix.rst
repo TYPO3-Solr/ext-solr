@@ -9,20 +9,30 @@ Appendix - Version Matrix
 Supported versions
 ------------------
 
+Supported versions
+------------------
+
 List of EXT:solr versions and the matching versions of Apache Solr and TYPO3 that are supported:
 
-========= ========== ========== =========== =============== ================== ============================================= =============== =================
-       Basic components                Funding contribution extensions          Published funding contribution extensions         Solr configuration
-------------------------------- ---------------------------------------------- --------------------------------------------- ---------------------------------
-TYPO3     EXT: solr  EXT:tika   EXT:solrfal EXT:solrconsole EXT:solrdebugtools EXT:solrfluidgrouping         EXT:solrmlt     Apache Solr     Configset
-========= ========== ========== =========== =============== ================== ============================= =============== =============== =================
-12.4      12.0 (ᾱ)   12.0 (Ø)   12.0 (Ø)    12.0 (Ø)        12.0 (Ø)           - (integrated in EXT:solr)    12.0 (Ø)        9.2.1           ext_solr_12_0_0
-11.5      11.5       11.0       11.0        11.0            11.0               11.0                          11.0 (Ø)        8.11.1          ext_solr_11_5_0
-========= ========== ========== =========== =============== ================== ============================= =============== =============== =================
+========= ========== ========== =========== =============== ================== ================================ =============== =============== =================
+       Basic components                Funding contribution extensions          Published funding contribution    extensions         Solr configuration
+------------------------------- ---------------------------------------------- -------------------------------- --------------- ---------------------------------
+TYPO3     EXT: solr  EXT:tika   EXT:solrfal EXT:solrconsole EXT:solrdebugtools EXT:solrfluidgrouping            EXT:solrmlt     Apache Solr     Configset
+========= ========== ========== =========== =============== ================== ================================ =============== =============== =================
+12.4      12.0 (β)   12.0 (Ø)   12.0 (Ø)    12.0 (Ø)        12.0 (Ø)           N/A (integrated in EXT:solr)     12.0 (Ø)        9.2.1           ext_solr_12_0_0
+11.5      11.5       11.0       11.0        11.0            11.0               11.0                             11.0 (Ø)        8.11.1          ext_solr_11_5_0
+========= ========== ========== =========== =============== ================== ================================ =============== =============== =================
 
-Ø  - not yet available
-ᾱ  - non stable alpha release
-rc - release candidate available
+| Ø  - not yet available
+| ᾱ  - non stable alpha release
+| β  - non stable beta release
+| rc - release candidate available
+
+.. important::
+
+    | Non-stable releases are not available in TER, but
+    | via composer or as a ZIP file attachment on GitHub `release <https://github.com/TYPO3-Solr/ext-solr/releases>`_ page.
+
 
 Extended Long Term Support (ELTS)
 ---------------------------------
