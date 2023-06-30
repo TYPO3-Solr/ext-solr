@@ -25,6 +25,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollectio
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use stdClass;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -65,7 +66,7 @@ class GroupedResultParser extends AbstractResultParser
     ): SearchResultCollection {
         $parsedData = $resultSet->getResponse()->getParsedData();
         if ($parsedData === null) {
-            $parsedData = new \stdClass();
+            $parsedData = new stdClass();
         }
         $allGroups = new GroupCollection();
 
@@ -90,7 +91,7 @@ class GroupedResultParser extends AbstractResultParser
     protected function parseGroupDependingOnType(
         SearchResultSet $resultSet,
         array $options,
-        \stdClass $parsedData,
+        stdClass $parsedData,
         string $name
     ): ?Group {
         if (!empty($options['field'])) {
@@ -108,7 +109,7 @@ class GroupedResultParser extends AbstractResultParser
      */
     protected function parseFieldGroup(
         SearchResultSet $resultSet,
-        \stdClass $parsedData,
+        stdClass $parsedData,
         string $groupedResultName,
         array $groupedResultConfiguration
     ): Group {
@@ -141,7 +142,7 @@ class GroupedResultParser extends AbstractResultParser
      */
     protected function parseQueryGroup(
         SearchResultSet $resultSet,
-        \stdClass $parsedData,
+        stdClass $parsedData,
         string $groupedResultName,
         array $groupedResultConfiguration
     ): Group {
@@ -201,7 +202,7 @@ class GroupedResultParser extends AbstractResultParser
         SearchRequest $searchRequest,
         Group $parentGroup,
         string $groupValue,
-        \stdClass $rawGroup
+        stdClass $rawGroup
     ): GroupItem {
         $groupItem = GeneralUtility::makeInstance(
             GroupItem::class,
@@ -238,7 +239,7 @@ class GroupedResultParser extends AbstractResultParser
     /**
      * Extracts the grouped results for a queryGroup from a solr raw response.
      */
-    protected function getGroupedResultForQuery(\stdClass $parsedData, string $queryString): ?\stdClass
+    protected function getGroupedResultForQuery(stdClass $parsedData, string $queryString): ?stdClass
     {
         if (!empty($parsedData->grouped->{$queryString})) {
             return $parsedData->grouped->{$queryString};
@@ -285,10 +286,10 @@ class GroupedResultParser extends AbstractResultParser
     {
         $overAllMaximumScore = 0.0;
         $allResultCount = 0;
+        /** @var Group $group */
         foreach ($resultSet->getSearchResults()->getGroups() as $group) {
-            /* @var Group $group */
+            /** @var GroupItem $groupItem */
             foreach ($group->getGroupItems() as $groupItem) {
-                /* @var GroupItem $groupItem */
                 if ($groupItem->getMaximumScore() > $overAllMaximumScore) {
                     $overAllMaximumScore = $groupItem->getMaximumScore();
                 }

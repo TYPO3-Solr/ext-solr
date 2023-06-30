@@ -152,7 +152,7 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
 
         $typoScriptConfiguration = new TypoScriptConfiguration($configurationArray);
 
-        /* @var ResultParserRegistry $parserRegistry */
+        /** @var ResultParserRegistry $parserRegistry */
         $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, $typoScriptConfiguration);
         $parserRegistry->registerParser(GroupedResultParser::class, 300);
 
@@ -161,7 +161,7 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
         $queryBuilderMock->expects(self::once())->method('buildSearchQuery')->willReturn($queryMock);
 
-        /* @var SearchResultSetService|MockObject $searchResultSetService */
+        /** @var SearchResultSetService|MockObject $searchResultSetService */
         $searchResultSetService = $this->getMockBuilder(SearchResultSetService::class)
             ->onlyMethods(['doASearch'])
             ->setConstructorArgs([

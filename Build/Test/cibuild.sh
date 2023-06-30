@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 
-TYPO3_PATH_WEB="$(pwd)/.Build/Web/"
-export TYPO3_PATH_WEB
-TYPO3_PATH_PACKAGES="$(pwd)/.Build/vendor/"
-export TYPO3_PATH_PACKAGES
-
-TYPO3_BIN_DIR="$(pwd)/.Build/bin/"
-export TYPO3_BIN_DIR
-export PATH="$TYPO3_BIN_DIR:$PATH"
-
 EXIT_CODE=0
 
 COMPOSERS_BIN_DIR="$(composer config home)/vendor/bin"
@@ -40,7 +31,7 @@ then
   echo "Some files are not compliant to TYPO3 Coding Standards"
   echo "Please fix the files listed above."
   echo "Tip for auto fix: "
-  echo "  TYPO3_VERSION="${TYPO3_VERSION}" composer tests:setup && composer t3:standards:fix"
+  echo "  TYPO3_VERSION=\"${TYPO3_VERSION}\" composer tests:setup && composer t3:standards:fix"
   EXIT_CODE=3
   #exit 1
 else
@@ -70,7 +61,7 @@ then
   EXIT_CODE=7
   echo "Error during running the PHPStan analysis, please check and fix them."
   echo "Tip for working on them: "
-  echo "  TYPO3_VERSION="${TYPO3_VERSION}" composer tests:setup && composer tests:phpstan"
+  echo "  TYPO3_VERSION=\"${TYPO3_VERSION}\" composer tests:setup && composer tests:phpstan"
 fi
 
 echo -e "\n\n"
