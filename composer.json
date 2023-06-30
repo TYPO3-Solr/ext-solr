@@ -77,6 +77,16 @@
       "mkdir -p .Build/vendor/apache-solr-for-typo3",
       "[ -L .Build/vendor/apache-solr-for-typo3/solr ] || ln -snvf ../../../. .Build/vendor/apache-solr-for-typo3/solr"
     ],
+    "t3:docs:build": [
+      "rm -Rf Documentation-GENERATED-temp/",
+      "./Build/generate_documentation.sh"
+    ],
+    "t3:docs:build:prod": [
+      "BUILD_DOCS_FOR_PRUCTION=1 $COMPOSER_BINARY t3:docs:build"
+    ],
+    "t3:docs:clean": [
+      "rm -Rf Documentation-GENERATED-temp/ $(readlink -f Documentation.HTML) Documentation.HTML"
+    ],
     "extension-create-libs": [
       "@composer req -d Resources/Private/Php/ComposerLibraries solarium/solarium:$(Build/Helpers/GET_LACAL_PACKAGE_VERSION_CONSTRAINT.sh solarium/solarium)"
     ],
