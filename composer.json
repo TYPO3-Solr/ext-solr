@@ -97,6 +97,9 @@
     "t3:docs:build:prod": [
       "BUILD_DOCS_FOR_PRODUCTION=1 $COMPOSER_BINARY t3:docs:build"
     ],
+    "t3:docs:build:pdf": [
+      "BUILD_DOCS_IN_PDF=1 $COMPOSER_BINARY t3:docs:build"
+    ],
     "t3:docs:clean": [
       "rm -Rf Documentation-GENERATED-temp/ $(readlink -f Documentation.HTML) Documentation.HTML"
     ],
