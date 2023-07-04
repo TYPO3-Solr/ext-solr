@@ -1,6 +1,6 @@
 <?php
 /**
- * Definitions for modules provided by EXT:reports
+ * Definitions for modules provided by EXT:solr
  */
 
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\CoreOptimizationModuleController;
