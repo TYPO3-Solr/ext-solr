@@ -326,7 +326,7 @@ class Tsfe implements SingletonInterface
         }
         $pageRecord = BackendUtility::getRecord('pages', $pidToUse);
         $isSpacerOrSysfolder = ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SPACER || ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SYSFOLDER;
-        if ($isSpacerOrSysfolder === false) {
+        if ($isSpacerOrSysfolder === false && $this->isPageAvailableForTSFE($pageRecord)) {
             return $pidToUse;
         }
         /** @var ConfigurationPageResolver $configurationPageResolver */
@@ -352,6 +352,22 @@ class Tsfe implements SingletonInterface
         }
 
         return $this->getPidToUseForTsfeInitialization($pidToUse, $rootPageId);
+    }
+
+    /**
+     * Checks if the page is available for TSFE.
+     *
+     * @param array $pageRecord
+     * @return bool
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     */
+    protected function isPageAvailableForTSFE(array $pageRecord): bool
+    {
+        $currentTime = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp');
+        return $pageRecord['hidden'] === 0 &&
+            $pageRecord['starttime'] <= $currentTime &&
+            ($pageRecord['endtime'] === 0 || $pageRecord['endtime'] > 0 && $pageRecord['endtime'] > $currentTime)
+        ;
     }
 
     /**
