@@ -326,7 +326,7 @@ class Tsfe implements SingletonInterface
         }
         $pageRecord = BackendUtility::getRecord('pages', $pidToUse);
         $isSpacerOrSysfolder = ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SPACER || ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SYSFOLDER;
-        if ($isSpacerOrSysfolder === false) {
+        if ($isSpacerOrSysfolder === false && !$pageRecord['hidden']) {
             return $pidToUse;
         }
         /** @var ConfigurationPageResolver $configurationPageResolver */
