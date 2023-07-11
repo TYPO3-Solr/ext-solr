@@ -185,7 +185,7 @@ class IndexingConfigurationSelectorField
             'itemFormElID' => $this->formElementName,
             'itemFormElName' => $this->formElementName,
             'itemFormElValue' => $selectedValues,
-            'fieldConf' => ['config' => ['items' => $items]],
+            'fieldConf' => ['label' => '', 'config' => ['items' => $items]],
             'fieldTSConfig' => ['noMatchingValue_label' => ''],
         ];
 
