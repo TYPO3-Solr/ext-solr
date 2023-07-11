@@ -114,7 +114,7 @@ class OptionsFacetParser extends AbstractFacetParser
         foreach ($response->facets->{$facetName}->buckets as $bucket) {
             $optionValue = $bucket->val;
             $optionCount = $bucket->count;
-            $optionsFromSolrResponse[$optionValue] = $optionCount;
+            $optionsFromSolrResponse[(string)$optionValue] = $optionCount;
         }
 
         return $optionsFromSolrResponse;
