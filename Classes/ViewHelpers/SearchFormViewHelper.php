@@ -198,7 +198,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $suggestUrl = $this->uriBuilder
             ->reset()
             ->setTargetPageUid($pageUid)
-            ->setTargetPageType($this->arguments['suggestPageType'])
+            ->setTargetPageType((int)$this->arguments['suggestPageType'])
             ->setArguments([$pluginNamespace => ['additionalFilters' => $additionalFilters]])
             ->build();
 
@@ -212,7 +212,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         return $this->uriBuilder
             ->reset()
             ->setTargetPageUid($pageUid)
-            ->setTargetPageType($this->arguments['pageType'] ?? 0)
+            ->setTargetPageType((int)($this->arguments['pageType'] ?? 0))
             ->setNoCache($this->arguments['noCache'] ?? false)
             ->setArguments($this->arguments['additionalParams'] ?? [])
             ->setCreateAbsoluteUri($this->arguments['absolute'] ?? false)
