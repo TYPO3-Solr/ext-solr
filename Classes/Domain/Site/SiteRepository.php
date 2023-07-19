@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
@@ -33,7 +32,6 @@ use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class SiteRepository is responsible to retrieve instances of Site objects
@@ -238,17 +236,6 @@ class SiteRepository
             return $language->getLanguageId();
         }, $typo3Site->getLanguages());
 
-        // Try to get first instantiable TSFE for one of site languages, to get TypoScript with `plugin.tx_solr.index.*`,
-        // to be able to collect indexing configuration,
-        // which are required for BE-Modules/CLI-Commands or RecordMonitor within BE/TCE-commands.
-        // If TSFE for none of languages can be initialized, then the \ApacheSolrForTypo3\Solr\Domain\Site\Site object unusable at all,
-        // so the rest of the steps in this method are not necessary, and therefore the null will be returned.
-        $tsfeFactory = GeneralUtility::makeInstance(Tsfe::class);
-        $tsfeToUseForTypoScriptConfiguration = $tsfeFactory->getTsfeByPageIdAndLanguageFallbackChain($typo3Site->getRootPageId(), ...$availableLanguageIds);
-        if (!$tsfeToUseForTypoScriptConfiguration instanceof TypoScriptFrontendController) {
-            return null;
-        }
-
         $solrConnectionConfigurations = [];
 
         foreach ($availableLanguageIds as $languageUid) {
@@ -258,10 +245,8 @@ class SiteRepository
             }
         }
 
-        $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId(
-            $rootPageRecord['uid'],
-            $tsfeToUseForTypoScriptConfiguration->getLanguage()->getLanguageId()
-        );
+        $solrConfiguration = $this->frontendEnvironment
+            ->getSolrConfigurationFromPageId($rootPageRecord['uid']);
 
         return GeneralUtility::makeInstance(
             Site::class,

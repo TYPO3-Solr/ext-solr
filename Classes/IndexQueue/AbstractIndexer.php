@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
 /**
@@ -58,8 +57,11 @@ abstract class AbstractIndexer
      * @param array $data Record data
      * @return Document Modified document with added fields
      */
-    protected function addDocumentFieldsFromTyposcript(Document $document, array $indexingConfiguration, array $data, TypoScriptFrontendController $tsfe): Document
-    {
+    protected function addDocumentFieldsFromTyposcript(
+        Document $document,
+        array $indexingConfiguration,
+        array $data,
+    ): Document {
         $data = static::addVirtualContentFieldToRecord($document, $data);
 
         // mapping of record fields => solr document fields, resolving cObj
@@ -76,7 +78,7 @@ abstract class AbstractIndexer
                 );
             }
 
-            $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data, $tsfe);
+            $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data);
             if ($fieldValue === null) {
                 continue;
             }
@@ -118,7 +120,6 @@ abstract class AbstractIndexer
         array $indexingConfiguration,
         string $solrFieldName,
         array $data,
-        TypoScriptFrontendController $tsfe
     ): array|float|int|string|null {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
@@ -128,8 +129,8 @@ abstract class AbstractIndexer
             $backupWorkingDirectory = getcwd();
             chdir(Environment::getPublicPath() . '/');
 
-            $tsfe->cObj->start($data, $this->type);
-            $fieldValue = $tsfe->cObj->cObjGetSingle(
+            $GLOBALS['TSFE']->cObj->start($data, $this->type);
+            $fieldValue = $GLOBALS['TSFE']->cObj->cObjGetSingle(
                 $indexingConfiguration[$solrFieldName],
                 $indexingConfiguration[$solrFieldName . '.']
             );
@@ -159,8 +160,8 @@ abstract class AbstractIndexer
             $backupWorkingDirectory = getcwd();
             chdir(Environment::getPublicPath() . '/');
 
-            $tsfe->cObj->start($data, $this->type);
-            $fieldValue = $tsfe->cObj->cObjGetSingle($name, $conf);
+            $GLOBALS['TSFE']->cObj->start($data, $this->type);
+            $fieldValue = $GLOBALS['TSFE']->cObj->cObjGetSingle($name, $conf);
 
             chdir($backupWorkingDirectory);
 

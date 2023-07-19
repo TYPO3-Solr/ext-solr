@@ -50,7 +50,7 @@ class TypoScriptTest extends SetUpUnitTestCase
         $pageId = 12;
         $path = '';
         $language = 0;
-        $cacheId = md5($pageId . '|' . $path . '|' . $language);
+        $cacheId = md5($pageId . '|' . $path);
 
         // prepare first call
         $twoLevelCache = $this->createMock(TwoLevelCache::class);
@@ -72,8 +72,7 @@ class TypoScriptTest extends SetUpUnitTestCase
 
         $newConfiguration = $this->typoScriptMock->getConfigurationFromPageId(
             $pageId,
-            $path,
-            $language
+            $path
         );
 
         self::assertInstanceOf(TypoScriptConfiguration::class, $newConfiguration);
