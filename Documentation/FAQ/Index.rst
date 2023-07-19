@@ -682,6 +682,6 @@ If the root page is a shortcut, the destination MAY NOT be access restricted! Th
 
 * The root page is a shortcut to the first sub-page.
 * The first sub-page is the login page, which is not access restricted. Instead this page gets hidden if a user is logged in. And it redirects to the next access restricted page or sub-tree after successful login.
-* The next subpage is the access restricted page or subtree.
+* The next sub-page is the access restricted page or sub-tree.
 
-This way already logged in users will be redirected directly to the restricted page / subtree, because the login page is hidden and so the restricted page is the first subpage now.
+This way already logged in users will be redirected directly to the restricted page / sub-tree, because the login page is hidden and so the restricted page is the first sub-page now.
