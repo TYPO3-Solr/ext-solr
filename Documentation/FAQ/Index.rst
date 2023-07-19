@@ -678,10 +678,13 @@ With Typo3 10 and solr 11.0.1 it was possible for solr to read it's configuratio
 
 The solution:
 
-If the root page is a shortcut, the destination MAY NOT be access restricted! This can e. g. be achieved in the following way.
+If the root page is a shortcut, the destination MAY NOT be access restricted!  
+In addition a login page itself cannot get hidden after login. This would lead to errors and no redirections will take place.  
+This can e. g. be achieved in the following way.
 
-* The root page is a shortcut to the first sub-page.
-* The first sub-page is the login page, which is not access restricted. Instead this page gets hidden if a user is logged in. And it redirects to the next access restricted page or sub-tree after successful login.
-* The next sub-page is the access restricted page or sub-tree.
+* The root page is a shortcut to the 1st subpage.
+* The 1st subpage is a shortcut to an unprotected login page, and will be hidden after successfull login.
+* The 2nd subpage is an pagetree with the access restricted content.
+* And last but not least there is the login page (e. g. 3rd subpage) in an unprotected area, which will never get hidden. So ext-solr can read its configuration here.
 
-This way already logged in users will be redirected directly to the restricted page / sub-tree, because the login page is hidden and so the restricted page is the first sub-page now.
+This way already logged in users will be redirected directly to the restricted page / sub-tree, because the 1st subpage is hidden and so the restricted page is the first sub-page now.
