@@ -680,8 +680,8 @@ The solution:
 
 If the root page is a shortcut, the destination MAY NOT be access restricted! This can e. g. be achieved in the following way.
 
-* The root page is a shortcut to the first subpage.
-* The first subpage is the login page, which is not access restricted. Instaed this page gets hidden if a user is logged in. And it redirects to the next access restricted page or subtree after successful login.
+* The root page is a shortcut to the first sub-page.
+* The first sub-page is the login page, which is not access restricted. Instead this page gets hidden if a user is logged in. And it redirects to the next access restricted page or sub-tree after successful login.
 * The next subpage is the access restricted page or subtree.
 
 This way already logged in users will be redirected directly to the restricted page / subtree, because the login page is hidden and so the restricted page is the first subpage now.
