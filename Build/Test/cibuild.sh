@@ -19,7 +19,6 @@ if ! find . -name \*.php ! -path "./.Build/*" 2>/dev/null | parallel --gnu php -
 then
   echo "There are syntax errors, please check and fix them."
   EXIT_CODE=1
-  #exit 1
 else
   echo "No syntax errors! Great job!"
 fi
@@ -33,25 +32,15 @@ then
   echo "Tip for auto fix: "
   echo "  TYPO3_VERSION=\"${TYPO3_VERSION}\" composer tests:setup && composer t3:standards:fix"
   EXIT_CODE=3
-  #exit 1
 else
   echo "The code is TYPO3 Coding Standards compliant! Great job!"
 fi
 echo -e "\n\n"
 
 echo "Run XML Lint"
-if ! xmllint --version > /dev/null 2>&1; then
-  echo "XML Lint not found, skipping XML linting."
-else
-  echo -e "\n\n"
-  echo "Check syntax of XML files"
-  if ! composer lint:xlf
-  then
-    echo "Some XML files are not valid"
-    echo "Please fix the files listed above"
-    EXIT_CODE=4
-    #exit 1
-  fi
+if ! composer tests:lint-xml
+then
+  EXIT_CODE=4
 fi
 
 echo -e "\n\n"
@@ -70,7 +59,6 @@ if ! composer tests:unit -- --coverage-clover=coverage.unit.clover
 then
   echo "Error during running the unit tests please check and fix them"
   EXIT_CODE=5
-  #exit 1
 fi
 
 #
@@ -111,7 +99,6 @@ if ! composer tests:integration -- --coverage-clover=coverage.integration.clover
 then
   echo "Error during running the integration tests please check and fix them"
   EXIT_CODE=6
-  #exit 1
 fi
 
 exit $EXIT_CODE

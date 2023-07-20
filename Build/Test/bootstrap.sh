@@ -74,7 +74,7 @@ fi
 
 echo "Install third party tools globally:"
 export PATH=$PATH:$(composer config --global home)/vendor/bin
-if ! composer global require sclable/xml-lint scrutinizer/ocular
+if ! composer global require sclable/xml-lint scrutinizer/ocular --ignore-platform-reqs
 then
   "The test environment could not be installed by composer as expected. Please fix this issue."
   exit 1

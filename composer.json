@@ -118,8 +118,9 @@
     "t3:standards:fix": [
       "php-cs-fixer fix"
     ],
-    "lint:xlf": [
-      "xmllint Resources/Private/Language/ -p '*.xlf'"
+    "tests:lint-xml": [
+      "echo \"Run XML Lint\"",
+      "if ! $($COMPOSER_BINARY config home)/vendor/bin/xmllint Resources/Private/Language/ --pattern='*.xlf' --exclude=.Build/*; then echo \"Some XML files are not valid\" && echo \"Please fix the files listed above\" && export EXIT_CODE=4; else echo \"No syntax errors! Great job!\"; fi"
     ]
   },
   "extra": {
