@@ -99,6 +99,11 @@ abstract class AbstractStrategy
                 continue;
             }
 
+            if ($site === null) {
+                $this->queue->deleteItem($indexQueueItem->getType(), $indexQueueItem->getIndexQueueUid());
+                continue;
+            }
+
             $enableCommitsSetting = $site->getSolrConfiguration()->getEnableCommits();
             $siteHash = $site->getSiteHash();
             // a site can have multiple connections (cores / languages)
