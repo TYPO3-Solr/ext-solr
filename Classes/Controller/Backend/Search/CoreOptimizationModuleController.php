@@ -320,7 +320,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
             ->withHeader('Content-Type', 'text/plain; charset=utf-8')
             ->withHeader('Cache-control', 'public')
             ->withHeader('Content-Description', 'File transfer')
-            ->withHeader('Content-Description', 'File transfer')
             ->withHeader(
                 'Content-disposition',
                 'attachment; filename =' . $type . '_' . $coreAdmin->getPrimaryEndpoint()->getCore() . '.' . $fileExtension
