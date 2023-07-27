@@ -259,9 +259,14 @@ class Indexer extends AbstractIndexer
 
         $pidToUse = $this->getPageIdOfItem($item);
 
-        return GeneralUtility::makeInstance(Tsfe::class)
-            ->getTsfeByPageIdAndLanguageId($pidToUse, $language, $item->getRootPageUid())
-            ->sys_page->getLanguageOverlay($item->getType(), $itemRecord);
+        $globalTsfe = GeneralUtility::makeInstance(Tsfe::class);
+        $specializedTsfe = $globalTsfe->getTsfeByPageIdAndLanguageId($pidToUse, $language, $item->getRootPageUid());
+
+        if ($specializedTsfe === null) {
+            return null;
+        }
+
+        return $specializedTsfe->sys_page->getLanguageOverlay($item->getType(), $itemRecord);
     }
 
     protected function isAFreeContentModeItemRecord(Item $item): bool
