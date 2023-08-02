@@ -298,7 +298,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
         /** @var RoutingService $routingService */
         $routingService = GeneralUtility::makeInstance(
             RoutingService::class,
-            $this->configuration['solr'],
+            $this->configuration['solr'] ?? [],
             (string)$this->configuration['extensionKey']
         );
         return $routingService->withPathArguments($this->configuration['_arguments']);
