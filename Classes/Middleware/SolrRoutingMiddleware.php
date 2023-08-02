@@ -101,7 +101,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
+        if ($request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
             return $handler->handle($request);
         }
 
@@ -145,7 +145,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         /*
          * Take slug path segments and argument from incoming URI
          */
-        [$slug, $parameters] = $this->extractParametersFromUriPath(
+        [, $parameters] = $this->extractParametersFromUriPath(
             $request->getUri(),
             $enhancerConfiguration['routePath'],
             $page['slug'] ?? ''
@@ -195,7 +195,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     protected function configure(array $enhancerConfiguration): void
     {
-        $this->settings = $enhancerConfiguration['solr'];
+        $this->settings = $enhancerConfiguration['solr'] ?? [];
         $this->namespace = $enhancerConfiguration['extensionKey'] ?? $this->namespace;
         $this->routingService = null;
     }
@@ -320,45 +320,42 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 $path,
                 $this->language
             );
+
             if (empty($items)) {
-                $this->logger
-                    ->/** @scrutinizer ignore-call */
-                    error(
-                        vsprintf(
-                            'Could not determine page for slug "%1$s" and language "%2$s". Given path "%3$s"',
-                            [
-                                $path,
-                                $this->language->getTwoLetterIsoCode(),
-                                $uri->getPath(),
-                            ]
-                        )
-                    );
+                if (empty($path)) {
+                    $message = 'Could not resolve page by path "%3$s" and language "%2$s".';
+                } else {
+                    $message = 'Could not determine page for slug "%1$s" and language "%2$s". Given path "%3$s"';
+                }
+
+                $this->logger->error(
+                    sprintf(
+                        $message,
+                        $path,
+                        $this->language->getTwoLetterIsoCode(),
+                        $uri->getPath()
+                    )
+                );
                 $scan = false;
-            } elseif (empty($path)) {
-                $this->logger
-                    ->/** @scrutinizer ignore-call */
-                    error(
-                        vsprintf(
-                            'Could not resolve page by path "%1$s" and language "%2$s".',
-                            [
-                                $uri->getPath(),
-                                $this->language->getTwoLetterIsoCode(),
-                            ]
-                        )
-                    );
+            } elseif (empty($path) && count($items) === 1) {
+                $page = $items[0];
+                $this->logger->info(
+                    sprintf(
+                        'Path "%1$s" -> slug "%2$s"',
+                        $uri->getPath(),
+                        $page['slug']
+                    )
+                );
                 $scan = false;
             } else {
                 foreach ($items as $item) {
-                    $this->logger
-                        ->info(
-                            vsprintf(
-                                'Path "%1$s" -> slug "%2$s"',
-                                [
-                                    $path,
-                                    $item['slug'],
-                                ]
-                            )
-                        );
+                    $this->logger->info(
+                        sprintf(
+                            'Path "%1$s" -> slug "%2$s"',
+                            $path,
+                            $item['slug']
+                        )
+                    );
 
                     if ($item['slug'] === $path) {
                         $page = $item;

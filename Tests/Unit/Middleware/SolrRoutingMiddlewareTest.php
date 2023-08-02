@@ -87,14 +87,11 @@ class SolrRoutingMiddlewareTest extends UnitTest
      * @test
      * @covers \ApacheSolrForTypo3\Solr\Middleware\SolrRoutingMiddleware::process
      */
-    public function missingEnhancerHasNoEffectTest()
+    public function missingEnhancerHasNoEffectTest(): void
     {
         $serverRequest = new ServerRequest(
             'GET',
             'https://domain.example/facet/bar,buz,foo',
-            [
-                PageIndexerRequest::SOLR_INDEX_HEADER => '1',
-            ]
         );
         $siteMatcherMock = $this->getMockBuilder(SiteMatcher::class)
             ->disableOriginalConstructor()
@@ -142,6 +139,30 @@ class SolrRoutingMiddlewareTest extends UnitTest
         self::assertEquals(
             '/facet/bar,buz,foo',
             $uri->getPath()
+        );
+    }
+
+    /**
+     * @test
+     * @covers \ApacheSolrForTypo3\Solr\Middleware\SolrRoutingMiddleware::process
+     */
+    public function enhancerInactiveDuringIndexingTest(): void
+    {
+        $serverRequest = new ServerRequest(
+            'GET',
+            'https://domain.example/',
+            [
+                PageIndexerRequest::SOLR_INDEX_HEADER => '1',
+            ]
+        );
+
+        $this->routingServiceMock->expects(self::never())->method('getSiteMatcher');
+        $solrRoutingMiddleware = new SolrRoutingMiddleware();
+        $solrRoutingMiddleware->setLogger(new NullLogger());
+        $solrRoutingMiddleware->injectRoutingService($this->routingServiceMock);
+        $solrRoutingMiddleware->process(
+            $serverRequest,
+            $this->responseOutputHandler
         );
     }
 }
