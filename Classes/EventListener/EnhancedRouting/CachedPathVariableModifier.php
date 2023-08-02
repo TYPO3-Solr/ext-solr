@@ -51,7 +51,7 @@ class CachedPathVariableModifier
 
         $this->routingService = GeneralUtility::makeInstance(
             RoutingService::class,
-            $enhancerConfiguration['solr'],
+            $enhancerConfiguration['solr'] ?? [],
             (string)$enhancerConfiguration['extensionKey']
         );
 
