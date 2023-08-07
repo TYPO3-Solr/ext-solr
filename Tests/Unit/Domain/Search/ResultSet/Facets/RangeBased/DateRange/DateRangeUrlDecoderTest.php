@@ -21,8 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for query parser range
- *
- * @author Markus Goldbach
  */
 class DateRangeUrlDecoderTest extends SetUpUnitTestCase
 {

@@ -20,8 +20,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for FormatService
- *
- * @author Thomas Hohn <tho@systime.dk>
  */
 class FormatServiceTest extends SetUpUnitTestCase
 {

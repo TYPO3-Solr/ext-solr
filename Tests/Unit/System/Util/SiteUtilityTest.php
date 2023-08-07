@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 /**
  * Testcase for the SiteUtilityTest helper class.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SiteUtilityTest extends SetUpUnitTestCase
 {
@@ -67,9 +65,6 @@ class SiteUtilityTest extends SetUpUnitTestCase
         self::assertSame('readhost', $property, 'Can not fallback to read property when write property is undefined');
     }
 
-    /**
-     * @return array
-     */
     public function writeConnectionTestsDataProvider(): array
     {
         return [
@@ -152,8 +147,6 @@ class SiteUtilityTest extends SetUpUnitTestCase
 
     /**
      * Data provider for testing boolean value handling
-     *
-     * @return array
      */
     public function siteConfigurationValueHandlingDataProvider(): array
     {
@@ -266,10 +259,6 @@ class SiteUtilityTest extends SetUpUnitTestCase
     /**
      * Tests if boolean values in site configuration can be handled
      *
-     * @param array $fakeConfiguration
-     * @param string $property
-     * @param string $scope
-     * @param mixed $expectedConfigurationValue
      *
      * @test
      * @dataProvider siteConfigurationValueHandlingDataProvider

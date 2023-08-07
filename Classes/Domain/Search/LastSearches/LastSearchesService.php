@@ -24,8 +24,6 @@ use UnexpectedValueException;
 /**
  * The LastSearchesService is responsible to return the LastSearches from the session or database,
  * depending on the configuration.
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class LastSearchesService
 {

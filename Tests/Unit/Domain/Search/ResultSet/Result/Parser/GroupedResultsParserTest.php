@@ -25,8 +25,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase to test the GroupedResultsParser.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class GroupedResultsParserTest extends SetUpUnitTestCase
 {

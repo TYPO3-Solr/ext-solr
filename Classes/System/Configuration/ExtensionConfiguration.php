@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class encapsulates the access to the extension configuration.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ExtensionConfiguration
 {

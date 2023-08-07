@@ -33,8 +33,6 @@ use Psr\Log\LoggerAwareTrait;
 
 /**
  * Modifies a query to add faceting parameters
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class FacetingComponent implements LoggerAwareInterface
 {
@@ -50,8 +48,6 @@ class FacetingComponent implements LoggerAwareInterface
     /**
      * Modifies the given query and adds the parameters necessary for faceted
      * search.
-     *
-     * @param AfterSearchQueryHasBeenPreparedEvent $event
      */
     public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
@@ -84,7 +80,6 @@ class FacetingComponent implements LoggerAwareInterface
      * Modifies the given query and adds the parameters necessary for faceted
      * search.
      *
-     * @param Query $query The query to modify
      *
      * @return Query The modified query with faceting parameters
      *

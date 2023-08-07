@@ -26,8 +26,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 /**
  * Extracted logic from the RecordMonitor to trigger mount page updates.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class MountPagesUpdater
 {

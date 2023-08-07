@@ -33,9 +33,6 @@ use UnexpectedValueException;
  * set to hidden, is deleted or is otherwise made invisible to website visitors.
  *
  * Garbage collection will happen for online/LIVE workspaces only.
- *
- * @author Ingo Renner <ingo@typo3.org>
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class GarbageCollector implements SingletonInterface
 {

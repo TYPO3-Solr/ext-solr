@@ -20,8 +20,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase to check the functionallity of the UrlHelper
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class UrlHelperTest extends SetUpUnitTestCase
 {

@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to check if the solr admin service is working as expected.
- *
- * @author Timo Hund
  */
 class SolrAdminServiceTest extends IntegrationTest
 {

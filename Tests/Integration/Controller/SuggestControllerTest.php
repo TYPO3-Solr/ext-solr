@@ -23,7 +23,6 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 /**
  * Integration testcase to test for {@link SuggestController}
  *
- * @author Timo Hund
  * @group frontend
  */
 class SuggestControllerTest extends IntegrationTest

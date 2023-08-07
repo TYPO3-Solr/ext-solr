@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Class DefaultFacetQueryBuilderTest
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class DefaultFacetQueryBuilderTest extends SetUpUnitTestCase
 {

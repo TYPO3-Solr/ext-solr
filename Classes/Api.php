@@ -17,8 +17,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 /**
  * Remote API related methods
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Api
 {

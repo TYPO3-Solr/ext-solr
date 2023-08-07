@@ -32,8 +32,6 @@ use Solarium\QueryType\Ping\Query as PingQuery;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SolrService class
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SolrReadServiceTest extends SetUpUnitTestCase
 {

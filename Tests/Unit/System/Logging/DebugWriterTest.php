@@ -21,9 +21,6 @@ use ApacheSolrForTypo3\Solr\System\Logging\DebugWriter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Psr\Log\LogLevel;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class DebugWriterTest extends SetUpUnitTestCase
 {
     /**

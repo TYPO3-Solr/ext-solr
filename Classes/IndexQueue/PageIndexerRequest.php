@@ -30,8 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Index Queue Page Indexer request with details about which actions to perform.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class PageIndexerRequest
 {

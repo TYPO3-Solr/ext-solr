@@ -23,9 +23,6 @@ use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix\LabelPrefixes
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
 {
     /**
@@ -66,9 +63,6 @@ class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
         self::assertSame(['l', 'p', 'r'], $prefixes, 'ViewHelper registers unexpected prefixes from passed options');
     }
 
-    /**
-     * @return OptionCollection
-     */
     protected function getTestFacetOptionCollection(): OptionCollection
     {
         $facet = $this->createMock(OptionsFacet::class);

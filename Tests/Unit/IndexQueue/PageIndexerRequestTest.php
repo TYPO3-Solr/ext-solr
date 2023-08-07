@@ -28,8 +28,6 @@ use TYPO3\CMS\Core\Http\RequestFactory;
 
 /**
  * Index Queue Page Indexer request test.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class PageIndexerRequestTest extends SetUpUnitTestCase
 {
@@ -224,11 +222,6 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
         self::assertContains('User-Agent: TYPO3', $headers, 'Header should contain a proper User-Agent');
     }
 
-    /**
-     * @param string|null $jsonEncodedParameter
-     * @param RequestFactory|null $requestFactory
-     * @return PageIndexerRequest
-     */
     protected function getPageIndexerRequest(string $jsonEncodedParameter = null, RequestFactory $requestFactory = null): PageIndexerRequest
     {
         /** @var MockObject|SolrLogManager $solrLogManagerMock */
@@ -239,11 +232,6 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
         return new PageIndexerRequest($jsonEncodedParameter, $solrLogManagerMock, $extensionConfigurationMock, $requestFactory);
     }
 
-    /**
-     * @param $testParameters
-     * @param $fakeResponse
-     * @return MockObject|PageIndexerRequest
-     */
     protected function getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse): PageIndexerRequest|MockObject
     {
         $solrLogManagerMock = $this->createMock(SolrLogManager::class);
@@ -267,10 +255,6 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
         return $requestMock;
     }
 
-    /**
-     * @param $fakeResponse
-     * @return ResponseInterface
-     */
     protected function getFakedGuzzleResponse($fakeResponse): ResponseInterface
     {
         $bodyStream = $this->createMock(StreamInterface::class);

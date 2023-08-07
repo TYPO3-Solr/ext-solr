@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 
 /**
  * Access search component
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class AccessComponent
 {

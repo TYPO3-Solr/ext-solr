@@ -22,9 +22,6 @@ use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class ConfigurationServiceTest extends SetUpUnitTestCase
 {
     /**

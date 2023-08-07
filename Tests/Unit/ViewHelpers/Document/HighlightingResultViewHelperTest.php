@@ -28,14 +28,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use stdClass;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class HighlightingResultViewHelperTest extends SetUpUnitTestCase
 {
-    /**
-     * @return array
-     */
     public function canRenderCreateHighlightSnippedDataProvider(): array
     {
         return [

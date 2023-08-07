@@ -21,8 +21,6 @@ use TYPO3\CMS\Core\Core\Environment;
 
 /**
  * Testcase for IndexQueueWorkerTask
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class IndexQueueWorkerTaskTest extends SetUpUnitTestCase
 {

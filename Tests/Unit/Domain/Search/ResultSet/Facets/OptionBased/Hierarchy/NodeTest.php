@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase to test the Node class
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class NodeTest extends SetUpUnitTestCase
 {

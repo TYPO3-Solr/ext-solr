@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Index Queue Page Indexer frontend helper manager.
  *
  * Manages frontend helpers and creates instances.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Manager
 {

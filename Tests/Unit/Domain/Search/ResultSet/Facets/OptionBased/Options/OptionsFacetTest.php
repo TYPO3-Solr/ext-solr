@@ -23,9 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Unit test for the OptionsFacet
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * @author Frans Saris <frans@beech.it>
  */
 class OptionsFacetTest extends SetUpUnitTestCase
 {
@@ -112,8 +109,6 @@ class OptionsFacetTest extends SetUpUnitTestCase
     }
 
     /**
-     * @param mixed $includeInAvailableFacetsConfiguration
-     * @param mixed $expectedResult
      * @dataProvider getIncludeInAvailableFacetsDataProvider
      * @test
      */

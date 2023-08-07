@@ -22,9 +22,6 @@ use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class SearchRequestBuilderTest extends SetUpUnitTestCase
 {
     protected FrontendUserSession|MockObject $sessionMock;

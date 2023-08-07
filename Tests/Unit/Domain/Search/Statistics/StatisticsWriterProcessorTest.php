@@ -29,8 +29,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Unit test case for the StatisticsWriterProcessor.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class StatisticsWriterProcessorTest extends SetUpUnitTestCase
 {

@@ -30,8 +30,6 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Additional field provider for the index queue worker task
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {

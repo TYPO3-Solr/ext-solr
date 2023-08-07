@@ -17,8 +17,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 /**
  * Field Processor interface
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 interface FieldProcessor
 {

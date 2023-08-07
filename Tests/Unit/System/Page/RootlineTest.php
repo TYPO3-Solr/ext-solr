@@ -20,8 +20,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for the ArrayAccessor helper class.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class RootlineTest extends SetUpUnitTestCase
 {

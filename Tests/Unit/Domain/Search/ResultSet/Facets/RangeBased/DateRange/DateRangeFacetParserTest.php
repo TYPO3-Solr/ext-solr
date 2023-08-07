@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\SetUpFacet
 
 /**
  * Class DateRangeFacetParserTest
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class DateRangeFacetParserTest extends SetUpFacetParser
 {

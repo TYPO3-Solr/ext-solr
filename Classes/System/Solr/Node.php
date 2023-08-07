@@ -24,8 +24,6 @@ use UnexpectedValueException;
  * Represent a server node of solr, in the most setups you would only have one, but sometimes
  * multiple for reading and writing.
  *
- * @author Timo Hund <timo.hund@dkd.de>
- * @copyright Copyright (c) 2009-2020 Timo Hund <timo.hund@dkd.de>
  *
  * @deprecated Class will be removed with Ext:solr 12.x. Use class \Solarium\Core\Client\Endpoint instead.
  */

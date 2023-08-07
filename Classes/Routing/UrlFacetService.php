@@ -19,8 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Routing;
 
 /**
  * Service class to wrap functions to handle facet values within the URL
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 class UrlFacetService
 {

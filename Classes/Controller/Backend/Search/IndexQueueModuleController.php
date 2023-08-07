@@ -31,8 +31,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Index Queue Module
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class IndexQueueModuleController extends AbstractModuleController
 {

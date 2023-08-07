@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the GarbageHandler class.
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class GarbageHandlerTest extends SetUpUpdateHandler
 {
@@ -68,8 +66,6 @@ class GarbageHandlerTest extends SetUpUpdateHandler
      * Inits garbage collection expectations
      *
      * @param string $strategy Class name of strategy to expect
-     * @param string $table
-     * @param int $uid
      */
     protected function initGarbageCollectionExpectations(string $strategy, string $table, int $uid): void
     {

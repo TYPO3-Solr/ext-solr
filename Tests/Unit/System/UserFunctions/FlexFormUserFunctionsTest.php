@@ -18,9 +18,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\UserFunctions;
 use ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class FlexFormUserFunctionsTest extends SetUpUnitTestCase
 {
     /**

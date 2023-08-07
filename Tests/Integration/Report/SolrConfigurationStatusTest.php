@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Integration test for the Solr configuration status report
- *
- * @author Timo Schmidt
  */
 class SolrConfigurationStatusTest extends IntegrationTest
 {

@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Pagination\PaginationInterface;
 
 /**
  * This event is triggered before adding the search result to the fluid template
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 final class BeforeSearchResultIsShownEvent
 {

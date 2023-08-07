@@ -34,8 +34,6 @@ use TYPO3\CMS\Scheduler\Scheduler;
 /**
  * This testcase is used to check if the GarbageCollector can delete garbage from the
  * solr server as expected
- *
- * @author Timo Schmidt
  */
 class GarbageCollectorTest extends IntegrationTest
 {
@@ -135,9 +133,6 @@ class GarbageCollectorTest extends IntegrationTest
         );
     }
 
-    /**
-     * @param $amount
-     */
     protected function assertIndexQueueContainsItemAmount($amount): void
     {
         $itemsInQueue = $this->indexQueue->getAllItemsCount();
@@ -153,9 +148,6 @@ class GarbageCollectorTest extends IntegrationTest
         self::assertEquals(0, $this->eventQueue->count(), 'Event queue is not empty as expected');
     }
 
-    /**
-     * @param int $amount
-     */
     protected function assertEventQueueContainsItemAmount(int $amount): void
     {
         $itemsInQueue = $this->eventQueue->count();

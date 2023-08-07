@@ -21,9 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 class TestPackage extends AbstractFacetPackage
 {
-    /**
-     * @return string
-     */
     public function getParserClassName(): string
     {
         return TestParser::class;

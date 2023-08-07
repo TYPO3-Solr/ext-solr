@@ -22,8 +22,6 @@ use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 
 /**
  * This event is dispatched after the indexing of an item
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 final class AfterItemHasBeenIndexedEvent
 {

@@ -42,8 +42,6 @@ use UnexpectedValueException;
 /**
  * The SearchResultSetService is responsible to build a SearchResultSet from a SearchRequest.
  * It encapsulates the logic to trigger a search in order to be able to reuse it in multiple places.
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class SearchResultSetService
 {

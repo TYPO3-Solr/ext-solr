@@ -23,9 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class QueryGroupFacetParser
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class QueryGroupFacetParser extends AbstractFacetParser
 {

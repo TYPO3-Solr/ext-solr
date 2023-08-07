@@ -27,8 +27,6 @@ use TYPO3\CMS\Reports\Status;
 /**
  * Provides a status report about which schema version is used and checks
  * whether it fits the recommended version shipping with the extension.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class SchemaStatus extends AbstractSolrStatus
 {

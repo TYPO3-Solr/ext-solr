@@ -23,8 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to check if the SiteRepository class works as expected.
- *
- * @author Thomas Hohn <tho@systime.dk>
  */
 class SiteRepositoryTest extends IntegrationTest
 {

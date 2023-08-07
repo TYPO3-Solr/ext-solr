@@ -38,8 +38,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Solr Service Access
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class SolrConnection
 {

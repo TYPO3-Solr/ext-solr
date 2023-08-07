@@ -24,8 +24,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Testcase for ContentObjectService
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ContentObjectServiceTest extends SetUpUnitTestCase
 {
@@ -34,9 +32,6 @@ class ContentObjectServiceTest extends SetUpUnitTestCase
      */
     protected $contentObjectRendererMock;
 
-    /**
-     * @var ContentObjectService
-     */
     protected ContentObjectService $contentObjectService;
 
     protected function setUp(): void

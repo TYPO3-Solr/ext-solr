@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 
 /**
  * Testcase to check if the IdBuilder can be used to build proper variantIds.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class IdBuilderTest extends SetUpUnitTestCase
 {

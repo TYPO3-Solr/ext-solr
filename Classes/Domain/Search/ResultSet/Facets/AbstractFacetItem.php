@@ -19,9 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /**
  * Abstract item that represent a value of a facet. E.g. an option or a node
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 abstract class AbstractFacetItem
 {

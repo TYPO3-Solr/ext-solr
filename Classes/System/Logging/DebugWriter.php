@@ -28,8 +28,6 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 /**
  * The DebugWriter is used to write the devLog messages to the output of the page, or to the TYPO3 console in the
  * backend to provide a simple and lightweight debugging possibility.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class DebugWriter
 {

@@ -29,8 +29,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 /**
  * Indexer to add / overwrite page document fields as defined in
  * plugin.tx_solr.index.queue.pages.fields.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class PageFieldMappingIndexer
 {

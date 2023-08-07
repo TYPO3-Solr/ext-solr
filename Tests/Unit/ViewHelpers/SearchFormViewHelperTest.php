@@ -30,9 +30,6 @@ use TYPO3\CMS\Fluid\View\TemplatePaths;
 use TYPO3Fluid\Fluid\Core\Cache\FluidCacheInterface;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class SearchFormViewHelperTest extends SetUpUnitTestCase
 {
     protected MockObject|SearchFormViewHelper $viewHelper;
@@ -75,9 +72,6 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @param int $pageUid
-     */
     protected function assertUriIsBuildForPageUid(int $pageUid)
     {
         $this->uriBuilderMock->expects(self::any())->method('reset')->willReturn($this->uriBuilderMock);

@@ -20,8 +20,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Abstract testcase for the processing finished events
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 abstract class SetUpProcessingFinishedEvent extends SetUpUnitTestCase
 {

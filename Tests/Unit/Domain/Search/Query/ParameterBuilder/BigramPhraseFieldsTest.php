@@ -18,9 +18,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\ParameterBuilde
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class BigramPhraseFieldsTest extends SetUpUnitTestCase
 {
     /**

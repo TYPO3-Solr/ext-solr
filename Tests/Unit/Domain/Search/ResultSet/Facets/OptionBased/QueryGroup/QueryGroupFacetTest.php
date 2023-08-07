@@ -23,9 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Unit test for the QueryGroupFacet
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * @author Frans Saris <frans@beech.it>
  */
 class QueryGroupFacetTest extends SetUpUnitTestCase
 {

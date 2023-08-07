@@ -19,8 +19,6 @@ use InvalidArgumentException;
 
 /**
  * Class to parse the stopwords from a solr response.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class StopWordParser
 {

@@ -25,8 +25,6 @@ use Solarium\QueryType\Update\Result;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SolrService class
- *
- * @author Jens Jacobsen <typo3@jens-jacobsen.de>
  */
 class SolrWriteServiceTest extends SetUpUnitTestCase
 {

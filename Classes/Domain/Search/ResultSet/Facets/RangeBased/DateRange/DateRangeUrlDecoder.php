@@ -23,10 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Parser to build solr range queries from tx_solr[filter]
- *
- * @author Markus Goldbach <markus.goldbach@dkd.de>
- * @copyright (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
- * @copyright (c) 2012-2015 Ingo Renner <ingo@typo3.org>
  */
 class DateRangeUrlDecoder implements FacetUrlDecoderInterface
 {

@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -207,7 +208,9 @@ class Site
      * @param int|null $pageId Page ID from where to start collection sub-pages. Uses and includes the root page if none given.
      * @param string|null $indexQueueConfigurationName The name of index queue.
      *
-     * @return array Array of pages (IDs) in this site
+     * @return int[] Array of pages (IDs) in this site
+     *
+     * @throws DBALException
      */
     public function getPages(
         ?int $pageId = null,

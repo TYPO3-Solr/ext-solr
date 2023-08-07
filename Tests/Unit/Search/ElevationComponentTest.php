@@ -27,8 +27,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Elevation class
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ElevationComponentTest extends SetUpUnitTestCase
 {

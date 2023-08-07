@@ -31,8 +31,6 @@ use TYPO3\CMS\Reports\Status;
 /**
  * Provides a status report about whether a connection to the Solr server can
  * be established.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class SolrStatus extends AbstractSolrStatus
 {
@@ -103,7 +101,6 @@ class SolrStatus extends AbstractSolrStatus
     /**
      * Checks whether a Solr server is available and provides some information.
      *
-     * @param Site $site
      * @param array $solrConnection Solr connection parameters
      * @return Status Status of the Solr connection
      */

@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * tests the processing Service class
- *
- * @author Daniel Poetzinger <poetzinger@aoemedia.de>
  */
 class ServiceTest extends SetUpUnitTestCase
 {

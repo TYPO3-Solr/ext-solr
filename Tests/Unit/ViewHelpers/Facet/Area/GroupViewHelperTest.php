@@ -23,9 +23,6 @@ use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Area\GroupViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class GroupViewHelperTest extends SetUpUnitTestCase
 {
     /**

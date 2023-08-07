@@ -18,9 +18,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\FrontendHelper;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class ManagerTest extends SetUpUnitTestCase
 {
     /**

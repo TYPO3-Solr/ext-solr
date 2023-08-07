@@ -26,8 +26,6 @@ use TYPO3\CMS\Core\Site\SiteFinder;
  * Testcase to check if the SiteHashService class works as expected.
  *
  * The unit test is used to make sure that the SiteHashService works as expected when the calls to Site:: are mocked
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SiteHashServiceTest extends SetUpUnitTestCase
 {

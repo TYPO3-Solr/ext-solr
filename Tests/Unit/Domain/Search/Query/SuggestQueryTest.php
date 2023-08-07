@@ -23,8 +23,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SuggestQuery class
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SuggestQueryTest extends SetUpUnitTestCase
 {

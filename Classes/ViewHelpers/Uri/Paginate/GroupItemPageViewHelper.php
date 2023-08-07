@@ -24,9 +24,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Class GroupItemPageViewHelper
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class GroupItemPageViewHelper extends AbstractUriViewHelper
 {

@@ -27,8 +27,6 @@ use TYPO3\CMS\Scheduler\Scheduler;
 /**
  * Test case to check if the scheduler task EventQueueWorkerTask can process
  * event queue entries
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class EventQueueWorkerTaskTest extends IntegrationTest
 {

@@ -29,7 +29,6 @@ use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
  * Integration testcase to test for the SearchController
  *
  * (c) 2010-2015 Timo Hund <timo.hund@dkd.de>
- * @author Timo Hund
  */
 class SearchControllerTest extends IntegrationTest
 {
@@ -930,9 +929,6 @@ class SearchControllerTest extends IntegrationTest
         self::assertStringContainsString('Parsed Query:', $resultPage1, 'No parsed query in response');
     }
 
-    /**
-     * @return array
-     */
     public function frontendWillRenderErrorMessageIfSolrNotAvailableDataProvider(): array
     {
         return [
@@ -942,8 +938,6 @@ class SearchControllerTest extends IntegrationTest
     }
 
     /**
-     * @param string $action
-     * @param array $getArguments
      * @dataProvider frontendWillRenderErrorMessageIfSolrNotAvailableDataProvider
      * @test
      * @group frontend
@@ -1414,7 +1408,6 @@ class SearchControllerTest extends IntegrationTest
      *
      * @param string $expectedToContain
      * @param string $content
-     * @param $id
      */
     protected function assertContainerByIdContains($expectedToContain, $content, $id)
     {
@@ -1427,7 +1420,6 @@ class SearchControllerTest extends IntegrationTest
      *
      * @param string $expectedToContain
      * @param string $content
-     * @param $id
      */
     protected function assertContainerByIdNotContains($expectedToContain, $content, $id)
     {

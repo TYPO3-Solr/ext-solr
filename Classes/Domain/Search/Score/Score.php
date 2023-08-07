@@ -17,8 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Score;
 
 /**
  * Holds the data of an analyzed score.
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class Score
 {

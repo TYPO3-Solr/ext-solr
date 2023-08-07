@@ -22,8 +22,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  * Testcase to test the functionallity of the extension configuration that comes from
  *
  * ext_conf_template.txt
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ExtensionConfigurationTest extends SetUpUnitTestCase
 {

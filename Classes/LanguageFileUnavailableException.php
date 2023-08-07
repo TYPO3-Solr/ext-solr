@@ -17,8 +17,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 /**
  * Exception that is thrown when a language file is needed, but not available.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class LanguageFileUnavailableException extends Exception
 {

@@ -19,8 +19,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 
 /**
  * Testcase for AbstractIndexer
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class AbstractIndexerTest extends SetUpUnitTestCase
 {

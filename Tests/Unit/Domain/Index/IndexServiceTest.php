@@ -28,9 +28,6 @@ use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class IndexServiceTest extends SetUpUnitTestCase
 {
     protected Site|MockObject $siteMock;
@@ -176,9 +173,6 @@ class IndexServiceTest extends SetUpUnitTestCase
         $indexService->indexItems(2);
     }
 
-    /**
-     * @param array $fakeItems
-     */
     protected function fakeQueueItemContent(array $fakeItems): void
     {
         $this->queueMock

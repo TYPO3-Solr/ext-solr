@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the DelayedProcessingEventListener
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class DelayedProcessingEventListenerTest extends SetUpEventListener
 {

@@ -28,8 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * If the input date can not be processed by the given inputFormat string it is
  * returned unprocessed.
- *
- * @author Hendrik Putzek <hendrik.putzek@dkd.de>
  */
 class FormatDate
 {

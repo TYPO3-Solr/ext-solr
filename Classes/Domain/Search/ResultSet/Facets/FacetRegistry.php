@@ -26,9 +26,6 @@ use ApacheSolrForTypo3\Solr\System\Object\AbstractClassRegistry;
 
 /**
  * Class FacetRegistry
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class FacetRegistry extends AbstractClassRegistry
 {

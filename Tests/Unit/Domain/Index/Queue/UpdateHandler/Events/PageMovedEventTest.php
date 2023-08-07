@@ -19,8 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEve
 
 /**
  * Testcase for the PageMovedEvent
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class PageMovedEventTest extends SetUpDataUpdateEvent
 {

@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdate
 
 /**
  * Testcase for the NoProcessingEventListener
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class NoProcessingEventListenerTest extends SetUpEventListener
 {

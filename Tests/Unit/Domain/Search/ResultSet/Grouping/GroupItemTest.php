@@ -23,8 +23,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test case for the Group class
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class GroupItemTest extends SetUpUnitTestCase
 {
