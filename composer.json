@@ -138,7 +138,7 @@
         "ext-solrconsole": "^12.0",
         "ext-solrdebugtools": "^12.0",
         "ext-solrmlt": "^12.0",
-        "Apache-Solr": "8.11.1",
+        "Apache-Solr": "9.3.0",
         "configset": "ext_solr_12_0_0"
       },
       "ext-solrfal": {

@@ -18,6 +18,22 @@ Support of TYPO3 12 LTS
 
 With EXT:solr 12.0 we provide the support of TYPO3 12 LTS.
 
+!!! Upgrade to Apache Solr 9.3.0
+--------------------------------
+
+This release requires Apache Solr v 9.3.0+.
+
+**Note**: On third party installations enabling stream feature via the ENV vars or system properties is required.
+
+Following variables must be set in solr.in.sh file or in Solr system props:
+* `SOLR_ENABLE_REMOTE_STREAMING=true`
+* `SOLR_ENABLE_STREAM_BODY=true`
+
+For more information see:
+* https://solr.apache.org/guide/solr/latest/upgrade-notes/major-changes-in-solr-9.html#security
+* https://issues.apache.org/jira/browse/SOLR-14853
+
+
 Reworked Search Query Component System
 --------------------------------------
 
