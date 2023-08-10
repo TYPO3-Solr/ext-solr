@@ -13,7 +13,7 @@ The focus of this release was the support of TYPO3 10 LTS.
 **Important**: This version is installable with TYPO3 9 and 10 LTS. For TYPO3 9 LTS at least version 9.5.16 is required.
 EXT:solr 11 requires the usage of the TYPO3 site handling for the configuration of solr.
 
-The ```legacyMode``` that allows the usage of domain records and configuration of solr cores in TypoScript was dropped with EXT:solr 11.
+The ```legacyMode``` that allows the usage of domain records and configuration of Solr cores in TypoScript was dropped with EXT:solr 11.
 
 New in this release
 ===================

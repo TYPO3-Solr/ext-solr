@@ -17,7 +17,7 @@ The following changes might be interesting.
 
 #### Allow to use the closest configuration in the page tree
 
-When a record is saved in the backend by now the whole typoscript configuration is evaluated for the page where the record is located. In many setups it is enough to just use the closest template in the rootline to parse the configuration.
+When a record is saved in the backend by now the whole TypoScript configuration is evaluated for the page where the record is located. In many setups it is enough to just use the closest template in the rootline to parse the configuration.
 Since there are cases, where this method does not work (e.g. when you use conditions based on page ids) you need to switch this behaviour explicitly on, by enable "useConfigurationFromClosestTemplate".
 
 * https://github.com/TYPO3-Solr/ext-solr/issues/937
@@ -31,16 +31,16 @@ To optimize the performance the RecordMonitor and GarbageCollector class have be
 
 #### Add a global list of monitored tables
 
-If a record is relevant can only be decided in the context of a solr site because the typoscript configuration defines the indexing configuration.
+If a record is relevant can only be decided in the context of a Solr site because the TypoScript configuration defines the indexing configuration.
 
-When you want to tweek the backend performance you can define a global list of monitoredTables. Other tables will then be ignored and also the parsing of the typoscript configuration is not needed then.
+When you want to tweek the backend performance you can define a global list of monitoredTables. Other tables will then be ignored and also the parsing of the TypoScript configuration is not needed then.
 
 * https://github.com/TYPO3-Solr/ext-solr/issues/1115
 
 ### New Index Inspector
 
 Since extjs will be removed more and more from the TYPO3 core we decided to migrate the index inspector to fluid.
-You can use the index inspector as usual from "Web > Info > Search Index Inspector" to analyze which documents are in the 
+You can use the index inspector as usual from "Web > Info > Search Index Inspector" to analyze which documents are in the
 solr server for a specific page.
 
 Related Issues:
@@ -89,10 +89,10 @@ EXT:solr 6.1.0 shippes new dynamic field types that make "N-Gram" and "Edge N-Gr
 * Edge N-Gram Singlevalue: `\*_textEdgeNgramS`  Edge Ngram (hello => hello, hell..)
 * Edge N-Gram Multivalue: `\*_textEdgeNgramM`  Edge Ngram (hello => hello, hell..)
 * N-Gram Singlevalue: `\*_textNgramS` Ngram (hello => he,ll,lo,hel,llo)
-* N-Gram Multivalue: `\*_textNgramM` Ngram (hello => he,ll,lo,hel,llo) 
-    
+* N-Gram Multivalue: `\*_textNgramM` Ngram (hello => he,ll,lo,hel,llo)
+
 See also:
-    
+
 https://cuiborails.wordpress.com/2012/07/13/apache-solr-ngramedgengram/
 
 Related Issues:
@@ -102,19 +102,19 @@ Related Issues:
 
 ### Allow to disable siteHash check by using allowedSites = *
 
-The siteHash is unique for a solr site in the TYPO3 system. When solr does a query the allowedSites setting can be used to control the set of documents that are queried in a solr core.
-This is useful when you want to split the content from multiple sites in a single solr core. In some cases it is useful to disable this limitation. 
+The siteHash is unique for a Solr site in the TYPO3 system. When Solr does a query the allowedSites setting can be used to control the set of documents that are queried in a Solr core.
+This is useful when you want to split the content from multiple sites in a single Solr core. In some cases it is useful to disable this limitation.
 
 E.g. when:
 
-* You have data in solr that comes from another system
+* You have data in Solr that comes from another system
 * When you want to search across multiple sites
 
-Before the extension "solr_disablesitehash" was required to turn this sitehash check off. With solr 6.1.0 we've changed the meaning of the allowedSites:
+Before the extension "solr_disablesitehash" was required to turn this sitehash check off. With EXT:solr 6.1.0 we've changed the meaning of the allowedSites:
 
 * Before: \* was the same as __all, which means all sites in the system
 * After: __all is still handled as __all sites in the system, but * now means every site (same as no check at all)
-    
+
 Migration: When you are using * for query.allowedSites change the setting to __all.
 
 Related Issues:
@@ -146,9 +146,9 @@ Related Issues:
 * https://github.com/TYPO3-Solr/ext-solr/issues/1010
 
 
-### Add solr access filter plugin 2.0.0
+### Add Solr access filter plugin 2.0.0
 
-The solr access filter plugin has been optimized to use a solr post filter. By using a post filter the performance of this plugin is much better, because less documents need to be evaluated.
+The Solr access filter plugin has been optimized to use a Solr post filter. By using a post filter the performance of this plugin is much better, because less documents need to be evaluated.
 In this release we ship this new version 2.0.0 of the access filter with the default configSet and in our docker container.
 
 Related Issues:
@@ -178,19 +178,19 @@ Related Issues:
 * https://github.com/TYPO3-Solr/ext-solr/issues/1134
 * https://github.com/TYPO3-Solr/ext-solr/issues/1173
 
-### Add cObject support for solr settings
+### Add cObject support for Solr settings
 
-When you use EXT:solr in a deployment scenario (e.g. platform.sh) you maybe want to define the solr endpoints by environment variables or from variables in TYPO3_CONF_VARS. Both approaches are supported by the typoscript TEXT object.
-Therefore it makes sence for the solr endpoint settings in `plugin.tx_solr.solr` to support the usage of cObjects there. This allows you to define connections like this:
+When you use EXT:solr in a deployment scenario (e.g. platform.sh) you maybe want to define the Solr endpoints by environment variables or from variables in TYPO3_CONF_VARS. Both approaches are supported by the TypoScript TEXT object.
+Therefore it makes sence for the Solr endpoint settings in `plugin.tx_solr.solr` to support the usage of cObjects there. This allows you to define connections like this:
 
 Addition to AdditionalConfiguration.php:
-    
+
 ```
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['host'] = 'mysolrserver.de';
 ```
 
-Usage in Typoscript:
-    
+Usage in TypoScript:
+
 ```
 plugin.tx_solr.solr {
     host = TEXT
@@ -243,11 +243,11 @@ In this release some breaking changes have been required. Please follow the note
 ### Default variantId changed
 
 The default variantId was `table/uid` before since this id is not unique across multiple TYPO3 system, a system hash was added before.
-The scheme of the new variantId is `systemhash/table/uid` and allows to use grouping when data from multiple TYPO3 systems get indexed and searched. 
+The scheme of the new variantId is `systemhash/table/uid` and allows to use grouping when data from multiple TYPO3 systems get indexed and searched.
 
 Migration:
 
-Reindex the solr data to get the new variantId.
+Reindex the Solr data to get the new variantId.
 
 Related Issues:
 
@@ -265,7 +265,7 @@ Related Issues:
 
 ### Setting debugDevlogOutput replaced by debugOutput
 
-Because the devLog was replaced by the logging framework, the setting `plugin.tx_solr.logging.debugDevlogOutput` does not make sence anymore. 
+Because the devLog was replaced by the logging framework, the setting `plugin.tx_solr.logging.debugDevlogOutput` does not make sence anymore.
 
 Migration:
 
@@ -295,11 +295,11 @@ Related Issues:
 
 ## Bugfixes
 
-StatisticRepository::getTopKeyWordsWithOrWithoutHits $limit, $withoutHits have no default values 
+StatisticRepository::getTopKeyWordsWithOrWithoutHits $limit, $withoutHits have no default values
 
 https://github.com/TYPO3-Solr/ext-solr/issues/1143
 
-Wrong TS path in frontendDataHelper documentation 
+Wrong TS path in frontendDataHelper documentation
 
 https://github.com/TYPO3-Solr/ext-solr/issues/964
 
@@ -311,7 +311,7 @@ Backend Summary not working
 
 https://github.com/TYPO3-Solr/ext-solr/issues/731
 
-Queue initialization returns wrong (duplicate) results for second site root in multisite environment 
+Queue initialization returns wrong (duplicate) results for second site root in multisite environment
 
 https://github.com/TYPO3-Solr/ext-solr/issues/488
 
@@ -330,7 +330,7 @@ https://github.com/TYPO3-Solr/ext-solr/issues/652
 Custom field is not indexed for custom page queue configuration
 
 https://github.com/TYPO3-Solr/ext-solr/issues/842
- 
+
 GarbageCollector fails to check endtime correctly
 
 https://github.com/TYPO3-Solr/ext-solr/issues/1212
@@ -361,10 +361,10 @@ awesome community. Here are the contributors for this release.
 * Markus Kobligk
 * Rafael Kähm
 * Rasmus Larsen
-* Sascha Egerer 
+* Sascha Egerer
 * Thomas Hohn
 * Timo Hund
-* Tomas Norre Mikkelsen 
+* Tomas Norre Mikkelsen
 
 Also a big thanks to our partners that have joined the EB2017 program:
 
@@ -429,7 +429,7 @@ There are many ways to get involved with Apache Solr for TYPO3:
 
 Support us in 2017 by becoming an EB partner:
 
-http://www.typo3-solr.com/en/contact/ 
+http://www.typo3-solr.com/en/contact/
 
 or call:
 

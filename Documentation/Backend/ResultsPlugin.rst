@@ -73,7 +73,7 @@ This option is used to configure if the results of an initial query should be sh
 **"Filters"**:
 
 
-This flexform element allows you to define custom filters by selecting a solr field and a value:
+This flexform element allows you to define custom filters by selecting a Solr field and a value:
 
 .. image:: /Images/Backend/plugin_search_flexform_filter.png
 
@@ -102,7 +102,7 @@ When you want to sort initially by a field value and not by relevance this can b
 **"Boost Function"**:
 
 A boost function can be useful to influence the relevance calculation and boost some documents to appear more at the beginning of the result list.
-Technically the parameter will be mapped to the **"bf"** parameter in the solr query.
+Technically the parameter will be mapped to the **"bf"** parameter in the Solr query.
 
 Use cases for example could be:
 
@@ -138,7 +138,7 @@ https://cwiki.apache.org/confluence/display/solr/Function+Queries
 
 **"Boost Query"**:
 
-The boostQuery is a query that can be used for boosting. Technically it is mapped to the **"bq"** parameter of the solr query. Compared to boost a function a boost query provides less use cases.
+The boostQuery is a query that can be used for boosting. Technically it is mapped to the **"bq"** parameter of the Solr query. Compared to boost a function a boost query provides less use cases.
 
 An example could be to boost documents based on a certain field value:
 

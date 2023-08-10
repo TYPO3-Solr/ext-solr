@@ -8,7 +8,7 @@ As you already learned you can index pages very easy with EXT:solr and setup a s
 Indexing custom records
 -----------------------
 
-As a core feature EXT:solr allows you to write custom typoscript configuration to index records from any extension just with configuration. To see how this is working, we open the content of the TypoScript example **"Search - Index Queue Configuration for news"** that can be found in "Configuration/TypoScript/Examples/IndexQueueNews":
+As a core feature EXT:solr allows you to write custom TypoScript configuration to index records from any extension just with configuration. To see how this is working, we open the content of the TypoScript example **"Search - Index Queue Configuration for news"** that can be found in "Configuration/TypoScript/Examples/IndexQueueNews":
 
 .. code-block:: typoscript
 
@@ -81,7 +81,7 @@ By reading the example above you might recognize the following facts:
 
 * The indexing configuration is done in the TypoScript path 'plugin. tx_solr. index. queue. [configName]' and there can be multiple queue configurations.
 * The database table is configured in the property 'plugin.tx_solr.index.queue.[configName].table'. This allows you to have multiple index queue configurations for the same database table. This can be helpful when you have multiple queue configurations for news (e.g. if you have a press & corporate news section on your website).
-* The solr fields are configured in 'plugin.tx_solr.index.queue.[configName].fields'. This allows you to flexibly fill any solr field. The combination of dynamic fields (:ref:`appendix-dynamic-fields`) and the queue configuration allows you to write any kind of data into solr without adapting the solr schema.
+* The Solr fields are configured in 'plugin.tx_solr.index.queue.[configName].fields'. This allows you to flexibly fill any Solr field. The combination of dynamic fields (:ref:`appendix-dynamic-fields`) and the queue configuration allows you to write any kind of data into Solr without adapting the Solr schema.
 * There are custom TypoScript objects from EXT:solr that are used in the index queue configuration
    - :ref:`index-helper-solr-content`
    - :ref:`index-helper-solr-relation`
@@ -93,7 +93,7 @@ Custom records - links and detail page
 --------------------------------------
 
 In the example above *typolink* is used to build a link to the detail view of the news. This is required, because EXT:solr can not know the business logic of the news extension to build a detail link.
-The typoscript constant "plugin.tx_news.settings.detailPid" is used to configure the target pageId of the news single view. This has two important impacts:
+The TypoScript constant "plugin.tx_news.settings.detailPid" is used to configure the target pageId of the news single view. This has two important impacts:
 
 * The constant (*plugin.tx_news.settings.detailPid*) need to point to a valid news single page.
 * The page with the news single view, should be configured with *"Include in Search => Disable"* because indexing this page with the normal page indexing without a news id will produce an error page.
@@ -107,7 +107,7 @@ Sysfolders outside the siteroot
 -------------------------------
 
 The page with a domain record act as a siteroot in EXT:solr. It is a good practice not to nest the siteroots and do the configuration on the root page.
-Changes on records that are done in the TYPO3 backend are detected and the solr document will be readded to the index queue when something was changed.
+Changes on records that are done in the TYPO3 backend are detected and the Solr document will be readded to the index queue when something was changed.
 
 By default only records are monitored for a site that are in the tree of the site. If you want to index records and detect changes on records in a different siteroot, the
 index queue configuration needs to contains "additionalPageIds" (e.g.: 'plugin.tx_solr.index.queue.<queueName>.additionalPageIds = 45,48').

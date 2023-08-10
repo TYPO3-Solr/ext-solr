@@ -74,7 +74,7 @@ NOTE: $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] needs to be configured and
 
 ### RST Documentation
 
-We've ported the typoscript reference from the forge wiki into an rst format. At the same time we've enhanced the documentation with chapters about:
+We've ported the TypoScript reference from the forge wiki into an rst format. At the same time we've enhanced the documentation with chapters about:
 
 - Getting Started
 - The Backend

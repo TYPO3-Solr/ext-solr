@@ -14,7 +14,7 @@ There are several points to extend the Page Indexer class and register own class
 BeforePageDocumentIsProcessedForIndexingEvent
 ---------------------------------------------
 
-Registered Event Listeners can be used to add additional documents to solr when a page gets indexed.
+Registered Event Listeners can be used to add additional documents to Solr when a page gets indexed.
 
 Registration of an event listener in your extension's :file:`Services.yaml`:
 
@@ -132,7 +132,7 @@ If external data should be indexed or the RecordIndexer is not required, it is p
        }
 
        /**
-        * Send data to solr index
+        * Send data to Solr index
         *
         * @param array $rows Data to be indexed, e.g. multiple DB rows
         * @param int $pageId root page
@@ -165,7 +165,7 @@ If external data should be indexed or the RecordIndexer is not required, it is p
        }
 
        /**
-        * Create a solr document which then is sent to solr
+        * Create a Solr document which then is sent to Solr
         *
         * @param array $row
         * @param int $pageId

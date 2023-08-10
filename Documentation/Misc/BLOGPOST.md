@@ -7,7 +7,7 @@ The integration of fluid has several advantages:
 Reuse your knowledge: Many integrators already know how to use fluid, no need to learn a new templating language
 Reuse existing ViewHelpers: There a several existing ViewHelpers for standard tasks, now you can make use of them in your template
 
-Since there where several approaches already started in the community, we started to watch out if we could join the forces to bring the solr extension with fluid to the next level. Together with Frans Saris (beech.it) we started to bring the parts together that he has started back then.
+Since there where several approaches already started in the community, we started to watch out if we could join the forces to bring the Solr extension with fluid to the next level. Together with Frans Saris (beech.it) we started to bring the parts together that he has started back then.
 
 We also had a very productive codesprint in Venlo at the beginning of may. At that time we though about concepts and did a lot of the implementation.
 
@@ -43,7 +43,7 @@ By having these parts in place we could start in EXT:solrfluid to build the logi
 To really split the logic in the View/Controller and Model we decided to implement a new domain model for facets that simplifies the usage for fluid and any other mvc based rendering.
 
 As mentioned before the „ResultSet“ in the new central entry point in the view and allows to retrieve other related domain objects. Therefore we attached also the facets to the SearchResultsSet.
-Every facet type is located in one subpackage of „Domain/Search/ResultSet/Facets“. It needs to ship a „parser“ that is responsible to to parse the solr response and create the facet object structure
+Every facet type is located in one subpackage of „Domain/Search/ResultSet/Facets“. It needs to ship a „parser“ that is responsible to to parse the Solr response and create the facet object structure
 for the view, based on the response.
 
 For the options facet for example we have the following components:
@@ -99,7 +99,7 @@ To allow and simplify this we introduced the „ViewHelpers/Facets/Area“ packa
 facets in the context.
 
 The first implementation of an „area“ is the „grouping“ area. By default every facet is configured to be assigned to the group „main“. And by default this group is also rendered.
-You can change the configuration by changing the typoscript configuration „groupName“ to something else, and then render this group in another location.
+You can change the configuration by changing the TypoScript configuration „groupName“ to something else, and then render this group in another location.
 
 Beside the „Group“ area, we thinking about other types e.g. „FieldWhitelist“ or „FieldBlacklist“ to allow other „strategies“ of grouping.
 

@@ -15,7 +15,7 @@ useConfigurationFromClosestTemplate
 :Since: 6.1
 :Default: 0
 
-When this setting is active the closest page with a typoscript template will be used to fetch the configuration.
+When this setting is active the closest page with a TypoScript template will be used to fetch the configuration.
 This improves the performance but limits also the possibilities. E.g. conditions can not be used that are related to a certain page.
 
 useConfigurationTrackRecordsOutsideSiteroot

@@ -15,7 +15,7 @@ Below are all available components listed and their responsibility.
 CoreSelector
 ============
 
-Renders menu in backends doc header with available Solr cores for selected Site and changes the solr core by clicking on option in drop down menu.
+Renders menu in backends doc header with available Solr cores for selected Site and changes the Solr core by clicking on option in drop down menu.
 
 * Provides following methods, which must be called inside the `initializeView(...)` method in your controller to render this component in Backend:
 
@@ -49,5 +49,5 @@ and allowed by ACL for all(or almost all) be users/groups, but this is a bag app
 **What do I need to do for using Backend Components?**
 
 By extending ApacheSolrForTypo3\Solr\Controller\Backend\Search\AbstractModuleController your module has the pagetree (to select the side) and the core selector, to
-select the needed solr core.
+select the needed Solr core.
 

@@ -7,7 +7,7 @@ ConnectionManager
 TYPO3 Site mode
 ---------------
 
-You can configure all solr connection properties along with your TYPO3 site in the site module.
+You can configure all Solr connection properties along with your TYPO3 site in the site module.
 
 The configuration in the UI is limited to the following settings to keep the setup as simple as possible:
 
@@ -22,7 +22,7 @@ Languagelevel:
 
 * Solr core name
 
-If you have a more complex setup or need to configure username and password please configure solr by editing the yaml file.
+If you have a more complex setup or need to configure username and password please configure Solr by editing the yaml file.
 
 The fallback mechanism allows you to overwrite settings on the language level.
 
@@ -95,7 +95,7 @@ In EXT:solr all the configuration, including options affecting backend functions
 
 .. figure:: /Images/GettingStarted/typo3-initialize-connections.png
 
-    Initialize all solr connections
+    Initialize all Solr connections
 
 When initializing the Solr connections the extensions looks for all the pages with the root flag set, generates the TypoScript configuration for that page like in the frontend and reads the Solr connection parameters.
 

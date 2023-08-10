@@ -4,7 +4,7 @@ Ajaxified Results
 
 To improve the use experience and the performance it is possible to load most of the sub requests with ajax.
 
-To activate the **"ajaxification"** you need to include the typoscript template **"Search - Ajaxify the searchresults with jQuery"**
+To activate the **"ajaxification"** you need to include the TypoScript template **"Search - Ajaxify the searchresults with jQuery"**
 
 
 .. figure:: /Images/Frontend/Ajax/typoscript_template.png

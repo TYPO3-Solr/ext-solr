@@ -13,7 +13,7 @@ Apache Solr for TYPO3 11.5.2
 This is a maintenance release for TYPO3 11.5, containing:
 
 - [BUGFIX:BP:11.5] Fix error when indexing pages with field processing instruction categoryUidToHierarchy by @dkd-kaehm in `#3462 <https://github.com/TYPO3-Solr/ext-solr/pull/3462>`__
-- [BUGFIX:BP:11.5] Custom doktype is deleted from solr after saving with custom queue configuration by @dkd-friedrich in `#3468 <https://github.com/TYPO3-Solr/ext-solr/pull/3468>`__
+- [BUGFIX:BP:11.5] Custom doktype is deleted from Solr after saving with custom queue configuration by @dkd-friedrich in `#3468 <https://github.com/TYPO3-Solr/ext-solr/pull/3468>`__
 - [BUGFIX:BP:11.5] Don't use minimum-stability dev on TYPO3 stable in build/CI by @dkd-kaehm in `#3464 <https://github.com/TYPO3-Solr/ext-solr/pull/3464>`__
 - [BUGFIX:BP:11.5] Fix value resolution in SOLR_RELATION by @dkd-friedrich in `#3484 <https://github.com/TYPO3-Solr/ext-solr/pull/3484>`__
 - [FEATURE:P:11.5] Add new option manualSortOrderDelimiter for facets by @dkd-kaehm in `#3494 <https://github.com/TYPO3-Solr/ext-solr/pull/3494>`__
@@ -224,13 +224,13 @@ The list of all changes:
 - [TASK] Allow to publish (-PRE)-(ALPHA|BETA|RC) releases to TYPO3 TER `5cb71c168 <https://github.com/TYPO3-Solr/ext-solr/commit/5cb71c168>`_
 - [FIX] Allow to edit pages outside of site root `6c8801154 <https://github.com/TYPO3-Solr/ext-solr/commit/6c8801154>`_
 - [FIX] Allow to mark pages as site root `09009909b <https://github.com/TYPO3-Solr/ext-solr/commit/09009909b>`_
-- [FIX] Don't auto select first configured solr site if non configured exists `352998671 <https://github.com/TYPO3-Solr/ext-solr/commit/352998671>`_
+- [FIX] Don't auto select first configured Solr site if non configured exists `352998671 <https://github.com/TYPO3-Solr/ext-solr/commit/352998671>`_
 - [FIX] Can't create SchedulerTask `05ae55ec7 <https://github.com/TYPO3-Solr/ext-solr/commit/05ae55ec7>`_
 - [TASK] Add Czech translation `a3805b287 <https://github.com/TYPO3-Solr/ext-solr/commit/a3805b287>`_
 - [Bugfix] Prevent unwanted filter parameters from being generated `3e156981d <https://github.com/TYPO3-Solr/ext-solr/commit/3e156981d>`_
 - !!![TASK] Refactor Site stack `5120a68b7 <https://github.com/TYPO3-Solr/ext-solr/commit/5120a68b7>`_
 - !!![FIX] Index Queue initialization is not robust enought `bc7133237 <https://github.com/TYPO3-Solr/ext-solr/commit/bc7133237>`_
-- [FIX] typoscript in Tsfe::initializeTsfe()  parsed twice `aafc18de3 <https://github.com/TYPO3-Solr/ext-solr/commit/aafc18de3>`_
+- [FIX] TypoScript in Tsfe::initializeTsfe()  parsed twice `aafc18de3 <https://github.com/TYPO3-Solr/ext-solr/commit/aafc18de3>`_
 - [FIX] Integration tests on release-11.5.x `210a64a88 <https://github.com/TYPO3-Solr/ext-solr/commit/210a64a88>`_
 - [TASK] Upgrade to Apache Solr 8.11.1 `b3ab72de1 <https://github.com/TYPO3-Solr/ext-solr/commit/b3ab72de1>`_
 - [BUGFIX] Catch Throwables instead Exceptions `a2988d2ff <https://github.com/TYPO3-Solr/ext-solr/commit/a2988d2ff>`_

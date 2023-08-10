@@ -15,7 +15,7 @@ With these pull requests several new features and bugfixes were added.
 The focus of this release was adding support for the latest version of Apache Solr 
 and making setup easier. Configuration of Apache Solr is now provided via configSets. 
 A configSet contains everything you need - solrconfig.xml, schema.xml & custom 
-access filter jar files - to configure and run a Solr server for use with TYPO3.
+access filter JAR files - to configure and run a Solr server for use with TYPO3.
 
 **Related PRs:**
 
@@ -159,7 +159,7 @@ by setting `<useCompoundFile>false</useCompoundFile>` in your solrconfig.xml.
 
 ### Added Schema Field for Exact Matches
 
-We've added a new data type "textExact" to the solr schema. Beside that copyFields have been added for the following fields:
+We've added a new data type "textExact" to the Solr schema. Beside that copyFields have been added for the following fields:
 
 * titleExact
 * contentExact
@@ -179,7 +179,7 @@ Beside that this type is also available as dynamic fields with the following suf
 
 ### Username and Password for Solr Connection
 
-Username and password can now be configured for the solr connection:
+Username and password can now be configured for the Solr connection:
 
 ```
 plugin.tx_solr.solr.username = username
@@ -192,7 +192,7 @@ plugin.tx_solr.solr.password = password
 
 ### Timeout for Solr Connection
 
-A timeout for the solr connection can now be configured:
+A timeout for the Solr connection can now be configured:
 
 ```
 plugin.tx_solr.solr.timeout = 20

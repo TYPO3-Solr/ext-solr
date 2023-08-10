@@ -71,7 +71,7 @@ During the migration to namespace we also had to change the TypoScript paths:
    tx_solr_pi_search => tx_solr_PiSearch_Search
    tx_solr_pi_frequentsearches  => tx_solr_PiFrequentSearches_FrequentSearches
 
-If you're building custom TypoScript content objects referencing solr plugin configurations you should make to update these as well.
+If you're building custom TypoScript content objects referencing Solr plugin configurations you should make to update these as well.
 
 ## Outlook
 

@@ -22,9 +22,9 @@ With EXT:solr 7.0.0 the new templating is the default templating in EXT:solr. A 
 
 Most of the things just work like before but in the following parts we made conceptional changes (for good reasons):
 
-* No css or javascript will be added to the page automatically with the page renderer! Because the integrator wants to have control on that and TYPO3 allows to add this with TypoScript we propose to add these things via typoscript. EXT:solr offers a lot of example typoscript templates e.g. to add the default css or to add the javascript for a range facet.
+* No css or javascript will be added to the page automatically with the page renderer! Because the integrator wants to have control on that and TYPO3 allows to add this with TypoScript we propose to add these things via TypoScript. EXT:solr offers a lot of example TypoScript templates e.g. to add the default css or to add the javascript for a range facet.
 
-The following typoscript settings have been removed because they can be implemented with FLUID:
+The following TypoScript settings have been removed because they can be implemented with FLUID:
 
 **plugin.tx_solr.search.faceting.facetLinkATagParams**
 
@@ -60,7 +60,7 @@ When you login into the backend, you now have the following modules available:
 * Info: Gives information of your Solr system, index fields and search usage.
 * Core Optimization: This module can be used to maintain the synonyms and stopwords in the Apache Solr server.
 * Index Queue: Gives an overview on indexed records and can be used to requeue records for indexing.
-* Index Administration: This module can be used for administrator tasks on your solr system (clear index, index queue or reload a core)
+* Index Administration: This module can be used for administrator tasks on your Solr system (clear index, index queue or reload a core)
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1300
 
@@ -134,21 +134,21 @@ Refactoring of Query API
 
 The Query class is one of the biggest classes in EXT:solr and grown over time. This class has now been splitted into several classes.
 Along with that a concept of "ParameterBuilder" has been introduced. A ParameterBuilder is responsible to build a parameter part of the query.
-E.g. the Grouping ParameterBuilder is responsible to build all parameters of the solr query for the grouping.
+E.g. the Grouping ParameterBuilder is responsible to build all parameters of the Solr query for the grouping.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1385
 
 Move FilterEncoder and FacetBuilder to Facet Package
 ----------------------------------------------------
 
-In Solrfluid there was one folder for each facet, that contains the facet class and a parser that parsers the solr response into the facet object.
-The opposite part(parse the url, build the solr query) was previously done in EXT:solr, with a FilterEncoder that was registered in the FacetRendererFactory.
+In Solrfluid there was one folder for each facet, that contains the facet class and a parser that parsers the Solr response into the facet object.
+The opposite part(parse the url, build the Solr query) was previously done in EXT:solr, with a FilterEncoder that was registered in the FacetRendererFactory.
 
-Now because solrfluid and solr have been merged, this logic can also be streamlined. Every facet is now structured in a FacetPackage.
+Now because solrfluid and Solr have been merged, this logic can also be streamlined. Every facet is now structured in a FacetPackage.
 
 A FacetPackage describes:
 
-* Which parser should be used to parse the solr response
+* Which parser should be used to parse the Solr response
 * Which url decoder should be used to parse the EXT:solr query data
 * Which query builder should be used to build the faceting query part
 
@@ -184,7 +184,7 @@ If you want to work on that, your help is very welcome.
 Add --rootpageid to CLI command
 -------------------------------
 
-If you want or need to limit the initialization of solr connections to a special rootpage, you can now do this by adding the argument --rootpageid.
+If you want or need to limit the initialization of Solr connections to a special rootpage, you can now do this by adding the argument --rootpageid.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1305
 
