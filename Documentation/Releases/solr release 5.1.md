@@ -10,7 +10,7 @@ The focus of this release was to provide the new features from the codesprint an
 
 This feature adds a new optional field variantId that is filled with type/uid and can be used for collapsing by default.
 
-The following example shows the required typoscript configuration that is needed:
+The following example shows the required TypoScript configuration that is needed:
 
     plugin.tx_solr.search {
         variants = 0

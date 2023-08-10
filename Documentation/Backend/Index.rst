@@ -7,7 +7,7 @@
 Backend
 =======
 
-The chapter before gives you a short introduction about how to setup a solr server, the extension and index a few documents into solr.
+The chapter before gives you a short introduction about how to setup a Solr server, the extension and index a few documents into Solr.
 In this chapter we want to go deeper and learn how to write more complex indexing configurations and see what other possibilities the backend of EXT:solr provides.
 
 

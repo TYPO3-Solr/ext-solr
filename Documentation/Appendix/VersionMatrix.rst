@@ -15,9 +15,9 @@ Supported versions
 List of EXT:solr versions and the matching versions of Apache Solr and TYPO3 that are supported:
 
 ========= ========== ========== =========== =============== ================== ================================ =============== =============== =================
-       Basic components                Funding contribution extensions          Published funding contribution    extensions         Solr configuration
+       Basic components                Funding contribution extensions          Published funding contribution    Extensions         Solr configuration
 ------------------------------- ---------------------------------------------- -------------------------------- --------------- ---------------------------------
-TYPO3     EXT: solr  EXT:tika   EXT:solrfal EXT:solrconsole EXT:solrdebugtools EXT:solrfluidgrouping            EXT:solrmlt     Apache Solr     Configset
+TYPO3     EXT:solr   EXT:tika   EXT:solrfal EXT:solrconsole EXT:solrdebugtools EXT:solrfluidgrouping            EXT:solrmlt     Apache Solr     Configset
 ========= ========== ========== =========== =============== ================== ================================ =============== =============== =================
 12.4      12.0 (β)   12.0 (Ø)   12.0 (Ø)    12.0 (Ø)        12.0 (Ø)           N/A (integrated in EXT:solr)     12.0 (Ø)        9.2.1           ext_solr_12_0_0
 11.5      11.5       11.0       11.0        11.0            11.0               11.0                             11.0 (Ø)        8.11.1          ext_solr_11_5_0
@@ -31,7 +31,7 @@ TYPO3     EXT: solr  EXT:tika   EXT:solrfal EXT:solrconsole EXT:solrdebugtools E
 .. important::
 
     | Non-stable releases are not available in TER, but
-    | via composer or as a ZIP file attachment on GitHub `release <https://github.com/TYPO3-Solr/ext-solr/releases>`_ page.
+    | via Composer or as a ZIP file attachment on GitHub `release <https://github.com/TYPO3-Solr/ext-solr/releases>`_ page.
 
 
 Extended Long Term Support (ELTS)
@@ -43,7 +43,7 @@ selected older versions. The following table illustrates the offers and availabl
 ========= =========== ========== =========== =============== ================== =============== ====================
        Basic components                 Funding contribution extensions                 Solr configuration
 -------------------------------- ---------------------------------------------- ------------------------------------
-TYPO3     EXT: solr   EXT:tika   EXT:solrfal EXT:solrconsole EXT:solrdebugtools Apache Solr     Configset
+TYPO3     EXT:solr    EXT:tika   EXT:solrfal EXT:solrconsole EXT:solrdebugtools Apache Solr     Configset
 ========= =========== ========== =========== =============== ================== =============== ====================
 10.4      11.2.3+ Ø   10.0       10.0        10.0            10.0               9.2.1           ext_solr_11_2_0_elts
 9.5-10.4  11.0.8+     6.0.3+     8.0.2+      4.0.2+          1.1.3+             9.2.1           ext_solr_11_0_0_elts
@@ -57,7 +57,7 @@ No longer supported versions
 ----------------------------
 
 ========= ========== ========= =========== =============== ================== =========== =========== ================
-TYPO3     EXT: solr  EXT:tika  EXT:solrfal EXT:solrconsole EXT:solrdebugtools EXT:solrmlt Apache Solr Configset
+TYPO3     EXT:solr   EXT:tika  EXT:solrfal EXT:solrconsole EXT:solrdebugtools EXT:solrmlt Apache Solr Configset
 ========= ========== ========= =========== =============== ================== =========== =========== ================
 10.4      11.2.0-2   10.0      10.0        10.0            10.0               10.0        8.11        ext_solr_11_2_0
 10.4      11.1       10.0      10.0        10.0            10.0               10.0        8.9         ext_solr_11_1_0
@@ -74,7 +74,7 @@ Obsolete versions
 -----------------
 
 ========== ========= ========= =========== ============= ================ ================ =========== ======================== ======================== ============
-TYPO3      EXT: solr EXT:tika  EXT:solrfal EXT:solrfluid EXT:solrgrouping EXT:solrmlt      Apache Solr Schema                   Solrconfig               Accessplugin
+TYPO3      EXT:solr  EXT:tika  EXT:solrfal EXT:solrfluid EXT:solrgrouping EXT:solrmlt      Apache Solr Schema                   Solrconfig               Accessplugin
 ========== ========= ========= =========== ============= ================ ================ =========== ======================== ======================== ============
 7.6 - 8.x  6.5       2.3       4.1         2.0           1.3              N/A              6.6.2       tx_solr-6-5-0--20171023  tx_solr-6-5-0--20171023  2.0
 7.6 - 8.7  6.1       2.3       4.1         2.0           1.3              N/A              6.3         tx_solr-6-1-0--20170206  tx_solr-6-1-0--20161220  2.0

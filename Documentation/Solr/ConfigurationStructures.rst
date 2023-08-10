@@ -6,10 +6,10 @@ The configuration can be found in the folder "Resources/Private/Solr".
 
 This folder contains:
 
-* The folder "configsets": This folder a set of configuration files that can be deployed into a solr server, as a template.
+* The folder "configsets": This folder a set of configuration files that can be deployed into a Solr server, as a template.
 
 It contains the "solrconfig.xml" file, the "schema.xml" files for all languages and the accessfilter libary that belongs to
-this version as a jar file. This configSet needs to be in place on a solr server to create cores that are compatible to the EXT:solr
+this version as a jar file. This configSet needs to be in place on a Solr server to create cores that are compatible to the EXT:solr
 extension.
 
 * The folder "cores": This folder ships an example "core.properties" file for all languages that are compatible with EXT:solr.
@@ -25,7 +25,7 @@ By example a "core.properties" file looks like this:
     name=core_de
     dataDir=../../data/german
 
-* The solr.xml file: This file configures solr as required for the used Apache Solr version.
+* The solr.xml file: This file configures Solr as required for the used Apache Solr version.
 
 
 The EXT:solr configSet
@@ -38,7 +38,7 @@ The configset of the current release is located in "Resources/Private/Solr/confi
 
 Inside the configSet you find the following folders:
 
-* conf: This folder contains the solr configuration and all schemata files. There is one directory for each language which ships the schema.xml file for this language.
+* conf: This folder contains the Solr configuration and all schemata files. There is one directory for each language which ships the schema.xml file for this language.
 
 The schema.xml file contains the language specific adaptions and includes all general schema fields and types with an XInclude statement.
 
@@ -58,18 +58,18 @@ The solrconfig (conf/solrconfig.xml) is configured to load all jar files from ty
 Setup steps
 ===========
 
-With the extension we ship an installer for development and a docker images that can be used to install solr.
+With the extension we ship an installer for development and a Docker images that can be used to install Solr.
 
-When you want to install solr on your system in another way the following steps are required.
+When you want to install Solr on your system in another way the following steps are required.
 
-* Install the solr server
+* Install the Solr server
 * Copy the configsets into the configset folder (by default $SOLR_HOME/server/solr/configsets)
-* Make sure that the solr.xml file ($SOLR_HOME/server/solr/solr.xml) is in place an fits to your solr version
+* Make sure that the solr.xml file ($SOLR_HOME/server/solr/solr.xml) is in place an fits to your Solr version
 
-* Create an init script that start solr on boottime.
-* Secure your solr port from outside.
-* Make sure that solr is running with an own user.
+* Create an init script that start Solr on boottime.
+* Secure your Solr port from outside.
+* Make sure that Solr is running with an own user.
 * Backup your data folders
 
 *Hint:* Apache Solr ships an install script in newer version that might cover your requirements for production
-($SOLR_HOME/bin/install_solr_service.sh). We don't use it in EXT:solr because there are currently problems when using it with ubuntu xenial (16.04)
+($SOLR_HOME/bin/install_solr_service.sh). We don't use it in EXT:solr because there are currently problems when using it with Ubuntu Xenial (16.04)

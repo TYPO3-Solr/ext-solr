@@ -9,13 +9,13 @@ up to a point where he exactly finds what he was looking for. This concept is ca
 Imagine a user in an online shoe shop is searching for the term "shoe", wouldn't it be useful to allow
 the user to filter by "gender", "color" and "brand" to find exactly the model where he is looking for?
 
-In the following paragraphs we will get an overview about the different facet types that can be created on a solr field
+In the following paragraphs we will get an overview about the different facet types that can be created on a Solr field
 just by adding a few lines of configuration.
 
 Facet Types
 ===========
 
-A solr field can contain different type of data, where different facets make sence. The simplest facet is an option "facet".
+A Solr field can contain different type of data, where different facets make sence. The simplest facet is an option "facet".
 The "options facet" just contains a list of values and the user can choose one or many of them. A more complex type
 could be a "range facet" on a price field. A facet like this needs to allow to filter on a range of a minimum and a maximum value.
 
@@ -52,7 +52,7 @@ To setup an simple options facet you can use the following TypoScript snipped:
     }
 
 
-By using this configuration you create an options facet on the solr field "type" with the name "contentType". This field represents the record type, that was
+By using this configuration you create an options facet on the Solr field "type" with the name "contentType". This field represents the record type, that was
 indexed into solr. Shown in the frontend it will look like this:
 
 .. figure:: /Images/Frontend/Facets/options_facet.png
@@ -99,7 +99,7 @@ Query Group
 -----------
 
 The query group facet renders an option list, compareable to the options facet, but the single options are not created from
-plain solr field values. They are created from dynamic queries.
+plain Solr field values. They are created from dynamic queries.
 
 A typical usecase could be, when you want to offer the possiblity to filter on the creation date and want to offer options like "yesterday", "last year" or "more then five years".
 
@@ -193,9 +193,9 @@ including the example TypoScript **"Search - (Example) Fluid hierarchy facet on 
 | Domain Classes  | Domain\\Search\\ResultSet\\Facets\\OptionBased\\Hierarchy\\*  |
 +-----------------+---------------+-----------------------------------------------+
 
-**Technical solr background:**
+**Technical Solr background:**
 
-Technically the hierarchical facet for solr is the same as a flat options facet. The support of hierarchies is implemented,
+Technically the hierarchical facet for Solr is the same as a flat options facet. The support of hierarchies is implemented,
 by writing and reading the facet options by a convention:
 
 .. code-block:: typoscript
@@ -203,7 +203,7 @@ by writing and reading the facet options by a convention:
     [depth]-Level1Label/Level2Label/
 
 
-When you follow this convention by writing date into a solr field you can render it as hierarchical facet. As example you can check indexing configuration in EXT:solr (EXT:solr/Configuration/TypoScript/Solr/setup.typoscript)
+When you follow this convention by writing date into a Solr field you can render it as hierarchical facet. As example you can check indexing configuration in EXT:solr (EXT:solr/Configuration/TypoScript/Solr/setup.typoscript)
 
 .. code-block:: typoscript
 
@@ -216,7 +216,7 @@ When you follow this convention by writing date into a solr field you can render
     }
 
 
-In this case the "fieldProcessingInstruction" "pageUidToHierarchy" is used to create the rootline for solr in the conventional way.
+In this case the "fieldProcessingInstruction" "pageUidToHierarchy" is used to create the rootline for Solr in the conventional way.
 
 Custom field processors can be registered with
 
@@ -229,10 +229,10 @@ Date Range
 
 When you want to provide a range filter on a date field in EXT:solr, you can use the type **"dateRange"**.
 
-The default partial generates a markup with all needed values in data attributes. Together with the provided jQuery ui implementation you can
+The default partial generates a markup with all needed values in data attributes. Together with the provided jQuery UI implementation you can
 create an out-of-the-box date range facet.
 
-With the following typoscript you create a date range facet:
+With the following TypoScript you create a date range facet:
 
 .. code-block:: typoscript
 
@@ -247,7 +247,7 @@ With the following typoscript you create a date range facet:
         }
     }
 
-In the extension we ship the TypoScript example **"Search - (Example) dateRange facet with jquery ui datepicker on created field"** that shows how to
+In the extension we ship the TypoScript example **"Search - (Example) dateRange facet with jQuery UI datepicker on created field"** that shows how to
 configure a dateRange facet and load all required javascript files.
 
 When you include this template a date range facet will be shown in the frontend that we look like this:
@@ -256,7 +256,7 @@ When you include this template a date range facet will be shown in the frontend 
 
     EXT:solr dateRange facet
 
-As described before for the date range facet markup and javascript code is required, looking at the example template **"Search - (Example) dateRange facet with jquery ui datepicker on created field"**
+As described before for the date range facet markup and javascript code is required, looking at the example template **"Search - (Example) dateRange facet with jQuery UI datepicker on created field"**
 in "Configuration/TypoScript/Examples/DateRange" you see that for the jQueryUi implementation the following files are included:
 
 .. code-block:: typoscript
@@ -300,8 +300,8 @@ The following example configures a **numericRange** facet for the field **"pid"*
         }
     }
 
-The numeric range facet requires beside the template also a javascript library to render the slider. The example typoscript template **"Search - (Example) Fluid numericRange facet with jquery ui slider on pid field"**
-can be used to see the range slider with jQuery ui for the solr field pid by example.
+The numeric range facet requires beside the template also a javascript library to render the slider. The example TypoScript template **"Search - (Example) Fluid numericRange facet with jQuery UI slider on pid field"**
+can be used to see the range slider with jQuery UI for the Solr field pid by example.
 
 When you configure a facet on the pid field like this, the frontend will output the following facet:
 

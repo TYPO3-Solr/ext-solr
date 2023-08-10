@@ -11,8 +11,8 @@ After reading this chapter you will know:
 
 How to...
 
-* Start a solr server
-* Install the extension and connect your TYPO3 system to your solr server
+* Start a Solr server
+* Install the extension and connect your TYPO3 system to your Solr server
 * Index a few pages and see the search results on your website
 
 .. toctree::

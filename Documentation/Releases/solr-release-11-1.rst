@@ -91,7 +91,7 @@ See:
 * https://github.com/TYPO3-Solr/ext-solr/commit/7b0e77c2680d9dea7861f7bcd33abc1e8664f289
 * https://github.com/TYPO3-Solr/ext-solr/pull/2972
 
-Scheduler task to optimize solr cores
+Scheduler task to optimize Solr cores
 -------------------------------------
 
 This task allows you to optimize the indexes of given cores for a site at a planned time.
@@ -200,7 +200,7 @@ Beside the major changes we did several small improvements and bugfixes:
 * [TASK] Make sure HtmlContentExtractor::cleanContent() is UTF-8 safe .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2513
 * [BUGFIX] Fix #2511: database exception in RecordMonitor .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2511
 * [BUGFIX] Indexing of records fails with solr 10.x+  .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2520
-* [DOCS] Fix path of suggest in typoscript settings .. __: https://github.com/TYPO3-Solr/ext-solr/pull/2678
+* [DOCS] Fix path of suggest in TypoScript settings .. __: https://github.com/TYPO3-Solr/ext-solr/pull/2678
 * [DOCS] Fix links in docs and CONTRIBUTING.md .. __: https://github.com/TYPO3-Solr/ext-solr/pull/2697
 * [BUGFIX] Hard codes plugin namespace .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2691
 * [BUGFIX] Restricted pages are not being indexed in Typo3 10 .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2634

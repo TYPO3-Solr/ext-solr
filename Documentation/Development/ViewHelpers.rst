@@ -15,7 +15,7 @@ With the current release we ship the following concrete ViewHelpers:
 +------------------------------------------------+----------------------------------------------------------------+
 | s:debug.documentScoreAnalyzer                  | Used to render the score analysis.                             |
 +------------------------------------------------+----------------------------------------------------------------+
-| s:debug.query                                  | Shows the solr query debug information.                        |
+| s:debug.query                                  | Shows the Solr query debug information.                        |
 +------------------------------------------------+----------------------------------------------------------------+
 | s:document.highlightResult                     | Performs the highlighting on a document.                       |
 +------------------------------------------------+----------------------------------------------------------------+

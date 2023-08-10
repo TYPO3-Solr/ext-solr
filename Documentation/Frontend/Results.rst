@@ -20,7 +20,7 @@ This structure allows you to use e.g. the fluid if ViewHelper to render a result
 But as you see in the template above, by default the partial "Result/Document" is used.
 
 The "document" partial is getting the document object. In our case this is an instance of "ApacheSolrForTypo3\Solrfluid\Domain\Search\ResultSet\SearchResult"
-the api of this object allows to get the solr field content with "Document->getFieldName()" that can be used as "document.fieldName" in fluid.
+the api of this object allows to get the Solr field content with "Document->getFieldName()" that can be used as "document.fieldName" in fluid.
 
 
 

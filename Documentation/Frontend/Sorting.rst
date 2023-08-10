@@ -8,7 +8,7 @@ the best result for the query on the first position. That's what you expect from
 For some usecases you want to change the sorting of the results by a certain field. In an onlineshop a user might want to order the results
 by the price to find the cheapest product that is matching his query.
 
-A simple sorting can be configured with the following typoscript snipped:
+A simple sorting can be configured with the following TypoScript snipped:
 
 .. code-block:: typoscript
 
@@ -34,7 +34,7 @@ A simple sorting can be configured with the following typoscript snipped:
 
 
 With the configuration above the possibility to sort by title is introduced. At the same time the sort by relevance link can be used to
-reset the sorting to sort by the natural solr relevance.
+reset the sorting to sort by the natural Solr relevance.
 
 
 .. figure:: /Images/Frontend/Sorting/sorting_by_title_asc.png

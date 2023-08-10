@@ -89,7 +89,7 @@ additionalPersistentArgumentNames
 
 Comma-separated list of additional argument names, that should be added to the persistent arguments that are kept for sub request, like the facet and sorting urls. Hard coded argument names are q, filter and sort.
 
-Till solr version 6.5.x all parameters of the plugin namespace was added to the url again. With this setting you could enable this behavior again, but only with a whitelist of argument names.
+Till Solr version 6.5.x all parameters of the plugin namespace was added to the url again. With this setting you could enable this behavior again, but only with a whitelist of argument names.
 
 query
 -----
@@ -115,7 +115,7 @@ query.allowedSites
 :Since: 2.2
 :Default: __solr_current_site
 
-When indexing documents (pages, records, files, ...) into the Solr index, the solr extension adds a "siteHash". The siteHash is used to allow indexing multiple sites into one index and still have each site only find its own documents. This is achieved by adding a filter on the siteHash.
+When indexing documents (pages, records, files, ...) into the Solr index, the Solr extension adds a "siteHash". The siteHash is used to allow indexing multiple sites into one index and still have each site only find its own documents. This is achieved by adding a filter on the siteHash.
 
 Sometimes though, you want to search across multiple domains, then the siteHash is a blocker. Using the allowedSites setting you can set a comma-separated list of domains who's documents are allowed to be included in the current domain's search results. The default value is **__solr_current_site** which is a magic string/variable that is replaced with the current site's domain when querying the Solr server.
 
@@ -199,7 +199,7 @@ query.boostFunction
 :Example: recip(ms(NOW,created),3.16e-11,1,1)
 
 A boost function can be useful to influence the relevance calculation and boost some documents to appear more at the beginning of the result list.
-Technically the parameter will be mapped to the **"bf"** parameter in the solr query.
+Technically the parameter will be mapped to the **"bf"** parameter in the Solr query.
 
 Use cases for example could be:
 
@@ -472,7 +472,7 @@ results.resultsHighlighting.highlightFields
 
 A comma-separated list of fields to highlight.
 
-Note: The highlighting in solr (based on FastVectorHighlighter requires a field datatype with **termVectors=on**, **termPositions=on** and **termOffsets=on** which is the case for the content field).
+Note: The highlighting in Solr (based on FastVectorHighlighter requires a field datatype with **termVectors=on**, **termPositions=on** and **termOffsets=on** which is the case for the content field).
 If you add other fields here, make sure that you are using a datatype where this is configured.
 
 results.resultsHighlighting.fragmentSize
@@ -973,7 +973,7 @@ faceting.facets.[facetName].addFieldAsTag
 :Required: no
 :Default: false
 
-When you want to add fields as ```additionalExcludeTags``` for a facet a tag for this facet needs to exist. You can use this setting to force the creation of a tag for this facet in the solr query.
+When you want to add fields as ```additionalExcludeTags``` for a facet a tag for this facet needs to exist. You can use this setting to force the creation of a tag for this facet in the Solr query.
 
 faceting.facets.[facetName].field
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1368,7 +1368,7 @@ EXT:solr provides the following renderingInstructions that you can use in your p
 **FormatDate**:
 
 This rendering instruction can be used in combination with a date field or an integer field that hold a timestamp. You can use this rendering instruction to format the facet value on rendering.
-A common usecase for this is, when the datatype in solr needs to be sortable (date or int) but you need to render the date as readable date option in the frontend:
+A common usecase for this is, when the datatype in Solr needs to be sortable (date or int) but you need to render the date as readable date option in the frontend:
 
 
 .. code-block:: typoscript
@@ -1491,7 +1491,7 @@ EXT:solr 10)
 grouping
 --------
 
-The solr grouping feature can be used to group documents based on a Solr field
+The Solr grouping feature can be used to group documents based on a Solr field
 or a set of Solr queries.
 
 ..  note::

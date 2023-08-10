@@ -731,11 +731,11 @@ enableCommits
 :Since: 6.1
 :Default: true
 
-This setting controls whether ext-solr will implicitly cause solr commits as part of its operation.
+This setting controls whether ext-solr will implicitly cause Solr commits as part of its operation.
 
 If this settings is set to false, you need to ensure that something else will periodically call
-commits. The solr daemons AutoCommit feature would be a natural choice.
+commits. The Solr daemons AutoCommit feature would be a natural choice.
 
-This feature is mainly useful, when you have many installations in the same solr core.
+This feature is mainly useful, when you have many installations in the same Solr core.
 
 **Note**: Calling some APIs may still cause commits, but these can always be explicitly disabled.
