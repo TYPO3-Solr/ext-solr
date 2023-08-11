@@ -29,5 +29,5 @@ interface GarbageCollectorPostProcessor
      *
      * @see GarbageCollector::collectGarbage()
      */
-    public function postProcessGarbageCollector(string $table, int $uid);
+    public function postProcessGarbageCollector(string $table, int $uid): void;
 }

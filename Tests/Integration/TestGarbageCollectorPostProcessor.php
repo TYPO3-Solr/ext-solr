@@ -17,7 +17,7 @@ class TestGarbageCollectorPostProcessor implements SingletonInterface, GarbageCo
      *
      * @see \ApacheSolrForTypo3\Solr\GarbageCollector::collectGarbage()
      */
-    public function postProcessGarbageCollector(string $table, int $uid)
+    public function postProcessGarbageCollector(string $table, int $uid): void
     {
         $this->hookWasCalled = true;
     }
