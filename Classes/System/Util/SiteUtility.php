@@ -15,8 +15,9 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Util;
 
+use ApacheSolrForTypo3\Solr\Domain\Site\Site as ExtSolrSite;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -46,7 +47,7 @@ class SiteUtility
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
             /** @var SiteFinder $siteFinder */
-            return $siteFinder->getSiteByPageId($pageId) instanceof Site;
+            return $siteFinder->getSiteByPageId($pageId) instanceof CoreSite;
         } catch (SiteNotFoundException) {
         }
         return false;
@@ -68,7 +69,7 @@ class SiteUtility
      * for the solr read connection.
      */
     public static function getConnectionProperty(
-        Site $typo3Site,
+        CoreSite $typo3Site,
         string $property,
         int $languageId,
         string $scope,
@@ -84,8 +85,10 @@ class SiteUtility
     /**
      * Builds the Solr connection configuration
      */
-    public static function getSolrConnectionConfiguration(Site $typo3Site, int $languageUid): ?array
-    {
+    public static function getSolrConnectionConfiguration(
+        CoreSite $typo3Site,
+        int $languageUid,
+    ): ?array {
         $solrEnabled = self::getConnectionProperty($typo3Site, 'enabled', $languageUid, 'read', true);
         $solrReadCore = self::getConnectionProperty($typo3Site, 'core', $languageUid, 'read');
         $solrWriteCore = self::getConnectionProperty($typo3Site, 'core', $languageUid, 'write');
@@ -127,8 +130,9 @@ class SiteUtility
     /**
      * Builds the Solr connection configuration for all languages of given TYPO3 site
      */
-    public static function getAllSolrConnectionConfigurations(Site $typo3Site): array
-    {
+    public static function getAllSolrConnectionConfigurations(
+        CoreSite $typo3Site,
+    ): array {
         $connections = [];
         foreach ($typo3Site->getLanguages() as $language) {
             $connection = self::getSolrConnectionConfiguration($typo3Site, $language->getLanguageId());
@@ -145,10 +149,10 @@ class SiteUtility
      * Language context properties have precedence over global settings.
      */
     protected static function getConnectionPropertyOrFallback(
-        Site $typo3Site,
-        string $property,
-        int $languageId,
-        string $scope,
+        CoreSite $typo3Site,
+        string   $property,
+        int      $languageId,
+        string   $scope,
     ): string|int|bool|null {
         if ($scope === 'write' && !self::isWriteConnectionEnabled($typo3Site, $languageId)) {
             $scope = 'read';
@@ -179,8 +183,10 @@ class SiteUtility
      * Checks whether write connection is enabled.
      * Language context properties have precedence over global settings.
      */
-    protected static function isWriteConnectionEnabled(Site $typo3Site, int $languageId): bool
-    {
+    protected static function isWriteConnectionEnabled(
+        CoreSite $typo3Site,
+        int $languageId,
+    ): bool {
         $rootPageUid = $typo3Site->getRootPageId();
         if (!isset(self::$languages[$rootPageUid][$languageId])) {
             self::$languages[$rootPageUid][$languageId] = $typo3Site->getLanguageById($languageId)->toArray();
@@ -243,12 +249,15 @@ class SiteUtility
 
     /**
      * Retrieves the rootPageIds as an array from a set of sites.
+     *
+     * @param CoreSite[]|ExtSolrSite[] $sites
+     * @return int[]
      */
     public static function getRootPageIdsFromSites(array $sites): array
     {
         $rootPageIds = [];
         foreach ($sites as $site) {
-            $rootPageIds[] = (int)$site->getRootPageId();
+            $rootPageIds[] = $site->getRootPageId();
         }
 
         return $rootPageIds;

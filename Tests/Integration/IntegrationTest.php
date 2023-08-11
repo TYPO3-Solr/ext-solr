@@ -48,6 +48,9 @@ abstract class IntegrationTest extends FunctionalTestCase
         'fluid_styled_content',
     ];
 
+    /**
+     * @var array<string, array{id: int, title: string, locale: string}|array{id: int, title: string, locale: string, fallbackType: string|null, fallbacks: string|null}>
+     */
     protected const LANGUAGE_PRESETS = [
         'EN' => ['id' => 0, 'title' => 'English', 'locale' => 'en_US.UTF8'],
         'DE' => ['id' => 1, 'title' => 'German', 'locale' => 'de_DE.UTF8', 'fallbackType' => 'fallback', 'fallbacks' => 'EN'],

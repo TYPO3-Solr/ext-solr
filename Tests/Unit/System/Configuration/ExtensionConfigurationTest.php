@@ -17,9 +17,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 
 /**
- * Testcase to test the functionallity of the extension configuration that comes from
+ * Testcase to test the functionality of the extension configuration that comes from
  *
  * ext_conf_template.txt
  *
@@ -35,8 +37,11 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
 
     /**
      * @test
+     *
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public function testGetIsUseConfigurationFromClosestTemplateEnabled()
+    public function testGetIsUseConfigurationFromClosestTemplateEnabled(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();
         self::assertFalse($defaultConfiguration->getIsUseConfigurationFromClosestTemplateEnabled());
@@ -48,8 +53,11 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
 
     /**
      * @test
+     *
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public function testIsGetUseConfigurationTrackRecordsOutsideSiterootEnabled()
+    public function testIsGetUseConfigurationTrackRecordsOutsideSiterootEnabled(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();
         self::assertTrue($defaultConfiguration->getIsUseConfigurationTrackRecordsOutsideSiteroot());
@@ -61,8 +69,11 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
 
     /**
      * @test
+     *
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public function testIsGetIsUseConfigurationMonitorTablesConfiguredKnownTable()
+    public function testIsGetIsUseConfigurationMonitorTablesConfiguredKnownTable(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();
         self::assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
@@ -76,8 +87,11 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
 
     /**
      * @test
+     *
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public function testIsGetIsUseConfigurationMonitorTablesConfiguredUnknownTable()
+    public function testIsGetIsUseConfigurationMonitorTablesConfiguredUnknownTable(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();
         self::assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
@@ -91,8 +105,11 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
 
     /**
      * @test
+     *
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public function testIsGetIsUseConfigurationMonitorTablesConfiguredEmptyList()
+    public function testIsGetIsUseConfigurationMonitorTablesConfiguredEmptyList(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();
         self::assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
@@ -105,8 +122,11 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
 
     /**
      * @test
+     *
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public function testIsGetIsSelfSignedCertificatesEnabled()
+    public function testIsGetIsSelfSignedCertificatesEnabled(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();
         self::assertFalse($defaultConfiguration->getIsSelfSignedCertificatesEnabled());

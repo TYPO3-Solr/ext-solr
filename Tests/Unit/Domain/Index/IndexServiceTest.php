@@ -64,7 +64,7 @@ class IndexServiceTest extends SetUpUnitTestCase
             ->getMock();
         $this->siteMock->expects(self::once())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
 
-        // we create an IndexeService where indexItem is mocked to avoid real indexing in the unit test
+        // we create an IndexService where indexItem is mocked to avoid real indexing in the unit test
         $indexService = $this->getMockBuilder(IndexService::class)
             ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->eventDispatcherMock, $this->logManagerMock])
             ->onlyMethods(['indexItem'])
