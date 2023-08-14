@@ -150,9 +150,9 @@ class SiteUtility
      */
     protected static function getConnectionPropertyOrFallback(
         CoreSite $typo3Site,
-        string   $property,
-        int      $languageId,
-        string   $scope,
+        string $property,
+        int $languageId,
+        string $scope,
     ): string|int|bool|null {
         if ($scope === 'write' && !self::isWriteConnectionEnabled($typo3Site, $languageId)) {
             $scope = 'read';

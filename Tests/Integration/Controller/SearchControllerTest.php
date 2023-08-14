@@ -936,8 +936,8 @@ class SearchControllerTest extends IntegrationTest
     public function frontendWillRenderErrorMessageIfSolrNotAvailableDataProvider(): array
     {
         return [
-            ['action' => 'results', 'getArguments' =>['q' => '*']],
-            ['action' => 'detail', 'getArguments' =>['id' => 1]],
+            ['action' => 'results', 'getArguments' => ['q' => '*']],
+            ['action' => 'detail', 'getArguments' => ['id' => 1]],
         ];
     }
 
