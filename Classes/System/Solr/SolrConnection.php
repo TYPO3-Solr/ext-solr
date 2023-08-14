@@ -45,7 +45,7 @@ class SolrConnection
 {
     protected ?SolrAdminService $adminService = null;
 
-    protected ?SolrReadService $readService= null;
+    protected ?SolrReadService $readService = null;
 
     protected ?SolrWriteService $writeService = null;
 

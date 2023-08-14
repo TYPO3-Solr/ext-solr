@@ -143,7 +143,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
         );
 
         $siteOne = $this->siteRepository->getFirstAvailableSite();
-        $connections =$siteOne->getAllSolrConnectionConfigurations();
+        $connections = $siteOne->getAllSolrConnectionConfigurations();
         self::assertEquals([0, 2, 5], array_keys($connections), 'Could not get languages for site');
     }
 

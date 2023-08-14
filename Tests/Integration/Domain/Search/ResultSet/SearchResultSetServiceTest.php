@@ -82,7 +82,7 @@ class SearchResultSetServiceTest extends IntegrationTest
 
         $typoScriptConfiguration = Util::getSolrConfiguration();
         $typoScriptConfiguration->mergeSolrConfiguration([
-           'search.' =>[
+           'search.' => [
                'variants' => 1,
                'variants.' => [
                    'variantField' => 'pid',
@@ -130,7 +130,7 @@ class SearchResultSetServiceTest extends IntegrationTest
 
         $typoScriptConfiguration = Util::getSolrConfiguration();
         $typoScriptConfiguration->mergeSolrConfiguration([
-            'search.' =>[
+            'search.' => [
                 'variants' => 1,
                 'variants.' => [
                     'variantField' => 'author',
@@ -196,7 +196,7 @@ class SearchResultSetServiceTest extends IntegrationTest
 
         $typoScriptConfiguration = Util::getSolrConfiguration();
         $typoScriptConfiguration->mergeSolrConfiguration([
-            'search.' =>[
+            'search.' => [
                 'variants' => 1,
                 'variants.' => [
                     'variantField' => 'pid',

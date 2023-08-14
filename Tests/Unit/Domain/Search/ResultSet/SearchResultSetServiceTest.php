@@ -156,7 +156,7 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
         $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, $typoScriptConfiguration);
         $parserRegistry->registerParser(GroupedResultParser::class, 300);
 
-        $queryMock= $this->createMock(Query::class);
+        $queryMock = $this->createMock(Query::class);
         $queryMock->expects(self::once())->method('getComponent')->willReturn($this->createMock(Grouping::class));
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
         $queryBuilderMock->expects(self::once())->method('buildSearchQuery')->willReturn($queryMock);

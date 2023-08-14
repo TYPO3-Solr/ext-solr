@@ -139,7 +139,7 @@ class StatisticsRepositoryTest extends IntegrationTest
     protected static function getDaysSinceTimestamp(int $timestamp): int
     {
         $secondsUntilNow = time() - $timestamp;
-        $days = floor($secondsUntilNow / (60*60*24));
+        $days = floor($secondsUntilNow / (60 * 60 * 24));
         return (int)$days;
     }
 }
