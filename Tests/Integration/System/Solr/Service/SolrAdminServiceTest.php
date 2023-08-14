@@ -19,7 +19,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Curl;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -35,13 +34,10 @@ class SolrAdminServiceTest extends IntegrationTest
      */
     protected $solrAdminService;
 
-    /**
-     * @throws NoSuchCacheException
-     */
     protected function setUp(): void
     {
         parent::setUp();
-        /* @var EventDispatcher $eventDispatcher */
+        /** @var EventDispatcher $eventDispatcher */
         $eventDispatcher = $this->createMock(EventDispatcher::class);
         $adapter = new Curl();
         $client = new Client(
@@ -200,7 +196,7 @@ class SolrAdminServiceTest extends IntegrationTest
      */
     public function canParseLanguageFromSchema()
     {
-        /* @var EventDispatcher $eventDispatcher */
+        /** @var EventDispatcher $eventDispatcher */
         $eventDispatcher = $this->createMock(EventDispatcher::class);
         $adapter = new Curl();
         $client = new Client(

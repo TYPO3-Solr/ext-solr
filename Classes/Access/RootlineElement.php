@@ -27,62 +27,48 @@ class RootlineElement
 {
     /**
      * Page access rootline element.
-     *
-     * @var int
      */
-    const ELEMENT_TYPE_PAGE = 1;
+    public const ELEMENT_TYPE_PAGE = 1;
 
     /**
      * Content access rootline element.
-     *
-     * @var int
      */
-    const ELEMENT_TYPE_CONTENT = 2;
+    public const ELEMENT_TYPE_CONTENT = 2;
 
     /**
      * Record access rootline element.
-     *
-     * @var int
      */
-    const ELEMENT_TYPE_RECORD = 3;
+    public const ELEMENT_TYPE_RECORD = 3;
 
     /**
      * Delimiter between the page ID and the groups set for a page.
-     *
-     * @var string
      */
-    const PAGE_ID_GROUP_DELIMITER = ':';
+    public const PAGE_ID_GROUP_DELIMITER = ':';
 
     /**
      * Access type, either page (default) or content. Depending on the type,
      * access is granted differently. For pages the user must meet at least one
      * group requirement, for content all group requirements must be met.
-     *
-     * @var int
      */
-    protected $type = self::ELEMENT_TYPE_PAGE;
+    protected int $type = self::ELEMENT_TYPE_PAGE;
 
     /**
      * Page Id for the element. NULL for the content type.
-     *
-     * @var int|null
      */
     protected ?int $pageId = null;
 
     /**
      * Set of access groups assigned to the element.
-     *
-     * @var array
      */
-    protected $accessGroups = [];
+    protected array $accessGroups = [];
 
     /**
      * Constructor for RootlineElement.
      *
      * @param string $element String representation of an element in the access rootline, usually of the form pageId:commaSeparatedPageAccessGroups
-     * @throws    RootlineElementFormatException on wrong access format.
+     * @throws RootlineElementFormatException on wrong access format.
      */
-    public function __construct($element)
+    public function __construct(string $element)
     {
         $elementAccess = explode(self::PAGE_ID_GROUP_DELIMITER, $element);
 
@@ -150,17 +136,15 @@ class RootlineElement
      *
      * @return int ELEMENT_TYPE_PAGE for page, ELEMENT_TYPE_CONTENT for content access rootline elements
      */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
     /**
      * Gets the page Id for page type elements.
-     *
-     * @return int Page Id.
      */
-    public function getPageId()
+    public function getPageId(): ?int
     {
         return $this->pageId;
     }
@@ -170,7 +154,7 @@ class RootlineElement
      *
      * @return array Array of user group Ids
      */
-    public function getGroups()
+    public function getGroups(): array
     {
         return $this->accessGroups;
     }

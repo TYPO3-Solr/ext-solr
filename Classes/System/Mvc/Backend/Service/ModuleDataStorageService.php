@@ -26,15 +26,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ModuleDataStorageService implements SingletonInterface
 {
-    /**
-     * @var string
-     */
-    const KEY = 'tx_solr';
+    public const KEY = 'tx_solr';
 
     /**
      * Loads module data for user settings or returns a fresh object initially
-     *
-     * @return ModuleData
      */
     public function loadModuleData(): ModuleData
     {
@@ -52,27 +47,23 @@ class ModuleDataStorageService implements SingletonInterface
 
     /**
      * Persists serialized module data to user settings
-     *
-     * @param ModuleData $moduleData
      */
-    public function persistModuleData(ModuleData $moduleData)
+    public function persistModuleData(ModuleData $moduleData): void
     {
         $GLOBALS['BE_USER']->pushModuleData(self::KEY, serialize($moduleData));
     }
 
     /**
      * Unsets not serializable module data.
-     *
-     * @param string|null $serializedModuleData
      */
-    private function unsetModuleDataIfCanNotBeSerialized(string &$serializedModuleData = null)
+    private function unsetModuleDataIfCanNotBeSerialized(string &$serializedModuleData = null): void
     {
         if (!isset($serializedModuleData)) {
             $serializedModuleData = '';
             return;
         }
-        if (strpos($serializedModuleData, 'ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData') !== false
-            || strpos($serializedModuleData, 'Tx_Solr_Site') !== false) {
+        if (str_contains($serializedModuleData, 'ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData')
+            || str_contains($serializedModuleData, 'Tx_Solr_Site')) {
             $serializedModuleData = '';
         }
     }

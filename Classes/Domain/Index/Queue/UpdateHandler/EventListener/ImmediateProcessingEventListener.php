@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Exception\RootPageRecordNotFoundException;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\ProcessingFinishedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
@@ -26,8 +27,9 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbag
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Throwable;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 
 /**
  * Event listener for immediate processing of
@@ -39,8 +41,6 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
 
     /**
      * Handles the data update events
-     *
-     * @param DataUpdateEventInterface $event
      */
     public function __invoke(DataUpdateEventInterface $event): void
     {
@@ -58,9 +58,6 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
 
     /**
      * Determines the right method by event name
-     *
-     * @param DataUpdateEventInterface $event
-     * @return string
      */
     protected function getMethodNameByEvent(DataUpdateEventInterface $event): string
     {
@@ -72,7 +69,10 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
     /**
      * Handles the deletion of a content element
      *
-     * @param ContentElementDeletedEvent $event
+     * @throws DBALException
+     * @throws AspectNotFoundException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     *
      * @noinspection PhpUnused
      */
     protected function handleContentElementDeletedEvent(ContentElementDeletedEvent $event): void
@@ -83,8 +83,9 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
     /**
      * Handles a version swap
      *
-     * @param VersionSwappedEvent $event
-     * @throws DBALDriverException
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     *
      * @noinspection PhpUnused
      */
     protected function handleVersionSwappedEvent(VersionSwappedEvent $event): void
@@ -95,8 +96,9 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
     /**
      * Handles moved records, including pages
      *
-     * @param RecordMovedEvent $event
-     * @throws DBALDriverException
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     *
      * @noinspection PhpUnused
      */
     protected function handleRecordMovedEvent(RecordMovedEvent $event): void
@@ -111,9 +113,10 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
     /**
      * Handles record updates
      *
-     * @param RecordUpdatedEvent $event
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
+     *
      * @noinspection PhpUnused
      */
     protected function handleRecordUpdatedEvent(RecordUpdatedEvent $event): void
@@ -130,7 +133,6 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
     /**
      * Handles record deletion
      *
-     * @param RecordDeletedEvent $event
      * @noinspection PhpUnused
      */
     protected function handleRecordDeletedEvent(RecordDeletedEvent $event): void
@@ -141,7 +143,9 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
     /**
      * Handles a page movement
      *
-     * @param PageMovedEvent $event
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     *
      * @noinspection PhpUnused
      */
     protected function handlePageMovedEvent(PageMovedEvent $event): void
@@ -152,7 +156,9 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
     /**
      * Performs garbage checks
      *
-     * @param RecordGarbageCheckEvent $event
+     * @throws AspectNotFoundException
+     * @throws DBALException
+     *
      * @noinspection PhpUnused
      */
     protected function handleRecordGarbageCheckEvent(RecordGarbageCheckEvent $event): void

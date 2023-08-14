@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Typo3PageContentExtractorTest extends UnitTest
+class Typo3PageContentExtractorTest extends SetUpUnitTestCase
 {
     /**
      * @var TypoScriptConfiguration
@@ -33,7 +33,7 @@ class Typo3PageContentExtractorTest extends UnitTest
 
     protected function setUp(): void
     {
-        $this->typoScripConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->typoScripConfigurationMock = $this->createMock(TypoScriptConfiguration::class);
         $this->typoScripConfigurationMock->expects(self::once())->method(
             'getIndexQueuePagesExcludeContentByClassArray'
         )->willReturn(['typo3-search-exclude']);

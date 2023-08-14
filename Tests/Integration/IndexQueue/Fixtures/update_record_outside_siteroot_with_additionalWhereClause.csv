@@ -1,0 +1,8 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title",
+# sysfolder
+,2,1,0,254,"/folder","Sys Folder"
+"tx_fakeextension_domain_model_foo",
+,"uid","pid","title"
+,1,2,"testnews"
+,2,2,"testnews2"

@@ -16,43 +16,222 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\IndexQueueIndexingPropertyRepository;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
+use ApacheSolrForTypo3\Solr\IndexQueue\Exception\IndexingException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use PHPUnit\Framework\MockObject\MockBuilder;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
+use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class IndexerTest
  */
-class IndexerTest extends UnitTest
+class IndexerTest extends SetUpUnitTestCase
 {
-    use ProphecyTrait;
+    protected function tearDown(): void
+    {
+        GeneralUtility::purgeInstances();
+        unset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']);
+        parent::tearDown();
+    }
+
+    /**
+     * @param int $httpStatus
+     * @param bool $itemIndexed
+     *
+     * @test
+     * @dataProvider canTriggerIndexingAndIndicateIndexStatusDataProvider
+     */
+    public function canTriggerIndexingAndIndicateIndexStatus(int $httpStatus, bool $itemIndexed): void
+    {
+        $writeServiceMock = $this->createMock(SolrWriteService::class);
+        $responseMock = $this->createMock(ResponseAdapter::class);
+
+        $indexer = $this->getAccessibleMock(
+            Indexer::class,
+            ['itemToDocument', 'processDocuments'],
+            [],
+            '',
+            false
+        );
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $eventDispatcher->expects(self::any())->method('dispatch')->willReturnArgument(0);
+        $indexer->_set('eventDispatcher', $eventDispatcher);
+
+        $solrConnectionMock = $this->createMock(SolrConnection::class);
+        $solrConnectionMock
+            ->expects(self::atLeastOnce())
+            ->method('getWriteService')
+            ->willReturn($writeServiceMock);
+        $indexer->_set('currentlyUsedSolrConnection', $solrConnectionMock);
+
+        $siteMock = $this->createMock(Site::class);
+        $itemMock = $this->createMock(Item::class);
+        $itemMock->expects(self::any())->method('getSite')->willReturn($siteMock);
+        $itemDocumentMock = $this->createMock(Document::class);
+        $indexer
+            ->expects(self::once())
+            ->method('itemToDocument')
+            ->with($itemMock, 0)
+            ->willReturn($itemDocumentMock);
+
+        $indexer
+            ->expects(self::once())
+            ->method('processDocuments')
+            ->with($itemMock, [$itemDocumentMock])
+            ->willReturnArgument(1);
+
+        $writeServiceMock
+            ->expects(self::atLeastOnce())
+            ->method('addDocuments')
+            ->with([$itemDocumentMock])
+            ->willReturn($responseMock);
+
+        $responseMock
+            ->expects(self::atLeastOnce())
+            ->method('getHttpStatus')
+            ->willReturn($httpStatus);
+
+        if ($httpStatus !== 200) {
+            self::expectException(IndexingException::class);
+        }
+        $result = $indexer->_call('indexItem', $itemMock, 0);
+        if ($httpStatus === 200) {
+            self::assertEquals($itemIndexed, $result);
+        }
+    }
+
+    /**
+     * Data provider for "canTriggerIndexingAndIndicateIndexStatus"
+     */
+    public function canTriggerIndexingAndIndicateIndexStatusDataProvider(): \Generator
+    {
+        yield 'Item could be indexed' => [
+            200,
+            true,
+        ];
+        yield 'Item could not be indexed' => [
+            500,
+            false,
+        ];
+    }
 
     /**
      * @test
+     * @dataProvider canGetAdditionalDocumentsDataProvider
      */
-    public function indexerAlwaysInitializesTSFE()
+    public function canGetAdditionalDocuments(\Closure|null $listener, ?string $expectedException, int $expectedResultCount): void
     {
-        self::markTestSkipped('API has been changed, the test case must be moved, since it is still relevant.');
-        /* @var Item|ObjectProphecy $item */
-        $item =  $this->prophesize(Item::class);
-        $item->getType()->willReturn('pages');
-        $item->getRecordUid()->willReturn(12);
-        $item->getRootPageUid()->willReturn(1);
-        $item->getIndexingConfigurationName()->willReturn('fakeIndexingConfigurationName');
+        $indexer = $this->getAccessibleMock(
+            Indexer::class,
+            null,
+            [],
+            '',
+            false
+        );
 
-        /* @var FrontendEnvironment|ObjectProphecy $frontendEnvironment */
-        $frontendEnvironment = $this->prophesize(FrontendEnvironment::class);
-        $frontendEnvironment->getSolrConfigurationFromPageId(12, 0)->shouldBeCalled();
+        $eventDispatcher = new MockEventDispatcher();
+        if ($listener) {
+            $eventDispatcher->addListener($listener);
+        }
+        $indexer->_set('eventDispatcher', $eventDispatcher);
 
-        $indexer = $this->getMockBuilderForIndexer([], null, null, null, null, $frontendEnvironment->reveal())
+        if ($expectedException !== null) {
+            self::expectException($expectedException);
+        }
+
+        $itemMock = new class ([], [], $this->createMock(IndexQueueIndexingPropertyRepository::class), $this->createMock(QueueItemRepository::class)) extends Item {
+            protected $site;
+            public function setSite(Site $site): void
+            {
+                $this->site = $site;
+            }
+            public function getSite(): ?Site
+            {
+                return $this->site;
+            }
+        };
+        $itemMock->setSite($this->createMock(Site::class));
+
+        // new $itemMock()
+        $documents = $indexer->_call(
+            'getAdditionalDocuments',
+            new Document(),
+            $itemMock,
+            0,
+        );
+        self::assertCount($expectedResultCount, $documents);
+        foreach ($documents as $document) {
+            self::assertTrue($document instanceof Document);
+        }
+    }
+
+    /**
+     * Data provider for "canGetAdditionalDocuments"
+     */
+    public function canGetAdditionalDocumentsDataProvider(): \Generator
+    {
+        yield 'no listener registered' => [
+            null,
+            null,
+            1,
+        ];
+
+        yield 'valid listener, no additional documents' => [
+            function (BeforeDocumentIsProcessedForIndexingEvent $event) {
+                // Does nothing
+            },
+            null,
+            1,
+        ];
+        yield 'valid listener, adds an additional document' => [
+            function (BeforeDocumentIsProcessedForIndexingEvent $event) {
+                $event->addDocuments([new Document()]);
+            },
+            null,
+            2,
+        ];
+    }
+
+    /**
+     * @test
+     * @skip
+     */
+    public function indexerAlwaysInitializesTSFE(): void
+    {
+        self::markTestIncomplete('API has been changed, the test case must be moved, since it is still relevant.');
+        $item =  $this->createMock(Item::class);
+        $item->expects(self::any())->method('getType')->willReturn('pages');
+        $item->expects(self::any())->method('getRecordUid')->willReturn(12);
+        $item->expects(self::any())->method('getRootPageUid')->willReturn(1);
+        $item->expects(self::any())->method('getIndexingConfigurationName')->willReturn('fakeIndexingConfigurationName');
+
+        $frontendEnvironment = $this->createMock(FrontendEnvironment::class);
+        $frontendEnvironment->expects(self::atLeastOnce())->method('getSolrConfigurationFromPageId')->with(12, 0);
+
+        $indexer = $this->getMockBuilder(Indexer::class)
+            ->setConstructorArgs([
+                [],
+                $this->createMock(PagesRepository::class),
+                $this->createMock(Builder::class),
+                $this->createMock(ConnectionManager::class),
+                $frontendEnvironment,
+                $this->createMock(SolrLogManager::class),
+            ])
             ->onlyMethods([
                 'getFullItemRecord',
                 'isRootPageIdPartOfRootLine',
@@ -70,35 +249,6 @@ class IndexerTest extends UnitTest
         $indexerReflection = new ReflectionClass($indexer);
         $itemToDocumentReflectionMethod = $indexerReflection->getMethod('itemToDocument');
         $itemToDocumentReflectionMethod->setAccessible(true);
-        $itemToDocumentReflectionMethod->invokeArgs($indexer, [$item->reveal()]);
-    }
-
-    /**
-     * Returns a mock builder with dump-mocked object properties.
-     *
-     * @param array $options
-     * @param PagesRepository|null $pagesRepository
-     * @param Builder|null $documentBuilder
-     * @param SolrLogManager|null $logger
-     * @param ConnectionManager|null $connectionManager
-     * @param FrontendEnvironment|null $frontendEnvironment
-     * @return MockBuilder
-     */
-    protected function getMockBuilderForIndexer(
-        array $options = [],
-        PagesRepository $pagesRepository = null,
-        Builder $documentBuilder = null,
-        SolrLogManager $logger = null,
-        ConnectionManager $connectionManager = null,
-        FrontendEnvironment $frontendEnvironment = null
-    ): MockBuilder {
-        return $this->getMockBuilder(Indexer::class)->setConstructorArgs([
-            $options,
-            $pagesRepository ?? $this->getDumbMock(PagesRepository::class),
-            $documentBuilder ?? $this->getDumbMock(Builder::class),
-            $logger ?? $this->getDumbMock(SolrLogManager::class),
-            $connectionManager ?? $this->getDumbMock(ConnectionManager::class),
-            $frontendEnvironment ?? $this->getDumbMock(FrontendEnvironment::class),
-        ]);
+        $itemToDocumentReflectionMethod->invokeArgs($indexer, [$item]);
     }
 }

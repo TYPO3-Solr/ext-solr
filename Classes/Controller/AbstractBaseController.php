@@ -18,28 +18,22 @@ namespace ApacheSolrForTypo3\Solr\Controller;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager as SolrConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
+use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class AbstractBaseController
- *
- * @property SolrControllerContext $controllerContext
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
@@ -47,124 +41,66 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 abstract class AbstractBaseController extends ActionController
 {
     /**
-     * The HTTP code 503 message.
-     * @var string
+     * The HTTP message for 503 error from Apache Solr server.
      */
     protected const STATUS_503_MESSAGE = 'Apache Solr Server is not available.';
 
-    /**
-     * @var ContentObjectRenderer|null
-     */
     private ?ContentObjectRenderer $contentObjectRenderer = null;
 
-    /**
-     * @var TypoScriptFrontendController|null
-     */
     protected ?TypoScriptFrontendController $typoScriptFrontendController = null;
 
-    /**
-     * @var SolrConfigurationManager|null
-     */
     private ?SolrConfigurationManager $solrConfigurationManager = null;
 
     /**
-     * The configuration is private if you need it please get it from the controllerContext.
-     *
-     * @var TypoScriptConfiguration|null
+     * The configuration is private if you need it please get it from the SolrVariableProvider of RenderingContext.
      */
     protected ?TypoScriptConfiguration $typoScriptConfiguration = null;
 
-    /**
-     * @var SearchResultSetService|null
-     */
     protected ?SearchResultSetService $searchService = null;
 
-    /**
-     * @var SearchRequestBuilder|null
-     */
     protected ?SearchRequestBuilder $searchRequestBuilder = null;
 
-    /**
-     * @var bool
-     */
     protected bool $resetConfigurationBeforeInitialize = true;
 
-    /**
-     * @param ConfigurationManagerInterface $configurationManager
-     */
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
     {
         $this->configurationManager = $configurationManager;
         // @extensionScannerIgnoreLine
         $this->contentObjectRenderer = $this->configurationManager->getContentObject();
+        $this->arguments = GeneralUtility::makeInstance(Arguments::class);
     }
 
-    /**
-     * @param ContentObjectRenderer $contentObjectRenderer
-     */
-    public function setContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer)
+    public function setContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer): void
     {
         $this->contentObjectRenderer = $contentObjectRenderer;
     }
 
-    /**
-     * @return ContentObjectRenderer|null
-     */
     public function getContentObjectRenderer(): ?ContentObjectRenderer
     {
         return $this->contentObjectRenderer;
     }
 
-    /**
-     * @param SolrConfigurationManager $configurationManager
-     */
-    public function injectSolrConfigurationManager(SolrConfigurationManager $configurationManager)
+    public function injectSolrConfigurationManager(SolrConfigurationManager $configurationManager): void
     {
         $this->solrConfigurationManager = $configurationManager;
     }
 
-    /**
-     * @param bool $resetConfigurationBeforeInitialize
-     */
-    public function setResetConfigurationBeforeInitialize(bool $resetConfigurationBeforeInitialize)
+    public function setResetConfigurationBeforeInitialize(bool $resetConfigurationBeforeInitialize): void
     {
         $this->resetConfigurationBeforeInitialize = $resetConfigurationBeforeInitialize;
     }
 
     /**
-     * Initialize the controller context
-     *
-     * @return ControllerContext ControllerContext to be passed to the view
-     * @api
-     */
-    protected function buildControllerContext()
-    {
-        /** @var $controllerContext SolrControllerContext */
-        $controllerContext = $this->objectManager->get(SolrControllerContext::class);
-        $controllerContext->setRequest($this->request);
-//        $controllerContext->setResponse($this->response);
-        if ($this->arguments !== null) {
-            $controllerContext->setArguments($this->arguments);
-        }
-        $controllerContext->setUriBuilder($this->uriBuilder);
-
-        $controllerContext->setTypoScriptConfiguration($this->typoScriptConfiguration);
-
-        return $controllerContext;
-    }
-
-    /**
      * Initialize action
-     * @throws AspectNotFoundException
      */
-    protected function initializeAction()
+    protected function initializeAction(): void
     {
         // Reset configuration (to reset flexform overrides) if resetting is enabled
         if ($this->resetConfigurationBeforeInitialize) {
             $this->solrConfigurationManager->reset();
         }
         /** @var TypoScriptService $typoScriptService */
-        $typoScriptService = $this->objectManager->get(TypoScriptService::class);
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
 
         // Merge settings done by typoscript with solrConfiguration plugin.tx_solr (obsolete when part of ext:solr)
         $frameWorkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -185,7 +121,7 @@ abstract class AbstractBaseController extends ActionController
         }
 
         if (!empty($this->contentObjectRenderer->data['pi_flexform'])) {
-            $this->objectManager->get(ConfigurationService::class)
+            GeneralUtility::makeInstance(ConfigurationService::class)
                 ->overrideConfigurationWithFlexFormSettings(
                     $this->contentObjectRenderer->data['pi_flexform'],
                     $this->typoScriptConfiguration
@@ -204,23 +140,21 @@ abstract class AbstractBaseController extends ActionController
     /**
      * Inject settings of plugin.tx_solr
      */
-    protected function initializeSettings()
+    protected function initializeSettings(): void
     {
-        /** @var $typoScriptService TypoScriptService */
-        $typoScriptService = $this->objectManager->get(TypoScriptService::class);
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
 
         // Make sure plugin.tx_solr.settings are available in the view as {settings}
         $this->settings = $typoScriptService->convertTypoScriptArrayToPlainArray(
-            $this->typoScriptConfiguration->getObjectByPathOrDefault('plugin.tx_solr.settings.', [])
+            $this->typoScriptConfiguration->getObjectByPathOrDefault('plugin.tx_solr.settings.')
         );
     }
 
     /**
      * Initialize the Solr connection and
      * test the connection through a ping
-     * @throws AspectNotFoundException
      */
-    protected function initializeSearch()
+    protected function initializeSearch(): void
     {
         try {
             $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByTypo3Site(
@@ -228,28 +162,22 @@ abstract class AbstractBaseController extends ActionController
                 $this->typoScriptFrontendController->getLanguage()->getLanguageId()
             );
 
-            $search = $this->objectManager->get(Search::class, $solrConnection);
+            $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
 
-            /** @noinspection PhpParamsInspection */
-            $this->searchService = $this->objectManager->get(
+            $this->searchService = GeneralUtility::makeInstance(
                 SearchResultSetService::class,
-                /** @scrutinizer ignore-type */
                 $this->typoScriptConfiguration,
-                /** @scrutinizer ignore-type */
                 $search
             );
-        } catch (NoSolrConnectionFoundException $e) {
+        } catch (NoSolrConnectionFoundException) {
             $this->logSolrUnavailable();
         }
     }
 
-    /**
-     * @return SearchRequestBuilder
-     */
     protected function getSearchRequestBuilder(): SearchRequestBuilder
     {
         if ($this->searchRequestBuilder === null) {
-            $this->searchRequestBuilder = GeneralUtility::makeInstance(SearchRequestBuilder::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
+            $this->searchRequestBuilder = GeneralUtility::makeInstance(SearchRequestBuilder::class, $this->typoScriptConfiguration);
         }
 
         return $this->searchRequestBuilder;
@@ -258,28 +186,11 @@ abstract class AbstractBaseController extends ActionController
     /**
      * Called when the solr server is unavailable.
      */
-    protected function logSolrUnavailable()
+    protected function logSolrUnavailable(): void
     {
         if ($this->typoScriptConfiguration->getLoggingExceptions()) {
-            /** @var SolrLogManager $logger */
-            $logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
-            $logger->log(SolrLogManager::ERROR, 'Solr server is not available');
+            $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+            $logger->error('Solr server is not available');
         }
-    }
-
-    /**
-     * Emits signal for various actions
-     *
-     * @param string $className Name of the class containing the signal
-     * @param string $signalName Name of the signal slot
-     * @param array $signalArguments arguments for the signal slot
-     *
-     * @return array|mixed
-     * @throws InvalidSlotException
-     * @throws InvalidSlotReturnException
-     */
-    protected function emitActionSignal(string $className, string $signalName, array $signalArguments)
-    {
-        return $this->signalSlotDispatcher->dispatch($className, $signalName, $signalArguments)[0];
     }
 }

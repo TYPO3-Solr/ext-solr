@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\SystemTemplat
 
 use ApacheSolrForTypo3\Solr\System\Records\SystemTemplate\SystemTemplateRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,11 +26,10 @@ class SystemTemplateRepositoryTest extends IntegrationTest
 {
     /**
      * @test
-     * @throws DBALDriverException
      */
     public function canFindOneClosestPageIdWithActiveTemplateByRootLine()
     {
-        $this->importDataSetFromFixture('sys_template.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_template.csv');
 
         $fakeRootLine = [
             ['uid' => 100],
@@ -39,7 +37,7 @@ class SystemTemplateRepositoryTest extends IntegrationTest
             ['uid' => 8657],
         ];
 
-        /* @var $repository SystemTemplateRepository */
+        /** @var SystemTemplateRepository $repository */
         $repository = GeneralUtility::makeInstance(SystemTemplateRepository::class);
         $closestPageIdWithActiveTemplate = $repository->findOneClosestPageIdWithActiveTemplateByRootLine($fakeRootLine);
         self::assertEquals(33, $closestPageIdWithActiveTemplate, 'Can not find closest page id with active template.');

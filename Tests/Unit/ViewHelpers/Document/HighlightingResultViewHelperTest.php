@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use stdClass;
@@ -31,7 +31,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class HighlightingResultViewHelperTest extends UnitTest
+class HighlightingResultViewHelperTest extends SetUpUnitTestCase
 {
     /**
      * @return array
@@ -63,10 +63,10 @@ class HighlightingResultViewHelperTest extends UnitTest
      */
     public function canRenderCreateHighlightSnipped(array $input, $expectedOutput, $configuredWrap)
     {
-        /* @var RenderingContextInterface|MockObject $renderingContextMock */
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        /** @var RenderingContextInterface|MockObject $renderingContextMock */
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
 
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchResultsHighlightingFragmentSeparator')->willReturn(
             '###'
         );
@@ -74,7 +74,7 @@ class HighlightingResultViewHelperTest extends UnitTest
             $configuredWrap
         );
 
-        $searchRequestMock = $this->getDumbMock(SearchRequest::class);
+        $searchRequestMock = $this->createMock(SearchRequest::class);
         $searchRequestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn(
             $configurationMock
         );
@@ -83,12 +83,12 @@ class HighlightingResultViewHelperTest extends UnitTest
         $fakeHighlightedContent->foo = new stdClass();
         $fakeHighlightedContent->foo->content = $input;
 
-        $searchMock = $this->getDumbMock(Search::class);
+        $searchMock = $this->createMock(Search::class);
         $searchMock->expects(self::once())->method('getHighlightedContent')->willReturn(
             $fakeHighlightedContent
         );
 
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $resultSetMock->expects(self::any())->method('getUsedSearchRequest')->willReturn(
             $searchRequestMock
         );
@@ -97,7 +97,7 @@ class HighlightingResultViewHelperTest extends UnitTest
             $searchMock
         );
 
-        $documentMock = $this->getDumbMock(SearchResult::class);
+        $documentMock = $this->createMock(SearchResult::class);
         $documentMock->expects(self::any())->method('getId')->willReturn('foo');
 
         $viewHelper = new HighlightResultViewHelper();

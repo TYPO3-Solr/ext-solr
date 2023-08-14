@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\FieldProcessor;
 
 use ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * tests the path to hierarchy processing
  *
  * @author    Daniel Pötzinger <poetzinger@aoemedia.de>
  */
-class PathToHierarchyTest extends UnitTest
+class PathToHierarchyTest extends SetUpUnitTestCase
 {
     /**
      * @var PathToHierarchy

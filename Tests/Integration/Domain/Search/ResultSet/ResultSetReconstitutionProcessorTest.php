@@ -24,30 +24,17 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
-use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 
-/**
- * Unit test case for the ObjectReconstitutionProcessor.
- *
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class ResultSetReconstitutionProcessorTest extends IntegrationTest
 {
     /**
      * @test
-     *
-     * @throws TestingFrameworkCoreException
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
      */
     public function canApplyRenderingInstructionsOnOptions()
     {
         $this->writeDefaultSolrTestSiteConfiguration();
-        $this->fakeTSFE(1);
+        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest('https://example.com');
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 
@@ -83,26 +70,21 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /** @var $facet OptionsFacet */
+        /** @var OptionsFacet $facet */
         $facet = $searchResultSet->getFacets()->getByPosition(0);
 
-        /** @var $option1 Option */ // @extensionScannerIgnoreLine
+        /** @var Option $option1 */ // @extensionScannerIgnoreLine
         $option1 = $facet->getOptions()->getByPosition(0);
         self::assertSame('Pages', $option1->getLabel(), 'Rendering instructions have not been applied on the facet options');
     }
 
     /**
      * @test
-     *
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
-     * @throws TestingFrameworkCoreException
      */
     public function labelCanBeUsedAsCObject()
     {
         $this->writeDefaultSolrTestSiteConfiguration();
-        $this->fakeTSFE(1);
+        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest('https://example.com');
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 
         // before the reconstitution of the domain object from the response we expect that no facets
@@ -126,20 +108,16 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /** @var $facet OptionsFacet */
+        /** @var OptionsFacet $facet */
         $facet = $searchResultSet->getFacets()->getByPosition(0);
         self::assertSame('MY TYPE WITH SPECIAL RENDERING', $facet->getLabel(), 'Rendering instructions have not been applied on the facet options');
     }
 
-    /**
-     * @param string $fixtureFile
-     * @return SearchResultSet
-     */
     protected function initializeSearchResultSetFromFakeResponse(string $fixtureFile): SearchResultSet
     {
         $searchRequestMock = $this->createMock(SearchRequest::class);
 
-        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
+        $fakeResponseJson = file_get_contents(__DIR__ . '/Fixtures/' . $fixtureFile);
         $fakeResponse = new ResponseAdapter($fakeResponseJson);
 
         $searchResultSet = new SearchResultSet();
@@ -149,10 +127,6 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         return $searchResultSet;
     }
 
-    /**
-     * @param array $facetConfiguration
-     * @return array
-     */
     protected function getConfigurationArrayFromFacetConfigurationArray(array $facetConfiguration): array
     {
         $configuration = [];
@@ -160,23 +134,15 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         return $configuration;
     }
 
-    /**
-     * @param array $configuration
-     * @param SearchResultSet $searchResultSet
-     * @return ResultSetReconstitutionProcessor
-     */
     protected function getConfiguredReconstitutionProcessor(array $configuration, SearchResultSet $searchResultSet): ResultSetReconstitutionProcessor
     {
         $typoScriptConfiguration = new TypoScriptConfiguration($configuration);
 
-        /* @var SearchRequest|MockObject $usedSearchRequestMock */
+        /** @var SearchRequest|MockObject $usedSearchRequestMock */
         $usedSearchRequestMock = $searchResultSet->getUsedSearchRequest();
         $usedSearchRequestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
         $usedSearchRequestMock->expects(self::any())->method('getActiveFacetNames')->willReturn([]);
 
-        $processor = new ResultSetReconstitutionProcessor();
-        $fakeObjectManager = $this->getFakeObjectManager();
-        $processor->setObjectManager($fakeObjectManager);
-        return $processor;
+        return new ResultSetReconstitutionProcessor();
     }
 }

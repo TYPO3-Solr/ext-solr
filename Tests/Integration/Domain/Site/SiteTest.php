@@ -40,7 +40,7 @@ class SiteTest extends IntegrationTest
     public function canGetDefaultLanguage()
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        /* @var Site $site */
+        /** @var Site $site */
         $site = $siteRepository->getFirstAvailableSite();
         self::assertEquals(0, $site->getDefaultLanguageId(), 'Could not get default language from site');
     }
@@ -50,7 +50,7 @@ class SiteTest extends IntegrationTest
      */
     public function canCreateInstanceWithRootSiteUidOK()
     {
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByRootPageId(1);
         self::assertEquals(1, $site->getRootPageId());
@@ -62,7 +62,7 @@ class SiteTest extends IntegrationTest
     public function canCreateInstanceWithRootSiteUidNOK()
     {
         $this->expectException(InvalidArgumentException::class);
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByRootPageId(2);
     }
@@ -72,10 +72,10 @@ class SiteTest extends IntegrationTest
      */
     public function canCreateInstanceWithNonRootSiteUidOK()
     {
-        $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_create_instance_with_non_root_site.csv');
         $this->expectException(InvalidArgumentException::class);
 
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $siteRepository->getSiteByRootPageId(151);
     }
@@ -85,10 +85,10 @@ class SiteTest extends IntegrationTest
      */
     public function canCreateInstanceWithNonRootSiteUidNOK()
     {
-        $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_create_instance_with_non_root_site.csv');
         $this->expectException(InvalidArgumentException::class);
 
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $siteRepository->getSiteByRootPageId(152);
     }
@@ -98,9 +98,9 @@ class SiteTest extends IntegrationTest
      */
     public function canGetAvailableLanguageIds()
     {
-        $this->importDataSetFromFixture('can_get_translations_for_root_site.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_translations_for_root_site.csv');
 
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByRootPageId(1);
         $languageIds = $site->getAvailableLanguageIds();

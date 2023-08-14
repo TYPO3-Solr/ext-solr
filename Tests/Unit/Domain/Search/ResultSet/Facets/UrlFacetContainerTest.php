@@ -17,21 +17,19 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcases for the url data bag
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-class UrlFacetContainerTest extends UnitTest
+class UrlFacetContainerTest extends SetUpUnitTestCase
 {
     /**
      * Test data for index based url parameters
-     *
-     * @var string[][][]
      */
-    protected $indexParameters = [
+    protected array $indexParameters = [
         'tx_solr' => [
             'filter' => [
                 'type:pages',
@@ -43,10 +41,8 @@ class UrlFacetContainerTest extends UnitTest
     ];
     /**
      * Test data for assoc based url parameters
-     *
-     * @var string[][][]
      */
-    protected $assocParameters = [
+    protected array $assocParameters = [
         'tx_solr' => [
             'filter' => [
                 'type:pages' => 1,

@@ -1,5 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Event\Indexing;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,22 +36,21 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use PHPUnit\Framework\MockObject\MockObject;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class QueueInitializerServiceTest extends UnitTest
+class QueueInitializerServiceTest extends SetUpUnitTestCase
 {
     /**
      * @test
      */
-    public function allIndexConfigurationsAreUsedWhenWildcardIsPassed()
+    public function allIndexConfigurationsAreUsedWhenWildcardIsPassed(): void
     {
-        $queueMock = $this->getDumbMock(Queue::class);
-        /* @var QueueInitializationService|MockObject $service */
-        $service = $this->getMockBuilder(QueueInitializationService::class)->onlyMethods(['executeInitializer'])->setConstructorArgs([$queueMock])->getMock();
+        $queueMock = $this->createMock(Queue::class);
+        $service = $this->getMockBuilder(QueueInitializationService::class)->onlyMethods(['executeInitializer'])->setConstructorArgs([$queueMock, new NoopEventDispatcher()])->getMock();
 
         $fakeTs = [
             'plugin.' => [
@@ -65,7 +81,7 @@ class QueueInitializerServiceTest extends UnitTest
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeTs);
 
-        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::any())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
 
         $service

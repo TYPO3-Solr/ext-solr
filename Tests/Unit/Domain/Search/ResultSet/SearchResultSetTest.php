@@ -21,65 +21,39 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchHasBeenExecutedEvent;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 use ApacheSolrForTypo3\Solr\Search;
-use ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 
 /**
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class SearchResultSetTest extends UnitTest
+class SearchResultSetTest extends SetUpUnitTestCase
 {
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configurationMock;
-
-    /**
-     * @var Search
-     */
-    protected $searchMock;
-
-    /**
-     * @var SearchResultSetService
-     */
-    protected $searchResultSetService;
-
-    /**
-     * @var SolrLogManager
-     */
-    protected $solrLogManagerMock;
-
-    /**
-     * @var Query
-     */
-    protected $queryMock;
-
-    /**
-     * @var EscapeService
-     */
-    protected $escapeServiceMock;
-
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManagerMock;
+    protected TypoScriptConfiguration|MockObject $configurationMock;
+    protected Search|MockObject $searchMock;
+    protected SearchResultSetService $searchResultSetService;
+    protected SolrLogManager|MockObject $solrLogManagerMock;
+    protected Query|MockObject $queryMock;
+    protected EscapeService|MockObject $escapeServiceMock;
+    protected MockEventDispatcher $eventDispatcher;
 
     protected function setUp(): void
     {
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->searchMock = $this->getDumbMock(Search::class);
-        $this->solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $this->searchMock = $this->createMock(Search::class);
+        $this->solrLogManagerMock = $this->createMock(SolrLogManager::class);
 
-        $this->escapeServiceMock = $this->getDumbMock(EscapeService::class);
+        $this->escapeServiceMock = $this->createMock(EscapeService::class);
         $this->escapeServiceMock->expects(self::any())->method('escape')->willReturnArgument(0);
 
         $queryBuilder = new QueryBuilder(
@@ -88,51 +62,34 @@ class SearchResultSetTest extends UnitTest
             $this->createMock(SiteHashService::class)
         );
 
-        $this->objectManagerMock = $this->createMock(ObjectManager::class);
-        $this->searchResultSetService = $this->getMockBuilder(SearchResultSetService::class)
-            ->onlyMethods(['getRegisteredSearchComponents'])
-            ->setConstructorArgs([
-                $this->configurationMock,
-                $this->searchMock,
-                $this->solrLogManagerMock,
-                null,
-                $queryBuilder,
-                $this->objectManagerMock,
-            ])
-            ->getMock();
-        parent::setUp();
-    }
+        $this->eventDispatcher = new MockEventDispatcher();
 
-    /**
-     * @param $fakedRegisteredComponents
-     */
-    protected function fakeRegisteredSearchComponents(array $fakedRegisteredComponents)
-    {
-        $this->searchResultSetService->expects(self::once())->method('getRegisteredSearchComponents')->willReturn(
-            $fakedRegisteredComponents
+        $this->searchResultSetService = new SearchResultSetService(
+            $this->configurationMock,
+            $this->searchMock,
+            $this->solrLogManagerMock,
+            null,
+            $queryBuilder,
+            $this->eventDispatcher
         );
+        parent::setUp();
     }
 
     /**
      * @test
      */
-    public function testSearchIfFiredWithInitializedQuery()
+    public function testSearchIfFiredWithInitializedQuery(): void
     {
-        $this->fakeRegisteredSearchComponents([]);
-
-        // we expect the the ->search method on the Search object will be called once
+        // we expect the ->search method on the Search object will be called once
         // and we pass the response that should be returned when it was call to compare
         // later if we retrieve the expected result
-        $fakeResponse = $this->getDumbMock(ResponseAdapter::class);
+        $fakeResponse = $this->createMock(ResponseAdapter::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my search', 0, $fakeResponse);
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my search']]);
         $fakeRequest->setResultsPerPage(10);
 
-        $this->objectManagerMock
-            ->expects(self::once())->method('get')->with(SearchResultSet::class)
-            ->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($fakeRequest);
         self::assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
     }
@@ -140,18 +97,15 @@ class SearchResultSetTest extends UnitTest
     /**
     * @test
     */
-    public function testOffsetIsPassedAsExpectedWhenSearchWasPaginated()
+    public function testOffsetIsPassedAsExpectedWhenSearchWasPaginated(): void
     {
-        $this->fakeRegisteredSearchComponents([]);
-
-        $fakeResponse = $this->getDumbMock(ResponseAdapter::class);
+        $fakeResponse = $this->createMock(ResponseAdapter::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 2. search', 50, $fakeResponse);
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 2. search', 'page' => 3]]);
         $fakeRequest->setResultsPerPage(25);
 
-        $this->objectManagerMock->expects(self::once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($fakeRequest);
         self::assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
     }
@@ -159,24 +113,22 @@ class SearchResultSetTest extends UnitTest
     /**
      * @test
      */
-    public function testQueryAwareComponentGetsInitialized()
+    public function testComponentAsEventListenerGetsInitialized(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchConfiguration')->willReturn([]);
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        // we expect that the initialize method of our component will be called
-        $fakeQueryAwareSpellChecker = $this->getDumbMock(SpellcheckingComponent::class);
-        $fakeQueryAwareSpellChecker->expects(self::once())->method('initializeSearchComponent');
-        $fakeQueryAwareSpellChecker->expects(self::once())->method('setQuery');
-
-        $this->fakeRegisteredSearchComponents([$fakeQueryAwareSpellChecker]);
-        $fakeResponse = $this->getDumbMock(ResponseAdapter::class);
+        $this->eventDispatcher->addListener(function (object $event) {
+            if ($event instanceof AfterSearchQueryHasBeenPreparedEvent) {
+                $event->getTypoScriptConfiguration()->getSearchConfiguration();
+            }
+        });
+        $fakeResponse = $this->createMock(ResponseAdapter::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 3. search', 0, $fakeResponse);
 
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 3. search']]);
         $fakeRequest->setResultsPerPage(10);
 
-        $this->objectManagerMock->expects(self::once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($fakeRequest);
         self::assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
     }
@@ -184,15 +136,17 @@ class SearchResultSetTest extends UnitTest
     /**
      * @test
      */
-    public function canRegisterSearchResultSetProcessor()
+    public function canRegisterSearchResultSetProcessor(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $processSearchResponseBackup = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] ?? null;
-
-        $testProcessor = TestSearchResultSetProcessor::class;
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['testProcessor'] = $testProcessor;
-        $this->fakeRegisteredSearchComponents([]);
+        $this->eventDispatcher->addListener(function (object $event) {
+            if ($event instanceof AfterSearchHasBeenExecutedEvent) {
+                foreach ($event->getSearchResultSet()->getSearchResults() as $result) {
+                    $result->type = strtoupper($result->type);
+                }
+            }
+        });
 
         $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
@@ -200,18 +154,6 @@ class SearchResultSetTest extends UnitTest
 
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 4. search']]);
         $fakeRequest->setResultsPerPage(10);
-
-        $this->objectManagerMock
-            ->expects(self::exactly(2))
-            ->method('get')
-            ->withConsecutive(
-                [SearchResultSet::class],
-                [$testProcessor]
-            )->will(self::onConsecutiveCalls(
-                new SearchResultSet(),
-                new TestSearchResultSetProcessor()
-            ));
-
         $resultSet  = $this->searchResultSetService->search($fakeRequest);
 
         $documents  = $resultSet->getSearchResults();
@@ -219,17 +161,14 @@ class SearchResultSetTest extends UnitTest
         self::assertSame(3, count($documents), 'Did not get 3 documents from fake response');
         $firstResult = $documents[0];
         self::assertSame('PAGES', $firstResult->getType(), 'Could not get modified type from result');
-
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] = $processSearchResponseBackup;
     }
 
     /**
      * @test
      */
-    public function testAdditionalFiltersGetPassedToTheQuery()
+    public function testAdditionalFiltersGetPassedToTheQuery(): void
     {
-        $this->fakeRegisteredSearchComponents([]);
-        $fakeResponse = $this->getDumbMock(ResponseAdapter::class);
+        $fakeResponse = $this->createMock(ResponseAdapter::class);
 
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('test', 0, $fakeResponse);
 
@@ -241,8 +180,6 @@ class SearchResultSetTest extends UnitTest
         $fakeRequest->setResultsPerPage(10);
 
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('test', 0, $fakeResponse);
-
-        $this->objectManagerMock->expects(self::once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($fakeRequest);
 
         self::assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
@@ -252,7 +189,7 @@ class SearchResultSetTest extends UnitTest
     /**
      * @test
      */
-    public function testExpandedDocumentsGetAddedWhenVariantsAreConfigured()
+    public function testExpandedDocumentsGetAddedWhenVariantsAreConfigured(): void
     {
         // we fake that collapsing is enabled
         $this->configurationMock->expects(self::atLeastOnce())->method('getSearchVariants')->willReturn(true);
@@ -262,29 +199,21 @@ class SearchResultSetTest extends UnitTest
 
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $this->fakeRegisteredSearchComponents([]);
         $fakedSolrResponse = $this->getFixtureContentByName('fakeCollapsedResponse.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('variantsSearch', 0, $fakeResponse);
 
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'variantsSearch']]);
         $fakeRequest->setResultsPerPage(10);
-
-        $this->objectManagerMock->expects(self::once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($fakeRequest);
         self::assertSame(1, count($resultSet->getSearchResults()), 'Unexpected amount of document');
 
-        /** @var  $fistResult SearchResult */
+        /** @var SearchResult $fistResult */
         $fistResult = $resultSet->getSearchResults()[0];
         self::assertSame(5, count($fistResult->getVariants()), 'Unexpected amount of expanded result');
     }
 
-    /**
-     * @param string $expextedQueryString
-     * @param int $expectedOffset
-     * @param ResponseAdapter $fakeResponse
-     */
-    public function assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse($expextedQueryString, $expectedOffset, ResponseAdapter $fakeResponse)
+    public function assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse(string $expextedQueryString, int $expectedOffset, ResponseAdapter $fakeResponse): void
     {
         $this->searchMock->expects(self::once())->method('search')->willReturnCallback(
             function (Query $query, $offset) use ($expextedQueryString, $expectedOffset, $fakeResponse) {

@@ -19,27 +19,19 @@ namespace ApacheSolrForTypo3\Solr\System\Data;
 
 use DateTime as PhpDateTime;
 use DateTimeZone;
-use Exception;
 
 /**
  * Class DateTime
  */
 class DateTime extends PhpDateTime
 {
-    /**
-     * @param string $time
-     * @param DateTimeZone|null $timezone
-     * @throws Exception
-     */
-    public function __construct($time = 'now', DateTimeZone $timezone = null)
+    public function __construct(string $time = 'now', DateTimeZone $timezone = null)
     {
         parent::__construct($time, $timezone);
     }
 
     /**
      * Returns the date formatted as ISO.
-     *
-     * @return string
      */
     public function __toString()
     {

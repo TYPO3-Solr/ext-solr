@@ -23,7 +23,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  * @author Timo Hund <timo.hund@dkd.de>
  * @author Frans Saris <frans@beech.it>
  */
-class RemoveFacetViewHelperTest extends AbstractFacetItemViewHelperTest
+class RemoveFacetViewHelperTest extends SetUpFacetItemViewHelper
 {
     /**
      * @test
@@ -32,11 +32,11 @@ class RemoveFacetViewHelperTest extends AbstractFacetItemViewHelperTest
     {
         $facet = $this->getTestColorFacet();
 
-        $renderContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderContextMock = $this->createMock(RenderingContextInterface::class);
         $viewHelper = new RemoveFacetViewHelper();
         $viewHelper->setRenderingContext($renderContextMock);
 
-        $searchUriBuilderMock = $this->getDumbMock(SearchUriBuilder::class);
+        $searchUriBuilderMock = $this->createMock(SearchUriBuilder::class);
 
         // we expected that the getRemoveFacetValueUri will be called on the searchUriBuilder in the end.
         $searchUriBuilderMock->expects(self::once())->method('getRemoveFacetUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color');

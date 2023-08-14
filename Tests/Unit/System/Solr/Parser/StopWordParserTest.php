@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Parser;
 
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for StopWordParser
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class StopWordParserTest extends UnitTest
+class StopWordParserTest extends SetUpUnitTestCase
 {
     /**
      * @test

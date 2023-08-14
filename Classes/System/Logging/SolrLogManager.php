@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,8 +17,9 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Logging;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
 use TYPO3\CMS\Core\Log\Logger;
-use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -25,43 +28,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Thomas Hohn <tho@systime.dk>
  */
-class SolrLogManager
+class SolrLogManager implements LoggerInterface
 {
-    const WARNING = LogLevel::WARNING;
-    const ERROR = LogLevel::ERROR;
-    const INFO = LogLevel::INFO;
-    const NOTICE = LogLevel::NOTICE;
+    use LoggerTrait;
 
-    /**
-     * @var Logger|null
-     */
     protected ?Logger $logger = null;
 
-    /**
-     * @var DebugWriter
-     */
-    protected $debugWriter;
+    protected DebugWriter $debugWriter;
 
-    /**
-     * @var string
-     */
-    protected string $className = '';
+    protected string $className;
 
-    /**
-     * SolrLogManager constructor.
-     *
-     * @param string $className
-     * @param DebugWriter|null $debugWriter
-     */
     public function __construct(string $className, DebugWriter $debugWriter = null)
     {
         $this->className = $className;
         $this->debugWriter = $debugWriter ?? GeneralUtility::makeInstance(DebugWriter::class);
     }
 
-    /**
-     * @return Logger
-     */
     protected function getLogger(): Logger
     {
         if ($this->logger === null) {
@@ -72,15 +54,15 @@ class SolrLogManager
     }
 
     /**
-     * Adds an entry to the LogManager
+     * Logs with an arbitrary level.
      *
-     * @param int|string $level Log level. Value according to \TYPO3\CMS\Core\Log\LogLevel. Alternatively accepts a string.
-     * @param string $message Log message.
-     * @param array $data Additional data to log
+     * @param mixed $level
+     * @param string|\Stringable $message
+     * @param array $context
      */
-    public function log($level, string $message, array $data = [])
+    public function log($level, string|\Stringable $message, array $context = []): void
     {
-        $this->getLogger()->log($level, $message, $data);
-        $this->debugWriter->write($level, $message, $data);
+        $this->getLogger()->log($level, $message, $context);
+        $this->debugWriter->write($level, $message, $context);
     }
 }

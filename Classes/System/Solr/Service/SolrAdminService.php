@@ -25,85 +25,46 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use InvalidArgumentException;
-use function simplexml_load_string;
 use Solarium\Client;
 use stdClass;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use function simplexml_load_string;
 
 /**
  * Class SolrAdminService
  */
 class SolrAdminService extends AbstractSolrService
 {
-    const PLUGINS_SERVLET = 'admin/plugins';
-    const LUKE_SERVLET = 'admin/luke';
-    const SYSTEM_SERVLET = 'admin/system';
-    const CORES_SERVLET = '../admin/cores';
-    const FILE_SERVLET = 'admin/file';
-    const SCHEMA_SERVLET = 'schema';
-    const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
-    const STOPWORDS_SERVLET = 'schema/analysis/stopwords/';
+    public const PLUGINS_SERVLET = 'admin/plugins';
+    public const LUKE_SERVLET = 'admin/luke';
+    public const SYSTEM_SERVLET = 'admin/system';
+    public const CORES_SERVLET = '../admin/cores';
+    public const FILE_SERVLET = 'admin/file';
+    public const SCHEMA_SERVLET = 'schema';
+    public const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
+    public const STOPWORDS_SERVLET = 'schema/analysis/stopwords/';
 
-    /**
-     * @var array
-     */
     protected array $lukeData = [];
 
-    /**
-     * @var ResponseAdapter|null
-     */
     protected ?ResponseAdapter $systemData = null;
 
-    /**
-     * @var ResponseAdapter|null
-     */
     protected ?ResponseAdapter $pluginsData = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $solrconfigName = null;
 
-    /**
-     * @var SchemaParser
-     */
     protected SchemaParser $schemaParser;
 
-    /**
-     * @var Schema|null
-     */
     protected ?Schema $schema = null;
 
-    /**
-     * @var string
-     */
     protected string $_synonymsUrl = '';
 
-    /**
-     * @var string
-     */
     protected string $_stopWordsUrl = '';
 
-    /**
-     * @var SynonymParser
-     */
     protected SynonymParser $synonymParser;
 
-    /**
-     * @var StopWordParser
-     */
     protected StopWordParser $stopWordParser;
 
-    /**
-     * Constructor
-     *
-     * @param Client $client
-     * @param TypoScriptConfiguration|null $typoScriptConfiguration
-     * @param SolrLogManager|null $logManager
-     * @param SynonymParser|null $synonymParser
-     * @param StopWordParser|null $stopWordParser
-     * @param SchemaParser|null $schemaParser
-     */
     public function __construct(
         Client $client,
         TypoScriptConfiguration $typoScriptConfiguration = null,
@@ -121,8 +82,6 @@ class SolrAdminService extends AbstractSolrService
 
     /**
      * Call the /admin/system servlet and retrieve system information about Solr
-     *
-     * @return ResponseAdapter
      */
     public function system(): ResponseAdapter
     {
@@ -142,7 +101,7 @@ class SolrAdminService extends AbstractSolrService
 
             /**
              * access a random property to trigger response parsing
-             * @noinspection PhpExpressionResultUnusedInspection
+             * @phpstan-ignore-next-line
              */
             $pluginsInformation->responseHeader;
             $this->pluginsData = $pluginsInformation;
@@ -155,7 +114,6 @@ class SolrAdminService extends AbstractSolrService
      * get field meta data for the index
      *
      * @param int $numberOfTerms Number of top terms to fetch for each field
-     * @return stdClass
      */
     public function getFieldsMetaData(int $numberOfTerms = 0): stdClass
     {
@@ -184,8 +142,6 @@ class SolrAdminService extends AbstractSolrService
 
     /**
      * Gets information about the Solr server
-     *
-     * @return ResponseAdapter
      */
     public function getSystemInformation(): ResponseAdapter
     {
@@ -194,7 +150,7 @@ class SolrAdminService extends AbstractSolrService
 
             /**
              * access a random property to trigger response parsing
-             * @noinspection PhpExpressionResultUnusedInspection
+             * @phpstan-ignore-next-line
              */
             $systemInformation->responseHeader;
             $this->systemData = $systemInformation;
@@ -207,7 +163,7 @@ class SolrAdminService extends AbstractSolrService
      * Gets the name of the solrconfig.xml file installed and in use on the Solr
      * server.
      *
-     * @return string Name of the active solrconfig.xml
+     * @return string|null Name of the active solrconfig.xml
      */
     public function getSolrconfigName(): ?string
     {
@@ -226,8 +182,6 @@ class SolrAdminService extends AbstractSolrService
 
     /**
      * Gets the Solr server's version number.
-     *
-     * @return string Solr version number
      */
     public function getSolrServerVersion(): string
     {
@@ -239,8 +193,6 @@ class SolrAdminService extends AbstractSolrService
 
     /**
      * Reloads the current core
-     *
-     * @return ResponseAdapter
      */
     public function reloadCore(): ResponseAdapter
     {
@@ -249,9 +201,6 @@ class SolrAdminService extends AbstractSolrService
 
     /**
      * Reloads a core of the connection by a given core-name.
-     *
-     * @param string $coreName
-     * @return ResponseAdapter
      */
     public function reloadCoreByName(string $coreName): ResponseAdapter
     {
@@ -261,8 +210,6 @@ class SolrAdminService extends AbstractSolrService
 
     /**
      * Get the configured schema for the current core.
-     *
-     * @return Schema
      */
     public function getSchema(): Schema
     {
@@ -279,7 +226,6 @@ class SolrAdminService extends AbstractSolrService
      * Get currently configured synonyms
      *
      * @param string $baseWord If given a base word, retrieves the synonyms for that word only
-     * @return array
      */
     public function getSynonyms(string $baseWord = ''): array
     {
@@ -295,11 +241,6 @@ class SolrAdminService extends AbstractSolrService
 
     /**
      * Add list of synonyms for base word to managed synonyms map
-     *
-     * @param string $baseWord
-     * @param array $synonyms
-     *
-     * @return ResponseAdapter
      */
     public function addSynonym(string $baseWord, array $synonyms): ResponseAdapter
     {
@@ -310,9 +251,6 @@ class SolrAdminService extends AbstractSolrService
 
     /**
      * Remove a synonym from the synonyms map
-     *
-     * @param string $baseWord
-     * @return ResponseAdapter
      */
     public function deleteSynonym(string $baseWord): ResponseAdapter
     {
@@ -322,8 +260,6 @@ class SolrAdminService extends AbstractSolrService
 
     /**
      * Get currently configured stop words
-     *
-     * @return array
      */
     public function getStopWords(): array
     {
@@ -336,10 +272,10 @@ class SolrAdminService extends AbstractSolrService
      * Adds stop words to the managed stop word list
      *
      * @param array|string $stopWords string for a single word, array for multiple words
-     * @return ResponseAdapter
+     *
      * @throws InvalidArgumentException If $stopWords is empty
      */
-    public function addStopWords($stopWords): ResponseAdapter
+    public function addStopWords(array|string $stopWords): ResponseAdapter
     {
         $this->initializeStopWordsUrl();
         $json = $this->stopWordParser->toJson($stopWords);
@@ -349,21 +285,19 @@ class SolrAdminService extends AbstractSolrService
     /**
      * Deletes a words from the managed stop word list
      *
-     * @param string $stopWord stop word to delete
-     * @return ResponseAdapter
      * @throws InvalidArgumentException If $stopWords is empty
      */
-    public function deleteStopWord(string $stopWord): ResponseAdapter
+    public function deleteStopWord(string $stopWordToDelete): ResponseAdapter
     {
         $this->initializeStopWordsUrl();
-        if (empty($stopWord)) {
+        if (empty($stopWordToDelete)) {
             throw new InvalidArgumentException('Must provide stop word.');
         }
 
-        return $this->_sendRawDelete($this->_stopWordsUrl . '/' . rawurlencode(rawurlencode($stopWord)));
+        return $this->_sendRawDelete($this->_stopWordsUrl . '/' . rawurlencode(rawurlencode($stopWordToDelete)));
     }
 
-    protected function initializeSynonymsUrl()
+    protected function initializeSynonymsUrl(): void
     {
         if (trim($this->_synonymsUrl ?? '') !== '') {
             return;
@@ -371,7 +305,7 @@ class SolrAdminService extends AbstractSolrService
         $this->_synonymsUrl = $this->_constructUrl(self::SYNONYMS_SERVLET) . $this->getSchema()->getManagedResourceId();
     }
 
-    protected function initializeStopWordsUrl()
+    protected function initializeStopWordsUrl(): void
     {
         if (trim($this->_stopWordsUrl ?? '') !== '') {
             return;

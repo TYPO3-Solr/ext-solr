@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Psr\Http\Message\UriInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -29,7 +29,7 @@ use TYPO3\CMS\Core\Site\SiteFinder;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SiteHashServiceTest extends UnitTest
+class SiteHashServiceTest extends SetUpUnitTestCase
 {
     /**
      * @return array
@@ -58,14 +58,14 @@ class SiteHashServiceTest extends UnitTest
 
         $baseAMock = $this->createMock(UriInterface::class);
         $baseAMock->method('getHost')->willReturn('solrtesta.local');
-        $siteA = $this->getDumbMock(Site::class);
+        $siteA = $this->createMock(Site::class);
         $siteA->method('getBase')->willReturn($baseAMock);
         $siteA->method('getLanguages')->willReturn([$siteLanguageMock]);
         $siteA->method('getConfiguration')->willReturn($siteConfiguration);
 
         $baseBMock = $this->createMock(UriInterface::class);
         $baseBMock->method('getHost')->willReturn('solrtestb.local');
-        $siteB = $this->getDumbMock(Site::class);
+        $siteB = $this->createMock(Site::class);
         $siteB->method('getBase')->willReturn($baseBMock);
         $siteB->method('getLanguages')->willReturn([$siteLanguageMock]);
         $siteB->method('getConfiguration')->willReturn($siteConfiguration);

@@ -18,17 +18,15 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Facet\Area;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Area\GroupViewHelper;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class GroupViewHelperTest extends UnitTest
+class GroupViewHelperTest extends SetUpUnitTestCase
 {
     /**
      * @test
@@ -38,7 +36,7 @@ class GroupViewHelperTest extends UnitTest
         $facetCollection = $this->getTestFacetCollection();
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['facets'] = $facetCollection;
@@ -47,7 +45,7 @@ class GroupViewHelperTest extends UnitTest
         GroupViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
         self::assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
 
-        /** @var  $facetCollection FacetCollection */
+        /** @var FacetCollection $facetCollection */
         $facetCollection = $variableContainer->get('areaFacets');
         self::assertEquals(2, $facetCollection->getCount());
 
@@ -63,7 +61,7 @@ class GroupViewHelperTest extends UnitTest
         $facetCollection = $this->getTestFacetCollection();
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $viewHelper = $this->getMockBuilder(GroupViewHelper::class)->onlyMethods(['renderChildren'])->getMock();
@@ -73,7 +71,7 @@ class GroupViewHelperTest extends UnitTest
 
         self::assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
 
-        /** @var  $facetCollection FacetCollection */
+        /** @var FacetCollection $facetCollection */
         $facetCollection = $variableContainer->get('areaFacets');
         self::assertEquals(2, $facetCollection->getCount());
 
@@ -87,8 +85,7 @@ class GroupViewHelperTest extends UnitTest
     protected function getTestFacetCollection()
     {
         $facetCollection = new FacetCollection();
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
-        GeneralUtility::setSingletonInstance(ObjectManager::class, $this->createMock(ObjectManager::class));
+        $resultSetMock = $this->createMock(SearchResultSet::class);
 
         $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'left']);
         $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left']);

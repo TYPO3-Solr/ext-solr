@@ -16,7 +16,9 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Reports\Status;
 
 /**
@@ -24,12 +26,9 @@ use TYPO3\CMS\Reports\Status;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SolrConfigurationStatusTest extends UnitTest
+class SolrConfigurationStatusTest extends SetUpUnitTestCase
 {
-    /**
-     * @var SolrConfigurationStatus
-     */
-    protected $report;
+    protected SolrConfigurationStatus|MockObject $report;
 
     protected function setUp(): void
     {
@@ -50,7 +49,7 @@ class SolrConfigurationStatusTest extends UnitTest
     /**
      * @test
      */
-    public function canGetEmptyResultWhenEverythingIsOK()
+    public function canGetEmptyResultWhenEverythingIsOK(): void
     {
         $fakedRootPages =  [1 => ['uid' => 1, 'title' => 'My Siteroot']];
 
@@ -68,7 +67,7 @@ class SolrConfigurationStatusTest extends UnitTest
     /**
      * @test
      */
-    public function canGetViolationWhenSolrIsEnabledButIndexingNot()
+    public function canGetViolationWhenSolrIsEnabledButIndexingNot(): void
     {
         $fakedRootPages =  [1 => ['uid' => 1, 'title' => 'My Siteroot']];
 
@@ -85,10 +84,21 @@ class SolrConfigurationStatusTest extends UnitTest
 
         $states = $this->report->getStatus();
 
-        self::assertCount(1, $states, 'Expected to have one violation');
+        self::assertCount(2, $states, 'Expected to have two status reports');
 
-        /** @var $firstState Status */
+        /** @var Status $firstState */
         $firstState = $states[0];
-        self::assertSame(Status::WARNING, $firstState->getSeverity(), 'Expected to have one violation');
+        self::assertSame(
+            ContextualFeedbackSeverity::OK,
+            $firstState->getSeverity(),
+            'Expected to have no violation concerning root pages.'
+        );
+
+        $secondState = $states[1];
+        self::assertSame(
+            ContextualFeedbackSeverity::WARNING,
+            $secondState->getSeverity(),
+            'Expected to have one violation concerning page indexing flag.'
+        );
     }
 }

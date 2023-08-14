@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+			xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+			xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+			data-namespace-typo3-fluid="true"
+>
+
+<nav class="solr-pagination">
+	<ul class="pagination">
+		<f:if condition="{pagination.previousPageNumber}">
+			<li class="page-item">
+				<a class="page-link solr-ajaxified" href="{s:uri.paginate.groupItemPage(groupItem: groupItem, page: pagination.previousPageNumber)}">
+					<f:if condition="{f:translate(key: 'paginate_previous', extensionName: 'solr')}">
+						<f:then><f:translate key="paginate_previous" extensionName="solr"/></f:then>
+						<f:else>&laquo;</f:else>
+					</f:if>
+				</a>
+			</li>
+		</f:if>
+
+		<f:if condition="{pagination.hasLessPages}">
+			<li class="page-item"><span class="page-link">....</span></li>
+		</f:if>
+
+		<f:for each="{pagination.allPageNumbers}" as="page">
+			<f:if condition="{page} == {paginator.currentPageNumber}">
+				<f:then>
+					<li class="page-item active"><span class="page-link">{page}</span></li>
+				</f:then>
+				<f:else>
+					<li class="page-item">
+						<f:if condition="{page} > 1">
+							<f:then>
+								<a class="page-link solr-ajaxified" href="{s:uri.paginate.groupItemPage(groupItem: groupItem, page: page)}">{page}</a>
+							</f:then>
+							<f:else>
+								<a class="page-link solr-ajaxified" href="{s:uri.paginate.groupItemPage(groupItem: groupItem)}">{page}</a>
+							</f:else>
+						</f:if>
+					</li>
+				</f:else>
+			</f:if>
+		</f:for>
+
+		<f:if condition="{pagination.hasMorePages}">
+			<li class="page-item"><span class="page-link">....</span></li>
+		</f:if>
+
+		<f:if condition="{pagination.nextPageNumber}">
+			<li class="page-item">
+				<a class="page-link solr-ajaxified" href="{s:uri.paginate.groupItemPage(groupItem: groupItem, page: pagination.nextPageNumber)}">
+					<f:if condition="{f:translate(key: 'paginate_next', extensionName: 'solr')}">
+						<f:then><f:translate key="paginate_next" extensionName="solr" /></f:then>
+						<f:else>&raquo;</f:else>
+					</f:if>
+				</a>
+			</li>
+		</f:if>
+	</ul>
+</nav>
+
+</html>

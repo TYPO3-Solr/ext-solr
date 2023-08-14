@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,10 +19,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Integration testcase to test the results plugin.
+ * Integration test for the Solr configuration status report
  *
  * @author Timo Schmidt
  */
@@ -41,47 +44,64 @@ class SolrConfigurationStatusTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetGreenReportAgainstTestServer()
+    public function canGetGreenReportAgainstTestServer(): void
     {
-        $this->importDataSetFromFixture('can_get_green_solr_configuration_status_report.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_green_solr_configuration_status_report.csv');
 
-        /** @var $solrConfigurationStatus  SolrConfigurationStatus */
+        /** @var SolrConfigurationStatus $solrConfigurationStatus */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
-        $violations = $solrConfigurationStatus->getStatus();
-        self::assertEmpty($violations, 'We did not get an empty response from the solr configuration status report! Something is wrong');
+        $results = $solrConfigurationStatus->getStatus();
+        self::assertCount(2, $results);
+        self::assertEquals(
+            $results[0]->getSeverity(),
+            ContextualFeedbackSeverity::OK,
+            'We expect to get no violations concerning root page configurations'
+        );
+        self::assertEquals(
+            $results[1]->getSeverity(),
+            ContextualFeedbackSeverity::OK,
+            'We expect to get no violations concerning index enable flags'
+        );
     }
 
     /**
      * @test
      */
-    public function canDetectMissingRootPage()
+    public function canDetectMissingRootPage(): void
     {
-        $this->importDataSetFromFixture('can_detect_missing_rootpage.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_detect_missing_rootpage.csv');
 
-        /** @var $solrConfigurationStatus  SolrConfigurationStatus */
+        /** @var SolrConfigurationStatus $solrConfigurationStatus */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
-        $violations = $solrConfigurationStatus->getStatus();
+        $results = $solrConfigurationStatus->getStatus();
 
-        self::assertCount(1, $violations, 'Asserting to contain only one violation.');
+        self::assertCount(1, $results);
 
-        $firstViolation = array_pop($violations);
+        $firstViolation = array_pop($results);
         self::assertStringContainsString('No sites', $firstViolation->getValue(), 'Did not get a no sites found violation');
     }
 
     /**
      * @test
      */
-    public function canDetectIndexingDisabled()
+    public function canDetectIndexingDisabled(): void
     {
-        $this->importDataSetFromFixture('can_detect_indexing_disabled.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_detect_indexing_disabled.csv');
 
-        /* @var SolrConfigurationStatus $solrConfigurationStatus   */
+        /** @var SolrConfigurationStatus $solrConfigurationStatus   */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
-        $violations = $solrConfigurationStatus->getStatus();
+        $results = $solrConfigurationStatus->getStatus();
 
-        self::assertCount(1, $violations, 'Asserting to contain only one violation.');
-
-        $firstViolation = array_pop($violations);
-        self::assertStringContainsString('Indexing is disabled', $firstViolation->getValue(), 'Did not get a no sites found violation');
+        self::assertCount(2, $results, 'Two test status are expected to be returned.');
+        self::assertEquals(
+            $results[0]->getSeverity(),
+            ContextualFeedbackSeverity::OK,
+            'We expect to get no violations concerning root page configurations'
+        );
+        self::assertStringContainsString(
+            'Indexing is disabled',
+            $results[1]->getValue(),
+            'Did not get an indexing disabled violation'
+        );
     }
 }

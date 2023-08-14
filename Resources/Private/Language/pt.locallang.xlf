@@ -198,32 +198,32 @@
 				<target>Filter</target>
 			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve">
-				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>Exibindo resultados @resultsFrom a @resultsTo de @resultsTotal.</target>
+				<source>Displaying results %s to %s of %s.</source>
+				<target>Exibindo resultados %s a %s de %s.</target>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve">
-				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>Foram encontrados @resultsTotal resultados em @resultsTime milissegundos.</target>
+				<source>Found %s results in %s milliseconds.</source>
+				<target>Foram encontrados %s resultados em %s milissegundos.</target>
 			</trans-unit>
 			<trans-unit id="results_found.singular" xml:space="preserve">
-				<source>Found 1 result in @resultsTime milliseconds.</source>
-				<target>Found 1 result in @resultsTime milliseconds.</target>
+				<source>Found 1 result in %s milliseconds.</source>
+				<target>Found 1 result in %s milliseconds.</target>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve">
-				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>Pesquisado "@searchWord".</target>
+				<source>Searched for &quot;%s&quot;.</source>
+				<target>Pesquisado "%s".</target>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve">
-				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>Nada foi encontrado para "@searchWord".</target>
+				<source>Nothing found for &quot;%s&quot;.</source>
+				<target>Nada foi encontrado para "%s".</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve">
-				<source>Showing results for &quot;@suggestedWord&quot;.</source>
-				<target>Exibindo resultados para "@suggestedWord"</target>
+				<source>Showing results for &quot;%s&quot;.</source>
+				<target>Exibindo resultados para "%s"</target>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve">
-				<source>Search instead for &quot;@searchWord&quot;.</source>
-				<target>Pesquisar "@searchWord" em vez disso.</target>
+				<source>Search instead for &quot;%s&quot;.</source>
+				<target>Pesquisar "%s" em vez disso.</target>
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve">
 				<source>Last searches</source>
@@ -443,12 +443,12 @@
 				<target>Nenhum registro encontrado. Você ativou "plugin.tx_solr.statistics = 1" na configuração typoscript do seu site?</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases" xml:space="preserve">
-				<source>Top 5 Search Phrases</source>
-				<target>5 principais frases pesquisadas</target>
+				<source>Top %d Search Phrases</source>
+				<target>%d principais frases pesquisadas</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases_without_hits" xml:space="preserve">
-				<source>Top 5 Search Phrases Without Hits</source>
-				<target>5 principais frases pesquisadas sem resultados</target>
+				<source>Top %d Search Phrases Without Hits</source>
+				<target>%d principais frases pesquisadas sem resultados</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.search_phrases_header" xml:space="preserve">
 				<source>Search Phrase Statistics</source>

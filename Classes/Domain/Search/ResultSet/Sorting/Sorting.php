@@ -25,63 +25,32 @@ use InvalidArgumentException;
  */
 class Sorting
 {
-    const DIRECTION_DESC = 'desc';
+    public const DIRECTION_DESC = 'desc';
 
-    const DIRECTION_ASC = 'asc';
+    public const DIRECTION_ASC = 'asc';
 
-    /**
-     * @var array
-     */
     protected static array $validDirections = [self::DIRECTION_DESC, self::DIRECTION_ASC];
 
-    /**
-     * @var string
-     */
     protected string $name = '';
 
-    /**
-     * @var string
-     */
     protected string $field = '';
 
-    /**
-     * @var string
-     */
     protected string $direction = self::DIRECTION_ASC;
 
-    /**
-     * @var string
-     */
     protected string $label = '';
 
-    /**
-     * @var bool
-     */
     protected bool $selected = false;
 
-    /**
-     * @var bool
-     */
     protected bool $isResetOption = false;
 
-    /**
-     * @param SearchResultSet $resultSet
-     * @param string $name
-     * @param string $field
-     * @param string $direction
-     * @param string $label
-     * @param bool $selected
-     * @param bool $isResetOption
-     * @throws InvalidArgumentException
-     */
     public function __construct(
-        SearchResultSet $resultSet,
+        public readonly SearchResultSet $resultSet,
         string $name,
         string $field,
         string $direction,
         string $label,
         bool $selected = false,
-        bool $isResetOption = false
+        bool $isResetOption = false,
     ) {
         if (!self::getIsValidDirection($direction)) {
             throw new InvalidArgumentException('Invalid sorting direction');
@@ -94,25 +63,16 @@ class Sorting
         $this->isResetOption = $isResetOption;
     }
 
-    /**
-     * @return string
-     */
     public function getDirection(): string
     {
         return $this->direction;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsAscDirection(): bool
     {
         return $this->direction === self::DIRECTION_ASC;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsDescDirection(): bool
     {
         return $this->direction === self::DIRECTION_DESC;
@@ -120,59 +80,37 @@ class Sorting
 
     /**
      * Returns the opposite direction of the current assigned direction.
-     *
-     * @return string
      */
     public function getOppositeDirection(): string
     {
         return self::getOppositeDirectionFromDirection($this->direction);
     }
 
-    /**
-     * @return string
-     */
     public function getField(): string
     {
         return $this->field;
     }
 
-    /**
-     * @return string
-     */
     public function getLabel(): string
     {
         return $this->label;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return bool
-     */
     public function getSelected(): bool
     {
         return $this->selected;
     }
 
-    /**
-     * @param string $direction
-     * @return bool
-     */
     public static function getIsValidDirection(string $direction): bool
     {
         return in_array($direction, self::$validDirections);
     }
 
-    /**
-     * @param string $direction
-     * @return string
-     */
     public static function getOppositeDirectionFromDirection(string $direction): string
     {
         if ($direction === self::DIRECTION_ASC) {
@@ -181,9 +119,6 @@ class Sorting
         return self::DIRECTION_ASC;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsResetOption(): bool
     {
         return $this->isResetOption;

@@ -16,20 +16,19 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\Statistic;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class QueueStatisticTest extends UnitTest
+class QueueStatisticTest extends SetUpUnitTestCase
 {
     /**
      * @test
      */
     public function canGetFailedPercentage()
     {
-        /** @var $statistic QueueStatistic */
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
         $statistic->setFailedCount(2);
         $statistic->setSuccessCount(1);
@@ -45,7 +44,6 @@ class QueueStatisticTest extends UnitTest
      */
     public function canGetZeroPercentagesWhenEmpty()
     {
-        /** @var $statistic QueueStatistic */
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
         self::assertSame(0.0, $statistic->getFailedPercentage(), 'Can not zero percent for empty');
     }

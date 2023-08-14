@@ -29,13 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SiteHighlighterUrlModifier
 {
-    /**
-     * @param string $url
-     * @param string $searchWords
-     * @param bool $addNoCache
-     * @param bool $keepCHash
-     * @return string
-     */
     public function modify(
         string $url,
         string $searchWords,
@@ -46,7 +39,7 @@ class SiteHighlighterUrlModifier
         $searchWords = GeneralUtility::trimExplode(' ', $searchWords, true);
 
         /** @var UrlHelper $urlHelper */
-        $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, /** @scrutinizer ignore-type */ $url)
+        $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $url)
             ->withQueryParameter('sword_list', $searchWords);
 
         if ($addNoCache) {

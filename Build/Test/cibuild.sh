@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
 
-TYPO3_PATH_WEB="$(pwd)/.Build/Web/"
-export TYPO3_PATH_WEB
-TYPO3_PATH_PACKAGES="$(pwd)/.Build/vendor/"
-export TYPO3_PATH_PACKAGES
-
-TYPO3_BIN_DIR="$(pwd)/.Build/bin/"
-export TYPO3_BIN_DIR
-export PATH="$TYPO3_BIN_DIR:$PATH"
+EXIT_CODE=0
 
 COMPOSERS_BIN_DIR="$(composer config home)/vendor/bin"
 # Add COMPOSERS_BIN_DIR to $PATH, if not present
@@ -25,54 +18,47 @@ echo "Run PHP Lint"
 if ! find . -name \*.php ! -path "./.Build/*" 2>/dev/null | parallel --gnu php -d display_errors=stderr -l {} > /dev/null
 then
   echo "There are syntax errors, please check and fix them."
-  exit 1
+  EXIT_CODE=1
 else
   echo "No syntax errors! Great job!"
 fi
 
-echo "Check compliance against TYPO3 Coding Standards"
-if ! .Build/bin/php-cs-fixer --version > /dev/null 2>&1
+
+echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
+if ! composer t3:standards:fix -- --diff --verbose --dry-run && rm .php-cs-fixer.cache
 then
-  echo "TYPO3 https://github.com/TYPO3/coding-standards is not set properly."
-  echo "Please fix that asap to avoid unwanted changes in the future."
-  exit 1
+  echo "Some files are not compliant to TYPO3 Coding Standards"
+  echo "Please fix the files listed above."
+  echo "Tip for auto fix: "
+  echo "  TYPO3_VERSION=\"${TYPO3_VERSION}\" composer tests:setup && composer t3:standards:fix"
+  EXIT_CODE=3
 else
-  echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
-  if ! composer t3:standards:fix -- --diff --verbose --dry-run && rm .php-cs-fixer.cache
-  then
-    echo "Some files are not compliant to TYPO3 Coding Standards"
-    echo "Please fix the files listed above."
-    echo "Tip for auto fix: "
-    echo "  composer tests:setup && composer t3:standards:fix"
-    exit 1
-  else
-    echo "The code is TYPO3 Coding Standards compliant! Great job!"
-  fi
+  echo "The code is TYPO3 Coding Standards compliant! Great job!"
 fi
 echo -e "\n\n"
 
 echo "Run XML Lint"
-if ! xmllint --version > /dev/null 2>&1; then
-  echo "XML Lint not found, skipping XML linting."
-else
-  echo -e "\n\n"
-  echo "Check syntax of XML files"
-  if ! composer lint:xlf
-  then
-    echo "Some XML files are not valid"
-    echo "Please fix the files listed above"
-    exit 1
-  fi
+if ! composer tests:lint-xml
+then
+  EXIT_CODE=4
 fi
 
+echo -e "\n\n"
+echo "Run PHPStan analysis"
+if ! composer tests:phpstan
+then
+  EXIT_CODE=7
+  echo "Error during running the PHPStan analysis, please check and fix them."
+  echo "Tip for working on them: "
+  echo "  TYPO3_VERSION=\"${TYPO3_VERSION}\" composer tests:setup && composer tests:phpstan"
+fi
 
 echo -e "\n\n"
 echo "Run unit tests"
-UNIT_BOOTSTRAP="Build/Test/UnitTestsBootstrap.php"
-if ! .Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --bootstrap=$UNIT_BOOTSTRAP --coverage-clover=coverage.unit.clover
+if ! composer tests:unit -- --coverage-clover=coverage.unit.clover
 then
   echo "Error during running the unit tests please check and fix them"
-  exit 1
+  EXIT_CODE=5
 fi
 
 #
@@ -109,9 +95,10 @@ fi
 
 echo -e "\n\n"
 echo "Run integration tests"
-INTEGRATION_BOOTSTRAP="Build/Test/IntegrationTestsBootstrap.php"
-if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.clover
+if ! composer tests:integration -- --coverage-clover=coverage.integration.clover
 then
   echo "Error during running the integration tests please check and fix them"
-  exit 1
+  EXIT_CODE=6
 fi
+
+exit $EXIT_CODE

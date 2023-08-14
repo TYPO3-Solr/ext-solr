@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rang
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeFacetParser;
-use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\AbstractFacetParserTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\SetUpFacetParser;
 
 /**
  * Class DateRangeFacetParserTest
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class DateRangeFacetParserTest extends AbstractFacetParserTest
+class DateRangeFacetParserTest extends SetUpFacetParser
 {
     /**
      * @test
@@ -45,7 +45,7 @@ class DateRangeFacetParserTest extends AbstractFacetParserTest
             ['myCreated:201506020000-201706020000']
         );
 
-        /** @var $parser DateRangeFacetParser */
+        /** @var DateRangeFacetParser $parser */
         $parser = $this->getInitializedParser(DateRangeFacetParser::class);
 
         $facet = $parser->parse($searchResultSet, 'myCreated', $facetConfiguration['myCreated.']);

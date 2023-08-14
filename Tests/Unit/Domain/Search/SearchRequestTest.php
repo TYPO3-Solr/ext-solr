@@ -17,12 +17,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class SearchRequestTest extends UnitTest
+class SearchRequestTest extends SetUpUnitTestCase
 {
     /**
      * @var SearchRequest
@@ -382,7 +382,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canGetContextTypoScriptConfigurationPassedOnCreation()
     {
-        $typoScriptConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $typoScriptConfiguration = $this->createMock(TypoScriptConfiguration::class);
         $request = new SearchRequest([], 111, 4711, $typoScriptConfiguration);
 
         self::assertSame($request->getContextTypoScriptConfiguration(), $typoScriptConfiguration, 'Can get initial passed TypoScriptConfiguration');

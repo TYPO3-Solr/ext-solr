@@ -15,14 +15,14 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Backend;
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\IsStringViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Testcase for the IsStringViewHelper
  */
-class IsStringViewHelperTest extends UnitTest
+class IsStringViewHelperTest extends SetUpUnitTestCase
 {
     /**
      * @test
@@ -31,11 +31,11 @@ class IsStringViewHelperTest extends UnitTest
     {
         $arguments = [
             'value' => 'givenString',
-            '__thenClosure' => function () { return 'thenResult'; },
-            '__elseClosures' => [function () { return 'elseResult'; }],
+            '__then' => function () { return 'thenResult'; },
+            '__else' => function () { return 'elseResult'; },
         ];
 
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $result = IsStringViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
         self::assertSame('thenResult', $result, 'thenClosure was not rendered');
     }
@@ -47,11 +47,11 @@ class IsStringViewHelperTest extends UnitTest
     {
         $arguments = [
             'value' => ['givenStringInArray'],
-            '__thenClosure' => function () { return 'thenResult'; },
-            '__elseClosures' => [function () { return 'elseResult'; }],
+            '__then' => function () { return 'thenResult'; },
+            '__else' => function () { return 'elseResult'; },
         ];
 
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $result = IsStringViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
         self::assertSame('elseResult', $result, 'elseResult was not rendered');
     }

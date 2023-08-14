@@ -20,9 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use Doctrine\DBAL\ConnectionException as DBALConnectionException;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
-use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -35,8 +33,6 @@ class ReIndexTask extends AbstractSolrTask
 {
     /**
      * Indexing configurations to re-initialize.
-     *
-     * @var array
      */
     protected array $indexingConfigurationsToReIndex = [];
 
@@ -47,9 +43,7 @@ class ReIndexTask extends AbstractSolrTask
      * @return bool Returns TRUE on success, FALSE on failure.
      *
      * @throws DBALConnectionException
-     * @throws DBALDriverException
      * @throws DBALException
-     * @throws Throwable
      *
      * @noinspection PhpMissingReturnTypeInspection See {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::execute()}
      */
@@ -59,7 +53,7 @@ class ReIndexTask extends AbstractSolrTask
         $cleanUpResult = $this->cleanUpIndex();
 
         // initialize for re-indexing
-        /* @var Queue $indexQueue */
+        /** @var Queue $indexQueue */
         $indexQueue = GeneralUtility::makeInstance(Queue::class);
         $indexQueueInitializationResults = $indexQueue->getInitializationService()
             ->initializeBySiteAndIndexConfigurations($this->getSite(), $this->indexingConfigurationsToReIndex);
@@ -71,7 +65,8 @@ class ReIndexTask extends AbstractSolrTask
      * Removes documents of the selected types from the index.
      *
      * @return bool TRUE if clean up was successful, FALSE on error
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
      */
     protected function cleanUpIndex(): bool
     {
@@ -107,8 +102,6 @@ class ReIndexTask extends AbstractSolrTask
 
     /**
      * Gets the indexing configurations to re-index.
-     *
-     * @return array
      */
     public function getIndexingConfigurationsToReIndex(): array
     {
@@ -117,10 +110,8 @@ class ReIndexTask extends AbstractSolrTask
 
     /**
      * Sets the indexing configurations to re-index.
-     *
-     * @param array $indexingConfigurationsToReIndex
      */
-    public function setIndexingConfigurationsToReIndex(array $indexingConfigurationsToReIndex)
+    public function setIndexingConfigurationsToReIndex(array $indexingConfigurationsToReIndex): void
     {
         $this->indexingConfigurationsToReIndex = $indexingConfigurationsToReIndex;
     }
@@ -133,7 +124,8 @@ class ReIndexTask extends AbstractSolrTask
      *
      * @return string Information to display
      *
-     * @throws DBALDriverException
+     * @throws DBALException
+     *
      * @noinspection PhpMissingReturnTypeInspection See {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::getAdditionalInformation()}
      */
     public function getAdditionalInformation()

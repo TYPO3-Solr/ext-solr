@@ -8,7 +8,7 @@ tx_solr.solr
 
 .. warning::
 
-   The ability to use the legacy mode will be removed in EXT:solr 11.0. please configure your solr connections together with your TYPO3 site in the site module
+   The ability to use the legacy mode will be removed in EXT:solr 11.0. please configure your Solr connections together with your TYPO3 site in the site module
 
 This section defines the address of the Solr server. As the communication with
 the Solr server happens over HTTP this is just a simple URL. Each of the URL's
@@ -97,7 +97,7 @@ username
 :cObject supported: yes
 :Deprecated: 10.0
 
-Sets the username required to access the solr server.
+Sets the username required to access the Solr server.
 
 password
 --------
@@ -108,7 +108,7 @@ password
 :cObject supported: yes
 :Deprecated: 10.0
 
-Sets the password required to access the solr server.
+Sets the password required to access the Solr server.
 
 timeout
 -------

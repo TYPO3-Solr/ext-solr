@@ -25,15 +25,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements RoutingEnhancerInterface, SolrRouteEnhancerInterface
 {
-    /**
-     * @var array
-     */
     protected array $configuration;
 
-    /**
-     * @var string
-     */
-    protected $namespace;
+    protected string $namespace;
 
     public function __construct(array $configuration)
     {
@@ -58,16 +52,11 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
     /**
      * Builds a variant of a route based on the given configuration.
      *
-     * @param Route $defaultPageRoute
-     * @param array $configuration
-     *
      * @todo: Refactor to get cHash expected functionality.
-     *
-     * @return Route
      */
     protected function getVariant(Route $defaultPageRoute, array $configuration): Route
     {
-        /** @noinspection DuplicatedCode copied from \TYPO3\CMS\Core\Routing\Enhancer\PluginEnhancer::getVariant() */
+        /** @noinspection DuplicatedCode copied from {@link \TYPO3\CMS\Core\Routing\Enhancer\PluginEnhancer::getVariant()} */
         $arguments = $configuration['_arguments'] ?? [];
         unset($configuration['_arguments']);
 
@@ -80,7 +69,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
         $variant->setDefaults(
             $variableProcessor->deflateKeys($this->configuration['defaults'] ?? [], $this->namespace, $arguments)
         );
-        $this->applyRouteAspects($variant, $this->aspects ?? [], $this->namespace);
+        $this->applyRouteAspects($variant, $this->aspects, $this->namespace);
         $this->applyRequirements($variant, $this->configuration['requirements'] ?? [], $this->namespace);
         return $variant;
     }
@@ -118,14 +107,11 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
      * This method combine arguments into a single string
      * It is possible to configure a path segment that contains more than one value.
      * This method build one single string out of it.
-     *
-     * @param array $parameters
-     * @return array
      */
     protected function combineArrayParameters(array $parameters = []): array
     {
         $parametersCombined = [];
-        foreach ($this->configuration['_arguments'] as $fieldName => $fieldPath) {
+        foreach ($this->configuration['_arguments'] as $fieldPath) {
             $combinedKey = RoutingUtility::deflateString($fieldPath, $this->namespace);
             $parameterPattern = RoutingUtility::deflateString($fieldPath, $this->namespace);
             $elements = explode('-', $parameterPattern);
@@ -155,13 +141,13 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
                 $parameterValueNew = $parameterValue;
 
                 // Placeholder for cached URIs (type is the last part of the parameter value)
-                if (substr($parameterValue, 0, 3) === '###') {
+                if (str_starts_with($parameterValue, '###')) {
                     $facetFieldElements = explode(':', $parameterValue);
                     $facetField = array_pop($facetFieldElements);
                     $facetField = substr($facetField, 0, strlen($facetField) - 3);
 
                     $facetValue = null;
-                    if (strpos($facetField, '%3A') !== false) {
+                    if (str_contains($facetField, '%3A')) {
                         [$facetField, $facetValue] = explode('%3A', $facetField, 2);
                     }
 
@@ -203,10 +189,6 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
      *
      * This needs to be done, because we not exactly configure a path inside the site configuration.
      * What we are configuring is a placeholder contains information, what we should process
-     *
-     * @param Route $route
-     * @param array $parameters
-     * @return array
      */
     protected function replaceVariableWithHash(Route $route, array $parameters = []): array
     {
@@ -256,16 +238,12 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
      * they are used in the upcoming process.
      *
      * @see \TYPO3\CMS\Core\Routing\PageRouter::generateUri
-     *
-     * @param Route $variant
-     * @param array $deflatedParameters
-     * @return array
      */
     protected function inflateUnprocessedVariables(Route $variant, array $deflatedParameters): array
     {
         $mixedVariables = [];
         $variablesToHandle = [];
-        foreach ($variant->getArguments() as $argumentKey => $argumentPath) {
+        foreach ($variant->getArguments() as $argumentPath) {
             $variablesToHandle[] = RoutingUtility::deflateString($argumentPath, $this->namespace);
         }
 
@@ -286,9 +264,6 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
 
     /**
      * Inflate deflated query parameters
-     *
-     * @param array $elements
-     * @return array
      */
     protected function inflateQueryParams(array $elements = []): array
     {
@@ -305,10 +280,6 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
 
     /**
      * Deflate query parameters
-     *
-     * @param Route $route
-     * @param array $parameters
-     * @return array
      */
     protected function deflateParameters(Route $route, array $parameters): array
     {
@@ -320,14 +291,16 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
     }
 
     /**
-     * @return RoutingService
+     * Returns the routing services.
      */
     protected function getRoutingService(): RoutingService
     {
-        return GeneralUtility::makeInstance(
+        /** @var RoutingService $routingService */
+        $routingService = GeneralUtility::makeInstance(
             RoutingService::class,
             $this->configuration['solr'],
             (string)$this->configuration['extensionKey']
-        )->withPathArguments($this->configuration['_arguments']);
+        );
+        return $routingService->withPathArguments($this->configuration['_arguments']);
     }
 }

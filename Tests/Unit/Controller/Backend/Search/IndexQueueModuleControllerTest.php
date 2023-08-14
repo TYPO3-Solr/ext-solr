@@ -16,19 +16,32 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexQueueModuleController;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatisticsRepository;
+use ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterIndexQueueItemHasBeenMarkedForReindexingEvent;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 
 /**
  * Testcase for IndexQueueModuleController
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class IndexQueueModuleControllerTest extends AbstractModuleControllerTest
+class IndexQueueModuleControllerTest extends AbstractModuleController
 {
+    protected Queue|MockObject $indexQueueMock;
+
     /**
-     * @var Queue
+     * @var IndexQueueModuleController|MockObject
      */
-    protected $indexQueueMock;
+    protected $controller;
+
+    protected MockEventDispatcher $eventDispatcher;
 
     protected function setUp(): void
     {
@@ -36,19 +49,24 @@ class IndexQueueModuleControllerTest extends AbstractModuleControllerTest
             IndexQueueModuleController::class,
             ['addIndexQueueFlashMessage']
         );
+        $this->eventDispatcher = new MockEventDispatcher();
         $this->indexQueueMock = $this->getMockBuilder(Queue::class)
-            ->onlyMethods(['getHookImplementation', 'updateOrAddItemForAllRelatedRootPages'])
-            ->disableOriginalConstructor()
+            ->onlyMethods(['updateOrAddItemForAllRelatedRootPages'])
+            ->setConstructorArgs([
+                $this->createMock(RootPageResolver::class),
+                $this->createMock(ConfigurationAwareRecordService::class),
+                $this->createMock(QueueItemRepository::class),
+                $this->createMock(QueueStatisticsRepository::class),
+                $this->createMock(QueueInitializationService::class),
+                $this->createMock(FrontendEnvironment::class),
+                $this->eventDispatcher,
+            ])
             ->getMock();
         $this->controller->setIndexQueue($this->indexQueueMock);
         parent::setUp();
     }
 
-    /**
-     * @param string $type
-     * @param int $uid
-     */
-    protected function assertQueueUpdateIsTriggeredFor($type, $uid)
+    protected function assertQueueUpdateIsTriggeredFor(string $type, int $uid): void
     {
         $this->indexQueueMock->expects(self::once())->method('updateOrAddItemForAllRelatedRootPages')->with($type, $uid)->willReturn(1);
     }
@@ -56,28 +74,24 @@ class IndexQueueModuleControllerTest extends AbstractModuleControllerTest
     /**
      * @test
      */
-    public function requeueDocumentActionIsTriggeringReIndexOnIndexQueue()
+    public function requeueDocumentActionIsTriggeringReIndexOnIndexQueue(): void
     {
         $this->assertQueueUpdateIsTriggeredFor('pages', 4711);
-        $this->controller->requeueDocumentAction('pages', 4711, 1, 0);
+        $this->controller->requeueDocumentAction('pages', 4711);
     }
 
     /**
      * @test
      */
-    public function hookIsTriggeredWhenRegistered()
+    public function hookIsTriggeredWhenRegistered(): void
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem'][] = IndexQueueTestUpdateHandler::class;
-
-        $testHandlerMock = $this->getDumbMock(IndexQueueTestUpdateHandler::class);
-        $testHandlerMock->expects(self::once())->method('postProcessIndexQueueUpdateItem');
+        $this->eventDispatcher->addListener(function (AfterIndexQueueItemHasBeenMarkedForReindexingEvent $event) {
+            $event->setUpdateCount(5);
+        });
 
         $this->indexQueueMock->expects(self::once())->method('updateOrAddItemForAllRelatedRootPages')->willReturn(0);
-        $this->indexQueueMock->expects(self::once())->method('getHookImplementation')->with(IndexQueueTestUpdateHandler::class)->willReturn($testHandlerMock);
 
         $this->assertQueueUpdateIsTriggeredFor('tx_solr_file', 88);
-        $this->controller->requeueDocumentAction('tx_solr_file', 88, 1, 0);
-
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem'] = [];
+        $this->controller->requeueDocumentAction('tx_solr_file', 88);
     }
 }

@@ -33,14 +33,31 @@ class SolrConnectionTest extends IntegrationTest
     }
 
     /**
+     * There is following scenario:
+     *
+     *  [0]
+     *   |
+     *   ——[ 1] First site
+     *   |   |
+     *   |   ——[11] Subpage of first site
+     *   |
+     *   ——[111] Second site
+     *   |   |
+     *   |   ——[21] Subpage of second site
+     *   |
+     *   ——[ 3] Detached and non Root Page-Tree
+     *       |
+     *       —— [31] Subpage 1 of Detached
+     *       |
+     *       —— [32] Subpage 2 of Detached
+     *
      * @param ?int $pageUid defaults to 1
-     * @return SolrConnection|object
      */
-    protected function canFindSolrConnectionByPageAndReturn(?int $pageUid = 1)
+    protected function canFindSolrConnectionByPageAndReturn(?int $pageUid = 1): SolrConnection
     {
-        $this->importDataSetFromFixture('SolrConnectionTest_slim_basic_sites.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/slim_basic_sites.csv');
 
-        /* @var $connectionManager ConnectionManager */
+        /** @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         $messageOnNoSolrConnectionFoundException = vsprintf(

@@ -22,8 +22,7 @@ use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Exception;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -39,26 +38,13 @@ class ReIndexTaskTest extends IntegrationTest
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
-    /**
-     * @var ReIndexTask
-     */
-    protected $task;
+    protected ReIndexTask $task;
+    protected Queue $indexQueue;
 
-    /**
-     * @var Queue
-     */
-    protected $indexQueue;
-
-    /**
-     * @var array
-     */
-    protected $coreExtensionsToLoad = [
+    protected array $coreExtensionsToLoad = [
         'scheduler',
     ];
 
-    /**
-     * @throws NoSuchCacheException
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -70,9 +56,7 @@ class ReIndexTaskTest extends IntegrationTest
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
 
-        /* @var LanguageService $languageService */
-        $languageService = GeneralUtility::makeInstance(LanguageService::class);
-        $GLOBALS['LANG'] = $languageService;
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
     }
 
     protected function assertEmptyIndexQueue()
@@ -107,7 +91,7 @@ class ReIndexTaskTest extends IntegrationTest
      */
     public function testIfTheQueueIsFilledAfterTaskWasRunning()
     {
-        $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
         $this->assertEmptyIndexQueue();
 
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
@@ -125,7 +109,7 @@ class ReIndexTaskTest extends IntegrationTest
      */
     public function testCanGetAdditionalInformationFromTask()
     {
-        $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
         $this->assertEmptyIndexQueue();
 
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
@@ -144,14 +128,14 @@ class ReIndexTaskTest extends IntegrationTest
      */
     public function solrIsEmptyAfterCleanup()
     {
-        $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
 
         // fill the solr
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
         $this->indexQueue->updateItem('pages', 1);
         $items = $this->indexQueue->getItems('pages', 1);
-        /* @var Indexer $indexer */
+        /** @var Indexer $indexer */
         $indexer = GeneralUtility::makeInstance(Indexer::class);
         $indexer->index($items[0]);
         $this->waitToBeVisibleInSolr();

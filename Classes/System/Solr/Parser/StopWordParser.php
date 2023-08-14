@@ -25,10 +25,7 @@ use InvalidArgumentException;
 class StopWordParser
 {
     /**
-     * Parse the solr stopwords response from an json string to an array.
-     *
-     * @param string $jsonString
-     * @return array
+     * Parse the solr stopwords response from a json string to an array.
      */
     public function parseJson(string $jsonString): array
     {
@@ -44,11 +41,11 @@ class StopWordParser
     }
 
     /**
-     * @param string|array $stopWords
-     * @return string
+     * Converts the stop words to JSON
+     *
      * @throws InvalidArgumentException
      */
-    public function toJson($stopWords): string
+    public function toJson(array|string $stopWords): string
     {
         if (empty($stopWords)) {
             throw new InvalidArgumentException('Must provide stop word.', 1642968688);

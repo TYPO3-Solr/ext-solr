@@ -16,8 +16,6 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionsFacet;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Class QueryGroupFacet
@@ -27,32 +25,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class QueryGroupFacet extends AbstractOptionsFacet
 {
-    const TYPE_QUERY_GROUP = 'queryGroup';
+    public const TYPE_QUERY_GROUP = 'queryGroup';
 
-    /**
-     * String
-     * @var string
-     */
     protected static string $type = self::TYPE_QUERY_GROUP;
-
-    /**
-     * OptionsFacet constructor
-     *
-     * @param SearchResultSet $resultSet
-     * @param string $name
-     * @param string $field
-     * @param string $label
-     * @param array $configuration Facet configuration passed from typoscript
-     * @param ObjectManagerInterface $objectManager
-     */
-    public function __construct(
-        SearchResultSet $resultSet,
-        $name,
-        $field,
-        $label = '',
-        array $configuration = [],
-        ObjectManagerInterface $objectManager = null
-    ) {
-        parent::__construct($resultSet, $name, $field, $label, $configuration, $objectManager);
-    }
 }

@@ -14,7 +14,7 @@
 */
 
 /**
- * Value object that represent an date range count. The count has a date and the count of documents
+ * Value object that represent a date range count. The count has a date and the count of documents
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
@@ -24,38 +24,22 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
 
 class NumericRangeCount
 {
-    /**
-     * @var float
-     */
-    protected $rangeItem;
+    protected float $rangeItem;
 
-    /**
-     * @var int
-     */
-    protected $documentCount = 0;
+    protected int $documentCount = 0;
 
-    /**
-     * @param float $rangeItem
-     * @param int $documentCount
-     */
-    public function __construct($rangeItem, $documentCount)
+    public function __construct(float $rangeItem, int $documentCount)
     {
         $this->rangeItem = $rangeItem;
         $this->documentCount = $documentCount;
     }
 
-    /**
-     * @return float
-     */
-    public function getRangeItem()
+    public function getRangeItem(): float
     {
         return $this->rangeItem;
     }
 
-    /**
-     * @return int
-     */
-    public function getDocumentCount()
+    public function getDocumentCount(): int
     {
         return $this->documentCount;
     }

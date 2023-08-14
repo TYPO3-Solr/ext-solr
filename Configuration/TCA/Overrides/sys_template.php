@@ -1,5 +1,7 @@
 <?php
 
+defined('TYPO3') or die('Access denied.');
+
 // TypoScript
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'solr',
@@ -115,4 +117,17 @@
     'solr',
     'Configuration/TypoScript/Examples/Ajaxify/',
     'Search - Ajaxify the search results with jQuery'
+);
+
+// Solr Fluid Grouping Examples
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'solr',
+    'Configuration/TypoScript/Examples/TypeFieldGroup/',
+    'Search - (Example) Fieldgroup on type field'
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'solr',
+    'Configuration/TypoScript/Examples/PidQueryGroup/',
+    'Search - (Example) Querygroup on pid field'
 );

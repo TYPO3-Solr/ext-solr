@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\OptionCollection;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
@@ -29,15 +30,12 @@ class LabelFilterViewHelper extends AbstractSolrFrontendViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * @var bool
-     */
     protected $escapeOutput = false;
 
     /**
      * Initializes the arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('options', OptionCollection::class, 'The facets that should be filtered', true);
@@ -45,14 +43,14 @@ class LabelFilterViewHelper extends AbstractSolrFrontendViewHelper
     }
 
     /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
+     * Renders group label filter
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
-        /** @var  $options OptionCollection */
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext,
+    ) {
+        /** @var OptionCollection $options */
         $options = $arguments['options'];
         $requiredPrefix = mb_strtolower($arguments['prefix'] ?? '');
         $filtered = $options->getByLowercaseLabelPrefix($requiredPrefix);

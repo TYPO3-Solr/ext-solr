@@ -16,26 +16,25 @@
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
-use Throwable;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Http\RedirectResponse;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\View\ViewInterface;
@@ -46,120 +45,56 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
 abstract class AbstractModuleController extends ActionController
 {
     /**
-     * In the page-tree selected page UID
-     *
-     * @var int
-     */
-    protected int $selectedPageUID;
-
-    /**
      * Holds the requested page UID because the selected page uid,
      * might be overwritten by the automatic site selection.
-     *
-     * @var int
      */
     protected int $requestedPageUID;
 
-    /**
-     * @var ?Site
-     */
     protected ?Site $selectedSite = null;
 
-    /**
-     * @var SiteRepository
-     */
-    protected SiteRepository $siteRepository;
-
-    /**
-     * @var SolrCoreConnection|null
-     */
     protected ?SolrCoreConnection $selectedSolrCoreConnection = null;
 
-    /**
-     * @var Menu|null
-     */
     protected ?Menu $coreSelectorMenu = null;
 
-    /**
-     * @var ConnectionManager
-     */
-    protected ConnectionManager $solrConnectionManager;
-
-    /**
-     * @var ModuleDataStorageService
-     */
-    protected ModuleDataStorageService $moduleDataStorageService;
-
-    /**
-     * @var Queue
-     */
-    protected Queue $indexQueue;
-
-    /**
-     * @var SiteFinder
-     */
-    protected SiteFinder $siteFinder;
-
-    /**
-     * @var ModuleTemplateFactory
-     */
-    protected ModuleTemplateFactory $moduleTemplateFactory;
-
-    /**
-     * @var ModuleTemplate
-     */
     protected ModuleTemplate $moduleTemplate;
 
-    /**
-     * Constructor for dependency injection
-     */
     public function __construct(
-        ModuleTemplateFactory $moduleTemplateFactory,
-        ModuleDataStorageService $moduleDataStorageService,
-        SiteRepository $siteRepository,
-        SiteFinder $siteFinder,
-        ConnectionManager $solrConnectionManager,
-        Queue $indexQueue,
-        ?int $selectedPageUID = null
+        protected readonly ModuleTemplateFactory $moduleTemplateFactory,
+        protected readonly IconFactory $iconFactory,
+        protected readonly ModuleDataStorageService $moduleDataStorageService,
+        protected readonly SiteRepository $siteRepository,
+        protected readonly SiteFinder $siteFinder,
+        protected readonly ConnectionManager $solrConnectionManager,
+        protected Queue $indexQueue,
+        protected ?int $selectedPageUID = null,
     ) {
-        $this->moduleTemplateFactory = $moduleTemplateFactory;
-        $this->moduleDataStorageService = $moduleDataStorageService;
-        $this->siteRepository = $siteRepository;
-        $this->siteFinder = $siteFinder;
-        $this->solrConnectionManager = $solrConnectionManager;
-        $this->indexQueue = $indexQueue;
-        $this->selectedPageUID = $selectedPageUID ?? (int)GeneralUtility::_GP('id');
+        $this->selectedPageUID = $selectedPageUID ?? 0;
     }
 
     /**
      * Injects UriBuilder object.
-     *
      * Purpose: Is already set in {@link processRequest} but wanted in PhpUnit
-     *
-     * @param UriBuilder $uriBuilder
      */
-    public function injectUriBuilder(UriBuilder $uriBuilder)
+    public function injectUriBuilder(UriBuilder $uriBuilder): void
     {
         $this->uriBuilder = $uriBuilder;
     }
 
-    /**
-     * @param Site $selectedSite
-     */
-    public function setSelectedSite(Site $selectedSite)
+    public function setSelectedSite(Site $selectedSite): void
     {
         $this->selectedSite = $selectedSite;
     }
 
     /**
      * Initializes the controller and sets needed vars.
-     * @throws DBALDriverException
-     * @throws Throwable
-     * @throws NoSuchArgumentException
+     *
+     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws DBALException
      */
-    protected function initializeAction()
+    protected function initializeAction(): void
     {
         parent::initializeAction();
+
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         if ($this->request->hasArgument('id')) {
             $this->selectedPageUID = (int)$this->request->getArgument('id');
@@ -177,15 +112,15 @@ abstract class AbstractModuleController extends ActionController
 
         try {
             $this->selectedSite = $this->siteRepository->getSiteByPageId($this->selectedPageUID);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
             return;
         }
     }
 
     /**
-     * @return bool
-     * @throws DBALDriverException
-     * @throws Throwable
+     * Tries to select single available site's root page
+     *
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function autoSelectFirstSiteAndRootPageWhenOnlyOneSiteIsAvailable(): bool
     {
@@ -207,11 +142,9 @@ abstract class AbstractModuleController extends ActionController
     /**
      * Set up the doc header properly here
      *
-     * @param ViewInterface $view
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
-    protected function initializeView($view)
+    protected function initializeView(ViewInterface $view): void
     {
         $sites = $this->siteRepository->getAvailableSites();
 
@@ -222,16 +155,18 @@ abstract class AbstractModuleController extends ActionController
             return;
         }
 
-        $this->moduleTemplate->addJavaScriptCode(
-            'mainJsFunctions',
-            '
-                top.fsMod.recentIds["searchbackend"] = ' . $this->selectedPageUID . ';'
-        );
+        //        @todo: https://github.com/TYPO3-Solr/ext-solr/issues/3489
+        //               Migrate following lines to TYPO3 12 conform way or remove them.
+        //        $this->moduleTemplate->addJavaScriptCode(
+        //            'mainJsFunctions',
+        //            '
+        //                top.fsMod.recentIds["searchbackend"] = ' . $this->selectedPageUID . ';'
+        //        );
         if ($this->selectedSite === null) {
             return;
         }
 
-        /* @var BackendUserAuthentication $beUser */
+        /** @var BackendUserAuthentication $beUser */
         $beUser = $GLOBALS['BE_USER'];
         $permissionClause = $beUser->getPagePermsClause(1);
         $pageRecord = BackendUtility::readPageAccess($this->selectedSite->getRootPageId(), $permissionClause);
@@ -244,10 +179,8 @@ abstract class AbstractModuleController extends ActionController
 
     /**
      * Generates selector menu in backends doc header using selected page from page tree.
-     *
-     * @param string|null $uriToRedirectTo
      */
-    public function generateCoreSelectorMenuUsingPageTree(string $uriToRedirectTo = null)
+    public function generateCoreSelectorMenuUsingPageTree(string $uriToRedirectTo = null): void
     {
         if ($this->selectedPageUID < 1 || $this->selectedSite === null) {
             return;
@@ -258,11 +191,8 @@ abstract class AbstractModuleController extends ActionController
 
     /**
      * Generates Core selector Menu for given Site.
-     *
-     * @param Site $site
-     * @param string|null $uriToRedirectTo
      */
-    protected function generateCoreSelectorMenu(Site $site, string $uriToRedirectTo = null)
+    protected function generateCoreSelectorMenu(Site $site, string $uriToRedirectTo = null): void
     {
         $this->coreSelectorMenu = $this->moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
         $this->coreSelectorMenu->setIdentifier('component_core_selector_menu');
@@ -298,7 +228,7 @@ abstract class AbstractModuleController extends ActionController
     /**
      * Empties the Index Queue
      *
-     * @return ResponseInterface
+     * @throws DBALException
      *
      * @noinspection PhpUnused Used in IndexQueue- and IndexAdministration- controllers
      */
@@ -318,13 +248,7 @@ abstract class AbstractModuleController extends ActionController
 
     /**
      * Switches used core.
-     *
      * Note: Does not check availability of core in site. All this stuff is done in the generation step.
-     *
-     * @param string $corePath
-     * @param string $uriToRedirectTo
-     *
-     * @return ResponseInterface
      *
      * @noinspection PhpUnused Used in IndexQueue- and IndexAdministration- controllers
      */
@@ -341,8 +265,6 @@ abstract class AbstractModuleController extends ActionController
 
     /**
      * Returns the Response for be module action.
-     *
-     * @return ResponseInterface
      */
     protected function getModuleTemplateResponse(): ResponseInterface
     {
@@ -354,7 +276,7 @@ abstract class AbstractModuleController extends ActionController
      * Initializes the solr core connection considerately to the components state.
      * Uses and persists default core connection if persisted core in Site does not exist.
      */
-    private function initializeSelectedSolrCoreConnection()
+    private function initializeSelectedSolrCoreConnection(): void
     {
         $moduleData = $this->moduleDataStorageService->loadModuleData();
 
@@ -372,19 +294,19 @@ abstract class AbstractModuleController extends ActionController
         if (!$this->selectedSolrCoreConnection instanceof SolrCoreConnection && count($solrCoreConnections) > 0) {
             $this->initializeFirstAvailableSolrCoreConnection($solrCoreConnections, $moduleData);
             $message = LocalizationUtility::translate('coreselector_switched_to_default_core', 'solr', [$currentSolrCorePath, $this->selectedSite->getLabel(), $this->selectedSolrCoreConnection->getAdminService()->getCorePath()]);
-            $this->addFlashMessage($message, '', AbstractMessage::NOTICE);
+            $this->addFlashMessage($message, '', ContextualFeedbackSeverity::NOTICE);
         }
     }
 
     /**
      * @param SolrCoreConnection[] $solrCoreConnections
      */
-    private function initializeFirstAvailableSolrCoreConnection(array $solrCoreConnections, $moduleData)
+    private function initializeFirstAvailableSolrCoreConnection(array $solrCoreConnections, $moduleData): void
     {
         if (empty($solrCoreConnections)) {
             return;
         }
-        $this->selectedSolrCoreConnection = $solrCoreConnections[0];
+        $this->selectedSolrCoreConnection = array_shift($solrCoreConnections);
         $moduleData->setCore($this->selectedSolrCoreConnection->getAdminService()->getCorePath());
         $this->moduleDataStorageService->persistModuleData($moduleData);
     }

@@ -1,123 +1,94 @@
 <?php
 
-defined('TYPO3') || die();
+use ApacheSolrForTypo3\Solr\Controller\SearchController;
+use ApacheSolrForTypo3\Solr\Controller\SuggestController;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\GroupedResultParser;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Eid\ApiEid;
+use ApacheSolrForTypo3\Solr\GarbageCollector;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector;
+use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+use ApacheSolrForTypo3\Solr\Routing\Enhancer\SolrFacetMaskAndCombineEnhancer;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
+use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTaskAdditionalFieldProvider;
+use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
+use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider;
+use ApacheSolrForTypo3\Solr\Task\OptimizeIndexTask;
+use ApacheSolrForTypo3\Solr\Task\OptimizeIndexTaskAdditionalFieldProvider;
+use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
+use ApacheSolrForTypo3\Solr\Task\ReIndexTaskAdditionalFieldProvider;
+use Psr\Log\LogLevel;
+use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Log\Writer\FileWriter;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
+use TYPO3\CMS\Scheduler\Task\TableGarbageCollectionTask;
+
+defined('TYPO3') or die('Access denied.');
 
 // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-(function () {
+(static function () {
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // Registering RecordMonitor and GarbageCollector hooks.
+
+    // hooking into TCE Main to monitor record updates that may require deleting documents from the index
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['solr/garbagecollector'] = GarbageCollector::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['solr/garbagecollector'] = GarbageCollector::class;
+
+    // hooking into TCE Main to monitor record updates that may require reindexing by the index queue
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['solr/recordmonitor'] = RecordMonitor::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['solr/recordmonitor'] = RecordMonitor::class;
+
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
     // registering Index Queue page indexer helpers
-    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][\ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer::class] = \ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer::class;
+    Manager::registerFrontendHelper('findUserGroups', UserGroupDetector::class);
 
-    \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
-        'findUserGroups',
-        \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector::class
-    );
-
-    \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
-        'indexPage',
-        \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer::class
-    );
-
-    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
-    // page module plugin settings summary
-
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info']['solr_pi_results']['solr'] = \ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary::class . '->getSummary';
-
-    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
-    // register search components
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'access',
-        \ApacheSolrForTypo3\Solr\Search\AccessComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'relevance',
-        \ApacheSolrForTypo3\Solr\Search\RelevanceComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'sorting',
-        \ApacheSolrForTypo3\Solr\Search\SortingComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'debug',
-        \ApacheSolrForTypo3\Solr\Search\DebugComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'analysis',
-        \ApacheSolrForTypo3\Solr\Search\AnalysisComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'highlighting',
-        \ApacheSolrForTypo3\Solr\Search\HighlightingComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'spellchecking',
-        \ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'faceting',
-        \ApacheSolrForTypo3\Solr\Search\FacetingComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'statistics',
-        \ApacheSolrForTypo3\Solr\Search\StatisticsComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'lastSearches',
-        \ApacheSolrForTypo3\Solr\Search\LastSearchesComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'elevation',
-        \ApacheSolrForTypo3\Solr\Search\ElevationComponent::class
-    );
+    Manager::registerFrontendHelper('indexPage', PageIndexer::class);
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     // adding scheduler tasks
 
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\OptimizeIndexTask::class] = [
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][OptimizeIndexTask::class] = [
         'extension' => 'solr',
         'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:optimizeindex_title',
         'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:optimizeindex_description',
-        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\OptimizeIndexTaskAdditionalFieldProvider::class,
+        'additionalFields' => OptimizeIndexTaskAdditionalFieldProvider::class,
     ];
 
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\ReIndexTask::class] = [
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][ReIndexTask::class] = [
         'extension' => 'solr',
         'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:reindex_title',
         'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:reindex_description',
-        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\ReIndexTaskAdditionalFieldProvider::class,
+        'additionalFields' => ReIndexTaskAdditionalFieldProvider::class,
     ];
 
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask::class] = [
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][IndexQueueWorkerTask::class] = [
         'extension' => 'solr',
         'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_title',
         'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_description',
-        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider::class,
+        'additionalFields' => IndexQueueWorkerTaskAdditionalFieldProvider::class,
     ];
 
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask::class] = [
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][EventQueueWorkerTask::class] = [
         'extension' => 'solr',
         'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:task.eventQueueWorkerTask.title',
         'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:task.eventQueueWorkerTask.description',
-        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTaskAdditionalFieldProvider::class,
+        'additionalFields' => EventQueueWorkerTaskAdditionalFieldProvider::class,
     ];
 
-    if (!isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\TYPO3\CMS\Scheduler\Task\TableGarbageCollectionTask::class]['options']['tables']['tx_solr_statistics'])) {
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\TYPO3\CMS\Scheduler\Task\TableGarbageCollectionTask::class]['options']['tables']['tx_solr_statistics'] = [
+    if (!isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][TableGarbageCollectionTask::class]['options']['tables']['tx_solr_statistics'])) {
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][TableGarbageCollectionTask::class]['options']['tables']['tx_solr_statistics'] = [
             'dateField' => 'tstamp',
             'expirePeriod' => 180,
         ];
@@ -127,23 +98,7 @@ defined('TYPO3') || die();
 
     // registering the eID scripts
     // TODO move to suggest form modifier
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_solr_api'] = \ApacheSolrForTypo3\Solr\Eid\ApiEid::class . '::main';
-
-    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
-    // add custom Solr content objects
-
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME]
-        = \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::class;
-
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME]
-        = \ApacheSolrForTypo3\Solr\ContentObject\Content::class;
-
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME]
-        = \ApacheSolrForTypo3\Solr\ContentObject\Relation::class;
-
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME]
-        = \ApacheSolrForTypo3\Solr\ContentObject\Classification::class;
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_solr_api'] = ApiEid::class . '::main';
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -158,11 +113,11 @@ defined('TYPO3') || die();
     }
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr_configuration']['backend'])) {
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr_configuration']['backend'] = \TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr_configuration']['backend'] = Typo3DatabaseBackend::class;
     }
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr_configuration']['options'])) {
-        // default life time one day
+        // default life-time is one day
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr_configuration']['options'] = ['defaultLifetime' => 60 * 60 * 24];
     }
 
@@ -171,13 +126,11 @@ defined('TYPO3') || die();
     }
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-    /* @var \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration $extensionConfiguration */
-    $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-        \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration::class
-    );
+    /** @var ExtensionConfiguration $extensionConfiguration */
+    $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
 
     // cacheHash handling
-    \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
+    ArrayUtility::mergeRecursiveWithOverrule(
         $GLOBALS['TYPO3_CONF_VARS'],
         [
             'FE' => [
@@ -191,25 +144,25 @@ defined('TYPO3') || die();
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '])) {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] = \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] = SearchResult::class;
     }
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '])) {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] = \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] = SearchResultSet::class;
     }
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['writerConfiguration'])) {
-        $context = \TYPO3\CMS\Core\Core\Environment::getContext();
+        $context = Environment::getContext();
         if ($context->isProduction()) {
-            $logLevel = \TYPO3\CMS\Core\Log\LogLevel::ERROR;
+            $logLevel = LogLevel::ERROR;
         } elseif ($context->isDevelopment()) {
-            $logLevel = \TYPO3\CMS\Core\Log\LogLevel::DEBUG;
+            $logLevel = LogLevel::DEBUG;
         } else {
-            $logLevel = \TYPO3\CMS\Core\Log\LogLevel::INFO;
+            $logLevel = LogLevel::INFO;
         }
         $GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['writerConfiguration'] = [
             $logLevel => [
-                \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
+                FileWriter::class => [
                     'logFileInfix' => 'solr',
                 ],
             ],
@@ -218,49 +171,46 @@ defined('TYPO3') || die();
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    ExtensionUtility::configurePlugin(
         'Solr',
         'pi_results',
         [
-            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'results,form,detail',
+            SearchController::class => 'results,form,detail',
         ],
         [
-            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'results',
+            SearchController::class => 'results',
         ]
     );
 
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    ExtensionUtility::configurePlugin(
         'Solr',
         'pi_search',
         [
-            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'form',
+            SearchController::class => 'form',
         ]
     );
 
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    ExtensionUtility::configurePlugin(
         'Solr',
         'pi_frequentlySearched',
         [
-            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'frequentlySearched',
+            SearchController::class => 'frequentlySearched',
         ],
         [
-            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'frequentlySearched',
+            SearchController::class => 'frequentlySearched',
         ]
     );
 
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    ExtensionUtility::configurePlugin(
         'Solr',
         'pi_suggest',
         [
-            \ApacheSolrForTypo3\Solr\Controller\SuggestController::class => 'suggest',
+            SuggestController::class => 'suggest',
         ],
         [
-            \ApacheSolrForTypo3\Solr\Controller\SuggestController::class => 'suggest',
+            SuggestController::class => 'suggest',
         ]
     );
-
-    // add tsconfig
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('@import \'EXT:solr/Configuration/TSconfig/Page/Mod/Wizards/NewContentElement.tsconfig\'');
 
     // register the Fluid namespace 'solr' globally
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['solr'] = ['ApacheSolrForTypo3\\Solr\\ViewHelpers'];
@@ -268,8 +218,7 @@ defined('TYPO3') || die();
     /*
      * Solr route enhancer configuration
      */
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers']['SolrFacetMaskAndCombineEnhancer'] =
-        \ApacheSolrForTypo3\Solr\Routing\Enhancer\SolrFacetMaskAndCombineEnhancer::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers']['SolrFacetMaskAndCombineEnhancer'] = SolrFacetMaskAndCombineEnhancer::class;
 
     // add solr field to rootline fields
     if ($GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] === '') {
@@ -277,11 +226,41 @@ defined('TYPO3') || die();
     } else {
         $GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] .= ',no_search_sub_entries';
     }
+
+    /**
+     * Registers an authentication service to authorize / grant the indexer to
+     * access protected pages.
+     */
+    ExtensionManagementUtility::addService(
+        'solr',
+        'auth',
+        AuthorizationService::class,
+        [// service meta data
+            'title' => 'Solr Indexer Authorization',
+            'description' => 'Authorizes the Solr Index Queue indexer to access protected pages.',
+            'subtype' => 'getUserFE,authUserFE',
+            'available' => true,
+            'priority' => 100,
+            'quality' => 100,
+
+            'os' => '',
+            'exec' => '',
+            'className' => AuthorizationService::class,
+        ]
+    );
+
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+    // Register Solr Grouping feature
+    $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class);
+    if (!$parserRegistry->hasParser(GroupedResultParser::class, 200)) {
+        $parserRegistry->registerParser(GroupedResultParser::class, 200);
+    }
 })();
 
 $isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
 if (!$isComposerMode) {
     // we load the autoloader for our libraries
-    $dir = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
+    $dir = ExtensionManagementUtility::extPath('solr');
     require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
 }

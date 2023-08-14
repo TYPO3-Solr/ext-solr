@@ -27,12 +27,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper;
 class EscapeService
 {
     /**
-     * Quote and escape search strings
-     *
-     * @param string|int|float $string String to escape
-     * @return string|int|float The escaped/quoted string
+     * Quotes and escapes given string
      */
-    public static function escape($string)
+    public static function escape(float|int|string $string): float|int|string
     {
         // when we have a numeric string only, nothing needs to be done
         if (is_numeric($string)) {
@@ -50,16 +47,11 @@ class EscapeService
             return static::escapeSpecialCharacters($string);
         }
 
-        $result = static::tokenizeByQuotesAndEscapeDependingOnContext($string);
-
-        return $result;
+        return static::tokenizeByQuotesAndEscapeDependingOnContext($string);
     }
 
     /**
      * Applies trim and htmlspecialchars on the querystring to use it as output.
-     *
-     * @param string $string
-     * @return string
      */
     public static function clean(string $string): string
     {
@@ -70,9 +62,6 @@ class EscapeService
     /**
      * This method is used to escape the content in the query string surrounded by quotes
      * different, then when it is not in a quoted context.
-     *
-     * @param string $string
-     * @return string
      */
     protected static function tokenizeByQuotesAndEscapeDependingOnContext(string $string): string
     {
@@ -107,9 +96,6 @@ class EscapeService
     /**
      * Escapes a value meant to be contained in a phrase with characters with
      * special meanings in Lucene query syntax.
-     *
-     * @param string $value Unescaped - "dirty" - string
-     * @return string Escaped - "clean" - string
      */
     protected static function escapePhrase(string $value): string
     {

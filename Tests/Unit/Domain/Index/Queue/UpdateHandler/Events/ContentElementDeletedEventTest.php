@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentEleme
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class ContentElementDeletedEventTest extends AbstractDataUpdateEventTest
+class ContentElementDeletedEventTest extends SetUpDataUpdateEvent
 {
     protected const EVENT_CLASS = ContentElementDeletedEvent::class;
     protected const EVENT_TEST_TABLE = 'tt_content';
@@ -32,7 +32,7 @@ class ContentElementDeletedEventTest extends AbstractDataUpdateEventTest
      */
     public function canInitAndReturnFields(): void
     {
-        $event = new ContentElementDeletedEvent(123, static::EVENT_TEST_TABLE, ['hidden' => 1]);
+        $event = new ContentElementDeletedEvent(123);
         self::assertEmpty($event->getFields());
     }
 
@@ -41,7 +41,7 @@ class ContentElementDeletedEventTest extends AbstractDataUpdateEventTest
      */
     public function canForceTable(): void
     {
-        $event = new ContentElementDeletedEvent(123, 'tx_foo_bar');
+        $event = new ContentElementDeletedEvent(123);
         self::assertEquals('tt_content', $event->getTable());
     }
 

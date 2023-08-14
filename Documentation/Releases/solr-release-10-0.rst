@@ -22,7 +22,7 @@ TYPO3 9 LTS site handling support
 ---------------------------------
 
 The major new feature of EXT:solr 10 is the support of the TYPO3 site handling. You can now configure the Apache Solr connections along with your TYPO3 site.
-To get a typical solr site running you now need only a few settings and can use the site handling user interface for that.
+To get a typical Solr site running you now need only a few settings and can use the site handling user interface for that.
 
 Apache Solr 8.2 support
 -----------------------
@@ -54,10 +54,10 @@ Migration from EXT:solr 9 to EXT:solr 10
 Important things on sites with activated Site Handling
 ------------------------------------------------------
 
-By default EXT:solr 10 expects the configuration of solr connections and cores in the site handling module, along with your TYPO3 site.
-The configuration of the solr connections with your site are available immediatly, so now initialization of connections is required anymore.
+By default EXT:solr 10 expects the configuration of Solr connections and cores in the site handling module, along with your TYPO3 site.
+The configuration of the Solr connections with your site are available immediatly, so now initialization of connections is required anymore.
 
-The old fashioned setup (domain records and solr connections in TypoScript) are now the *legacy mode*. If you want or need to use that still, you can enable the legacy mode,
+The old fashioned setup (domain records and Solr connections in TypoScript) are now the *legacy mode*. If you want or need to use that still, you can enable the legacy mode,
 with your extension configuration by setting ```allowLegacySiteMode = 1```.
 
 The following things will become standard, and should be preferred and activated/configured as close as possible and in some cases immediately,
@@ -93,7 +93,7 @@ There are the following known and wanted limitations:
    variables. To configure a username the setting ``solr_username_read`` or
    ``solr_password_read`` can be used in the yaml file.
 
-*  It is **not** possible to configure a different solr hostname with the UI.
+*  It is **not** possible to configure a different Solr hostname with the UI.
    If you need that you can still configured that in the yaml file, by using the
    fallback mechanism.
 

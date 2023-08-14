@@ -27,38 +27,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SearchRequestBuilder
 {
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $typoScriptConfiguration;
 
-    /**
-     * @var FrontendUserSession
-     */
     protected FrontendUserSession $session;
 
-    /**
-     * SearchRequestBuilder constructor.
-     * @param TypoScriptConfiguration $typoScriptConfiguration
-     * @param FrontendUserSession|null $frontendUserSession
-     */
-    public function __construct(TypoScriptConfiguration $typoScriptConfiguration, FrontendUserSession $frontendUserSession = null)
-    {
+    public function __construct(
+        TypoScriptConfiguration $typoScriptConfiguration,
+        FrontendUserSession $frontendUserSession = null,
+    ) {
         $this->typoScriptConfiguration = $typoScriptConfiguration;
         $this->session = $frontendUserSession ?? GeneralUtility::makeInstance(FrontendUserSession::class);
     }
 
-    /**
-     * @param array $controllerArguments
-     * @param int $pageId
-     * @param int $languageId
-     * @return SearchRequest
-     */
     public function buildForSearch(array $controllerArguments, int $pageId, int $languageId): SearchRequest
     {
         $controllerArguments = $this->adjustPageArgumentToPositiveInteger($controllerArguments);
 
-        /* @var SearchRequest $searchRequest */
         $argumentsNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
         $searchRequest = $this->getRequest([$argumentsNamespace => $controllerArguments], $pageId, $languageId);
         return $this->applyPassedResultsPerPage($searchRequest);
@@ -67,16 +51,13 @@ class SearchRequestBuilder
     /**
      * Checks if the passed resultsPerPageValue is valid and applies it. If the perPage value was changed it is stored in
      * the session and the current page is set to 0, since the pagination should start from the beginning then.
-     *
-     * @param SearchRequest $searchRequest
-     * @return SearchRequest
      */
     protected function applyPassedResultsPerPage(SearchRequest $searchRequest): SearchRequest
     {
         $requestedPerPage = $searchRequest->getResultsPerPage();
 
         $perPageSwitchOptions = $this->typoScriptConfiguration->getSearchResultsPerPageSwitchOptionsAsArray();
-        if (isset($requestedPerPage) && in_array($requestedPerPage, $perPageSwitchOptions)) {
+        if (in_array($requestedPerPage, $perPageSwitchOptions)) {
             $this->session->setPerPage($requestedPerPage);
             $searchRequest->setPage(0);
         }
@@ -86,7 +67,7 @@ class SearchRequestBuilder
         if ($this->session->getHasPerPage()) {
             $sessionResultPerPage = $this->session->getPerPage();
             if (in_array($sessionResultPerPage, $perPageSwitchOptions)) {
-                $currentNumberOfResultsShown = (int)$sessionResultPerPage;
+                $currentNumberOfResultsShown = $sessionResultPerPage;
             }
         }
 
@@ -104,9 +85,6 @@ class SearchRequestBuilder
 
     /**
      * Checks it the results should be hidden in the response.
-     *
-     * @param SearchRequest $searchRequest
-     * @return bool
      */
     protected function shouldHideResultsFromInitialSearch(SearchRequest $searchRequest): bool
     {
@@ -118,28 +96,21 @@ class SearchRequestBuilder
     }
 
     /**
-     * @param int $pageId
-     * @param int $languageId
-     * @return SearchRequest
+     * Builds request for frequent searches
      */
     public function buildForFrequentSearches(int $pageId, int $languageId): SearchRequest
     {
-        /* @var SearchRequest $searchRequest */
         return $this->getRequest([], $pageId, $languageId);
     }
 
     /**
-     * @param array $controllerArguments
-     * @param string $rawUserQuery
-     * @param int $pageId
-     * @param int $languageId
-     * @return SearchRequest
+     * Builds request for suggest
      */
     public function buildForSuggest(
         array $controllerArguments,
         string $rawUserQuery,
         int $pageId,
-        int $languageId
+        int $languageId,
     ): SearchRequest {
         $controllerArguments['page'] = 0;
         $controllerArguments['q'] = $rawUserQuery;
@@ -157,32 +128,20 @@ class SearchRequestBuilder
 
     /**
      * Creates an instance of the SearchRequest.
-     *
-     * @param array $requestArguments
-     * @param int $pageId
-     * @param int $languageId
-     * @return SearchRequest
      */
     protected function getRequest(array $requestArguments = [], int $pageId = 0, int $languageId = 0): SearchRequest
     {
         return GeneralUtility::makeInstance(
             SearchRequest::class,
-            /** @scrutinizer ignore-type */
             $requestArguments,
-            /** @scrutinizer ignore-type */
             $pageId,
-            /** @scrutinizer ignore-type */
             $languageId,
-            /** @scrutinizer ignore-type */
             $this->typoScriptConfiguration
         );
     }
 
     /**
      * This method sets the page argument to an expected positive integer value in the arguments array.
-     *
-     * @param array $arguments
-     * @return array
      */
     protected function adjustPageArgumentToPositiveInteger(array $arguments): array
     {

@@ -18,10 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use InvalidArgumentException;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 
 /**
  * Class AbstractSolrFrontendTagBasedViewHelper
@@ -31,42 +28,13 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
  */
 abstract class AbstractSolrFrontendTagBasedViewHelper extends AbstractSolrTagBasedViewHelper
 {
-    /**
-     * @var SolrControllerContext|null
-     */
-    protected ?SolrControllerContext $controllerContext = null;
-
-    /**
-     * @return TypoScriptConfiguration
-     */
     protected function getTypoScriptConfiguration(): TypoScriptConfiguration
     {
-        return $this->getControllerContext()->getTypoScriptConfiguration();
+        return $this->renderingContext->getVariableProvider()->get('typoScriptConfiguration');
     }
 
-    /**
-     * @return SearchResultSet|null
-     */
     protected function getSearchResultSet(): ?SearchResultSet
     {
-        return $this->getControllerContext()->getSearchResultSet();
-    }
-
-    /**
-     * @return ControllerContext|SolrControllerContext
-     * @throws InvalidArgumentException
-     */
-    protected function getControllerContext(): ControllerContext
-    {
-        $controllerContext = null;
-        if (method_exists($this->renderingContext, 'getControllerContext')) {
-            $controllerContext = $this->renderingContext->getControllerContext();
-        }
-
-        if (!$controllerContext instanceof SolrControllerContext) {
-            throw new InvalidArgumentException('No valid SolrControllerContext found', 1512998673);
-        }
-
-        return $controllerContext;
+        return $this->renderingContext->getVariableProvider()->get('searchResultSet');
     }
 }

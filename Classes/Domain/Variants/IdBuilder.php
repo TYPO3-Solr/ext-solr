@@ -17,7 +17,11 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Variants;
 
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Event\Variants\AfterVariantIdWasBuiltEvent;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use InvalidArgumentException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -31,55 +35,25 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class IdBuilder
 {
-    /**
-     * This method is used to build a variantId.
-     *
-     * By default, the variantId is used
-     * @param string $type
-     * @param int $uid
-     * @return string
-     */
-    public function buildFromTypeAndUid(string $type, int $uid): string
-    {
-        $systemHash = $this->getSystemHash();
-        $variantId = $systemHash . '/' . $type . '/' . $uid;
-
-        return $this->applyHook($variantId, $systemHash, $type, $uid);
+    public function __construct(
+        protected readonly EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     /**
-     * Applies configured postProcessing hooks to build a custom variantId.
-     *
-     * @param string $variantId
-     * @param string $systemHash
-     * @param string $type
-     * @param int $uid
-     * @return string
+     * This method is used to build a variantId.
      */
-    protected function applyHook(
-        string $variantId,
-        string $systemHash,
-        string $type,
-        int $uid
-    ): string {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId'] ?? null)) {
-            return $variantId;
-        }
-
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId'] as $classReference) {
-            $variantIdModifier = GeneralUtility::makeInstance($classReference);
-            if ($variantIdModifier instanceof IdModifier) {
-                $variantId = $variantIdModifier->modifyVariantId($variantId, $systemHash, $type, $uid);
-            }
-        }
-
-        return $variantId;
+    public function buildFromTypeAndUid(string $type, int $uid, array $itemRecord, Site $site, Document $document): string
+    {
+        $systemHash = $this->getSystemHash();
+        $variantId = $systemHash . '/' . $type . '/' . $uid;
+        $event = new AfterVariantIdWasBuiltEvent($variantId, $systemHash, $type, $uid, $itemRecord, $site, $document);
+        $event = $this->eventDispatcher->dispatch($event);
+        return $event->getVariantId();
     }
 
     /**
      * Returns a system unique hash.
-     *
-     * @return string
      */
     protected function getSystemHash(): string
     {

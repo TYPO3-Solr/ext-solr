@@ -16,25 +16,21 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
+
 use function json_encode;
 
 class LastSearchesRepository extends AbstractRepository
 {
-    /**
-     * @var string
-     */
     protected string $table = 'tx_solr_last_searches';
 
     /**
      * Finds the last searched keywords from the database
      *
-     * @param int $limit
      * @return array An array containing the last searches of the current user
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     *
+     * @throws DBALException
      */
     public function findAllKeywords(int $limit = 10): array
     {
@@ -54,10 +50,7 @@ class LastSearchesRepository extends AbstractRepository
     /**
      * Returns all last searches
      *
-     * @param int $limit
-     * @return array
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function getLastSearchesResultSet(int $limit): array
     {
@@ -72,19 +65,16 @@ class LastSearchesRepository extends AbstractRepository
             ->groupBy('keywords')
             ->orderBy('maxtstamp', 'DESC')
             ->setMaxResults($limit)
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
     /**
      * Adds keywords to last searches or updates the oldest row by given limit.
      *
-     * @param string $lastSearchesKeywords
-     * @param int $lastSearchesLimit
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
-    public function add(string $lastSearchesKeywords, int $lastSearchesLimit)
+    public function add(string $lastSearchesKeywords, int $lastSearchesLimit): void
     {
         $nextSequenceId = $this->resolveNextSequenceIdForGivenLimit($lastSearchesLimit);
         $rowsCount = $this->count();
@@ -104,16 +94,13 @@ class LastSearchesRepository extends AbstractRepository
                 'keywords' => $lastSearchesKeywords,
                 'tstamp' => time(),
             ])
-            ->execute();
+            ->executeStatement();
     }
 
     /**
      * Resolves next sequence id by given last searches limit.
      *
-     * @param int $lastSearchesLimit
-     * @return int
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected function resolveNextSequenceIdForGivenLimit(int $lastSearchesLimit): int
     {
@@ -124,7 +111,7 @@ class LastSearchesRepository extends AbstractRepository
             ->from($this->table)
             ->orderBy('tstamp', 'DESC')
             ->setMaxResults(1)
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if (!empty($result)) {
@@ -137,11 +124,9 @@ class LastSearchesRepository extends AbstractRepository
     /**
      * Updates last searches row by using sequence_id from given $lastSearchesRow array
      *
-     * @param array $lastSearchesRow
      * @throws InvalidArgumentException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    protected function update(array $lastSearchesRow)
+    protected function update(array $lastSearchesRow): void
     {
         $queryBuilder = $this->getQueryBuilder();
 
@@ -152,7 +137,7 @@ class LastSearchesRepository extends AbstractRepository
             )
             ->set('tstamp', time())
             ->set('keywords', $lastSearchesRow['keywords'])
-            ->execute();
+            ->executeStatement();
 
         if ($affectedRows < 1) {
             throw new InvalidArgumentException(vsprintf('By trying to update last searches row with values "%s" nothing was updated, make sure the given "sequence_id" exists in database.', [json_encode($lastSearchesRow)]), 1502717923);

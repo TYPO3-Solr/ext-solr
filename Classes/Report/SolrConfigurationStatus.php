@@ -20,10 +20,11 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use RuntimeException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -35,21 +36,10 @@ use TYPO3\CMS\Reports\Status;
  */
 class SolrConfigurationStatus extends AbstractSolrStatus
 {
-    /**
-     * @var ExtensionConfiguration
-     */
-    protected $extensionConfiguration;
+    protected ExtensionConfiguration $extensionConfiguration;
 
-    /**
-     * @var FrontendEnvironment
-     */
-    protected $frontendEnvironment;
+    protected FrontendEnvironment $frontendEnvironment;
 
-    /**
-     * SolrConfigurationStatus constructor.
-     * @param ExtensionConfiguration|null $extensionConfiguration
-     * @param FrontendEnvironment|null $frontendEnvironment
-     */
     public function __construct(
         ExtensionConfiguration $extensionConfiguration = null,
         FrontendEnvironment $frontendEnvironment = null
@@ -61,56 +51,56 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * Compiles a collection of configuration status checks.
      *
-     * @return array
-     *
-     * @throws DBALDriverException
-     *
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
+     * @throws DBALException
      */
-    public function getStatus()
+    public function getStatus(): array
     {
-        $reports = [];
-
         $rootPageFlagStatus = $this->getRootPageFlagStatus();
-        if (!is_null($rootPageFlagStatus)) {
-            $reports[] = $rootPageFlagStatus;
-
-            // intended early return, no sense in going on if there are no root pages
-            return $reports;
+        if ($rootPageFlagStatus->getSeverity() !== ContextualFeedbackSeverity::OK) {
+            return [$rootPageFlagStatus];
         }
 
-        $configIndexEnableStatus = $this->getConfigIndexEnableStatus();
-        if (!is_null($configIndexEnableStatus)) {
-            $reports[] = $configIndexEnableStatus;
-        }
-
-        return $reports;
+        return [
+            $rootPageFlagStatus,
+            $this->getConfigIndexEnableStatus(),
+        ];
     }
 
     /**
-     * Checks whether the "Use as Root Page" page property has been set for any
-     * site.
-     *
-     * @return Status|null An error status is returned if no root pages were found.
+     * {@inheritDoc}
      */
-    protected function getRootPageFlagStatus(): ?Status
+    public function getLabel(): string
+    {
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_configuration';
+    }
+
+    /**
+     * Checks whether the "Use as Root Page" page property has been set for any site.
+     *
+     * @return Status An error status is returned if no root pages were found.
+     *
+     * @throws DBALException
+     */
+    protected function getRootPageFlagStatus(): Status
     {
         $rootPages = $this->getRootPages();
         if (!empty($rootPages)) {
-            return null;
+            return GeneralUtility::makeInstance(
+                Status::class,
+                'Sites',
+                'OK',
+                '',
+                ContextualFeedbackSeverity::OK
+            );
         }
 
         $report = $this->getRenderedReport('RootPageFlagStatus.html');
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */
             'Sites',
-            /** @scrutinizer ignore-type */
             'No sites found',
-            /** @scrutinizer ignore-type */
             $report,
-            /** @scrutinizer ignore-type */
-            Status::ERROR
+            ContextualFeedbackSeverity::ERROR
         );
     }
 
@@ -118,35 +108,37 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Checks whether config.index_enable is set to 1, otherwise indexing will
      * not work.
      *
-     * @return Status|null An error status is returned for each site root page config.index_enable = 0.
-     * @throws DBALDriverException
+     * @return Status An error status is returned for each site root page config.index_enable = 0.
+     *
+     * @throws DBALException
      */
-    protected function getConfigIndexEnableStatus(): ?Status
+    protected function getConfigIndexEnableStatus(): Status
     {
         $rootPagesWithIndexingOff = $this->getRootPagesWithIndexingOff();
         if (empty($rootPagesWithIndexingOff)) {
-            return null;
+            return GeneralUtility::makeInstance(
+                Status::class,
+                'Page Indexing',
+                'OK',
+                '',
+                ContextualFeedbackSeverity::OK
+            );
         }
 
         $report = $this->getRenderedReport('SolrConfigurationStatusIndexing.html', ['pages' => $rootPagesWithIndexingOff]);
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */
             'Page Indexing',
-            /** @scrutinizer ignore-type */
             'Indexing is disabled',
-            /** @scrutinizer ignore-type */
             $report,
-            /** @scrutinizer ignore-type */
-            Status::WARNING
+            ContextualFeedbackSeverity::WARNING
         );
     }
 
     /**
      * Returns an array of rootPages where the indexing is off and EXT:solr is enabled.
      *
-     * @return array
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function getRootPagesWithIndexingOff(): array
     {
@@ -159,14 +151,17 @@ class SolrConfigurationStatus extends AbstractSolrStatus
                 if ($solrIsEnabledAndIndexingDisabled) {
                     $rootPagesWithIndexingOff[] = $rootPage;
                 }
-            } catch (RuntimeException $rte) {
+                /** @phpstan-ignore-next-line */
+            } catch (RuntimeException) {
                 $rootPagesWithIndexingOff[] = $rootPage;
+                /** @phpstan-ignore-next-line */
             } catch (ServiceUnavailableException $sue) {
                 if ($sue->getCode() == 1294587218) {
                     //  No TypoScript template found, continue with next site
                     $rootPagesWithIndexingOff[] = $rootPage;
                     continue;
                 }
+                /** @phpstan-ignore-next-line */
             } catch (SiteNotFoundException $sue) {
                 if ($sue->getCode() == 1521716622) {
                     //  No site found, continue with next site
@@ -184,6 +179,8 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * which usually is the case for pages with pid = 0.
      *
      * @return array An array of (partial) root page records, containing the uid and title fields
+     *
+     * @throws DBALException
      */
     protected function getRootPages(): array
     {
@@ -194,9 +191,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * Checks if the solr plugin is enabled with plugin.tx_solr.enabled.
      *
-     * @param int $pageUid
-     * @return bool
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function getIsSolrEnabled(int $pageUid): bool
     {
@@ -206,9 +201,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * Checks if the indexing is enabled with config.index_enable
      *
-     * @param int $pageUid
-     * @return bool
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function getIsIndexingEnabled(int $pageUid): bool
     {

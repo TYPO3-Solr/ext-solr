@@ -24,18 +24,11 @@ class Path
 {
     /**
      * Validate that a path is a valid Solr Path
-     *
-     * @param string $path
-     * @return bool
      */
-    public function isValidSolrPath($path)
+    public function isValidSolrPath(string $path): bool
     {
         $path = trim($path);
 
-        if ((!empty($path)) && (preg_match('/^[^*?"<>|:#]*$/', $path))) {
-            return true;
-        }
-
-        return false;
+        return (!empty($path)) && (preg_match('/^[^*?"<>|:#]*$/', $path));
     }
 }

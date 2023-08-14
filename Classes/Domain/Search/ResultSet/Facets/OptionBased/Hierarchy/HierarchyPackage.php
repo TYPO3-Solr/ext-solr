@@ -24,17 +24,11 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
  */
 class HierarchyPackage extends AbstractFacetPackage
 {
-    /**
-     * @return string
-     */
     public function getParserClassName(): string
     {
         return HierarchyFacetParser::class;
     }
 
-    /**
-     * @return string
-     */
     public function getUrlDecoderClassName(): string
     {
         return HierarchyUrlDecoder::class;

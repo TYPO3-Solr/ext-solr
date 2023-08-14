@@ -15,66 +15,65 @@
 
 namespace ApacheSolrForTypo3\Solr\Controller;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterFrequentlySearchHasBeenExecutedEvent;
+use ApacheSolrForTypo3\Solr\Event\Search\BeforeSearchFormIsShownEvent;
+use ApacheSolrForTypo3\Solr\Event\Search\BeforeSearchResultIsShownEvent;
+use ApacheSolrForTypo3\Solr\Mvc\Variable\SolrVariableProvider;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
-use ApacheSolrForTypo3\Solr\Util;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
-use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3Fluid\Fluid\View\AbstractTemplateView;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * Class SearchController
  *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
+ * @property AbstractTemplateView $view {@link AbstractTemplateView} is used in this scope. Line required by PhpStan.
  */
 class SearchController extends AbstractBaseController
 {
     /**
-     * @var TemplateView
-     */
-    protected $view;
-
-    /**
      * Provide search query in extbase arguments.
      */
-    protected function initializeAction()
+    protected function initializeAction(): void
     {
         parent::initializeAction();
         $this->mapGlobalQueryStringWhenEnabled();
     }
 
-    protected function mapGlobalQueryStringWhenEnabled()
+    protected function mapGlobalQueryStringWhenEnabled(): void
     {
         $query = GeneralUtility::_GET('q');
 
         $useGlobalQueryString = $query !== null && !$this->typoScriptConfiguration->getSearchIgnoreGlobalQParameter();
-
         if ($useGlobalQueryString) {
-            $this->request->setArgument('q', $query);
+            $this->request = $this->request->withArgument('q', $query);
         }
     }
 
-    /**
-     * @param ViewInterface $view
-     */
-    public function initializeView($view)
+    public function initializeView(ViewInterface $view): void
     {
         if ($view instanceof TemplateView) {
+            $variableProvider = GeneralUtility::makeInstance(SolrVariableProvider::class);
+            $variableProvider->setSource($view->getRenderingContext()->getVariableProvider()->getSource());
+            $view->getRenderingContext()->setVariableProvider($variableProvider);
+            $view->getRenderingContext()->getVariableProvider()->add(
+                'typoScriptConfiguration',
+                $this->typoScriptConfiguration
+            );
+
             $customTemplate = $this->getCustomTemplateFromConfiguration();
             if ($customTemplate === '') {
                 return;
             }
 
-            if (strpos($customTemplate, 'EXT:') !== false) {
+            if (str_contains($customTemplate, 'EXT:')) {
                 $view->setTemplatePathAndFilename($customTemplate);
             } else {
                 $view->setTemplate($customTemplate);
@@ -82,9 +81,6 @@ class SearchController extends AbstractBaseController
         }
     }
 
-    /**
-     * @return string
-     */
     protected function getCustomTemplateFromConfiguration(): string
     {
         $templateKey = str_replace('Action', '', $this->actionMethodName);
@@ -93,25 +89,28 @@ class SearchController extends AbstractBaseController
 
     /**
      * Results
-     * @return ResponseInterface
-     * @throws AspectNotFoundException
-     * @throws NoSuchArgumentException
-     * @throws InvalidSlotException
-     * @throws InvalidSlotReturnException
+     *
+     * @throws InvalidFacetPackageException
+     *
+     * @noinspection PhpUnused Is used by plugin.
      */
     public function resultsAction(): ResponseInterface
     {
+        if ($this->searchService === null) {
+            return $this->handleSolrUnavailable();
+        }
+
         try {
             $arguments = $this->request->getArguments();
             $pageId = $this->typoScriptFrontendController->getRequestedId();
-            $languageId = Util::getLanguageUid();
+            $languageId = $this->typoScriptFrontendController->getLanguage()->getLanguageId();
             $searchRequest = $this->getSearchRequestBuilder()->buildForSearch($arguments, $pageId, $languageId);
 
             $searchResultSet = $this->searchService->search($searchRequest);
 
             // we pass the search result set to the controller context, to have the possibility
             // to access it without passing it from partial to partial
-            $this->controllerContext->setSearchResultSet($searchResultSet);
+            $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
 
             $currentPage = $this->request->hasArgument('page') ? (int)$this->request->getArgument('page') : 1;
 
@@ -120,24 +119,34 @@ class SearchController extends AbstractBaseController
                 $currentPage = 1;
             }
 
-            $itemsPerPage = ($searchResultSet->getUsedResultsPerPage() ?: $this->typoScriptConfiguration->getSearchResultsPerPage(10));
+            $itemsPerPage = ($searchResultSet->getUsedResultsPerPage() ?: $this->typoScriptConfiguration->getSearchResultsPerPage());
             $paginator = GeneralUtility::makeInstance(ResultsPaginator::class, $searchResultSet, $currentPage, $itemsPerPage);
             $pagination = GeneralUtility::makeInstance(ResultsPagination::class, $paginator);
-            $pagination->setMaxPageNumbers((int)$this->typoScriptConfiguration->getMaxPaginatorLinks(0));
+            $pagination->setMaxPageNumbers($this->typoScriptConfiguration->getMaxPaginatorLinks());
+
+            /** @var BeforeSearchResultIsShownEvent $afterSearchEvent */
+            $afterSearchEvent = $this->eventDispatcher->dispatch(
+                new BeforeSearchResultIsShownEvent(
+                    $searchResultSet,
+                    $this->getAdditionalFilters(),
+                    $this->typoScriptConfiguration->getSearchPluginNamespace(),
+                    $arguments,
+                    $pagination,
+                    $currentPage
+                )
+            );
 
             $values = [
-                'additionalFilters' => $this->getAdditionalFilters(),
-                'resultSet' => $searchResultSet,
-                'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace(),
-                'arguments' => $arguments,
-                'pagination' => $pagination,
-                'currentPage' => $currentPage,
+                'additionalFilters' => $afterSearchEvent->getAdditionalFilters(),
+                'resultSet' => $afterSearchEvent->getResultSet(),
+                'pluginNamespace' => $afterSearchEvent->getPluginNamespace(),
+                'arguments' => $afterSearchEvent->getArguments(),
+                'pagination' => $afterSearchEvent->getPagination(),
+                'currentPage' => $afterSearchEvent->getCurrentPage(),
             ];
 
-            $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
-
             $this->view->assignMultiple($values);
-        } catch (SolrUnavailableException $e) {
+        } catch (SolrUnavailableException) {
             return $this->handleSolrUnavailable();
         }
         return $this->htmlResponse();
@@ -145,15 +154,28 @@ class SearchController extends AbstractBaseController
 
     /**
      * Form
+     *
+     * @noinspection PhpUnused Is used by plugin.
      */
     public function formAction(): ResponseInterface
     {
+        if ($this->searchService === null) {
+            return $this->handleSolrUnavailable();
+        }
+
+        /** @var BeforeSearchFormIsShownEvent $formEvent */
+        $formEvent = $this->eventDispatcher->dispatch(
+            new BeforeSearchFormIsShownEvent(
+                $this->searchService->getSearch(),
+                $this->getAdditionalFilters(),
+                $this->typoScriptConfiguration->getSearchPluginNamespace()
+            )
+        );
         $values = [
-            'search' => $this->searchService->getSearch(),
-            'additionalFilters' => $this->getAdditionalFilters(),
-            'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace(),
+            'search' => $formEvent->getSearch(),
+            'additionalFilters' => $formEvent->getAdditionalFilters(),
+            'pluginNamespace' => $formEvent->getPluginNamespace(),
         ];
-        $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
 
         $this->view->assignMultiple($values);
         return $this->htmlResponse();
@@ -161,25 +183,32 @@ class SearchController extends AbstractBaseController
 
     /**
      * Frequently Searched
+     *
+     * @noinspection PhpUnused Is used by plugin.
      */
     public function frequentlySearchedAction(): ResponseInterface
     {
-        /** @var  $searchResultSet SearchResultSet */
+        /** @var SearchResultSet $searchResultSet */
         $searchResultSet = GeneralUtility::makeInstance(SearchResultSet::class);
 
         $pageId = $this->typoScriptFrontendController->getRequestedId();
-        $languageId = Util::getLanguageUid();
+        $languageId = $this->typoScriptFrontendController->getLanguage()->getLanguageId();
         $searchRequest = $this->getSearchRequestBuilder()->buildForFrequentSearches($pageId, $languageId);
         $searchResultSet->setUsedSearchRequest($searchRequest);
 
-        $this->controllerContext->setSearchResultSet($searchResultSet);
+        $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
 
+        /** @var AfterFrequentlySearchHasBeenExecutedEvent $afterFrequentlySearchedEvent*/
+        $afterFrequentlySearchedEvent = $this->eventDispatcher->dispatch(
+            new AfterFrequentlySearchHasBeenExecutedEvent(
+                $searchResultSet,
+                $this->getAdditionalFilters()
+            )
+        );
         $values = [
-            'additionalFilters' => $this->getAdditionalFilters(),
-            'resultSet' => $searchResultSet,
+            'additionalFilters' => $afterFrequentlySearchedEvent->getAdditionalFilters(),
+            'resultSet' => $afterFrequentlySearchedEvent->getResultSet(),
         ];
-        $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
-
         $this->view->assignMultiple($values);
         return $this->htmlResponse();
     }
@@ -187,15 +216,18 @@ class SearchController extends AbstractBaseController
     /**
      * This action allows to render a detailView with data from solr.
      *
-     * @param string $documentId
-     * @return ResponseInterface
+     * @noinspection PhpUnused Is used by plugin.
      */
     public function detailAction(string $documentId = ''): ResponseInterface
     {
+        if ($this->searchService === null) {
+            return $this->handleSolrUnavailable();
+        }
+
         try {
             $document = $this->searchService->getDocumentById($documentId);
             $this->view->assign('document', $document);
-        } catch (SolrUnavailableException $e) {
+        } catch (SolrUnavailableException) {
             return $this->handleSolrUnavailable();
         }
         return $this->htmlResponse();
@@ -203,7 +235,8 @@ class SearchController extends AbstractBaseController
 
     /**
      * Rendered when no search is available.
-     * @return ResponseInterface
+     *
+     * @noinspection PhpUnused Is used by {@link self::handleSolrUnavailable()}
      */
     public function solrNotAvailableAction(): ResponseInterface
     {
@@ -221,10 +254,8 @@ class SearchController extends AbstractBaseController
     }
 
     /**
-     * This method can be overwritten to add additionalFilters for the autosuggest.
+     * This method can be overwritten to add additionalFilters for the auto-suggest.
      * By default, suggest controller will apply the configured filters from the typoscript configuration.
-     *
-     * @return array
      */
     protected function getAdditionalFilters(): array
     {

@@ -27,10 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SchemaParser
 {
     /**
-     * Parse the solr stopwords response from an json string to an array.
-     *
-     * @param string $jsonString
-     * @return Schema
+     * Parse the solr stopwords response from a json string to an array.
      */
     public function parseJson(string $jsonString): Schema
     {
@@ -54,9 +51,6 @@ class SchemaParser
 
     /**
      * Extracts the language from a solr schema response.
-     *
-     * @param stdClass $schema
-     * @return ?string
      */
     protected function parseManagedResourceId(stdClass $schema): ?string
     {
@@ -82,9 +76,6 @@ class SchemaParser
 
     /**
      * Extracts the schema name from the response.
-     *
-     * @param stdClass $schemaResponse
-     * @return string
      */
     protected function parseName(stdClass $schemaResponse): string
     {

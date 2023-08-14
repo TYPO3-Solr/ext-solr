@@ -17,19 +17,22 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AfterItemHasBeenIndexedEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AfterItemsHaveBeenIndexedEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeItemIsIndexedEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeItemsAreIndexedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Exception as DBALException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
-use Solarium\Exception\HttpException;
 use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 
 /**
  * Service to perform indexing operations
@@ -38,61 +41,33 @@ use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
  */
 class IndexService
 {
-    /**
-     * @var Site
-     */
     protected Site $site;
 
-    /**
-     * @var IndexQueueWorkerTask|null
-     */
     protected ?IndexQueueWorkerTask $contextTask = null;
 
-    /**
-     * @var Queue
-     */
     protected Queue $indexQueue;
 
-    /**
-     * @var Dispatcher
-     */
-    protected $signalSlotDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var SolrLogManager
-     */
     protected SolrLogManager $logger;
 
-    /**
-     * IndexService constructor.
-     * @param Site $site
-     * @param Queue|null $queue
-     * @param Dispatcher|null $dispatcher
-     * @param SolrLogManager|null $solrLogManager
-     */
     public function __construct(
         Site $site,
         Queue $queue = null,
-        Dispatcher $dispatcher = null,
-        SolrLogManager $solrLogManager = null
+        EventDispatcherInterface $eventDispatcher = null,
+        SolrLogManager $solrLogManager = null,
     ) {
         $this->site = $site;
         $this->indexQueue = $queue ?? GeneralUtility::makeInstance(Queue::class);
-        $this->signalSlotDispatcher = $dispatcher ?? GeneralUtility::makeInstance(Dispatcher::class);
-        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
+        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
-    /**
-     * @param IndexQueueWorkerTask $contextTask
-     */
-    public function setContextTask(IndexQueueWorkerTask $contextTask)
+    public function setContextTask(IndexQueueWorkerTask $contextTask): void
     {
         $this->contextTask = $contextTask;
     }
 
-    /**
-     * @return IndexQueueWorkerTask
-     */
     public function getContextTask(): ?IndexQueueWorkerTask
     {
         return $this->contextTask;
@@ -101,10 +76,8 @@ class IndexService
     /**
      * Indexes items from the Index Queue.
      *
-     * @param int $limit
-     * @return bool
-     * @throws InvalidSlotException
-     * @throws InvalidSlotReturnException
+     * @throws ConnectionException
+     * @throws DBALException
      */
     public function indexItems(int $limit): bool
     {
@@ -116,14 +89,19 @@ class IndexService
         // get items to index
         $itemsToIndex = $this->indexQueue->getItemsToIndex($this->site, $limit);
 
-        $this->emitSignal('beforeIndexItems', [$itemsToIndex, $this->getContextTask(), $indexRunId]);
+        $beforeIndexItemsEvent = new BeforeItemsAreIndexedEvent($itemsToIndex, $this->getContextTask(), $indexRunId);
+        $beforeIndexItemsEvent = $this->eventDispatcher->dispatch($beforeIndexItemsEvent);
+        $itemsToIndex = $beforeIndexItemsEvent->getItems();
 
         foreach ($itemsToIndex as $itemToIndex) {
             try {
                 // try indexing
-                $this->emitSignal('beforeIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
+                $beforeIndexItemEvent = new BeforeItemIsIndexedEvent($itemToIndex, $this->getContextTask(), $indexRunId);
+                $beforeIndexItemEvent = $this->eventDispatcher->dispatch($beforeIndexItemEvent);
+                $itemToIndex = $beforeIndexItemEvent->getItem();
                 $this->indexItem($itemToIndex, $configurationToUse);
-                $this->emitSignal('afterIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
+                $afterIndexItemEvent = new AfterItemHasBeenIndexedEvent($itemToIndex, $this->getContextTask(), $indexRunId);
+                $this->eventDispatcher->dispatch($afterIndexItemEvent);
             } catch (Throwable $e) {
                 $errors++;
                 $this->indexQueue->markItemAsFailed($itemToIndex, $e->getCode() . ': ' . $e->__toString());
@@ -131,14 +109,14 @@ class IndexService
             }
         }
 
-        $this->emitSignal('afterIndexItems', [$itemsToIndex, $this->getContextTask(), $indexRunId]);
+        $afterIndexItemsEvent = new AfterItemsHaveBeenIndexedEvent($itemsToIndex, $this->getContextTask(), $indexRunId);
+        $this->eventDispatcher->dispatch($afterIndexItemsEvent);
 
         if ($enableCommitsSetting && count($itemsToIndex) > 0) {
             $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
             foreach ($solrServers as $solrServer) {
-                try {
-                    $solrServer->getWriteService()->commit(false, false);
-                } catch (HttpException $e) {
+                $response = $solrServer->getWriteService()->commit(false, false);
+                if ($response->getHttpStatus() !== 200) {
                     $errors++;
                 }
             }
@@ -149,42 +127,20 @@ class IndexService
 
     /**
      * Generates a message in the error log when an error occurred.
-     *
-     * @param Item $itemToIndex
-     * @param Throwable $e
      */
-    protected function generateIndexingErrorLog(Item $itemToIndex, Throwable $e)
+    protected function generateIndexingErrorLog(Item $itemToIndex, Throwable $e): void
     {
         $message = 'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid();
         $data = ['code' => $e->getCode(), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString(), 'item' => (array)$itemToIndex];
 
-        $this->logger->log(
-            SolrLogManager::ERROR,
-            $message,
-            $data
-        );
-    }
-
-    /**
-     * Builds an emits a signal for the IndexService.
-     *
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     * @throws InvalidSlotException
-     * @throws InvalidSlotReturnException
-     */
-    protected function emitSignal(string $name, array $arguments = [])
-    {
-        return $this->signalSlotDispatcher->dispatch(__CLASS__, $name, $arguments);
+        $this->logger->error($message, $data);
     }
 
     /**
      * Indexes an item from the Index Queue.
      *
-     * @param Item $item An index queue item to index
-     * @param TypoScriptConfiguration $configuration
      * @return bool TRUE if the item was successfully indexed, FALSE otherwise
+     *
      * @throws Throwable
      */
     protected function indexItem(Item $item, TypoScriptConfiguration $configuration): bool
@@ -209,7 +165,7 @@ class IndexService
             if ($itemChangedDateAfterIndex > $itemChangedDate && $itemChangedDateAfterIndex > time()) {
                 $this->indexQueue->setForcedChangeTimeByItem($item, $itemChangedDateAfterIndex);
             }
-        } catch (Throwable $e) {
+        } catch (Throwable $e) { // @todo: wrap with EX:solr exception
             $this->restoreOriginalHttpHost($originalHttpHost);
             throw $e;
         }
@@ -227,10 +183,6 @@ class IndexService
      * configured to be indexed through a dedicated indexer
      * (ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer). In all other cases a dedicated indexer
      * can be specified through TypoScript if needed.
-     *
-     * @param string $indexingConfigurationName Indexing configuration name.
-     * @param TypoScriptConfiguration $configuration
-     * @return Indexer
      */
     protected function getIndexerByItem(
         string $indexingConfigurationName,
@@ -239,7 +191,7 @@ class IndexService
         $indexerClass = $configuration->getIndexQueueIndexerByConfigurationName($indexingConfigurationName);
         $indexerConfiguration = $configuration->getIndexQueueIndexerConfigurationByConfigurationName($indexingConfigurationName);
 
-        $indexer = GeneralUtility::makeInstance($indexerClass, /** @scrutinizer ignore-type */ $indexerConfiguration);
+        $indexer = GeneralUtility::makeInstance($indexerClass, $indexerConfiguration);
         if (!($indexer instanceof Indexer)) {
             throw new RuntimeException(
                 'The indexer class "' . $indexerClass . '" for indexing configuration "' . $indexingConfigurationName . '" is not a valid indexer. Must be a subclass of ApacheSolrForTypo3\Solr\IndexQueue\Indexer.',
@@ -251,9 +203,9 @@ class IndexService
     }
 
     /**
-     * Gets the indexing progress.
+     * Gets the indexing progress as a two decimal precision float. f.e. 44.87
      *
-     * @return float Indexing progress as a two decimal precision float. f.e. 44.87
+     * @throws DBALException
      */
     public function getProgress(): float
     {
@@ -263,7 +215,7 @@ class IndexService
     /**
      * Returns the amount of failed queue items for the current site.
      *
-     * @return int
+     * @throws DBALException
      */
     public function getFailCount(): int
     {
@@ -280,10 +232,9 @@ class IndexService
      * root page information we can determine the correct host although being
      * in a CLI environment.
      *
-     * @param Item $item Index Queue item to use to determine the host.
-     * @param
+     * @throws DBALException
      */
-    protected function initializeHttpServerEnvironment(Item $item)
+    protected function initializeHttpServerEnvironment(Item $item): void
     {
         static $hosts = [];
         $rootPageId = $item->getRootPageUid();
@@ -299,10 +250,7 @@ class IndexService
         GeneralUtility::flushInternalRuntimeCaches();
     }
 
-    /**
-     * @param string|null $originalHttpHost
-     */
-    protected function restoreOriginalHttpHost(?string $originalHttpHost)
+    protected function restoreOriginalHttpHost(?string $originalHttpHost): void
     {
         if (!is_null($originalHttpHost)) {
             $_SERVER['HTTP_HOST'] = $originalHttpHost;

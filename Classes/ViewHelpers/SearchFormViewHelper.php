@@ -19,10 +19,10 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 
 /**
@@ -30,42 +30,30 @@ use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
+ *
+ * @property RenderingContext $renderingContext
  */
 class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
 {
-    /**
-     * @var string
-     */
     protected $tagName = 'form';
 
-    /**
-     * @var TypoScriptFrontendController
-     */
-    protected $frontendController;
-
-    /**
-     * @var bool
-     */
     protected $escapeChildren = true;
 
-    /**
-     * @var bool
-     */
     protected $escapeOutput = false;
 
     /**
      * Constructor
      */
-    public function __construct()
-    {
+    public function __construct(
+        protected readonly UriBuilder $uriBuilder
+    ) {
         parent::__construct();
-        $this->frontendController = $GLOBALS['TSFE'] ?? null;
     }
 
     /**
      * Initialize arguments.
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerTagAttribute('enctype', 'string', 'MIME type with which the form is submitted');
@@ -75,8 +63,8 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->registerTagAttribute('onsubmit', 'string', 'JavaScript: On submit of the form');
         $this->registerUniversalTagAttributes();
 
-        $this->registerArgument('pageUid', 'integer', 'When not set current page is used', false);
-        $this->registerArgument('additionalFilters', 'array', 'Additional filters', false);
+        $this->registerArgument('pageUid', 'integer', 'When not set current page is used');
+        $this->registerArgument('additionalFilters', 'array', 'Additional filters');
         $this->registerArgument('additionalParams', 'array', 'Query parameters to be attached to the resulting URI', false, []);
         $this->registerArgument('pageType', 'integer', 'Type of the target page. See typolink.parameter', false, 0);
 
@@ -85,7 +73,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->registerArgument('absolute', 'boolean', 'If set, the URI of the rendered link is absolute', false, false);
         $this->registerArgument('addQueryString', 'boolean', 'If set, the current query parameters will be kept in the URI', false, false);
         $this->registerArgument('argumentsToBeExcludedFromQueryString', 'array', 'arguments to be removed from the URI. Only active if $addQueryString = TRUE', false, []);
-        $this->registerArgument('addQueryStringMethod', 'string', 'Set which parameters will be kept. Only active if $addQueryString = TRUE', false);
         $this->registerArgument('addSuggestUrl', 'boolean', 'Indicates if suggestUrl should be rendered or not', false, true);
         $this->registerArgument('suggestHeader', 'string', 'The header for the top results', false, 'Top Results');
         $this->registerArgument('suggestPageType', 'integer', 'The page type that should be used for the suggest', false, 7384);
@@ -94,12 +81,13 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     /**
      * Render search form tag
      *
-     * @return string
      * @throws AspectNotFoundException
      * @noinspection PhpMissingReturnTypeInspection
      */
     public function render()
     {
+        /** @phpstan-ignore-next-line */
+        $this->uriBuilder->setRequest($this->renderingContext->getRequest());
         $pageUid = $this->arguments['pageUid'] ?? null;
         if ($pageUid === null && !empty($this->getTypoScriptConfiguration()->getSearchTargetPage())) {
             $pageUid = $this->getTypoScriptConfiguration()->getSearchTargetPage();
@@ -113,7 +101,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
             $this->tag->addAttribute('data-suggest', $this->getSuggestUrl($this->arguments['additionalFilters'], $pageUid));
         }
         $this->tag->addAttribute('data-suggest-header', htmlspecialchars($this->arguments['suggestHeader'] ?? ''));
-        $this->tag->addAttribute('accept-charset', $this->frontendController->metaCharset ?? null);
+        $this->tag->addAttribute('accept-charset', 'utf-8');
 
         // Get search term
         // @extensionScannerIgnoreLine
@@ -121,7 +109,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('pageUid', $pageUid);
         // @extensionScannerIgnoreLine
-        $this->getTemplateVariableContainer()->add('languageUid', Util::getLanguageUid());
+        $this->getTemplateVariableContainer()->add('languageUid', ($GLOBALS['TSFE']?->getLanguage()->getLanguageId() ?? 0));
         // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('existingParameters', $this->getExistingSearchParameters());
         // @extensionScannerIgnoreLine
@@ -146,8 +134,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     /**
      * Get the existing search parameters in an array
      * Returns an empty array if search.keepExistingParametersForNewSearches is not set
-     *
-     * @return array
      */
     protected function getExistingSearchParameters(): array
     {
@@ -162,10 +148,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
 
     /**
      * Translate the multidimensional array of existing arguments into a flat array of name-value pairs for the input tags
-     *
-     * @param array $arguments
-     * @param string $nameAttributePrefix
-     * @return array
      */
     protected function translateSearchParametersToInputTagAttributes(
         array $arguments,
@@ -190,73 +172,52 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      * When a site is managed with site management the language and the id are encoded in the path segment of the url.
      * When no speaking urls are active (e.g. with TYPO3 8 and no realurl) this information is passed as query parameter
      * and would get lost when it is only part of the query arguments in the action parameter of the form.
-     *
-     * @param int $pageId
-     * @return bool
      */
     protected function getIsSiteManagedSite(int $pageId): bool
     {
         return SiteUtility::getIsSiteManagedSite($pageId);
     }
 
-    /**
-     * @return VariableProviderInterface|null
-     */
     protected function getTemplateVariableContainer(): ?VariableProviderInterface
     {
         return $this->templateVariableContainer;
     }
 
-    /**
-     * @return string
-     */
     protected function getQueryString(): string
     {
         $resultSet = $this->getSearchResultSet();
         if ($resultSet === null) {
             return '';
         }
-        return trim($this->getSearchResultSet()->getUsedSearchRequest()->getRawUserQuery() ?? '');
+        return trim($this->getSearchResultSet()->getUsedSearchRequest()->getRawUserQuery());
     }
 
-    /**
-     * @param array|null $additionalFilters
-     * @param int $pageUid
-     * @return string
-     */
     protected function getSuggestUrl(?array $additionalFilters, int $pageUid): string
     {
-        $uriBuilder = $this->getControllerContext()->getUriBuilder();
         $pluginNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
-        $suggestUrl = $uriBuilder
+        $suggestUrl = $this->uriBuilder
             ->reset()
             ->setTargetPageUid($pageUid)
-            ->setTargetPageType($this->arguments['suggestPageType'])
+            ->setTargetPageType((int)$this->arguments['suggestPageType'])
             ->setArguments([$pluginNamespace => ['additionalFilters' => $additionalFilters]])
             ->build();
 
-        /* @var UrlHelper $urlService */
+        /** @var UrlHelper $urlService */
         $urlService = GeneralUtility::makeInstance(UrlHelper::class, $suggestUrl);
-        return $urlService->removeQueryParameter('cHash')->__toString();
+        return $urlService->withoutQueryParameter('cHash')->__toString();
     }
 
-    /**
-     * @param int|null $pageUid
-     * @return string
-     */
-    protected function buildUriFromPageUidAndArguments($pageUid): string
+    protected function buildUriFromPageUidAndArguments(int $pageUid): string
     {
-        $uriBuilder = $this->getControllerContext()->getUriBuilder();
-        return $uriBuilder
+        return $this->uriBuilder
             ->reset()
-            ->setTargetPageUid((int)$pageUid)
-            ->setTargetPageType($this->arguments['pageType'] ?? 0)
+            ->setTargetPageUid($pageUid)
+            ->setTargetPageType((int)($this->arguments['pageType'] ?? 0))
             ->setNoCache($this->arguments['noCache'] ?? false)
             ->setArguments($this->arguments['additionalParams'] ?? [])
             ->setCreateAbsoluteUri($this->arguments['absolute'] ?? false)
             ->setAddQueryString($this->arguments['addQueryString'] ?? false)
             ->setArgumentsToBeExcludedFromQueryString($this->arguments['argumentsToBeExcludedFromQueryString'] ?? [])
-            ->setAddQueryStringMethod($this->arguments['addQueryStringMethod'] ?? '')
             ->setSection($this->arguments['section'] ?? '')
             ->build();
     }

@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for the dateRange queryBuilder
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class QueryGroupFacetQueryBuilderTest extends UnitTest
+class QueryGroupFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     /**
      * @test
@@ -51,7 +51,7 @@ class QueryGroupFacetQueryBuilderTest extends UnitTest
                 'month.' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'],
             ],
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
             $fakeFacetConfiguration
         );
@@ -143,7 +143,7 @@ class QueryGroupFacetQueryBuilderTest extends UnitTest
                 'month.' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-14DAYS]'],
             ],
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
             $fakeFacetConfiguration
         );

@@ -46,12 +46,12 @@ Just insert one of this plugins on corresponding page to fade in the search form
 
 **When i open the search page i see the message 'Search is currently not available. ', whats wrong?**
 
-Did you configure your solr connection as required?
+Did you configure your Solr connection as required?
 
 - Please read ":ref:`started-configure-extension`" and check if you have configured everything
-- Did you configure solr server and port and does the scheme and path match?
-- Did you click "Initialize connection" after configuring the solr server?
-- Can you access the solr server with wget or curl from the command line?
+- Did you configure Solr server and port and does the scheme and path match?
+- Did you click "Initialize connection" after configuring the Solr server?
+- Can you access the Solr server with wget or curl from the command line?
 - Is the system report of EXT:solr green?
 
 |
@@ -164,9 +164,9 @@ Beside the indexing part you need to configure the query part. Make sure that al
 
 **I don't find the expected document on the first position. What can i do?**
 
-:) That's a good question. In the end, solr is a search and the sorting depends on the score, not as in a database on one or two simple criterion.
+:) That's a good question. In the end, Solr is a search and the sorting depends on the score, not as in a database on one or two simple criterion.
 
-In the end solr provides a lot of settings that influence the score calculation and you need to tune the results to you needs. The following settings are helpful to tune your results.
+In the end Solr provides a lot of settings that influence the score calculation and you need to tune the results to you needs. The following settings are helpful to tune your results.
 
 *Check your data*
 
@@ -191,7 +191,7 @@ For use cases like "*news* are always more important then *pages*" or "Newer doc
 
 *The search term only exists as a synonym*
 
-You can use the backend module synonyms (:ref:`backend-module-synonyms`) to maintain synonyms and configure solr to retrieve documents by a term that is not naturally inside the document.
+You can use the backend module synonyms (:ref:`backend-module-synonyms`) to maintain synonyms and configure Solr to retrieve documents by a term that is not naturally inside the document.
 
 *Ask DKD support*
 
@@ -212,7 +212,7 @@ To allow search with umlauts Tomcat needs to be configured to use UTF-8 encoded 
 
 **How can I change Solr's schema and add custom fields?**
 
-Please do not change the shipped solr schema. There are a lot of dynamic fields (:ref:`appendix-dynamic-fields`) that can be used to index any kind of datatype.
+Please do not change the shipped Solr schema. There are a lot of dynamic fields (:ref:`appendix-dynamic-fields`) that can be used to index any kind of datatype.
 
 **I am using varnish before my site. How can i index pages properly?**
 
@@ -222,7 +222,7 @@ SOLR Indexer might have some issues, when the page to index is behind a Varnish 
 
 Bypass when X-Tx-Solr-Iq is present
 
-The SOLR indexer request send the header X-Tx-Solr-Iq.
+The Solr indexer request send the header X-Tx-Solr-Iq.
 
 To have bypass the Varnish caching, put this into your sub vcl_recv part of the configuration
 
@@ -265,7 +265,7 @@ Put this into your sub vcl_fetch part of the configuration
 |
 
 The following example shows how to build the Dockerfile image and start a container with a mapped local volume (only for the data).
-This was tested with "Docker for Mac" (not Docker Toolbox). Before executing the example, make sure, that you have added "~/solrdata" as allowed volume in the docker configuration.
+This was tested with "Docker for Mac" (not Docker Toolbox). Before executing the example, make sure, that you have added "~/solrdata" as allowed volume in the Docker configuration.
 
 ::
 
@@ -275,10 +275,10 @@ This was tested with "Docker for Mac" (not Docker Toolbox). Before executing the
     # create volume directory locally
     mkdir -p ~/solrdata
 
-    # add solr group to volume directory
+    # add Solr group to volume directory
     sudo chown :8983 ~/solrdata
 
-    # run docker container from image with volume
+    # run Docker container from image with volume
     docker run -d -p 127.0.0.1:8282:8983 -v ~/solrdata:/var/solr/data/data typo3-solr
 
 
@@ -313,10 +313,10 @@ You can do that, by using SOLR_MULTIVALUE
 
 **How can i use a configuration from AdditionalConfiguration.php when i deploy my application on several instances?**
 
-The configuration of the connection is done with typoscript. When you want to use a configuration from TYPO3_CONF_VARS or from the system environment,
+The configuration of the connection is done with TypoScript. When you want to use a configuration from TYPO3_CONF_VARS or from the system environment,
 you can apply an stdWrap on the configuration that reads from these configurations.
 
-The following example shows how a host can be configured in the AdditionalConfiguration.php and used in your typoscript to connect to solr:
+The following example shows how a host can be configured in the AdditionalConfiguration.php and used in your TypoScript to connect to solr:
 
 The following line is added to AdditionalConfiguration.php
 
@@ -351,13 +351,13 @@ The following things are important:
 
 * The extension ships several examples in the Folder "Configuration/TypoScript/Examples", read them and try to undestand them.
 * EXT:solr can not know the business logic of an extension to generate a link to a detail view. You need to use typolink to build an url that points to a valid, existing detail page.
-* When you index records, e.g. news it these records are indexed in solr and point to a news details page. That's the reason why it makes sence to exclude the news detail page from the normal page indexing. Otherwise the indexing of this page will produce an error message, because only a url with a valid news uid produces a valid output.
+* When you index records, e.g. news it these records are indexed in Solr and point to a news details page. That's the reason why it makes sence to exclude the news detail page from the normal page indexing. Otherwise the indexing of this page will produce an error message, because only a url with a valid news uid produces a valid output.
 
 |
 
 **Are in EXT:solr some cli commands available?**
 
-Yes, currently(v. 6.1) only one for initializing solr connections.
+Yes, currently(v. 6.1) only one for initializing Solr connections.
 But check for new ones with :code:`bin/typo3 list` command.
 
 |
@@ -366,7 +366,7 @@ But check for new ones with :code:`bin/typo3 list` command.
 **I want to overwrite the type field, why is this not possible?**
 
 The type field is a system field that EXT:solr uses to keep the system in sync. Overwritting this field might result in inconsistency.
-However, if you need something like a custom type you can also write the information to a dynamic solr field and use that one as a type.
+However, if you need something like a custom type you can also write the information to a dynamic Solr field and use that one as a type.
 
 The following example shows, how to fill the field "mytype_stringS" and build a facet on this field:
 
@@ -433,9 +433,9 @@ This is the content of the OptionsToggle Partial (Feel free to adapt it to your 
 
 **I want to store HTML in solr, how can i retrieve that?**
 
-In general it is not recommend to allow html in the solr field. Especially when you index content that can be changed by the user.
+In general it is not recommend to allow html in the Solr field. Especially when you index content that can be changed by the user.
 
-However, if you want to allow html in a solr field, you need to add the field as trusted field and the content will not be escaped during the retrieval from solr.
+However, if you want to allow html in a Solr field, you need to add the field as trusted field and the content will not be escaped during the retrieval from solr.
 
 The following example shows how to avoid html in the content field:
 
@@ -483,7 +483,7 @@ The following example shows, how you can configure a custom switchable entry tem
 
 When you deploy a system automatically and you use EXT:solr there are some things that might be complicated:
 
-* You want to use a different solr endpoint for each environment
+* You want to use a different Solr endpoint for each environment
 * EXT:solr depends on an existing domain record
 
 To avoid that, you can set or generate these settings in the TYPO3 AdditionalConfigruation.php file and use them in your system.
@@ -494,7 +494,7 @@ To configure a used domain you cat set:
 
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites'][###rootPageId###]['domains'] = ['mydomain.com'];
 
-You can also define the data for your solr endpoints there and use them in the typoscript:
+You can also define the data for your Solr endpoints there and use them in the TypoScript:
 
 ::
 
@@ -552,15 +552,15 @@ The setting "keepAllFacetsOnSelection" let all facets remain and with keepAllOpt
 
 **How can i add a searchbox on every page?**
 
-In most projects you want to add a searchbox on every content page. To support this, the default EXT:solr typoscript template provides the typoscript template path "plugin.tx_solr_PiSearch_Search" that contains a configured typoscript code to render the searchbox. When you want to add that to your project in the most cases you would need to refer to a search result page.
-The following example shows how you can build a typoscript lib object that configures the target page for this plugin instance:
+In most projects you want to add a searchbox on every content page. To support this, the default EXT:solr TypoScript template provides the TypoScript template path "plugin.tx_solr_PiSearch_Search" that contains a configured TypoScript code to render the searchbox. When you want to add that to your project in the most cases you would need to refer to a search result page.
+The following example shows how you can build a TypoScript lib object that configures the target page for this plugin instance:
 
 ::
 
     lib.searchbox < plugin.tx_solr_PiSearch_Search
     lib.searchbox.search.targetPage = 4711
 
-Afterwards you could render the typoscript path "lib.searchbox" with several ways in TYPO3, e.g. with a FLUID ViewHelper:
+Afterwards you could render the TypoScript path "lib.searchbox" with several ways in TYPO3, e.g. with a FLUID ViewHelper:
 
 ::
 
@@ -582,15 +582,15 @@ You can set the credentials by the following configuration:
 As credentials are stored as plain text, go for sure that your web server does not serve your TypoScript files publicly \(protect the directory or by file endings\).
 If you don't want to store plain text passwords, you can configure your web server to allow access from a specific domain (see below).
 
-If you have multiple domains to index, the webserver requires the credentials for each domain accessed by the solr indexer. The extension passes the credentials only once, so you will run into errors on a multi domain environment.
-Solution: Instead of passing the credentials as shown above, configure your webserver directory protection to allow access from the solr IP:
+If you have multiple domains to index, the webserver requires the credentials for each domain accessed by the Solr indexer. The extension passes the credentials only once, so you will run into errors on a multi domain environment.
+Solution: Instead of passing the credentials as shown above, configure your webserver directory protection to allow access from the Solr IP:
 
 ::
 
 	AuthType Basic
 	AuthUserFile /path/to/.htpasswd
 	<RequireAny>
-	        Require ip XXX.XX.XX.XX (the IP of the solr server)
+	        Require ip XXX.XX.XX.XX (the IP of the Solr server)
 	        Require valid-user
 	</RequireAny>
 

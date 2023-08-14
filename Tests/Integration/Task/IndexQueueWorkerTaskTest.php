@@ -19,7 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -35,15 +34,9 @@ class IndexQueueWorkerTaskTest extends IntegrationTest
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
-    /**
-     * @var Queue
-     */
     protected $indexQueue;
 
-    /**
-     * @var array
-     */
-    protected $coreExtensionsToLoad = [
+    protected array $coreExtensionsToLoad = [
         'scheduler',
     ];
 
@@ -56,14 +49,13 @@ class IndexQueueWorkerTaskTest extends IntegrationTest
 
     /**
      * @test
-     * @throws Exception
      */
     public function canGetAdditionalInformationFromTask()
     {
-        $this->importDataSetFromFixture('can_trigger_frontend_calls_for_page_index.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_trigger_frontend_calls_for_page_index.csv');
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
-        /* @var IndexQueueWorkerTask $indexQueueQueueWorkerTask */
+        /** @var IndexQueueWorkerTask $indexQueueQueueWorkerTask */
         $indexQueueQueueWorkerTask = GeneralUtility::makeInstance(IndexQueueWorkerTask::class);
         $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
         $indexQueueQueueWorkerTask->setRootPageId($site->getRootPageId());

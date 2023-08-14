@@ -30,10 +30,6 @@ abstract class AbstractSolrStatus implements StatusProviderInterface
 {
     /**
      * Assigns variables to the fluid StandaloneView and renders the view.
-     *
-     * @param string $templateFilename
-     * @param array $variables
-     * @return string
      */
     protected function getRenderedReport(string $templateFilename = '', array $variables = []): string
     {
@@ -46,9 +42,6 @@ abstract class AbstractSolrStatus implements StatusProviderInterface
 
     /**
      * Initializes a StandaloneView with a template and returns it.
-     *
-     * @param string $templatePath
-     * @return StandaloneView
      */
     private function getFluidStandaloneViewWithTemplate(string $templatePath = ''): StandaloneView
     {

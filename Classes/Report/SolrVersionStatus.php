@@ -18,9 +18,9 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Throwable;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -33,42 +33,32 @@ use TYPO3\CMS\Reports\Status;
 class SolrVersionStatus extends AbstractSolrStatus
 {
     /**
-     * Required Solr version. The version that gets installed when using the
-     * provided install-script EXT:solr/Resources/Private/Install/install-solr.sh
-     *
-     * @var string
+     * Required Solr version. The version that gets installed when using the provided Docker image.
      */
-    const REQUIRED_SOLR_VERSION = '8.11.1';
+    public const REQUIRED_SOLR_VERSION = '9.3.0';
 
     /**
      * Compiles a version check against each configured Solr server.
      *
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
-     *
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
             $coreAdmin = $solrConnection->getAdminService();
-            /** @var $solrConnection SolrConnection */
+            /** @var SolrConnection $solrConnection */
             if (!$coreAdmin->ping()) {
                 $url = $coreAdmin->__toString();
-                $pingFailedMsg = 'Could not ping solr server, can not check version ' . $url;
+                $pingFailedMsg = 'Could not ping Solr server, can not check version ' . $url;
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */
                     'Apache Solr Version',
-                    /** @scrutinizer ignore-type */
                     'Not accessible',
-                    /** @scrutinizer ignore-type */
                     $pingFailedMsg,
-                    /** @scrutinizer ignore-type */
-                    Status::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
                 $reports[] = $status;
                 continue;
@@ -78,6 +68,13 @@ class SolrVersionStatus extends AbstractSolrStatus
             $isOutdatedVersion = version_compare($this->getCleanSolrVersion($solrVersion), self::REQUIRED_SOLR_VERSION, '<');
 
             if (!$isOutdatedVersion) {
+                $reports[] = GeneralUtility::makeInstance(
+                    Status::class,
+                    'Apache Solr Version',
+                    'OK',
+                    'Version of ' . $coreAdmin->__toString() . ' is ok: ' . $solrVersion,
+                    ContextualFeedbackSeverity::OK
+                );
                 continue;
             }
 
@@ -86,20 +83,24 @@ class SolrVersionStatus extends AbstractSolrStatus
             $report = $this->getRenderedReport('SolrVersionStatus.html', $variables);
             $status = GeneralUtility::makeInstance(
                 Status::class,
-                /** @scrutinizer ignore-type */
                 'Apache Solr Version',
-                /** @scrutinizer ignore-type */
                 'Outdated, Unsupported',
-                /** @scrutinizer ignore-type */
                 $report,
-                /** @scrutinizer ignore-type */
-                Status::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
 
             $reports[] = $status;
         }
 
         return $reports;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_solrversion';
     }
 
     /**

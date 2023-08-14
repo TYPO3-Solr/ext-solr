@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,10 +19,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Integration test for the schema status report
+ * Integration test for the Solr Access Filter status report
  *
  * @author Timo Hund
  */
@@ -35,11 +38,17 @@ class AccessFilterPluginInstalledStatusTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetGreenAccessFilterStatus()
+    public function canGetGreenAccessFilterStatus(): void
     {
-        /** @var $accessFilterStatus  AccessFilterPluginInstalledStatus */
+        /** @var AccessFilterPluginInstalledStatus $accessFilterStatus */
         $accessFilterStatus = GeneralUtility::makeInstance(AccessFilterPluginInstalledStatus::class);
-        $violations = $accessFilterStatus->getStatus();
-        self::assertEmpty($violations, 'We expect to get no violations against the test solr server ');
+        $results = $accessFilterStatus->getStatus();
+
+        self::assertCount(1, $results);
+        self::assertEquals(
+            $results[0]->getSeverity(),
+            ContextualFeedbackSeverity::OK,
+            'We expect to get no violations against the test Solr server '
+        );
     }
 }

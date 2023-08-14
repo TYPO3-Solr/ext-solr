@@ -20,37 +20,25 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Event\Parser\AfterFacetIsParsedEvent;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 
 /**
  * Class OptionsFacetParser
  */
 class OptionsFacetParser extends AbstractFacetParser
 {
-    /**
-     * @var Dispatcher|null
-     */
-    protected ?Dispatcher $dispatcher = null;
+    protected ?EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @param Dispatcher $dispatcher
-     */
-    public function injectDispatcher(Dispatcher $dispatcher)
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
-        $this->dispatcher = $dispatcher;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @param string $facetName
-     * @param array $facetConfiguration
-     * @return OptionsFacet|null
-     * @throws InvalidSlotException
-     * @throws InvalidSlotReturnException
+     * Parses/converts {@link SearchResultSet} to desired facet object structure
      */
     public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
@@ -69,15 +57,14 @@ class OptionsFacetParser extends AbstractFacetParser
             return null;
         }
 
-        /** @var $facet OptionsFacet */
+        /** @var OptionsFacet $facet */
         $facet = GeneralUtility::makeInstance(
             OptionsFacet::class,
             $resultSet,
             $facetName,
             $fieldName,
             $label,
-            $facetConfiguration,
-            $this->objectManager
+            $facetConfiguration
         );
 
         $hasActiveOptions = count($optionsFromRequest) > 0;
@@ -111,17 +98,18 @@ class OptionsFacetParser extends AbstractFacetParser
         $this->applyManualSortOrder($facet, $facetConfiguration);
         $this->applyReverseOrder($facet, $facetConfiguration);
 
-        if (!is_null($this->dispatcher)) {
-            $this->dispatcher->dispatch(__CLASS__, 'optionsParsed', [&$facet, $facetConfiguration]);
+        if (isset($this->eventDispatcher)) {
+            /** @var AfterFacetIsParsedEvent $afterFacetParsedEvent */
+            $afterFacetParsedEvent = $this->eventDispatcher
+                ->dispatch(new AfterFacetIsParsedEvent($facet, $facetConfiguration));
+            $facet = $afterFacetParsedEvent->getFacet();
         }
 
         return $facet;
     }
 
     /**
-     * @param string $facetName
-     * @param ResponseAdapter $response
-     * @return array
+     * Converts Apache Solr Response to facets options array.
      */
     protected function getOptionsFromSolrResponse(string $facetName, ResponseAdapter $response): array
     {
@@ -140,9 +128,7 @@ class OptionsFacetParser extends AbstractFacetParser
     }
 
     /**
-     * @param string $facetName
-     * @param ResponseAdapter $response
-     * @return array
+     * Converts Apache Solr Response to facets metrics array.
      */
     protected function getMetricsFromSolrResponse(string $facetName, ResponseAdapter $response): array
     {
@@ -155,7 +141,7 @@ class OptionsFacetParser extends AbstractFacetParser
         foreach ($response->facets->{$facetName}->buckets as $bucket) {
             $bucketVariables = get_object_vars($bucket);
             foreach ($bucketVariables as $key => $value) {
-                if (strpos($key, 'metrics_') === 0) {
+                if (str_starts_with($key, 'metrics_')) {
                     $metricsKey = str_replace('metrics_', '', $key);
                     $metricsFromSolrResponse[$bucket->val][$metricsKey] = $value;
                 }

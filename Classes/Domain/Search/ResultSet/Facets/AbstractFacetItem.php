@@ -25,99 +25,41 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  */
 abstract class AbstractFacetItem
 {
-    /**
-     * @var string
-     */
-    protected string $label = '';
-
-    /**
-     * @var int
-     */
-    protected int $documentCount = 0;
-
-    /**
-     * @var bool
-     */
-    protected bool $selected = false;
-
-    /**
-     * @var array
-     */
-    protected array $metrics = [];
-
-    /**
-     * @var AbstractFacet
-     */
-    protected AbstractFacet $facet;
-
-    /**
-     * @param AbstractFacet $facet
-     * @param string $label
-     * @param int $documentCount
-     * @param bool $selected
-     * @param array|null $metrics
-     */
     public function __construct(
-        AbstractFacet $facet,
-        string $label = '',
-        int $documentCount = 0,
-        bool $selected = false,
-        array $metrics = []
+        protected AbstractFacet $facet,
+        protected string $label = '',
+        protected int $documentCount = 0,
+        protected bool $selected = false,
+        protected array $metrics = []
     ) {
-        $this->facet = $facet;
-        $this->label = $label;
-        $this->documentCount = $documentCount;
-        $this->selected = $selected;
-        $this->metrics = $metrics;
     }
 
-    /**
-     * @return int
-     */
     public function getDocumentCount(): int
     {
         return $this->documentCount;
     }
 
-    /**
-     * @return AbstractFacet
-     */
     public function getFacet(): AbstractFacet
     {
         return $this->facet;
     }
 
-    /**
-     * @return string
-     */
     public function getLabel(): string
     {
         return $this->label;
     }
 
-    /**
-     * @return bool
-     */
     public function getSelected(): bool
     {
         return $this->selected;
     }
 
-    /**
-     * @return array
-     */
     public function getMetrics(): array
     {
         return $this->metrics;
     }
 
-    /**
-     * @return string
-     */
-    abstract public function getUriValue(): string;
+    abstract public function getUriValue(): string|int;
 
-    /**
-     * @return string
-     */
-    abstract public function getCollectionKey(): string;
+    abstract public function getCollectionKey(): string|int;
 }

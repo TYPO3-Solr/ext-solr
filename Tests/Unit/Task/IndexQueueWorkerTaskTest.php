@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Core\Environment;
 
 /**
@@ -24,14 +24,13 @@ use TYPO3\CMS\Core\Core\Environment;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class IndexQueueWorkerTaskTest extends UnitTest
+class IndexQueueWorkerTaskTest extends SetUpUnitTestCase
 {
     /**
      * @test
      */
     public function canGetWebRoot()
     {
-        /** @var $indexQueuerWorker IndexQueueWorkerTask */
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['execute'])
@@ -54,7 +53,6 @@ class IndexQueueWorkerTaskTest extends UnitTest
      */
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
     {
-        /** @var $indexQueuerWorker IndexQueueWorkerTask */
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getSite'])

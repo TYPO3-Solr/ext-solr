@@ -31,29 +31,21 @@ class UrlFacetService
      *  - query
      *
      * These are connected to the configuration
-     *
-     * @var string
      */
     protected string $uriLocation = 'query';
 
     /**
      * Mapping of characters
-     *
-     * @var array
      */
     protected array $characterMap = [];
 
     /**
      * Character to separate multi values
-     *
-     * @var string
      */
     protected string $multiValueSeparator = ',';
 
     /**
      * Character to replace multi value separator a value contains it.
-     *
-     * @var string
      */
     protected string $multiValueEscapeCharacter = '°';
 
@@ -69,10 +61,8 @@ class UrlFacetService
 
     /**
      * Initialize settings
-     *
-     * @param array $settings
      */
-    protected function init(array $settings)
+    protected function init(array $settings): void
     {
         if (is_array($settings['facet-' . $this->uriLocation]['replaceCharacters'] ?? null)) {
             $this->characterMap = $settings['facet-' . $this->uriLocation]['replaceCharacters'];
@@ -100,33 +90,21 @@ class UrlFacetService
         }
     }
 
-    /**
-     * @return string
-     */
     public function getUriLocation(): string
     {
         return $this->uriLocation;
     }
 
-    /**
-     * @return array
-     */
     public function getCharacterMap(): array
     {
         return $this->characterMap;
     }
 
-    /**
-     * @return string
-     */
     public function getMultiValueSeparator(): string
     {
         return $this->multiValueSeparator;
     }
 
-    /**
-     * @return string
-     */
     public function getMultiValueEscapeCharacter(): string
     {
         return $this->multiValueEscapeCharacter;
@@ -136,10 +114,8 @@ class UrlFacetService
      * Encodes a single value in case it contains the multi value separator
      *
      * @see RoutingService::finalizePathQuery
-     * @param $value
-     * @return string
      */
-    public function encodeSingleValue($value): string
+    public function encodeSingleValue(string $value): string
     {
         if (mb_strpos($value, $this->multiValueSeparator) !== false) {
             $value = str_replace($this->multiValueSeparator, $this->multiValueEscapeCharacter, $value);
@@ -158,10 +134,8 @@ class UrlFacetService
      * Decodes a single value in case it contains the multi value separator
      *
      * @see RoutingService::inflateQueryParameter
-     * @param $value
-     * @return string
      */
-    public function decodeSingleValue($value): string
+    public function decodeSingleValue(string $value): string
     {
         if (mb_strpos($value, $this->multiValueEscapeCharacter) !== false) {
             $value = str_replace($this->multiValueEscapeCharacter, $this->multiValueSeparator, $value);
@@ -178,9 +152,6 @@ class UrlFacetService
 
     /**
      * Encode a string for path segment
-     *
-     * @param string $string
-     * @return string
      */
     public function applyCharacterMap(string $string): string
     {

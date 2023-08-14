@@ -15,7 +15,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
@@ -24,7 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
-use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\AbstractFacetParserTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\SetUpFacetParser;
 
 /**
  * Class QueryGroupFacetParserTest
@@ -32,18 +31,12 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\AbstractFa
  * @author Timo Hund <timo.hund@dkd.de>
  * @author Frans Saris <frans@beech.it>
  */
-class QueryGroupFacetParserTest extends AbstractFacetParserTest
+class QueryGroupFacetParserTest extends SetUpFacetParser
 {
-    /**
-     * @param string $fixtureFile
-     * @param array $facetConfiguration
-     * @param array $activeFilters
-     * @return SearchResultSet
-     */
-    protected function initializeSearchResultSetFromFakeResponse($fixtureFile, $facetConfiguration, array $activeFilters = [])
+    protected function initializeSearchResultSetFromFakeResponse(string $fixtureFile, array $facetConfiguration, array $activeFilters = []): SearchResultSet
     {
         $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
-        $searchRequestMock = $this->getDumbMock(SearchRequest::class);
+        $searchRequestMock = $this->createMock(SearchRequest::class);
         $fakeResponse = new ResponseAdapter($fakeResponseJson);
 
         $searchResultSet = new SearchResultSet();
@@ -100,7 +93,6 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
             'fake_solr_response_with_query_fields_facets_and_used_facet.json',
             $facetConfiguration
         );
-        /** @var $parser QueryGroupFacetParser */
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
 
@@ -132,7 +124,6 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
             $facetConfiguration
         );
 
-        /** @var $parser QueryGroupFacetParser */
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
 
@@ -164,7 +155,6 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
             $facetConfiguration,
             ['age:week']
         );
-        /** @var $parser QueryGroupFacetParser */
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
 
@@ -196,12 +186,10 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
             $facetConfiguration,
             ['age:week']
         );
-        /** @var $parser QueryGroupFacetParser */
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         /** @var QueryGroupFacet $facet */
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
 
-        /** @var Option $option */ // @extensionScannerIgnoreLine
         foreach ($facet->getOptions() as $option) {
             if ($option->getValue() === 'week') {
                 self::assertTrue($option->getSelected(), 'Option ' . $option->getValue() . ' isn\'t active');

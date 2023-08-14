@@ -16,12 +16,12 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Score;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class ScoreCalculationServiceTest extends UnitTest
+class ScoreCalculationServiceTest extends SetUpUnitTestCase
 {
     /**
      * @var ScoreCalculationService
@@ -44,12 +44,12 @@ class ScoreCalculationServiceTest extends UnitTest
 
         $scoreAnalysis = $this->scoreCalculationService->getRenderedScores($fakeDebugData, $fakeQueryFields);
 
-        self::assertStringContainsString('<td>+     98.444336</td', $scoreAnalysis);
+        self::assertStringContainsString('<td>+ 98.444336', $scoreAnalysis);
         self::assertStringContainsString('<td>content</td>', $scoreAnalysis);
-        self::assertStringContainsString('<td>40.0</td></tr>', $scoreAnalysis);
+        self::assertStringContainsString('<td>40.0', $scoreAnalysis);
 
-        self::assertStringContainsString('<td>+     6.2762194</td>', $scoreAnalysis);
+        self::assertStringContainsString('<td>+ 6.2762194', $scoreAnalysis);
         self::assertStringContainsString('<td>tagsH2H3</td>', $scoreAnalysis);
-        self::assertStringContainsString('<td>3.0</td></tr>', $scoreAnalysis);
+        self::assertStringContainsString('<td>3.0', $scoreAnalysis);
     }
 }

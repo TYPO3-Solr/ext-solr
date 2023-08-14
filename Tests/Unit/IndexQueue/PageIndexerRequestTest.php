@@ -19,9 +19,11 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 use TYPO3\CMS\Core\Http\RequestFactory;
 
 /**
@@ -29,7 +31,7 @@ use TYPO3\CMS\Core\Http\RequestFactory;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class PageIndexerRequestTest extends UnitTest
+class PageIndexerRequestTest extends SetUpUnitTestCase
 {
     /**
      * @test
@@ -85,7 +87,8 @@ class PageIndexerRequestTest extends UnitTest
         $fakeResponse = $this->getFixtureContentByName('fakeResponse.json');
         $requestMock = $this->getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse);
 
-        $queueItemMock = $this->getDumbMock(Item::class);
+        /** @var MockObject|Item $queueItemMock */
+        $queueItemMock = $this->createMock(Item::class);
         $requestMock->setIndexQueueItem($queueItemMock);
 
         $response = $requestMock->send('http://7.6.local.typo3.org/about/typo3/');
@@ -99,17 +102,18 @@ class PageIndexerRequestTest extends UnitTest
     /**
      * @test
      */
-    public function sendThrowsExceptionOnIsMissmatch()
+    public function sendThrowsExceptionOnIsMismatch()
     {
         $testParameters = json_encode(['requestId' => 'wrongId']);
         $fakeResponse = $this->getFixtureContentByName('fakeResponse.json');
 
         $requestMock = $this->getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse);
-        $queueItemMock = $this->getDumbMock(Item::class);
+        /** @var MockObject|Item $queueItemMock */
+        $queueItemMock = $this->createMock(Item::class);
 
         $requestMock->setIndexQueueItem($queueItemMock);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Request ID mismatch');
         $requestMock->send('http://7.6.local.typo3.org/about/typo3/');
     }
@@ -123,10 +127,11 @@ class PageIndexerRequestTest extends UnitTest
         $fakeResponse = 'invalidJsonString!!';
 
         $requestMock = $this->getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse);
-        $queueItemMock = $this->getDumbMock(Item::class);
+        /** @var MockObject|Item $queueItemMock */
+        $queueItemMock = $this->createMock(Item::class);
         $requestMock->setIndexQueueItem($queueItemMock);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to execute Page Indexer Request');
         $requestMock->send('http://7.6.local.typo3.org/about/typo3/');
     }
@@ -137,10 +142,10 @@ class PageIndexerRequestTest extends UnitTest
     public function canSetTimeOutFromPHPConfiguration()
     {
         $initialTimeout = ini_get('default_socket_timeout');
-        ini_set('default_socket_timeout', 122.5);
+        ini_set('default_socket_timeout', 122);
 
         $pageIndexerRequest = $this->getPageIndexerRequest();
-        self::assertSame(122.5, $pageIndexerRequest->getTimeout());
+        self::assertSame(122.0, $pageIndexerRequest->getTimeout());
         ini_set('default_socket_timeout', $initialTimeout);
     }
 
@@ -153,7 +158,8 @@ class PageIndexerRequestTest extends UnitTest
         $fakeResponse = $this->getFixtureContentByName('fakeResponse.json');
 
         $requestMock = $this->getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse);
-        $queueItemMock = $this->getDumbMock(Item::class);
+        /** @var MockObject|Item $queueItemMock */
+        $queueItemMock = $this->createMock(Item::class);
         $requestMock->setIndexQueueItem($queueItemMock);
 
         $requestMock->send('https://7.6.local.typo3.org/about/typo3/');
@@ -164,7 +170,8 @@ class PageIndexerRequestTest extends UnitTest
      */
     public function authenticationHeaderIsSetWhenUsernameAndPasswordHaveBeenPassed()
     {
-        $requestFactoryMock = $this->getDumbMock(RequestFactory::class);
+        /** @var MockObject|RequestFactory $requestFactoryMock */
+        $requestFactoryMock = $this->createMock(RequestFactory::class);
         $requestFactoryMock->expects(self::once())->method('request')->willReturnCallback(function ($url, $method, $options) {
             $this->assertSame(['bob', 'topsecret'], $options['auth'], 'Authentication options have not been set');
             $this->assertSame('GET', $method, 'Unexpected http method');
@@ -172,13 +179,16 @@ class PageIndexerRequestTest extends UnitTest
             return $this->getFakedGuzzleResponse($this->getFixtureContentByName('fakeResponse.json'));
         });
 
-        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
-        $extensionConfigurationMock = $this->getDumbMock(ExtensionConfiguration::class);
+        /** @var MockObject|SolrLogManager $solrLogManagerMock */
+        $solrLogManagerMock = $this->createMock(SolrLogManager::class);
+        /** @var MockObject|ExtensionConfiguration $extensionConfigurationMock */
+        $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
 
         $testParameters = json_encode(['requestId' => '581f76be71f60']);
         $pageIndexerRequest = new PageIndexerRequest($testParameters, $solrLogManagerMock, $extensionConfigurationMock, $requestFactoryMock);
 
-        $queueItemMock = $this->getDumbMock(Item::class);
+        /** @var MockObject|Item $queueItemMock */
+        $queueItemMock = $this->createMock(Item::class);
         $pageIndexerRequest->setIndexQueueItem($queueItemMock);
         $pageIndexerRequest->setAuthorizationCredentials('bob', 'topsecret');
 
@@ -207,36 +217,48 @@ class PageIndexerRequestTest extends UnitTest
     {
         $pageIndexerRequest = $this->getPageIndexerRequest();
 
-        $itemMock = $this->getDumbMock(Item::class);
+        /** @var MockObject|Item $itemMock */
+        $itemMock = $this->createMock(Item::class);
         $pageIndexerRequest->setIndexQueueItem($itemMock);
         $headers = $pageIndexerRequest->getHeaders();
         self::assertContains('User-Agent: TYPO3', $headers, 'Header should contain a proper User-Agent');
     }
 
     /**
-     * @param string $jsonEncodedParameter
-     * @param RequestFactory $requestFactory
+     * @param string|null $jsonEncodedParameter
+     * @param RequestFactory|null $requestFactory
      * @return PageIndexerRequest
      */
-    protected function getPageIndexerRequest($jsonEncodedParameter = null, RequestFactory $requestFactory = null)
+    protected function getPageIndexerRequest(string $jsonEncodedParameter = null, RequestFactory $requestFactory = null): PageIndexerRequest
     {
-        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
-        $extensionConfigurationMock = $this->getDumbMock(ExtensionConfiguration::class);
-        $request = new PageIndexerRequest($jsonEncodedParameter, $solrLogManagerMock, $extensionConfigurationMock, $requestFactory);
-        return $request;
+        /** @var MockObject|SolrLogManager $solrLogManagerMock */
+        $solrLogManagerMock = $this->createMock(SolrLogManager::class);
+        /** @var MockObject|ExtensionConfiguration $extensionConfigurationMock */
+        $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
+        $requestFactory = $requestFactory ?? $this->createMock(RequestFactory::class);
+        return new PageIndexerRequest($jsonEncodedParameter, $solrLogManagerMock, $extensionConfigurationMock, $requestFactory);
     }
 
     /**
      * @param $testParameters
      * @param $fakeResponse
-     * @return PageIndexerRequest
+     * @return MockObject|PageIndexerRequest
      */
-    protected function getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse)
+    protected function getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse): PageIndexerRequest|MockObject
     {
-        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
-        $extensionConfigurationMock = $this->getDumbMock(ExtensionConfiguration::class);
-        /** @var $requestMock PageIndexerRequest */
-        $requestMock = $this->getMockBuilder(PageIndexerRequest::class)->onlyMethods(['getUrl'])->setConstructorArgs([$testParameters, $solrLogManagerMock, $extensionConfigurationMock])->getMock();
+        $solrLogManagerMock = $this->createMock(SolrLogManager::class);
+        $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
+        $requestFactoryMock = $this->createMock(RequestFactory::class);
+        /** @var MockObject|PageIndexerRequest $requestMock */
+        $requestMock = $this->getMockBuilder(PageIndexerRequest::class)
+            ->onlyMethods(['getUrl'])
+            ->setConstructorArgs([
+                $testParameters,
+                $solrLogManagerMock,
+                $extensionConfigurationMock,
+                $requestFactoryMock,
+            ])
+            ->getMock();
 
         $responseMock = $this->getFakedGuzzleResponse($fakeResponse);
 
@@ -251,11 +273,11 @@ class PageIndexerRequestTest extends UnitTest
      */
     protected function getFakedGuzzleResponse($fakeResponse): ResponseInterface
     {
-        $bodyStream = $this->getDumbMock(StreamInterface::class);
+        $bodyStream = $this->createMock(StreamInterface::class);
         $bodyStream->expects(self::any())->method('getContents')->willReturn($fakeResponse);
 
-        /** @var $responseMock  ResponseInterface */
-        $responseMock = $this->getDumbMock(ResponseInterface::class);
+        /** @var MockObject|ResponseInterface $responseMock */
+        $responseMock = $this->createMock(ResponseInterface::class);
         $responseMock->expects(self::any())->method('getBody')->willReturn($bodyStream);
         return $responseMock;
     }

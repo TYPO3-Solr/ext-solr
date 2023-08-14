@@ -28,9 +28,7 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Routing\PageSlugCandidateProvider;
 use TYPO3\CMS\Core\Routing\SiteMatcher;
-use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Site\Entity\SiteInterface;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -47,26 +45,20 @@ class RoutingService implements LoggerAwareInterface
     /**
      * Default plugin namespace
      */
-    const PLUGIN_NAMESPACE = 'tx_solr';
+    public const PLUGIN_NAMESPACE = 'tx_solr';
 
     /**
      * Settings from routing configuration
-     *
-     * @var array
      */
     protected array $settings = [];
 
     /**
      * List of filter that are placed as path arguments
-     *
-     * @var array
      */
     protected array $pathArguments = [];
 
     /**
      * Plugin/extension namespace
-     *
-     * @var string
      */
     protected string $pluginNamespace = 'tx_solr';
 
@@ -84,21 +76,12 @@ class RoutingService implements LoggerAwareInterface
         'type',
     ];
 
-    /**
-     * @var UrlFacetService|null
-     */
     protected ?UrlFacetService $urlFacetPathService = null;
 
-    /**
-     * @var UrlFacetService|null
-     */
     protected ?UrlFacetService $urlFacetQueryService = null;
 
     /**
      * RoutingService constructor.
-     *
-     * @param array $settings
-     * @param string $pluginNamespace
      */
     public function __construct(array $settings = [], string $pluginNamespace = self::PLUGIN_NAMESPACE)
     {
@@ -112,9 +95,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Creates a clone of the current service and replace the settings inside
-     *
-     * @param array $settings
-     * @return RoutingService
      */
     public function withSettings(array $settings): RoutingService
     {
@@ -126,9 +106,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Creates a clone of the current service and replace the settings inside
-     *
-     * @param array $pathArguments
-     * @return RoutingService
      */
     public function withPathArguments(array $pathArguments): RoutingService
     {
@@ -140,9 +117,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Load configuration from routing configuration
-     *
-     * @param array $routingConfiguration
-     * @return $this
      */
     public function fromRoutingConfiguration(array $routingConfiguration): RoutingService
     {
@@ -166,8 +140,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Reset the routing service
-     *
-     * @return $this
      */
     public function reset(): RoutingService
     {
@@ -179,8 +151,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Initialize url facet services for different types
-     *
-     * @return $this
      */
     protected function initUrlFacetService(): RoutingService
     {
@@ -190,17 +160,11 @@ class RoutingService implements LoggerAwareInterface
         return $this;
     }
 
-    /**
-     * @return UrlFacetService
-     */
     public function getUrlFacetPathService(): UrlFacetService
     {
         return $this->urlFacetPathService;
     }
 
-    /**
-     * @return UrlFacetService
-     */
     public function getUrlFacetQueryService(): UrlFacetService
     {
         return $this->urlFacetQueryService;
@@ -210,8 +174,6 @@ class RoutingService implements LoggerAwareInterface
      * Test if the given parameter is a Core parameter
      *
      * @see \TYPO3\CMS\Frontend\Page\CacheHashCalculator::isCoreParameter
-     * @param string $parameterName
-     * @return bool
      */
     public function isCoreParameter(string $parameterName): bool
     {
@@ -221,8 +183,6 @@ class RoutingService implements LoggerAwareInterface
     /**
      * This returns the plugin namespace
      * @see https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/Configuration/Reference/TxSolrView.html#pluginnamespace
-     *
-     * @return string
      */
     public function getPluginNamespace(): string
     {
@@ -231,9 +191,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Determine if an enhancer is in use for Solr
-     *
-     * @param string $enhancerName
-     * @return bool
      */
     public function isRouteEnhancerForSolr(string $enhancerName): bool
     {
@@ -257,9 +214,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Masks Solr filter inside the query parameters
-     *
-     * @param string $uriPath
-     * @return string
      */
     public function finalizePathQuery(string $uriPath): string
     {
@@ -286,7 +240,7 @@ class RoutingService implements LoggerAwareInterface
                     2
                 );
 
-                if ($this->isPathArgument((string)$facetName)) {
+                if ($this->isPathArgument($facetName)) {
                     $queryValues[$i] = $facetValue;
                 }
             }
@@ -305,13 +259,11 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * This method checks if the query parameter should be masked.
-     *
-     * @return bool
      */
     public function shouldMaskQueryParameter(): bool
     {
         if (!isset($this->settings['query']['mask']) ||
-            !(bool)$this->settings['query']['mask']) {
+            !$this->settings['query']['mask']) {
             return false;
         }
 
@@ -322,9 +274,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Masks Solr filter inside the query parameters
-     *
-     * @param array $queryParams
-     * @return array
      */
     public function maskQueryParameters(array $queryParams): array
     {
@@ -334,7 +283,7 @@ class RoutingService implements LoggerAwareInterface
 
         if (!isset($queryParams[$this->getPluginNamespace()])) {
             $this->logger
-                ->/** @scrutinizer ignore-call */
+                ->
                 error('Mask error: Query parameters has no entry for namespace ' . $this->getPluginNamespace());
             return $queryParams;
         }
@@ -342,14 +291,14 @@ class RoutingService implements LoggerAwareInterface
         if (!isset($queryParams[$this->getPluginNamespace()]['filter']) ||
             empty($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->/** @scrutinizer ignore-call */
+                ->
                 info('Mask info: Query parameters has no filter in namespace ' . $this->getPluginNamespace());
             return $queryParams;
         }
 
         if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->/** @scrutinizer ignore-call */
+                ->
                 warning('Mask info: Filter within the Query parameters is not an array');
             return $queryParams;
         }
@@ -364,7 +313,7 @@ class RoutingService implements LoggerAwareInterface
             $keep = false;
             if (isset($queryParameterMap[$facetName]) &&
                 isset($newQueryParams[$queryParameterMap[$facetName]])) {
-                $this->logger->/** @scrutinizer ignore-call */error(
+                $this->logger->error(
                     'Mask error: Facet "' . $facetName . '" as "' . $queryParameterMap[$facetName] .
                     '" already in query!'
                 );
@@ -385,9 +334,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Unmask incoming parameters if needed
-     *
-     * @param array $queryParams
-     * @return array
      */
     public function unmaskQueryParameters(array $queryParams): array
     {
@@ -439,8 +385,6 @@ class RoutingService implements LoggerAwareInterface
      * There are following requirements:
      * - Masking is activated and the mal is valid or
      * - Concat is activated
-     *
-     * @return bool
      */
     public function shouldConcatQueryParameters(): bool
     {
@@ -459,8 +403,6 @@ class RoutingService implements LoggerAwareInterface
      * Returns the query parameter map
      *
      * Note TYPO3 core query arguments removed from the configured map!
-     *
-     * @return array
      */
     public function getQueryParameterMap(): array
     {
@@ -473,7 +415,7 @@ class RoutingService implements LoggerAwareInterface
         $self = $this;
         return array_filter(
             $this->settings['query']['map'],
-            function ($value) use ($self) {
+            static function ($value) use ($self) {
                 return !$self->isCoreParameter($value);
             }
         );
@@ -501,8 +443,6 @@ class RoutingService implements LoggerAwareInterface
      *      taste:sour
      *   ]
      * ]
-     * @param array $queryParams
-     * @return array
      */
     public function concatQueryParameter(array $queryParams = []): array
     {
@@ -525,7 +465,7 @@ class RoutingService implements LoggerAwareInterface
 
         if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->/** @scrutinizer ignore-call */
+                ->
                 warning('Mask info: Filter within the Query parameters is not an array');
             return $queryParams;
         }
@@ -538,9 +478,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * This method expect a filter array that should be concat instead of the whole query
-     *
-     * @param array $filterArray
-     * @return array
      */
     public function concatFilterValues(array $filterArray): array
     {
@@ -594,9 +531,6 @@ class RoutingService implements LoggerAwareInterface
      *      taste:sour
      *   ]
      * ]
-     *
-     * @param array $queryParams
-     * @return array
      */
     public function inflateQueryParameter(array $queryParams = []): array
     {
@@ -615,7 +549,7 @@ class RoutingService implements LoggerAwareInterface
 
         if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->/** @scrutinizer ignore-call */
+                ->
                 warning('Inflate query: Expected filter to be an array. Replace it with an array structure!');
             $queryParams[$this->getPluginNamespace()]['filter'] = [];
         }
@@ -650,9 +584,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Cleanup the query parameters, to avoid empty solr arguments
-     *
-     * @param array $queryParams
-     * @return array
      */
     public function cleanUpQueryParameters(array $queryParams): array
     {
@@ -673,9 +604,6 @@ class RoutingService implements LoggerAwareInterface
      * avoid problems during separation of the values later.
      *
      * This mask has to be applied before contact the values
-     *
-     * @param array $facets
-     * @return string
      */
     public function queryParameterFacetsToString(array $facets): string
     {
@@ -686,14 +614,11 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Returns the string which separates the facet from the value
-     *
-     * @param string $facetWithValue
-     * @return string
      */
     public function detectFacetAndValueSeparator(string $facetWithValue): string
     {
         $separator = ':';
-        if (mb_strpos($facetWithValue, '%3A') !== false) {
+        if (str_contains($facetWithValue, '%3A')) {
             $separator = '%3A';
         }
 
@@ -702,24 +627,14 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Check if given facet value combination contains a separator
-     *
-     * @param string $facetWithValue
-     * @return bool
      */
     public function containsFacetAndValueSeparator(string $facetWithValue): bool
     {
-        if (mb_strpos($facetWithValue, ':') === false && mb_strpos($facetWithValue, '%3A') === false) {
-            return false;
-        }
-
-        return true;
+        return !(!str_contains($facetWithValue, ':') && !str_contains($facetWithValue, '%3A'));
     }
 
     /**
      * Cleanup facet values (strip type if needed)
-     *
-     * @param array $facetValues
-     * @return array
      */
     public function cleanupFacetValues(array $facetValues): array
     {
@@ -741,9 +656,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Builds a string out of multiple facet values
-     *
-     * @param array $facets
-     * @return string
      */
     public function pathFacetsToString(array $facets): string
     {
@@ -756,9 +668,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Builds a string out of multiple facet values
-     *
-     * @param array $facets
-     * @return string
      */
     public function facetsToString(array $facets): string
     {
@@ -773,10 +682,6 @@ class RoutingService implements LoggerAwareInterface
      * This method is used in two different situation
      *  1. Middleware: Here the values should not be decoded
      *  2. Within the event listener CachedPathVariableModifier
-     *
-     * @param string $facets
-     * @param bool $decode
-     * @return array
      */
     public function pathFacetStringToArray(string $facets, bool $decode = true): array
     {
@@ -790,7 +695,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Returns the multi value separator
-     * @return string
      */
     public function getDefaultMultiValueSeparator(): string
     {
@@ -799,18 +703,14 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Find an enhancer configuration by a given page id
-     *
-     * @param int $pageUid
-     * @return array
      */
     public function fetchEnhancerByPageUid(int $pageUid): array
     {
         $site = $this->findSiteByUid($pageUid);
-        if ($site instanceof NullSite) {
+        if (!$site instanceof Site) {
             return [];
         }
 
-        /** @noinspection PhpParamsInspection */
         return $this->fetchEnhancerInSiteConfigurationByPageUid(
             $site,
             $pageUid
@@ -819,10 +719,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Returns the route enhancer configuration by given site and page uid
-     *
-     * @param Site $site
-     * @param int $pageUid
-     * @return array
      */
     public function fetchEnhancerInSiteConfigurationByPageUid(Site $site, int $pageUid): array
     {
@@ -852,17 +748,14 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Add heading slash to given slug
-     *
-     * @param string $slug
-     * @return string
      */
     public function cleanupHeadingSlash(string $slug): string
     {
-        if (mb_substr($slug, 0, 1) !== '/') {
+        if (!str_starts_with($slug, '/')) {
             return '/' . $slug;
         }
-        if (mb_substr($slug, 0, 2) === '//') {
-            return mb_substr($slug, 1, mb_strlen($slug) - 1);
+        if (str_starts_with($slug, '//')) {
+            return mb_substr($slug, 1);
         }
 
         return $slug;
@@ -870,13 +763,10 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Add heading slash to given slug
-     *
-     * @param string $slug
-     * @return string
      */
     public function addHeadingSlash(string $slug): string
     {
-        if (mb_substr($slug, 0, 1) === '/') {
+        if (str_starts_with($slug, '/')) {
             return $slug;
         }
 
@@ -885,39 +775,29 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Remove heading slash from given slug
-     *
-     * @param string $slug
-     * @return string
      */
     public function removeHeadingSlash(string $slug): string
     {
-        if (mb_substr($slug, 0, 1) !== '/') {
+        if (!str_starts_with($slug, '/')) {
             return $slug;
         }
 
-        return mb_substr($slug, 1, mb_strlen($slug) - 1);
+        return mb_substr($slug, 1);
     }
 
     /**
      * Retrieve the site by given UID
-     *
-     * @param int $pageUid
-     * @return SiteInterface
      */
-    public function findSiteByUid(int $pageUid): SiteInterface
+    public function findSiteByUid(int $pageUid): ?Site
     {
         try {
             return $this->getSiteFinder()
                 ->getSiteByPageId($pageUid);
-        } catch (SiteNotFoundException $exception) {
-            return new NullSite();
+        } catch (SiteNotFoundException) {
+            return null;
         }
     }
 
-    /**
-     * @param Site $site
-     * @return PageSlugCandidateProvider
-     */
     public function getSlugCandidateProvider(Site $site): PageSlugCandidateProvider
     {
         $context = GeneralUtility::makeInstance(Context::class);
@@ -931,29 +811,21 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Convert the base string into a URI object
-     *
-     * @param string $base
-     * @return UriInterface|null
      */
     public function convertStringIntoUri(string $base): ?UriInterface
     {
         try {
-            /* @var Uri $uri */
             return GeneralUtility::makeInstance(
                 Uri::class,
                 $base
             );
-        } catch (InvalidArgumentException $argumentException) {
+        } catch (InvalidArgumentException) {
             return null;
         }
     }
 
     /**
      * In order to search for a path, a possible language prefix need to remove
-     *
-     * @param SiteLanguage $language
-     * @param string $path
-     * @return string
      */
     public function stripLanguagePrefixFromPath(SiteLanguage $language, string $path): string
     {
@@ -963,8 +835,8 @@ class RoutingService implements LoggerAwareInterface
 
         $pathLength = mb_strlen($language->getBase()->getPath());
 
-        $path = mb_substr($path, $pathLength, mb_strlen($path) - $pathLength);
-        if (mb_substr($path, 0, 1) !== '/') {
+        $path = mb_substr($path, $pathLength);
+        if (!str_starts_with($path, '/')) {
             $path = '/' . $path;
         }
 
@@ -973,11 +845,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Enrich the current query Params with data from path information
-     *
-     * @param ServerRequestInterface $request
-     * @param array $arguments
-     * @param array $parameters
-     * @return ServerRequestInterface
      */
     public function addPathArgumentsToQuery(
         ServerRequestInterface $request,
@@ -1009,35 +876,22 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Check if given argument is a mapping argument
-     *
-     * @param string $facetName
-     * @return bool
      */
     public function isMappingArgument(string $facetName): bool
     {
         $map = $this->getQueryParameterMap();
-        if (isset($map[$facetName]) && $this->shouldMaskQueryParameter()) {
-            return true;
-        }
 
-        return false;
+        return isset($map[$facetName]) && $this->shouldMaskQueryParameter();
     }
 
     /**
      * Check if given facet type is a path argument
-     *
-     * @param string $facetName
-     * @return bool
      */
     public function isPathArgument(string $facetName): bool
     {
         return isset($this->pathArguments[$facetName]);
     }
 
-    /**
-     * @param string $variable
-     * @return string
-     */
     public function reviewVariable(string $variable): string
     {
         if (!$this->containsFacetAndValueSeparator($variable)) {
@@ -1052,9 +906,6 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * Remove type prefix from filter
-     *
-     * @param array $variables
-     * @return array
      */
     public function reviseFilterVariables(array $variables): array
     {
@@ -1093,12 +944,6 @@ class RoutingService implements LoggerAwareInterface
      * tx_solr:
      *      filter:
      *          - type:household
-     *
-     * @param array $queryParams
-     * @param string $fieldName
-     * @param array $parameters
-     * @param array $pathElements
-     * @return array
      */
     protected function processUriPathArgument(
         array $queryParams,
@@ -1110,14 +955,14 @@ class RoutingService implements LoggerAwareInterface
         $queryKey = (string)$queryKey;
 
         $tmpQueryKey = $queryKey;
-        if (strpos($queryKey, '-') !== false) {
+        if (str_contains($queryKey, '-')) {
             [$tmpQueryKey, $filterName] = explode('-', $tmpQueryKey, 2);
         }
         if (!isset($queryParams[$tmpQueryKey])) {
             $queryParams[$tmpQueryKey] = [];
         }
 
-        if (strpos($queryKey, '-') !== false) {
+        if (str_contains($queryKey, '-')) {
             [$queryKey, $filterName] = explode('-', $queryKey, 2);
             // explode multiple values
             $values = $this->pathFacetStringToArray($parameters[$fieldName], false);
@@ -1140,22 +985,12 @@ class RoutingService implements LoggerAwareInterface
         return $queryParams;
     }
 
-    /**
-     * Return site matcher
-     *
-     * @return SiteMatcher
-     */
     public function getSiteMatcher(): SiteMatcher
     {
-        return GeneralUtility::makeInstance(SiteMatcher::class, $this->getSiteFinder());
+        return GeneralUtility::makeInstance(SiteMatcher::class);
     }
 
-    /**
-     * Returns the site finder
-     *
-     * @return SiteFinder|null
-     */
-    protected function getSiteFinder(): ?SiteFinder
+    protected function getSiteFinder(): SiteFinder
     {
         return GeneralUtility::makeInstance(SiteFinder::class);
     }

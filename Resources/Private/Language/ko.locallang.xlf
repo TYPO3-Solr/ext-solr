@@ -198,32 +198,32 @@
 				<target>Filter</target>
 			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
-				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>@resultsTotal의 @resultsFrom에서 @resultsTo까지의 결과.</target>
+				<source>Displaying results %s to %s of %s.</source>
+				<target>%s의 %s에서 %s까지의 결과.</target>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve" approved="yes">
-				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>@resultsTime 1,000분의 1초 동안에 @resultsTotal 검색 결과</target>
+				<source>Found %s results in %s milliseconds.</source>
+				<target>%s 1,000분의 1초 동안에 %s 검색 결과</target>
 			</trans-unit>
 			<trans-unit id="results_found.singular" xml:space="preserve" approved="yes">
-				<source>Found 1 results in @resultsTime milliseconds.</source>
-				<target>@resultsTime 1,000분의 1초 동안에 1 검색 결과</target>
+				<source>Found 1 results in %s milliseconds.</source>
+				<target>%s 1,000분의 1초 동안에 1 검색 결과</target>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
-				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>&quot;@searchWord&quot;에 대한 검색내용.</target>
+				<source>Searched for &quot;%s&quot;.</source>
+				<target>&quot;%s&quot;에 대한 검색내용.</target>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
-				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>&quot;@searchWord&quot;에 대한 검색내용 없음.</target>
+				<source>Nothing found for &quot;%s&quot;.</source>
+				<target>&quot;%s&quot;에 대한 검색내용 없음.</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
-				<source>Showing results for &quot;@suggestedWord&quot;.</source>
-				<target>“@suggestedWord”의 검색 결과</target>
+				<source>Showing results for &quot;%s&quot;.</source>
+				<target>“%s”의 검색 결과</target>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
-				<source>Search instead for &quot;@searchWord&quot;.</source>
-				<target>“@searchWord” 대신 검색.</target>
+				<source>Search instead for &quot;%s&quot;.</source>
+				<target>“%s” 대신 검색.</target>
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">
 				<source>Last searches</source>
@@ -440,12 +440,12 @@
 				<target>기록이 없습니다. 사이트의  타이포스크립트 구성에서  &apos;plugin.tx_solr.statistics = 1&apos;을 활성화시켰습니까?</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases" xml:space="preserve">
-				<source>Top 5 Search Phrases</source>
-				<target>Top 5 검색 구문</target>
+				<source>Top %d Search Phrases</source>
+				<target>Top %d 검색 구문</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases_without_hits" xml:space="preserve">
-				<source>Top 5 Search Phrases Without Hits</source>
-				<target>Top 5 검색 구문(Hit 없음)</target>
+				<source>Top %d Search Phrases Without Hits</source>
+				<target>Top %d 검색 구문(Hit 없음)</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.search_phrases_header" xml:space="preserve">
 				<source>Search Phrase Statistics</source>

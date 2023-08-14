@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
 
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use Solarium\QueryType\Extract\Query;
 use Solarium\QueryType\Update\Result;
@@ -30,7 +29,7 @@ use Throwable;
  */
 class SolrWriteService extends AbstractSolrService
 {
-    const EXTRACT_SERVLET = 'update/extract';
+    public const EXTRACT_SERVLET = 'update/extract';
 
     /**
      * Performs a content and meta data extraction request.
@@ -45,8 +44,7 @@ class SolrWriteService extends AbstractSolrService
             return [$response->file, $response->file_metadata];
         } catch (Throwable $e) {
             $param = $query->getRequestBuilder()->build($query)->getParams();
-            $this->logger->log(
-                SolrLogManager::ERROR,
+            $this->logger->error(
                 'Extracting text and meta data through Solr Cell over HTTP POST',
                 [
                     'query' => (array)$query,
@@ -68,7 +66,7 @@ class SolrWriteService extends AbstractSolrService
      * @param string $type The type of documents to delete, usually a table name.
      * @param bool $commit Will commit immediately after deleting the documents if set, defaults to TRUE
      */
-    public function deleteByType(string $type, bool $commit = true)
+    public function deleteByType(string $type, bool $commit = true): void
     {
         $this->deleteByQuery('type:' . trim($type));
 
@@ -81,7 +79,6 @@ class SolrWriteService extends AbstractSolrService
      * Create the delete-query, which is document based on a query and submit it
      *
      * @param string $rawQuery Expected to be utf-8 encoded
-     * @return ResponseAdapter
      */
     public function deleteByQuery(string $rawQuery): ResponseAdapter
     {
@@ -94,7 +91,6 @@ class SolrWriteService extends AbstractSolrService
      * Add an array of Solr Documents to the index all at once
      *
      * @param array $documents Should be an array of \ApacheSolrForTypo3\Solr\System\Solr\Document\Document instances
-     * @return ResponseAdapter
      */
     public function addDocuments(array $documents): ResponseAdapter
     {
@@ -108,7 +104,6 @@ class SolrWriteService extends AbstractSolrService
      *
      * @param bool $expungeDeletes Defaults to false, merge segments with deletes away
      * @param bool $waitSearcher Defaults to true, block until a new searcher is opened and registered as the main query searcher, making the changes visible
-     * @return ResponseAdapter
      */
     public function commit(bool $expungeDeletes = false, bool $waitSearcher = true): ResponseAdapter
     {
@@ -119,8 +114,6 @@ class SolrWriteService extends AbstractSolrService
 
     /**
      * Optimize the solr index
-     *
-     * @return Result
      */
     public function optimizeIndex(): Result
     {

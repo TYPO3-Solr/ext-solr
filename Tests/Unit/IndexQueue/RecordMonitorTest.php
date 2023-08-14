@@ -21,7 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdate
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -34,12 +34,9 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class RecordMonitorTest extends UnitTest
+class RecordMonitorTest extends SetUpUnitTestCase
 {
-    /**
-     * @var RecordMonitor|null
-     */
-    protected ?RecordMonitor $recordMonitor;
+    protected RecordMonitor $recordMonitor;
 
     /**
      * @var EventDispatcherInterface|MockObject
@@ -55,10 +52,10 @@ class RecordMonitorTest extends UnitTest
         $GLOBALS['BE_USER']->workspace = 0;
         GeneralUtility::addInstance(
             ExtensionConfiguration::class,
-            $this->getDumbMock(ExtensionConfiguration::class)
+            $this->createMock(ExtensionConfiguration::class)
         );
 
-        $rootlineUtilityMock = $this->getDumbMock(RootlineUtility::class);
+        $rootlineUtilityMock = $this->createMock(RootlineUtility::class);
         $rootlineUtilityMock->method('get')->willReturn([]);
         GeneralUtility::addInstance(
             RootlineUtility::class,
@@ -113,7 +110,7 @@ class RecordMonitorTest extends UnitTest
      */
     public function processCmdmap_postProcessUpdatesQueueItemForVersionSwapOfPageRecord(): void
     {
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
+        $dataHandlerMock = $this->createMock(DataHandler::class);
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
@@ -122,7 +119,7 @@ class RecordMonitorTest extends UnitTest
             ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
-        $this->recordMonitor->processCmdmap_postProcess('version', 'pages', 4711, ['action' => 'swap'], $dataHandlerMock);
+        $this->recordMonitor->processCmdmap_postProcess('version', 'pages', 4711, ['action' => 'swap']);
 
         self::assertTrue($dispatchedEvent instanceof VersionSwappedEvent);
         self::assertEquals('pages', $dispatchedEvent->getTable());
@@ -134,8 +131,6 @@ class RecordMonitorTest extends UnitTest
      */
     public function processCmdmap_postProcessUpdatesQueueItemForVersionSwapOfRecord(): void
     {
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
-
         $dispatchedEvent = null;
         $this->eventDispatcherMock
             ->expects(self::once())
@@ -143,7 +138,7 @@ class RecordMonitorTest extends UnitTest
             ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
-        $this->recordMonitor->processCmdmap_postProcess('version', 'tx_foo_bar', 888, ['action' => 'swap'], $dataHandlerMock);
+        $this->recordMonitor->processCmdmap_postProcess('version', 'tx_foo_bar', 888, ['action' => 'swap']);
 
         self::assertTrue($dispatchedEvent instanceof VersionSwappedEvent);
         self::assertEquals('tx_foo_bar', $dispatchedEvent->getTable());
@@ -155,8 +150,6 @@ class RecordMonitorTest extends UnitTest
      */
     public function processCmdmap_postProcessUpdatesQueueItemForMoveOfPageRecord(): void
     {
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
-
         $dispatchedEvent = null;
         $this->eventDispatcherMock
             ->expects(self::once())
@@ -164,7 +157,7 @@ class RecordMonitorTest extends UnitTest
             ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
-        $this->recordMonitor->processCmdmap_postProcess('move', 'pages', 4711, [], $dataHandlerMock);
+        $this->recordMonitor->processCmdmap_postProcess('move', 'pages', 4711, []);
 
         self::assertTrue($dispatchedEvent instanceof RecordMovedEvent);
         self::assertEquals('pages', $dispatchedEvent->getTable());
@@ -176,13 +169,12 @@ class RecordMonitorTest extends UnitTest
      */
     public function processCmdmap_postProcessUpdatesQueueItemForMoveOfPageRecordInDraftWorkspace(): void
     {
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
         $GLOBALS['BE_USER']->workspace = 1;
 
         $this->eventDispatcherMock
             ->expects(self::never())
             ->method('dispatch');
-        $this->recordMonitor->processCmdmap_postProcess('move', 'pages', 4711, [], $dataHandlerMock);
+        $this->recordMonitor->processCmdmap_postProcess('move', 'pages', 4711, []);
     }
 
     /**
@@ -190,8 +182,6 @@ class RecordMonitorTest extends UnitTest
      */
     public function processCmdmap_postProcessUpdatesQueueItemForMoveOfRecord(): void
     {
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
-
         $dispatchedEvent = null;
         $this->eventDispatcherMock
             ->expects(self::once())
@@ -199,7 +189,7 @@ class RecordMonitorTest extends UnitTest
             ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
-        $this->recordMonitor->processCmdmap_postProcess('move', 'tx_foo_bar', 888, [], $dataHandlerMock);
+        $this->recordMonitor->processCmdmap_postProcess('move', 'tx_foo_bar', 888, []);
 
         self::assertTrue($dispatchedEvent instanceof RecordMovedEvent);
         self::assertEquals('tx_foo_bar', $dispatchedEvent->getTable());
@@ -212,8 +202,7 @@ class RecordMonitorTest extends UnitTest
      */
     public function processDatamap_afterDatabaseOperationsUsesAlreadyResolvedNextAutoIncrementValueForNewStatus(): void
     {
-        /* @var DataHandler|MockObject $dataHandlerMock */
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
+        $dataHandlerMock = $this->createMock(DataHandler::class);
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
@@ -236,7 +225,7 @@ class RecordMonitorTest extends UnitTest
     public function processDatamap_afterDatabaseOperationsUsesNotYetResolvedNextAutoIncrementValueForNewStatus(): void
     {
         $newId = 'NEW1';
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
+        $dataHandlerMock = $this->createMock(DataHandler::class);
         $dataHandlerMock->substNEWwithIDs[$newId] = 123;
 
         $dispatchedEvent = null;

@@ -47,15 +47,15 @@
 				<f:if condition="{resultSet.isAutoCorrected}">
 					<f:then>
 					<span class="searched-for">
-						<s:translate key="no_results_nothing_found" arguments="{0: resultSet.initialQueryString}">Nothing found for "%s".</s:translate>
-						<s:translate key="no_results_showing_results_suggestion" arguments="{0: resultSet.correctedQueryString}">Showing results for &quot;@suggestedWord&quot;.</s:translate>
+						<f:translate key="no_results_nothing_found" arguments="{0: resultSet.initialQueryString}" extensionName="solr">Nothing found for "%s".</f:translate>
+						<f:translate key="no_results_showing_results_suggestion" arguments="{0: resultSet.correctedQueryString}" extensionName="solr">Showing results for "%s".</f:translate>
 					</span>
 					</f:then>
 
 					<f:else>
 						<f:if condition="{resultSet.usedQuery.query}">
 						<span class="searched-for">
-							<s:translate key="results_searched_for" arguments="{0: resultSet.usedQuery.query}">Searched for "%s"</s:translate>
+							<f:translate key="results_searched_for" arguments="{0: resultSet.usedQuery.query}" extensionName="solr">Searched for "%s"</f:translate>
 						</span>
 						</f:if>
 					</f:else>
@@ -63,9 +63,9 @@
 
 				<f:if condition="{resultSet.hasSpellCheckingSuggestions}">
 					<f:then>
-						<s:translate key="didYouMean">Did you mean</s:translate>
+						<f:translate key="didYouMean" extensionName="solr">Did you mean</f:translate>
 						<f:for each="{resultSet.spellCheckingSuggestions}" as="suggestion">
-							<f:link.page additionalParams="{q:suggestion.suggestion}">{suggestion.suggestion}</f:link.page>
+							<f:link.page additionalParams="{q: suggestion.suggestion}">{suggestion.suggestion}</f:link.page>
 						</f:for> ?
 					</f:then>
 				</f:if>
@@ -74,16 +74,16 @@
 					<span class="result-found">
 						<f:if condition="{resultSet.allResultCount} == 1">
 							<f:then>
-								<s:translate key="results_found.singular" arguments="{0:resultSet.usedSearch.queryTime}">Found 1 result in %d seconds</s:translate>
+								<f:translate key="results_found.singular" arguments="{0: resultSet.usedSearch.queryTime}" extensionName="solr">Found 1 result in %d seconds</f:translate>
 							</f:then>
 							<f:else>
-								<s:translate key="results_found" arguments="{0:resultSet.allResultCount, 1: resultSet.usedSearch.queryTime}">Found %d results in %d seconds</s:translate>
+								<f:translate key="results_found" arguments="{0: resultSet.allResultCount, 1: resultSet.usedSearch.queryTime}" extensionName="solr">Found %d results in %d seconds</f:translate>
 							</f:else>
 						</f:if>
 					</span>
 						<span class="result-range">
 						<s:pageBrowserRange>
-							<s:translate key="results_range" arguments="{0:from, 1: to, 2: total}">Results %d until %d of %d</s:translate>
+							<f:translate key="results_range" arguments="{0: from, 1: to, 2: total}" extensionName="solr">Results %d until %d of %d</f:translate>
 						</s:pageBrowserRange>
 					</span>
 				</f:if>
@@ -93,7 +93,28 @@
 		<div class="row">
 			<div class="col-md-12 d-grid gap-3">
 				<f:if condition="{resultSet.hasSearched}">
-					<f:if condition="{resultSet.allResultCount}">
+					<f:if condition="{resultSet.searchresults.hasGroups}">
+						<f:then>
+							<f:for each="{resultSet.searchresults.groups}" as="group">
+								<h2>{group.groupname}</h2>
+								<f:for each="{group.groupitems}" as="groupItem">
+									<strong>{groupItem.groupValue} <span>({groupItem.allResultCount})</span></strong>
+									<s:groupItemPaginate groupItem="{groupItem}" resultSet="{resultSet}">
+
+										<f:comment>
+											<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, groupItem: groupItem, pagination: pagination, currentPage: currentPage}"/>
+										</f:comment>
+
+										<ol start="{pagination.resultCountStart}" class="results-list">
+											<f:for each="{documents}" as="document">
+												<f:render partial="Result/Document" section="Document" arguments="{resultSet:resultSet, document:document}" />
+											</f:for>
+										</ol>
+									</s:groupItemPaginate>
+								</f:for>
+							</f:for>
+						</f:then>
+						<f:else if="{resultSet.allResultCount}">
 							<div class="row">
 								<div class="col-8">
 									<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
@@ -102,14 +123,15 @@
 									<f:render partial="Result/PerPage" section="PerPage" arguments="{resultSet: resultSet}" />
 								</div>
 							</div>
-					</f:if>
 
-					<div data-start="{pagination.startRecordNumber}" class="results-list list-group">
-						<f:for each="{resultSet.searchResults}" as="document">
-							<f:render partial="Result/Document" section="Document" arguments="{resultSet: resultSet, document: document}" />
-						</f:for>
-					</div>
-					<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
+							<div data-start="{pagination.startRecordNumber}" class="results-list list-group">
+								<f:for each="{resultSet.searchResults}" as="document">
+									<f:render partial="Result/Document" section="Document" arguments="{resultSet: resultSet, document: document}" />
+								</f:for>
+							</div>
+							<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
+						</f:else>
+					</f:if>
 				</f:if>
 			</div>
 		</div>

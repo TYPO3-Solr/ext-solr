@@ -18,12 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Doctrine\DBAL\DBALException;
-use Exception;
 use InvalidArgumentException;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Testcase to check if the SiteRepository class works as expected.
@@ -37,11 +33,6 @@ class SiteRepositoryTest extends IntegrationTest
      */
     protected $siteRepository;
 
-    /**
-     * @throws NoSuchCacheException
-     * @throws TestingFrameworkCoreException
-     * @throws DBALException
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -51,7 +42,6 @@ class SiteRepositoryTest extends IntegrationTest
 
     /**
      * @test
-     * @throws Exception
      */
     public function canGetAllSites()
     {
@@ -61,12 +51,10 @@ class SiteRepositoryTest extends IntegrationTest
 
     /**
      * @test
-     * @throws TestingFrameworkCoreException
-     * @throws Exception
      */
     public function canGetAllPagesFromSite()
     {
-        $this->importDataSetFromFixture('can_get_all_pages_from_sites.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_all_pages_from_sites.csv');
         $site = $this->siteRepository->getFirstAvailableSite();
         self::assertSame([1, 2, 21, 22, 3, 30], $site->getPages(), 'Can not get all pages from site');
     }
@@ -92,33 +80,30 @@ class SiteRepositoryTest extends IntegrationTest
 
     /**
      * @test
-     * @throws Exception
      */
     public function canGetSiteByPageIdExistingPage()
     {
-        $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_site_by_page_id.csv');
         $site = $this->siteRepository->getSiteByPageId(2);
         self::assertContainsOnlyInstancesOf(Site::class, [$site], 'Could not retrieve site from page');
     }
 
     /**
      * @test
-     * @throws TestingFrameworkCoreException
      */
     public function canGetSiteByPageIdNonExistingPage()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_site_by_page_id.csv');
         $this->siteRepository->getSiteByPageId(42);
     }
 
     /**
      * @test
-     * @throws TestingFrameworkCoreException
      */
     public function canGetSiteWithDomainFromSiteConfiguration()
     {
-        $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_site_by_page_id.csv');
         $site = $this->siteRepository->getSiteByPageId(1);
         $domain = $site->getDomain();
         self::assertSame('testone.site', $domain, 'Can not configured domain with sys_domain record');

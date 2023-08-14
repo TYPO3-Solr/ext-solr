@@ -17,14 +17,14 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Report;
 
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Psr\Http\Message\UriInterface;
-use Throwable;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -37,35 +37,19 @@ use TYPO3\CMS\Reports\Status;
  */
 class SiteHandlingStatus extends AbstractSolrStatus
 {
-    const TITLE_SITE_HANDLING_CONFIGURATION = 'Site handling configuration';
+    public const TITLE_SITE_HANDLING_CONFIGURATION = 'Site handling configuration';
 
-    /**
-     * @var string
-     */
-    const
+    public const
         CSS_STATUS_NOTICE = 'notice',
     CSS_STATUS_INFO = 'info',
     CSS_STATUS_OK = 'success',
     CSS_STATUS_WARNING = 'warning',
     CSS_STATUS_ERROR = 'danger';
 
-    /**
-     * Site Repository
-     *
-     * @var SiteRepository
-     */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
-    /**
-     * @var ExtensionConfiguration
-     */
-    protected $extensionConfiguration;
+    protected ExtensionConfiguration $extensionConfiguration;
 
-    /**
-     * SolrStatus constructor.
-     * @param ExtensionConfiguration|null $extensionConfiguration
-     * @param SiteRepository|null $siteRepository
-     */
     public function __construct(
         ExtensionConfiguration $extensionConfiguration = null,
         SiteRepository $siteRepository = null
@@ -75,29 +59,35 @@ class SiteHandlingStatus extends AbstractSolrStatus
     }
 
     /**
-     * @return array
+     * Verifies the site configuration.
      *
-     * @throws DBALDriverException
-     * @throws Throwable
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
+        $sites = $this->siteRepository->getAvailableSites();
+        if (empty($sites)) {
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
+                self::TITLE_SITE_HANDLING_CONFIGURATION,
+                'No sites found',
+                '',
+                ContextualFeedbackSeverity::WARNING
+            );
 
-        /* @var Site $site */
-        foreach ($this->siteRepository->getAvailableSites() as $site) {
+            return $reports;
+        }
+
+        /** @var Site $site */
+        foreach ($sites as $site) {
             if (!($site instanceof Site)) {
                 $reports[] = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */
                     self::TITLE_SITE_HANDLING_CONFIGURATION,
-                    /** @scrutinizer ignore-type */
                     'Something went wrong',
-                    /** @scrutinizer ignore-type */
                     vsprintf('The configured Site "%s" is not TYPO3 managed site. Please refer to TYPO3 site management docs and configure the site properly.', [$site->getLabel()]),
-                    /** @scrutinizer ignore-type */
-                    Status::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
                 continue;
             }
@@ -109,9 +99,6 @@ class SiteHandlingStatus extends AbstractSolrStatus
 
     /**
      * Renders validation results for desired typo3 site configuration.
-     *
-     * @param Typo3Site $ypo3Site
-     * @return Status
      */
     protected function generateValidationReportForSingleSite(Typo3Site $ypo3Site): Status
     {
@@ -137,25 +124,25 @@ class SiteHandlingStatus extends AbstractSolrStatus
         }
 
         $renderedReport = $this->getRenderedReport('SiteHandlingStatus.html', $variables);
-        /* @var Status $status */
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */
             sprintf('Site Identifier: "%s"', $ypo3Site->getIdentifier()),
-            /** @scrutinizer ignore-type */
             '',
-            /** @scrutinizer ignore-type */
             $renderedReport,
-            /** @scrutinizer ignore-type */
-            $globalPassedStateForThisSite == true ? Status::OK : Status::ERROR
+            $globalPassedStateForThisSite ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::ERROR
         );
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_site-handling';
+    }
+
+    /**
      * Generates the validation result array for using them in standalone view as a table row.
-     *
-     * @param SiteLanguage $siteLanguage
-     * @return array
      */
     protected function generateValidationResultsForSingleSiteLanguage(SiteLanguage $siteLanguage): array
     {
@@ -188,8 +175,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
     }
 
     /**
-     * @param UriInterface $uri
-     * @return string
+     * Fetches the invalid parts of given URI.
      */
     protected function fetchInvalidPartsOfUri(UriInterface $uri): string
     {

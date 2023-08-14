@@ -19,32 +19,22 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SearchRequestBuilderTest extends UnitTest
+class SearchRequestBuilderTest extends SetUpUnitTestCase
 {
-    /**
-     * @var FrontendUserSession
-     */
-    protected $sessionMock;
-
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configurationMock;
-
-    /**
-     * @var SearchRequestBuilder
-     */
-    protected $searchRequestBuilder;
+    protected FrontendUserSession|MockObject $sessionMock;
+    protected TypoScriptConfiguration|MockObject $configurationMock;
+    protected SearchRequestBuilder|MockObject $searchRequestBuilder;
 
     protected function setUp(): void
     {
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->sessionMock = $this->getDumbMock(FrontendUserSession::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $this->sessionMock = $this->createMock(FrontendUserSession::class);
         $this->searchRequestBuilder = new SearchRequestBuilder($this->configurationMock, $this->sessionMock);
         parent::setUp();
     }
@@ -52,7 +42,7 @@ class SearchRequestBuilderTest extends UnitTest
     /**
      * @test
      */
-    public function testPageIsResettedWhenValidResultsPerPageValueWasPassed()
+    public function testPageIsResettedWhenValidResultsPerPageValueWasPassed(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
             ->willReturn([10, 25]);
@@ -72,7 +62,7 @@ class SearchRequestBuilderTest extends UnitTest
     /**
      * @test
      */
-    public function testPerPageValueIsNotSetInSession()
+    public function testPerPageValueIsNotSetInSession(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
             ->willReturn([10, 25]);
@@ -82,12 +72,12 @@ class SearchRequestBuilderTest extends UnitTest
         $this->searchRequestBuilder->buildForSearch($requestArguments, 0, 0);
     }
 
-    private function assertPerPageInSessionWillBeChanged()
+    private function assertPerPageInSessionWillBeChanged(): void
     {
         $this->sessionMock->expects(self::once())->method('setPerPage');
     }
 
-    private function assertPerPageInSessionWillNotBeChanged()
+    private function assertPerPageInSessionWillNotBeChanged(): void
     {
         $this->sessionMock->expects(self::never())->method('setPerPage');
     }

@@ -19,10 +19,11 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent;
-use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
-use ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\AfterUriIsProcessedEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\BeforeCachedVariablesAreProcessedEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -44,71 +45,35 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  */
 class SearchUriBuilder
 {
-    /**
-     * @var UriBuilder|null
-     */
     protected ?UriBuilder $uriBuilder = null;
 
-    /**
-     * @var array
-     */
     protected static array $preCompiledLinks = [];
 
-    /**
-     * @var int
-     */
     protected static int $hitCount = 0;
 
-    /**
-     * @var int
-     */
     protected static int $missCount = 0;
 
-    /**
-     * @var array
-     */
     protected static array $additionalArgumentsCache = [];
 
-    /**
-     * @var EventDispatcherInterface
-     */
     protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var ?RoutingService
-     */
     protected ?RoutingService $routingService = null;
 
-    /**
-     * @param UriBuilder $uriBuilder
-     */
-    public function injectUriBuilder(UriBuilder $uriBuilder)
+    public function injectUriBuilder(UriBuilder $uriBuilder): void
     {
         $this->uriBuilder = $uriBuilder;
     }
 
-    /**
-     * @param RoutingService $routingService
-     */
-    public function injectRoutingService(RoutingService $routingService)
+    public function injectRoutingService(RoutingService $routingService): void
     {
         $this->routingService = $routingService;
     }
 
-    /**
-     * @param EventDispatcherInterface $eventDispatcher
-     */
-    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @param SearchRequest $previousSearchRequest
-     * @param string $facetName
-     * @param mixed $facetValue
-     * @return string
-     */
     public function getAddFacetValueUri(SearchRequest $previousSearchRequest, string $facetName, $facetValue): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
@@ -127,11 +92,6 @@ class SearchUriBuilder
 
     /**
      * Removes all other facet values for this name and only set's the passed value for the facet.
-     *
-     * @param SearchRequest $previousSearchRequest
-     * @param $facetName
-     * @param $facetValue
-     * @return string
      */
     public function getSetFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue): string
     {
@@ -141,12 +101,6 @@ class SearchUriBuilder
         return $this->getAddFacetValueUri($previousSearchRequest, $facetName, $facetValue);
     }
 
-    /**
-     * @param SearchRequest $previousSearchRequest
-     * @param $facetName
-     * @param $facetValue
-     * @return string
-     */
     public function getRemoveFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
@@ -154,7 +108,11 @@ class SearchUriBuilder
             ->getAsArray();
 
         $additionalArguments = [];
-        if ($previousSearchRequest->getContextTypoScriptConfiguration()->getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl()) {
+        if (
+            ($typoScriptConfiguration = $previousSearchRequest->getContextTypoScriptConfiguration())
+            && $typoScriptConfiguration instanceof TypoScriptConfiguration
+            && $typoScriptConfiguration->getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl()
+        ) {
             $additionalArguments = $this->getAdditionalArgumentsFromRequestConfiguration($previousSearchRequest);
         }
         $arguments = $persistentAndFacetArguments + $additionalArguments;
@@ -165,11 +123,6 @@ class SearchUriBuilder
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
 
-    /**
-     * @param SearchRequest $previousSearchRequest
-     * @param $facetName
-     * @return string
-     */
     public function getRemoveFacetUri(SearchRequest $previousSearchRequest, $facetName): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
@@ -177,7 +130,11 @@ class SearchUriBuilder
             ->getAsArray();
 
         $additionalArguments = [];
-        if ($previousSearchRequest->getContextTypoScriptConfiguration()->getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl()) {
+        if (
+            ($typoScriptConfiguration = $previousSearchRequest->getContextTypoScriptConfiguration())
+            && $typoScriptConfiguration instanceof TypoScriptConfiguration
+            && $typoScriptConfiguration->getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl()
+        ) {
             $additionalArguments = $this->getAdditionalArgumentsFromRequestConfiguration($previousSearchRequest);
         }
 
@@ -189,10 +146,6 @@ class SearchUriBuilder
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
 
-    /**
-     * @param SearchRequest $previousSearchRequest
-     * @return string
-     */
     public function getRemoveAllFacetsUri(SearchRequest $previousSearchRequest): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
@@ -200,7 +153,11 @@ class SearchUriBuilder
             ->getAsArray();
 
         $additionalArguments = [];
-        if ($previousSearchRequest->getContextTypoScriptConfiguration()->getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl()) {
+        if (
+            ($typoScriptConfiguration = $previousSearchRequest->getContextTypoScriptConfiguration())
+            && $typoScriptConfiguration instanceof TypoScriptConfiguration
+            && $typoScriptConfiguration->getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl()
+        ) {
             $additionalArguments = $this->getAdditionalArgumentsFromRequestConfiguration($previousSearchRequest);
         }
 
@@ -212,11 +169,6 @@ class SearchUriBuilder
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
 
-    /**
-     * @param SearchRequest $previousSearchRequest
-     * @param $page
-     * @return string
-     */
     public function getResultPageUri(SearchRequest $previousSearchRequest, $page): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
@@ -227,12 +179,6 @@ class SearchUriBuilder
         return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
 
-    /**
-     * @param SearchRequest $previousSearchRequest
-     * @param GroupItem $groupItem
-     * @param int $page
-     * @return string
-     */
     public function getResultGroupItemPageUri(SearchRequest $previousSearchRequest, GroupItem $groupItem, int $page): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
@@ -241,26 +187,19 @@ class SearchUriBuilder
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
-    /**
-     * @param SearchRequest $previousSearchRequest
-     * @param $queryString
-     * @return string
-     */
+
     public function getNewSearchUri(SearchRequest $previousSearchRequest, $queryString): string
     {
-        /** @var $request SearchRequest */
         $contextConfiguration = $previousSearchRequest->getContextTypoScriptConfiguration();
         $contextSystemLanguage = $previousSearchRequest->getContextSystemLanguageUid();
         $contextPageUid = $previousSearchRequest->getContextPageUid();
 
+        /** @var SearchRequest $request */
         $request = GeneralUtility::makeInstance(
             SearchRequest::class,
             [],
-            /** @scrutinizer ignore-type */
             $contextPageUid,
-            /** @scrutinizer ignore-type */
             $contextSystemLanguage,
-            /** @scrutinizer ignore-type */
             $contextConfiguration
         );
         $arguments = $request->setRawQueryString($queryString)->getAsArray();
@@ -271,12 +210,6 @@ class SearchUriBuilder
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
 
-    /**
-     * @param SearchRequest $previousSearchRequest
-     * @param $sortingName
-     * @param $sortingDirection
-     * @return string
-     */
     public function getSetSortingUri(SearchRequest $previousSearchRequest, $sortingName, $sortingDirection): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
@@ -287,10 +220,6 @@ class SearchUriBuilder
         return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
 
-    /**
-     * @param SearchRequest $previousSearchRequest
-     * @return string
-     */
     public function getRemoveSortingUri(SearchRequest $previousSearchRequest): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
@@ -301,10 +230,6 @@ class SearchUriBuilder
         return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
 
-    /**
-     * @param SearchRequest $previousSearchRequest
-     * @return string
-     */
     public function getCurrentSearchUri(SearchRequest $previousSearchRequest): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
@@ -315,13 +240,9 @@ class SearchUriBuilder
         return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
 
-    /**
-     * @param SearchRequest $request
-     * @return array
-     */
     protected function getAdditionalArgumentsFromRequestConfiguration(SearchRequest $request): array
     {
-        if ($request->getContextTypoScriptConfiguration() == null) {
+        if ($request->getContextTypoScriptConfiguration() === null) {
             return [];
         }
 
@@ -336,25 +257,13 @@ class SearchUriBuilder
         return self::$additionalArgumentsCache[$reQuestId];
     }
 
-    /**
-     * @param SearchRequest $request
-     * @return int|null
-     */
     protected function getTargetPageUidFromRequestConfiguration(SearchRequest $request): ?int
     {
-        if ($request->getContextTypoScriptConfiguration() == null) {
-            return null;
-        }
-
-        return $request->getContextTypoScriptConfiguration()->getSearchTargetPage();
+        return $request->getContextTypoScriptConfiguration()?->getSearchTargetPage();
     }
 
     /**
      * Build the link with an i memory cache that reduces the amount of required typolink calls.
-     *
-     * @param int|null $pageUid
-     * @param array $arguments
-     * @return string
      */
     protected function buildLinkWithInMemoryCache(?int $pageUid, array $arguments): string
     {
@@ -370,15 +279,15 @@ class SearchUriBuilder
             $this->uriBuilder->reset()->setTargetPageUid($pageUid);
             $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->build();
 
-            /* @var UrlHelper $urlHelper */
+            /** @var UrlHelper $urlHelper */
             $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $uriCacheTemplate);
             self::$preCompiledLinks[$hash] = (string)$urlHelper;
         }
 
-        $keys = array_map(function ($value) {
+        $keys = array_map(static function ($value) {
             return urlencode((string)$value);
         }, array_keys($values));
-        $values = array_map(function ($value) {
+        $values = array_map(static function ($value) {
             return urlencode((string)$value);
         }, $values);
 
@@ -390,18 +299,18 @@ class SearchUriBuilder
             $this->routingService->fromRoutingConfiguration($routingConfigurations[0]);
         }
 
-        /* @var Uri $uri */
+        /** @var Uri $uri */
         $uri = GeneralUtility::makeInstance(
             Uri::class,
             $uriCacheTemplate
         );
 
-        $urlEvent = new BeforeReplaceVariableInCachedUrlEvent($uri, $enhancedRouting);
-        /* @var BeforeReplaceVariableInCachedUrlEvent $urlEvent */
+        $urlEvent = new BeforeVariableInCachedUrlAreReplacedEvent($uri, $enhancedRouting);
+        /** @var BeforeVariableInCachedUrlAreReplacedEvent $urlEvent */
         $urlEvent = $this->eventDispatcher->dispatch($urlEvent);
         $uriCacheTemplate = (string)$urlEvent->getUri();
 
-        $variableEvent = new BeforeProcessCachedVariablesEvent(
+        $variableEvent = new BeforeCachedVariablesAreProcessedEvent(
             $uri,
             $routingConfigurations,
             $keys,
@@ -411,9 +320,8 @@ class SearchUriBuilder
 
         $values = $variableEvent->getVariableValues();
         // Take care that everything is urlencoded!
-        $keys = array_map(function ($value) {
-            // @TODO: With only PHP 8 support, replace this with str_contains()
-            if (strpos($value, '###') === false) {
+        $keys = array_map(static function ($value) {
+            if (!str_contains($value, '###')) {
                 return $value;
             }
             return urlencode($value);
@@ -424,7 +332,7 @@ class SearchUriBuilder
             Uri::class,
             $uri
         );
-        $uriEvent = new PostProcessUriEvent($uri, $routingConfigurations);
+        $uriEvent = new AfterUriIsProcessedEvent($uri, $routingConfigurations);
         $this->eventDispatcher->dispatch($uriEvent);
         $uri = $uriEvent->getUri();
         return (string)$uri;
@@ -433,7 +341,7 @@ class SearchUriBuilder
     /**
      * Flushes the internal in memory cache.
      */
-    public function flushInMemoryCache()
+    public function flushInMemoryCache(): void
     {
         self::$preCompiledLinks = [];
     }
@@ -443,7 +351,6 @@ class SearchUriBuilder
      * In this structure the values are replaced with the pass to the value. At the same time the values get collected
      * in the $values array, with the path as key. This can be used to build a comparable hash from the arguments
      * in order to reduce the amount of typolink calls
-     *
      *
      * Example input
      *
@@ -464,10 +371,6 @@ class SearchUriBuilder
      * $values = [
      *  '###foo:bar###' => 111
      * ]
-     *
-     * @param array $structure
-     * @param array $values
-     * @param array $branch
      */
     protected function getSubstitution(array &$structure, array &$values, array $branch = []): void
     {
@@ -505,23 +408,24 @@ class SearchUriBuilder
 
     /**
      * Sorts filter arguments if enabled.
-     *
-     *
-     * @param SearchRequest $searchRequest
-     * @param array $arguments
      */
-    protected function sortFilterParametersIfNecessary(SearchRequest $searchRequest, array &$arguments)
+    protected function sortFilterParametersIfNecessary(SearchRequest $searchRequest, array &$arguments): void
     {
         if (!$searchRequest->isActiveFacetsSorted()) {
             return;
         }
 
-        $pluginNameSpace = $searchRequest->getContextTypoScriptConfiguration()->getSearchPluginNamespace();
-        if (!empty($arguments[$pluginNameSpace]['filter']) && is_array($arguments[$pluginNameSpace]['filter'])) {
-            $arguments[$pluginNameSpace]['filter'] = ParameterSortingUtility::sortByType(
-                $arguments[$pluginNameSpace]['filter'],
-                $searchRequest->getActiveFacetsUrlParameterStyle()
-            );
+        if (
+            ($typoScriptConfiguration = $searchRequest->getContextTypoScriptConfiguration())
+            && $typoScriptConfiguration instanceof TypoScriptConfiguration
+        ) {
+            $pluginNameSpace = $typoScriptConfiguration->getSearchPluginNamespace();
+            if (!empty($arguments[$pluginNameSpace]['filter']) && is_array($arguments[$pluginNameSpace]['filter'])) {
+                $arguments[$pluginNameSpace]['filter'] = ParameterSortingUtility::sortByType(
+                    $arguments[$pluginNameSpace]['filter'],
+                    $searchRequest->getActiveFacetsUrlParameterStyle()
+                );
+            }
         }
     }
 }

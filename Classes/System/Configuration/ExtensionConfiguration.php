@@ -31,15 +31,12 @@ class ExtensionConfiguration
 {
     /**
      * Extension Configuration
-     *
-     * @var array
      */
     protected array $configuration = [];
 
     /**
      * ExtensionConfiguration constructor.
      *
-     * @param array $configurationToUse
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
@@ -54,8 +51,6 @@ class ExtensionConfiguration
 
     /**
      * Get configuration for useConfigurationFromClosestTemplate
-     *
-     * @return bool
      */
     public function getIsUseConfigurationFromClosestTemplateEnabled(): bool
     {
@@ -64,8 +59,6 @@ class ExtensionConfiguration
 
     /**
      * Get configuration for useConfigurationTrackRecordsOutsideSiteroot
-     *
-     * @return bool
      */
     public function getIsUseConfigurationTrackRecordsOutsideSiteroot(): bool
     {
@@ -74,8 +67,6 @@ class ExtensionConfiguration
 
     /**
      * Get configuration for allowSelfSignedCertificates
-     *
-     * @return bool
      */
     public function getIsSelfSignedCertificatesEnabled(): bool
     {
@@ -85,7 +76,7 @@ class ExtensionConfiguration
     /**
      * Get configuration for useConfigurationMonitorTables
      *
-     * @return array of table names
+     * @return string[] of table names
      */
     public function getIsUseConfigurationMonitorTables(): array
     {
@@ -102,8 +93,6 @@ class ExtensionConfiguration
     /**
      * Returns a list of available/whitelisted EXT:solr plugin namespaces.
      * Builds from "pluginNamespaces" extension configuration setting.
-     *
-     * @return array
      */
     public function getAvailablePluginNamespaces(): array
     {
@@ -118,19 +107,17 @@ class ExtensionConfiguration
      *
      * Builds from "pluginNamespaces" and takes "includeGlobalQParameterInCacheHash"
      * extension configuration settings into account.
-     *
-     * @return array
      */
     public function getCacheHashExcludedParameters(): array
     {
         $pluginNamespaces = array_map(
-            function ($pluginNamespace) {
+            static function ($pluginNamespace) {
                 return '^' . $pluginNamespace . '[';
             },
             $this->getAvailablePluginNamespaces()
         );
         $enhancersRouteParts = array_map(
-            function ($pluginNamespace) {
+            static function ($pluginNamespace) {
                 // __ \TYPO3\CMS\Core\Routing\Enhancer\VariableProcessor::LEVEL_DELIMITER
                 return '^' . $pluginNamespace . '__';
             },
@@ -147,8 +134,6 @@ class ExtensionConfiguration
 
     /**
      * Returns the "includeGlobalQParameterInCacheHash" extension configuration setting.
-     *
-     * @return bool
      */
     public function getIncludeGlobalQParameterInCacheHash(): bool
     {
@@ -160,20 +145,13 @@ class ExtensionConfiguration
      * 0 - immediate
      * 1 - delayed
      * 2 - no monitoring
-     *
-     * @return int
      */
     public function getMonitoringType(): int
     {
         return (int)$this->getConfigurationOrDefaultValue('monitoringType', 0);
     }
 
-    /**
-     * @param string $key
-     * @param mixed $defaultValue
-     * @return mixed|null
-     */
-    protected function getConfigurationOrDefaultValue(string $key, $defaultValue = null)
+    protected function getConfigurationOrDefaultValue(string $key, mixed $defaultValue = null): mixed
     {
         return $this->configuration[$key] ?? $defaultValue;
     }

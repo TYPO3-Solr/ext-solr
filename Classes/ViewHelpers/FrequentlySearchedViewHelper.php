@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use Closure;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
@@ -32,25 +33,26 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  * Class LastSearchesViewHelper
  *
  * @author Rudy Gnodde <rudy.gnodde@beech.it>
+ *
+ * @noinspection PhpUnused
  */
 class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
 {
     /**
-     * @var bool
+     * @inheritdoc
      */
     protected $escapeChildren = false;
 
     /**
-     * @var bool
+     * @inheritdoc
      */
     protected $escapeOutput = false;
 
     /**
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return mixed|void
+     * Renders frequently searches component.
+     *
      * @throws AspectNotFoundExceptionAlias
+     * @throws DBALException
      */
     public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
@@ -60,7 +62,7 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
         /** @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration();
-        /* @var FrequentSearchesService $frequentSearchesService */
+        /** @var FrequentSearchesService $frequentSearchesService */
         $frequentSearchesService = GeneralUtility::makeInstance(
             FrequentSearchesService::class,
             $typoScriptConfiguration,
@@ -81,16 +83,14 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
 
     /**
      * Initializes the cache for this command.
-     *
-     * @return FrontendInterface|null
      */
     protected static function getInitializedCache(): ?FrontendInterface
     {
         $cacheIdentifier = 'tx_solr';
-        /* @var FrontendInterface $cacheInstance */
         try {
+            /** @var FrontendInterface $cacheInstance */
             $cacheInstance = GeneralUtility::makeInstance(CacheManager::class)->getCache($cacheIdentifier);
-        } catch (NoSuchCacheException $exception) {
+        } catch (NoSuchCacheException) {
             return null;
         }
 
@@ -100,9 +100,7 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
     /**
      * Enrich the frequentSearches
      *
-     * @param array Frequent search terms as array with terms as keys and hits as the value
-     * @param int $minimumSize
-     * @param int $maximumSize
+     * @param array $frequentSearchTerms Frequent search terms as array with terms as keys and hits as the value
      * @return array An array with content for the frequent terms markers
      */
     protected static function enrichFrequentSearchesInfo(array $frequentSearchTerms, int $minimumSize, int $maximumSize): array
@@ -112,7 +110,7 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
             $maximumHits = max(array_values($frequentSearchTerms));
             $minimumHits = min(array_values($frequentSearchTerms));
             $spread = $maximumHits - $minimumHits;
-            $step = ($spread == 0) ? 1 : ($maximumSize - $minimumSize) / $spread;
+            $step = ($spread === 0) ? 1 : ($maximumSize - $minimumSize) / $spread;
 
             foreach ($frequentSearchTerms as $term => $hits) {
                 $size = round($minimumSize + (($hits - $minimumHits) * $step));

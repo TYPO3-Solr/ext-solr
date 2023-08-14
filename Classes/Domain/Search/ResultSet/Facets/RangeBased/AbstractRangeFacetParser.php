@@ -19,11 +19,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRange;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeFacet;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRange;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
-use DateTime;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,23 +35,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractRangeFacetParser extends AbstractFacetParser
 {
-    /**
-     * @param SearchResultSet $resultSet
-     * @param string $facetName
-     * @param array $facetConfiguration
-     * @param string $facetClass
-     * @param string $facetItemClass
-     * @param string $facetRangeCountClass
-     * @return AbstractFacet|null
-     */
     protected function getParsedFacet(
         SearchResultSet $resultSet,
         string $facetName,
         array $facetConfiguration,
         string $facetClass,
         string $facetItemClass,
-        string $facetRangeCountClass
-    ) {
+        string $facetRangeCountClass,
+    ): ?AbstractFacet {
         $fieldName = $facetConfiguration['field'];
         $label = $this->getPlainLabelOrApplyCObject($facetConfiguration);
         $activeValue = $this->getActiveFacetValuesFromRequest($resultSet, $facetName);
@@ -58,15 +50,14 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
 
         $valuesFromResponse = isset($response->facet_counts->facet_ranges->{$fieldName}) ? get_object_vars($response->facet_counts->facet_ranges->{$fieldName}) : [];
 
-        /* @var NumericRangeFacet|DateRangeFacet $facet */
+        /** @var NumericRangeFacet|DateRangeFacet $facet */
         $facet = GeneralUtility::makeInstance(
             $facetClass,
             $resultSet,
             $facetName,
             $fieldName,
             $label,
-            $facetConfiguration,
-            $this->objectManager
+            $facetConfiguration
         );
 
         $facet->setIsAvailable(count($valuesFromResponse) > 0);
@@ -102,7 +93,7 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
             $type = $facetConfiguration['type'] ?? 'numericRange';
             $gap = $facetConfiguration[$type . '.']['gap'] ?? 1;
 
-            /* @var AbstractRangeFacetItem|NumericRangeFacet|DateRangeFacet $range */
+            /** @var DateRange|NumericRange $range */
             $range = GeneralUtility::makeInstance(
                 $facetItemClass,
                 $facet,
@@ -115,22 +106,13 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
                 $rangeCounts,
                 true
             );
-            /* @noinspection PhpParamsInspection */
             $facet->setRange($range);
         }
 
         return $facet;
     }
 
-    /**
-     * @param float|int|string|null $rawRequestValue
-     * @return mixed|float|int|DateTime|null
-     */
-    abstract protected function parseRequestValue($rawRequestValue);
+    abstract protected function parseRequestValue(float|int|string|null $rawRequestValue): mixed;
 
-    /**
-     * @param float|int|string|null $rawResponseValue
-     * @return mixed|float|int|DateTime|null
-     */
-    abstract protected function parseResponseValue($rawResponseValue);
+    abstract protected function parseResponseValue(float|int|string|null $rawResponseValue): mixed;
 }

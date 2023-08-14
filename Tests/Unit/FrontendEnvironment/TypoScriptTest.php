@@ -18,25 +18,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\TypoScript;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class TypoScriptTest extends UnitTest
+class TypoScriptTest extends SetUpUnitTestCase
 {
-    use ProphecyTrait;
-
-    /**
-     * @var TypoScript
-     */
-    protected $typoScriptMock;
-
-    /**
-     * @var TypoScriptConfiguration|MockObject
-     */
-    protected $typoScriptConfigurationDumpMock;
+    protected TypoScript|MockObject $typoScriptMock;
+    protected TypoScriptConfiguration|MockObject $typoScriptConfigurationDumpMock;
 
     protected function setUp(): void
     {
@@ -49,23 +38,14 @@ class TypoScriptTest extends UnitTest
                 ]
             )->getMock();
 
-        $this->typoScriptConfigurationDumpMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->typoScriptConfigurationDumpMock = $this->createMock(TypoScriptConfiguration::class);
         parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        GeneralUtility::resetSingletonInstances([]);
-        unset(
-            $this->typoScriptMock
-        );
-        parent::tearDown();
     }
 
     /**
      * @test
      */
-    public function getConfigurationFromPageIdReturnsCachedConfiguration()
+    public function getConfigurationFromPageIdReturnsCachedConfiguration(): void
     {
         $pageId = 12;
         $path = '';
@@ -73,16 +53,14 @@ class TypoScriptTest extends UnitTest
         $cacheId = md5($pageId . '|' . $path . '|' . $language);
 
         // prepare first call
-        /** @var TwoLevelCache|ObjectProphecy $twoLevelCache */
-        $twoLevelCache = $this->prophesize(TwoLevelCache::class);
+        $twoLevelCache = $this->createMock(TwoLevelCache::class);
         $twoLevelCache
-            ->get($cacheId)
-            ->shouldBeCalled()
-            ->willReturn([]);
+            ->expects(self::once())
+            ->method('get')->with($cacheId)->willReturn([]);
         $twoLevelCache
-            ->set($cacheId, [])
-            ->shouldBeCalledOnce();
-        GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache->reveal());
+            ->expects(self::once())
+            ->method('set')->with($cacheId, []);
+        GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache);
 
         $this->typoScriptMock
             ->method('buildConfigurationArray')

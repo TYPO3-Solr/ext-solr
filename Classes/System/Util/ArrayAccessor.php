@@ -37,26 +37,12 @@ namespace ApacheSolrForTypo3\Solr\System\Util;
  */
 class ArrayAccessor
 {
-    /**
-     * @var array|null
-     */
-    protected ?array $data;
+    protected ?array $data = [];
 
-    /**
-     * @var string
-     */
     protected string $pathSeparator = ':';
 
-    /**
-     * @var bool
-     */
     protected bool $includePathSeparatorInKeys = false;
 
-    /**
-     * @param array $data
-     * @param string $pathSeparator
-     * @param bool $includePathSeparatorInKeys
-     */
     public function __construct(
         array $data = [],
         string $pathSeparator = ':',
@@ -67,28 +53,17 @@ class ArrayAccessor
         $this->includePathSeparatorInKeys = $includePathSeparatorInKeys;
     }
 
-    /**
-     * @param mixed $data
-     */
-    public function setData($data)
+    public function setData(array $data): void
     {
         $this->data = $data;
     }
 
-    /**
-     * @return array
-     */
     public function getData(): array
     {
         return $this->data;
     }
 
-    /**
-     * @param string $path
-     * @param mixed $defaultIfEmpty
-     * @return mixed
-     */
-    public function get(string $path, $defaultIfEmpty = null)
+    public function get(string $path, mixed $defaultIfEmpty = null): mixed
     {
         $pathArray = $this->getPathAsArray($path);
         $pathSegmentCount = count($pathArray);
@@ -108,11 +83,7 @@ class ArrayAccessor
         }
     }
 
-    /**
-     * @param array $pathArray
-     * @return mixed
-     */
-    protected function getDeepElementWithLoop(array $pathArray)
+    protected function getDeepElementWithLoop(array $pathArray): mixed
     {
         $currentElement = $this->data;
         foreach ($pathArray as $key => $pathSegment) {
@@ -133,20 +104,12 @@ class ArrayAccessor
         return $currentElement;
     }
 
-    /**
-     * @param string $path
-     * @return bool
-     */
     public function has(string $path): bool
     {
         return $this->get($path) !== null;
     }
 
-    /**
-     * @param string $path
-     * @param mixed $value
-     */
-    public function set(string $path, $value)
+    public function set(string $path, mixed $value): void
     {
         $pathArray = $this->getPathAsArray($path);
         $pathSegmentCount = count($pathArray);
@@ -164,11 +127,7 @@ class ArrayAccessor
         }
     }
 
-    /**
-     * @param array $pathArray
-     * @param mixed $value
-     */
-    protected function setDeepElementWithLoop(array $pathArray, $value)
+    protected function setDeepElementWithLoop(array $pathArray, mixed $value): void
     {
         $currentElement = &$this->data;
         foreach ($pathArray as $key => $pathSegment) {
@@ -187,10 +146,7 @@ class ArrayAccessor
         }
     }
 
-    /**
-     * @param string $path
-     */
-    public function reset(string $path)
+    public function reset(string $path): void
     {
         $pathArray = $this->getPathAsArray($path);
         $pathSegmentCount = count($pathArray);
@@ -208,10 +164,7 @@ class ArrayAccessor
         }
     }
 
-    /**
-     * @param array $pathArray
-     */
-    protected function resetDeepElementWithLoop(array $pathArray)
+    protected function resetDeepElementWithLoop(array $pathArray): void
     {
         $currentElement = &$this->data;
 
@@ -225,21 +178,16 @@ class ArrayAccessor
                 if (empty($currentElement)) {
                     unset($currentElement);
                 }
-            } else {
+            } elseif (isset($currentElement[$pathSegment])) {
                 $currentElement = &$currentElement[$pathSegment];
             }
         }
     }
 
-    /**
-     * @param string $path
-     * @return array
-     */
     protected function getPathAsArray(string $path): array
     {
         if (!$this->includePathSeparatorInKeys) {
-            $pathArray = explode($this->pathSeparator, $path);
-            return $pathArray !== false ? $pathArray : [];
+            return explode($this->pathSeparator, $path);
         }
 
         $substitutedPath = str_replace($this->pathSeparator, $this->pathSeparator . '@@@', trim($path));

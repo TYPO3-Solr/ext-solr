@@ -15,7 +15,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
 
-use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
@@ -28,12 +27,12 @@ use Solarium\Core\Client\Endpoint;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class IndexAdministrationModuleControllerTest extends AbstractModuleControllerTest
+class IndexAdministrationModuleControllerTest extends AbstractModuleController
 {
     /**
-     * @var ConnectionManager|MockObject
+     * @var IndexAdministrationModuleController|MockObject
      */
-    protected $connectionManagerMock;
+    protected $controller;
 
     protected function setUp(): void
     {
@@ -44,17 +43,17 @@ class IndexAdministrationModuleControllerTest extends AbstractModuleControllerTe
     /**
      * @test
      */
-    public function testReloadIndexConfigurationAction()
+    public function testReloadIndexConfigurationAction(): void
     {
-        $responseMock = $this->getDumbMock(ResponseAdapter::class);
+        $responseMock = $this->createMock(ResponseAdapter::class);
         $responseMock->expects(self::once())->method('getHttpStatus')->willReturn(200);
 
-        $writeEndpointMock = $this->getDumbMock(Endpoint::class);
-        $adminServiceMock = $this->getDumbMock(SolrAdminService::class);
+        $writeEndpointMock = $this->createMock(Endpoint::class);
+        $adminServiceMock = $this->createMock(SolrAdminService::class);
         $adminServiceMock->expects(self::once())->method('reloadCore')->willReturn($responseMock);
         $adminServiceMock->expects(self::once())->method('getPrimaryEndpoint')->willReturn($writeEndpointMock);
 
-        $solrConnection = $this->getDumbMock(SolrConnection::class);
+        $solrConnection = $this->createMock(SolrConnection::class);
         $solrConnection->expects(self::once())->method('getAdminService')->willReturn($adminServiceMock);
 
         $fakeConnections = [$solrConnection];

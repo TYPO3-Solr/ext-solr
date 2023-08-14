@@ -15,10 +15,9 @@
 
 namespace ApacheSolrForTypo3\Solr\Backend;
 
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -35,9 +34,10 @@ class SiteSelectorField
      *
      * @param string $selectorName Name to be used in the selects name attribute
      * @param Site|null $selectedSite Optional, currently selected site
+     *
      * @return string Site selector HTML code
-     * @throws DBALDriverException
-     * @throws Throwable
+     *
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function getAvailableSitesSelector(
         string $selectorName,
@@ -54,7 +54,7 @@ class SiteSelectorField
                 $selectedAttribute = ' selected="selected"';
             }
 
-            $selector .= '<option value="' . htmlspecialchars($site->getRootPageId()) . '"' . $selectedAttribute . '>'
+            $selector .= '<option value="' . htmlspecialchars((string)$site->getRootPageId()) . '"' . $selectedAttribute . '>'
                 . htmlspecialchars($site->getLabel())
                 . '</option>';
         }

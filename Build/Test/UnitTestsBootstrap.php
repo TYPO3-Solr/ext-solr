@@ -15,8 +15,20 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-call_user_func(function () {
-    $testbase = new \TYPO3\TestingFramework\Core\Testbase();
+use TYPO3\CMS\Core\Cache\Backend\NullBackend;
+use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
+use TYPO3\CMS\Core\Configuration\ConfigurationManager;
+use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Package\PackageManager;
+use TYPO3\CMS\Core\Package\UnitTestPackageManager;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Testbase;
+
+call_user_func(static function () {
+    $testbase = new Testbase();
 
     // These if's are for core testing (package typo3/cms) only. cms-composer-installer does
     // not create the autoload-include.php file that sets these env vars and sets composer
@@ -34,45 +46,37 @@ call_user_func(function () {
 
     $testbase->defineSitePath();
 
-    $requestType = \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_BE | \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_CLI;
-    \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::run(0, $requestType);
+    $requestType = SystemEnvironmentBuilder::REQUESTTYPE_BE | SystemEnvironmentBuilder::REQUESTTYPE_CLI;
+    SystemEnvironmentBuilder::run(0, $requestType);
 
-    $testbase->createDirectory(\TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/typo3conf/ext');
-    $testbase->createDirectory(\TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/typo3temp/assets');
-    $testbase->createDirectory(\TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/typo3temp/var/tests');
-    $testbase->createDirectory(\TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/typo3temp/var/transient');
+    $testbase->createDirectory(Environment::getPublicPath() . '/typo3conf/ext');
+    $testbase->createDirectory(Environment::getPublicPath() . '/typo3temp/assets');
+    $testbase->createDirectory(Environment::getPublicPath() . '/typo3temp/var/tests');
+    $testbase->createDirectory(Environment::getPublicPath() . '/typo3temp/var/transient');
 
     // Retrieve an instance of class loader and inject to core bootstrap
     $classLoader = require $testbase->getPackagesPath() . '/autoload.php';
-    \TYPO3\CMS\Core\Core\Bootstrap::initializeClassLoader($classLoader);
+    Bootstrap::initializeClassLoader($classLoader);
 
     // Initialize default TYPO3_CONF_VARS
-    $configurationManager = new \TYPO3\CMS\Core\Configuration\ConfigurationManager();
+    $configurationManager = new ConfigurationManager();
     $GLOBALS['TYPO3_CONF_VARS'] = $configurationManager->getDefaultConfiguration();
 
-    $cache = new \TYPO3\CMS\Core\Cache\Frontend\PhpFrontend(
+    $cache = new PhpFrontend(
         'core',
-        new \TYPO3\CMS\Core\Cache\Backend\NullBackend('production', [])
+        new NullBackend('production', [])
     );
 
     // Set all packages to active
-    if (interface_exists(\TYPO3\CMS\Core\Package\Cache\PackageCacheInterface::class)) {
-        $packageManager = \TYPO3\CMS\Core\Core\Bootstrap::createPackageManager(
-            \TYPO3\CMS\Core\Package\UnitTestPackageManager::class,
-            \TYPO3\CMS\Core\Core\Bootstrap::createPackageCache($cache)
-        );
-    } else {
-        // v10 compatibility layer
-        $packageManager = \TYPO3\CMS\Core\Core\Bootstrap::createPackageManager(
-            \TYPO3\CMS\Core\Package\UnitTestPackageManager::class,
-            $cache
-        );
-    }
+    $packageManager = Bootstrap::createPackageManager(
+        UnitTestPackageManager::class,
+        Bootstrap::createPackageCache($cache)
+    );
 
-    \TYPO3\CMS\Core\Utility\GeneralUtility::setSingletonInstance(\TYPO3\CMS\Core\Package\PackageManager::class, $packageManager);
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::setPackageManager($packageManager);
+    GeneralUtility::setSingletonInstance(PackageManager::class, $packageManager);
+    ExtensionManagementUtility::setPackageManager($packageManager);
 
     $testbase->dumpClassLoadingInformation();
 
-    \TYPO3\CMS\Core\Utility\GeneralUtility::purgeInstances();
+    GeneralUtility::purgeInstances();
 });

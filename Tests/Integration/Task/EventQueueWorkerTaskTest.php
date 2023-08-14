@@ -32,23 +32,13 @@ use TYPO3\CMS\Scheduler\Scheduler;
  */
 class EventQueueWorkerTaskTest extends IntegrationTest
 {
-    /**
-     * @var array
-     */
-    protected $coreExtensionsToLoad = [
+    protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'scheduler',
     ];
 
-    /**
-     * @var EventQueueItemRepository
-     */
-    protected $eventQueue;
-
-    /**
-     * @var Queue
-     */
-    protected $indexQueue;
+    protected EventQueueItemRepository $eventQueue;
+    protected Queue $indexQueue;
 
     protected function setUp(): void
     {
@@ -57,17 +47,8 @@ class EventQueueWorkerTaskTest extends IntegrationTest
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
 
-        /** @var ExtensionConfiguration $task */
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $extConf->set('solr', ['monitoringType' => 1]);
-    }
-
-    protected function tearDown(): void
-    {
-        unset($this->indexQueue);
-        unset($this->eventQueue);
-        unset($GLOBALS['TYPO3_CONF_VARS']);
-        parent::tearDown();
     }
 
     /**
@@ -75,7 +56,7 @@ class EventQueueWorkerTaskTest extends IntegrationTest
      */
     public function canProcessEventQueueItems(): void
     {
-        $this->importDataSetFromFixture('can_process_event_queue.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_process_event_queue.csv');
         $this->eventQueue->addEventToQueue(new RecordUpdatedEvent(1, 'tt_content'));
 
         /** @var EventQueueWorkerTask $task */
@@ -94,12 +75,9 @@ class EventQueueWorkerTaskTest extends IntegrationTest
      */
     public function canHandleErroneousEventQueueItems(): void
     {
-        $this->importDataSetFromFixture('can_handle_erroneous_event_queue_items.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_handle_erroneous_event_queue_items.csv');
 
-        /** @var EventQueueWorkerTask $task */
         $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
-
-        /** @var Scheduler $scheduler */
         $scheduler = GeneralUtility::makeInstance(Scheduler::class);
         $scheduler->executeTask($task);
 

@@ -60,7 +60,7 @@ Getting information / statistics about the index
 Create cores with the core admin api
 ====================================
 
-The CoreAdmin API (https://cwiki.apache.org/confluence/display/solr/CoreAdmin+API) allows you, manipulate the cores in your solr server.
+The CoreAdmin API (https://cwiki.apache.org/confluence/display/solr/CoreAdmin+API) allows you, manipulate the cores in your Solr server.
 
 Since we support configSets a core could be generated with the following http call:
 

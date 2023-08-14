@@ -18,12 +18,11 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 // TODO use/extend ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
+use ApacheSolrForTypo3\Solr\Event\Indexing\AfterPageDocumentIsCreatedForIndexingEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\InvalidFieldNameException;
-use ApacheSolrForTypo3\Solr\SubstitutePageIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -33,48 +32,24 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class PageFieldMappingIndexer implements SubstitutePageIndexer
+class PageFieldMappingIndexer
 {
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $configuration;
-
-    /**
-     * @var string
-     */
     protected string $pageIndexingConfigurationName = 'pages';
 
     /**
-     * @param TypoScriptConfiguration|null $configuration
-     */
-    public function __construct(TypoScriptConfiguration $configuration = null)
-    {
-        $this->configuration = $configuration == null ? Util::getSolrConfiguration() : $configuration;
-    }
-
-    /**
-     * @param string $pageIndexingConfigurationName
-     */
-    public function setPageIndexingConfigurationName(string $pageIndexingConfigurationName)
-    {
-        $this->pageIndexingConfigurationName = $pageIndexingConfigurationName;
-    }
-
-    /**
-     * Returns a substitute document for the currently being indexed page.
+     * Builds a substitute document for the currently being indexed page.
      *
      * Uses the original document and adds fields as defined in
      * plugin.tx_solr.index.queue.pages.fields.
-     *
-     * @param Document $originalPageDocument The original page document.
-     * @return Document A Apache Solr Document object that replace the default page document
      */
-    public function getPageDocument(Document $originalPageDocument): Document
+    public function __invoke(AfterPageDocumentIsCreatedForIndexingEvent $event): void
     {
-        $substitutePageDocument = clone $originalPageDocument;
+        $substitutePageDocument = clone $event->getDocument();
+        $this->configuration = $event->getConfiguration();
+        $this->pageIndexingConfigurationName = $event->getIndexingConfigurationName();
 
-        $mappedFields = $this->getMappedFields($originalPageDocument);
+        $mappedFields = $this->getMappedFields($event->getDocument(), $event->getRecord());
         foreach ($mappedFields as $fieldName => $fieldValue) {
             if (isset($substitutePageDocument->{$fieldName})) {
                 // reset = overwrite, especially important to not make fields
@@ -88,17 +63,18 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
             }
         }
 
-        return $substitutePageDocument;
+        $event->overrideDocument($substitutePageDocument);
     }
 
     /**
      * Gets the mapped fields as an array mapping field names to values.
      *
-     * @throws InvalidFieldNameException
      * @param Document $pageDocument The original page document.
      * @return array An array mapping field names to their values.
+     *
+     * @throws InvalidFieldNameException
      */
-    protected function getMappedFields(Document $pageDocument): array
+    protected function getMappedFields(Document $pageDocument, array $pageRecord): array
     {
         $fields = [];
 
@@ -111,7 +87,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
                     1435441863
                 );
             }
-            $fields[$mappedFieldName] = $this->resolveFieldValue($mappedFieldName, $pageDocument);
+            $fields[$mappedFieldName] = $this->resolveFieldValue($mappedFieldName, $pageDocument, $pageRecord);
         }
 
         return $fields;
@@ -124,12 +100,10 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * Otherwise, the plain page record field value is used.
      *
      * @param string $solrFieldName The Solr field name to resolve the value from the item's record
-     * @return string|array The resolved string value to be indexed
+     * @return string|array The resolved value to be indexed
      */
-    protected function resolveFieldValue(string $solrFieldName, Document $pageDocument)
+    protected function resolveFieldValue(string $solrFieldName, Document $pageDocument, array $pageRecord): array|string
     {
-        $pageRecord = $GLOBALS['TSFE']->page;
-
         $pageIndexingConfiguration = $this->configuration->getIndexQueueFieldsConfigurationByConfigurationName($this->pageIndexingConfigurationName);
 
         if (isset($pageIndexingConfiguration[$solrFieldName . '.'])) {

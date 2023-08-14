@@ -38,16 +38,8 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  */
 class RecordMonitor
 {
-    /**
-     * @var EventDispatcherInterface
-     */
     protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * RecordMonitor constructor.
-     *
-     * @param EventDispatcherInterface|null $eventDispatcher
-     */
     public function __construct(EventDispatcherInterface $eventDispatcher = null)
     {
         $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
@@ -59,12 +51,13 @@ class RecordMonitor
      * @param string $command The command.
      * @param string $table The table the record belongs to
      * @param int $uid The record's uid
+     *
      * @noinspection PhpMissingParamTypeInspection, because it is the TYPO3 core implementation.
      */
     public function processCmdmap_preProcess(
         $command,
         $table,
-        $uid
+        $uid,
     ): void {
         if ($command === 'delete' && $table === 'tt_content' && ($GLOBALS['BE_USER']->workspace ?? null) == 0) {
             $this->eventDispatcher->dispatch(
@@ -80,7 +73,7 @@ class RecordMonitor
      * @param string $command The command.
      * @param string $table The table the record belongs to
      * @param int $uid The record's uid
-     * @param mixed $value
+     *
      * @noinspection PhpMissingParamTypeInspection, because it is the TYPO3 core implementation.
      */
     public function processCmdmap_postProcess(
@@ -124,9 +117,9 @@ class RecordMonitor
     public function processDatamap_afterDatabaseOperations(
         string $status,
         string $table,
-        $uid,
+        int|string $uid,
         array $fields,
-        DataHandler $tceMain
+        DataHandler $tceMain,
     ): void {
         $recordUid = $uid;
         if ($this->skipMonitoringOfTable($table)) {
@@ -135,7 +128,7 @@ class RecordMonitor
 
         $recordPid = $fields['pid'] ?? null;
         if (is_null($recordPid) && MathUtility::canBeInterpretedAsInteger($recordUid)) {
-            $recordInfo = $tceMain->recordInfo($table, (int)$recordUid, 'pid');
+            $recordInfo = $tceMain->recordInfo($table, (int)$recordUid);
             if (!is_null($recordInfo)) {
                 $recordPid = $recordInfo['pid'] ?? null;
             }
@@ -163,9 +156,6 @@ class RecordMonitor
 
     /**
      * Check if the provided table is explicitly configured for monitoring
-     *
-     * @param string $table
-     * @return bool
      */
     protected function skipMonitoringOfTable(string $table): bool
     {
@@ -186,9 +176,6 @@ class RecordMonitor
 
     /**
      * Check if at least one page in the record's rootline is configured to exclude sub-entries from indexing
-     *
-     * @param int $pid
-     * @return bool
      */
     protected function skipRecordByRootlineConfiguration(int $pid): bool
     {
@@ -196,7 +183,7 @@ class RecordMonitor
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid);
         try {
             $rootline = $rootlineUtility->get();
-        } catch (PageNotFoundException $e) {
+        } catch (PageNotFoundException) {
             return true;
         }
         foreach ($rootline as $page) {

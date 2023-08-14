@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\System\Records;
 
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
 use RuntimeException;
@@ -33,55 +32,45 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractRepository
 {
-    /**
-     * @var string
-     */
     protected string $table = '';
 
     /**
      * Retrieves a single row from the database by a given uid
      *
-     * @param string $fields
-     * @param int $uid
      * @return array<string,mixed>|false
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     *
+     * @throws DBALException
      */
-    protected function getOneRowByUid(string $fields, int $uid)
+    protected function getOneRowByUid(string $fields, int $uid): array|bool
     {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder
             ->select($fields)
             ->from($this->table)
             ->where($queryBuilder->expr()->eq('uid', $uid))
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
     }
 
     /**
      * Returns QueryBuilder for Doctrine DBAL
-     *
-     * @return QueryBuilder
      */
     protected function getQueryBuilder(): QueryBuilder
     {
-        /* @var QueryBuilder $queryBuilder */
         return GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->table);
     }
 
     /**
      * Returns current count of last searches
      *
-     * @return int
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function count(): int
     {
         return (int)$this->getQueryBuilder()
             ->count('*')
             ->from($this->table)
-            ->execute()
+            ->executeQuery()
             ->fetchOne();
     }
 
@@ -89,9 +78,6 @@ abstract class AbstractRepository
      * Returns connection for all in transaction involved tables.
      *
      * Note: Rollback will not work in case of different connections.
-     *
-     * @param string ...$tableNames
-     * @return Connection
      */
     public function getConnectionForAllInTransactionInvolvedTables(string ...$tableNames): Connection
     {
@@ -114,9 +100,6 @@ abstract class AbstractRepository
 
     /**
      * Checks whether all table involved in transaction using same connection.
-     *
-     * @param string ...$tableNames
-     * @return bool
      */
     protected function isConnectionForAllTablesTheSame(string ...$tableNames): bool
     {

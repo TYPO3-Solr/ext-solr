@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use Doctrine\DBAL\Exception as DBALException;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
@@ -30,16 +31,8 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  */
 class MountPagesUpdater
 {
-    /**
-     * @var PagesRepository
-     */
-    protected $pagesRepository;
+    protected PagesRepository $pagesRepository;
 
-    /**
-     * MountPagesUpdater constructor.
-     *
-     * @param PagesRepository|null $pagesRepository
-     */
     public function __construct(PagesRepository $pagesRepository = null)
     {
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
@@ -49,15 +42,15 @@ class MountPagesUpdater
      * Handles updates of the Index Queue in case a newly created or changed
      * page is part of a tree that is mounted into another site.
      *
-     * @param int $pageId Page Id (uid).
+     * @throws DBALException
      */
-    public function update(int $pageId)
+    public function update(int $pageId): void
     {
         // get the root line of the page, every parent page could be a Mount Page source
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
         try {
             $rootLineArray = $rootlineUtility->get();
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException) {
             $rootLineArray = [];
         }
 
@@ -68,8 +61,8 @@ class MountPagesUpdater
             return;
         }
 
-        /* @var Rootline $rootLine */
-        $rootLine = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $rootLineArray);
+        /** @var Rootline $rootLine */
+        $rootLine = GeneralUtility::makeInstance(Rootline::class, $rootLineArray);
         $rootLineParentPageIds = array_map('intval', $rootLine->getParentPageIds());
         $destinationMountProperties = $this->pagesRepository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds($currentPageUid, $rootLineParentPageIds);
 
@@ -87,13 +80,15 @@ class MountPagesUpdater
      *
      * @param int $mountedPageId ID (uid) of the mounted page.
      * @param array $mountProperties Array of mount point properties mountPageSource, mountPageDestination, and mountPageOverlayed
+     *
+     * @throws DBALException
      */
-    protected function addPageToMountingSiteIndexQueue(int $mountedPageId, array $mountProperties)
+    protected function addPageToMountingSiteIndexQueue(int $mountedPageId, array $mountProperties): void
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $mountingSite = $siteRepository->getSiteByPageId($mountProperties['mountPageDestination']);
 
-        /* @var Page $pageInitializer */
+        /** @var Page $pageInitializer */
         $pageInitializer = GeneralUtility::makeInstance(Page::class);
         $pageInitializer->setSite($mountingSite);
         $pageInitializer->setIndexingConfigurationName('pages');

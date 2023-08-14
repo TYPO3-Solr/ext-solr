@@ -25,7 +25,7 @@ class ExtractingQuery extends SolariumExtractQuery
     /**
      * Constructor
      *
-     * @param string $file Absolute path to the file to extract content and meta data from.
+     * @param string $file Absolute path to the file to extract content and metadata from.
      */
     public function __construct($file)
     {

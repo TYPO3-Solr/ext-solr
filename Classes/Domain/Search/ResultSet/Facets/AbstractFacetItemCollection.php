@@ -27,10 +27,6 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
  */
 abstract class AbstractFacetItemCollection extends AbstractCollection
 {
-    /**
-     * @param AbstractFacetItem|null $item
-     * @return AbstractFacetItemCollection
-     */
     public function add(?AbstractFacetItem $item): AbstractFacetItemCollection
     {
         if ($item === null) {
@@ -41,19 +37,13 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
         return $this;
     }
 
-    /**
-     * @param string $value
-     * @return ?AbstractFacetItem
-     */
-    public function getByValue(string $value): ?AbstractFacetItem
+    public function getByValue(string $value): AbstractFacetItem|AbstractCollection|AbstractFacetItemCollection|null
     {
         return $this->data[$value] ?? null;
     }
 
     /**
      * Retrieves the count (with get prefixed to be usable in fluid).
-     *
-     * @return int
      */
     public function getCount(): int
     {
@@ -61,7 +51,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
     }
 
     /**
-     * @return AbstractCollection
+     * Returns the selected facet item collection
      */
     public function getSelected(): AbstractCollection
     {
@@ -71,10 +61,9 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
     }
 
     /**
-     * @param array $manualSorting
-     * @return AbstractFacetItemCollection
+     * Returns the manually sorted copy of given facet items.
      */
-    public function getManualSortedCopy(array $manualSorting): AbstractFacetItemCollection
+    public function getManualSortedCopy(array $manualSorting): static
     {
         $result = clone $this;
         $copiedItems = $result->data;
@@ -86,16 +75,16 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
             }
         }
         // in the end all items get appended that are not configured in the manual sort order
-        $sortedOptions = $sortedOptions + $copiedItems;
+        $sortedOptions += $copiedItems;
         $result->data = $sortedOptions;
 
         return $result;
     }
 
     /**
-     * @return AbstractFacetItemCollection
+     * Returns the manually reverse ordered copy of available facet items.
      */
-    public function getReversedOrderCopy(): AbstractFacetItemCollection
+    public function getReversedOrderCopy(): static
     {
         $result = clone $this;
         $result->data = array_reverse($result->data, true);

@@ -17,7 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Service;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ConfigurationServiceTest extends UnitTest
+class ConfigurationServiceTest extends SetUpUnitTestCase
 {
     /**
      * @return array
@@ -54,7 +54,7 @@ class ConfigurationServiceTest extends UnitTest
                     ],
                 ],
           ];
-        $flexFormServiceMock = $this->getDumbMock(FlexFormService::class);
+        $flexFormServiceMock = $this->createMock(FlexFormService::class);
         $flexFormServiceMock->expects(self::once())->method('convertflexFormContentToArray')->willReturn($fakeFlexFormArrayData);
 
         $typoScriptConfiguration = new TypoScriptConfiguration(['plugin.' => ['tx_solr.' => []]]);

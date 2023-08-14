@@ -33,21 +33,16 @@ class ResultParserRegistry implements SingletonInterface
     /**
      * Array of available parser classNames
      *
-     * @var array
+     * @var string[]
      */
     protected array $parsers = [
         100 => DefaultResultParser::class,
     ];
 
-    /**
-     * @var AbstractResultParser[]|null
-     */
     protected ?array $parserInstances = null;
 
     /**
      * Get registered parser classNames
-     *
-     * @return array
      */
     public function getParsers(): array
     {
@@ -55,10 +50,8 @@ class ResultParserRegistry implements SingletonInterface
     }
 
     /**
-     * Can be used to register a custom parser.
+     * Can be used to register a custom parser class by priority(higher priority means more important).
      *
-     * @param string $className classname of the parser that should be used
-     * @param int $priority higher priority means more important
      * @throws InvalidArgumentException
      */
     public function registerParser(string $className, int $priority): void
@@ -81,10 +74,6 @@ class ResultParserRegistry implements SingletonInterface
 
     /**
      * Method to check if a certain parser is already registered
-     *
-     * @param string $className
-     * @param int $priority
-     * @return bool
      */
     public function hasParser(string $className, int $priority): bool
     {
@@ -96,7 +85,9 @@ class ResultParserRegistry implements SingletonInterface
     }
 
     /**
-     * @return AbstractResultParser[]
+     * Returns an array of available parser instances
+     *
+     * @return AbstractResultParser[]|null
      */
     public function getParserInstances(): ?array
     {
@@ -111,12 +102,11 @@ class ResultParserRegistry implements SingletonInterface
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @return AbstractResultParser|null
+     * Returns parser instances, which can parse a given result set.
      */
     public function getParser(SearchResultSet $resultSet): ?AbstractResultParser
     {
-        /* @var AbstractResultParser $parser */
+        /** @var AbstractResultParser $parser */
         foreach ($this->getParserInstances() as $parser) {
             if ($parser->canParse($resultSet)) {
                 return $parser;
@@ -127,10 +117,6 @@ class ResultParserRegistry implements SingletonInterface
 
     /**
      * Create an instance of a certain parser class
-     *
-     * @param string $className
-     * @return AbstractResultParser
-     * @noinspection PhpIncompatibleReturnTypeInspection
      */
     protected function createParserInstance(string $className): AbstractResultParser
     {

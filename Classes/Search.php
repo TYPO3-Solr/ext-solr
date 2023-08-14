@@ -19,15 +19,14 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\DebugWriter;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Exception;
+use Doctrine\DBAL\Exception as DBALException;
 use stdClass;
 use Throwable;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -39,55 +38,38 @@ class Search
 {
     /**
      * An instance of the Solr service
-     *
-     * @var SolrConnection|null
      */
     protected ?SolrConnection $solr;
 
     /**
      * The search query
-     *
-     * @var Query|null
      */
-    protected ?Query $query;
+    protected ?Query $query = null;
 
     /**
      * The search response
-     *
-     * @var ResponseAdapter|null
      */
     protected ?ResponseAdapter $response = null;
 
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $configuration;
 
-    // TODO Override __clone to reset $response and $hasSearched
-
-    /**
-     * @var SolrLogManager
-     */
     protected SolrLogManager $logger;
 
     /**
-     * Constructor
+     * Search constructor
      *
-     * @param SolrConnection|null $solrConnection The Solr connection to use for searching
-     * @throws AspectNotFoundException
-     * @throws DBALDriverException
+     * @throws DBALException
      * @throws NoSolrConnectionFoundException
      */
     public function __construct(SolrConnection $solrConnection = null)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = new SolrLogManager(__CLASS__, GeneralUtility::makeInstance(DebugWriter::class));
 
         $this->solr = $solrConnection;
 
         if (is_null($solrConnection)) {
-            /** @var $connectionManager ConnectionManager */
             $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-            $this->solr = $connectionManager->getConnectionByPageId(($GLOBALS['TSFE']->id ?? 0), Util::getLanguageUid());
+            $this->solr = $connectionManager->getConnectionByPageId(($GLOBALS['TSFE']->id ?? 0), ($GLOBALS['TSFE']?->getLanguage()->getLanguageId() ?? 0));
         }
 
         $this->configuration = Util::getSolrConfiguration();
@@ -95,8 +77,6 @@ class Search
 
     /**
      * Gets the Solr connection used by this search.
-     *
-     * @return SolrConnection Solr connection
      */
     public function getSolrConnection(): ?SolrConnection
     {
@@ -109,10 +89,8 @@ class Search
      * Since ApacheSolrForTypo3\Solr\Search is a \TYPO3\CMS\Core\SingletonInterface, this is needed to
      * be able to switch between multiple cores/connections during
      * one request
-     *
-     * @param SolrConnection $solrConnection
      */
-    public function setSolrConnection(SolrConnection $solrConnection)
+    public function setSolrConnection(SolrConnection $solrConnection): void
     {
         $this->solr = $solrConnection;
     }
@@ -127,7 +105,7 @@ class Search
      * @param Query $query The query with keywords, filters, and so on.
      * @param int $offset Result offset for pagination.
      * @param int|null $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
-     * @return ResponseAdapter Solr response
+     * @return ResponseAdapter|null Solr response
      */
     public function search(Query $query, int $offset = 0, ?int $limit = null): ?ResponseAdapter
     {
@@ -141,8 +119,7 @@ class Search
         try {
             $response = $this->solr->getReadService()->search($query);
             if ($this->configuration->getLoggingQueryQueryString()) {
-                $this->logger->log(
-                    SolrLogManager::INFO,
+                $this->logger->info(
                     'Querying Solr, getting result',
                     [
                         'query string' => $query->getQuery(),
@@ -153,8 +130,7 @@ class Search
             }
         } catch (SolrCommunicationException $e) {
             if ($this->configuration->getLoggingExceptions()) {
-                $this->logger->log(
-                    SolrLogManager::ERROR,
+                $this->logger->error(
                     'Exception while querying Solr',
                     [
                         'exception' => $e->__toString(),
@@ -175,9 +151,6 @@ class Search
 
     /**
      * Sends a ping to the solr server to see whether it is available.
-     *
-     * @param bool $useCache Set to true if the cache should be used.
-     * @return bool Returns TRUE on successful ping.
      */
     public function ping(bool $useCache = true): bool
     {
@@ -191,8 +164,7 @@ class Search
             $solrAvailable = true;
         } catch (Throwable $e) {
             if ($this->configuration->getLoggingExceptions()) {
-                $this->logger->log(
-                    SolrLogManager::ERROR,
+                $this->logger->error(
                     'Exception while trying to ping the solr server',
                     [
                         $e->__toString(),
@@ -206,8 +178,6 @@ class Search
 
     /**
      * Gets the query object.
-     *
-     * @return Query|null
      */
     public function getQuery(): ?Query
     {
@@ -216,8 +186,6 @@ class Search
 
     /**
      * Gets the Solr response
-     *
-     * @return ResponseAdapter|null
      */
     public function getResponse(): ?ResponseAdapter
     {
@@ -225,7 +193,7 @@ class Search
     }
 
     /**
-     * @return string|null
+     * Returns raw response if available.
      */
     public function getRawResponse(): ?string
     {
@@ -233,13 +201,16 @@ class Search
     }
 
     /**
-     * @return stdClass|null
+     * Returns response header if available.
      */
     public function getResponseHeader(): ?stdClass
     {
         return $this->getResponse()->responseHeader;
     }
 
+    /**
+     * Returns response body if available.
+     */
     public function getResponseBody(): ?stdClass
     {
         // @extensionScannerIgnoreLine
@@ -247,9 +218,7 @@ class Search
     }
 
     /**
-     * Gets the time Solr took to execute the query and return the result.
-     *
-     * @return int Query time in milliseconds
+     * Gets the time in milliseconds Solr took to execute the query and return the result.
      */
     public function getQueryTime(): int
     {
@@ -258,8 +227,6 @@ class Search
 
     /**
      * Gets the number of results per page.
-     *
-     * @return int Number of results per page
      */
     public function getResultsPerPage(): int
     {
@@ -268,8 +235,6 @@ class Search
 
     /**
      * Gets the result offset.
-     *
-     * @return int Result offset
      */
     public function getResultOffset(): int
     {
@@ -277,12 +242,18 @@ class Search
         return $this->response->response->start;
     }
 
+    /**
+     * Returns the debug response if available.
+     */
     public function getDebugResponse(): ?stdClass
     {
         // @extensionScannerIgnoreLine
         return $this->response->debug;
     }
 
+    /**
+     * Returns highlighted content if available.
+     */
     public function getHighlightedContent(): ?stdClass
     {
         $highlightedContent = new stdClass();

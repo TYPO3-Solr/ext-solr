@@ -39,14 +39,13 @@ use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
  */
 class Classification extends AbstractContentObject
 {
-    const CONTENT_OBJECT_NAME = 'SOLR_CLASSIFICATION';
+    public const CONTENT_OBJECT_NAME = 'SOLR_CLASSIFICATION';
 
     /**
      * Executes the SOLR_CLASSIFICATION content object.
      *
      * Returns mapped classes when the field matches on of the configured patterns ...
      *
-     * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])
@@ -68,7 +67,7 @@ class Classification extends AbstractContentObject
             $data = $this->cObj->stdWrap($data, $conf);
         }
         $classifications = $this->buildClassificationsFromConfiguration($configuredMappedClasses);
-        /** @var $classificationService ClassificationService */
+        /** @var ClassificationService $classificationService */
         $classificationService = GeneralUtility::makeInstance(ClassificationService::class);
 
         return serialize($classificationService->getMatchingClassNames((string)$data, $classifications));
@@ -77,7 +76,6 @@ class Classification extends AbstractContentObject
     /**
      * Builds an array of Classification objects from the passed classification configuration.
      *
-     * @param array $configuredMappedClasses
      * @return ClassificationItem[]
      */
     protected function buildClassificationsFromConfiguration(array $configuredMappedClasses): array
@@ -91,17 +89,14 @@ class Classification extends AbstractContentObject
             // @todo deprecate patterns configuration
             $patterns = empty($class['patterns']) ? [] : GeneralUtility::trimExplode(',', $class['patterns']);
             $matchPatterns = empty($class['matchPatterns']) ? [] : GeneralUtility::trimExplode(',', $class['matchPatterns']);
-            $matchPatterns = $matchPatterns + $patterns;
+            $matchPatterns += $patterns;
             $unMatchPatters = empty($class['unmatchPatterns']) ? [] : GeneralUtility::trimExplode(',', $class['unmatchPatterns']);
 
             $className = $class['class'];
             $classifications[] = GeneralUtility::makeInstance(
                 ClassificationItem::class,
-                /** @scrutinizer ignore-type */
                 $matchPatterns,
-                /** @scrutinizer ignore-type */
                 $unMatchPatters,
-                /** @scrutinizer ignore-type */
                 $className
             );
         }

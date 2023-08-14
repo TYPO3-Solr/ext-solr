@@ -17,11 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
+use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Search\RelevanceComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Solarium\QueryType\Select\RequestBuilder;
 
 /**
@@ -29,13 +32,13 @@ use Solarium\QueryType\Select\RequestBuilder;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class RelevanceComponentTest extends UnitTest
+class RelevanceComponentTest extends SetUpUnitTestCase
 {
     /**
      * @param $query
      * @return array
      */
-    protected function getQueryParameters($query)
+    protected function getQueryParameters($query): array
     {
         $requestBuilder = new RequestBuilder();
         $request = $requestBuilder->build($query);
@@ -45,7 +48,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function canSetQuerySlop()
+    public function canSetQuerySlop(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -62,14 +65,20 @@ class RelevanceComponentTest extends UnitTest
             $this->createMock(SolrLogManager::class),
             $this->createMock(SiteHashService::class)
         );
-        $relevanceComponent = new RelevanceComponent($queryBuilder);
 
         $query = new Query();
         $query->setQuery('test');
         self::assertArrayNotHasKey('qs', $this->getQueryParameters($query));
 
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertSame(2, $this->getQueryParameters($query)['qs'], 'querySlop was not applied as qs parameter');
     }
@@ -77,7 +86,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function querySlopIsNotSetWhenPhraseIsDisabled()
+    public function querySlopIsNotSetWhenPhraseIsDisabled(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -93,14 +102,20 @@ class RelevanceComponentTest extends UnitTest
             $this->createMock(SolrLogManager::class),
             $this->createMock(SiteHashService::class)
         );
-        $relevanceComponent = new RelevanceComponent($queryBuilder);
 
         $query = new Query();
         $query->setQuery('test');
         self::assertArrayNotHasKey('qs', $this->getQueryParameters($query));
 
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertArrayNotHasKey('qs', $this->getQueryParameters($query), 'querySlop should still be null because phrase is disabled');
     }
@@ -108,7 +123,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function canSetSlop()
+    public function canSetSlop(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -131,8 +146,14 @@ class RelevanceComponentTest extends UnitTest
         $query->setQuery('test');
         self::assertArrayNotHasKey('ps', $this->getQueryParameters($query));
 
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $relevanceComponent->__invoke($event);
 
         self::assertSame(3, $this->getQueryParameters($query)['ps'], 'slop was not applied as qs parameter');
     }
@@ -156,14 +177,20 @@ class RelevanceComponentTest extends UnitTest
             $this->createMock(SolrLogManager::class),
             $this->createMock(SiteHashService::class)
         );
-        $relevanceComponent = new RelevanceComponent($queryBuilder);
 
         $query = new Query();
         $query->setQuery('test');
         self::assertArrayNotHasKey('ps', $this->getQueryParameters($query));
 
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertArrayNotHasKey('ps', $this->getQueryParameters($query), 'PhraseSlop should be null, when phrase is disabled');
     }
@@ -171,7 +198,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function canSetBigramPhraseSlop()
+    public function canSetBigramPhraseSlop(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -187,15 +214,21 @@ class RelevanceComponentTest extends UnitTest
             $this->createMock(SolrLogManager::class),
             $this->createMock(SiteHashService::class)
         );
-        $relevanceComponent = new RelevanceComponent($queryBuilder);
 
         $query = new Query();
         $query->setQuery('test');
 
         self::assertArrayNotHasKey('ps2', $this->getQueryParameters($query));
 
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertSame(4, $this->getQueryParameters($query)['ps2'], 'slop was not applied as qs parameter');
     }
@@ -203,7 +236,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function canNotSetBigramPhraseSlopWhenBigramPhraseIsDisabled()
+    public function canNotSetBigramPhraseSlopWhenBigramPhraseIsDisabled(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -219,14 +252,20 @@ class RelevanceComponentTest extends UnitTest
             $this->createMock(SolrLogManager::class),
             $this->createMock(SiteHashService::class)
         );
-        $relevanceComponent = new RelevanceComponent($queryBuilder);
 
         $query = new Query();
         $query->setQuery('test');
         self::assertArrayNotHasKey('ps2', $this->getQueryParameters($query));
 
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertArrayNotHasKey('ps2', $this->getQueryParameters($query), 'ps2 parameter should be empty because bigramPhrases are disabled');
     }
@@ -234,7 +273,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function canSetTrigramPhraseSlop()
+    public function canSetTrigramPhraseSlop(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -256,8 +295,15 @@ class RelevanceComponentTest extends UnitTest
         $query->setQuery('test');
         self::assertArrayNotHasKey('ps3', $this->getQueryParameters($query));
 
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertSame(4, $this->getQueryParameters($query)['ps3'], 'slop was not applied as qs parameter');
     }
@@ -265,7 +311,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function canNotSetTrigramPhraseSlopWhenBigramPhraseIsDisabled()
+    public function canNotSetTrigramPhraseSlopWhenBigramPhraseIsDisabled(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -287,8 +333,15 @@ class RelevanceComponentTest extends UnitTest
         $query->setQuery('test');
         self::assertArrayNotHasKey('ps3', $this->getQueryParameters($query));
 
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertArrayNotHasKey('ps3', $this->getQueryParameters($query), 'ps3 parameter should be empty because bigramPhrases are disabled');
     }
@@ -296,7 +349,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function canSetTieParameter()
+    public function canSetTieParameter(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -309,14 +362,20 @@ class RelevanceComponentTest extends UnitTest
             $this->createMock(SolrLogManager::class),
             $this->createMock(SiteHashService::class)
         );
-        $relevanceComponent = new RelevanceComponent($queryBuilder);
 
         $query = new Query();
         $query->setQuery('test');
         self::assertArrayNotHasKey('tie', $this->getQueryParameters($query));
 
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertSame((float)'0.78', $this->getQueryParameters($query)['tie'], 'tieParameter was not applied as tie parameter');
     }
@@ -324,7 +383,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function canSetBoostQuery()
+    public function canSetBoostQuery(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -342,11 +401,16 @@ class RelevanceComponentTest extends UnitTest
             $this->createMock(SolrLogManager::class),
             $this->createMock(SiteHashService::class)
         );
-        $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $relevanceComponent->setSearchConfiguration($searchConfiguration);
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertSame('type:pages^100', $this->getQueryParameters($query)['bq'], 'Configured boostQuery was not applied');
     }
@@ -354,7 +418,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function canSetBoostQueries()
+    public function canSetBoostQueries(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -375,11 +439,16 @@ class RelevanceComponentTest extends UnitTest
             $this->createMock(SolrLogManager::class),
             $this->createMock(SiteHashService::class)
         );
-        $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $relevanceComponent->setSearchConfiguration($searchConfiguration);
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertSame('type:pages^100', $this->getQueryParameters($query)['bq'][0], 'Configured boostQuery was not applied');
         self::assertSame('type:tx_solr_file^400', $this->getQueryParameters($query)['bq'][1], 'Configured boostQuery was not applied');
@@ -388,7 +457,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function canSetBoostFunction()
+    public function canSetBoostFunction(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -406,11 +475,16 @@ class RelevanceComponentTest extends UnitTest
             $this->createMock(SolrLogManager::class),
             $this->createMock(SiteHashService::class)
         );
-        $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $relevanceComponent->setSearchConfiguration($searchConfiguration);
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertSame('sum(clicks)^100', $this->getQueryParameters($query)['bf'], 'Configured boostFunction was not applied');
     }
@@ -418,7 +492,7 @@ class RelevanceComponentTest extends UnitTest
     /**
      * @test
      */
-    public function canSetMinimumMatch()
+    public function canSetMinimumMatch(): void
     {
         $searchConfiguration = [
             'query.' => [
@@ -437,19 +511,20 @@ class RelevanceComponentTest extends UnitTest
             $this->createMock(SiteHashService::class)
         );
 
-        $relevanceComponent = new RelevanceComponent($queryBuilder);
-        $relevanceComponent->setSearchConfiguration($searchConfiguration);
-        $relevanceComponent->setQuery($query);
-        $relevanceComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $this->createMock(SearchRequest::class),
+            $this->createMock(Search::class),
+            $typoscriptConfiguration
+        );
+
+        $subject = new RelevanceComponent($queryBuilder);
+        $subject->__invoke($event);
 
         self::assertSame('<1', $this->getQueryParameters($query)['mm'], 'Configured minimumMatch was not applied');
     }
 
-    /**
-     * @param array $searchConfiguration
-     * @return TypoScriptConfiguration
-     */
-    protected function getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration)
+    protected function getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration): TypoScriptConfiguration
     {
         return new TypoScriptConfiguration([
             'plugin.' => [

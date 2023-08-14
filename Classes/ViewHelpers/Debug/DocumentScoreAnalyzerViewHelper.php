@@ -33,35 +33,27 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
+ *
+ * @noinspection PhpUnused Used in {@link Resources/Private/Partials/Result/Document.html}
  */
 class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * @var ScoreCalculationService|null
-     */
     protected static ?ScoreCalculationService $scoreService = null;
 
-    /**
-     * @var bool
-     */
     protected $escapeOutput = false;
 
     /**
      * Initializes the arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('document', SearchResult::class, 'The solr document', true);
     }
 
     /**
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
      * @throws AspectNotFoundException
      * @noinspection PhpMissingReturnTypeInspection
      */
@@ -77,7 +69,7 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
 
         $document = $arguments['document'];
 
-        /** @var $resultSet SearchResultSet */
+        /** @var SearchResultSet $resultSet */
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
         $debugData = '';
         if (
@@ -94,9 +86,6 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
         return '<div class="document-score-analysis">' . $content . '</div>';
     }
 
-    /**
-     * @return ScoreCalculationService
-     */
     protected static function getScoreService(): ScoreCalculationService
     {
         if (isset(self::$scoreService)) {

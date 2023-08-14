@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Report;
 
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -30,19 +31,16 @@ class AllowUrlFOpenStatus extends AbstractSolrStatus
 {
     /**
      * Checks whether allow_url_fopen is enabled.
-     * @noinspection PhpMissingReturnTypeInspection
-     *
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
-        $severity = Status::OK;
+        $severity = ContextualFeedbackSeverity::OK;
         $value = 'On';
         $message = '';
 
         if (!ini_get('allow_url_fopen')) {
-            $severity = Status::ERROR;
+            $severity = ContextualFeedbackSeverity::ERROR;
             $value = 'Off';
             $message = 'allow_url_fopen must be enabled in php.ini to allow
 				communication between TYPO3 and the Apache Solr server.
@@ -52,16 +50,20 @@ class AllowUrlFOpenStatus extends AbstractSolrStatus
 
         $reports[] = GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */
             'allow_url_fopen',
-            /** @scrutinizer ignore-type */
             $value,
-            /** @scrutinizer ignore-type */
             $message,
-            /** @scrutinizer ignore-type */
             $severity
         );
 
         return $reports;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_allow-url-open';
     }
 }

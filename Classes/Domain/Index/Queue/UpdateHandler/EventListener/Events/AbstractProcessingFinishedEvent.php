@@ -29,9 +29,6 @@ abstract class AbstractProcessingFinishedEvent implements ProcessingFinishedEven
      */
     private DataUpdateEventInterface $dataUpdateEvent;
 
-    /**
-     * @param DataUpdateEventInterface $dataUpdateEvent
-     */
     public function __construct(DataUpdateEventInterface $dataUpdateEvent)
     {
         $this->dataUpdateEvent = $dataUpdateEvent;
@@ -39,8 +36,6 @@ abstract class AbstractProcessingFinishedEvent implements ProcessingFinishedEven
 
     /**
      * Returns the processed data update event
-     *
-     * @return DataUpdateEventInterface
      */
     final public function getDataUpdateEvent(): DataUpdateEventInterface
     {

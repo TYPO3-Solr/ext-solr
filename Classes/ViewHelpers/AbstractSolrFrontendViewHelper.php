@@ -19,9 +19,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use InvalidArgumentException;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -32,55 +30,20 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 abstract class AbstractSolrFrontendViewHelper extends AbstractSolrViewHelper
 {
-    /**
-     * @var SolrControllerContext|null
-     */
-    protected ?SolrControllerContext $controllerContext = null;
-
-    /**
-     * @return TypoScriptConfiguration|null
-     */
     protected function getTypoScriptConfiguration(): ?TypoScriptConfiguration
     {
-        return $this->getControllerContext()->getTypoScriptConfiguration();
+        return $this->renderingContext->getVariableProvider()->get('typoScriptConfiguration');
     }
 
-    /**
-     * @return SearchResultSet|null
-     * @deprecated Will be removed with v12.
-     */
     protected function getSearchResultSet(): ?SearchResultSet
     {
-        return $this->getControllerContext()->getSearchResultSet();
+        return $this->renderingContext->getVariableProvider()->get('searchResultSet');
     }
 
-    /**
-     * @return SolrControllerContext
-     * @throws InvalidArgumentException
-     * @deprecated Will be removed with v12.
-     */
-    protected function getControllerContext(): SolrControllerContext
-    {
-        $controllerContext = null;
-        if (method_exists($this->renderingContext, 'getControllerContext')) {
-            $controllerContext = $this->renderingContext->getControllerContext();
-        }
-
-        if (!$controllerContext instanceof SolrControllerContext) {
-            throw new InvalidArgumentException('No valid SolrControllerContext found', 1512998673);
-        }
-
-        return $controllerContext;
-    }
-
-    /**
-     * @param RenderingContextInterface $renderingContext
-     * @return SearchResultSet|GroupItem|null
-     */
     protected static function getUsedSearchResultSetFromRenderingContext(
         RenderingContextInterface $renderingContext
-    ) {
+    ): SearchResultSet|GroupItem|null {
         return $renderingContext->getVariableProvider()->get('resultSet')
-            ?? $renderingContext->getControllerContext()->getSearchResultSet();
+            ?? $renderingContext->getVariableProvider()->get('searchResultSet');
     }
 }

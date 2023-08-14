@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  ApacheSolrForTypo3\SolrFakeExtension2\EventListeners\AddAdditionalTestDocumentsToIndexer:
+    tags:
+      - name: event.listener
+        identifier: 'fake-extension2/example-documents-before-indexing'

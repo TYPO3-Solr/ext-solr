@@ -35,31 +35,31 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
     use CompileWithRenderStatic;
 
     /**
-     * Initializes the arguments
+     * @inheritDoc
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('resultSet', SearchResultSet::class, 'The context searchResultSet', true);
         $this->registerArgument('document', SearchResult::class, 'The document to highlight', true);
-        $this->registerArgument('maximumScore', 'float', 'The maximum score that should be used for percentage calculation, if nothing is passed the maximum from the resultSet is used', false);
+        $this->registerArgument('maximumScore', 'float', 'The maximum score that should be used for percentage calculation, if nothing is passed the maximum from the resultSet is used');
     }
 
     /**
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
+     * Renders relevance.
+     *
+     * @noinspection PhpMissingReturnTypeInspection
+     * @noinspection PhpUnused
      */
     public static function renderStatic(
         array $arguments,
         Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
+        RenderingContextInterface $renderingContext,
     ) {
-        /** @var $document SearchResult */
+        /** @var SearchResult $document */
         $document = $arguments['document'];
 
-        /** @var $resultSet SearchResultSet */
+        /** @var SearchResultSet $resultSet */
         $resultSet = $arguments['resultSet'];
 
         $maximumScore = $arguments['maximumScore'] ?? $resultSet->getMaximumScore();

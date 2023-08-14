@@ -4,49 +4,104 @@
 Indexing
 ========
 
-In this section i describe the possibilities to extend page indexing in EXT:solr with custom code.
+This section describes the possibilities to extend page indexing in EXT:solr with custom code via PSR-14 events.
 
 Page Indexing
 =============
 
-There are several points to extend the Typo3PageIndexer class and register own classes that are used during the indexing.
+There are several points to extend the Page Indexer class and register own classes that are used during the indexing.
 
-indexPageAddDocuments
----------------------
+BeforePageDocumentIsProcessedForIndexingEvent
+---------------------------------------------
 
-Registered classes can be used to add additional documents to solr when a page get's indexed.
+Registered Event Listeners can be used to add additional documents to Solr when a page gets indexed.
 
-Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments']
-Required Interface: AdditionalPageIndexer
+Registration of an event listener in your extension's :file:`Services.yaml`:
+
+..  code-block:: yaml
+
+    MyVendor\MyPackage\EventListeners\MyEventListener:
+      tags:
+        - name: event.listener
+          identifier: 'my-package/modify-documents'
+
+The corresponding event listener class:
+
+..  code-block:: php
+
+    use ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndexingEvent;
+    use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+
+    class MyEventListener {
+
+        public function __invoke(BeforePageDocumentIsProcessedForIndexingEvent $event): void
+        {
+            $additionalDocument = new Document();
+            $event->addDocuments([$additionalDocument]);
+        }
+    }
+
+For other records than pages, the PSR-14 Event :php:class:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent` can be used.
+
+AfterPageDocumentIsCreatedForIndexingEvent
+------------------------------------------
+
+Registered event listeners can be used to replace/substitute a Solr document of a page.
+
+Registration of an event listener in your extension's :file:`Services.yaml`:
+
+..  code-block:: yaml
+
+    MyVendor\MyPackage\EventListeners\MyEventListener:
+      tags:
+        - name: event.listener
+          identifier: 'my-package/modify-page'
+
+The corresponding event listener class:
+
+..  code-block:: php
+
+    use ApacheSolrForTypo3\Solr\Event\Indexing\AfterPageDocumentIsCreatedForIndexingEvent;
+
+    class MyEventListener {
+
+        public function __invoke(AfterPageDocumentIsCreatedForIndexingEvent $event): void
+        {
+            $event->setDocument($myCustomDocument);
+        }
+    }
 
 
-indexPageSubstitutePageDocument
--------------------------------
 
-Registered classes can be used to replace/substitute a Solr document of a page.
+BeforeDocumentsAreIndexedEvent
+------------------------------
 
+Registered Event Listeners can be used to process Solr documents (pages and records) before they are added to index.
 
-Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']
-Required Interface: SubstitutePageIndexer
+Registration of an event listener in your extension's :file:`Services.yaml`:
 
-indexPagePostProcessPageDocument
---------------------------------
+..  code-block:: yaml
 
-This is deprecated in favor of preAddModifyDocuments.
+    MyVendor\MyPackage\EventListeners\MyEventListener:
+      tags:
+        - name: event.listener
+          identifier: 'my-package/modify-documents'
 
-Registered classes can be used to post process a Solr document of a page.
+The corresponding event listener class:
 
-Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument']
-Required Interface: PageDocumentPostProcessor
+..  code-block:: php
 
+    use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentsAreIndexedEvent;
 
-preAddModifyDocuments
----------------------
+    class MyEventListener {
 
-Registered classes can be used to process Solr documents (pages and records) before they are added to index.
-
-Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']
-Required Interface: PageIndexerDocumentsModifier
+        public function __invoke(BeforeDocumentsAreIndexedEvent $event): void
+        {
+            foreach ($event->getDocuments() as $document) {
+               $document->addField('my_custom_field', 'my_custom_value');
+            }
+        }
+    }
 
 
 Independent indexer
@@ -69,8 +124,7 @@ If external data should be indexed or the RecordIndexer is not required, it is p
    class Indexer
    {
 
-       /** @var ConnectionManager */
-       protected $connectionManager;
+       protected ConnectionManager $connectionManager;
 
        public function __construct()
        {
@@ -78,7 +132,7 @@ If external data should be indexed or the RecordIndexer is not required, it is p
        }
 
        /**
-        * Send data to solr index
+        * Send data to Solr index
         *
         * @param array $rows Data to be indexed, e.g. multiple DB rows
         * @param int $pageId root page
@@ -106,12 +160,12 @@ If external data should be indexed or the RecordIndexer is not required, it is p
            $connections = $this->connectionManager->getAllConnections();
            foreach ($connections as $connectionLanguage => $connection) {
                /** @var SolrConnection */
-               $connection->getWriteService()->deleteByType('cutom_type');
+               $connection->getWriteService()->deleteByType('custom_type');
            }
        }
 
        /**
-        * Create a solr document which then is sent to solr
+        * Create a Solr document which then is sent to Solr
         *
         * @param array $row
         * @param int $pageId
@@ -154,13 +208,13 @@ If external data should be indexed or the RecordIndexer is not required, it is p
            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
            $site = $siteRepository->getSiteByRootPageId($rootPageId);
 
-               /** @var $document Document */
+           /** @var Document $document */
            $document = GeneralUtility::makeInstance(Document::class);
 
            // required fields
-           $document->setField('id', 'cutom_type_' . $itemRecord['uid']);
-           $document->setField('variantId', 'cutom_type' . $itemRecord['uid']);
-           $document->setField('type', 'cutom_type');
+           $document->setField('id', 'custom_type_' . $itemRecord['uid']);
+           $document->setField('variantId', 'custom_type' . $itemRecord['uid']);
+           $document->setField('type', 'custom_type');
            $document->setField('appKey', 'EXT:solr');
            $document->setField('access', ['r:0']);
 

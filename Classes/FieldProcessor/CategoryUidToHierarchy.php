@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 use ApacheSolrForTypo3\Solr\System\Records\SystemCategory\SystemCategoryRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -49,15 +48,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor
 {
-    /**
-     * @var SystemCategoryRepository
-     */
-    protected $systemCategoryRepository;
+    protected SystemCategoryRepository $systemCategoryRepository;
 
     /**
      * CategoryUidToHierarchy constructor.
-     *
-     * @param SystemCategoryRepository|null $systemCategoryRepository
      */
     public function __construct(SystemCategoryRepository $systemCategoryRepository = null)
     {
@@ -65,12 +59,13 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
     }
 
     /**
-     * Expects a uid ID of a category. Returns a Solr hierarchy notation for the
+     * Expects an uid ID of a category. Returns a Solr hierarchy notation for the
      * rootline of the category ID.
      *
      * @param array $values Array of values, an array because of multivalued fields
+     *
      * @return array Modified array of values
-     * @throws DBALDriverException
+     *
      * @throws DBALException
      */
     public function process(array $values): array
@@ -91,8 +86,9 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
      * Returns a Solr hierarchy notation string for rootline of given category uid.
      *
      * @param int $categoryId Category ID to get a rootline as Solr hierarchy for
+     *
      * @return array Rootline as Solr hierarchy array
-     * @throws DBALDriverException
+     *
      * @throws DBALException
      */
     protected function getSolrRootlineForCategoryId(int $categoryId): array
@@ -105,8 +101,9 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
      * Builds a category's rootline of parent category Ids
      *
      * @param int $uid The category ID to build the rootline for
+     *
      * @return array Category ID rootline as array
-     * @throws DBALDriverException
+     *
      * @throws DBALException
      */
     protected function buildCategoryIdRootline(int $uid): array
@@ -117,7 +114,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
         while ($parentCategory !== 0) {
             $rootlineIds[] = $parentCategory;
             $childCategory = $this->systemCategoryRepository->findOneByUid($parentCategory);
-            if ($childCategory === null) {
+            if (!is_array($childCategory)) {
                 $parentCategory = 0;
             } else {
                 $parentCategory = (int)($childCategory['parent']);

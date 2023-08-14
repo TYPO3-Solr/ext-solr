@@ -19,7 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Util;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -37,32 +37,15 @@ class FrequentSearchesService
 {
     /**
      * Instance of the caching frontend used to cache this command's output.
-     *
-     * @var AbstractFrontend|null
      */
     protected ?AbstractFrontend $cache;
 
-    /**
-     * @var TypoScriptFrontendController|null
-     */
     protected ?TypoScriptFrontendController $tsfe;
 
-    /**
-     * @var StatisticsRepository|null
-     */
     protected ?StatisticsRepository $statisticsRepository;
 
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $configuration;
 
-    /**
-     * @param TypoScriptConfiguration $typoscriptConfiguration
-     * @param AbstractFrontend|null $cache
-     * @param TypoScriptFrontendController|null $tsfe
-     * @param StatisticsRepository|null $statisticsRepository
-     */
     public function __construct(
         TypoScriptConfiguration $typoscriptConfiguration,
         AbstractFrontend $cache = null,
@@ -78,8 +61,8 @@ class FrequentSearchesService
     /**
      * Generates an array with terms and hits
      *
-     * @return array Tags as array with terms and hits
      * @throws AspectNotFoundException
+     * @throws DBALException
      */
     public function getFrequentSearchTerms(): array
     {
@@ -114,9 +97,7 @@ class FrequentSearchesService
     /**
      * Gets frequent search terms from the statistics tracking table.
      *
-     * @param array $frequentSearchConfiguration
-     * @return array Array of frequent search terms, keys are the terms, values are hits
-     * @throws AspectNotFoundException
+     * @throws DBALException
      */
     protected function getFrequentSearchTermsFromStatistics(array $frequentSearchConfiguration = []): array
     {
@@ -128,7 +109,7 @@ class FrequentSearchesService
             $checkRootPidWhere = '1';
         }
         if ($frequentSearchConfiguration['select.']['checkLanguage']) {
-            $checkLanguageWhere = ' AND language =' . Util::getLanguageUid();
+            $checkLanguageWhere = ' AND language =' . $this->tsfe->getLanguage()->getLanguageId();
         } else {
             $checkLanguageWhere = '';
         }
@@ -149,9 +130,7 @@ class FrequentSearchesService
     }
 
     /**
-     * @param array $frequentSearchConfiguration
-     * @return string
-     * @throws AspectNotFoundException
+     * Returns cache identifier for given $frequentSearchConfiguration
      */
     protected function getCacheIdentifier(array $frequentSearchConfiguration): string
     {
@@ -162,7 +141,7 @@ class FrequentSearchesService
             $identifier .= '_RP' . (int)$this->tsfe->tmpl->rootLine[0]['uid'];
         }
         if (isset($frequentSearchConfiguration['select.']['checkLanguage']) && $frequentSearchConfiguration['select.']['checkLanguage']) {
-            $identifier .= '_L' . Util::getLanguageUid();
+            $identifier .= '_L' . $this->tsfe->getLanguage()->getLanguageId();
         }
 
         $identifier .= '_' . md5(serialize($frequentSearchConfiguration));
@@ -171,8 +150,6 @@ class FrequentSearchesService
 
     /**
      * Checks if this service has a valid cache class
-     *
-     * @return bool
      */
     protected function hasValidCache(): bool
     {

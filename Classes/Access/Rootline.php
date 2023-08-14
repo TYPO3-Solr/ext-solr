@@ -60,15 +60,11 @@ class Rootline
 {
     /**
      * Delimiter for page and content access right elements in the rootline.
-     *
-     * @var string
      */
-    const ELEMENT_DELIMITER = '/';
+    public const ELEMENT_DELIMITER = '/';
 
     /**
      * Storage for access rootline elements
-     *
-     * @var array
      */
     protected array $rootlineElements = [];
 
@@ -84,8 +80,8 @@ class Rootline
             $rawRootlineElements = explode(self::ELEMENT_DELIMITER, $accessRootline);
             foreach ($rawRootlineElements as $rawRootlineElement) {
                 try {
-                    $this->push(GeneralUtility::makeInstance(RootlineElement::class, /** @scrutinizer ignore-type */ $rawRootlineElement));
-                } catch (RootlineElementFormatException $e) {
+                    $this->push(GeneralUtility::makeInstance(RootlineElement::class, $rawRootlineElement));
+                } catch (RootlineElementFormatException) {
                     // just ignore the faulty element for now, might log this later
                 }
             }
@@ -97,7 +93,7 @@ class Rootline
      *
      * @param RootlineElement $rootlineElement Element to add.
      */
-    public function push(RootlineElement $rootlineElement)
+    public function push(RootlineElement $rootlineElement): void
     {
         $lastElementIndex = max(0, (count($this->rootlineElements) - 1));
 
@@ -131,12 +127,12 @@ class Rootline
         int $pageId,
         string $mountPointParameter = ''
     ): Rootline {
-        /* @var Rootline $accessRootline */
+        /** @var Rootline $accessRootline */
         $accessRootline = GeneralUtility::makeInstance(Rootline::class);
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPointParameter);
         try {
             $rootline = $rootlineUtility->get();
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException) {
             $rootline = [];
         }
         $rootline = array_reverse($rootline);
@@ -148,13 +144,12 @@ class Rootline
             ) {
                 $accessRootline->push(GeneralUtility::makeInstance(
                     RootlineElement::class,
-                    /** @scrutinizer ignore-type */
                     $pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
                 ));
             }
         }
 
-        /** @var  $pageSelector PageRepository */
+        /** @var PageRepository $pageSelector */
         $pageSelector = GeneralUtility::makeInstance(PageRepository::class);
 
         // current page
@@ -162,7 +157,6 @@ class Rootline
         if ($currentPageRecord['fe_group']) {
             $accessRootline->push(GeneralUtility::makeInstance(
                 RootlineElement::class,
-                /** @scrutinizer ignore-type */
                 $currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
             ));
         }

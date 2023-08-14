@@ -17,10 +17,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
-use ApacheSolrForTypo3\Solr\Util;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -34,22 +33,12 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @author Dimitri Ebert <dimitri.ebert@dkd.de>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class StatisticsWriterProcessor implements SearchResultSetProcessor
+class StatisticsWriterProcessor
 {
-    /**
-     * @var StatisticsRepository
-     */
-    protected $statisticsRepository;
+    protected StatisticsRepository $statisticsRepository;
 
-    /**
-     * @var SiteRepository
-     */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
-    /**
-     * @param StatisticsRepository|null $statisticsRepository
-     * @param SiteRepository|null $siteRepository
-     */
     public function __construct(
         StatisticsRepository $statisticsRepository = null,
         SiteRepository $siteRepository = null
@@ -59,9 +48,10 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @return SearchResultSet
+     * Writes the statistics to statistics table.
+     *
      * @throws AspectNotFoundException
+     * @throws DBALException
      */
     public function process(SearchResultSet $resultSet): SearchResultSet
     {
@@ -86,7 +76,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             'pid' => $TSFE->id,
             'root_pid' => $root_pid,
             'tstamp' => $this->getTime(),
-            'language' => Util::getLanguageUid(),
+            'language' => $TSFE->getLanguage()->getLanguageId(),
             // @extensionScannerIgnoreLine
             'num_found' => $resultSet->getAllResultCount(),
             'suggestions_shown' => is_object($response->spellcheck->suggestions ?? null) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,
@@ -96,6 +86,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             'time_preparation' => $response->debug->timing->prepare->time ?? 0,
             // @extensionScannerIgnoreLine
             'time_processing' => $response->debug->timing->process->time ?? 0,
+            /** @phpstan-ignore-next-line */
             'feuser_id' => isset($TSFE->fe_user->user) ? (int)$TSFE->fe_user->user['uid'] ?? 0 : 0,
             'cookie' => $TSFE->fe_user->id ?? '',
             'ip' => IpAnonymizationUtility::anonymizeIp($this->getUserIp(), $ipMaskLength),
@@ -111,11 +102,6 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         return $resultSet;
     }
 
-    /**
-     * @param Query $query
-     * @param bool $lowerCaseQuery
-     * @return string
-     */
     protected function getProcessedKeywords(
         Query $query,
         bool $lowerCaseQuery = false
@@ -133,9 +119,6 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
 
     /**
      * Sanitizes a string
-     *
-     * @param $string String to sanitize
-     * @return string Sanitized string
      */
     protected function sanitizeString(string $string): string
     {
@@ -145,27 +128,22 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         return trim($string);
     }
 
-    /**
-     * @return TypoScriptFrontendController
-     */
     protected function getTSFE(): ?TypoScriptFrontendController
     {
         return $GLOBALS['TSFE'];
     }
 
-    /**
-     * @return string
-     */
     protected function getUserIp(): string
     {
         return GeneralUtility::getIndpEnv('REMOTE_ADDR');
     }
 
     /**
-     * @return mixed
+     * Returns timestamp from TYPO3 core date aspect
+     *
      * @throws AspectNotFoundException
      */
-    protected function getTime()
+    protected function getTime(): int
     {
         return GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp');
     }

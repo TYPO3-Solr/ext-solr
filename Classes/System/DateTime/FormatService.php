@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\System\DateTime;
 
 use DateTime;
 use DateTimeZone;
+use Exception;
 
 /**
  * Testcase to check if the configuration object can be used as expected
@@ -27,21 +28,25 @@ use DateTimeZone;
  */
 class FormatService
 {
-    const SOLR_ISO_DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
+    public const SOLR_ISO_DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
 
     /**
      * @see http://php.net/manual/de/function.date.php for formatting options
      * @param string $input the passed date string
      * @param string $inputFormat the input format that should be used for parsing
      * @param string $outputFormat The output format, when nothing is passed
-     * $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] will be used or Y-m-d when nothing is configured
-     * @param DateTimeZone|null $timezone
-     * @return \DateTime|string
+     *        $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] will be used or Y-m-d when nothing is configured
+     *
+     * @throws Exception
      */
-    public function format($input = '', $inputFormat = 'Y-m-d\TH:i:s\Z', $outputFormat = '', $timezone = null)
-    {
+    public function format(
+        string $input = '',
+        string $inputFormat = 'Y-m-d\TH:i:s\Z',
+        string $outputFormat = '',
+        DateTimeZone $timezone = null,
+    ): string {
         if ($outputFormat === '') {
-            // when no value was passed we us the TYPO3 configured or fallback to Y-m-d
+            // when no value was passed we use the TYPO3 configured or fallback to Y-m-d
             $outputFormat = $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] ?: 'Y-m-d';
         }
 
@@ -67,9 +72,9 @@ class FormatService
      * @param string $isoTime date in ISO 8601 format
      * @return int unix timestamp
      */
-    public function isoToTimestamp($isoTime): int
+    public function isoToTimestamp(string $isoTime): int
     {
-        $dateTime = \DateTime::createFromFormat(
+        $dateTime = DateTime::createFromFormat(
             self::SOLR_ISO_DATETIME_FORMAT,
             $isoTime
         );
@@ -93,10 +98,10 @@ class FormatService
      * @param string $isoTime date in ISO 8601 format
      * @return int unix timestamp
      */
-    public function utcIsoToTimestamp($isoTime): int
+    public function utcIsoToTimestamp(string $isoTime): int
     {
-        $utcTimeZone = new \DateTimeZone('UTC');
-        $dateTime = \DateTime::createFromFormat(
+        $utcTimeZone = new DateTimeZone('UTC');
+        $dateTime = DateTime::createFromFormat(
             self::SOLR_ISO_DATETIME_FORMAT,
             $isoTime,
             $utcTimeZone
@@ -106,20 +111,18 @@ class FormatService
 
     /**
      * Applies the formatting using DateTime.
-     *
-     * @param string $input
-     * @param string $inputFormat
-     * @param string $outputFormat
-     * @param DateTimeZone $timezone
-     * @return string
      */
-    protected function getFormattedDate($input, $inputFormat, $outputFormat, DateTimeZone $timezone): string
-    {
+    protected function getFormattedDate(
+        string $input,
+        string $inputFormat,
+        string $outputFormat,
+        DateTimeZone $timezone
+    ): string {
         $formattedDate = DateTime::createFromFormat($inputFormat, $input, $timezone);
         if ($formattedDate) {
             return $formattedDate->format($outputFormat);
         }
 
-        return (string)$input;
+        return $input;
     }
 }

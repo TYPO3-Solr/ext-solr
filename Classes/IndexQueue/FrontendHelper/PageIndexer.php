@@ -17,52 +17,72 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AfterPageDocumentIsCreatedForIndexingEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentsAreIndexedEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndexingEvent;
+use ApacheSolrForTypo3\Solr\Exception;
+use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\DebugWriter;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\Util;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Doctrine\DBAL\Exception as DBALException;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LogLevel;
 use Throwable;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 use UnexpectedValueException;
 
 /**
- * Index Queue Page Indexer frontend helper to ask the frontend page indexer to
- * index the page.
+ * Index Queue Page Indexer frontend helper to validate if a page
+ * should be used by the Index Queue.
+ *
+ * Once the FrontendHelper construct is separated, this will be a standalone Indexer.
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
+class PageIndexer implements FrontendHelper, SingletonInterface
 {
     /**
      * This frontend helper's executed action.
-     *
-     * @var string
      */
     protected string $action = 'indexPage';
 
     /**
-     * the page currently being indexed.
-     *
-     * @var TypoScriptFrontendController
+     * Index Queue page indexer request.
      */
-    protected TypoScriptFrontendController $page;
+    protected ?PageIndexerRequest $request = null;
 
     /**
      * Response data
-     *
-     * @var array
      */
     protected array $responseData = [];
+
+    /**
+     * Solr server connection.
+     */
+    protected ?SolrConnection $solrConnection = null;
+
+    /**
+     * Documents that have been sent to Solr
+     */
+    protected array $documentsSentToSolr = [];
+
+    protected ?TypoScriptConfiguration $configuration = null;
+
+    protected ?SolrLogManager $logger = null;
 
     /**
      * Activates a frontend helper by registering for hooks and other
@@ -70,61 +90,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @noinspection PhpUnused
      */
-    public function activate()
+    public function activate(): void
     {
-        $pageIndexingHookRegistration = PageIndexer::class;
-
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][__CLASS__] = $pageIndexingHookRegistration . '->hook_indexContent';
-
-        // indexes fields defined in plugin.tx_solr.index.queue.pages.fields
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
-
-        $this->registerAuthorizationService();
-    }
-
-    /**
-     * Returns the status of whether a page was indexed.
-     *
-     * @return array Page indexed status.
-     * @noinspection PhpUnused
-     */
-    public function getData(): array
-    {
-        return $this->responseData;
-    }
-
-    //
-    // Indexer authorisation for access restricted pages / content
-    //
-
-    /**
-     * Fakes a logged in user to retrieve access restricted content.
-     *
-     * @noinspection PhpUnused
-     */
-    public function authorizeFrontendUser()
-    {
-        $accessRootline = $this->getAccessRootline();
-        $stringAccessRootline = (string)$accessRootline;
-
-        if (empty($stringAccessRootline)) {
-            return;
-        }
-
-        if (!is_array($GLOBALS['TSFE']->fe_user->user)) {
-            $GLOBALS['TSFE']->fe_user->user = [];
-        }
-
-        $groups = $accessRootline->getGroups();
-        $groupList = implode(',', $groups);
-
-        $GLOBALS['TSFE']->fe_user->user['username'] = AuthorizationService::SOLR_INDEXER_USERNAME;
-        $GLOBALS['TSFE']->fe_user->user['usergroup'] = $groupList;
-
-        $this->responseData['authorization'] = [
-            'username' => $GLOBALS['TSFE']->fe_user->user['username'],
-            'usergroups' => $GLOBALS['TSFE']->fe_user->user['usergroup'],
-        ];
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**
@@ -136,64 +104,11 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     {
         $stringAccessRootline = '';
 
-        if ($this->request->getParameter('accessRootline')) {
+        if ($this->request?->getParameter('accessRootline')) {
             $stringAccessRootline = $this->request->getParameter('accessRootline');
         }
 
-        return GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $stringAccessRootline);
-    }
-
-    /**
-     * Registers an authentication service to authorize / grant the indexer to
-     * access protected pages.
-     */
-    protected function registerAuthorizationService()
-    {
-        $overrulingPriority = $this->getHighestAuthenticationServicePriority() + 1;
-
-        ExtensionManagementUtility::addService(
-            'solr', // extension key
-            'auth', // service type
-            AuthorizationService::class,
-            // service key
-            [// service meta data
-                'title' => 'Solr Indexer Authorization',
-                'description' => 'Authorizes the Solr Index Queue indexer to access protected pages.',
-
-                'subtype' => 'getUserFE,authUserFE,getGroupsFE',
-
-                'available' => true,
-                'priority' => $overrulingPriority,
-                'quality' => 100,
-
-                'os' => '',
-                'exec' => '',
-
-                'classFile' => ExtensionManagementUtility::extPath('solr') . 'Classes/IndexQueue/FrontendHelper/AuthorizationService.php',
-                'className' => AuthorizationService::class,
-            ]
-        );
-    }
-
-    /**
-     * Determines the highest priority of all registered authentication
-     * services.
-     *
-     * @return int Highest priority of all registered authentication service
-     */
-    protected function getHighestAuthenticationServicePriority(): int
-    {
-        $highestPriority = 0;
-
-        if (is_array($GLOBALS['T3_SERVICES']['auth'] ?? null)) {
-            foreach ($GLOBALS['T3_SERVICES']['auth'] as $service) {
-                if ($service['priority'] > $highestPriority) {
-                    $highestPriority = $service['priority'];
-                }
-            }
-        }
-
-        return $highestPriority;
+        return GeneralUtility::makeInstance(Rootline::class, $stringAccessRootline);
     }
 
     //
@@ -201,62 +116,42 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     //
 
     /**
-     * Generates the current page's URL.
-     *
-     * Uses the provided GET parameters, page id and language id.
-     *
-     * @return string URL of the current page.
+     * Generates the current page's URL as string.
+     * Uses the provided parameters from TSFE, page id and language id.
      */
-    protected function generatePageUrl(): string
+    protected function generatePageUrl(TypoScriptFrontendController $controller): string
     {
-        if ($this->request->getParameter('overridePageUrl')) {
+        if ($this->request?->getParameter('overridePageUrl')) {
             return $this->request->getParameter('overridePageUrl');
         }
 
-        /** @var $contentObject ContentObjectRenderer */
-        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-
-        $typolinkConfiguration = [
-            'parameter' => (int)($this->page->id),
+        $parameter = $controller->page['uid'];
+        $type = $controller->getPageArguments()->getPageType();
+        if ($type && MathUtility::canBeInterpretedAsInteger($type)) {
+            $parameter .= ',' . $type;
+        }
+        return $controller->cObj->createUrl([
+            'parameter' => $parameter,
             'linkAccessRestrictedPages' => '1',
-        ];
-
-        $language = GeneralUtility::_GET('L');
-        if (!empty($language)) {
-            $typolinkConfiguration['additionalParams'] = '&L=' . $language;
-        }
-
-        $url = $contentObject->typoLink_URL($typolinkConfiguration);
-
-        // clean up
-        if ($url == '') {
-            $url = '/';
-        }
-
-        return $url;
+        ]);
     }
 
     /**
-     * Handles the indexing of the page content during post-processing of a
-     * generated page.
-     *
-     * @param array $params unused
-     * @param TypoScriptFrontendController $page TypoScript frontend
-     * @noinspection PhpUnused
-     * @noinspection PhpUnusedParameterInspection
+     * Handles the indexing of the page content during AfterCacheableContentIsGeneratedEvent of a generated page.
      */
-    public function hook_indexContent(array $params, TypoScriptFrontendController $page)
+    public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->request = $event->getRequest()->getAttribute('solr.pageIndexingInstructions');
+        if (!$this->request) {
+            return;
+        }
+        $this->setupConfiguration();
+        $tsfe = $event->getController();
 
-        $this->page = $page;
-        $configuration = Util::getSolrConfiguration();
-
-        $logPageIndexed = $configuration->getLoggingIndexingPageIndexed();
-        if (!$this->page->config['config']['index_enable'] ?? false) {
+        $logPageIndexed = $this->configuration->getLoggingIndexingPageIndexed();
+        if (!($tsfe->config['config']['index_enable'] ?? false)) {
             if ($logPageIndexed) {
-                $this->logger->log(
-                    SolrLogManager::ERROR,
+                $this->logger->error(
                     'Indexing is disabled. Set config.index_enable = 1 .'
                 );
             }
@@ -265,37 +160,15 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 
         try {
             $indexQueueItem = $this->getIndexQueueItem();
-            if (is_null($indexQueueItem)) {
+            if ($indexQueueItem === null) {
                 throw new UnexpectedValueException('Can not get index queue item', 1482162337);
             }
-
-            $solrConnection = $this->getSolrConnection($indexQueueItem);
-
-            /** @var $indexer Typo3PageIndexer */
-            $indexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, /** @scrutinizer ignore-type */ $page);
-            $indexer->setSolrConnection($solrConnection);
-            $indexer->setPageAccessRootline($this->getAccessRootline());
-            $indexer->setPageUrl($this->generatePageUrl());
-            $indexer->setMountPointParameter($GLOBALS['TSFE']->MP);
-            $indexer->setIndexQueueItem($indexQueueItem);
-
-            $this->responseData['pageIndexed'] = (int)$indexer->indexPage();
-            $this->responseData['originalPageDocument'] = (array)$indexer->getPageSolrDocument();
-            $this->responseData['solrConnection'] = [
-                'rootPage' => $indexQueueItem->getRootPageUid(),
-                'sys_language_uid' => Util::getLanguageUid(),
-                'solr' => (string)$solrConnection->getNode('write'),
-            ];
-
-            $documentsSentToSolr = $indexer->getDocumentsSentToSolr();
-            foreach ($documentsSentToSolr as $document) {
-                $this->responseData['documentsSentToSolr'][] = (array)$document;
-            }
+            $this->index($indexQueueItem, $tsfe);
         } catch (Throwable $e) {
-            if ($configuration->getLoggingExceptions()) {
-                $this->logger->log(
-                    SolrLogManager::ERROR,
-                    'Exception while trying to index page ' . $page->id,
+            $this->responseData['pageIndexed'] = false;
+            if ($this->configuration->getLoggingExceptions()) {
+                $this->logger->error(
+                    'Exception while trying to index page ' . $tsfe->id,
                     [
                         $e->__toString(),
                     ]
@@ -305,7 +178,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 
         if ($logPageIndexed) {
             $success = $this->responseData['pageIndexed'] ? 'Success' : 'Failed';
-            $severity = $this->responseData['pageIndexed'] ? SolrLogManager::NOTICE : SolrLogManager::ERROR;
+            $severity = $this->responseData['pageIndexed'] ? LogLevel::NOTICE : LogLevel::ERROR;
 
             $this->logger->log(
                 $severity,
@@ -316,37 +189,192 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     }
 
     /**
+     * @internal currently only public for tests
+     */
+    public function index(Item $indexQueueItem, TypoScriptFrontendController $tsfe): void
+    {
+        $this->solrConnection = $this->getSolrConnection($indexQueueItem, $tsfe->getLanguage(), $this->configuration->getLoggingExceptions());
+
+        $document = $this->getPageDocument($tsfe, $this->generatePageUrl($tsfe), $this->getAccessRootline(), $tsfe->MP);
+        $document = $this->substitutePageDocument($document, $tsfe->getSite(), $tsfe->getLanguage(), $tsfe->page, $indexQueueItem);
+
+        $this->responseData['pageIndexed'] = (int)$this->indexPage($document, $indexQueueItem, $tsfe->getSite(), $tsfe->getLanguage());
+        $this->responseData['originalPageDocument'] = (array)$document;
+        $this->responseData['solrConnection'] = [
+            'rootPage' => $indexQueueItem->getRootPageUid(),
+            'sys_language_uid' => $tsfe->getLanguage()->getLanguageId(),
+            'solr' => (string)$this->solrConnection->getNode('write'),
+        ];
+
+        foreach ($this->documentsSentToSolr as $document) {
+            $this->responseData['documentsSentToSolr'][] = (array)$document;
+        }
+    }
+
+    /**
      * Gets the solr connection to use for indexing the page based on the
      * Index Queue item's properties.
-     *
-     * @param Item $indexQueueItem
-     * @return SolrConnection Solr server connection
-     * @throws AspectNotFoundException
-     * @throws NoSolrConnectionFoundException
-     * @throws DBALDriverException
      */
-    protected function getSolrConnection(Item $indexQueueItem): SolrConnection
+    protected function getSolrConnection(Item $indexQueueItem, SiteLanguage $siteLanguage, bool $logExceptions): SolrConnection
     {
-        /** @var $connectionManager ConnectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
+        try {
+            $solrConnection = $connectionManager->getConnectionByRootPageId($indexQueueItem->getRootPageUid(), $siteLanguage->getLanguageId());
+            if (!$solrConnection->getWriteService()->ping()) {
+                throw new Exception(
+                    'Could not connect to Solr server.',
+                    1323946472
+                );
+            }
+            return $solrConnection;
+        } catch (Throwable $e) {
+            $this->logger->error(
+                $e->getMessage() . ' Error code: ' . $e->getCode()
+            );
 
-        return $connectionManager->getConnectionByRootPageId(
-            $indexQueueItem->getRootPageUid(),
-            Util::getLanguageUid()
-        );
+            // TODO extract to a class "ExceptionLogger"
+            if ($logExceptions) {
+                $this->logger->error(
+                    'Exception while trying to index a page',
+                    [
+                        $e->__toString(),
+                    ]
+                );
+            }
+            throw $e;
+        }
     }
 
     /**
      * This method retrieves the item from the index queue, that is indexed in this request.
-     *
-     * @return Item|null
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     protected function getIndexQueueItem(): ?Item
     {
-        /** @var $indexQueue Queue */
         $indexQueue = GeneralUtility::makeInstance(Queue::class);
         return $indexQueue->getItem($this->request->getParameter('item'));
+    }
+
+    /**
+     * Allows third party extensions to replace or modify the page document
+     * created by this indexer.
+     *
+     * @param Document $pageDocument The page document created by this indexer.
+     * @return Document An Apache Solr document representing the currently indexed page
+     */
+    protected function substitutePageDocument(Document $pageDocument, Site $site, SiteLanguage $siteLanguage, array $pageRecord, Item $indexQueueItem): Document
+    {
+        $event = new AfterPageDocumentIsCreatedForIndexingEvent($pageDocument, $indexQueueItem, $site, $siteLanguage, $pageRecord, $this->configuration);
+        $event = $this->getEventDispatcher()->dispatch($event);
+        return $event->getDocument();
+    }
+
+    /**
+     * Builds the Solr document for the current page.
+     *
+     * @return Document A document representing the page
+     */
+    protected function getPageDocument(TypoScriptFrontendController $tsfe, string $url, Rootline $pageAccessRootline, string $mountPointParameter): Document
+    {
+        $documentBuilder = GeneralUtility::makeInstance(Builder::class);
+        return $documentBuilder->fromPage($tsfe, $url, $pageAccessRootline, $mountPointParameter);
+    }
+
+    /**
+     * Indexes a page.
+     *
+     * @return bool TRUE after successfully indexing the page, FALSE on error
+     */
+    public function indexPage(Document $pageDocument, Item $indexQueueItem, Site $site, SiteLanguage $siteLanguage): bool
+    {
+        $event = new BeforePageDocumentIsProcessedForIndexingEvent($pageDocument, $site, $siteLanguage, $indexQueueItem);
+        $event = $this->getEventDispatcher()->dispatch($event);
+        $documents = $event->getDocuments();
+
+        $this->processDocuments($documents);
+
+        $event = new BeforeDocumentsAreIndexedEvent($pageDocument, $site, $siteLanguage, $indexQueueItem, $documents);
+        $event = $this->getEventDispatcher()->dispatch($event);
+        $documents = $event->getDocuments();
+
+        $pageIndexed = $this->addDocumentsToSolrIndex($documents);
+        $this->documentsSentToSolr = $documents;
+
+        return $pageIndexed;
+    }
+
+    /**
+     * Sends the given documents to the field processing service which takes
+     * care of manipulating fields as defined in the field's configuration.
+     *
+     * @param Document[] $documents An array of documents to manipulate
+     */
+    protected function processDocuments(array $documents): void
+    {
+        $processingInstructions = $this->configuration?->getIndexFieldProcessingInstructionsConfiguration();
+        if (is_array($processingInstructions) && !empty($processingInstructions)) {
+            $service = GeneralUtility::makeInstance(Service::class);
+            $service->processDocuments($documents, $processingInstructions);
+        }
+    }
+
+    /**
+     * Adds the collected documents to the Solr index.
+     *
+     * @param Document[] $documents An array of Document objects.
+     * @return bool TRUE if documents were added successfully, FALSE otherwise
+     */
+    protected function addDocumentsToSolrIndex(array $documents): bool
+    {
+        $documentsAdded = false;
+
+        if ($documents === []) {
+            return false;
+        }
+
+        try {
+            $this->logger->info('Adding ' . count($documents) . ' documents.', $documents);
+
+            // chunk adds by 20
+            $documentChunks = array_chunk($documents, 20);
+            foreach ($documentChunks as $documentChunk) {
+                $response = $this->solrConnection->getWriteService()->addDocuments($documentChunk);
+                if ($response->getHttpStatus() != 200) {
+                    throw new \RuntimeException('Solr Request failed.', 1331834983);
+                }
+            }
+
+            $documentsAdded = true;
+        } catch (Throwable $e) {
+            $this->logger->error($e->getMessage() . ' Error code: ' . $e->getCode());
+
+            if ($this->configuration->getLoggingExceptions()) {
+                $this->logger->error('Exception while adding documents', [$e->__toString()]);
+            }
+        }
+
+        return $documentsAdded;
+    }
+
+    /**
+     * @internal only used for tests
+     */
+    public function setupConfiguration(): void
+    {
+        // currently needed for tests, will be separated.
+        $this->logger = new SolrLogManager(__CLASS__, GeneralUtility::makeInstance(DebugWriter::class));
+        $this->configuration = Util::getSolrConfiguration();
+    }
+
+    protected function getEventDispatcher(): EventDispatcherInterface
+    {
+        return GeneralUtility::makeInstance(EventDispatcherInterface::class);
+    }
+
+    /**
+     * Adds the status of whether a page was indexed to the pageIndexer Response.
+     */
+    public function deactivate(PageIndexerResponse $response): void
+    {
+        $response->addActionResult($this->action, $this->responseData);
     }
 }

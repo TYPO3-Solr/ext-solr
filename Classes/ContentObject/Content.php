@@ -28,21 +28,17 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class Content extends AbstractContentObject
 {
-    const CONTENT_OBJECT_NAME = 'SOLR_CONTENT';
+    public const CONTENT_OBJECT_NAME = 'SOLR_CONTENT';
 
     /**
      * Executes the SOLR_CONTENT content object.
      *
      * Cleans content coming from a database field, removing HTML tags ...
-     *
-     * @inheritDoc
-     * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])
     {
         $contentExtractor = GeneralUtility::makeInstance(
             HtmlContentExtractor::class,
-            /** @scrutinizer ignore-type */
             $this->getRawContent($this->cObj, $conf)
         );
 

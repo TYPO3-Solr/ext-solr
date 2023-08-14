@@ -19,7 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Value object that represent the options facet.
@@ -29,63 +28,29 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class HierarchyFacet extends AbstractFacet
 {
-    const TYPE_HIERARCHY = 'hierarchy';
+    public const TYPE_HIERARCHY = 'hierarchy';
 
-    /**
-     * String
-     * @var string
-     */
     protected static string $type = self::TYPE_HIERARCHY;
 
-    /**
-     * @var NodeCollection
-     */
-    protected NodeCollection $childNodes;
-
-    /**
-     * @var NodeCollection
-     */
-    protected NodeCollection $allNodes;
-
-    /**
-     * @var array
-     */
     protected array $nodesByKey = [];
 
-    /**
-     * OptionsFacet constructor
-     *
-     * @param SearchResultSet $resultSet
-     * @param string $name
-     * @param string $field
-     * @param string $label
-     * @param array $configuration Facet configuration passed from typoscript
-     * @param ObjectManagerInterface $objectManager
-     */
     public function __construct(
         SearchResultSet $resultSet,
         string $name,
         string $field,
         string $label = '',
-        array $configuration = [],
-        ObjectManagerInterface $objectManager = null
+        array $facetConfiguration = [],
+        protected NodeCollection $childNodes = new NodeCollection(),
+        protected NodeCollection $allNodes = new NodeCollection(),
     ) {
-        parent::__construct($resultSet, $name, $field, $label, $configuration, $objectManager);
-        $this->childNodes = new NodeCollection();
-        $this->allNodes = new NodeCollection();
+        parent::__construct($resultSet, $name, $field, $label, $facetConfiguration);
     }
 
-    /**
-     * @param Node $node
-     */
-    public function addChildNode(Node $node)
+    public function addChildNode(Node $node): void
     {
         $this->childNodes->add($node);
     }
 
-    /**
-     * @return NodeCollection
-     */
     public function getChildNodes(): NodeCollection
     {
         return $this->childNodes;
@@ -93,13 +58,6 @@ class HierarchyFacet extends AbstractFacet
 
     /**
      * Creates a new node on the right position with the right parent node.
-     *
-     * @param string|null $parentKey
-     * @param string $key
-     * @param string $label
-     * @param string $value
-     * @param int $count
-     * @param bool $selected
      */
     public function createNode(
         ?string $parentKey,
@@ -107,11 +65,11 @@ class HierarchyFacet extends AbstractFacet
         string $label,
         string $value,
         int $count,
-        bool $selected
-    ) {
-        /* @var $parentNode Node|null */
+        bool $selected,
+    ): void {
+        /** @var Node|null $parentNode */
         $parentNode = $this->nodesByKey[$parentKey] ?? null;
-        /* @var Node $node */
+        /** @var Node $node */
         $node = GeneralUtility::makeInstance(
             Node::class,
             $this,
@@ -135,8 +93,6 @@ class HierarchyFacet extends AbstractFacet
 
     /**
      * Get facet partial name used for rendering the facet
-     *
-     * @return string
      */
     public function getPartialName(): string
     {
@@ -145,8 +101,6 @@ class HierarchyFacet extends AbstractFacet
 
     /**
      * The implementation of this method should return a "flatten" collection of all items.
-     *
-     * @return AbstractFacetItemCollection
      */
     public function getAllFacetItems(): AbstractFacetItemCollection
     {

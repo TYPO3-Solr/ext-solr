@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Event
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -37,12 +36,10 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 final class EventQueueWorkerTask extends AbstractTask
 {
-    const DEFAULT_PROCESSING_LIMIT = 100;
+    public const DEFAULT_PROCESSING_LIMIT = 100;
 
     /**
      * Processing limit, the number of events to process
-     *
-     * @var int
      */
     protected int $limit = self::DEFAULT_PROCESSING_LIMIT;
 
@@ -51,9 +48,8 @@ final class EventQueueWorkerTask extends AbstractTask
      *
      * @return bool Returns TRUE on success, FALSE if no items were indexed or none were found.
      *
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @noinspection PhpMissingReturnTypeInspection See {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::execute()}
+     * @throws DBALException
+     * @noinspection PhpMissingReturnTypeInspection See {@link AbstractTask::execute}
      */
     public function execute()
     {
@@ -64,8 +60,7 @@ final class EventQueueWorkerTask extends AbstractTask
     /**
      * Process queued data update events
      *
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected function processEvents(): void
     {
@@ -94,8 +89,7 @@ final class EventQueueWorkerTask extends AbstractTask
                     new DelayedProcessingFinishedEvent($event)
                 );
             } catch (Throwable $e) {
-                $this->getSolrLogManager()->log(
-                    SolrLogManager::ERROR,
+                $this->getSolrLogManager()->error(
                     'Couldn\'t process queued event',
                     [
                         'eventQueueItemUid' => $queueItem['uid'],
@@ -122,9 +116,7 @@ final class EventQueueWorkerTask extends AbstractTask
      * Returns some additional information about indexing progress, shown in
      * the scheduler's task overview list.
      *
-     * @return string Information to display
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function getAdditionalInformation(): string
     {
@@ -144,8 +136,6 @@ final class EventQueueWorkerTask extends AbstractTask
 
     /**
      * Sets the limit
-     *
-     * @param int $limit
      */
     public function setLimit(int $limit): void
     {
@@ -154,8 +144,6 @@ final class EventQueueWorkerTask extends AbstractTask
 
     /**
      * Returns the limit
-     *
-     * @return int
      */
     public function getLimit(): int
     {
@@ -164,18 +152,14 @@ final class EventQueueWorkerTask extends AbstractTask
 
     /**
      * Return the SolrLogManager
-     *
-     * @return SolrLogManager
      */
     protected function getSolrLogManager(): SolrLogManager
     {
-        return  GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        return  GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**
      * Return the EventQueueItemRepository
-     *
-     * @return EventQueueItemRepository
      */
     protected function getEventQueueItemRepository(): EventQueueItemRepository
     {
@@ -184,8 +168,6 @@ final class EventQueueWorkerTask extends AbstractTask
 
     /**
      * Returns the EventDispatcher
-     *
-     * @return EventDispatcherInterface
      */
     protected function getEventDispatcher(): EventDispatcherInterface
     {

@@ -27,17 +27,10 @@ class SortingExpression
 {
     /**
      * Return expression for facet sorting
-     *
-     * @param string|int|bool $sorting
-     * @return string
      */
-    public function getForFacet($sorting): string
+    public function getForFacet(string|int|bool $sorting): string
     {
-        $noSortingSet = empty($sorting) && (int)$sorting !== 0 && (bool)$sorting !== false;
-        $sortingIsCount = $sorting === 'count' || $sorting === 1 || $sorting === '1' || $sorting === true;
-        if ($noSortingSet) {
-            return '';
-        }
+        $sortingIsCount = $sorting === 'count' || $sorting === 1 || $sorting === '1' || $sorting === true || $sorting === 'true';
         if ($sortingIsCount) {
             return 'count';
         }
@@ -46,16 +39,12 @@ class SortingExpression
 
     /**
      * Return expression for facet sorting combined with direction
-     *
-     * @param string $sorting
-     * @param string $direction
-     * @return string
      */
-    public function getForJsonFacet(string $sorting, string $direction): string
+    public function getForJsonFacet(string|int|bool $sorting, string $direction): string
     {
-        $isMetricSorting = strpos($sorting, 'metrics_') === 0;
+        $isMetricSorting = str_starts_with($sorting, 'metrics_');
         $expression = $isMetricSorting ? $sorting : $this->getForFacet($sorting);
-        $direction = strtolower($direction ?? '');
+        $direction = strtolower($direction);
         if (!empty($direction) && in_array($direction, ['asc', 'desc'])) {
             $expression .= ' ' . $direction;
         }

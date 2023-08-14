@@ -30,54 +30,34 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
  */
 class SearchRequest
 {
-    /**
-     * The default plugin namespace.
-     *
-     * @var string
-     */
-    const DEFAULT_PLUGIN_NAMESPACE = 'tx_solr';
+    public const DEFAULT_PLUGIN_NAMESPACE = 'tx_solr';
 
-    /**
-     * @var string
-     */
     protected string $id;
 
     /**
      * Default namespace overwritten with the configured plugin namespace.
-     *
-     * @var string
      */
     protected string $argumentNameSpace = self::DEFAULT_PLUGIN_NAMESPACE;
 
     /**
      * Arguments that should be kept for sub requests.
-     *
      * Default values, overwritten in the constructor with the namespaced arguments
-     *
-     * @var array
      */
     protected array $persistentArgumentsPaths = [
         'tx_solr:q',
         'tx_solr:filter',
         'tx_solr:sort',
+        'tx_solr:groupPage',
     ];
 
-    /**
-     * @var bool
-     */
     protected bool $stateChanged = false;
 
-    /**
-     * @var ArrayAccessor|null
-     */
     protected ?ArrayAccessor $argumentsAccessor = null;
 
     /**
      * The sys_language_uid that was used in the context where the request was build.
      * This could be different from the "L" parameter and not relevant for urls,
      * because typolink itself will handle it.
-     *
-     * @var int
      */
     protected int $contextSystemLanguageUid = 0;
 
@@ -86,39 +66,23 @@ class SearchRequest
      *
      * The pageUid is not relevant for the typolink additionalArguments and therefore
      * a separate property.
-     *
-     * @var int
      */
     protected int $contextPageUid;
 
-    /**
-     * @var TypoScriptConfiguration|null
-     */
     protected ?TypoScriptConfiguration $contextTypoScriptConfiguration;
 
     /**
      * Container for all active facets inside the URL(TYPO3/FE)
-     *
-     * @var UrlFacetContainer|null
      */
     protected ?UrlFacetContainer $activeFacetContainer;
 
-    /**
-     * @var array
-     */
     protected array $persistedArguments = [];
 
-    /**
-     * @param array $argumentsArray
-     * @param int $pageUid
-     * @param int $sysLanguageUid
-     * @param TypoScriptConfiguration|null $typoScriptConfiguration
-     */
     public function __construct(
         array $argumentsArray = [],
         int $pageUid = 0,
         int $sysLanguageUid = 0,
-        TypoScriptConfiguration $typoScriptConfiguration = null
+        TypoScriptConfiguration $typoScriptConfiguration = null,
     ) {
         $this->stateChanged = true;
         $this->persistedArguments = $argumentsArray;
@@ -129,14 +93,14 @@ class SearchRequest
 
         // overwrite the plugin namespace and the persistentArgumentsPaths
         if (!is_null($typoScriptConfiguration)) {
-            $this->argumentNameSpace = $typoScriptConfiguration->getSearchPluginNamespace() ?? self::DEFAULT_PLUGIN_NAMESPACE;
+            $this->argumentNameSpace = $typoScriptConfiguration->getSearchPluginNamespace();
         }
 
-        $this->persistentArgumentsPaths = [$this->argumentNameSpace . ':q', $this->argumentNameSpace . ':filter', $this->argumentNameSpace . ':sort', $this->argumentNameSpace . ':groupPage'];
+        $this->persistentArgumentsPaths = [$this->argumentNameSpace . ':q', $this->argumentNameSpace . ':filter', $this->argumentNameSpace . ':sort', $this->argumentNameSpace . ':grouping', $this->argumentNameSpace . ':groupPage'];
 
         if (!is_null($typoScriptConfiguration)) {
             $additionalPersistentArgumentsNames = $typoScriptConfiguration->getSearchAdditionalPersistentArgumentNames();
-            foreach ($additionalPersistentArgumentsNames ?? [] as $additionalPersistentArgumentsName) {
+            foreach ($additionalPersistentArgumentsNames as $additionalPersistentArgumentsName) {
                 $this->persistentArgumentsPaths[] = $this->argumentNameSpace . ':' . $additionalPersistentArgumentsName;
             }
             $this->persistentArgumentsPaths = array_unique($this->persistentArgumentsPaths);
@@ -145,9 +109,6 @@ class SearchRequest
         $this->reset();
     }
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
@@ -155,9 +116,6 @@ class SearchRequest
 
     /**
      * Can be used do merge arguments into the request arguments
-     *
-     * @param array $argumentsToMerge
-     * @return SearchRequest
      */
     public function mergeArguments(array $argumentsToMerge): SearchRequest
     {
@@ -173,9 +131,6 @@ class SearchRequest
 
     /**
      * Helper method to prefix an accessor with the argument's namespace.
-     *
-     * @param string $path
-     * @return string
      */
     protected function prefixWithNamespace(string $path): string
     {
@@ -183,7 +138,7 @@ class SearchRequest
     }
 
     /**
-     * @return array
+     * Returns active facet names
      */
     public function getActiveFacetNames(): array
     {
@@ -192,8 +147,6 @@ class SearchRequest
 
     /**
      * Returns all facet values for a certain facetName
-     * @param string $facetName
-     * @return array
      */
     public function getActiveFacetValuesByName(string $facetName): array
     {
@@ -201,7 +154,7 @@ class SearchRequest
     }
 
     /**
-     * @return array
+     * Returns active facets
      */
     public function getActiveFacets(): array
     {
@@ -210,6 +163,7 @@ class SearchRequest
 
     /**
      * Enable sorting of URL parameters
+     *
      * @noinspection PhpUnused
      */
     public function sortActiveFacets(): void
@@ -217,17 +171,11 @@ class SearchRequest
         $this->activeFacetContainer->enableSort();
     }
 
-    /**
-     * @return bool
-     */
     public function isActiveFacetsSorted(): bool
     {
         return $this->activeFacetContainer->isSorted();
     }
 
-    /**
-     * @return string
-     */
     public function getActiveFacetsUrlParameterStyle(): string
     {
         return $this->activeFacetContainer->getParameterStyle();
@@ -235,8 +183,6 @@ class SearchRequest
 
     /**
      * Returns the active count of facets
-     *
-     * @return int
      */
     public function getActiveFacetCount(): int
     {
@@ -244,9 +190,8 @@ class SearchRequest
     }
 
     /**
-     * @param array $activeFacets
+     * Sets active facets for current result set
      *
-     * @return SearchRequest
      * @noinspection PhpUnused
      */
     protected function setActiveFacets(array $activeFacets = []): SearchRequest
@@ -258,11 +203,6 @@ class SearchRequest
 
     /**
      * Adds a facet value to the request.
-     *
-     * @param string $facetName
-     * @param mixed $facetValue
-     *
-     * @return SearchRequest
      */
     public function addFacetValue(string $facetName, $facetValue): SearchRequest
     {
@@ -278,13 +218,8 @@ class SearchRequest
 
     /**
      * Removes a facet value from the request.
-     *
-     * @param string $facetName
-     * @param mixed $facetValue
-     *
-     * @return SearchRequest
      */
-    public function removeFacetValue(string $facetName, $facetValue): SearchRequest
+    public function removeFacetValue(string $facetName, mixed $facetValue): SearchRequest
     {
         $this->activeFacetContainer->removeFacetValue($facetName, $facetValue);
         if ($this->activeFacetContainer->hasChanged()) {
@@ -297,10 +232,6 @@ class SearchRequest
 
     /**
      * Removes all facet values from the request by a certain facet name
-     *
-     * @param string $facetName
-     *
-     * @return SearchRequest
      */
     public function removeAllFacetValuesByName(string $facetName): SearchRequest
     {
@@ -314,8 +245,6 @@ class SearchRequest
 
     /**
      * Removes all active facets from the request.
-     *
-     * @return SearchRequest
      */
     public function removeAllFacets(): SearchRequest
     {
@@ -329,19 +258,12 @@ class SearchRequest
 
     /**
      * Check if an active facet has a given value
-     *
-     * @param string $facetName
-     * @param mixed $facetValue
-     * @return bool
      */
-    public function getHasFacetValue(string $facetName, $facetValue): bool
+    public function getHasFacetValue(string $facetName, mixed $facetValue): bool
     {
         return $this->activeFacetContainer->hasFacetValue($facetName, $facetValue);
     }
 
-    /**
-     * @return bool
-     */
     public function getHasSorting(): bool
     {
         $path = $this->prefixWithNamespace('sort');
@@ -350,8 +272,6 @@ class SearchRequest
 
     /**
      * Returns the sorting string in the url e.g. title asc.
-     *
-     * @return string
      */
     public function getSorting(): string
     {
@@ -361,9 +281,6 @@ class SearchRequest
 
     /**
      * Helper function to get the sorting configuration name or direction.
-     *
-     * @param int $index
-     * @return string
      */
     protected function getSortingPart(int $index): ?string
     {
@@ -378,8 +295,6 @@ class SearchRequest
 
     /**
      * Returns the sorting configuration name that is currently used.
-     *
-     * @return string
      */
     public function getSortingName(): ?string
     {
@@ -388,17 +303,12 @@ class SearchRequest
 
     /**
      * Returns the sorting direction that is currently used.
-     *
-     * @return string
      */
     public function getSortingDirection(): string
     {
         return mb_strtolower($this->getSortingPart(1) ?? '');
     }
 
-    /**
-     * @return SearchRequest
-     */
     public function removeSorting(): SearchRequest
     {
         $path = $this->prefixWithNamespace('sort');
@@ -407,12 +317,6 @@ class SearchRequest
         return $this;
     }
 
-    /**
-     * @param string $sortingName
-     * @param string $direction (asc or desc)
-     *
-     * @return SearchRequest
-     */
     public function setSorting(string $sortingName, string $direction = 'asc'): SearchRequest
     {
         $value = $sortingName . ' ' . $direction;
@@ -424,9 +328,6 @@ class SearchRequest
 
     /**
      * Method to set the paginated page of the search
-     *
-     * @param int $page
-     * @return SearchRequest
      */
     public function setPage(int $page): SearchRequest
     {
@@ -442,8 +343,6 @@ class SearchRequest
 
     /**
      * Returns the passed page.
-     *
-     * @return int|null
      */
     public function getPage(): ?int
     {
@@ -453,8 +352,6 @@ class SearchRequest
 
     /**
      * Can be used to reset all groupPages.
-     *
-     * @return SearchRequest
      */
     public function removeAllGroupItemPages(): SearchRequest
     {
@@ -466,14 +363,12 @@ class SearchRequest
 
     /**
      * Can be used to paginate within a groupItem.
-     *
-     * @param string $groupName e.g. type
-     * @param string $groupItemValue e.g. pages
-     * @param int $page
-     * @return SearchRequest
      */
-    public function setGroupItemPage(string $groupName, string $groupItemValue, int $page): SearchRequest
-    {
+    public function setGroupItemPage(
+        string $groupName,
+        string $groupItemValue,
+        int $page,
+    ): SearchRequest {
         $this->stateChanged = true;
         $escapedValue = $this->getEscapedGroupItemValue($groupItemValue);
         $path = $this->prefixWithNamespace('groupPage:' . $groupName . ':' . $escapedValue);
@@ -483,10 +378,6 @@ class SearchRequest
 
     /**
      * Retrieves the current page for this group item.
-     *
-     * @param string $groupName
-     * @param string $groupItemValue
-     * @return int
      */
     public function getGroupItemPage(string $groupName, string $groupItemValue): int
     {
@@ -497,9 +388,6 @@ class SearchRequest
 
     /**
      * Removes all non-alphanumeric values from the groupItem value to have a valid array key.
-     *
-     * @param string $groupItemValue
-     * @return string
      */
     protected function getEscapedGroupItemValue(string $groupItemValue): string
     {
@@ -508,8 +396,6 @@ class SearchRequest
 
     /**
      * Retrieves the highest page of the groups.
-     *
-     * @return int
      */
     public function getHighestGroupPage(): int
     {
@@ -532,9 +418,6 @@ class SearchRequest
 
     /**
      * Method to overwrite the query string.
-     *
-     * @param string $rawQueryString
-     * @return SearchRequest
      */
     public function setRawQueryString(string $rawQueryString = ''): SearchRequest
     {
@@ -546,8 +429,6 @@ class SearchRequest
 
     /**
      * Returns the passed rawQueryString.
-     *
-     * @return string
      */
     public function getRawUserQuery(): string
     {
@@ -561,7 +442,6 @@ class SearchRequest
      * (also empty string or whitespaces only are handled as empty).
      *
      * When no query string is set (null) the method returns false.
-     * @return bool
      */
     public function getRawUserQueryIsEmptyString(): bool
     {
@@ -582,8 +462,6 @@ class SearchRequest
     /**
      * This method returns true when no querystring is present at all.
      * Which means no search by the user was triggered
-     *
-     * @return bool
      */
     public function getRawUserQueryIsNull(): bool
     {
@@ -594,9 +472,6 @@ class SearchRequest
 
     /**
      * Sets the results per page that are used during search.
-     *
-     * @param int $resultsPerPage
-     * @return SearchRequest
      */
     public function setResultsPerPage(int $resultsPerPage): SearchRequest
     {
@@ -607,9 +482,6 @@ class SearchRequest
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getStateChanged(): bool
     {
         return $this->stateChanged;
@@ -617,7 +489,6 @@ class SearchRequest
 
     /**
      * Returns the passed resultsPerPage value
-     * @return int
      */
     public function getResultsPerPage(): int
     {
@@ -627,9 +498,6 @@ class SearchRequest
 
     /**
      * Allows setting additional filters that are used on time and not transported during the request.
-     *
-     * @param array $additionalFilters
-     * @return SearchRequest
      */
     public function setAdditionalFilters(array $additionalFilters): SearchRequest
     {
@@ -642,8 +510,6 @@ class SearchRequest
 
     /**
      * Retrieves the additional filters that have been set
-     *
-     * @return array
      */
     public function getAdditionalFilters(): array
     {
@@ -651,17 +517,11 @@ class SearchRequest
         return $this->argumentsAccessor->get($path, []);
     }
 
-    /**
-     * @return int
-     */
     public function getContextSystemLanguageUid(): int
     {
         return $this->contextSystemLanguageUid;
     }
 
-    /**
-     * @return int
-     */
     public function getContextPageUid(): int
     {
         return $this->contextPageUid;
@@ -669,8 +529,6 @@ class SearchRequest
 
     /**
      * Get contextTypoScriptConfiguration
-     *
-     * @return TypoScriptConfiguration
      */
     public function getContextTypoScriptConfiguration(): ?TypoScriptConfiguration
     {
@@ -679,8 +537,6 @@ class SearchRequest
 
     /**
      * Assigns the last known persistedArguments and restores their state.
-     *
-     * @return SearchRequest
      */
     public function reset(): SearchRequest
     {
@@ -707,9 +563,6 @@ class SearchRequest
 
     /**
      * This can be used to start a new sub request, e.g. for a faceted search.
-     *
-     * @param bool $onlyPersistentArguments
-     * @return SearchRequest
      */
     public function getCopyForSubRequest(bool $onlyPersistentArguments = true): SearchRequest
     {
@@ -740,7 +593,8 @@ class SearchRequest
     }
 
     /**
-     * @return string
+     * Returns argument's namespace
+     *
      * @noinspection PhpUnused
      */
     public function getArgumentNamespace(): string
@@ -748,9 +602,6 @@ class SearchRequest
         return $this->argumentNameSpace;
     }
 
-    /**
-     * @return array
-     */
     public function getAsArray(): array
     {
         return $this->argumentsAccessor->getData();
@@ -758,8 +609,6 @@ class SearchRequest
 
     /**
      * Returns only the arguments as array.
-     *
-     * @return array
      */
     public function getArguments(): array
     {

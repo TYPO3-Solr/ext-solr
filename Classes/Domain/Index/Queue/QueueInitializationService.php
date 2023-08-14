@@ -18,14 +18,13 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
-use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
+use ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterIndexQueueHasBeenInitializedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
-use Throwable;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use UnexpectedValueException;
 
 /**
  * The queue initialization service is responsible to run the initialization of the index queue for a combination of sites
@@ -36,17 +35,13 @@ use UnexpectedValueException;
  */
 class QueueInitializationService
 {
-    /**
-     * @var Queue
-     */
     protected Queue $queue;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * QueueInitializationService constructor.
-     */
-    public function __construct(Queue $queue)
+    public function __construct(Queue $queue, EventDispatcherInterface $eventDispatcher = null)
     {
         $this->queue = $queue;
+        $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }
 
     /**
@@ -58,9 +53,9 @@ class QueueInitializationService
      * @param string $indexingConfigurationName Name of a specific indexing configuration, when * is passed any is used
      * @return array An array of booleans, each representing whether the
      *      initialization for an indexing configuration was successful
+     *
      * @throws ConnectionException
      * @throws DBALException
-     * @throws Throwable
      */
     public function initializeBySiteAndIndexConfiguration(Site $site, string $indexingConfigurationName = '*'): array
     {
@@ -72,16 +67,15 @@ class QueueInitializationService
      *
      * @param array $sites The array of sites to initialize
      * @param array $indexingConfigurationNames the array of index configurations to initialize.
-     * @return array
+     *
      * @throws ConnectionException
      * @throws DBALException
-     * @throws Throwable
      */
     public function initializeBySitesAndConfigurations(array $sites, array $indexingConfigurationNames = ['*']): array
     {
         $initializationStatesBySiteId = [];
         foreach ($sites as $site) {
-            /** @var  Site $site */
+            /** @var Site $site */
             $initializationResult = $this->initializeBySiteAndIndexConfigurations($site, $indexingConfigurationNames);
             $initializationStatesBySiteId[$site->getRootPageId()] = $initializationResult;
         }
@@ -90,13 +84,12 @@ class QueueInitializationService
     }
 
     /**
-     * Initializes a set index configurations for a given site.
+     * Initializes a set of index configurations for a given site.
+     * If one of the indexing configuration names is a * (wildcard) all configurations are used,
      *
-     * @param Site $site
-     * @param array $indexingConfigurationNames if one of the names is a * (wildcard) all configurations are used,
-     * @return array
+     * @param array<int, string> $indexingConfigurationNames
+     * @return array<string, bool>
      * @throws ConnectionException
-     * @throws Throwable
      * @throws DBALException
      */
     public function initializeBySiteAndIndexConfigurations(Site $site, array $indexingConfigurationNames): array
@@ -108,33 +101,15 @@ class QueueInitializationService
         foreach ($indexingConfigurationNames as $indexingConfigurationName) {
             $initializationStatus[$indexingConfigurationName] = $this->applyInitialization($site, (string)$indexingConfigurationName);
         }
-
-        if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'])) {
-            return $initializationStatus;
-        }
-
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'] as $classReference) {
-            $indexQueueInitializationPostProcessor = GeneralUtility::makeInstance($classReference);
-            if ($indexQueueInitializationPostProcessor instanceof InitializationPostProcessor) {
-                $indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization($site, $indexingConfigurationNames, $initializationStatus);
-            } else {
-                throw new UnexpectedValueException(get_class($indexQueueInitializationPostProcessor) . ' must implement interface ' . InitializationPostProcessor::class, 1345815561);
-            }
-        }
-
         return $initializationStatus;
     }
 
     /**
      * Initializes the Index Queue for a specific indexing configuration.
      *
-     * @param Site $site The site to initialize
-     * @param string $indexingConfigurationName name of a specific
-     *      indexing configuration
      * @return bool TRUE if the initialization was successful, FALSE otherwise
-     * @throws ConnectionException
+     *
      * @throws DBALException
-     * @throws Throwable
      */
     protected function applyInitialization(Site $site, string $indexingConfigurationName): bool
     {
@@ -150,12 +125,7 @@ class QueueInitializationService
     }
 
     /**
-     * @param Site $site
-     * @param string $indexingConfigurationName
-     * @param string $initializerClass
-     * @param string $type
-     * @param array $indexConfiguration
-     * @return bool
+     * Executes desired initializer
      */
     protected function executeInitializer(
         Site $site,
@@ -165,12 +135,15 @@ class QueueInitializationService
         array $indexConfiguration
     ): bool {
         $initializer = GeneralUtility::makeInstance($initializerClass);
-        /* @var AbstractInitializer $initializer */
+        /** @var AbstractInitializer $initializer */
         $initializer->setSite($site);
         $initializer->setType($type);
         $initializer->setIndexingConfigurationName($indexingConfigurationName);
         $initializer->setIndexingConfiguration($indexConfiguration);
 
-        return $initializer->initialize();
+        $isInitialized = $initializer->initialize();
+        $event = new AfterIndexQueueHasBeenInitializedEvent($initializer, $site, $indexingConfigurationName, $type, $indexConfiguration, $isInitialized);
+        $event = $this->eventDispatcher->dispatch($event);
+        return $event->isInitialized();
     }
 }

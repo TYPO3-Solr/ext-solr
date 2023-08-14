@@ -27,11 +27,11 @@ class StatisticsRepositoryTest extends IntegrationTest
      */
     public function canGetTopKeywordsWithHits()
     {
-        $this->importDataSetFromFixture('can_get_statistics.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1471203378;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
-        /** @var $repository StatisticsRepository */
+        /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getTopKeyWordsWithHits(1, $daysSinceFixture);
         $expectedResult = [
@@ -47,11 +47,11 @@ class StatisticsRepositoryTest extends IntegrationTest
      */
     public function canGetTopKeywordsWithoutHits()
     {
-        $this->importDataSetFromFixture('can_get_statistics.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1471203378;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
-        /** @var $repository StatisticsRepository */
+        /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getTopKeyWordsWithoutHits(1, $daysSinceFixture);
 
@@ -67,11 +67,11 @@ class StatisticsRepositoryTest extends IntegrationTest
      */
     public function canGetTopKeywordsWithoutHitsNoResult()
     {
-        $this->importDataSetFromFixture('can_get_statistics.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1480000000;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
-        /** @var $repository StatisticsRepository */
+        /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getTopKeyWordsWithoutHits(1, $daysSinceFixture);
 
@@ -85,11 +85,11 @@ class StatisticsRepositoryTest extends IntegrationTest
      */
     public function canGetSearchStatisticsNoResult()
     {
-        $this->importDataSetFromFixture('can_get_statistics.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1480000000;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
-        /** @var $repository StatisticsRepository */
+        /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getSearchStatistics(37, $daysSinceFixture);
 
@@ -103,8 +103,8 @@ class StatisticsRepositoryTest extends IntegrationTest
      */
     public function canSaveStatisticsRecord()
     {
-        $this->importDataSetFromFixture('can_save_statistics_record.xml');
-        /** @var $repository StatisticsRepository */
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
+        /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
 
         self::assertEquals(4, $repository->countByRootPageId(1), 'Does not contain all statistics records from fixtures.');
@@ -135,14 +135,11 @@ class StatisticsRepositoryTest extends IntegrationTest
 
     /**
      * Helper method to calculate the number of days from now to a specific timestamp.
-     *
-     * @param $timestamp
-     * @return float
      */
-    protected static function getDaysSinceTimestamp($timestamp)
+    protected static function getDaysSinceTimestamp(int $timestamp): int
     {
         $secondsUntilNow = time() - $timestamp;
         $days = floor($secondsUntilNow / (60*60*24));
-        return $days;
+        return (int)$days;
     }
 }

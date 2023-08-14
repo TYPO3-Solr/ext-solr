@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\System\Records\Queue;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use ApacheSolrForTypo3\Solr\Util;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -30,16 +29,11 @@ use TYPO3\CMS\Core\SingletonInterface;
  */
 class EventQueueItemRepository extends AbstractRepository implements SingletonInterface
 {
-    /**
-     * @var string
-     */
     protected string $table = 'tx_solr_eventqueue_item';
 
     /**
      * Add event to event queue
      *
-     * @param DataUpdateEventInterface $event
-     * @throws DBALException|\Doctrine\DBAL\DBALException
      * @throws AspectNotFoundException
      */
     public function addEventToQueue(DataUpdateEventInterface $event): void
@@ -50,21 +44,16 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
         $queryBuilder
             ->insert($this->table)
             ->values([
-                'tstamp' => Util::getExceptionTime(),
+                'tstamp' => Util::getExecutionTime(),
                 'event' => $serializedEvent,
-
             ])
-            ->execute();
+            ->executeStatement();
     }
 
     /**
      * Returns event queue items
      *
-     * @param int|null $limit
-     * @param bool $excludeErroneousItems
-     * @return array
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function getEventQueueItems(int $limit = null, bool $excludeErroneousItems = true): array
     {
@@ -82,16 +71,12 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
         }
 
         return $queryBuilder
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
     /**
      * Updates a event queue item
-     *
-     * @param int $uid
-     * @param array $data
-     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function updateEventQueueItem(int $uid, array $data): void
     {
@@ -110,14 +95,13 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
             $queryBuilder->set($column, $value);
         }
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 
     /**
      * Deletes event queue items
      *
      * @param int[] $uids
-     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function deleteEventQueueItems(array $uids): void
     {
@@ -131,16 +115,13 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
             ->where(
                 $queryBuilder->expr()->in('uid', array_map('intval', $uids))
             )
-            ->execute();
+            ->executeStatement();
     }
 
     /**
      * Returns current count of last searches
      *
-     * @param bool $excludeErroneousItems
-     * @return int
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     public function count(bool $excludeErroneousItems = true): int
     {
@@ -154,7 +135,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
         }
 
         return (int)$queryBuilder
-            ->execute()
+            ->executeQuery()
             ->fetchOne();
     }
 }

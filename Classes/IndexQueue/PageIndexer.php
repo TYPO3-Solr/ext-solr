@@ -19,14 +19,13 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
-use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\AbstractUriStrategy;
-use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriStrategyFactory;
+use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\PageUriBuilder;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Exception as DBALException;
 use Exception;
-use RuntimeException;
+use Psr\Log\LogLevel;
 use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -45,8 +44,9 @@ class PageIndexer extends Indexer
      * Indexes an item from the indexing queue.
      *
      * @param Item $item An index queue item
+     *
      * @return bool Whether indexing was successful
-     * @throws DBALDriverException
+     *
      * @throws DBALException
      * @throws NoSolrConnectionFoundException
      */
@@ -70,7 +70,7 @@ class PageIndexer extends Indexer
             }
 
             foreach ($contentAccessGroups as $userGroup) {
-                $this->indexPage($item, $systemLanguageUid, (int)$userGroup);
+                $this->indexPage($item, $systemLanguageUid, $userGroup);
             }
         }
 
@@ -81,6 +81,7 @@ class PageIndexer extends Indexer
      * Checks whether we can index this page.
      *
      * @param Item $item The page we want to index encapsulated in an index queue item
+     *
      * @return bool True if we can index this page, FALSE otherwise
      */
     protected function isPageIndexable(Item $item): bool
@@ -106,10 +107,11 @@ class PageIndexer extends Indexer
      * The connections include the default connection and connections to be used
      * for translations of a page.
      *
-     * @param Item $item An index queue item
-     * @return array An array of ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections, the array's keys are the sys_language_uid of the language of the connection
-     * @throws DBALDriverException
+     * @return SolrConnection[] An array of {@link SolrConnection} connections,
+     *     the array's keys are the sys_language_uid of the language of the connection
+     *
      * @throws NoSolrConnectionFoundException
+     * @throws DBALException
      */
     protected function getSolrConnectionsByItem(Item $item): array
     {
@@ -147,11 +149,10 @@ class PageIndexer extends Indexer
      * elements and groups of records of extensions that have correctly been
      * pushed through ContentObjectRenderer during rendering.
      *
-     * @param Item $item Index queue item representing the current page to get the user groups from
-     * @param int $language The sys_language_uid language ID
-     * @return array Array of user group IDs
-     * @throws DBALDriverException
+     * @return int[] Array of user group IDs
+     *
      * @throws DBALException
+     * @throws Exception
      */
     protected function getAccessGroupsFromContent(Item $item, int $language = 0): array
     {
@@ -172,8 +173,7 @@ class PageIndexer extends Indexer
             }
 
             if ($this->loggingEnabled) {
-                $this->logger->log(
-                    SolrLogManager::INFO,
+                $this->logger->info(
                     'Page Access Groups',
                     [
                         'item' => (array)$item,
@@ -195,8 +195,6 @@ class PageIndexer extends Indexer
     /**
      * Builds a base page indexer request with configured headers and other
      * parameters.
-     *
-     * @return PageIndexerRequest Base page indexer request
      */
     protected function buildBasePageIndexerRequest(): PageIndexerRequest
     {
@@ -223,9 +221,6 @@ class PageIndexer extends Indexer
         return $request;
     }
 
-    /**
-     * @return PageIndexerRequest
-     */
     protected function getPageIndexerRequest(): PageIndexerRequest
     {
         return GeneralUtility::makeInstance(PageIndexerRequest::class);
@@ -237,29 +232,29 @@ class PageIndexer extends Indexer
      * Tries to find a domain record to use to build a URL for a given page ID
      * and then actually build and return the page URL.
      *
-     * @param Item $item Item to index
-     * @param int $language The language id
-     * @return string URL to send the index request to
-     * @throws DBALDriverException
      * @throws DBALException
-     * @throws Exception
+     * @throws \Exception
      */
     protected function getDataUrl(Item $item, int $language = 0): string
     {
         $pageId = $item->getRecordUid();
-        $strategy = $this->getUriStrategy($pageId);
+        $uriBuilder = $this->getUriBuilder($pageId);
         $mountPointParameter = $this->getMountPageDataUrlParameter($item);
-        return $strategy->getPageIndexingUriFromPageItemAndLanguageId($item, $language, $mountPointParameter, $this->options);
+        return $uriBuilder->getPageIndexingUriFromPageItemAndLanguageId($item, $language, $mountPointParameter, $this->options);
     }
 
     /**
-     * @param int $pageId
-     * @return AbstractUriStrategy
-     * @throws Exception
+     * Returns the URI strategy object
+     *
+     * @throws \Exception
      */
-    protected function getUriStrategy(int $pageId): AbstractUriStrategy
+    protected function getUriBuilder(int $pageId): PageUriBuilder
     {
-        return GeneralUtility::makeInstance(UriStrategyFactory::class)->getForPageId($pageId);
+        if (!SiteUtility::getIsSiteManagedSite($pageId)) {
+            throw new \Exception('Site of page with uid ' . $pageId . ' is not a TYPO3 managed site');
+        }
+
+        return GeneralUtility::makeInstance(PageUriBuilder::class);
     }
 
     /**
@@ -267,8 +262,9 @@ class PageIndexer extends Indexer
      * is identified as being a mounted page, the &MP parameter is generated.
      *
      * @param Item $item Item to get an &MP URL parameter for
+     *
      * @return string 'MP' URL parameter if $item is a mounted page
-     * @throws DBALDriverException
+     *
      * @throws DBALException
      */
     protected function getMountPageDataUrlParameter(Item $item): string
@@ -291,9 +287,11 @@ class PageIndexer extends Indexer
      * @param Item $item The index queue item representing the page.
      * @param ?int $language The language to use.
      * @param ?int $userGroup The frontend user group to use.
+     *
      * @return PageIndexerResponse Page indexer response
-     * @throws DBALDriverException
+     *
      * @throws DBALException
+     * @throws Exception
      */
     protected function indexPage(Item $item, ?int $language = 0, ?int $userGroup = 0): PageIndexerResponse
     {
@@ -301,17 +299,17 @@ class PageIndexer extends Indexer
         $request = $this->buildBasePageIndexerRequest();
         $request->setIndexQueueItem($item);
         $request->addAction('indexPage');
-        $request->setParameter('accessRootline', (string)$accessRootline);
+        $request->setParameter('accessRootline', $accessRootline);
 
         $indexRequestUrl = $this->getDataUrl($item, $language);
         $response = $request->send($indexRequestUrl);
         $indexActionResult = $response->getActionResult('indexPage');
 
         if ($this->loggingEnabled) {
-            $logSeverity = SolrLogManager::INFO;
+            $logSeverity = LogLevel::INFO;
             $logStatus = 'Info';
             if (!empty($indexActionResult['pageIndexed'])) {
-                $logSeverity = SolrLogManager::NOTICE;
+                $logSeverity = LogLevel::NOTICE;
                 $logStatus = 'Success';
             }
 
@@ -333,7 +331,7 @@ class PageIndexer extends Indexer
         if (empty($indexActionResult['pageIndexed'])) {
             $message = 'Failed indexing page Index Queue item: ' . $item->getIndexQueueUid() . ' url: ' . $indexRequestUrl;
 
-            throw new RuntimeException($message, 1331837081);
+            throw new \RuntimeException($message, 1331837081);
         }
 
         return $response;
@@ -361,17 +359,18 @@ class PageIndexer extends Indexer
      * @param Item $item Index queue item representing the current page
      * @param int $language The sys_language_uid language ID
      * @param int|null $contentAccessGroup The user group to use for the content access rootline element. Optional, will be determined automatically if not set.
-     * @return mixed|Rootline An Access Rootline.
-     * @throws DBALDriverException
+     *
+     * @return string An Access Rootline.
+     *
      * @throws DBALException
      */
-    protected function getAccessRootline(Item $item, int $language = 0, int $contentAccessGroup = null)
+    protected function getAccessRootline(Item $item, int $language = 0, int $contentAccessGroup = null): string
     {
         static $accessRootlineCache;
 
         $mountPointParameter = $this->getMountPageDataUrlParameter($item);
 
-        $accessRootlineCacheEntryId = $item->getRecordUid() . '|' . $language;
+        $accessRootlineCacheEntryId = $item->getType() . '|' . $item->getRecordUid() . '|' . $language;
         if ($mountPointParameter !== '') {
             $accessRootlineCacheEntryId .= '|' . $mountPointParameter;
         }
@@ -387,21 +386,17 @@ class PageIndexer extends Indexer
             if (is_null($contentAccessGroup)) {
                 $contentAccessGroups = $this->getAccessGroupsFromContent($item, $language);
             }
-            $element = GeneralUtility::makeInstance(RootlineElement::class, /** @scrutinizer ignore-type */ 'c:' . implode(',', $contentAccessGroups));
+            $element = GeneralUtility::makeInstance(RootlineElement::class, 'c:' . implode(',', $contentAccessGroups));
             $accessRootline->push($element);
 
             $accessRootlineCache[$accessRootlineCacheEntryId] = $accessRootline;
         }
 
-        return $accessRootlineCache[$accessRootlineCacheEntryId];
+        return (string)$accessRootlineCache[$accessRootlineCacheEntryId];
     }
 
     /**
      * Returns the access rootLine for a certain pageId.
-     *
-     * @param int $pageId
-     * @param string $mountPointParameter
-     * @return Rootline
      */
     protected function getAccessRootlineByPageId(int $pageId, string $mountPointParameter): Rootline
     {

@@ -2,7 +2,7 @@
 Languages
 =========
 
-We recommend to create one solr core per language. The shipped solr example configuration provides a setup for the following languages:
+We recommend to create one Solr core per language. The shipped Solr example configuration provides a setup for the following languages:
 
 * Arabic (core_ar)
 * Armenian (core_hy)
@@ -44,9 +44,9 @@ We recommend to create one solr core per language. The shipped solr example conf
 * Turkish (core_tr)
 * Ukrainian (core_uk)
 
-The configuration of the connection between solr cores and sites is done in typoscript.
+The configuration of the connection between Solr cores and sites is done in TypoScript.
 
-The following typoscript snipped shows an example how to configure multiple languages for the introduction package (EN, DE and DA):
+The following TypoScript snipped shows an example how to configure multiple languages for the introduction package (EN, DE and DA):
 
 
 .. code-block:: typoscript
@@ -67,4 +67,4 @@ The following typoscript snipped shows an example how to configure multiple lang
     [end]
 
 
-After setting up the languages with typoscript you need to initialize the solr connections with the connection manager (:ref:`connection-manager`).
+After setting up the languages with TypoScript you need to initialize the Solr connections with the connection manager (:ref:`connection-manager`).

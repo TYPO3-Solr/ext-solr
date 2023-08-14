@@ -22,14 +22,10 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
  */
 class GroupCollection extends AbstractCollection
 {
-    /**
-     * @param string $name
-     * @return Group|null
-     */
     public function getByName(string $name): ?Group
     {
         foreach ($this->data as $group) {
-            /* @var Group $group */
+            /** @var Group $group */
             if ($group->getGroupName() === $name) {
                 return $group;
             }
@@ -37,14 +33,10 @@ class GroupCollection extends AbstractCollection
         return null;
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
     public function getHasWithName(string $name): bool
     {
         foreach ($this->data as $group) {
-            /* @var Group $group */
+            /** @var Group $group */
             if ($group->getGroupName() === $name) {
                 return true;
             }
@@ -53,23 +45,17 @@ class GroupCollection extends AbstractCollection
         return false;
     }
 
-    /**
-     * @return array
-     */
     public function getGroupNames(): array
     {
         $names = [];
         foreach ($this->data as $group) {
-            /* @var Group $group */
+            /** @var Group $group */
             $names[] = $group->getGroupName();
         }
         return $names;
     }
 
-    /**
-     * @param Group $group
-     */
-    public function add(Group $group)
+    public function add(Group $group): void
     {
         $this->data[] = $group;
     }

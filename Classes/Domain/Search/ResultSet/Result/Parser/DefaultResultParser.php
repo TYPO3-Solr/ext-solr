@@ -23,14 +23,12 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * The DefaultResultParser is able to parse normal(ungroupd results)
+ * The DefaultResultParser is able to parse normal(ungrouped results)
  */
 class DefaultResultParser extends AbstractResultParser
 {
     /**
-     * @param SearchResultSet $resultSet
-     * @param bool $useRawDocuments
-     * @return SearchResultSet
+     * @inheritDoc
      */
     public function parse(SearchResultSet $resultSet, bool $useRawDocuments = true): SearchResultSet
     {
@@ -63,14 +61,15 @@ class DefaultResultParser extends AbstractResultParser
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @return bool
+     * @inheritDoc
      */
     public function canParse(SearchResultSet $resultSet): bool
     {
-        // These parsers should not be used when grouping is enabled
         $configuration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration();
-        if ($configuration instanceof TypoScriptConfiguration && $configuration->getIsSearchGroupingEnabled()) {
+        if ($resultSet->getUsedQuery()->getComponent('grouping') !== null
+            && $configuration instanceof TypoScriptConfiguration
+            && $configuration->getIsSearchGroupingEnabled()
+        ) {
             return false;
         }
 

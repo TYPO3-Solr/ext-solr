@@ -19,14 +19,14 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test case for the Group class
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class GroupItemTest extends UnitTest
+class GroupItemTest extends SetUpUnitTestCase
 {
     /**
      * @var GroupItem
@@ -47,7 +47,7 @@ class GroupItemTest extends UnitTest
             12,
             1,
             99,
-            $this->getDumbMock(SearchRequest::class)
+            $this->createMock(SearchRequest::class)
         );
         parent::setUp();
     }
@@ -99,7 +99,7 @@ class GroupItemTest extends UnitTest
     {
         self::assertSame(0, $this->groupItem->getSearchResults()->getCount());
 
-        $searchResult = $this->getDumbMock(SearchResult::class);
+        $searchResult = $this->createMock(SearchResult::class);
         $this->groupItem->addSearchResult($searchResult);
 
         self::assertSame(1, $this->groupItem->getSearchResults()->getCount());

@@ -7,6 +7,54 @@ services:
     resource: '../Classes/*'
     exclude: '../Classes/Eid/*'
 
+  controller:
+    namespace: ApacheSolrForTypo3\Solr\Controller\
+    resource: '../Classes/Controller/*'
+    public: true
+    autowire: true
+    shared: false
+
+  viewhelper:
+    namespace: ApacheSolrForTypo3\Solr\ViewHelpers\
+    resource: '../Classes/ViewHelpers/*'
+    public: true
+    autowire: true
+
+  backend_controller:
+    namespace: ApacheSolrForTypo3\Solr\Controller\Backend\Search\
+    resource: '../Classes/Controller/Backend/Search/*'
+    public: true
+    autowire: true
+    tags: ['backend.controller']
+
+  ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder:
+    public: true
+    autowire: true
+
+  ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder:
+    public: true
+    autowire: true
+
+  ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder:
+    public: true
+    autowire: true
+
+  # BE modules, plugins
+  ApacheSolrForTypo3\Solr\Backend\SettingsPreviewOnPlugins:
+    arguments:
+      $flexFormService: '@TYPO3\CMS\Core\Service\FlexFormService'
+    tags:
+      - name: event.listener
+        identifier: 'solr.plugin.be.settings.preview'
+        event: TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent
+  # END: BE modules
+
+  viewhelpers_backend:
+    namespace: ApacheSolrForTypo3\Solr\ViewHelpers\Backend\
+    resource: '../Classes/ViewHelpers/Backend/*'
+    public: true
+    autowire: true
+
   ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler:
     public: true
     arguments:
@@ -27,6 +75,10 @@ services:
       $indexQueue: '@ApacheSolrForTypo3\Solr\IndexQueue\Queue'
 
   ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService:
+    public: true
+    autowire: true
+
+  ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler:
     public: true
     autowire: true
 
@@ -138,9 +190,122 @@ services:
         identifier: 'solr.index.updatehandler.delayedprocessingeventlistener'
         event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent
 
-  ### Indexing
-  ApacheSolrForTypo3\Solr\EventListener\PageIndexer\FrontendGroupsModifier:
+  # Register search components
+  ApacheSolrForTypo3\Solr\Search\AccessComponent:
+    autowire: true
     tags:
       - name: event.listener
-        identifier: 'solr.index.pageIndexer.FrontendUserAuthenticator'
-        event: TYPO3\CMS\Frontend\Authentication\ModifyResolvedFrontendGroupsEvent
+        identifier: 'solr.search-component.access'
+  ApacheSolrForTypo3\Solr\Search\AnalysisComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.analysis'
+  ApacheSolrForTypo3\Solr\Search\DebugComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.debug'
+  ApacheSolrForTypo3\Solr\Search\ElevationComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.elevation'
+  ApacheSolrForTypo3\Solr\Search\GroupingComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.grouping'
+  ApacheSolrForTypo3\Solr\Search\FacetingComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.faceting'
+  ApacheSolrForTypo3\Solr\Search\HighlightingComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.highlighting'
+  ApacheSolrForTypo3\Solr\Search\LastSearchesComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.last-searches'
+  ApacheSolrForTypo3\Solr\Search\RelevanceComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.relevance'
+  ApacheSolrForTypo3\Solr\Search\SortingComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.sorting'
+  ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.spellchecking'
+  ApacheSolrForTypo3\Solr\Search\StatisticsComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.statistics'
+      - name: event.listener
+        identifier: 'solr.search-component.statistics-writer'
+        method: 'writeStatisticsAfterSearch'
+
+  ### Indexing
+  ApacheSolrForTypo3\Solr\EventListener\PageIndexer\FrontendGroupsModifier:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.PageIndexer.FrontendUserAuthenticator'
+
+  ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.FrontendHelper.PageIndexer.indexPageContentAfterCacheableContentIsGenerated'
+  ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider:
+    public: true
+    arguments:
+      $siteRepository: '@ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository'
+
+  ApacheSolrForTypo3\Solr\EventListener\PageIndexer\AdditionalFieldsForPageIndexing:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.AdditionalFieldsForPageIndexing'
+
+  ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.PageFieldMappingIndexer'
+
+  ###  EXT:solr content objects
+  ApacheSolrForTypo3\Solr\ContentObject\Classification:
+    tags:
+      - name: frontend.contentobject
+        identifier: 'SOLR_CLASSIFICATION'
+  ApacheSolrForTypo3\Solr\ContentObject\Content:
+    tags:
+      - name: frontend.contentobject
+        identifier: 'SOLR_CONTENT'
+  ApacheSolrForTypo3\Solr\ContentObject\Multivalue:
+    tags:
+      - name: frontend.contentobject
+        identifier: 'SOLR_MULTIVALUE'
+  ApacheSolrForTypo3\Solr\ContentObject\Relation:
+    arguments:
+      $tcaService: '@ApacheSolrForTypo3\Solr\System\TCA\TCAService'
+    tags:
+      - name: frontend.contentobject
+        identifier: 'SOLR_RELATION'
+
+
+  # Reports: Status
+  ApacheSolrForTypo3\Solr\Report\:
+    resource: '../Classes/Report/*'
+    autoconfigure: true

@@ -3,7 +3,7 @@
 Backend Modules
 ===============
 
-The backend modules are in the "APACHE SOLR" section available and can be unlocked for BE-users or/and groups. The modules help you to do maintenance tasks and get an overview on the system status:
+The backend modules are in the "Apache Solr" section available and can be unlocked for BE-users or/and groups. The modules help you to do maintenance tasks and get an overview on the system status:
 
 .. image:: /Images/Backend/solr-backend_modules-listing.png
 
@@ -35,7 +35,7 @@ complete listing with hits etc. ranked by Top search keywords.
 Index Fields
 ^^^^^^^^^^^^
 
-The **Index Fields** module allows you to see, how many documents you have in which solr core and which fields those documents have.
+The **Index Fields** module allows you to see, how many documents you have in which Solr core and which fields those documents have.
 
 .. image:: /Images/Backend/solr-backend-module_Info-IndexFields.png
 
@@ -94,10 +94,10 @@ The **Index Queue** module is the most important module. It allows you to do the
 Index Administration (earlier Index Maintenance)
 ------------------------------------------------
 
-The **Index Administration** module allows you, to do the following administrative operations on your solr index:
+The **Index Administration** module allows you, to do the following administrative operations on your Solr index:
 
-* Reload the solr configuration.
-* Empty your solr index. This removes all documents from the index of the current selected site.
+* Reload the Solr configuration.
+* Empty your Solr index. This removes all documents from the index of the current selected site.
 * Clear the indexing queue.
 
 .. image:: /Images/Backend/solr-backend-module_IndexAdministration.png

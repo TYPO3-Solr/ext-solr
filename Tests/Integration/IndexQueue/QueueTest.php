@@ -48,10 +48,8 @@ class QueueTest extends IntegrationTest
 
     /**
      * Custom assertion to expect a specific amount of items in the queue.
-     *
-     * @param int $expectedAmount
      */
-    protected function assertItemsInQueue($expectedAmount)
+    protected function assertItemsInQueue(int $expectedAmount): void
     {
         $itemCount = $this->indexQueue->getAllItemsCount();
         self::assertSame($itemCount, $expectedAmount, 'Indexqueue contains unexpected amount of items. Expected amount: ' . $expectedAmount);
@@ -70,9 +68,7 @@ class QueueTest extends IntegrationTest
      */
     public function preFilledQueueContainsRootPageAfterInitialize()
     {
-        $this->importDataSetFromFixture('can_clear_queue_after_initialize.xml');
-        $itemCount = $this->indexQueue->getAllItemsCount();
-
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_one_item.csv');
         $this->assertItemsInQueue(1);
         self::assertFalse($this->indexQueue->containsItem('pages', 1));
         self::assertTrue($this->indexQueue->containsItem('pages', 4711));
@@ -107,7 +103,7 @@ class QueueTest extends IntegrationTest
      */
     public function canDeleteItemsByType()
     {
-        $this->importDataSetFromFixture('can_delete_queue_items_by_type.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_with_multiple_types.csv');
         $this->assertItemsInQueue(2);
 
         $this->indexQueue->deleteItemsByType('pages');
@@ -125,7 +121,6 @@ class QueueTest extends IntegrationTest
         $this->assertEmptyQueue();
 
         // record does not exist in fixture
-        $this->expectException(\InvalidArgumentException::class);
         $this->indexQueue->updateItem('pages', 5);
 
         // queue should still be empty
@@ -137,7 +132,7 @@ class QueueTest extends IntegrationTest
      */
     public function canNotAddUnAllowedPageType()
     {
-        $this->importDataSetFromFixture('can_not_add_unallowed_pagetype.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_not_add_unallowed_pagetype.csv');
         $this->assertEmptyQueue();
 
         // record does not exist in fixture
@@ -153,7 +148,7 @@ class QueueTest extends IntegrationTest
      */
     public function mountPagesAreOnlyAddedOnceAfterInitialize()
     {
-        $this->importDataSetFromFixture('mount_pages_initialize_queue_as_expected.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/queue_initialization_with_mount_pages.csv');
         $this->assertEmptyQueue();
         $site = $this->siteRepository->getFirstAvailableSite();
 
@@ -169,7 +164,7 @@ class QueueTest extends IntegrationTest
      */
     public function canAddCustomPageTypeToTheQueue()
     {
-        $this->importDataSetFromFixture('can_index_custom_page_type_with_own_configuration.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/custom_page_doktype.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -210,7 +205,7 @@ class QueueTest extends IntegrationTest
      */
     public function canGetStatisticsWithTotalItemCount()
     {
-        $this->importDataSetFromFixture('can_get_item_count_by_site.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_in_multiple_sites.csv');
         $site = $this->siteRepository->getFirstAvailableSite();
         $itemCount = $this->indexQueue->getStatisticsBySite($site)->getTotalCount();
 
@@ -223,7 +218,7 @@ class QueueTest extends IntegrationTest
      */
     public function canGetStatisticsBySiteWithPendingItems()
     {
-        $this->importDataSetFromFixture('can_get_item_count_by_site.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_in_multiple_sites.csv');
         $site = $this->siteRepository->getFirstAvailableSite();
 
         $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
@@ -240,7 +235,7 @@ class QueueTest extends IntegrationTest
      */
     public function canInitializeMultipleSites()
     {
-        $this->importDataSetFromFixture('can_initialize_multiple_sites.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_in_multiple_sites.csv');
         $this->assertEmptyQueue();
 
         $availableSites = $this->siteRepository->getAvailableSites();
@@ -274,7 +269,7 @@ class QueueTest extends IntegrationTest
      */
     public function canGetStatistics()
     {
-        $this->importDataSetFromFixture('can_get_statistics_by_site.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/subpages_with_filled_indexqueue.csv');
         $this->assertItemsInQueue(4);
 
         $site = $this->siteRepository->getSiteByPageId(111);
@@ -289,7 +284,7 @@ class QueueTest extends IntegrationTest
      */
     public function canGetStatisticsByCustomIndexingConfigurationName()
     {
-        $this->importDataSetFromFixture('can_get_statistics_by_site_and_custom_indexing_configuration.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/subpages_with_filled_indexqueue_multiple_indexing_configurations.csv');
         $this->assertItemsInQueue(4);
 
         $site = $this->siteRepository->getSiteByPageId(111);
@@ -310,7 +305,7 @@ class QueueTest extends IntegrationTest
      */
     public function canGetLastIndexNonExistingRoot()
     {
-        $this->importDataSetFromFixture('can_get_last_index_time.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
         $lastIndexTime = $this->indexQueue->getLastIndexTime(2);
         self::assertEquals($lastIndexTime, 0);
@@ -321,10 +316,10 @@ class QueueTest extends IntegrationTest
      */
     public function canGetLastIndexRootExists()
     {
-        $this->importDataSetFromFixture('can_get_last_index_time.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
         $lastIndexTime = $this->indexQueue->getLastIndexTime(1);
-        self::assertEquals($lastIndexTime, 1489383800);
+        self::assertEquals($lastIndexTime, 1489507800);
     }
 
     /**
@@ -332,7 +327,7 @@ class QueueTest extends IntegrationTest
      */
     public function canGetLastIndexedItemIdNonExistingRoot()
     {
-        $this->importDataSetFromFixture('can_get_last_indexed_item_id.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
         $lastIndexedItemIdUid = $this->indexQueue->getLastIndexedItemId(2);
         self::assertEquals($lastIndexedItemIdUid, 0);
@@ -343,7 +338,7 @@ class QueueTest extends IntegrationTest
      */
     public function canGetLastIndexedItemIdRootExists()
     {
-        $this->importDataSetFromFixture('can_get_last_indexed_item_id.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
         $lastIndexedItemIdUid = $this->indexQueue->getLastIndexedItemId(1);
         self::assertEquals($lastIndexedItemIdUid, 4713);
@@ -354,7 +349,7 @@ class QueueTest extends IntegrationTest
      */
     public function canMarkItemAsFailedWithItemAndEmptyMessage()
     {
-        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_with_one_error.csv');
         $this->assertItemsInQueue(3);
         $item = $this->indexQueue->getItem(4711);
         $this->indexQueue->markItemAsFailed($item);
@@ -367,7 +362,7 @@ class QueueTest extends IntegrationTest
      */
     public function canMarkItemAsFailedWithItemAndMessage()
     {
-        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_with_one_error.csv');
         $this->assertItemsInQueue(3);
         $item = $this->indexQueue->getItem(4711);
         $this->indexQueue->markItemAsFailed($item, 'Error during indexing canMarkItemAsFailedWithItemAndMessage');
@@ -380,7 +375,7 @@ class QueueTest extends IntegrationTest
      */
     public function canMarkItemAsFailedWithUidAndEmptyMessage()
     {
-        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_with_one_error.csv');
         $this->assertItemsInQueue(3);
         $this->indexQueue->markItemAsFailed(4712);
         $item = $this->indexQueue->getItem(4712);
@@ -392,7 +387,7 @@ class QueueTest extends IntegrationTest
      */
     public function canMarkItemAsFailedWithUidAndMessage()
     {
-        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
         $this->indexQueue->markItemAsFailed(4712, 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
         $item = $this->indexQueue->getItem(4712);
@@ -404,7 +399,7 @@ class QueueTest extends IntegrationTest
      */
     public function canMarkItemAsFailedNonexistingUid()
     {
-        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
         $this->indexQueue->markItemAsFailed(42, 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
         $item = $this->indexQueue->getItem(42);
@@ -414,9 +409,9 @@ class QueueTest extends IntegrationTest
     /**
      * @test
      */
-    public function canMarkItemAsFailedNonexistingItem()
+    public function canMarkItemAsFailedNonExistingItem()
     {
-        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
         $item = $this->indexQueue->getItem(42);
         $this->indexQueue->markItemAsFailed($item, 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
@@ -429,7 +424,7 @@ class QueueTest extends IntegrationTest
      */
     public function canUpdateIndexTimeByItemNonExistingItem()
     {
-        $this->importDataSetFromFixture('can_update_index_time_by_item.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
         $item = $this->indexQueue->getItem(42);
         self::assertEquals($item, null);
@@ -440,7 +435,7 @@ class QueueTest extends IntegrationTest
      */
     public function canUpdateIndexTimeByItemExistingItem()
     {
-        $this->importDataSetFromFixture('can_update_index_time_by_item.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
         $lastestUpdatedItem = $this->indexQueue->getLastIndexedItemId(1);
         self::assertEquals($lastestUpdatedItem, 4713);
@@ -454,10 +449,10 @@ class QueueTest extends IntegrationTest
      */
     public function canFlushAllErrors()
     {
-        $this->importDataSetFromFixture('can_flush_errors.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_flush_errors.csv');
         $this->assertItemsInQueue(4);
 
-        /** @var $siteRepository SiteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $firstSite = $siteRepository->getFirstAvailableSite();
 
@@ -479,10 +474,10 @@ class QueueTest extends IntegrationTest
      */
     public function canFlushErrorsBySite()
     {
-        $this->importDataSetFromFixture('can_flush_errors.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_flush_errors.csv');
         $this->assertItemsInQueue(4);
 
-        /** @var $siteRepository SiteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $firstSite = $siteRepository->getFirstAvailableSite();
 
@@ -504,10 +499,10 @@ class QueueTest extends IntegrationTest
      */
     public function canFlushErrorByItem()
     {
-        $this->importDataSetFromFixture('can_flush_error_by_item.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_flush_errors.csv');
         $this->assertItemsInQueue(4);
 
-        /** @var $siteRepository SiteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $firstSite = $siteRepository->getFirstAvailableSite();
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 use ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Configuration\SiteConfiguration;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -29,24 +32,24 @@ class SiteHandlingStatusTest extends IntegrationTest
     /**
      * @test
      */
-    public function allStatusChecksShouldBeOkForFirstTestSite()
+    public function allStatusChecksShouldBeOkForFirstTestSite(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
 
-        /** @var $siteHandlingStatus  siteHandlingStatus */
+        /** @var SiteHandlingStatus $siteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /** @var $status Status */
-            self::assertSame(Status::OK, $status->getSeverity(), 'Expected that all status checks for site handling configuration of first test site should be ok');
+            /** @var Status $status */
+            self::assertSame(ContextualFeedbackSeverity::OK, $status->getSeverity(), 'Expected that all status checks for site handling configuration of first test site should be ok');
         }
     }
 
     /**
      * @test
      */
-    public function statusCheckShouldFailIfSchemeIsNotDefined()
+    public function statusCheckShouldFailIfSchemeIsNotDefined(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->mergeSiteConfiguration('integration_tree_one', [
@@ -56,21 +59,21 @@ class SiteHandlingStatusTest extends IntegrationTest
             'base' => 'authorityOnly.two.example.com',
         ]);
 
-        /** @var $siteHandlingStatus  SiteHandlingStatus */
+        /** @var SiteHandlingStatus $siteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /** @var $status Status */
-            self::assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if scheme in "Entry Point[base]" is not defined.');
-            self::assertMatchesRegularExpression('~.*are empty or invalid\: &quot;scheme&quot;~', $status->getMessage());
+            /** @var Status $status */
+            self::assertSame(ContextualFeedbackSeverity::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if scheme in "Entry Point[base]" is not defined.');
+            self::assertMatchesRegularExpression('~.*are empty or invalid: &quot;scheme&quot;~', $status->getMessage());
         }
     }
 
     /**
      * @test
      */
-    public function statusCheckShouldFailIfAuthorityIsNotDefined()
+    public function statusCheckShouldFailIfAuthorityIsNotDefined(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->mergeSiteConfiguration('integration_tree_one', [
@@ -80,26 +83,27 @@ class SiteHandlingStatusTest extends IntegrationTest
             'base' => '/',
         ]);
 
-        /** @var $siteHandlingStatus  SiteHandlingStatus */
+        /** @var SiteHandlingStatus $siteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /** @var $status Status */
-            self::assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
-            self::assertMatchesRegularExpression('~.*are empty or invalid\: &quot;scheme, host&quot;~', $status->getMessage());
+            /** @var Status $status  */
+            self::assertSame(ContextualFeedbackSeverity::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
+            self::assertMatchesRegularExpression('~.*are empty or invalid: &quot;scheme, host&quot;~', $status->getMessage());
         }
     }
 
     /**
      * @test
      */
-    public function statusCheckShouldFailIfBaseIsSetWrongInLanguages()
+    public function statusCheckShouldFailIfBaseIsSetWrongInLanguages(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
 
         // mergeSiteConfiguration() do not work recursively
-        $siteConfiguration = new SiteConfiguration($this->instancePath . '/typo3conf/sites/');
+        putenv('TYPO3:configPath=' . $this->instancePath . '/typo3conf/');
+        $siteConfiguration = GeneralUtility::makeInstance(SiteConfiguration::class);
 
         $configuration1 = $siteConfiguration->load('integration_tree_one');
         $configuration1['languages'][1]['base'] = 'authorityOnly.example.com';
@@ -110,14 +114,14 @@ class SiteHandlingStatusTest extends IntegrationTest
 
         $this->mergeSiteConfiguration('integration_tree_two', $configuration2);
 
-        /** @var $siteHandlingStatus  SiteHandlingStatus */
+        /** @var SiteHandlingStatus $siteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /** @var $status Status */
-            self::assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
-            self::assertMatchesRegularExpression('~.*is not valid URL\. Following parts of defined URL are empty or invalid\: &quot;scheme&quot;~', $status->getMessage());
+            /** @var Status $status */
+            self::assertSame(ContextualFeedbackSeverity::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
+            self::assertMatchesRegularExpression('~.*is not valid URL\. Following parts of defined URL are empty or invalid: &quot;scheme&quot;~', $status->getMessage());
         }
     }
 }

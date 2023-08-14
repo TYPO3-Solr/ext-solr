@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Search;
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -27,15 +28,14 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class CurrentSearchViewHelper extends AbstractUriViewHelper
 {
     /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
+     * Renders URI for current search.
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext,
+    ) {
         $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
-        $uri = self::getSearchUriBuilder($renderingContext)->getCurrentSearchUri($previousRequest);
-        return $uri;
+        return self::getSearchUriBuilder($renderingContext)->getCurrentSearchUri($previousRequest);
     }
 }

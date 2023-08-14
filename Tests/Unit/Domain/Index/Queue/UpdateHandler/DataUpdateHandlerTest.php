@@ -32,34 +32,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
+class DataUpdateHandlerTest extends SetUpUpdateHandler
 {
     private const DUMMY_PAGE_ID = 10;
 
-    /**
-     * @var DataUpdateHandler
-     */
-    protected $dataUpdateHandler;
+    protected DataUpdateHandler $dataUpdateHandler;
 
-    /**
-     * @var MountPagesUpdater|MockObject
-     */
-    protected $mountPagesUpdaterMock;
+    protected MountPagesUpdater|MockObject $mountPagesUpdaterMock;
 
-    /**
-     * @var RootPageResolver|MockObject
-     */
-    protected $rootPageResolverMock;
+    protected RootPageResolver|MockObject $rootPageResolverMock;
 
-    /**
-     * @var DataHandler|MockObject
-     */
-    protected $dataHandlerMock;
+    protected DataHandler|MockObject $dataHandlerMock;
 
-    /**
-     * @var SolrLogManager|MockObject
-     */
-    protected $solrLogManagerMock;
+    protected SolrLogManager|MockObject $solrLogManagerMock;
+
+    protected MockObject|SolrLogManager $loggerMock;
 
     protected function setUp(): void
     {
@@ -91,7 +78,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      * Init the rootPageResolverMock to simulate a valid
      * root page (self::DUMMY_PAGE_ID)
      */
-    protected function initRootPageResolverforValidDummyRootPage(): void
+    protected function initRootPageResolverForValidDummyRootPage(): void
     {
         $this->rootPageResolverMock
             ->expects(self::any())
@@ -114,7 +101,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleContentElementUpdateTriggersSinglePageProcessing(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page on which dummy ce is placed',
@@ -196,7 +183,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleContentElementUpdateTriggersInvalidPageProcessing(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'invalid page on which dummy ce is placed',
@@ -253,7 +240,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleContentElementDeletionTriggersPageUpdate(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $contextMock = $this->createMock(Context::class);
         $contextMock->expects(self::any())->method('getPropertyFromAspect')->willReturn(1641472388);
         GeneralUtility::setSingletonInstance(Context::class, $contextMock);
@@ -276,7 +263,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handlePageUpdateTriggersSinglePageProcessing(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page to be processed',
@@ -368,7 +355,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handlePageUpdateTriggersRecursivePageProcessing(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page to be processed',
@@ -378,10 +365,10 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
 
         $GLOBALS['TCA']['pages'] = ['columns' => []];
 
-        $this->queryGeneratorMock
+        $this->pagesRepositoryMock
             ->expects(self::any())
             ->method('getTreeList')
-            ->willReturn($dummyPageRecord['uid'] . ',100,200');
+            ->willReturn(implode(',', [$dummyPageRecord['uid'], 100, 200]));
 
         $this->pagesRepositoryMock
             ->expects(self::any())
@@ -456,7 +443,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleRecordUpdateTriggersRecordProcessing(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $this->initSiteForDummyConfiguration(self::DUMMY_PAGE_ID);
         $dummyRecord = [
             'uid' => 789,
@@ -530,7 +517,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleRecordUpdateTriggersInvalidRecordProcessing(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $this->initSiteForDummyConfiguration(self::DUMMY_PAGE_ID);
         $dummyRecord = [
             'uid' => 789,
@@ -637,7 +624,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleVersionSwapAppliesPageChangesToQueue(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page to be processed',
@@ -681,7 +668,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleVersionSwapAppliesContentElementChangesToQueue(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $dummyRecordId = 123;
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
@@ -726,7 +713,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleVersionSwapAppliesInvalidPageChangesToQueue(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'invalid dummy page to be processed',
@@ -770,7 +757,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleVersionSwapAppliesRecordChangesToQueue(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $dummyRecord = [
             'uid' => 789,
             'pid' => self::DUMMY_PAGE_ID,
@@ -824,7 +811,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleVersionSwapAppliesInvalidRecordChangesToQueue(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $dummyRecord = [
             'uid' => 789,
             'pid' => self::DUMMY_PAGE_ID,
@@ -873,7 +860,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleMovedPageAppliesPageChangesToQueue(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page to be processed',
@@ -917,7 +904,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     public function handleMovedRecordAppliesRecordChangesToQueue(): void
     {
-        $this->initRootPageResolverforValidDummyRootPage();
+        $this->initRootPageResolverForValidDummyRootPage();
         $dummyRecord = [
             'uid' => 789,
             'pid' => self::DUMMY_PAGE_ID,

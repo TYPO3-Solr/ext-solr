@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rang
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for the numericRange queryBuilder
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class NumericRangeFacetQueryBuilderTest extends UnitTest
+class NumericRangeFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     /**
      * @test
@@ -36,7 +36,7 @@ class NumericRangeFacetQueryBuilderTest extends UnitTest
             'keepAllOptionsOnSelection' => 1,
             'numericRange.' => ['start' => 1, 'end' => 100, 'gap' => 5],
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
             $fakeFacetConfiguration
         );

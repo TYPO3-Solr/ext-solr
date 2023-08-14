@@ -27,26 +27,20 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class ContentObjectService
 {
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObjectRenderer;
+    protected ContentObjectRenderer $contentObjectRenderer;
 
     /**
      * StdWrapService constructor.
-     * @param ContentObjectRenderer|null $contentObject
+     * @todo: refactor to constructor property
      */
-    public function __construct(ContentObjectRenderer $contentObject = null)
-    {
-        $this->contentObjectRenderer = $contentObject ?? GeneralUtility::makeInstance(ContentObjectRenderer::class);
+    public function __construct(
+        ContentObjectRenderer $contentObjectRenderer = null,
+    ) {
+        $this->contentObjectRenderer = $contentObjectRenderer ?? GeneralUtility::makeInstance(ContentObjectRenderer::class);
     }
 
     /**
      * This method use $name and $conf and passes it directly to cObjGetSingle.
-     *
-     * @param string $name
-     * @param array $conf
-     * @return string
      */
     public function renderSingleContentObject(string $name = '', array $conf = []): string
     {
@@ -56,10 +50,6 @@ class ContentObjectService
     /**
      * Very often cObjGetSingle is used with 'field' as $name and 'field.' as $conf with this
      * method you can pass the array and the $key that is used to access $conant and $conf from $array.
-     *
-     * @param array $array
-     * @param string $key
-     * @return string
      */
     public function renderSingleContentObjectByArrayAndKey(array $array = [], string $key = '')
     {

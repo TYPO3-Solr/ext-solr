@@ -29,29 +29,17 @@ use ApacheSolrForTypo3\Solr\Util;
  */
 class SuggestQuery extends Query
 {
-    /**
-     * @var array
-     */
     protected array $configuration;
 
-    /**
-     * @var string
-     */
     protected string $prefix;
 
-    /**
-     * SuggestQuery constructor.
-     *
-     * @param string $keywords
-     * @param TypoScriptConfiguration|null $solrConfiguration
-     */
     public function __construct(string $keywords, TypoScriptConfiguration $solrConfiguration = null)
     {
         parent::__construct();
         $solrConfiguration = $solrConfiguration ?? Util::getSolrConfiguration();
 
         $this->setQuery($keywords);
-        $this->configuration = $solrConfiguration->getObjectByPathOrDefault('plugin.tx_solr.suggest.', []);
+        $this->configuration = $solrConfiguration->getObjectByPathOrDefault('plugin.tx_solr.suggest.');
 
         if (!empty($this->configuration['treatMultipleTermsAsSingleTerm'])) {
             $this->prefix = $keywords;

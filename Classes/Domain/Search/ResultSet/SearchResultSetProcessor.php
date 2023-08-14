@@ -26,9 +26,6 @@ interface SearchResultSetProcessor
     /**
      * The implementation can be used to influence a SearchResultSet that is
      * created and processed in the SearchResultSetService.
-     *
-     * @param SearchResultSet $resultSet
-     * @return mixed
      */
     public function process(SearchResultSet $resultSet): SearchResultSet;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,8 +22,9 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -29,9 +32,9 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class BuilderTest extends UnitTest
+class BuilderTest extends SetUpUnitTestCase
 {
-    const FAKE_PAGE_RECORD = [
+    public const FAKE_PAGE_RECORD = [
         'pid' => 4710,
         'crdate' => 1635537721,
         'SYS_LASTCHANGED' => 1635537721,
@@ -43,34 +46,17 @@ class BuilderTest extends UnitTest
         'abstract' => null,
     ];
 
-    /**
-     * @var IdBuilder
-     */
-    protected $variantIdBuilderMock;
-
-    /**
-     * @var Site
-     */
-    protected $siteMock;
-
-    /**
-     * @var Typo3PageContentExtractor
-     */
-    protected $typo3PageExtractorMock;
-
-    /**
-     * @var Builder
-     */
-    protected $documentBuilder;
+    protected IdBuilder|MockObject $variantIdBuilderMock;
+    protected Site|MockObject $siteMock;
+    protected Typo3PageContentExtractor|MockObject $typo3PageExtractorMock;
+    protected Builder|MockObject $documentBuilder;
 
     protected function setUp(): void
     {
-        /** @var $variantIdBuilderMock */
-        $this->variantIdBuilderMock = $this->getDumbMock(IdBuilder::class);
-        $this->siteMock = $this->getDumbMock(Site::class);
-        $this->typo3PageExtractorMock = $this->getDumbMock(Typo3PageContentExtractor::class);
+        $this->variantIdBuilderMock = $this->createMock(IdBuilder::class);
+        $this->siteMock = $this->createMock(Site::class);
+        $this->typo3PageExtractorMock = $this->createMock(Typo3PageContentExtractor::class);
 
-        /** @var $documentBuilder Builder */
         $this->documentBuilder = $this->getMockBuilder(Builder::class)->setConstructorArgs([$this->variantIdBuilderMock ])->onlyMethods(
             ['getExtractorForPageContent', 'getSiteByPageId', 'getPageDocumentId', 'getDocumentId']
         )->getMock();
@@ -83,16 +69,17 @@ class BuilderTest extends UnitTest
     /**
      * @test
      */
-    public function canBuildApacheSolrDocumentFromEmptyPage()
+    public function canBuildApacheSolrDocumentFromEmptyPage(): void
     {
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
-        $fakeRootLine = $this->getDumbMock(Rootline::class);
+        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent([]);
 
         $fakePage->page = self::FAKE_PAGE_RECORD;
+        $fakePage->id = 4711;
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
 
         self::assertInstanceOf(Document::class, $document, 'Expect to get an ' . Document::class . ' back');
@@ -102,16 +89,17 @@ class BuilderTest extends UnitTest
     /**
      * @test
      */
-    public function canSetKeywordsForApacheSolrDocument()
+    public function canSetKeywordsForApacheSolrDocument(): void
     {
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
-        $fakeRootLine = $this->getDumbMock(Rootline::class);
+        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent([]);
 
         $fakePage->page = array_merge(self::FAKE_PAGE_RECORD, ['keywords' => 'foo,bar']);
+        $fakePage->id = 4711;
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
 
         self::assertSame($document['keywords'], ['foo', 'bar'], 'Could not set keywords from page document');
@@ -120,16 +108,17 @@ class BuilderTest extends UnitTest
     /**
      * @test
      */
-    public function canSetEndtimeForApacheSolrDocument()
+    public function canSetEndtimeForApacheSolrDocument(): void
     {
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
-        $fakeRootLine = $this->getDumbMock(Rootline::class);
+        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent([]);
 
         $fakePage->page = array_merge(self::FAKE_PAGE_RECORD, ['endtime' => 1234]);
+        $fakePage->id = 4711;
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
 
         self::assertSame($document['endtime'], 1234, 'Could not set endtime from page document');
@@ -138,16 +127,17 @@ class BuilderTest extends UnitTest
     /**
      * @test
      */
-    public function canSetTagFieldsForApacheSolrDocument()
+    public function canSetTagFieldsForApacheSolrDocument(): void
     {
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
-        $fakeRootLine = $this->getDumbMock(Rootline::class);
+        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent(['tagsH1' => 'Fake H1 content']);
 
         $fakePage->page = self::FAKE_PAGE_RECORD;
+        $fakePage->id = 4711;
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
 
         self::assertSame($document['tagsH1'], 'Fake H1 content', 'Could not assign extracted h1 heading to solr document');
@@ -156,7 +146,7 @@ class BuilderTest extends UnitTest
     /**
      * @test
      */
-    public function canBuildFromRecord()
+    public function canBuildFromRecord(): void
     {
         $fakeRecord = ['uid' => 4711, 'pid' => 88, 'type' => 'news'];
         $type = 'news';
@@ -165,7 +155,7 @@ class BuilderTest extends UnitTest
         $this->siteMock->expects(self::any())->method('getRootPageId')->willReturn(99);
         $this->siteMock->expects(self::once())->method('getDomain')->willReturn('test.typo3.org');
         $this->siteMock->expects(self::any())->method('getSiteHash')->willReturn('testSiteHash');
-        $this->variantIdBuilderMock->expects(self::once())->method('buildFromTypeAndUid')->with('news', 4711)->willReturn('testVariantId');
+        $this->variantIdBuilderMock->expects(self::once())->method('buildFromTypeAndUid')->with($type, 4711, $fakeRecord, $this->siteMock)->willReturn('testVariantId');
 
         $document = $this->documentBuilder->fromRecord($fakeRecord, $type, 99, 'r:0');
 
@@ -180,26 +170,17 @@ class BuilderTest extends UnitTest
         self::assertSame('EXT:solr', $document->appKey, 'appKey field was not set as expected');
     }
 
-    /**
-     * @param string $documentId
-     */
-    protected function fakePageDocumentId($documentId)
+    protected function fakePageDocumentId(string $documentId): void
     {
         $this->documentBuilder->expects(self::once())->method('getPageDocumentId')->willReturn($documentId);
     }
 
-    /**
-     * @param string $documentId
-     */
-    protected function fakeDocumentId($documentId)
+    protected function fakeDocumentId(string $documentId): void
     {
         $this->documentBuilder->expects(self::once())->method('getDocumentId')->willReturn($documentId);
     }
 
-    /**
-     * @param array $tagContent
-     */
-    protected function fakeTagContent($tagContent = [])
+    protected function fakeTagContent($tagContent = []): void
     {
         $this->typo3PageExtractorMock->expects(self::once())->method('getTagContent')->willReturn($tagContent);
     }

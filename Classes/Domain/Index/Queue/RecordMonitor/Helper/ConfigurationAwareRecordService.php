@@ -33,7 +33,7 @@ class ConfigurationAwareRecordService
      *
      * @param string $recordTable Table to read from
      * @param int $recordUid id of the record
-     * @param TypoScriptConfiguration $solrConfiguration
+     *
      * @return string|null Name of indexing configuration
      */
     public function getIndexingConfigurationName(
@@ -71,7 +71,7 @@ class ConfigurationAwareRecordService
      *
      * @param string $recordTable Table to read from
      * @param int $recordUid id of the record
-     * @param TypoScriptConfiguration $solrConfiguration
+     *
      * @return array Record if found, otherwise empty array
      */
     public function getRecord(
@@ -99,12 +99,6 @@ class ConfigurationAwareRecordService
     /**
      * This method return the record array if the table is valid for this indexingConfiguration.
      * Otherwise, an empty array will be returned.
-     *
-     * @param string $recordTable
-     * @param int $recordUid
-     * @param string $indexingConfigurationName
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return array
      */
     protected function getRecordIfIndexConfigurationIsValid(
         string $recordTable,
@@ -124,19 +118,13 @@ class ConfigurationAwareRecordService
     /**
      * Returns the row need by getRecordIfIndexConfigurationIsValid either directly from database
      * or from cache
-     *
-     * @param string $recordTable
-     * @param int $recordUid
-     * @param string $recordWhereClause
-     *
-     * @return array
      */
     protected function getRecordForIndexConfigurationIsValid(
         string $recordTable,
         int $recordUid,
         string $recordWhereClause = ''
     ): array {
-        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'runtime');
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
         $cacheId = md5('ConfigurationAwareRecordService' . ':' . 'getRecordIfIndexConfigurationIsValid' . ':' . $recordTable . ':' . $recordUid . ':' . $recordWhereClause);
 
         $row = $cache->get($cacheId);
@@ -144,19 +132,14 @@ class ConfigurationAwareRecordService
             return $row;
         }
 
-        $row = (array)BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
+        $row = BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause) ?? [];
         $cache->set($cacheId, $row);
 
-        return $row ?? [];
+        return $row;
     }
 
     /**
      * This method is used to check if a table is an allowed table for an index configuration.
-     *
-     * @param string $recordTable
-     * @param string $indexingConfigurationName
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return bool
      */
     protected function isValidTableForIndexConfigurationName(
         string $recordTable,

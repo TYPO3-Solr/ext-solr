@@ -23,8 +23,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
 use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\Exception as ExtbaseObjectException;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
@@ -38,42 +38,29 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * @var SearchUriBuilder
-     */
     protected static SearchUriBuilder $searchUriBuilder;
 
-    /**
-     * @param SearchUriBuilder $searchUriBuilder
-     */
-    public function injectSearchUriBuilder(SearchUriBuilder $searchUriBuilder)
+    public function injectSearchUriBuilder(SearchUriBuilder $searchUriBuilder): void
     {
         self::$searchUriBuilder = $searchUriBuilder;
     }
 
-    /**
-     * @param RenderingContextInterface|null $renderingContext
-     * @return SearchUriBuilder
-     * @throws ExtbaseObjectException
-     */
     protected static function getSearchUriBuilder(RenderingContextInterface $renderingContext = null): SearchUriBuilder
     {
         if (!isset(self::$searchUriBuilder)) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            self::$searchUriBuilder = $objectManager->get(SearchUriBuilder::class);
+            self::$searchUriBuilder = GeneralUtility::makeInstance(SearchUriBuilder::class);
         }
 
-        if ($renderingContext && method_exists($renderingContext, 'getControllerContext')) {
-            self::$searchUriBuilder->injectUriBuilder($renderingContext->getControllerContext()->getUriBuilder());
+        if ($renderingContext instanceof RenderingContext) {
+            $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+            /** @phpstan-ignore-next-line */
+            $uriBuilder->reset()->setRequest($renderingContext->getRequest());
+            self::$searchUriBuilder->injectUriBuilder($uriBuilder);
         }
 
         return self::$searchUriBuilder;
     }
 
-    /**
-     * @param RenderingContextInterface $renderingContext
-     * @return mixed
-     */
     protected static function getUsedSearchRequestFromRenderingContext(RenderingContextInterface $renderingContext): ?SearchRequest
     {
         $resultSet = static::getUsedSearchResultSetFromRenderingContext($renderingContext);

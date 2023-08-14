@@ -31,7 +31,7 @@ class IsStringViewHelper extends AbstractConditionViewHelper
      *
      * @noinspection PhpUnused
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('value', 'mixed', 'Value to be verified.', true);
@@ -41,7 +41,6 @@ class IsStringViewHelper extends AbstractConditionViewHelper
      * This method decides if the condition is true or false
      *
      * @param array $arguments ViewHelper arguments to evaluate the condition for this ViewHelper.
-     * @return bool
      * @noinspection PhpMissingReturnTypeInspection
      * @noinspection PhpUnused
      */

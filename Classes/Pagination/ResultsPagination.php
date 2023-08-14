@@ -27,39 +27,18 @@ use TYPO3\CMS\Core\Pagination\PaginatorInterface;
  */
 class ResultsPagination implements PaginationInterface
 {
-    /**
-     * @var PaginatorInterface
-     */
     protected PaginatorInterface $paginator;
 
-    /**
-     * @var int
-     */
     protected int $maxPageNumbers = 0;
 
-    /**
-     * @var bool
-     */
     protected bool $hasMorePages = false;
 
-    /**
-     * @var bool
-     */
     protected bool $hasLessPages = false;
 
-    /**
-     * @var int
-     */
     protected int $pageRangeFirst = 1;
 
-    /**
-     * @var int
-     */
     protected int $pageRangeLast = 1;
 
-    /**
-     * @param PaginatorInterface $paginator
-     */
     public function __construct(PaginatorInterface $paginator)
     {
         $this->paginator = $paginator;
@@ -68,8 +47,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Get maximum page numbers
-     *
-     * @return int
      */
     public function getMaxPageNumbers(): int
     {
@@ -78,8 +55,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Set maximum page numbers
-     *
-     * @param int $maxPageNumbers
      */
     public function setMaxPageNumbers(int $maxPageNumbers): void
     {
@@ -89,8 +64,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Get has more pages
-     *
-     * @return bool
      */
     public function getHasMorePages(): bool
     {
@@ -98,9 +71,7 @@ class ResultsPagination implements PaginationInterface
     }
 
     /**
-     * Get has less pages
-     *
-     * @return bool
+     * Checks if pagination has fewer pages
      */
     public function getHasLessPages(): bool
     {
@@ -109,8 +80,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Get page range first
-     *
-     * @return int
      */
     public function getPageRangeFirst(): int
     {
@@ -119,8 +88,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Get page range last
-     *
-     * @return int
      */
     public function getPageRangeLast(): int
     {
@@ -129,8 +96,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Get previous page number
-     *
-     * @return int|null
      */
     public function getPreviousPageNumber(): ?int
     {
@@ -145,8 +110,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Get next page number
-     *
-     * @return int|null
      */
     public function getNextPageNumber(): ?int
     {
@@ -159,8 +122,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Get first page number
-     *
-     * @return int
      */
     public function getFirstPageNumber(): int
     {
@@ -169,8 +130,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Get last page number
-     *
-     * @return int
      */
     public function getLastPageNumber(): int
     {
@@ -179,8 +138,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Get start record number
-     *
-     * @return int
      */
     public function getStartRecordNumber(): int
     {
@@ -193,8 +150,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Get end record number
-     *
-     * @return int
      */
     public function getEndRecordNumber(): int
     {

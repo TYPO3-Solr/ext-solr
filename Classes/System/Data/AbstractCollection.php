@@ -17,12 +17,13 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\System\Data;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
 use ArrayAccess;
 use ArrayIterator;
 use Closure;
 use Countable;
 use IteratorAggregate;
-use ReturnTypeWillChange;
 use Traversable;
 
 /**
@@ -31,13 +32,10 @@ use Traversable;
 abstract class AbstractCollection implements IteratorAggregate, Countable, ArrayAccess
 {
     /**
-     * @var array
+     * @var AbstractFacetItem[]|Group[]
      */
     protected array $data = [];
 
-    /**
-     * @param array $data
-     */
     public function __construct(array $data = [])
     {
         $this->data = $data;
@@ -57,9 +55,6 @@ abstract class AbstractCollection implements IteratorAggregate, Countable, Array
      * This method can be used to pass a closure to create a filtered copy.
      * The closure get a collection item passed and needs to return true when the item should
      * be kept or false when it can be skipped.
-     *
-     * @param Closure $filter
-     * @return AbstractCollection
      */
     public function getFilteredCopy(Closure $filter): AbstractCollection
     {
@@ -76,24 +71,20 @@ abstract class AbstractCollection implements IteratorAggregate, Countable, Array
     }
 
     /**
-     * @return Traversable
+     * @inheritDoc
      */
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->data);
     }
 
-    /**
-     * @return array
-     */
     public function getArrayCopy(): array
     {
         return $this->data;
     }
 
     /**
-     * @param int $position
-     * @return ?object
+     * Returns the collections item by position if available
      */
     public function getByPosition(int $position): ?object
     {
@@ -102,13 +93,7 @@ abstract class AbstractCollection implements IteratorAggregate, Countable, Array
     }
 
     /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Count elements of an object
-     * @link http://php.net/manual/en/countable.count.php
-     * @return int The custom count as an integer.
-     * </p>
-     * <p>
-     * The return value is cast to an integer.
+     * @inheritDoc
      */
     public function count(): int
     {
@@ -116,7 +101,7 @@ abstract class AbstractCollection implements IteratorAggregate, Countable, Array
     }
 
     /**
-     * @return int
+     * See {@link self::count()} but for Fluid accessor.
      */
     public function getCount(): int
     {
@@ -132,14 +117,9 @@ abstract class AbstractCollection implements IteratorAggregate, Countable, Array
     }
 
     /**
-     * Offset to retrieve
-     *
-     * @param mixed $offset
-     * @return mixed
-     * @noinspection PhpLanguageLevelInspection
+     * @inheritDoc
      */
-    #[ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         if ($this->offsetExists($offset)) {
             return $this->data[$offset];
@@ -148,12 +128,9 @@ abstract class AbstractCollection implements IteratorAggregate, Countable, Array
     }
 
     /**
-     * Offset to set
-     *
-     * @param mixed $offset
-     * @param mixed $value
+     * @inheritDoc
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if ($offset === null) {
             $this->data[] = $value;
@@ -163,11 +140,9 @@ abstract class AbstractCollection implements IteratorAggregate, Countable, Array
     }
 
     /**
-     * Offset to unset
-     *
-     * @param mixed $offset
+     * @inheritDoc
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         if ($this->offsetExists($offset)) {
             unset($this->data[$offset]);

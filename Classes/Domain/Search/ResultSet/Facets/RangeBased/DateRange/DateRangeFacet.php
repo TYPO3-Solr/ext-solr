@@ -19,8 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Value object that represent a date range facet.
@@ -30,50 +28,22 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class DateRangeFacet extends AbstractFacet
 {
-    const TYPE_DATE_RANGE = 'dateRange';
+    public const TYPE_DATE_RANGE = 'dateRange';
 
-    /**
-     * String
-     * @var string
-     */
     protected static string $type = self::TYPE_DATE_RANGE;
 
-    /**
-     * @var DateRange|null
-     */
     protected ?DateRange $range = null;
 
     /**
-     * OptionsFacet constructor
-     *
-     * @param SearchResultSet $resultSet
-     * @param string $name
-     * @param string $field
-     * @param string $label
-     * @param array $configuration Facet configuration passed from typoscript
-     * @param ObjectManagerInterface $objectManager
+     * Sets the data range to facet
      */
-    public function __construct(
-        SearchResultSet $resultSet,
-        string $name,
-        string $field,
-        string $label = '',
-        array $configuration = [],
-        ObjectManagerInterface $objectManager = null
-    ) {
-        parent::__construct($resultSet, $name, $field, $label, $configuration, $objectManager);
-    }
-
-    /**
-     * @param DateRange $range
-     */
-    public function setRange(DateRange $range)
+    public function setRange(DateRange $range): void
     {
         $this->range = $range;
     }
 
     /**
-     * @return DateRange
+     * Returns the data range of facet if available, NULL if not.
      */
     public function getRange(): ?DateRange
     {
@@ -82,19 +52,15 @@ class DateRangeFacet extends AbstractFacet
 
     /**
      * Get facet partial name used for rendering the facet
-     *
-     * @return string
      */
     public function getPartialName(): string
     {
-        return !empty($this->configuration['partialName']) ? $this->configuration['partialName'] : 'RangeDate.html';
+        return !empty($this->facetConfiguration['partialName']) ? $this->facetConfiguration['partialName'] : 'RangeDate.html';
     }
 
     /**
      * Since the DateRange contains only one or two items when return a collection with the range only to
      * allow to render the date range as other facet items.
-     *
-     * @return AbstractFacetItemCollection
      */
     public function getAllFacetItems(): AbstractFacetItemCollection
     {

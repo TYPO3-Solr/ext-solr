@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,30 +18,26 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Classification;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Tests for the SOLR_CLASSIFICATION cObj.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ClassificationTest extends UnitTest
+class ClassificationTest extends SetUpContentObject
 {
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObject;
+    protected function getTestableContentObjectClassName(): string
+    {
+        return Classification::class;
+    }
 
     /**
      * @test
      */
     public function canClassifyContent()
     {
-        $GLOBALS['TSFE']->cObjectDepthCounter = 2;
         $content = 'i like TYPO3 more then joomla';
-        $this->contentObject->start(['content' => $content]);
+        $this->contentObjectRenderer->start(['content' => $content]);
 
         $configuration = [
             'field' => 'content',
@@ -55,7 +53,7 @@ class ClassificationTest extends UnitTest
             ],
         ];
 
-        $actual = $this->contentObject->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
+        $actual = $this->contentObjectRenderer->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
         $expected = serialize(['cms']);
         self::assertEquals($expected, $actual);
     }
@@ -63,7 +61,7 @@ class ClassificationTest extends UnitTest
     /**
      * @return array
      */
-    public function excludePatternDataProvider()
+    public function excludePatternDataProvider(): array
     {
         return [
             'excludePatternShouldLeadToUnassignedClass' => [
@@ -83,8 +81,7 @@ class ClassificationTest extends UnitTest
      */
     public function canExcludePatterns($input, $expectedOutput)
     {
-        $GLOBALS['TSFE']->cObjectDepthCounter = 2;
-        $this->contentObject->start(['content' => $input]);
+        $this->contentObjectRenderer->start(['content' => $input]);
 
         $configuration = [
             'field' => 'content',
@@ -97,27 +94,8 @@ class ClassificationTest extends UnitTest
             ],
         ];
 
-        $actual = $this->contentObject->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
+        $actual = $this->contentObjectRenderer->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
         $expected = serialize($expectedOutput);
         self::assertEquals($expected, $actual);
-    }
-
-    protected function setUp(): void
-    {
-        // fake a registered hook
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][Classification::CONTENT_OBJECT_NAME] = Classification::class;
-
-        $GLOBALS['TSFE'] = $this->getDumbMock(TypoScriptFrontendController::class);
-
-        $this->contentObject = $this->getMockBuilder(ContentObjectRenderer::class)
-            ->onlyMethods(['getResourceFactory', 'getEnvironmentVariable', 'getRequest'])
-            ->setConstructorArgs([$GLOBALS['TSFE']])->getMock();
-        parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        unset($GLOBALS['TSFE']);
-        parent::tearDown();
     }
 }

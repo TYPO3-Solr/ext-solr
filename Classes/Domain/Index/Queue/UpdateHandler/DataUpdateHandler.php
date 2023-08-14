@@ -17,10 +17,12 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Exception\RootPageRecordNotFoundException;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteInterface;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -29,9 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
-use InvalidArgumentException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -53,8 +53,6 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * Note: For pages all fields except l10n_diffsource are
      *       kept, as additional fields can be configured in
      *       TypoScript, see AbstractDataUpdateEvent->_sleep.
-     *
-     * @var array
      */
     protected static array $requiredUpdatedFields = [
         'pid',
@@ -67,8 +65,6 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * updates
      *
      * Note: The SQL transaction is already committed, so the current state covers only "non"-changed fields.
-     *
-     * @var array
      */
     protected array $updateSubPagesRecursiveTriggerConfiguration = [
         // the current page has the both fields "extendToSubpages" and "hidden" set from 1 to 0 => requeue subpages
@@ -94,42 +90,16 @@ class DataUpdateHandler extends AbstractUpdateHandler
         ],
     ];
 
-    /**
-     * @var MountPagesUpdater
-     */
     protected MountPagesUpdater $mountPageUpdater;
 
-    /**
-     * @var RootPageResolver
-     */
     protected RootPageResolver $rootPageResolver;
 
-    /**
-     * @var PagesRepository|null
-     */
     protected ?PagesRepository $pagesRepository;
 
-    /**
-     * @var SolrLogManager
-     */
     protected SolrLogManager $logger;
 
-    /**
-     * @var DataHandler
-     */
     protected DataHandler $dataHandler;
 
-    /**
-     * @param ConfigurationAwareRecordService $recordService
-     * @param FrontendEnvironment $frontendEnvironment
-     * @param TCAService $tcaService
-     * @param Queue $indexQueue
-     * @param MountPagesUpdater $mountPageUpdater
-     * @param RootPageResolver $rootPageResolver
-     * @param PagesRepository $pagesRepository
-     * @param DataHandler $dataHandler
-     * @param SolrLogManager|null $solrLogManager
-     */
     public function __construct(
         ConfigurationAwareRecordService $recordService,
         FrontendEnvironment $frontendEnvironment,
@@ -149,18 +119,16 @@ class DataUpdateHandler extends AbstractUpdateHandler
         $this->dataHandler = $dataHandler;
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(
             SolrLogManager::class,
-            /** @scrutinizer ignore-type */
             __CLASS__
         );
     }
 
     /**
-     * Handle content element update
+     * @Handle content element update
      *
-     * @param int $uid
-     * @param array $updatedFields
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
      */
     public function handleContentElementUpdate(int $uid, array $updatedFields = []): void
     {
@@ -175,11 +143,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * Handles the deletion of a content element
      *
-     * @param int $uid
      * @throws AspectNotFoundException
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function handleContentElementDeletion(int $uid): void
     {
@@ -191,16 +157,15 @@ class DataUpdateHandler extends AbstractUpdateHandler
             return;
         }
 
-        $this->indexQueue->updateItem('pages', $pid, Util::getExceptionTime());
+        $this->indexQueue->updateItem('pages', $pid, Util::getExecutionTime());
     }
 
     /**
      * Handles page updates
      *
-     * @param int $uid
-     * @param array $updatedFields
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
      */
     public function handlePageUpdate(int $uid, array $updatedFields = []): void
     {
@@ -215,7 +180,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
             } else {
                 $pid = $updatedFields['pid'] ?? $this->getValidatedPid('pages', $uid);
             }
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             $pid = null;
         }
 
@@ -230,10 +195,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * Handles record updates
      *
-     * @param int $uid
-     * @param string $table
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function handleRecordUpdate(int $uid, string $table): void
     {
@@ -244,11 +207,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * Handles a version swap
      *
-     * @param int $uid
-     * @param string $table
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function handleVersionSwap(int $uid, string $table): void
     {
@@ -271,10 +231,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * Handle page move
      *
-     * @param int $uid
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function handleMovedPage(int $uid): void
     {
@@ -284,11 +242,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * Handle record move
      *
-     * @param int $uid
-     * @param string $table
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function handleMovedRecord(int $uid, string $table): void
     {
@@ -304,10 +259,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * Adds a page to the queue and updates mounts, when it is enabled, otherwise ensure that the page is removed
      * from the queue.
      *
-     * @param int $uid
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function applyPageChangesToQueue(int $uid): void
     {
@@ -324,12 +277,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * Adds a record to the queue if it is monitored and enabled, otherwise it removes the record from the queue.
      *
-     * @param string $table
-     * @param int $uid
-     * @param int $pid
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function applyRecordChangesToQueue(string $table, int $uid, int $pid): void
     {
@@ -351,9 +300,6 @@ class DataUpdateHandler extends AbstractUpdateHandler
 
     /**
      * Removes record from the index queue and from the solr index
-     *
-     * @param string $recordTable Name of table where the record lives
-     * @param int $recordUid id of record
      */
     protected function removeFromIndexAndQueue(string $recordTable, int $recordUid): void
     {
@@ -363,10 +309,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * Removes record from the index queue and from the solr index when the item is in the queue.
      *
-     * @param string $recordTable Name of table where the record lives
-     * @param int $recordUid id of record
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected function removeFromIndexAndQueueWhenItemInQueue(string $recordTable, int $recordUid): void
     {
@@ -378,9 +321,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
     }
 
     /**
-     * @param int $pageId
-     * @return TypoScriptConfiguration
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function getSolrConfigurationFromPageId(int $pageId): TypoScriptConfiguration
     {
@@ -390,17 +331,15 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * Fetch record root page ids
      *
-     * @param string $recordTable The table the record belongs to
-     * @param int $recordUid
      * @return int[]
-     * @throws DBALDriverException
-     * @throws Throwable
+     *
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function getRecordRootPageIds(string $recordTable, int $recordUid): array
     {
         try {
             $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($recordTable, $recordUid);
-        } catch (InvalidArgumentException $e) {
+        } catch (RootPageRecordNotFoundException $e) {
             $rootPageIds = [];
         }
 
@@ -413,11 +352,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * Note: Also used if content element is updated, the page
      * of the content element is processed here
      *
-     * @param int $uid
-     * @param int $pid
-     * @param array $updatedFields
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
      */
     protected function processPageRecord(int $uid, int $pid, array $updatedFields = []): void
     {
@@ -443,12 +380,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * Process a record
      *
-     * @param string $recordTable
-     * @param int $recordUid
-     * @param array $rootPageIds
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function processRecord(string $recordTable, int $recordUid, array $rootPageIds): void
     {
@@ -459,7 +392,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
 
         foreach ($rootPageIds as $configurationPageId) {
             $site = $this->getSiteRepository()->getSiteByPageId($configurationPageId);
-            if (!$site instanceof SiteInterface) {
+            if (!$site instanceof Site) {
                 continue;
             }
             $solrConfiguration = $site->getSolrConfiguration();
@@ -506,12 +439,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * This method is used to determine the pageId that should be used to retrieve the index queue configuration.
      *
-     * @param string $recordTable
-     * @param int $recordPageId
-     * @param int $recordUid
-     * @return int
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
      */
     protected function getConfigurationPageId(string $recordTable, int $recordPageId, int $recordUid): int
     {
@@ -538,10 +467,6 @@ class DataUpdateHandler extends AbstractUpdateHandler
 
     /**
      * Checks if the parent record of the translated record is enabled.
-     *
-     * @param string $recordTable
-     * @param int $recordUid
-     * @return bool
      */
     protected function getIsTranslationParentRecordEnabled(string $recordTable, int $recordUid): bool
     {
@@ -552,10 +477,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * Applies the updateItem instruction on a collection of pageIds.
      *
-     * @param array $treePageIds
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function updatePageIdItems(array $treePageIds): void
     {
@@ -568,10 +491,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * Triggers Index Queue updates for other pages showing content from the
      * page currently being updated.
      *
-     * @param int $pageId UID of the page currently being updated
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function updateCanonicalPages(int $pageId): void
     {
@@ -583,34 +504,24 @@ class DataUpdateHandler extends AbstractUpdateHandler
 
     /**
      * Retrieves the pid of a record, returns null if no pid could be found
-     *
-     * @param string $table
-     * @param int $uid
-     * @return int|null
      */
     protected function getValidatedPid(string $table, int $uid): ?int
     {
         $pid = $this->dataHandler->getPID($table, $uid);
         if ($pid === false) {
             $message = 'Record without valid pid was processed ' . $table . ':' . $uid;
-            $this->logger->log(SolrLogManager::WARNING, $message);
+            $this->logger->warning($message);
             return null;
         }
 
         return $pid;
     }
 
-    /**
-     * @return GarbageHandler
-     */
     protected function getGarbageHandler(): GarbageHandler
     {
         return GeneralUtility::makeInstance(GarbageHandler::class);
     }
 
-    /**
-     * @return SiteRepository
-     */
     protected function getSiteRepository(): SiteRepository
     {
         return GeneralUtility::makeInstance(SiteRepository::class);

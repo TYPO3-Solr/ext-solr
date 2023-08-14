@@ -29,51 +29,25 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
  */
 class GroupItem extends SearchResultSet
 {
-    /**
-     * @var string
-     */
     protected string $groupValue = '';
 
-    /**
-     * @var int
-     */
     protected int $allResultCount = 0;
 
-    /**
-     * @var int
-     */
     protected int $start = 0;
 
-    /**
-     * @var float
-     */
     protected float $maximumScore = 0.0;
 
-    /**
-     * @var SearchResultCollection
-     */
     protected SearchResultCollection $searchResults;
 
-    /**
-     * @var Group
-     */
     protected Group $group;
 
-    /**
-     * @param Group $group
-     * @param string $groupValue
-     * @param int $numFound
-     * @param int $start
-     * @param float $maxScore
-     * @param SearchRequest $usedSearchRequest
-     */
     public function __construct(
         Group $group,
         string $groupValue,
         int $numFound,
         int $start,
         float $maxScore,
-        SearchRequest $usedSearchRequest
+        SearchRequest $usedSearchRequest,
     ) {
         parent::__construct();
         $this->group = $group;
@@ -87,8 +61,6 @@ class GroupItem extends SearchResultSet
 
     /**
      * Get groupValue
-     *
-     * @return string
      */
     public function getGroupValue(): string
     {
@@ -97,8 +69,6 @@ class GroupItem extends SearchResultSet
 
     /**
      * Get start
-     *
-     * @return int
      */
     public function getStart(): int
     {
@@ -106,7 +76,7 @@ class GroupItem extends SearchResultSet
     }
 
     /**
-     * @return Group
+     * Get Group
      */
     public function getGroup(): Group
     {

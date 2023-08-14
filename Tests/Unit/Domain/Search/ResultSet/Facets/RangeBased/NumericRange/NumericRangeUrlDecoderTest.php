@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeUrlDecoder;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Ingo Renner <ingo@typo3.org>
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class NumericRangeUrlDecoderTest extends UnitTest
+class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
 {
     /**
      * Parser to build Solr range queries

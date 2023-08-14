@@ -24,11 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class StrategyFactory
 {
-    /**
-     * @param string $table
-     * @return PageStrategy|RecordStrategy
-     */
-    public static function getByTable(string $table): AbstractStrategy
+    public static function getByTable(string $table): PageStrategy|RecordStrategy
     {
         $isPageRelated = in_array($table, ['tt_content', 'pages']);
         return $isPageRelated

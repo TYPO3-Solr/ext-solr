@@ -53,31 +53,31 @@
 				<target>Filter</target>
 			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
-				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>显示搜索结果中的第 @resultsFrom 条到第 @resultsTo 条 (共 @resultsTotal 条)。</target>
+				<source>Displaying results %s to %s of %s.</source>
+				<target>显示搜索结果中的第 %s 条到第 %s 条 (共 %s 条)。</target>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve" approved="yes">
-				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>找到相关结果共 @resultsTotal 条，用时 @resultsTime 毫秒。</target>
+				<source>Found %s results in %s milliseconds.</source>
+				<target>找到相关结果共 %s 条，用时 %s 毫秒。</target>
 			</trans-unit>
 			<trans-unit id="results_found.singular" xml:space="preserve" approved="yes">
-				<source>Found 1 result in @resultsTime milliseconds.</source>
-				<target>找到相关结果共 1 条，用时 @resultsTime 毫秒。</target>
+				<source>Found 1 result in %s milliseconds.</source>
+				<target>找到相关结果共 1 条，用时 %s 毫秒。</target>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
-				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>搜索&quot;@searchWord&quot;</target>
+				<source>Searched for &quot;%s&quot;.</source>
+				<target>搜索&quot;%s&quot;</target>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
-				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>没有找到任何关于&quot;@searchWord&quot;</target>
+				<source>Nothing found for &quot;%s&quot;.</source>
+				<target>没有找到任何关于&quot;%s&quot;</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
-				<source>Showing results for &quot;@suggestedWord&quot;.</source>
-				<target>Showing results for &quot;@suggestedWord&quot;.</target>
+				<source>Showing results for &quot;%s&quot;.</source>
+				<target>Showing results for &quot;%s&quot;.</target>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
-				<source>Search instead for &quot;@searchWord&quot;.</source>
+				<source>Search instead for &quot;%s&quot;.</source>
 				<target></target>
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">

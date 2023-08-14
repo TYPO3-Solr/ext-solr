@@ -18,23 +18,16 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Unit test for the OptionsFacet
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class OptionCollectionTest extends UnitTest
+class OptionCollectionTest extends SetUpUnitTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        GeneralUtility::setSingletonInstance(ObjectManager::class, $this->createMock(ObjectManager::class));
-    }
-
     protected function tearDown(): void
     {
         GeneralUtility::purgeInstances();
@@ -46,7 +39,7 @@ class OptionCollectionTest extends UnitTest
      */
     public function canGetManualSortedCopy()
     {
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
 
         $red = new Option($facet, 'Rubin Red', 'red', 9);
@@ -70,7 +63,7 @@ class OptionCollectionTest extends UnitTest
      */
     public function canGetLabelPrefixes()
     {
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
 
         $roseRed = new Option($facet, 'Rose Red', 'rose_red', 14);
@@ -95,7 +88,7 @@ class OptionCollectionTest extends UnitTest
      */
     public function canGetByLowercaseLabelPrefix()
     {
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
 
         $roseRed = new Option($facet, 'Rose Red', 'rose_red', 14);
@@ -124,7 +117,7 @@ class OptionCollectionTest extends UnitTest
      */
     public function canGetByLowercaseLabelPrefixWithMultiByteCharacter()
     {
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'authors', 'authors_s');
 
         $ben = new Option($facet, 'Ben', 'ben', 14);
@@ -143,7 +136,7 @@ class OptionCollectionTest extends UnitTest
      */
     public function canGetByValueAfterManualSorting()
     {
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
 
         $red = new Option($facet, 'Rubin Red', 'red', 9);

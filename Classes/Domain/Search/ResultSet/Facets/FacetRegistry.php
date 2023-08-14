@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGrou
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangePackage;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangePackage;
 use ApacheSolrForTypo3\Solr\System\Object\AbstractClassRegistry;
-use InvalidArgumentException;
 
 /**
  * Class FacetRegistry
@@ -35,8 +34,6 @@ class FacetRegistry extends AbstractClassRegistry
 {
     /**
      * Array of available parser classNames
-     *
-     * @var array
      */
     protected array $classMap = [
         'options' => OptionsPackage::class,
@@ -48,15 +45,11 @@ class FacetRegistry extends AbstractClassRegistry
 
     /**
      * Default parser className
-     *
-     * @var string
      */
     protected string $defaultClass = OptionsPackage::class;
 
     /**
      * Get defaultParser
-     *
-     * @return string
      */
     public function getDefaultPackage(): string
     {
@@ -65,18 +58,14 @@ class FacetRegistry extends AbstractClassRegistry
 
     /**
      * Set defaultParser
-     *
-     * @param string $defaultPackageClassName
      */
-    public function setDefaultPackage(string $defaultPackageClassName)
+    public function setDefaultPackage(string $defaultPackageClassName): void
     {
         $this->defaultClass = $defaultPackageClassName;
     }
 
     /**
      * Get registered parser classNames
-     *
-     * @return array
      */
     public function getPackages(): array
     {
@@ -84,9 +73,7 @@ class FacetRegistry extends AbstractClassRegistry
     }
 
     /**
-     * @param string $className
-     * @param string $type
-     * @throws InvalidArgumentException
+     * Registers package
      */
     public function registerPackage(string $className, string $type): void
     {
@@ -94,10 +81,8 @@ class FacetRegistry extends AbstractClassRegistry
     }
 
     /**
-     * Get package
+     * Returns facet package object
      *
-     * @param string $type
-     * @return AbstractFacetPackage
      * @throws InvalidFacetPackageException
      */
     public function getPackage(string $type): AbstractFacetPackage
@@ -106,7 +91,6 @@ class FacetRegistry extends AbstractClassRegistry
         if (!$instance instanceof AbstractFacetPackage) {
             throw new InvalidFacetPackageException('Invalid class registered for ' . htmlspecialchars($type));
         }
-        $instance->setObjectManager($this->objectManager);
         return $instance;
     }
 }

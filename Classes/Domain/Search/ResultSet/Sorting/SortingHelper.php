@@ -25,9 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SortingHelper
 {
-    /**
-     * @var array
-     */
     protected array $configuration = [];
 
     /**
@@ -55,11 +52,11 @@ class SortingHelper
         $sortFields = [];
         $sortParameters = GeneralUtility::trimExplode(',', $urlParameters);
 
-        $removeTsKeyDot = function ($sortingKey) { return trim($sortingKey, '.'); };
+        $removeTsKeyDot = static function ($sortingKey) { return trim($sortingKey, '.'); };
         $configuredSortingName = array_map($removeTsKeyDot, array_keys($this->configuration));
 
         foreach ($sortParameters as $sortParameter) {
-            list($sortOption, $sortDirection) = explode(' ', $sortParameter);
+            [$sortOption, $sortDirection] = explode(' ', $sortParameter);
 
             if (!in_array($sortOption, $configuredSortingName)) {
                 throw new InvalidArgumentException('No sorting configuration found for option name ' . $sortOption, 1316187644);

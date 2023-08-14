@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting;
 
-use ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\BeforeCachedVariablesAreProcessedEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use Psr\Http\Message\UriInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -26,15 +26,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Event listener to handle path elements containing placeholder
  *
  * @author Lars Tode <lars.tode@dkd.de>
+ *
+ * @noinspection PhpUnused Listener for {@link BeforeCachedVariablesAreProcessedEvent}
  */
 class CachedPathVariableModifier
 {
-    /**
-     * @var RoutingService
-     */
     protected RoutingService $routingService;
 
-    public function __invoke(BeforeProcessCachedVariablesEvent $event): void
+    public function __invoke(BeforeCachedVariablesAreProcessedEvent $event): void
     {
         if (!$event->hasRouting()) {
             return;
@@ -60,9 +59,6 @@ class CachedPathVariableModifier
             return;
         }
 
-        // TODO: Detect multiValue? Could be removed?
-        $multiValue = false;
-
         $standardizedKeys = $variableKeys;
 
         $variableKeysCount = count($variableKeys);
@@ -71,9 +67,8 @@ class CachedPathVariableModifier
             if (!$this->containsPathVariable($standardizedKey, $pathVariables) || empty($variableValues[$standardizedKey])) {
                 continue;
             }
-            $value = '';
             // Note: Some values contain the multi value separator
-            if ($multiValue) {
+            if ($this->containsMultiValue()) {
                 // Note: if the customer configured a + as separator an additional check on the facet value is required!
                 $facets = $this->routingService->pathFacetStringToArray(
                     $this->standardizeKey((string)$variableValues[$standardizedKey])
@@ -82,12 +77,8 @@ class CachedPathVariableModifier
                 $singleValues = [];
                 $index = 0;
                 foreach ($facets as $facet) {
-                    if (mb_strpos($facet, ':') !== false) {
-                        [$prefix, $value] = explode(
-                            ':',
-                            $facet,
-                            2
-                        );
+                    if (str_contains($facet, ':')) {
+                        $value = explode(':', $facet, 2)[1];
                         $singleValues[] = $value;
                         $index++;
                     } else {
@@ -96,11 +87,11 @@ class CachedPathVariableModifier
                 }
                 $value = $this->routingService->pathFacetsToString($singleValues);
             } else {
-                [$prefix, $value] = explode(
+                $value = explode(
                     ':',
                     $this->standardizeKey((string)$variableValues[$standardizedKey]),
                     2
-                );
+                )[1];
             }
             $standardizedKeys[$i] = $standardizedKey;
             $variableValues[$standardizedKey] = $value;
@@ -112,9 +103,6 @@ class CachedPathVariableModifier
 
     /**
      * Extract path variables from URI
-     *
-     * @param UriInterface $uri
-     * @return array
      */
     protected function getPathVariablesFromUri(UriInterface $uri): array
     {
@@ -126,7 +114,7 @@ class CachedPathVariableModifier
                 continue;
             }
             $element = $this->standardizeKey($element);
-            if (substr($element, 0, 3) !== '###') {
+            if (!str_starts_with($element, '###')) {
                 continue;
             }
 
@@ -138,9 +126,6 @@ class CachedPathVariableModifier
 
     /**
      * Standardize a given string in order to reduce the amount of if blocks
-     *
-     * @param string $key
-     * @return string
      */
     protected function standardizeKey(string $key): string
     {
@@ -153,23 +138,25 @@ class CachedPathVariableModifier
 
     /**
      * Check if the variable is includes within the path variables
-     *
-     * @param string $variableName
-     * @param array $pathVariables
-     * @return bool
      */
     protected function containsPathVariable(string $variableName, array $pathVariables): bool
     {
         if (in_array($variableName, $pathVariables)) {
             return true;
         }
-        foreach ($pathVariables as $keyName => $value) {
+        foreach ($pathVariables as $value) {
             $segments = explode($this->routingService->getUrlFacetPathService()->getMultiValueSeparator(), $value);
             if (in_array($variableName, $segments)) {
                 return true;
             }
         }
 
+        return false;
+    }
+
+    protected function containsMultiValue(): bool
+    {
+        // @todo: implement the check, or remove contents of if statement.
         return false;
     }
 }

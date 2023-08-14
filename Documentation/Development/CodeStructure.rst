@@ -32,15 +32,15 @@ For the **OptionsFacet** the FacetItem is an **Option**, for the **NumericRangeF
 Rendering of a facet:
 
 Based on the **"type"** TypoScript configuration the **"FacetRegistry"** chooses the responsible facet package class that
-is used to create the object structure from the solr repsonse. Each facet type is shipped with a default fluid partial, that is able to render such a facet.
+is used to create the object structure from the Solr repsonse. Each facet type is shipped with a default fluid partial, that is able to render such a facet.
 
 A facet package consists of the following parts:
 
-* The facet parser: Responsible to parse the apache solr response into a domain object structure
+* The facet parser: Responsible to parse the Apache Solr response into a domain object structure
 * The url decoder: Responsible to decode the url fragment of the facet in EXT:solr
 * The query builder: Responsible to build the needed query fragment for Apache Solr to apply the facet
 
-The typoscript configuration **"partialName"** can be used to force the rendering with another fluid partial.
+The TypoScript configuration **"partialName"** can be used to force the rendering with another fluid partial.
 
 For advanced use cases you can use the **"FacetRegistry"** to register your own facet type or overwrite the facet behaviour for a certain facet type.
 
@@ -48,4 +48,4 @@ For advanced use cases you can use the **"FacetRegistry"** to register your own 
 
     UML diagram of the \*Facet classes
 
-As you see in the diagram above solr ships a clean object structure of the facets, that you can render in your custom templates as you need them.
+As you see in the diagram above Solr ships a clean object structure of the facets, that you can render in your custom templates as you need them.

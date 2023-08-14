@@ -28,10 +28,8 @@ class HierarchyUrlDecoder implements FacetUrlDecoderInterface
 {
     /**
      * Delimiter for hierarchies in the URL.
-     *
-     * @var string
      */
-    const DELIMITER = '/';
+    public const DELIMITER = '/';
 
     /**
      * Parses the given hierarchy filter and returns a Solr filter query.

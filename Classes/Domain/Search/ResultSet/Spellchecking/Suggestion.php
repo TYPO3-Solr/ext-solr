@@ -25,44 +25,22 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking;
  */
 class Suggestion
 {
-    /**
-     * @var string
-     */
     protected string $suggestion = '';
 
-    /**
-     * @var string
-     */
     protected string $missSpelled = '';
 
-    /**
-     * @var int
-     */
     protected int $numFound = 1;
 
-    /**
-     * @var int
-     */
     protected int $startOffset = 0;
 
-    /**
-     * @var int
-     */
     protected int $endOffset = 0;
 
-    /**
-    * @param string $suggestion the suggested term
-    * @param string $missSpelled the misspelled original term
-    * @param int $numFound
-    * @param int $startOffset
-    * @param int $endOffset
-    */
     public function __construct(
         string $suggestion = '',
         string $missSpelled = '',
         int $numFound = 1,
         int $startOffset = 0,
-        int $endOffset = 0
+        int $endOffset = 0,
     ) {
         $this->suggestion = $suggestion;
         $this->missSpelled = $missSpelled;
@@ -71,41 +49,26 @@ class Suggestion
         $this->endOffset = $endOffset;
     }
 
-    /**
-     * @return int
-     */
     public function getEndOffset(): int
     {
         return $this->endOffset;
     }
 
-    /**
-     * @return int
-     */
     public function getNumFound(): int
     {
         return $this->numFound;
     }
 
-    /**
-     * @return int
-     */
     public function getStartOffset(): int
     {
         return $this->startOffset;
     }
 
-    /**
-     * @return string
-     */
     public function getSuggestion(): string
     {
         return $this->suggestion;
     }
 
-    /**
-     * @return string
-     */
     public function getMissSpelled(): string
     {
         return $this->missSpelled;

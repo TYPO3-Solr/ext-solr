@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RenderingInstructions;
 
 use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
+use Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -32,15 +33,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class FormatDate
 {
-    /**
-     * @var FormatService
-     */
-    protected $formatService;
+    protected FormatService $formatService;
 
-    /**
-     * FormatDate constructor.
-     * @param FormatService|null $formatService
-     */
     public function __construct(FormatService $formatService = null)
     {
         $this->formatService = $formatService ?? GeneralUtility::makeInstance(FormatService::class);
@@ -49,11 +43,13 @@ class FormatDate
     /**
      * Formats a given date string to another format
      *
-     * @param   string $content the content to process
-     * @param   array $conf typoscript configuration
+     * @param string $content the content to process
+     * @param array $conf typoscript configuration
      * @return  string formatted  date
+     *
+     * @throws Exception
      */
-    public function format($content, $conf)
+    public function format(string $content, array $conf): string
     {
         // set default values
         $inputFormat = $conf['inputFormat'] ?? 'Y-m-d\TH:i:s\Z';

@@ -19,9 +19,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Middleware;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Middleware\SolrRoutingMiddleware;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Uri;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -38,16 +39,9 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-class SolrRoutingMiddlewareTest extends UnitTest
+class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
 {
-    /**
-     * @var RoutingService
-     */
-    protected $routingServiceMock;
-
-    /**
-     * @var RequestHandlerInterface
-     */
+    protected RoutingService|MockObject $routingServiceMock;
     protected $responseOutputHandler;
 
     protected function setUp(): void
@@ -58,11 +52,8 @@ class SolrRoutingMiddlewareTest extends UnitTest
             ->getMock();
 
         /* @see \TYPO3\CMS\Frontend\Tests\Unit\Middleware\PageResolverTest::setUp */
-        $this->responseOutputHandler = new class() implements RequestHandlerInterface {
-            /**
-             * @var ServerRequestInterface
-             */
-            protected $request;
+        $this->responseOutputHandler = new class () implements RequestHandlerInterface {
+            protected ServerRequestInterface $request;
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
                 $this->request = $request;
@@ -70,9 +61,7 @@ class SolrRoutingMiddlewareTest extends UnitTest
             }
 
             /**
-             * This method is required since we wand to know how the URI changed inside
-             *
-             * @return ServerRequestInterface
+             * This method is required since we want to know how the URI changed inside
              */
             public function getRequest(): ServerRequestInterface
             {
@@ -87,7 +76,7 @@ class SolrRoutingMiddlewareTest extends UnitTest
      * @test
      * @covers \ApacheSolrForTypo3\Solr\Middleware\SolrRoutingMiddleware::process
      */
-    public function missingEnhancerHasNoEffectTest()
+    public function missingEnhancerHasNoEffectTest(): void
     {
         $serverRequest = new ServerRequest(
             'GET',
@@ -136,7 +125,6 @@ class SolrRoutingMiddlewareTest extends UnitTest
             $this->responseOutputHandler
         );
         $request = $this->responseOutputHandler->getRequest();
-        /* @var Uri $uri */
         $uri = $request->getUri();
 
         self::assertEquals(

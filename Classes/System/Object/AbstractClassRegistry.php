@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\System\Object;
 use InvalidArgumentException;
 use stdClass;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract class to hold the logic to register and retrieve different classes
@@ -34,35 +34,16 @@ class AbstractClassRegistry implements SingletonInterface
 {
     /**
      * Holds the mapping key => className
-     * @var array
      */
     protected array $classMap = [];
 
     /**
      * Name for the default implementation
-     *
-     * @var string
      */
     protected string $defaultClass = stdClass::class;
 
     /**
-     * @var ObjectManagerInterface|null
-     */
-    protected ?ObjectManagerInterface $objectManager = null;
-
-    /**
-     * @param ObjectManagerInterface $objectManager
-     */
-    public function injectObjectManager(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
-    }
-
-    /**
      * Retrieves an instance for a registered type.
-     *
-     * @param string $type
-     * @return object
      */
     public function getInstance(string $type): object
     {
@@ -71,8 +52,7 @@ class AbstractClassRegistry implements SingletonInterface
     }
 
     /**
-     * @param string $type
-     * @return string
+     * Resolves the classname for given type
      */
     protected function resolveClassName(string $type): string
     {
@@ -85,21 +65,14 @@ class AbstractClassRegistry implements SingletonInterface
 
     /**
      * Create an instance of a certain class
-     *
-     * @param string $className
-     * @return object
      */
     protected function createInstance(string $className): object
     {
-        return $this->objectManager->get($className);
+        return GeneralUtility::makeInstance($className);
     }
 
     /**
      * Can be used to register an implementation in the classMap.
-     *
-     * @param string $className
-     * @param string $type
-     * @param string $requiredBaseClass
      */
     protected function register(string $className, string $type, string $requiredBaseClass): void
     {

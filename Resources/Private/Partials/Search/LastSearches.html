@@ -13,14 +13,14 @@
 			<div class="card-header">
 				<span class="bi bi-clock-history"></span>
 				<a data-bs-toggle="collapse" href="#lastSearches">
-					<s:translate key="lastSearches">Last searches</s:translate>
+					<f:translate key="lastSearches" extensionName="solr">Last searches</f:translate>
 				</a>
 			</div>
 
 			<ul class="list-group collapse show" id="lastSearches">
 				<f:for each="{lastSearches}" as="searchedFor">
 					<li class="list-group-item">
-						<a href="{s:uri.search.startNewSearch(queryString: searchedFor)}" class="solr-ajaxified">{searchedFor}</a>
+						<a href="{s:uri.search.startNewSearch(queryString: searchedFor)}" class="solr-ajaxified"><f:format.htmlentities>{searchedFor}</f:format.htmlentities></a>
 					</li>
 				</f:for>
 			</ul>

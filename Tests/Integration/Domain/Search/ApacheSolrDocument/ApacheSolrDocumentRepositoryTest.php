@@ -23,38 +23,29 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ApacheSolrDocumentRepositoryTest extends IntegrationTest
 {
     /**
-     * @inheritdoc
-     * @todo: Remove unnecessary fixtures and remove that property as intended.
+     * @var Repository|null
      */
-    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
-
-    /**
-     * @var Repository
-     */
-    protected $apacheSolrDocumentRepository;
+    protected ?Repository $apacheSolrDocumentRepository = null;
 
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->writeDefaultSolrTestSiteConfiguration();
-        $_SERVER['HTTP_HOST'] = 'testone.site';
-        $_SERVER['REQUEST_URI'] = '/search.html';
-        // trigger a search
-        $this->indexPageIdsFromFixture('can_get_apacheSolrDocuments.xml', [1, 2, 3, 4, 5]);
+        // trigger an index
+        $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
+        $this->indexPages([1, 2, 3, 4, 5]);
 
-        $this->waitToBeVisibleInSolr();
-
-        /* @var $apacheSolrDocumentRepository Repository */
         $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
     }
 
     /**
-     * Executed after each test. Emptys solr and checks if the index is empty
+     * Executed after each test. Empties solr and checks if the index is empty
      */
     protected function tearDown(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
+        unset($this->apacheSolrDocumentRepository);
         parent::tearDown();
     }
 

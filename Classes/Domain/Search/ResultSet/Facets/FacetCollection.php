@@ -24,17 +24,11 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
  */
 class FacetCollection extends AbstractCollection
 {
-    /**
-     * @param AbstractFacet $facet
-     */
-    public function addFacet(AbstractFacet $facet)
+    public function addFacet(AbstractFacet $facet): void
     {
         $this->data[$facet->getName()] = $facet;
     }
 
-    /**
-     * @return FacetCollection|AbstractCollection
-     */
     public function getUsed(): AbstractCollection
     {
         return $this->getFilteredCopy(
@@ -44,9 +38,6 @@ class FacetCollection extends AbstractCollection
         );
     }
 
-    /**
-     * @return FacetCollection|AbstractCollection
-     */
     public function getAvailable(): AbstractCollection
     {
         return $this->getFilteredCopy(
@@ -56,10 +47,6 @@ class FacetCollection extends AbstractCollection
         );
     }
 
-    /**
-     * @param string $requiredGroup
-     * @return AbstractCollection
-     */
     public function getByGroupName(string $requiredGroup = 'all'): AbstractCollection
     {
         return $this->getFilteredCopy(
@@ -69,10 +56,6 @@ class FacetCollection extends AbstractCollection
         );
     }
 
-    /**
-     * @param string $requiredName
-     * @return AbstractCollection
-     */
     public function getByName(string $requiredName): AbstractCollection
     {
         return $this->getFilteredCopy(
@@ -80,14 +63,5 @@ class FacetCollection extends AbstractCollection
                 return $facet->getName() == $requiredName;
             }
         );
-    }
-
-    /**
-     * @param int $position
-     * @return AbstractFacet
-     */
-    public function getByPosition(int $position): ?object
-    {
-        return parent::getByPosition($position);
     }
 }

@@ -17,48 +17,50 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Search;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsWriterProcessor;
-use ApacheSolrForTypo3\Solr\Query\Modifier\Statistics;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchHasBeenExecutedEvent;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 
 /**
  * Statistics search component
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class StatisticsComponent extends AbstractComponent implements SearchRequestAware
+class StatisticsComponent
 {
-    /**
-     * @var SearchRequest|null
-     */
-    protected ?SearchRequest $searchRequest = null;
-
-    /**
-     * Provides a component that is aware of the current SearchRequest
-     *
-     * @param SearchRequest $searchRequest
-     */
-    public function setSearchRequest(SearchRequest $searchRequest)
-    {
-        $this->searchRequest = $searchRequest;
+    public function __construct(
+        protected readonly QueryBuilder $queryBuilder,
+        protected readonly StatisticsWriterProcessor $statisticsWriterProcessor
+    ) {
     }
 
     /**
-     * Initializes the search component.
+     * Enables the query's debug mode to get more detailed information.
      */
-    public function initializeSearchComponent()
+    public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
-        $solrConfiguration = $this->searchRequest->getContextTypoScriptConfiguration();
-
-        if ($solrConfiguration->getStatistics()) {
-            if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'])) {
-                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'] = StatisticsWriterProcessor::class;
-            }
-            // Only if addDebugData is enabled add Query modifier
-            if ($solrConfiguration->getStatisticsAddDebugData()) {
-                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['statistics'] = Statistics::class;
-            }
+        if (!$event->getSearchRequest()->getContextTypoScriptConfiguration()->getStatistics()) {
+            return;
         }
+        // Only if addDebugData is enabled add Query modifier
+        if (!$event->getSearchRequest()->getContextTypoScriptConfiguration()->getStatisticsAddDebugData()) {
+            return;
+        }
+
+        $query = $event->getQuery();
+        $query = $this->queryBuilder->startFrom($query)->useDebug(true)->getQuery();
+        $event->setQuery($query);
+    }
+
+    public function writeStatisticsAfterSearch(AfterSearchHasBeenExecutedEvent $event): void
+    {
+        $solrConfiguration = $event->getSearchRequest()->getContextTypoScriptConfiguration();
+
+        if (!$solrConfiguration->getStatistics()) {
+            return;
+        }
+        // Write the statistics
+        $this->statisticsWriterProcessor->process($event->getSearchResultSet());
     }
 }

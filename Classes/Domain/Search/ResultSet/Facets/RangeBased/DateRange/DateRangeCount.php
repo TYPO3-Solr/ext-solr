@@ -27,37 +27,21 @@ use DateTime;
  */
 class DateRangeCount
 {
-    /**
-     * @var DateTime
-     */
     protected DateTime $date;
 
-    /**
-     * @var int
-     */
     protected int $documentCount = 0;
 
-    /**
-     * @param DateTime $date
-     * @param int $documentCount
-     */
     public function __construct(DateTime $date, int $documentCount = 0)
     {
         $this->date = $date;
         $this->documentCount = $documentCount;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getDate(): DateTime
     {
         return $this->date;
     }
 
-    /**
-     * @return int
-     */
     public function getDocumentCount(): int
     {
         return $this->documentCount;

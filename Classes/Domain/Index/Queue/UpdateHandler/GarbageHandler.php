@@ -18,9 +18,11 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\StrategyFactory;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use Doctrine\DBAL\Exception as DBALException;
 use PDO;
 use Throwable;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
 
@@ -40,18 +42,16 @@ class GarbageHandler extends AbstractUpdateHandler
      * updates
      *
      * Note: The SQL transaction is already committed, so the current state covers only "non"-changed fields.
-     *
-     * @var array
      */
     protected array $updateSubPagesRecursiveTriggerConfiguration = [
-        // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 1
+        // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to '1'
         // covers following scenarios:
         //   'currentState' =>  ['hidden' => '0', 'extendToSubpages' => '0|1'], 'changeSet' => ['hidden' => '1', (optional)'extendToSubpages' => '1']
         'extendToSubpageEnabledAndHiddenFlagWasAdded' => [
             'currentState' =>  ['extendToSubpages' => '1'],
             'changeSet' => ['hidden' => '1'],
         ],
-        // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 1
+        // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to '1'
         // covers following scenarios:
         //   'currentState' =>  ['hidden' => '0|1', 'extendToSubpages' => '0'], 'changeSet' => [(optional)'hidden' => '1', 'extendToSubpages' => '1']
         'hiddenIsEnabledAndExtendToSubPagesWasAdded' => [
@@ -68,9 +68,7 @@ class GarbageHandler extends AbstractUpdateHandler
      * Tracks down index documents belonging to a particular record or page and
      * removes them from the index and the Index Queue.
      *
-     * @param string $table The record's table name.
-     * @param int $uid The record's uid.
-     * @throws UnexpectedValueException if a hook object does not implement interface {@linkt \ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor::}
+     * @throws UnexpectedValueException if a hook object does not implement interface {@linkt \ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor}
      */
     public function collectGarbage(string $table, int $uid): void
     {
@@ -81,7 +79,8 @@ class GarbageHandler extends AbstractUpdateHandler
     /**
      * Handles moved pages
      *
-     * @param int $uid
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function handlePageMovement(int $uid): void
     {
@@ -99,11 +98,8 @@ class GarbageHandler extends AbstractUpdateHandler
     /**
      * Performs record garbage check
      *
-     * @param int $uid
-     * @param string $table
-     * @param array $updatedFields
-     * @param bool $frontendGroupsRemoved
-     * @throws DBALDriverException
+     * @throws DBALException
+     * @throws AspectNotFoundException
      */
     public function performRecordGarbageCheck(
         int $uid,
@@ -132,10 +128,9 @@ class GarbageHandler extends AbstractUpdateHandler
     }
 
     /**
-     * @param string $table
-     * @param int $uid
-     * @param array $updatedFields
-     * @throws DBALDriverException
+     * Deletes sub-entries if recursive trigger is recognized
+     *
+     * @throws DBALException
      */
     protected function deleteSubEntriesWhenRecursiveTriggerIsRecognized(
         string $table,
@@ -157,11 +152,8 @@ class GarbageHandler extends AbstractUpdateHandler
     /**
      * Determines if a record is garbage and can be deleted.
      *
-     * @param string $table
-     * @param array $record
-     * @param bool $frontendGroupsRemoved
-     * @return bool
-     * @throws DBALDriverException
+     * @throws AspectNotFoundException
+     * @throws DBALException
      */
     protected function getIsGarbageRecord(string $table, array $record, bool $frontendGroupsRemoved): bool
     {
@@ -176,9 +168,7 @@ class GarbageHandler extends AbstractUpdateHandler
      * Checks whether a page has a page type that can be indexed.
      * Currently, standard pages and mount pages can be indexed.
      *
-     * @param array $record A page record
-     * @return bool TRUE if the page can be indexed according to its page type, FALSE otherwise
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function isIndexablePageType(array $record): bool
     {
@@ -187,9 +177,6 @@ class GarbageHandler extends AbstractUpdateHandler
 
     /**
      * Checks whether the page has been excluded from searching.
-     *
-     * @param array $record An array with record fields that may affect visibility.
-     * @return bool True if the page has been excluded from searching, FALSE otherwise
      */
     protected function isPageExcludedFromSearch(array $record): bool
     {
@@ -200,9 +187,8 @@ class GarbageHandler extends AbstractUpdateHandler
      * Check if a record is getting invisible due to changes in start or endtime. In addition, it is checked that the related
      * queue item was marked as indexed.
      *
-     * @param string $table
-     * @param array $record
-     * @return bool
+     * @throws AspectNotFoundException
+     * @throws DBALException
      */
     protected function isInvisibleByStartOrEndtime(string $table, array $record): bool
     {
@@ -219,9 +205,7 @@ class GarbageHandler extends AbstractUpdateHandler
      * * For tt_content the page from the pid is checked
      * * For all other records the table it's self is checked
      *
-     * @param string $table The table name.
-     * @param array $record An array with record fields that may affect visibility.
-     * @return bool True if the record is marked as being indexed
+     * @throws DBALException
      */
     protected function isRelatedQueueRecordMarkedAsIndexed(string $table, array $record): bool
     {
@@ -237,10 +221,6 @@ class GarbageHandler extends AbstractUpdateHandler
 
     /**
      * Returns a record with all visibility affecting fields.
-     *
-     * @param string $table
-     * @param int $uid
-     * @return array|null
      */
     public function getRecordWithFieldRelevantForGarbageCollection(string $table, int $uid): ?array
     {
@@ -254,7 +234,7 @@ class GarbageHandler extends AbstractUpdateHandler
                 ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, PDO::PARAM_INT)))
                 ->executeQuery()
                 ->fetchAssociative();
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             $row = false;
         }
 

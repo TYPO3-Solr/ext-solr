@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Area;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
@@ -31,14 +32,14 @@ class GroupViewHelper extends AbstractSolrFrontendViewHelper
     use CompileWithRenderStatic;
 
     /**
-     * @var bool
+     * @inheritdoc
      */
     protected $escapeOutput = false;
 
     /**
-     * Initializes the arguments
+     * @inheritDoc
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('facets', FacetCollection::class, 'The facets that should be filtered', true);
@@ -46,16 +47,16 @@ class GroupViewHelper extends AbstractSolrFrontendViewHelper
     }
 
     /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
+     * Renders group
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
-        /** @var  $facets FacetCollection */
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext,
+    ) {
+        /** @var FacetCollection $facets */
         $facets = $arguments['facets'];
-        $requiredGroup = isset($arguments['groupName']) ? $arguments['groupName'] : 'main';
+        $requiredGroup = $arguments['groupName'] ?? 'main';
         $filtered = $facets->getByGroupName($requiredGroup);
 
         $templateVariableProvider = $renderingContext->getVariableProvider();

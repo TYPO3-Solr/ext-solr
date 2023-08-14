@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,35 +18,30 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Tests for the SOLR_MULTIVALUE cObj.
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class MultivalueTest extends UnitTest
+class MultivalueTest extends SetUpContentObject
 {
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObject;
+    protected function getTestableContentObjectClassName(): string
+    {
+        return Multivalue::class;
+    }
 
     /**
      * @test
      */
     public function convertsCommaSeparatedListFromRecordToSerializedArrayOfTrimmedValues()
     {
-        $GLOBALS['TSFE']->cObjectDepthCounter = 2;
-
         $list = 'abc, def, ghi, jkl, mno, pqr, stu, vwx, yz';
         $expected = 'a:9:{i:0;s:3:"abc";i:1;s:3:"def";i:2;s:3:"ghi";i:3;s:3:"jkl";i:4;s:3:"mno";i:5;s:3:"pqr";i:6;s:3:"stu";i:7;s:3:"vwx";i:8;s:2:"yz";}';
 
-        $this->contentObject->start(['list' => $list]);
+        $this->contentObjectRenderer->start(['list' => $list]);
 
-        $actual = $this->contentObject->cObjGetSingle(
+        $actual = $this->contentObjectRenderer->cObjGetSingle(
             Multivalue::CONTENT_OBJECT_NAME,
             [
                 'field' => 'list',
@@ -63,9 +60,9 @@ class MultivalueTest extends UnitTest
         $list = 'abc, def, ghi, jkl, mno, pqr, stu, vwx, yz';
         $expected = 'a:9:{i:0;s:3:"abc";i:1;s:3:"def";i:2;s:3:"ghi";i:3;s:3:"jkl";i:4;s:3:"mno";i:5;s:3:"pqr";i:6;s:3:"stu";i:7;s:3:"vwx";i:8;s:2:"yz";}';
 
-        $this->contentObject->start([]);
+        $this->contentObjectRenderer->start([]);
 
-        $actual = $this->contentObject->cObjGetSingle(
+        $actual = $this->contentObjectRenderer->cObjGetSingle(
             Multivalue::CONTENT_OBJECT_NAME,
             [
                 'value' => $list,
@@ -74,24 +71,5 @@ class MultivalueTest extends UnitTest
         );
 
         self::assertEquals($expected, $actual);
-    }
-
-    protected function setUp(): void
-    {
-        // fake a registered hook
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][Multivalue::CONTENT_OBJECT_NAME] = Multivalue::class;
-
-        $GLOBALS['TSFE'] = $this->getDumbMock(TypoScriptFrontendController::class);
-
-        $this->contentObject = $this->getMockBuilder(ContentObjectRenderer::class)
-            ->onlyMethods(['getResourceFactory', 'getEnvironmentVariable', 'getRequest'])
-            ->setConstructorArgs([$GLOBALS['TSFE']])->getMock();
-        parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        unset($GLOBALS['TSFE']);
-        parent::tearDown();
     }
 }

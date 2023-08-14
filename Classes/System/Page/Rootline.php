@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\System\Page;
 
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 
 /**
  * Rootline class. This class is used to perform operations on a rootline array.
@@ -28,40 +28,25 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
  */
 class Rootline
 {
-    /**
-     * @var array
-     */
     protected array $rootLineArray = [];
 
-    /**
-     * Rootline constructor.
-     * @param array $rootLineArray
-     */
     public function __construct(array $rootLineArray = [])
     {
         $this->rootLineArray = $rootLineArray;
     }
 
-    /**
-     * @return array
-     */
     public function getRootLineArray(): array
     {
         return $this->rootLineArray;
     }
 
-    /**
-     * @param array $rootLineArray
-     */
-    public function setRootLineArray(array $rootLineArray)
+    public function setRootLineArray(array $rootLineArray): void
     {
         $this->rootLineArray = $rootLineArray;
     }
 
     /**
      * Returns true if the rootline contains a root page.
-     *
-     * @return bool
      */
     public function getHasRootPage(): bool
     {
@@ -69,10 +54,7 @@ class Rootline
     }
 
     /**
-     * Returns the rootPageId as integer if a rootpage is given,
-     * if non is given 0 will be returned
-     *
-     * @return int
+     * Returns the rootPageId as integer if a rootpage is given, if non is given 0 will be returned
      */
     public function getRootPageId(): int
     {
@@ -83,7 +65,7 @@ class Rootline
         }
 
         foreach ($this->rootLineArray as $page) {
-            if (Site::isRootPage($page)) {
+            if (SiteUtility::isRootPage($page)) {
                 $rootPageId = $page['uid'];
                 break;
             }
@@ -94,8 +76,6 @@ class Rootline
 
     /**
      * Returns an array of the pageUids in the rootline.
-     *
-     * @return array
      */
     public function getParentPageIds(): array
     {
@@ -107,7 +87,7 @@ class Rootline
 
         foreach ($this->rootLineArray as $pageRecord) {
             $rootLineParentPageIds[] = $pageRecord['uid'];
-            if (Site::isRootPage($pageRecord)) {
+            if (SiteUtility::isRootPage($pageRecord)) {
                 break;
             }
         }

@@ -17,12 +17,15 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
 use TYPO3\CMS\Core\Http\RedirectResponse;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -33,24 +36,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class IndexQueueModuleController extends AbstractModuleController
 {
-    /**
-     * @var Queue
-     */
-    protected Queue $indexQueue;
-
-    /**
-     * Initializes the controller before invoking an action method.
-     */
-    protected function initializeAction()
-    {
-        parent::initializeAction();
-        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
-    }
-
-    /**
-     * @param Queue $indexQueue
-     */
-    public function setIndexQueue(Queue $indexQueue)
+    public function setIndexQueue(Queue $indexQueue): void
     {
         $this->indexQueue = $indexQueue;
     }
@@ -58,11 +44,13 @@ class IndexQueueModuleController extends AbstractModuleController
     /**
      * Lists the available indexing configurations
      *
-     * @return ResponseInterface
      * @throws BackendFormException
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function indexAction(): ResponseInterface
     {
+        $this->initializeAction();
         if (!$this->canQueueSelectedSite()) {
             $this->view->assign('can_not_proceed', true);
             return $this->getModuleTemplateResponse();
@@ -77,8 +65,6 @@ class IndexQueueModuleController extends AbstractModuleController
 
     /**
      * Checks if selected site can be queued.
-     *
-     * @return bool
      */
     protected function canQueueSelectedSite(): bool
     {
@@ -93,16 +79,14 @@ class IndexQueueModuleController extends AbstractModuleController
     }
 
     /**
-     * Renders a field to select which indexing configurations to initialize.
-     *
+     * Renders the Markup for the select field, which indexing configurations to be initialized.
      * Uses TCEforms.
      *
-     * @return string Markup for the select field
      * @throws BackendFormException
      */
     protected function getIndexQueueInitializationSelector(): string
     {
-        $selector = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, /** @scrutinizer ignore-type */ $this->selectedSite);
+        $selector = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, $this->selectedSite);
         $selector->setFormElementName('tx_solr-index-queue-initialization');
 
         return $selector->render();
@@ -111,18 +95,20 @@ class IndexQueueModuleController extends AbstractModuleController
     /**
      * Initializes the Index Queue for selected indexing configurations
      *
-     * @return ResponseInterface
+     * @throws DBALException
+     *
+     * @noinspection PhpUnused Is *Action
      */
     public function initializeIndexQueueAction(): ResponseInterface
     {
         $initializedIndexingConfigurations = [];
 
-        $indexingConfigurationsToInitialize = GeneralUtility::_POST('tx_solr-index-queue-initialization');
+        $indexingConfigurationsToInitialize = $this->request->getArgument('tx_solr-index-queue-initialization');
         if ((!empty($indexingConfigurationsToInitialize)) && (is_array($indexingConfigurationsToInitialize))) {
             // initialize selected indexing configuration
             try {
                 $initializedIndexingConfigurations = $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfigurations($this->selectedSite, $indexingConfigurationsToInitialize);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->addFlashMessage(
                     sprintf(
                         LocalizationUtility::translate(
@@ -136,7 +122,7 @@ class IndexQueueModuleController extends AbstractModuleController
                         'solr.backend.index_queue_module.flashmessage.initialize_failure.title',
                         'Solr'
                     ),
-                    FlashMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
             }
         } else {
@@ -145,7 +131,7 @@ class IndexQueueModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 LocalizationUtility::translate($messageLabel, 'Solr'),
                 LocalizationUtility::translate($titleLabel, 'Solr'),
-                FlashMessage::WARNING
+                ContextualFeedbackSeverity::WARNING
             );
         }
         $messagesForConfigurations = [];
@@ -159,8 +145,7 @@ class IndexQueueModuleController extends AbstractModuleController
             $titleLabel = 'solr.backend.index_queue_module.flashmessage.initialize.title';
             $this->addFlashMessage(
                 LocalizationUtility::translate($messageLabel, 'Solr', [implode(', ', $messagesForConfigurations)]),
-                LocalizationUtility::translate($titleLabel, 'Solr'),
-                FlashMessage::OK
+                LocalizationUtility::translate($titleLabel, 'Solr')
             );
         }
 
@@ -170,17 +155,17 @@ class IndexQueueModuleController extends AbstractModuleController
     /**
      * Removes all errors in the index queue list. So that the items can be indexed again.
      *
-     * @return ResponseInterface
+     * @noinspection PhpUnused Is *Action
      */
     public function resetLogErrorsAction(): ResponseInterface
     {
         $resetResult = $this->indexQueue->resetAllErrors();
 
         $label = 'solr.backend.index_queue_module.flashmessage.success.reset_errors';
-        $severity = FlashMessage::OK;
+        $severity = ContextualFeedbackSeverity::OK;
         if (!$resetResult) {
             $label = 'solr.backend.index_queue_module.flashmessage.error.reset_errors';
-            $severity = FlashMessage::ERROR;
+            $severity = ContextualFeedbackSeverity::ERROR;
         }
 
         $this->addIndexQueueFlashMessage($label, $severity);
@@ -191,19 +176,18 @@ class IndexQueueModuleController extends AbstractModuleController
     /**
      * ReQueues a single item in the indexQueue.
      *
-     * @param string $type
-     * @param int $uid
-     * @return ResponseInterface
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function requeueDocumentAction(string $type, int $uid): ResponseInterface
     {
         $label = 'solr.backend.index_queue_module.flashmessage.error.single_item_not_requeued';
-        $severity = AbstractMessage::ERROR;
+        $severity = ContextualFeedbackSeverity::ERROR;
 
         $updateCount = $this->indexQueue->updateItem($type, $uid, time());
         if ($updateCount > 0) {
             $label = 'solr.backend.index_queue_module.flashmessage.success.single_item_was_requeued';
-            $severity = AbstractMessage::OK;
+            $severity = ContextualFeedbackSeverity::OK;
         }
 
         $this->addIndexQueueFlashMessage($label, $severity);
@@ -214,8 +198,9 @@ class IndexQueueModuleController extends AbstractModuleController
     /**
      * Shows the error message for one queue item.
      *
-     * @param int $indexQueueItemId
-     * @return ResponseInterface
+     * @throws DBALException
+     *
+     * @noinspection PhpUnused Is *Action
      */
     public function showErrorAction(int $indexQueueItemId): ResponseInterface
     {
@@ -223,7 +208,7 @@ class IndexQueueModuleController extends AbstractModuleController
         if ($item === null) {
             // add a flash message and quit
             $label = 'solr.backend.index_queue_module.flashmessage.error.no_queue_item_for_queue_error';
-            $severity = FlashMessage::ERROR;
+            $severity = ContextualFeedbackSeverity::ERROR;
             $this->addIndexQueueFlashMessage($label, $severity);
 
             return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
@@ -235,19 +220,23 @@ class IndexQueueModuleController extends AbstractModuleController
 
     /**
      * Indexes a few documents with the index service.
-     * @return ResponseInterface
+     *
+     * @throws ConnectionException
+     * @throws DBALException
+     *
+     * @noinspection PhpUnused Is *Action
      */
     public function doIndexingRunAction(): ResponseInterface
     {
-        /* @var IndexService $indexService */
-        $indexService = GeneralUtility::makeInstance(IndexService::class, /** @scrutinizer ignore-type */ $this->selectedSite);
+        /** @var IndexService $indexService */
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $this->selectedSite);
         $indexWithoutErrors = $indexService->indexItems(1);
 
         $label = 'solr.backend.index_queue_module.flashmessage.success.index_manual';
-        $severity = FlashMessage::OK;
+        $severity = ContextualFeedbackSeverity::OK;
         if (!$indexWithoutErrors) {
             $label = 'solr.backend.index_queue_module.flashmessage.error.index_manual';
-            $severity = FlashMessage::ERROR;
+            $severity = ContextualFeedbackSeverity::ERROR;
         }
 
         $this->addFlashMessage(
@@ -261,11 +250,8 @@ class IndexQueueModuleController extends AbstractModuleController
 
     /**
      * Adds a flash message for the index queue module.
-     *
-     * @param string $label
-     * @param int $severity
      */
-    protected function addIndexQueueFlashMessage(string $label, int $severity)
+    protected function addIndexQueueFlashMessage(string $label, ContextualFeedbackSeverity $severity): void
     {
         $this->addFlashMessage(LocalizationUtility::translate($label, 'Solr'), LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title', 'Solr'), $severity);
     }

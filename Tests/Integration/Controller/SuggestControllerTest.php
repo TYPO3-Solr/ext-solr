@@ -16,29 +16,42 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Http\Response;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 /**
  * Integration testcase to test for {@link SuggestController}
  *
  * @author Timo Hund
- * @copyright (c) 2018 Timo Hund <timo.hund@dkd.de>
  * @group frontend
  */
-class SuggestControllerTest extends AbstractFrontendControllerTest
+class SuggestControllerTest extends IntegrationTest
 {
     protected function setUp(): void
     {
         parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
             '
+            config.index_enable = 1
+            page = PAGE
+            page.typeNum = 0
+            # include suggest feature
             @import \'EXT:solr/Configuration/TypoScript/Examples/Suggest/setup.typoscript\'
             '
         );
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
+    }
+
+    /**
+     * Executed after each test. Empties solr and checks if the index is empty
+     */
+    protected function tearDown(): void
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        parent::tearDown();
     }
 
     /**
@@ -46,12 +59,12 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
      */
     public function canDoABasicSuggest()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $result = (string)($this->executeFrontendSubRequestForSuggestQueryString('Sweat', 'rand')->getBody());
 
-        //we assume to get suggestions like Sweatshirt
+        // we assume to get suggestions like Sweatshirt
         self::assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
     }
 
@@ -60,12 +73,12 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
      */
     public function canDoABasicSuggestWithoutCallback()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $result = (string)($this->executeFrontendSubRequestForSuggestQueryString('Sweat')->getBody());
 
-        //we assume to get suggestions like Sweatshirt
+        // we assume to get suggestions like Sweatshirt
         self::assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
     }
 
@@ -74,7 +87,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
      */
     public function canSuggestWithUriSpecialChars()
     {
-        $this->importDataSetFromFixture('can_suggest_with_uri_special_chars.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/suggest_with_uri_special_chars.csv');
 
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -113,7 +126,9 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
 
     protected function executeFrontendSubRequestForSuggestQueryString(string $queryString, string $callback = null): Response
     {
-        $request = $this->getPreparedRequest(1)
+        $request = new InternalRequest('http://testone.site/en/');
+        $request = $request
+            ->withPageId(1)
             ->withQueryParameter('type', '7384')
             ->withQueryParameter('tx_solr[queryString]', $queryString);
 

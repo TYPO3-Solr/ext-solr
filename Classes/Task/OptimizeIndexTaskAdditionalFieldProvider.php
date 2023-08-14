@@ -21,14 +21,13 @@ use ApacheSolrForTypo3\Solr\Backend\CoreSelectorField;
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use LogicException;
 use Throwable;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
@@ -44,54 +43,39 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
 {
     /**
      * Default language file of the extension link validator
-     *
-     * @var string
      */
     protected string $languageFile = 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf';
 
     /**
      * Task information
-     *
-     * @var array
      */
     protected array $taskInformation = [];
 
     /**
      * Scheduler task
-     *
-     * @var AbstractTask|null
      */
-    protected ?AbstractTask $task = null;
+    protected ?OptimizeIndexTask $task = null;
 
     /**
      * Scheduler Module
-     *
-     * @var SchedulerModuleController|null
      */
     protected ?SchedulerModuleController $schedulerModule = null;
 
     /**
      * Selected site
-     *
-     * @var Site|null
      */
     protected ?Site $site = null;
 
     /**
      * SiteRepository
-     *
-     * @var SiteRepository|null
      */
     protected ?SiteRepository $siteRepository = null;
 
     /**
-     * @var PageRenderer|null
+     * PageRenderer
      */
     protected ?PageRenderer $pageRenderer = null;
 
-    /**
-     * ReIndexTaskAdditionalFieldProvider constructor.
-     */
     public function __construct()
     {
         $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
@@ -100,17 +84,13 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
     /**
      * Initializes this instance and the necessary objects.
      *
-     * @param SchedulerModuleController $schedulerModule
-     * @param AbstractTask|null $task
-     * @param array $taskInfo
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function initialize(
         SchedulerModuleController $schedulerModule,
-        AbstractTask $task = null,
+        OptimizeIndexTask $task = null,
         array $taskInfo = []
-    ) {
-        /** @var $task ReIndexTask */
+    ): void {
         $this->task = $task;
         $this->schedulerModule = $schedulerModule;
         $this->taskInformation = $taskInfo;
@@ -127,15 +107,15 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * or editing a task.
      *
      * @param array $taskInfo reference to the array containing the info used in the add/edit form
-     * @param AbstractTask $task when editing, reference to the current task object. Null when adding.
+     * @param OptimizeIndexTask $task when editing, reference to the current task object. Null when adding.
      * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
      * @return array Array containing all the information pertaining to the additional fields
      *                        The array is multidimensional, keyed to the task class name and each field's id
      *                        For each field it provides an associative sub-array with the following:
+     *
      * @throws BackendFormException
-     * @throws DBALDriverException
-     * @throws NoSolrConnectionFoundException
      * @throws Throwable
+     *
      * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
      * @noinspection PhpMissingReturnTypeInspection
      */
@@ -156,15 +136,11 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         $additionalFields['site'] = [
             'code' => $siteSelectorField->getAvailableSitesSelector('tx_scheduler[site]', $this->site),
             'label' => $this->languageFile . ':field_site',
-            'cshKey' => '',
-            'cshLabel' => '',
         ];
 
         $additionalFields['cores'] = [
             'code' => $this->getCoreSelectorMarkup(),
             'label' => $this->languageFile . ':field_cores',
-            'cshKey' => '',
-            'cshLabel' => '',
         ];
 
         return $additionalFields;
@@ -174,7 +150,6 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * Returns the selector HTML element with available cores.
      *
      * @throws BackendFormException
-     * @throws NoSolrConnectionFoundException
      */
     protected function getCoreSelectorMarkup(): string
     {
@@ -184,11 +159,10 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
             return $selectorMarkup;
         }
 
-        /* @var CoreSelectorField $selectorField */
-        $selectorField = GeneralUtility::makeInstance(CoreSelectorField::class, /** @scrutinizer ignore-type */ $this->site);
+        /** @var CoreSelectorField $selectorField */
+        $selectorField = GeneralUtility::makeInstance(CoreSelectorField::class, $this->site);
         $selectorField->setFormElementName('tx_scheduler[cores]');
-        /* @noinspection PhpPossiblePolymorphicInvocationInspection */
-        $selectorField->setSelectedValues($this->task->/** @scrutinizer ignore-call */getCoresToOptimizeIndex());
+        $selectorField->setSelectedValues($this->task->getCoresToOptimizeIndex());
         return $selectorField->render();
     }
 
@@ -199,7 +173,6 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * @param array $submittedData reference to the array containing the data submitted by the user
      * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
      * @return bool True if validation was ok (or selected class is not relevant), FALSE otherwise
-     * @throws DBALDriverException
      * @throws Throwable
      * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
      * @noinspection PhpMissingReturnTypeInspection
@@ -221,7 +194,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         ) {
             $this->addMessage(
                 $this->getLanguageService()->sL($this->languageFile . ':tasks.validate.invalidCores'),
-                FlashMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
             $result = false;
         }
@@ -233,31 +206,25 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * class matches.
      *
      * @param array $submittedData array containing the data submitted by the user
-     * @param AbstractTask $task reference to the current task object
+     * @param OptimizeIndexTask $task reference to the current task object
      */
     public function saveAdditionalFields(
         array $submittedData,
-        AbstractTask $task
-    ) {
-        /** @var $task OptimizeIndexTask */
+        OptimizeIndexTask|AbstractTask $task
+    ): void {
         if (!$this->isTaskInstanceofOptimizeIndexTask($task)) {
             return;
         }
 
-        $task->/** @scrutinizer ignore-call */
-            setRootPageId((int)$submittedData['site']);
+        $task->setRootPageId((int)$submittedData['site']);
 
         $cores = [];
         if (!empty($submittedData['cores'])) {
             $cores = $submittedData['cores'];
         }
-        $task->/** @scrutinizer ignore-call */
-        setCoresToOptimizeIndex($cores);
+        $task->setCoresToOptimizeIndex($cores);
     }
 
-    /**
-     * @return PageRenderer
-     */
     protected function getPageRenderer(): ?PageRenderer
     {
         if (!isset($this->pageRenderer)) {
@@ -268,9 +235,6 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
 
     /**
      * Check that a task is an instance of ReIndexTask
-     *
-     * @param ?AbstractTask $task
-     * @return bool
      */
     protected function isTaskInstanceofOptimizeIndexTask(?AbstractTask $task): bool
     {
@@ -284,9 +248,6 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         return true;
     }
 
-    /**
-     * @return LanguageService
-     */
     protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];

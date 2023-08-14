@@ -17,56 +17,18 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Search;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 
 /**
  * Debug search component
  *
- *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class DebugComponent extends AbstractComponent implements QueryAware, SearchRequestAware
+class DebugComponent
 {
-    /**
-     * Solr query
-     *
-     * @var Query|null
-     */
-    protected ?Query $query = null;
-
-    /**
-     * @var SearchRequest|null
-     */
-    protected ?SearchRequest $searchRequest;
-
-    /**
-     * QueryBuilder
-     *
-     * @var QueryBuilder|object
-     */
-    protected $queryBuilder;
-
-    /**
-     * AccessComponent constructor.
-     * @param QueryBuilder|null $queryBuilder
-     */
-    public function __construct(QueryBuilder $queryBuilder = null)
+    public function __construct(protected readonly QueryBuilder $queryBuilder)
     {
-        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class);
-    }
-
-    /**
-     * Provides a component that is aware of the current SearchRequest
-     *
-     * @param SearchRequest $searchRequest
-     */
-    public function setSearchRequest(SearchRequest $searchRequest)
-    {
-        $this->searchRequest = $searchRequest;
     }
 
     /**
@@ -74,20 +36,10 @@ class DebugComponent extends AbstractComponent implements QueryAware, SearchRequ
      *
      * Sets the debug query parameter
      */
-    public function initializeSearchComponent()
+    public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
-        if ($this->searchRequest->getContextTypoScriptConfiguration()->getEnabledDebugMode()) {
-            $this->queryBuilder->startFrom($this->query)->useDebug(true);
+        if ($event->getSearchRequest()->getContextTypoScriptConfiguration()->getEnabledDebugMode()) {
+            $this->queryBuilder->startFrom($event->getQuery())->useDebug(true);
         }
-    }
-
-    /**
-     * Provides the extension component with an instance of the current query.
-     *
-     * @param Query $query Current query
-     */
-    public function setQuery(Query $query)
-    {
-        $this->query = $query;
     }
 }

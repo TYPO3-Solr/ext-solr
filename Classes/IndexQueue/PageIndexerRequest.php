@@ -35,86 +35,56 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageIndexerRequest
 {
-    const SOLR_INDEX_HEADER = 'X-Tx-Solr-Iq';
+    public const SOLR_INDEX_HEADER = 'X-Tx-Solr-Iq';
 
     /**
      * List of actions to perform during page rendering.
-     *
-     * @var array
      */
     protected array $actions = [];
 
     /**
      * Parameters as sent from the Index Queue page indexer.
-     *
-     * @var array
      */
     protected array $parameters = [];
 
     /**
      * Headers as sent from the Index Queue page indexer.
-     *
-     * @var array
      */
     protected array $header = [];
 
     /**
      * Unique request ID.
-     *
-     * @var string|null
      */
     protected ?string $requestId = null;
 
     /**
      * Username to use for basic auth protected URLs.
-     *
-     * @var string
      */
     protected string $username = '';
 
     /**
      * Password to use for basic auth protected URLs.
-     *
-     * @var string
      */
     protected string $password = '';
 
     /**
      * An Index Queue item related to this request.
-     *
-     * @var Item|null
      */
     protected ?Item $indexQueueItem = null;
 
     /**
      * Request timeout in seconds
-     *
-     * @var float
      */
     protected float $timeout;
 
-    /**
-     * @var SolrLogManager
-     */
     protected SolrLogManager $logger;
 
-    /**
-     * @var ExtensionConfiguration
-     */
     protected ExtensionConfiguration $extensionConfiguration;
 
-    /**
-     * @var RequestFactory
-     */
     protected RequestFactory $requestFactory;
 
     /**
      * PageIndexerRequest constructor.
-     *
-     * @param string|null $jsonEncodedParameters json encoded header
-     * @param SolrLogManager|null $solrLogManager
-     * @param ExtensionConfiguration|null $extensionConfiguration
-     * @param RequestFactory|null $requestFactory
      */
     public function __construct(
         string $jsonEncodedParameters = null,
@@ -125,7 +95,7 @@ class PageIndexerRequest
         $this->requestId = uniqid();
         $this->timeout = (float)ini_get('default_socket_timeout');
 
-        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->requestFactory = $requestFactory ?? GeneralUtility::makeInstance(RequestFactory::class);
 
@@ -146,12 +116,10 @@ class PageIndexerRequest
 
     /**
      * Adds an action to perform during page rendering.
-     *
-     * @param string $action Action name.
      */
-    public function addAction(string $action)
+    public function addAction(string $actionName): void
     {
-        $this->actions[] = $action;
+        $this->actions[] = $actionName;
     }
 
     /**
@@ -160,13 +128,11 @@ class PageIndexerRequest
      * Uses headers to submit additional data and avoiding to have these
      * arguments integrated into the URL when created by RealURL.
      *
-     * @param string $url The URL to request.
-     * @return PageIndexerResponse Response
      * @throws Exception
      */
     public function send(string $url): PageIndexerResponse
     {
-        /** @var $response PageIndexerResponse */
+        /** @var PageIndexerResponse $response */
         $response = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $decodedResponse = $this->getUrlAndDecodeResponse($url, $response);
 
@@ -194,21 +160,17 @@ class PageIndexerRequest
     /**
      * This method is used to retrieve an url from the frontend and decode the response.
      *
-     * @param string $url
-     * @param PageIndexerResponse $response
-     * @return array|bool
      * @throws Exception
      */
-    protected function getUrlAndDecodeResponse(string $url, PageIndexerResponse $response)
+    protected function getUrlAndDecodeResponse(string $url, PageIndexerResponse $response): bool|array
     {
         $headers = $this->getHeaders();
         $rawResponse = $this->getUrl($url, $headers, $this->timeout);
         // convert JSON response to response object properties
         $decodedResponse = $response->getResultsFromJson($rawResponse->getBody()->getContents());
 
-        if ($decodedResponse === false) {
-            $this->logger->log(
-                SolrLogManager::ERROR,
+        if ($decodedResponse === null) {
+            $this->logger->error(
                 'Failed to execute Page Indexer Request. Request ID: ' . $this->requestId,
                 [
                     'request ID' => $this->requestId,
@@ -254,9 +216,6 @@ class PageIndexerRequest
         return $headers;
     }
 
-    /**
-     * @return string
-     */
     protected function getUserAgent(): string
     {
         return $GLOBALS['TYPO3_CONF_VARS']['HTTP']['headers']['User-Agent'] ?? 'TYPO3';
@@ -264,10 +223,8 @@ class PageIndexerRequest
 
     /**
      * Adds an HTTP header to be sent with the request.
-     *
-     * @param string $header HTTP header
      */
-    public function addHeader(string $header)
+    public function addHeader(string $header): void
     {
         $this->header[] = $header;
     }
@@ -275,8 +232,6 @@ class PageIndexerRequest
     /**
      * Checks whether this is a legitimate request coming from the Index Queue
      * page indexer worker task.
-     *
-     * @return bool TRUE if it's a legitimate request, FALSE otherwise.
      */
     public function isAuthenticated(): bool
     {
@@ -301,8 +256,6 @@ class PageIndexerRequest
 
     /**
      * Gets the list of actions to perform during page rendering.
-     *
-     * @return array List of actions
      */
     public function getActions(): array
     {
@@ -311,8 +264,6 @@ class PageIndexerRequest
 
     /**
      * Gets the request's parameters.
-     *
-     * @return array Request parameters.
      */
     public function getParameters(): array
     {
@@ -321,8 +272,6 @@ class PageIndexerRequest
 
     /**
      * Gets the request's unique ID.
-     *
-     * @return string|null Unique request ID.
      */
     public function getRequestId(): ?string
     {
@@ -333,35 +282,30 @@ class PageIndexerRequest
      * Gets a specific parameter's value.
      *
      * @param string $parameterName The parameter to retrieve.
-     * @return mixed|null NULL if a parameter was not set, or it's value otherwise.
+     *
+     * @return mixed NULL if a parameter was not set, or it's value otherwise.
      */
-    public function getParameter(string $parameterName)
+    public function getParameter(string $parameterName): mixed
     {
         return $this->parameters[$parameterName] ?? null;
     }
 
     /**
      * Sets a request's parameter and its value.
-     *
-     * @param string $parameter Parameter name
-     * @param mixed $value Parameter value.
      */
-    public function setParameter(string $parameter, $value)
+    public function setParameter(string $parameterName, mixed $value): void
     {
         if (is_bool($value)) {
             $value = $value ? '1' : '0';
         }
 
-        $this->parameters[$parameter] = $value;
+        $this->parameters[$parameterName] = $value;
     }
 
     /**
      * Sets username and password to be used for a basic auth request header.
-     *
-     * @param string $username username.
-     * @param string $password password.
      */
-    public function setAuthorizationCredentials(string $username, string $password)
+    public function setAuthorizationCredentials(string $username, string $password): void
     {
         $this->username = $username;
         $this->password = $password;
@@ -369,18 +313,14 @@ class PageIndexerRequest
 
     /**
      * Sets the Index Queue item this request is related to.
-     *
-     * @param Item $item Related Index Queue item.
      */
-    public function setIndexQueueItem(Item $item)
+    public function setIndexQueueItem(Item $item): void
     {
         $this->indexQueueItem = $item;
     }
 
     /**
      * Returns the request timeout in seconds
-     *
-     * @return float
      */
     public function getTimeout(): float
     {
@@ -389,10 +329,8 @@ class PageIndexerRequest
 
     /**
      * Sets the request timeout in seconds
-     *
-     * @param float $timeout Timeout seconds
      */
-    public function setTimeout(float $timeout)
+    public function setTimeout(float $timeout): void
     {
         $this->timeout = $timeout;
     }
@@ -400,14 +338,11 @@ class PageIndexerRequest
     /**
      * Fetches a page by sending the configured headers.
      *
-     * @param string $url
-     * @param string[] $headers
-     * @param float $timeout
-     * @return ResponseInterface
      * @throws Exception
      */
     protected function getUrl(string $url, array $headers, float $timeout): ResponseInterface
     {
+        $options = [];
         try {
             $options = $this->buildGuzzleOptions($headers, $timeout);
             $response = $this->requestFactory->request($url, 'GET', $options);
@@ -437,17 +372,13 @@ class PageIndexerRequest
 
     /**
      * Build the options array for the guzzle-client.
-     *
-     * @param array $headers
-     * @param float $timeout
-     * @return array
      */
     protected function buildGuzzleOptions(array $headers, float $timeout): array
     {
         $finalHeaders = [];
 
         foreach ($headers as $header) {
-            list($name, $value) = explode(':', $header, 2);
+            [$name, $value] = explode(':', $header, 2);
             $finalHeaders[$name] = trim($value);
         }
 

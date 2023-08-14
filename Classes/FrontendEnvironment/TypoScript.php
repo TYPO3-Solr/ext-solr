@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -34,8 +34,6 @@ class TypoScript implements SingletonInterface
 {
     /**
      * Holds the TypoScript values for given page-id language and TypoScript path.
-     *
-     * @var array
      */
     private array $configurationObjectCache = [];
 
@@ -47,11 +45,10 @@ class TypoScript implements SingletonInterface
      * @param int $pageId The page id of the (root) page to get the Solr configuration from.
      * @param string $path The TypoScript configuration path to retrieve.
      * @param int $language System language uid, optional, defaults to 0
-     * @param int|null $rootPageId
      *
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      *
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     public function getConfigurationFromPageId(
         int $pageId,
@@ -72,8 +69,8 @@ class TypoScript implements SingletonInterface
             return $this->configurationObjectCache[$cacheId] = $this->buildTypoScriptConfigurationFromArray([], $pageId, $language, $path);
         }
 
-        /* @var TwoLevelCache $cache */
-        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'tx_solr_configuration');
+        /** @var TwoLevelCache $cache */
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'tx_solr_configuration');
         $configurationArray = $cache->get($cacheId);
 
         if (!empty($configurationArray)) {
@@ -92,17 +89,11 @@ class TypoScript implements SingletonInterface
     /**
      * Builds a configuration array, containing the solr configuration.
      *
-     * @param int $pageId
-     * @param string $path
-     * @param int $language
-     *
-     * @return array
-     *
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function buildConfigurationArray(int $pageId, string $path, int $language): array
     {
-        /* @var Tsfe $tsfeManager */
+        /** @var Tsfe $tsfeManager */
         $tsfeManager = GeneralUtility::makeInstance(Tsfe::class);
         try {
             $tsfe = $tsfeManager->getTsfeByPageIdAndLanguageId($pageId, $language);
@@ -117,15 +108,12 @@ class TypoScript implements SingletonInterface
     /**
      * Adapted from TYPO3 core
      * @see sysext:core/Classes/TypoScript/ExtendedTemplateService until TYPO3 v11
-     * @param array $theSetup
-     * @param string $theKey
-     * @return array
      */
     public function ext_getSetup(array $theSetup, string $theKey): array
     {
         // 'a.b.c' --> ['a', 'b.c']
         $parts = explode('.', $theKey, 2);
-        if ((string)$parts[0] !== '' && is_array($theSetup[$parts[0] . '.'])) {
+        if ($parts[0] !== '' && is_array($theSetup[$parts[0] . '.'])) {
             if (trim($parts[1] ?? '') !== '') {
                 // Current path segment is a sub array, check it recursively by applying the rest of the key
                 return $this->ext_getSetup($theSetup[$parts[0] . '.'], trim($parts[1] ?? ''));
@@ -141,12 +129,6 @@ class TypoScript implements SingletonInterface
 
     /**
      * Builds the configuration object from a config array and returns it.
-     *
-     * @param array $configurationToUse
-     * @param int $pageId
-     * @param int $languageId
-     * @param string $typoScriptPath
-     * @return TypoScriptConfiguration
      */
     protected function buildTypoScriptConfigurationFromArray(array $configurationToUse, int $pageId, int $languageId, string $typoScriptPath): TypoScriptConfiguration
     {

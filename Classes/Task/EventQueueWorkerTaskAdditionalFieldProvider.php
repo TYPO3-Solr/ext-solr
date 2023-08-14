@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Task;
 
-use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
+use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
@@ -27,7 +27,7 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class EventQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface
+class EventQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {
     /**
      * Used to define fields to provide the TYPO3 site to index and number of
@@ -45,7 +45,7 @@ class EventQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         $task,
         SchedulerModuleController $schedulerModule
     ): array {
-        /** @var $task EventQueueWorkerTask */
+        /** @var EventQueueWorkerTask $task */
         $additionalFields = [];
 
         if (!$task instanceof EventQueueWorkerTask) {
@@ -59,13 +59,10 @@ class EventQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         $additionalFields['limit'] = [
             'code' => '<input type="number" class="form-control" name="tx_scheduler[solr_eventqueueworkertask_limit]" value="' . (int)$taskInfo['solr_eventqueueworkertask_limit'] . '" />',
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:task.eventQueueWorkerTask.limit',
-            'cshKey' => '',
-            'cshLabel' => '',
         ];
 
         return $additionalFields;
     }
-
     /**
      * Checks any additional data that is relevant to this task. If the task
      * class is not relevant, the method is expected to return TRUE
@@ -84,7 +81,6 @@ class EventQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         );
         return true;
     }
-
     /**
      * Saves the custom limit
      *

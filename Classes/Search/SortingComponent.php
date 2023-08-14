@@ -18,11 +18,9 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingHelper;
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -32,96 +30,51 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class SortingComponent extends AbstractComponent implements QueryAware, SearchRequestAware
+class SortingComponent
 {
-    /**
-     * Solr query
-     *
-     * @var Query|null
-     */
-    protected ?Query $query;
-
-    /**
-     * @var SearchRequest|null
-     */
-    protected ?SearchRequest $searchRequest;
-
-    /**
-     * QueryBuilder
-     *
-     * @var QueryBuilder
-     */
-    protected QueryBuilder $queryBuilder;
-
-    /**
-     * AccessComponent constructor.
-     * @param QueryBuilder|null $queryBuilder
-     */
-    public function __construct(QueryBuilder $queryBuilder = null)
+    public function __construct(protected readonly QueryBuilder $queryBuilder)
     {
-        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class);
     }
 
     /**
-     * Initializes the search component.
-     *
      * Sets the sorting query parameters
      */
-    public function initializeSearchComponent()
+    public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
-        $this->queryBuilder->startFrom($this->query);
+        $query = $event->getQuery();
+        $this->queryBuilder->startFrom($query);
 
-        if (!empty($this->searchConfiguration['query.']['sortBy'])) {
-            $this->queryBuilder->useSortings(Sortings::fromString($this->searchConfiguration['query.']['sortBy']));
-            $this->query = $this->queryBuilder->getQuery();
+        $searchConfiguration = $event->getTypoScriptConfiguration()->getSearchConfiguration();
+        if (!empty($searchConfiguration['query.']['sortBy'])) {
+            $this->queryBuilder->useSortings(Sortings::fromString($searchConfiguration['query.']['sortBy']));
+            $query = $this->queryBuilder->getQuery();
         }
 
-        $isSortingEnabled = !empty($this->searchConfiguration['sorting']) && ((int)$this->searchConfiguration['sorting']) === 1;
+        $isSortingEnabled = !empty($searchConfiguration['sorting']) && ((int)$searchConfiguration['sorting']) === 1;
         if (!$isSortingEnabled) {
             return;
         }
 
-        $arguments = $this->searchRequest->getArguments();
+        $arguments = $event->getSearchRequest()->getArguments();
         $isSortingPassedAsArgument = !empty($arguments['sort']) && preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i', $arguments['sort']);
         if (!$isSortingPassedAsArgument) {
             return;
         }
 
         // a passed sorting has always priority an overwrites the configured initial sorting
-        $this->query->clearSorts();
-        /** @var $sortHelper SortingHelper */
-        $sortHelper = GeneralUtility::makeInstance(SortingHelper::class, $this->searchConfiguration['sorting.']['options.']);
+        $query->clearSorts();
+        $sortHelper = GeneralUtility::makeInstance(SortingHelper::class, $searchConfiguration['sorting.']['options.'] ?? []);
         $sortFields = $sortHelper->getSortFieldFromUrlParameter($arguments['sort']);
         $this->queryBuilder->useSortings(Sortings::fromString($sortFields));
-        $this->query = $this->queryBuilder->getQuery();
+        $query = $this->queryBuilder->getQuery();
+        $event->setQuery($query);
     }
 
     /**
      * Checks if the arguments array has a valid sorting.
-     *
-     * @param array $arguments
-     * @return bool
      */
     protected function hasValidSorting(array $arguments): bool
     {
         return !empty($arguments['sort']) && preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i', $arguments['sort']);
-    }
-
-    /**
-     * Provides the extension component with an instance of the current query.
-     *
-     * @param Query $query Current query
-     */
-    public function setQuery(Query $query)
-    {
-        $this->query = $query;
-    }
-
-    /**
-     * @param SearchRequest $searchRequest
-     */
-    public function setSearchRequest(SearchRequest $searchRequest)
-    {
-        $this->searchRequest = $searchRequest;
     }
 }

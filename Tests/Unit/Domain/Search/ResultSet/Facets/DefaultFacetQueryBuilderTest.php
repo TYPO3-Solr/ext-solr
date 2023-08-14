@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\DefaultFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Class DefaultFacetQueryBuilderTest
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class DefaultFacetQueryBuilderTest extends UnitTest
+class DefaultFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     /**
      * Whe nothing is set, no exclude tags should be set.

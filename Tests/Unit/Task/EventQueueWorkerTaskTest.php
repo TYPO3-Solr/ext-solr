@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdate
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Execution;
@@ -31,12 +31,9 @@ use TYPO3\CMS\Scheduler\Scheduler;
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class EventQueueWorkerTaskTest extends UnitTest
+class EventQueueWorkerTaskTest extends SetUpUnitTestCase
 {
-    /**
-     * @var EventQueueWorkerTask
-     */
-    protected $task;
+    protected EventQueueWorkerTask $task;
 
     protected function setUp(): void
     {
@@ -64,7 +61,6 @@ class EventQueueWorkerTaskTest extends UnitTest
         $eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
         GeneralUtility::addInstance(EventDispatcherInterface::class, $eventDispatcherMock);
 
-        /** @var RecordUpdatedEvent $event */
         $event = new RecordUpdatedEvent(123, 'tx_foo_bar');
         $serializedEvent = serialize($event);
         /** @var RecordUpdatedEvent $unserializedEvent */
@@ -80,6 +76,7 @@ class EventQueueWorkerTaskTest extends UnitTest
             ->with(99)
             ->willReturn([$queueItem]);
 
+        /** @var array<int, mixed> $dispatchedEvents */
         $dispatchedEvents = [];
         $eventDispatcherMock
             ->expects(self::exactly(2))
@@ -117,7 +114,6 @@ class EventQueueWorkerTaskTest extends UnitTest
         $solrLogManagerMock = $this->createMock(SolrLogManager::class);
         GeneralUtility::addInstance(SolrLogManager::class, $solrLogManagerMock);
 
-        /** @var RecordUpdatedEvent $event */
         $event = new RecordUpdatedEvent(123, 'tx_foo_bar');
         $serializedEvent = serialize($event);
         /** @var RecordUpdatedEvent $unserializedEvent */
@@ -140,8 +136,8 @@ class EventQueueWorkerTaskTest extends UnitTest
 
         $solrLogManagerMock
             ->expects(self::once())
-            ->method('log')
-            ->with(SolrLogManager::ERROR, self::anything(), self::anything());
+            ->method('error')
+            ->with(self::anything(), self::anything());
 
         $eventQueueItemRepositoryMock
             ->expects(self::once())

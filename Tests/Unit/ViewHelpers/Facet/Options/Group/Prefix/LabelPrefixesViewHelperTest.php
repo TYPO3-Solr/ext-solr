@@ -18,7 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Facet\Options\Group\Pre
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\OptionCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix\LabelPrefixesViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
@@ -26,7 +26,7 @@ use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class LabelPrefixesViewHelperTest extends UnitTest
+class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
 {
     /**
      * @test
@@ -36,7 +36,7 @@ class LabelPrefixesViewHelperTest extends UnitTest
         $optionCollection = $this->getTestFacetOptionCollection();
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;
@@ -55,7 +55,7 @@ class LabelPrefixesViewHelperTest extends UnitTest
         $optionCollection = $this->getTestFacetOptionCollection();
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;
@@ -71,7 +71,7 @@ class LabelPrefixesViewHelperTest extends UnitTest
      */
     protected function getTestFacetOptionCollection(): OptionCollection
     {
-        $facet = $this->getDumbMock(OptionsFacet::class);
+        $facet = $this->createMock(OptionsFacet::class);
 
         $roseRed = new Option($facet, 'Rose Red', 'rose_red', 14);
         $blue = new Option($facet, 'Polar Blue', 'polar_blue', 12);

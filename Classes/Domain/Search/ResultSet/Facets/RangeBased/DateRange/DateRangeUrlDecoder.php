@@ -32,10 +32,8 @@ class DateRangeUrlDecoder implements FacetUrlDecoderInterface
 {
     /**
      * Delimiter for date parts in the URL.
-     *
-     * @var string
      */
-    const DELIMITER = '-';
+    public const DELIMITER = '-';
 
     /**
      * Parses the given date range from a GET parameter and returns a Solr
@@ -47,9 +45,9 @@ class DateRangeUrlDecoder implements FacetUrlDecoderInterface
      */
     public function decode(string $value, array $configuration = []): string
     {
-        list($dateRangeStart, $dateRangeEnd) = explode(self::DELIMITER, $value);
+        [$dateRangeStart, $dateRangeEnd] = explode(self::DELIMITER, $value);
 
-        /* @var FormatService $formatService */
+        /** @var FormatService $formatService */
         $formatService = GeneralUtility::makeInstance(FormatService::class);
         $fromPart = '*';
         if ($dateRangeStart !== '') {

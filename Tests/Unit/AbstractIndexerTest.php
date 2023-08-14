@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class AbstractIndexerTest extends UnitTest
+class AbstractIndexerTest extends SetUpUnitTestCase
 {
     /**
      * @test

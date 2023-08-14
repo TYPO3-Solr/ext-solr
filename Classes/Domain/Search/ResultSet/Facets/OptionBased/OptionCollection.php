@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
+use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
  * Collection for facet options.
@@ -34,9 +35,6 @@ class OptionCollection extends AbstractFacetItemCollection
      * Red, Blue, Green => r, g, b
      *
      * Can be used in combination with getByPrefix() to group facet options by prefix (e.g. alphabetical).
-     *
-     * @param int $length
-     * @return array
      */
     public function getLowercaseLabelPrefixes(int $length = 1): array
     {
@@ -45,12 +43,10 @@ class OptionCollection extends AbstractFacetItemCollection
     }
 
     /**
-     * @param string $filteredPrefix
-     * @return AbstractFacetItemCollection|OptionCollection
+     * Returns {@link AbstractFacetItemCollection} or {@link OptionCollection} for filtered prefix
      */
-    public function getByLowercaseLabelPrefix(string $filteredPrefix): OptionCollection
+    public function getByLowercaseLabelPrefix(string $filteredPrefix): AbstractCollection|AbstractFacetItemCollection|OptionCollection
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->getFilteredCopy(function (Option $option) use ($filteredPrefix) {
             $filteredPrefixLength = mb_strlen($filteredPrefix);
             $currentPrefix = mb_substr(mb_strtolower($option->getLabel()), 0, $filteredPrefixLength);
@@ -60,14 +56,12 @@ class OptionCollection extends AbstractFacetItemCollection
     }
 
     /**
-     * @param int $length
-     * @return array
+     * Returns the labels prefixes
      */
     protected function getLabelPrefixes(int $length = 1): array
     {
         $prefixes = [];
         foreach ($this->data as $option) {
-            /** @var $option Option */
             $prefix = mb_substr($option->getLabel(), 0, $length);
             $prefixes[$prefix] = $prefix;
         }

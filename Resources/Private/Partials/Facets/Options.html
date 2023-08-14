@@ -22,8 +22,8 @@
 
 			<f:if condition="{facet.options -> f:count()} > {facetOptionLimit}">
 				<li class="list-group-item">
-					<a href="#" class="tx-solr-facet-show-all" data-label-more="{s:translate(key:'faceting_showMore', extensionName:'solr')}" data-label-less="{s:translate(key:'faceting_showFewer', extensionName:'solr')}">
-						<s:translate key="faceting_showMore" extensionName="solr">Show more</s:translate>
+					<a href="#" class="tx-solr-facet-show-all" data-label-more="{f:translate(key: 'faceting_showMore', extensionName: 'solr')}" data-label-less="{f:translate(key: 'faceting_showFewer', extensionName: 'solr')}">
+						<f:translate key="faceting_showMore" extensionName="solr">Show more</f:translate>
 					</a>
 				</li>
 			</f:if>

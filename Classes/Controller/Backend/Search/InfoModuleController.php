@@ -18,27 +18,27 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository as ApacheSolrDocumentRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
+use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Registry;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Info Module
  */
 class InfoModuleController extends AbstractModuleController
 {
-    /**
-     * @var ApacheSolrDocumentRepository
-     */
     protected ApacheSolrDocumentRepository $apacheSolrDocumentRepository;
 
     /**
      * @inheritDoc
      */
-    protected function initializeAction()
+    protected function initializeAction(): void
     {
         parent::initializeAction();
         $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(ApacheSolrDocumentRepository::class);
@@ -47,10 +47,14 @@ class InfoModuleController extends AbstractModuleController
     /**
      * Index action, shows an overview of the state of the Solr index
      *
-     * @return ResponseInterface
+     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws DBALException
+     *
+     * @noinspection PhpUnused
      */
     public function indexAction(): ResponseInterface
     {
+        $this->initializeAction();
         if ($this->selectedSite === null) {
             $this->view->assign('can_not_proceed', true);
             return $this->getModuleTemplateResponse();
@@ -65,11 +69,10 @@ class InfoModuleController extends AbstractModuleController
     }
 
     /**
-     * @param string $type
-     * @param int $uid
-     * @param int $pageId
-     * @param int $languageUid
-     * @return ResponseInterface
+     * Renders the details of Apache Solr documents
+     *
+     * @noinspection PhpUnused
+     * @throws DBALException
      */
     public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid): ResponseInterface
     {
@@ -88,7 +91,7 @@ class InfoModuleController extends AbstractModuleController
         $missingHosts = [];
         $invalidPaths = [];
 
-        /* @var Path $path */
+        /** @var Path $path */
         $path = GeneralUtility::makeInstance(Path::class);
         $connections = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
 
@@ -122,33 +125,59 @@ class InfoModuleController extends AbstractModuleController
     }
 
     /**
-     * Index action, shows an overview of the state of the Solr index
+     * Returns the statistics
+     *
+     * @throws DBALException
      */
     protected function collectStatistics(): void
     {
-        // TODO make time frame user adjustable, for now it's last 30 days
+        $frameWorkConfiguration = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
+            'solr'
+        );
+        $statisticsConfig = $frameWorkConfiguration['plugin.']['tx_solr.']['statistics.'] ?? [];
+
+        $topHitsLimit = (int)($statisticsConfig['topHits.']['limit'] ?? 5);
+        $noHitsLimit = (int)($statisticsConfig['noHits.']['limit'] ?? 5);
+
+        $queriesDays = (int)($statisticsConfig['queries.']['days'] ?? 30);
 
         $siteRootPageId = $this->selectedSite->getRootPageId();
-        /* @var StatisticsRepository $statisticsRepository */
+        /** @var StatisticsRepository $statisticsRepository */
         $statisticsRepository = GeneralUtility::makeInstance(StatisticsRepository::class);
 
-        // @TODO: Do we want Typoscript constants to restrict the results?
         $this->view->assign(
             'top_search_phrases',
-            $statisticsRepository->getTopKeyWordsWithHits($siteRootPageId, 30, 5)
+            $statisticsRepository->getTopKeyWordsWithHits(
+                $siteRootPageId,
+                (int)($statisticsConfig['topHits.']['days'] ?? 30),
+                $topHitsLimit
+            )
         );
         $this->view->assign(
             'top_search_phrases_without_hits',
-            $statisticsRepository->getTopKeyWordsWithoutHits($siteRootPageId, 30, 5)
+            $statisticsRepository->getTopKeyWordsWithoutHits(
+                $siteRootPageId,
+                (int)($statisticsConfig['noHits.']['days'] ?? 30),
+                $noHitsLimit
+            )
         );
         $this->view->assign(
             'search_phrases_statistics',
-            $statisticsRepository->getSearchStatistics($siteRootPageId, 30, 100)
+            $statisticsRepository->getSearchStatistics(
+                $siteRootPageId,
+                $queriesDays,
+                (int)($statisticsConfig['queries.']['limit'] ?? 100)
+            )
         );
 
         $labels = [];
         $data = [];
-        $chartData = $statisticsRepository->getQueriesOverTime($siteRootPageId, 30, 86400);
+        $chartData = $statisticsRepository->getQueriesOverTime(
+            $siteRootPageId,
+            $queriesDays,
+            86400
+        );
         foreach ($chartData as $bucket) {
             // @todo Replace deprecated strftime in php 8.1. Suppress warning for now
             $labels[] = @strftime('%x', $bucket['timestamp']);
@@ -157,6 +186,8 @@ class InfoModuleController extends AbstractModuleController
 
         $this->view->assign('queriesChartLabels', json_encode($labels));
         $this->view->assign('queriesChartData', json_encode($data));
+        $this->view->assign('topHitsLimit', $topHitsLimit);
+        $this->view->assign('noHitsLimit', $noHitsLimit);
     }
 
     /**
@@ -177,7 +208,7 @@ class InfoModuleController extends AbstractModuleController
             if ($coreAdmin->ping()) {
                 $lukeData = $coreAdmin->getLukeMetaData();
 
-                /* @var Registry $registry */
+                /** @var Registry $registry */
                 $registry = GeneralUtility::makeInstance(Registry::class);
                 $limit = $registry->get('tx_solr', 'luke.limit', 20000);
                 $limitNote = '';
@@ -203,7 +234,7 @@ class InfoModuleController extends AbstractModuleController
                 $this->addFlashMessage(
                     '',
                     'Unable to contact Apache Solr server: ' . $this->selectedSite->getLabel() . ' ' . $coreAdmin->getCorePath(),
-                    FlashMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
             }
             $indexFieldsInfoByCorePaths[$coreAdmin->getCorePath()] = $indexFieldsInfo;
@@ -213,6 +244,8 @@ class InfoModuleController extends AbstractModuleController
 
     /**
      * Retrieves the information for the index inspector.
+     *
+     * @throws DBALException
      */
     protected function collectIndexInspectorInfo(): void
     {

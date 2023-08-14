@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,11 +19,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SolrStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Reports\Status;
 
 /**
- * Integration test for the solr status report
+ * Integration test for the Solr status report
  *
  * @author Timo Hund
  */
@@ -30,34 +32,30 @@ class SolrStatusTest extends IntegrationTest
     /**
      * @test
      */
-    public function allStatusChecksShouldBeOkForValidSolrConnection()
+    public function allStatusChecksShouldBeOkForValidSolrConnection(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
 
-        /** @var $solrStatus  SolrStatus */
         $solrStatus = GeneralUtility::makeInstance(SolrStatus::class);
         $statusCollection = $solrStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /** @var $status Status */
-            self::assertSame(Status::OK, $status->getSeverity(), 'Expected that all status objects should be ok');
+            self::assertSame(ContextualFeedbackSeverity::OK, $status->getSeverity(), 'Expected that all status objects should be ok');
         }
     }
 
     /**
      * @test
      */
-    public function allStatusChecksShouldFailForInvalidSolrConnection()
+    public function allStatusChecksShouldFailForInvalidSolrConnection(): void
     {
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort(null, 'invalid', 4711);
 
-        /** @var $solrStatus  SolrStatus */
         $solrStatus = GeneralUtility::makeInstance(SolrStatus::class);
         $statusCollection = $solrStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /** @var $status Status */
-            self::assertSame(Status::ERROR, $status->getSeverity(), 'Expected that all status objects should indicate an error');
+            self::assertSame(ContextualFeedbackSeverity::ERROR, $status->getSeverity(), 'Expected that all status objects should indicate an error');
         }
     }
 }

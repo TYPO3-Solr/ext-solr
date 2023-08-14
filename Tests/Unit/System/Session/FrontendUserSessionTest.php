@@ -16,7 +16,8 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Session;
 
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
@@ -24,12 +25,9 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class FrontendUserSessionTest extends UnitTest
+class FrontendUserSessionTest extends SetUpUnitTestCase
 {
-    /**
-     * @var FrontendUserAuthentication
-     */
-    protected $feUserMock;
+    protected FrontendUserAuthentication|MockObject $feUserMock;
 
     /**
      * @var FrontendUserSession
@@ -38,7 +36,7 @@ class FrontendUserSessionTest extends UnitTest
 
     protected function setUp(): void
     {
-        $this->feUserMock = $this->getDumbMock(FrontendUserAuthentication::class);
+        $this->feUserMock = $this->createMock(FrontendUserAuthentication::class);
         $this->session = new FrontendUserSession($this->feUserMock);
         parent::setUp();
     }
@@ -46,7 +44,7 @@ class FrontendUserSessionTest extends UnitTest
     /**
      * @test
      */
-    public function getEmptyArrayWhenNoLastSearchesInSession()
+    public function getEmptyArrayWhenNoLastSearchesInSession(): void
     {
         $lastSearches = $this->session->getLastSearches();
         self::assertSame([], $lastSearches, 'Expected to get an empty lastSearches array');
@@ -55,7 +53,7 @@ class FrontendUserSessionTest extends UnitTest
     /**
      * @test
      */
-    public function sessionDataWillBeRetrievedFromSessionForLastSearches()
+    public function sessionDataWillBeRetrievedFromSessionForLastSearches(): void
     {
         $fakeSessionData = ['foo', 'bar'];
         $this->feUserMock->expects(self::once())->method('getKey')->with('ses', 'tx_solr_lastSearches')->willReturn($fakeSessionData);
@@ -65,7 +63,7 @@ class FrontendUserSessionTest extends UnitTest
     /**
      * @test
      */
-    public function canSetLastSearchesInSession()
+    public function canSetLastSearchesInSession(): void
     {
         $lastSearches = ['TYPO3', 'solr'];
         $this->feUserMock->expects(self::once())->method('setKey')->with('ses', 'tx_solr_lastSearches', $lastSearches);
@@ -75,7 +73,7 @@ class FrontendUserSessionTest extends UnitTest
     /**
      * @test
      */
-    public function getHasPerPageReturnsFalseWhenNothingIsSet()
+    public function getHasPerPageReturnsFalseWhenNothingIsSet(): void
     {
         self::assertFalse($this->session->getHasPerPage(), 'Has per page should be false');
     }
@@ -83,7 +81,7 @@ class FrontendUserSessionTest extends UnitTest
     /**
      * @test
      */
-    public function getPerPageReturnsZeroWhenNothingIsSet()
+    public function getPerPageReturnsZeroWhenNothingIsSet(): void
     {
         self::assertSame(0, $this->session->getPerPage(), 'Expected to get 0 when nothing was set');
     }
@@ -91,7 +89,7 @@ class FrontendUserSessionTest extends UnitTest
     /**
      * @test
      */
-    public function getPerPageFromSessionData()
+    public function getPerPageFromSessionData(): void
     {
         $fakeSessionData = 12;
         $this->feUserMock->expects(self::once())->method('getKey')->with('ses', 'tx_solr_resultsPerPage')->willReturn($fakeSessionData);
@@ -101,7 +99,7 @@ class FrontendUserSessionTest extends UnitTest
     /**
      * @test
      */
-    public function canSetPerPageInSessionData()
+    public function canSetPerPageInSessionData(): void
     {
         $lastSearches = 45;
         $this->feUserMock->expects(self::once())->method('setKey')->with('ses', 'tx_solr_resultsPerPage', $lastSearches);

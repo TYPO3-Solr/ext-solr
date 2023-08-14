@@ -17,10 +17,11 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -43,15 +44,17 @@ class Util
      * @param int $language the language id, defaults to 0
      * @param string $accessGroups comma separated list of uids of groups that have access to that page
      * @param string $mountPointParameter The mount point parameter that is used to access the page.
+     *
      * @return string The document id for that page
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
      */
     public static function getPageDocumentId(
         int $uid,
         int $typeNum = 0,
         int $language = 0,
         string $accessGroups = '0,-1',
-        string $mountPointParameter = ''
+        string $mountPointParameter = '',
     ): string {
         $additionalParameters = $typeNum . '/' . $language . '/' . $accessGroups;
 
@@ -59,7 +62,10 @@ class Util
             $additionalParameters = $mountPointParameter . '/' . $additionalParameters;
         }
 
-        return self::getDocumentId('pages', $uid, $uid, $additionalParameters);
+        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
+        $rootPageId = $rootPageResolver->getRootPageId($uid);
+
+        return self::getDocumentId('pages', $rootPageId, $uid, $additionalParameters);
     }
 
     /**
@@ -69,18 +75,19 @@ class Util
      * @param int $rootPageId The record's site root id
      * @param int $uid The record's uid
      * @param string $additionalIdParameters Additional ID parameters
+     *
      * @return string A document id
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
      */
     public static function getDocumentId(
         string $table,
         int $rootPageId,
         int $uid,
-        string $additionalIdParameters = ''
+        string $additionalIdParameters = '',
     ): string {
-        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $site = $siteRepository->getSiteByPageId($rootPageId);
+        $site = $siteRepository->getSiteByRootPageId($rootPageId);
         $siteHash = $site->getSiteHash();
 
         $documentId = $siteHash . '/' . $table . '/' . $uid;
@@ -93,8 +100,6 @@ class Util
 
     /**
      * Shortcut to retrieve the TypoScript configuration for EXT:solr
-     *
-     * @return TypoScriptConfiguration
      */
     public static function getSolrConfiguration(): TypoScriptConfiguration
     {
@@ -107,16 +112,19 @@ class Util
      *
      * @param string $table The table the record belongs to
      * @param int $uid The record's uid
+     *
      * @return bool TRUE if the record is in a draft workspace, FALSE if it's a LIVE record
      */
-    public static function isDraftRecord(string $table, int $uid): bool
-    {
+    public static function isDraftRecord(
+        string $table,
+        int $uid,
+    ): bool {
         $isWorkspaceRecord = false;
 
         if ((ExtensionManagementUtility::isLoaded('workspaces')) && (BackendUtility::isTableWorkspaceEnabled($table))) {
             $record = BackendUtility::getRecord($table, $uid, 'pid, t3ver_state', '', false);
 
-            if ($record['pid'] == '-1' || $record['t3ver_state'] > 0) {
+            if ($record !== null && ($record['pid'] == '-1' || $record['t3ver_state'] > 0)) {
                 $isWorkspaceRecord = true;
             }
         }
@@ -138,13 +146,11 @@ class Util
      * haystack: the brown fox
      * needles: ['is', 'fox']
      * result: true
-     *
-     * @param string $haystack
-     * @param array $needles
-     * @return bool
      */
-    public static function containsOneOfTheStrings(string $haystack, array $needles): bool
-    {
+    public static function containsOneOfTheStrings(
+        string $haystack,
+        array $needles,
+    ): bool {
         foreach ($needles as $needle) {
             $position = strpos($haystack, $needle);
             if ($position !== false) {
@@ -156,44 +162,25 @@ class Util
     }
 
     /**
-     * Returns the current language ID from the active context.
-     * @return int
-     * @throws AspectNotFoundException
-     * @todo: Remove all usages of this method for all usages in isolated/capsuled TSFE approach.
-     */
-    public static function getLanguageUid(): int
-    {
-        $context = GeneralUtility::makeInstance(Context::class);
-        return (int)$context->getPropertyFromAspect('language', 'id');
-    }
-
-    /**
-     * @return string
-     * @throws AspectNotFoundException
-     */
-    public static function getFrontendUserGroupsList(): string
-    {
-        return implode(',', self::getFrontendUserGroups());
-    }
-
-    /**
-     * @return array
      * @throws AspectNotFoundException
      */
     public static function getFrontendUserGroups(): array
     {
-        $context = GeneralUtility::makeInstance(Context::class);
-        return $context->getPropertyFromAspect('frontend.user', 'groupIds');
+        return self::getTYPO3CoreContext()->getPropertyFromAspect('frontend.user', 'groupIds');
     }
 
     /**
      * Returns the current execution time (formerly known as EXEC_TIME)
-     * @return int
+     *
      * @throws AspectNotFoundException
      */
-    public static function getExceptionTime(): int
+    public static function getExecutionTime(): int
     {
-        $context = GeneralUtility::makeInstance(Context::class);
-        return (int)$context->getPropertyFromAspect('date', 'timestamp');
+        return (int)self::getTYPO3CoreContext()->getPropertyFromAspect('date', 'timestamp');
+    }
+
+    protected static function getTYPO3CoreContext(): Context
+    {
+        return GeneralUtility::makeInstance(Context::class);
     }
 }

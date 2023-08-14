@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
@@ -30,26 +29,12 @@ use UnexpectedValueException;
  */
 class LastSearchesService
 {
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $configuration;
 
-    /**
-     * @var FrontendUserSession
-     */
     protected FrontendUserSession $session;
 
-    /**
-     * @var LastSearchesRepository
-     */
     protected LastSearchesRepository $lastSearchesRepository;
 
-    /**
-     * @param TypoScriptConfiguration $typoscriptConfiguration
-     * @param FrontendUserSession|null $session
-     * @param LastSearchesRepository|null $lastSearchesRepository
-     */
     public function __construct(
         TypoScriptConfiguration $typoscriptConfiguration,
         FrontendUserSession $session = null,
@@ -63,9 +48,7 @@ class LastSearchesService
     /**
      * Retrieves the last searches from the session or database depending on the configuration.
      *
-     * @return array
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function getLastSearches(): array
     {
@@ -88,11 +71,9 @@ class LastSearchesService
     /**
      * Saves the keywords to the last searches in the database or session depending on the configuration.
      *
-     * @param string $keywords
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
-    public function addToLastSearches(string $keywords)
+    public function addToLastSearches(string $keywords): void
     {
         $mode = $this->configuration->getSearchLastSearchesMode();
         switch ($mode) {
@@ -111,10 +92,9 @@ class LastSearchesService
     }
 
     /**
-     * Gets the last searched keywords from the user's session
+     * Returns the last searched keywords from the user's session
      *
-     * @param int $limit
-     * @return array An array containing the last searches of the current user
+     * @return string[] An array containing the last searches of the current user
      */
     protected function getLastSearchesFromSession(int $limit): array
     {
@@ -124,10 +104,8 @@ class LastSearchesService
 
     /**
      * Stores the keywords from the current query to the user's session.
-     *
-     * @param string $keywords The current query's keywords
      */
-    protected function storeKeywordsToSession(string $keywords)
+    protected function storeKeywordsToSession(string $keywords): void
     {
         $currentLastSearches = $this->session->getLastSearches();
         $lastSearches = $currentLastSearches;

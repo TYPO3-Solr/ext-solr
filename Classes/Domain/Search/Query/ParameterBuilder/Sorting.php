@@ -23,25 +23,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Sorting extends AbstractDeactivatable
 {
-    const SORT_ASC = 'ASC';
-    const SORT_DESC = 'DESC';
+    public const SORT_ASC = 'ASC';
 
-    /**
-     * @var string
-     */
-    protected $fieldName = '';
+    public const SORT_DESC = 'DESC';
 
-    /**
-     * @var string
-     */
-    protected $direction = self::SORT_ASC;
+    protected string $fieldName = '';
+
+    protected string $direction = self::SORT_ASC;
 
     /**
      * Debug constructor.
-     *
-     * @param bool $isEnabled
-     * @param string $fieldName
-     * @param string $direction
      */
     public function __construct($isEnabled = false, $fieldName = '', $direction = self::SORT_ASC)
     {
@@ -50,52 +41,35 @@ class Sorting extends AbstractDeactivatable
         $this->setDirection($direction);
     }
 
-    /**
-     * @return Sorting
-     */
-    public static function getEmpty()
+    public static function getEmpty(): Sorting
     {
         return new Sorting(false);
     }
 
-    /**
-     * @return string
-     */
     public function getFieldName(): string
     {
         return $this->fieldName;
     }
 
-    /**
-     * @param string $fieldName
-     */
-    public function setFieldName(string $fieldName)
+    public function setFieldName(string $fieldName): void
     {
         $this->fieldName = $fieldName;
     }
 
-    /**
-     * @return string
-     */
     public function getDirection(): string
     {
         return $this->direction;
     }
 
-    /**
-     * @param string $direction
-     */
-    public function setDirection(string $direction)
+    public function setDirection(string $direction): void
     {
         $this->direction = $direction;
     }
 
     /**
      * Parses a sorting representation "<fieldName> <direction>"
-     * @param string $sortingString
-     * @return Sorting
      */
-    public static function fromString($sortingString)
+    public static function fromString(string $sortingString): Sorting
     {
         $parts = GeneralUtility::trimExplode(' ', $sortingString);
         return new Sorting(true, $parts[0], $parts[1]);

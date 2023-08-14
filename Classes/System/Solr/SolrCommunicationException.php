@@ -20,27 +20,18 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
 use RuntimeException;
 
 /**
- * This exception or a more specific one should be thrown when the is an error in the communication with the solr server.
+ * This exception or a more specific one should be thrown when there is an error in the communication with the solr server.
  */
 class SolrCommunicationException extends RuntimeException
 {
-    /**
-     * @var ResponseAdapter|null
-     */
     protected ?ResponseAdapter $solrResponse = null;
 
-    /**
-     * @return ResponseAdapter
-     */
     public function getSolrResponse(): ?ResponseAdapter
     {
         return $this->solrResponse;
     }
 
-    /**
-     * @param ResponseAdapter $solrResponse
-     */
-    public function setSolrResponse(ResponseAdapter $solrResponse)
+    public function setSolrResponse(ResponseAdapter $solrResponse): void
     {
         $this->solrResponse = $solrResponse;
     }

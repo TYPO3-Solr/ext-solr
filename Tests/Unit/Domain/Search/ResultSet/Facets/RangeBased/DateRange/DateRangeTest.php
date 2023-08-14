@@ -19,24 +19,23 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rang
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRange;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeFacet;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use DateTime;
 use Error;
 
 /**
  * Class DateRangeTest
  */
-class DateRangeTest extends UnitTest
+class DateRangeTest extends SetUpUnitTestCase
 {
     /**
      * @test
-     * @noinspection PhpParamsInspection
      */
     public function canHandleHalfOpenDateRanges()
     {
         $dateTime = new DateTime('2021-07-20 16:04:21.000000');
         $dateRangeOpenStart = new DateRange(
-            $this->getDumbMock(DateRangeFacet::class),
+            $this->createMock(DateRangeFacet::class),
             null,
             $dateTime,
             null,
@@ -47,7 +46,7 @@ class DateRangeTest extends UnitTest
             false
         );
         $dateRangeOpenEnd = new DateRange(
-            $this->getDumbMock(DateRangeFacet::class),
+            $this->createMock(DateRangeFacet::class),
             $dateTime,
             null,
             null,

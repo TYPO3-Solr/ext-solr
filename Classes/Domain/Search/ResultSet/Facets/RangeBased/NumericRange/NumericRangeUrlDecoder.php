@@ -31,10 +31,8 @@ class NumericRangeUrlDecoder implements FacetUrlDecoderInterface
 {
     /**
      * Delimiter for ranges in the URL.
-     *
-     * @var string
      */
-    const DELIMITER = '-';
+    public const DELIMITER = '-';
 
     /**
      * Parses the given range from a GET parameter and returns a Solr range
@@ -42,7 +40,9 @@ class NumericRangeUrlDecoder implements FacetUrlDecoderInterface
      *
      * @param string $value The range filter from the URL.
      * @param array $configuration Facet configuration
+     *
      * @return string Lucene query language filter to be used for querying Solr
+     *
      * @throws InvalidArgumentException
      */
     public function decode(string $value, array $configuration = []): string

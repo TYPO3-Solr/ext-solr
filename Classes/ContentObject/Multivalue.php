@@ -36,7 +36,7 @@ use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
  */
 class Multivalue extends AbstractContentObject
 {
-    const CONTENT_OBJECT_NAME = 'SOLR_MULTIVALUE';
+    public const CONTENT_OBJECT_NAME = 'SOLR_MULTIVALUE';
 
     /**
      * Executes the SOLR_MULTIVALUE content object.
@@ -45,7 +45,6 @@ class Multivalue extends AbstractContentObject
      * multivalued fields in a Solr document. The array is returned in
      * serialized form as content objects are expected to return strings.
      *
-     * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])

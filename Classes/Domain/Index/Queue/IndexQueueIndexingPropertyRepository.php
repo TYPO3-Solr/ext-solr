@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use PDO;
 
@@ -28,43 +27,30 @@ use PDO;
  */
 class IndexQueueIndexingPropertyRepository extends AbstractRepository
 {
-    /**
-     * @var string
-     */
     protected string $table = 'tx_solr_indexqueue_indexing_property';
 
     /**
      * Removes existing indexing properties.
-     *
-     * @param int $rootPid
-     * @param int $indexQueueUid
-     * @return int
-     * @throws DBALException
      */
     public function removeByRootPidAndIndexQueueUid(int $rootPid, int $indexQueueUid): int
     {
         $queryBuilder = $this->getQueryBuilder();
-        return (int)$queryBuilder
+        return $queryBuilder
             ->delete($this->table)
             ->where(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq(
                     'root',
                     $queryBuilder->createNamedParameter($rootPid, PDO::PARAM_INT)
                 ),
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq(
                     'item_id',
                     $queryBuilder->createNamedParameter($indexQueueUid, PDO::PARAM_INT)
                 )
-            )->execute();
+            )->executeStatement();
     }
 
     /**
-     * Inserts a list of given properties
-     *
-     * @param array $properties assoc array with column names as key
-     * @return int
+     * Inserts a list of given properties provided by $properties var as assoc array with column names as key
      */
     public function bulkInsert(array $properties): int
     {
@@ -72,11 +58,8 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
     }
 
     /**
-     * Fetches a list of properties related to index queue item
+     * Fetches a list of properties related to index queue item uid
      *
-     * @param int $indexQueueUid
-     * @return array list of records for searched index queue item
-     * @throws DBALDriverException
      * @throws DBALException
      */
     public function findAllByIndexQueueUid(int $indexQueueUid): array
@@ -86,13 +69,11 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
             ->select('property_key', 'property_value')
             ->from($this->table)
             ->where(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq(
                     'item_id',
                     $queryBuilder->createNamedParameter($indexQueueUid, PDO::PARAM_INT)
                 )
-            )
-            ->execute()
+            )->executeQuery()
             ->fetchAllAssociative();
     }
 }

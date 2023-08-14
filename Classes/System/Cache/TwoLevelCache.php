@@ -30,31 +30,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TwoLevelCache
 {
-    /**
-     * @var string
-     */
     protected string $cacheName = '';
 
-    /**
-     * @var array
-     */
     protected static array $firstLevelCache = [];
 
-    /**
-     * @var FrontendInterface
-     */
     protected FrontendInterface $secondLevelCache;
 
     /**
-     * @param string $cacheName
-     * @param FrontendInterface|null $secondaryCacheFrontend
      * @throws NoSuchCacheException
      */
     public function __construct(string $cacheName, FrontendInterface $secondaryCacheFrontend = null)
     {
         $this->cacheName = $cacheName;
         if ($secondaryCacheFrontend == null) {
-            /* @var CacheManager $cacheManager */
+            /** @var CacheManager $cacheManager */
             $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
             $this->secondLevelCache = $cacheManager->getCache($cacheName);
         } else {
@@ -64,11 +53,8 @@ class TwoLevelCache
 
     /**
      * Retrieves a value from the first level cache.
-     *
-     * @param string $cacheId
-     * @return mixed|null
      */
-    protected function getFromFirstLevelCache(string $cacheId)
+    protected function getFromFirstLevelCache(string $cacheId): mixed
     {
         if (!empty(self::$firstLevelCache[$this->cacheName][$cacheId])) {
             return self::$firstLevelCache[$this->cacheName][$cacheId];
@@ -79,9 +65,6 @@ class TwoLevelCache
 
     /**
      * Write a value to the first level cache.
-     *
-     * @param string $cacheId
-     * @param mixed $value
      */
     protected function setToFirstLevelCache(string $cacheId, $value): void
     {
@@ -91,11 +74,8 @@ class TwoLevelCache
     /**
      * Retrieves a value from the first level cache if present and
      * from the second level if not.
-     *
-     * @param string $cacheId
-     * @return mixed
      */
-    public function get(string $cacheId)
+    public function get(string $cacheId): mixed
     {
         $cacheId = $this->sanitizeCacheId($cacheId);
 
@@ -112,9 +92,6 @@ class TwoLevelCache
 
     /**
      * Write a value to the first and second level cache.
-     *
-     * @param string $cacheId
-     * @param mixed $value
      */
     public function set(string $cacheId, $value): void
     {
@@ -137,9 +114,6 @@ class TwoLevelCache
      * Sanitizes the cache id to ensure compatibility with the FrontendInterface::PATTERN_ENTRYIDENTIFIER
      *
      * @see \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend::isValidEntryIdentifier()
-     *
-     * @param string $cacheId
-     * @return string
      */
     protected function sanitizeCacheId(string $cacheId): string
     {

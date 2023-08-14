@@ -18,8 +18,9 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Throwable;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -39,48 +40,80 @@ class SolrConfigStatus extends AbstractSolrStatus
      * YYYYMMDD    - The date the config file was changed the last time
      *
      * Must be updated when changing the solrconfig.
-     *
-     * @var string
      */
-    const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-11-5-0--20211001';
+    public const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-12-0-0--20230602';
 
     /**
      * Compiles a collection of solrconfig version checks against each configured
      * Solr server. Only adds an entry if a solrconfig other than the
      * recommended one was found.
      *
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
-     *
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
+        if (empty($solrConnections)) {
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
+                'Solrconfig Version',
+                'No Solr connections configured',
+                '',
+                ContextualFeedbackSeverity::WARNING
+            );
 
+            return $reports;
+        }
+
+        /** @var SolrConnection $solrConnection */
         foreach ($solrConnections as $solrConnection) {
             $adminService = $solrConnection->getAdminService();
+            if (!$adminService->ping()) {
+                $reports[] = GeneralUtility::makeInstance(
+                    Status::class,
+                    'Solrconfig Version',
+                    'Couldn\'t connect to ' . $adminService->__toString(),
+                    '',
+                    ContextualFeedbackSeverity::WARNING
+                );
 
-            if ($adminService->ping() && $adminService->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION) {
+                continue;
+            }
+
+            if ($adminService->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION) {
                 $variables = ['solr' => $adminService, 'recommendedVersion' => self::RECOMMENDED_SOLRCONFIG_VERSION];
                 $report = $this->getRenderedReport('SolrConfigStatus.html', $variables);
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */
                     'Solrconfig Version',
-                    /** @scrutinizer ignore-type */
                     'Unsupported solrconfig.xml',
-                    /** @scrutinizer ignore-type */
                     $report,
-                    /** @scrutinizer ignore-type */
-                    Status::WARNING
+                    ContextualFeedbackSeverity::WARNING
                 );
 
                 $reports[] = $status;
             }
         }
 
+        if (empty($reports)) {
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
+                'Solrconfig Version',
+                'OK',
+                '',
+                ContextualFeedbackSeverity::OK
+            );
+        }
+
         return $reports;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_solrconfig';
     }
 }

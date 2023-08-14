@@ -27,7 +27,6 @@ class ApiEid
 {
     /**
      * Globally required params
-     * @var array
      */
     protected const REQUIRED_PARAMS_GLOBAL = [
         'api',
@@ -36,8 +35,6 @@ class ApiEid
 
     /**
      * Available methods and params
-     *
-     * @var array
      */
     protected const API_METHODS = [
         'siteHash' => [
@@ -63,15 +60,13 @@ class ApiEid
     /**
      * Returns the site hash
      *
-     * @param ServerRequestInterface $request
-     * @return JsonResponse
      * @noinspection PhpUnused
      */
     protected function getSiteHashResponse(ServerRequestInterface $request): JsonResponse
     {
         $domain = $request->getQueryParams()['domain'];
 
-        /* @var SiteHashService $siteHashService */
+        /** @var SiteHashService $siteHashService */
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
         $siteHash = $siteHashService->getSiteHashForDomain($domain);
         return new JsonResponse(
@@ -87,7 +82,7 @@ class ApiEid
     protected function validateRequest(ServerRequestInterface $request): void
     {
         $params = $request->getQueryParams();
-        if (!Api::isValidApiKey($params['apiKey'])) {
+        if (!Api::isValidApiKey($params['apiKey'] ?? '')) {
             throw new ImmediateResponseException(
                 new JsonResponse(
                     ['errorMessage' => 'Invalid API key'],
@@ -97,7 +92,7 @@ class ApiEid
             );
         }
 
-        if ($params['api'] === null || !array_key_exists($params['api'], self::API_METHODS)) {
+        if (($params['api'] ?? null) === null || !array_key_exists($params['api'], self::API_METHODS)) {
             throw new ImmediateResponseException(
                 new JsonResponse(
                     [
@@ -137,7 +132,7 @@ class ApiEid
         foreach ($apiMethodDefinitions as $apiMethodName => $apiMethodDefinition) {
             $apiMethodDefinitions[$apiMethodName]['params']['required'] = array_merge(
                 self::REQUIRED_PARAMS_GLOBAL,
-                $apiMethodDefinition['params']['required'] ?? []
+                $apiMethodDefinition['params']['required']
             );
         }
         return $apiMethodDefinitions;

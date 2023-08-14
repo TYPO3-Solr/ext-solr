@@ -29,26 +29,14 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
  */
 class NumericRangeFacetParser extends AbstractRangeFacetParser
 {
-    /**
-     * @var string
-     */
     protected string $facetClass = NumericRangeFacet::class;
 
-    /**
-     * @var string
-     */
     protected string $facetItemClass = NumericRange::class;
 
-    /**
-     * @var string
-     */
     protected string $facetRangeCountClass = NumericRangeCount::class;
 
     /**
-     * @param SearchResultSet $resultSet
-     * @param string $facetName
-     * @param array $facetConfiguration
-     * @return AbstractFacet|null
+     * Parses result-set to desired facet by its name
      */
     public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
@@ -63,19 +51,17 @@ class NumericRangeFacetParser extends AbstractRangeFacetParser
     }
 
     /**
-     * @param float|int|string|null $rawRequestValue
-     * @return float (numeric value)
+     * Parses request value
      */
-    protected function parseRequestValue($rawRequestValue): float
+    protected function parseRequestValue(float|int|string|null $rawRequestValue): float
     {
         return is_numeric($rawRequestValue) ? (float)$rawRequestValue : 0.0;
     }
 
     /**
-     * @param float|int|string|null $rawResponseValue
-     * @return float (numeric value)
+     * Parses response value
      */
-    protected function parseResponseValue($rawResponseValue): float
+    protected function parseResponseValue(float|int|string|null $rawResponseValue): float
     {
         return is_numeric($rawResponseValue) ? (float)$rawResponseValue : 0.0;
     }

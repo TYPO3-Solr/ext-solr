@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class QueryGroupFacetParser
@@ -29,10 +30,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 class QueryGroupFacetParser extends AbstractFacetParser
 {
     /**
-     * @param SearchResultSet $resultSet
-     * @param string $facetName
-     * @param array $facetConfiguration
-     * @return QueryGroupFacet|null
+     * Parses group params for Apache Solr query
      */
     public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
@@ -48,15 +46,13 @@ class QueryGroupFacetParser extends AbstractFacetParser
             return null;
         }
 
-        /** @var QueryGroupFacet $facet */
-        $facet = $this->objectManager->get(
+        $facet = GeneralUtility::makeInstance(
             QueryGroupFacet::class,
             $resultSet,
             $facetName,
             $fieldName,
             $label,
-            $facetConfiguration,
-            $this->objectManager
+            $facetConfiguration
         );
 
         $activeFacets = $resultSet->getUsedSearchRequest()->getActiveFacetNames();
@@ -82,7 +78,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
                     $facetName,
                     $facetConfiguration
                 );
-                $facet->addOption($this->objectManager->get(Option::class, $facet, $label, $value, $count, $isOptionsActive));
+                $facet->addOption(GeneralUtility::makeInstance(Option::class, $facet, $label, $value, $count, $isOptionsActive));
             }
         }
 
@@ -97,12 +93,8 @@ class QueryGroupFacetParser extends AbstractFacetParser
 
     /**
      * Get raw query options
-     *
-     * @param ResponseAdapter $response
-     * @param string $fieldName
-     * @return array
      */
-    protected function getRawOptions(ResponseAdapter $response, $fieldName)
+    protected function getRawOptions(ResponseAdapter $response, string $fieldName): array
     {
         $options = [];
 
@@ -116,7 +108,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
             // and facet.range Solr does that on its own automatically
             $rawValue = preg_replace('/^\{!ex=[^\}]*\}(.*)/', '\\1', $rawValue);
 
-            list($field, $query) = explode(':', $rawValue, 2);
+            [$field, $query] = explode(':', $rawValue, 2);
             if ($field === $fieldName) {
                 $options[$query] = $count;
             }
@@ -126,11 +118,9 @@ class QueryGroupFacetParser extends AbstractFacetParser
     }
 
     /**
-     * @param string $query
-     * @param array $facetConfiguration
-     * @return string|null
+     * Returns value from query
      */
-    protected function getValueByQuery($query, array $facetConfiguration)
+    protected function getValueByQuery(string $query, array $facetConfiguration): ?string
     {
         $value = null;
         foreach ($facetConfiguration['queryGroup.'] as $valueKey => $config) {

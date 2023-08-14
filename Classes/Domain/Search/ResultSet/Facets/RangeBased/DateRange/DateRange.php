@@ -23,71 +23,38 @@ use DateTime;
 /**
  * Value object that represent an option of options facet.
  *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
+ * @property DateRangeFacet $facet
+ * @method DateRangeFacet getFacet()
  */
 class DateRange extends AbstractRangeFacetItem
 {
-    /**
-     * @var DateTime|null
-     */
-    protected ?DateTime $startRequested = null;
-
-    /**
-     * @var DateTime|null
-     */
-    protected ?DateTime $endRequested = null;
-
-    /**
-     * @var DateTime|null
-     */
-    protected ?DateTime $startInResponse = null;
-
-    /**
-     * @var DateTime|null
-     */
-    protected ?DateTime $endInResponse = null;
-
-    /**
-     * @param DateRangeFacet $facet
-     * @param DateTime|null $startRequested
-     * @param DateTime|null $endRequested
-     * @param DateTime|null $startInResponse
-     * @param DateTime|null $endInResponse
-     * @param string|null $gap
-     * @param int $documentCount
-     * @param array $rangeCounts
-     * @param bool $selected
-     */
     public function __construct(
         DateRangeFacet $facet,
-        DateTime $startRequested = null,
-        DateTime $endRequested = null,
-        DateTime $startInResponse = null,
-        DateTime $endInResponse = null,
-        string $gap = '',
+        protected ?DateTime $startRequested = null,
+        protected ?DateTime $endRequested = null,
+        protected ?DateTime $startInResponse = null,
+        protected ?DateTime $endInResponse = null,
+        string|int $gap = '',
         int $documentCount = 0,
         array $rangeCounts = [],
-        bool $selected = false
+        bool $selected = false,
     ) {
-        $this->startInResponse = $startInResponse;
-        $this->endInResponse = $endInResponse;
-        $this->startRequested = $startRequested;
-        $this->endRequested = $endRequested;
-        $this->rangeCounts = $rangeCounts;
-        $this->gap = $gap;
-
         $label = '';
-        if ($startRequested instanceof DateTime && $endRequested instanceof DateTime) {
+        if ($this->startRequested instanceof DateTime && $this->endRequested instanceof DateTime) {
             $label = $this->getRangeString();
         }
 
-        parent::__construct($facet, $label, $documentCount, $selected);
+        parent::__construct(
+            $facet,
+            $label,
+            $documentCount,
+            $selected,
+            [],
+            $rangeCounts,
+            $gap
+        );
     }
 
-    /**
-     * @return string
-     */
     protected function getRangeString(): string
     {
         $from = $this->startRequested === null ? '' : $this->startRequested->format('Ymd') . '0000';
@@ -97,8 +64,6 @@ class DateRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the end date that was requested by the user for this facet.
-     *
-     * @return DateTime|null
      */
     public function getEndRequested(): ?DateTime
     {
@@ -107,8 +72,6 @@ class DateRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the start date that was requested by the used for the facet.
-     *
-     * @return DateTime|null
      */
     public function getStartRequested(): ?DateTime
     {
@@ -117,8 +80,6 @@ class DateRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the end date that was received from solr for this facet.
-     *
-     * @return DateTime|null
      */
     public function getEndInResponse(): ?DateTime
     {
@@ -127,8 +88,6 @@ class DateRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the start date that was received from solr for this facet.
-     *
-     * @return DateTime|null
      */
     public function getStartInResponse(): ?DateTime
     {

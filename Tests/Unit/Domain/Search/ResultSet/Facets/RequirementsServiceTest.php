@@ -19,22 +19,15 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RequirementsService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Testcase to test the RequirementsService
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class RequirementsServiceTest extends UnitTest
+class RequirementsServiceTest extends SetUpUnitTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        GeneralUtility::setSingletonInstance(ObjectManager::class, $this->createMock(ObjectManager::class));
-    }
-
     protected function tearDown(): void
     {
         GeneralUtility::purgeInstances();
@@ -46,7 +39,7 @@ class RequirementsServiceTest extends UnitTest
      */
     public function getRequirementsMetReturnTrueWhenNothingConfigured()
     {
-        $facet = $this->getDumbMock(OptionsFacet::class);
+        $facet = $this->createMock(OptionsFacet::class);
         $service = new RequirementsService();
         self::assertTrue($service->getAllRequirementsMet($facet), 'Facet without any requirements should met all requirements');
     }

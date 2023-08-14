@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Util;
 use Closure;
+use Psr\Log\LogLevel;
 use Solarium\Client;
 use Solarium\Core\Client\Endpoint;
 use Solarium\Core\Client\Request;
@@ -34,40 +35,23 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class AbstractSolrService
 {
-    /**
-     * @var array
-     */
     protected static array $pingCache = [];
 
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $configuration;
 
-    /**
-     * @var SolrLogManager
-     */
     protected SolrLogManager $logger;
 
-    /**
-     * @var Client
-     */
     protected Client $client;
 
-    /**
-     * SolrReadService constructor.
-     */
     public function __construct(Client $client, $typoScriptConfiguration = null, $logManager = null)
     {
         $this->client = $client;
         $this->configuration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
-        $this->logger = $logManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = $logManager ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**
      * Returns the path to the core solr path + core path.
-     *
-     * @return string
      */
     public function getCorePath(): string
     {
@@ -77,20 +61,14 @@ abstract class AbstractSolrService
 
     /**
      * Returns the Solarium client
-     *
-     * @return ?Client
      */
-    public function getClient(): ?Client
+    public function getClient(): Client
     {
         return $this->client;
     }
 
     /**
      * Return a valid http URL given this server's host, port and path and a provided servlet name
-     *
-     * @param string $servlet
-     * @param array $params
-     * @return string
      */
     protected function _constructUrl(string $servlet, array $params = []): string
     {
@@ -99,10 +77,7 @@ abstract class AbstractSolrService
     }
 
     /**
-     * Creates a string representation of the Solr connection. Specifically
-     * will return the Solr URL.
-     *
-     * @return string The Solr URL.
+     * Creates a string representation of the Solr connection. Specifically will return the Solr URL.
      * @TODO: Add support for API version 2
      */
     public function __toString()
@@ -110,14 +85,11 @@ abstract class AbstractSolrService
         $endpoint = $this->getPrimaryEndpoint();
         try {
             return $endpoint->getCoreBaseUri();
-        } catch (Throwable $exception) {
+        } catch (Throwable) {
         }
         return  $endpoint->getScheme() . '://' . $endpoint->getHost() . ':' . $endpoint->getPort() . $endpoint->getPath() . '/' . $endpoint->getCore() . '/';
     }
 
-    /**
-     * @return Endpoint|null
-     */
     public function getPrimaryEndpoint(): Endpoint
     {
         return $this->client->getEndpoint();
@@ -125,9 +97,6 @@ abstract class AbstractSolrService
 
     /**
      * Central method for making a get operation against this Solr Server
-     *
-     * @param string $url
-     * @return ResponseAdapter
      */
     protected function _sendRawGet(string $url): ResponseAdapter
     {
@@ -136,9 +105,6 @@ abstract class AbstractSolrService
 
     /**
      * Central method for making an HTTP DELETE operation against the Solr server
-     *
-     * @param string $url
-     * @return ResponseAdapter
      */
     protected function _sendRawDelete(string $url): ResponseAdapter
     {
@@ -147,11 +113,6 @@ abstract class AbstractSolrService
 
     /**
      * Central method for making a post operation against this Solr Server
-     *
-     * @param string $url
-     * @param string $rawPost
-     * @param string $contentType
-     * @return ResponseAdapter
      */
     protected function _sendRawPost(
         string $url,
@@ -169,12 +130,6 @@ abstract class AbstractSolrService
 
     /**
      * Method that performs an HTTP request with the solarium client.
-     *
-     * @param string $url
-     * @param string $method
-     * @param string $body
-     * @param ?Closure $initializeRequest
-     * @return ResponseAdapter
      */
     protected function _sendRawRequest(
         string $url,
@@ -182,7 +137,7 @@ abstract class AbstractSolrService
         string $body = '',
         Closure $initializeRequest = null
     ): ResponseAdapter {
-        $logSeverity = SolrLogManager::INFO;
+        $logSeverity = LogLevel::INFO;
         $exception = null;
         $url = $this->reviseUrl($url);
         try {
@@ -192,7 +147,7 @@ abstract class AbstractSolrService
             }
             $response = $this->executeRequest($request);
         } catch (HttpException $exception) {
-            $logSeverity = SolrLogManager::ERROR;
+            $logSeverity = LogLevel::ERROR;
             $response = new ResponseAdapter($exception->getBody(), $exception->getCode(), $exception->getMessage());
         }
 
@@ -207,13 +162,10 @@ abstract class AbstractSolrService
     /**
      * Revise url
      * - Resolve relative paths
-     *
-     * @param string $url
-     * @return string
      */
     protected function reviseUrl(string $url): string
     {
-        /* @var Uri $uri */
+        /** @var Uri $uri */
         $uri = GeneralUtility::makeInstance(Uri::class, $url);
 
         if ($uri->getPath() === '') {
@@ -240,13 +192,6 @@ abstract class AbstractSolrService
 
     /**
      * Build the log data and writes the message to the log
-     *
-     * @param string $logSeverity
-     * @param string $message
-     * @param string $url
-     * @param ResponseAdapter|null $solrResponse
-     * @param ?Throwable $exception
-     * @param string $contentSend
      */
     protected function writeLog(
         string $logSeverity,
@@ -255,19 +200,13 @@ abstract class AbstractSolrService
         ?ResponseAdapter $solrResponse,
         Throwable $exception = null,
         string $contentSend = ''
-    ) {
+    ): void {
         $logData = $this->buildLogDataFromResponse($solrResponse, $exception, $url, $contentSend);
         $this->logger->log($logSeverity, $message, $logData);
     }
 
     /**
      * Parses the solr information to build data for the logger.
-     *
-     * @param ResponseAdapter $solrResponse
-     * @param ?Throwable $e
-     * @param string $url
-     * @param string $contentSend
-     * @return array
      */
     protected function buildLogDataFromResponse(
         ResponseAdapter $solrResponse,
@@ -281,15 +220,13 @@ abstract class AbstractSolrService
             $logData['content'] = $contentSend;
         }
 
-        if (!empty($e)) {
+        if ($e !== null) {
             $logData['exception'] = $e->__toString();
             return $logData;
         }
         // trigger data parsing
-        /**
-         * @noinspection PhpExpressionResultUnusedInspection
-         * @extensionScannerIgnoreLine
-         */
+        /** @noinspectionPhpExpressionResultUnusedInspection */
+        /** @phpstan-ignore-next-line */
         $solrResponse->response;
         $logData['response data'] = print_r($solrResponse, true);
         return $logData;
@@ -305,13 +242,14 @@ abstract class AbstractSolrService
      * Also does not report the time, see https://forge.typo3.org/issues/64551
      *
      * @param bool $useCache indicates if the ping result should be cached in the instance or not
+     *
      * @return bool TRUE if Solr can be reached, FALSE if not
      */
     public function ping(bool $useCache = true): bool
     {
         try {
             $httpResponse = $this->performPingRequest($useCache);
-        } catch (HttpException $exception) {
+        } catch (HttpException) {
             return false;
         }
 
@@ -322,7 +260,9 @@ abstract class AbstractSolrService
      * Call the /admin/ping servlet, can be used to get the runtime of a ping request.
      *
      * @param bool $useCache indicates if the ping result should be cached in the instance or not
+     *
      * @return float runtime in milliseconds
+     *
      * @throws PingFailedException
      */
     public function getPingRoundTripRuntime(bool $useCache = true): float
@@ -352,7 +292,6 @@ abstract class AbstractSolrService
      * Performs a ping request and returns the result.
      *
      * @param bool $useCache indicates if the ping result should be cached in the instance or not
-     * @return ResponseAdapter
      */
     protected function performPingRequest(bool $useCache = true): ResponseAdapter
     {
@@ -373,8 +312,6 @@ abstract class AbstractSolrService
 
     /**
      * Returns the current time in milliseconds.
-     *
-     * @return float
      */
     protected function getMilliseconds(): float
     {
@@ -382,8 +319,7 @@ abstract class AbstractSolrService
     }
 
     /**
-     * @param QueryInterface $query
-     * @return ResponseAdapter
+     * Creates and executes the request and returns the response
      */
     protected function createAndExecuteRequest(QueryInterface $query): ResponseAdapter
     {
@@ -392,12 +328,16 @@ abstract class AbstractSolrService
     }
 
     /**
-     * @param Request $request
-     * @return ResponseAdapter
+     * Executes given request and returns the response
      */
     protected function executeRequest(Request $request): ResponseAdapter
     {
-        $result = $this->client->executeRequest($request);
+        try {
+            $result = $this->client->executeRequest($request);
+        } catch (HttpException $e) {
+            return new ResponseAdapter($e->getMessage(), $e->getCode(), $e->getStatusMessage());
+        }
+
         return new ResponseAdapter($result->getBody(), $result->getStatusCode(), $result->getStatusMessage());
     }
 
@@ -406,14 +346,10 @@ abstract class AbstractSolrService
      *
      * Important: The endpoint already contains the API information.
      * The internal Solarium will append the information including the core if set.
-     *
-     * @param string $url
-     * @param string $httpMethod
-     * @return Request
      */
     protected function buildSolariumRequestFromUrl(
         string $url,
-        string $httpMethod = Request::METHOD_GET
+        string $httpMethod = Request::METHOD_GET,
     ): Request {
         $params = [];
         parse_str(parse_url($url, PHP_URL_QUERY) ?? '', $params);
@@ -433,13 +369,11 @@ abstract class AbstractSolrService
     /**
      * Build a relative path from base path to target path.
      * Required since Solarium contains the core information
-     *
-     * @param string $basePath
-     * @param string $targetPath
-     * @return string
      */
-    protected function buildRelativePath(string $basePath, string $targetPath): string
-    {
+    protected function buildRelativePath(
+        string $basePath,
+        string $targetPath,
+    ): string {
         $basePath = trim($basePath, '/');
         $targetPath = trim($targetPath, '/');
         $baseElements = explode('/', $basePath);

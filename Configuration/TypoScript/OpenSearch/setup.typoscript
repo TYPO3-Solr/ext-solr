@@ -60,7 +60,7 @@ OpenSearch {
 	20.value (
 	<Url type="application/opensearchdescription+xml"
 		 rel="self"
-		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?type={TSFE:type}&amp;L={TSFE:sys_language_uid}" />
+		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?type={TSFE:type}&amp;L={siteLanguage:languageId}" />
 	)
 
 
@@ -71,7 +71,7 @@ OpenSearch {
 	30.value (
 	<Url type="text/html"
 		 method="GET"
-		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?id={$plugin.tx_solr.search.targetPage}&amp;L={TSFE:sys_language_uid}
+		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?id={$plugin.tx_solr.search.targetPage}&amp;L={siteLanguage:languageId}
 	)
 
 	31 = TEXT
@@ -86,7 +86,7 @@ OpenSearch {
 	40.value (
 	<Url type="application/x-suggestions+json"
 		 rel="suggestions"
-		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?id={$plugin.tx_solr.search.targetPage}&amp;L={TSFE:sys_language_uid}&amp;eID=tx_solr_suggest&amp;format=OpenSearch
+		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?id={$plugin.tx_solr.search.targetPage}&amp;L={siteLanguage:languageId}&amp;eID=tx_solr_suggest&amp;format=OpenSearch
 	)
 
 	41 = TEXT

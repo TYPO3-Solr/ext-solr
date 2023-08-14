@@ -20,15 +20,15 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\PhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Slops;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
-use Solarium\QueryType\Select\Query\Query;
-use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Test class to perform a search on a real solr server
@@ -42,11 +42,7 @@ class SearchTest extends IntegrationTest
      * @todo: Remove unnecessary fixtures and remove that property as intended.
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
-
-    /**
-     * @var QueryBuilder
-     */
-    protected $queryBuilder;
+    protected QueryBuilder $queryBuilder;
 
     protected function setUp(): void
     {
@@ -64,26 +60,19 @@ class SearchTest extends IntegrationTest
     /**
      * @test
      */
-    public function canSearchForADocument()
+    public function canSearchForADocument(): void
     {
-        $this->importDataSetFromFixture('can_search.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/can_search.csv');
 
-        $GLOBALS['TT'] = $this->createMock(TimeTracker::class);
-        $fakeTSFE = $this->getConfiguredTSFE();
-        $GLOBALS['TSFE'] = $fakeTSFE;
-
-        /* @var Typo3PageIndexer $pageIndexer */
-        $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
-        $indexQueueItemMock = $this->createMock(Item::class);
-        $indexQueueItemMock->expects(self::any())
-            ->method('getIndexingConfigurationName')
-            ->willReturn('pages');
-        $pageIndexer->setIndexQueueItem($indexQueueItemMock);
-        $pageIndexer->indexPage();
+        $tsfe = $this->getConfiguredTSFE();
+        $pageIndexer = GeneralUtility::makeInstance(PageIndexer::class);
+        $indexQueueItem = new Item(['root' => 1, 'indexing_configuration' => 'pages', 'item_type' => 'pages']);
+        $indexQueueItem->setRecord(['uid' => 1]);
+        $pageIndexer->setupConfiguration();
+        $pageIndexer->index($indexQueueItem, $tsfe);
 
         $this->waitToBeVisibleInSolr();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->queryBuilder
@@ -100,11 +89,11 @@ class SearchTest extends IntegrationTest
     /**
      * @test
      */
-    public function implicitPhraseSearchingBoostsDocsWithOccurringPhrase()
+    public function implicitPhraseSearchingBoostsDocsWithOccurringPhrase(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->fillIndexForPhraseSearchTests();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->queryBuilder
@@ -133,11 +122,11 @@ class SearchTest extends IntegrationTest
     /**
      * @test
      */
-    public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByPhraseSlop()
+    public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByPhraseSlop(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->fillIndexForPhraseSearchTests();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->queryBuilder
@@ -204,11 +193,11 @@ class SearchTest extends IntegrationTest
      *
      * Bigram Phrase
      */
-    public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByBigramPhraseSlop()
+    public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByBigramPhraseSlop(): void
     {
-        $this->fillIndexForPhraseSearchTests('phrase_search_bigram.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search_bigram.csv');
+        $this->fillIndexForPhraseSearchTests();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $this->switchPhraseSearchFeature('bigramPhrase', 1);
@@ -289,11 +278,11 @@ class SearchTest extends IntegrationTest
      *
      * Trigram Phrase
      */
-    public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByTrigramPhraseSlop()
+    public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByTrigramPhraseSlop(): void
     {
-        $this->fillIndexForPhraseSearchTests('phrase_search_trigram.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search_trigram.csv');
+        $this->fillIndexForPhraseSearchTests();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $this->switchPhraseSearchFeature('trigramPhrase', 1);
@@ -369,11 +358,12 @@ class SearchTest extends IntegrationTest
     /**
      * @test
      */
-    public function explicitPhraseSearchMatchesMorePrecise()
+    public function explicitPhraseSearchMatchesMorePrecise(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->fillIndexForPhraseSearchTests();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
+        /** @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->getSearchQueryForSolr();
@@ -391,11 +381,11 @@ class SearchTest extends IntegrationTest
     /**
      * @test
      */
-    public function explicitPhraseSearchPrecisionCanBeAdjustedByQuerySlop()
+    public function explicitPhraseSearchPrecisionCanBeAdjustedByQuerySlop(): void
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->fillIndexForPhraseSearchTests();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->getSearchQueryForSolr();
@@ -429,33 +419,19 @@ class SearchTest extends IntegrationTest
         self::assertSame(7, $parsedData->response->numFound, 'Found wrong number of decuments by explicit phrase search query.');
     }
 
-    /**
-     * @param string $fixture
-     */
-    protected function fillIndexForPhraseSearchTests(string $fixture = 'phrase_search.xml')
+    protected function fillIndexForPhraseSearchTests(): void
     {
-        $this->importDataSetFromFixture($fixture);
-
-        $GLOBALS['TT'] = $this->createMock(TimeTracker::class);
         for ($i = 1; $i <= 15; $i++) {
-            $fakeTSFE = $this->getConfiguredTSFE($i);
-            $GLOBALS['TSFE'] = $fakeTSFE;
-
-            /* @var Typo3PageIndexer $pageIndexer */
-            $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
-            $indexQueueItemMock = $this->createMock(Item::class);
-            $indexQueueItemMock->expects(self::any())
-                ->method('getIndexingConfigurationName')
-                ->willReturn('pages');
-            $pageIndexer->setIndexQueueItem($indexQueueItemMock);
-            $pageIndexer->indexPage();
+            $tsfe = $this->getConfiguredTSFE($i);
+            $pageIndexer = GeneralUtility::makeInstance(PageIndexer::class);
+            $indexQueueItem = new Item(['root' => 1, 'indexing_configuration' => 'pages', 'item_type' => 'pages']);
+            $indexQueueItem->setRecord(['uid' => $i]);
+            $pageIndexer->setupConfiguration();
+            $pageIndexer->index($indexQueueItem, $tsfe);
         }
         $this->waitToBeVisibleInSolr();
     }
 
-    /**
-     * @return Query
-     */
     protected function getSearchQueryForSolr(): Query
     {
         return $this->queryBuilder
@@ -464,17 +440,21 @@ class SearchTest extends IntegrationTest
             ->getQuery();
     }
 
-    /**
-     * @param string $feature
-     * @param int $state
-     */
-    protected function switchPhraseSearchFeature(string $feature, int $state)
+    protected function switchPhraseSearchFeature(string $feature, int $state): void
     {
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['query.'][$feature] = $state;
 
-        /** @var $configurationManager ConfigurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+    }
+
+    /**
+     * @deprecated Do not try to set up and configure TSFE in any way by self.
+     */
+    protected function getConfiguredTSFE(int $id = 1): TypoScriptFrontendController
+    {
+        $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
+        return $bootstrapper->bootstrap($id);
     }
 }

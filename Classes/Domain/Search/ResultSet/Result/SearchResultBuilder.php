@@ -30,15 +30,11 @@ class SearchResultBuilder
     /**
      * This method is used to wrap the original solr document instance in an instance of the configured SearchResult
      * class.
-     *
-     * @param Document $originalDocument
-     * @throws InvalidArgumentException
-     * @return SearchResult
      */
     public function fromApacheSolrDocument(Document $originalDocument): SearchResult
     {
         $searchResultClassName = $this->getResultClassName();
-        $result = GeneralUtility::makeInstance($searchResultClassName, /** @scrutinizer ignore-type */ $originalDocument->getFields() ?? []);
+        $result = GeneralUtility::makeInstance($searchResultClassName, $originalDocument->getFields());
 
         if (!$result instanceof SearchResult) {
             throw new InvalidArgumentException('Could not create result object with class: ' . $searchResultClassName, 1470037679);
@@ -47,9 +43,6 @@ class SearchResultBuilder
         return $result;
     }
 
-    /**
-     * @return string
-     */
     protected function getResultClassName(): string
     {
         return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] ?? SearchResult::class;

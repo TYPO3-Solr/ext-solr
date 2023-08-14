@@ -18,18 +18,15 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test case for the SearchResult.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SearchResultTest extends UnitTest
+class SearchResultTest extends SetUpUnitTestCase
 {
-    /**
-     * @var SearchResult
-     */
     protected SearchResult $searchResult;
 
     protected function setUp(): void
@@ -50,7 +47,7 @@ class SearchResultTest extends UnitTest
     /**
      * @test
      */
-    public function canGetId()
+    public function canGetId(): void
     {
         self::assertSame(
             '4711',
@@ -62,7 +59,7 @@ class SearchResultTest extends UnitTest
     /**
      * @test
      */
-    public function canGetScore()
+    public function canGetScore(): void
     {
         self::assertSame(
             0.55,
@@ -74,7 +71,7 @@ class SearchResultTest extends UnitTest
     /**
      * @test
      */
-    public function canGetContent()
+    public function canGetContent(): void
     {
         self::assertSame(
             'foobar',
@@ -86,7 +83,7 @@ class SearchResultTest extends UnitTest
     /**
      * @test
      */
-    public function canGetType()
+    public function canGetType(): void
     {
         self::assertSame(
             'pages',
@@ -98,7 +95,7 @@ class SearchResultTest extends UnitTest
     /**
      * @test
      */
-    public function canGetTitle()
+    public function canGetTitle(): void
     {
         self::assertSame(
             'The title',
@@ -110,7 +107,7 @@ class SearchResultTest extends UnitTest
     /**
      * @test
      */
-    public function canGetUrl()
+    public function canGetUrl(): void
     {
         self::assertSame(
             '://mytestdomain.com/test',
@@ -122,7 +119,7 @@ class SearchResultTest extends UnitTest
     /**
      * @test
      */
-    public function canGetIsElevated()
+    public function canGetIsElevated(): void
     {
         self::assertTrue(
             $this->searchResult->getIsElevated(),
@@ -133,10 +130,10 @@ class SearchResultTest extends UnitTest
     /**
      * @test
      */
-    public function getOnUnexistingFieldReturnsNull()
+    public function getOnUnexistingFieldReturnsNull(): void
     {
-        /** @noinspection PhpUndefinedMethodInspection */
         self::assertNull(
+            /** @phpstan-ignore-next-line */
             $this->searchResult->getUnexistingField(),
             'Calling getter for unexisting field does not return null'
         );

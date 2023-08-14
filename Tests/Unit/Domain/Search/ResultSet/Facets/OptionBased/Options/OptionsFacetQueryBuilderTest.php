@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for the dateRange queryBuilder
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class OptionsFacetQueryBuilderTest extends UnitTest
+class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     /**
      * @test
@@ -40,7 +40,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
             'sortBy' => 'index',
             'sortDirection' => 'desc',
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );
@@ -80,7 +80,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
             'field' => 'category',
             'facetLimit' => 20,
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );
@@ -115,7 +115,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $fakeFacetConfiguration = [
             'field' => 'category',
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );
@@ -155,7 +155,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
             'field' => 'category',
             'minimumCount' => 2,
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );
@@ -204,7 +204,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $fakeFacetConfiguration = [
             'field' => 'category',
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );
@@ -248,7 +248,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                 'downloads' => 'sum(downloads_intS)',
             ],
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );

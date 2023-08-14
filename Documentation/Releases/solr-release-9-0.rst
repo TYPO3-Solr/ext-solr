@@ -31,7 +31,7 @@ This brings us the following advantages:
 
 The migration to solarium required several changes in EXT:solr and all add-on's and we will provide compabtility releases for them as well.
 
-With the move to solarium we donated some parts to the solarium API (e.g. the solr core handling). This allows us to remove some redundant logic in EXT:solr in the future.
+With the move to solarium we donated some parts to the solarium API (e.g. the Solr core handling). This allows us to remove some redundant logic in EXT:solr in the future.
 
 Thanks:
 
@@ -85,7 +85,7 @@ This patch allows to create data range facets with an open beginning or open end
 Support to differ between read and write connections
 ----------------------------------------------------
 
-By now each site had one solr connection for reading and writing. In most of the cases this good enough when you want to index and search in the same core.
+By now each site had one Solr connection for reading and writing. In most of the cases this good enough when you want to index and search in the same core.
 
 Some setups require a more flexible approach:
 
@@ -95,7 +95,7 @@ Some setups require a more flexible approach:
 With a separation of read and write connections this is now possible. With these building blocks you could e.g.
 
 * Index into a shadow core (that is the write core) and swap read and write core when your re-index is done
-* Install a replica server on your frontend server and index into a dedicated primary node that act's as a solr primary server
+* Install a replica server on your frontend server and index into a dedicated primary node that act's as a Solr primary server
 
 The new setup can be configured like that:
 
@@ -169,7 +169,7 @@ Migration from EXT:solr 8.1.0 to EXT:solr 9.0.0
   information by calling "SearchResultSet::getHasSearch" or "{resultSet.hasSearched}" in the FLUID template.
   When you access this argument in your FLUID Template, you need to change that as well.
 * EXT:solr 9 differs between read and write connections now. As fallback the old configuration is still supported and used for reading and writing.
-  Nevertheless you need to re-initialize the solr connections that the data in the registry is rewritten. If you want to make use of the new configuration
+  Nevertheless you need to re-initialize the Solr connections that the data in the registry is rewritten. If you want to make use of the new configuration
   you can configure the connections like that:
 
 ::

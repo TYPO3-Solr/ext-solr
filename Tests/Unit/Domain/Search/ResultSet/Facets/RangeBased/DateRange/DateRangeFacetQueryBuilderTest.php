@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rang
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for the dateRange queryBuilder
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class DateRangeFacetQueryBuilderTest extends UnitTest
+class DateRangeFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     /**
      * @test
@@ -36,7 +36,7 @@ class DateRangeFacetQueryBuilderTest extends UnitTest
             'keepAllOptionsOnSelection' => 1,
             'dateRange.' => ['start' => 'NOW/DAY-2YEAR', 'end' => 'NOW/DAY+2YEAR', 'gap' => '+1DAY'],
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
             $fakeFacetConfiguration
         );

@@ -37,22 +37,14 @@ abstract class AbstractIndexer
 {
     /**
      * Holds the type of the data to be indexed, usually that is the table name.
-     *
-     * @var string
      */
     protected string $type = '';
 
     /**
      * Holds field names that are denied to overwrite in thy indexing configuration.
-     *
-     * @var array
      */
     protected static array $unAllowedOverrideFields = ['type'];
 
-    /**
-     * @param string $solrFieldName
-     * @return bool
-     */
     public static function isAllowedToOverrideField(string $solrFieldName): bool
     {
         return !in_array($solrFieldName, static::$unAllowedOverrideFields);
@@ -89,13 +81,8 @@ abstract class AbstractIndexer
                 continue;
             }
 
-            if (is_array($fieldValue)) {
-                // multi value
+            if (!empty($fieldValue)) {
                 $document->setField($solrFieldName, $fieldValue);
-            } else {
-                if ($fieldValue !== '' && $fieldValue !== null) {
-                    $document->setField($solrFieldName, $fieldValue);
-                }
             }
         }
 
@@ -105,10 +92,6 @@ abstract class AbstractIndexer
     /**
      * Adds the content of the field 'content' from the solr document as virtual field __solr_content in the record,
      * to have it available in typoscript.
-     *
-     * @param Document $document
-     * @param array $data
-     * @return array
      */
     public static function addVirtualContentFieldToRecord(Document $document, array $data): array
     {
@@ -129,15 +112,14 @@ abstract class AbstractIndexer
      * @param array $indexingConfiguration Indexing configuration as defined in plugin.tx_solr_index.queue.[indexingConfigurationName].fields
      * @param string $solrFieldName A Solr field name that is configured in the indexing configuration
      * @param array $data A record or item's data
-     * @param TypoScriptFrontendController $tsfe
-     * @return string|null The resolved string value to be indexed; null if value could not be resolved
+     * @return array|float|int|string|null The resolved string value to be indexed; null if value could not be resolved
      */
     protected function resolveFieldValue(
         array $indexingConfiguration,
         string $solrFieldName,
         array $data,
         TypoScriptFrontendController $tsfe
-    ) {
+    ): array|float|int|string|null {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
 
@@ -162,7 +144,7 @@ abstract class AbstractIndexer
                 $fieldValue = unserialize($fieldValue);
             }
         } elseif (
-            substr($indexingConfiguration[$solrFieldName], 0, 1) === '<'
+            str_starts_with($indexingConfiguration[$solrFieldName], '<')
         ) {
             $referencedTsPath = trim(substr(
                 $indexingConfiguration[$solrFieldName],
@@ -170,7 +152,7 @@ abstract class AbstractIndexer
             ));
             $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
             // $name and $conf is loaded with the referenced values.
-            list($name, $conf) = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TSFE']->tmpl->setup);
+            [$name, $conf] = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TSFE']->tmpl->setup);
 
             // need to change directory to make IMAGE content objects work in BE context
             // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
@@ -240,10 +222,6 @@ abstract class AbstractIndexer
 
     /**
      * Checks if the response comes from a custom content element that returns a serialized value.
-     *
-     * @param array $indexingConfiguration
-     * @param string $solrFieldName
-     * @return bool
      */
     protected static function isSerializedResultFromCustomContentElement(array $indexingConfiguration, string $solrFieldName): bool
     {
@@ -269,10 +247,6 @@ abstract class AbstractIndexer
 
     /**
      * Checks registered hooks if a SerializedValueDetector detects a serialized response.
-     *
-     * @param array $indexingConfiguration
-     * @param string $solrFieldName
-     * @return bool
      */
     protected static function isSerializedResultFromRegisteredHook(array $indexingConfiguration, string $solrFieldName): bool
     {
@@ -287,7 +261,7 @@ abstract class AbstractIndexer
                 throw new UnexpectedValueException($message, 1404471741);
             }
 
-            $isSerialized = (boolean)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
+            $isSerialized = (bool)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
             if ($isSerialized) {
                 return true;
             }
@@ -300,9 +274,9 @@ abstract class AbstractIndexer
      *
      * @param mixed $value Value to be added to a document
      * @param string $fieldType The dynamic field's type
-     * @return mixed Returns the value in the correct format for the field type
+     * @return int|float|string|null Returns the value in the correct format for the field type
      */
-    protected function ensureFieldValueType($value, string $fieldType)
+    protected function ensureFieldValueType(mixed $value, string $fieldType): int|float|string|null
     {
         switch ($fieldType) {
             case 'int':

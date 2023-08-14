@@ -33,21 +33,12 @@ abstract class AbstractBaseEventListener
 {
     public const MONITORING_TYPE = -1;
 
-    /**
-     * @var ExtensionConfiguration
-     */
     private ExtensionConfiguration $extensionConfiguration;
 
-    /**
-     * @var EventDispatcherInterface
-     */
     private EventDispatcherInterface $eventDispatcher;
 
     /**
      * Constructor
-     *
-     * @param ExtensionConfiguration $extensionConfiguration
-     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
         ExtensionConfiguration $extensionConfiguration,
@@ -59,8 +50,6 @@ abstract class AbstractBaseEventListener
 
     /**
      * Returns the configured monitoring type
-     *
-     * @return int
      */
     final protected function getMonitoringType(): int
     {
@@ -70,7 +59,6 @@ abstract class AbstractBaseEventListener
     /**
      * Returns the DataUpdateHandler
      *
-     * @return DataUpdateHandler
      * @noinspection PhpUnused
      */
     final protected function getDataUpdateHandler(): DataUpdateHandler
@@ -81,7 +69,6 @@ abstract class AbstractBaseEventListener
     /**
      * Returns the GarbageHandler
      *
-     * @return GarbageHandler
      * @noinspection PhpUnused
      */
     final protected function getGarbageHandler(): GarbageHandler
@@ -92,8 +79,6 @@ abstract class AbstractBaseEventListener
     /**
      * Dispatches a data update processing finished event
      *
-     * @param string $eventClass
-     * @param DataUpdateEventInterface $event
      * @throws InvalidArgumentException
      * @noinspection PhpUnused
      */
@@ -115,7 +100,6 @@ abstract class AbstractBaseEventListener
     /**
      * Indicates if immediate monitoring is allowed
      *
-     * @return bool
      * @noinspection PhpUnused
      */
     protected function isProcessingEnabled(): bool

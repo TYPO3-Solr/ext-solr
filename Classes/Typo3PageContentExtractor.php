@@ -18,8 +18,9 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use DOMDocument;
 use DOMXPath;
-use function libxml_use_internal_errors;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use function libxml_use_internal_errors;
 
 /**
  * Content extraction class for TYPO3 pages.
@@ -28,9 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Typo3PageContentExtractor extends HtmlContentExtractor
 {
-    /**
-     * @var SolrLogManager|null
-     */
     protected ?SolrLogManager $logger;
 
     /**
@@ -61,8 +59,8 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
 
         $indexableContent = $this->excludeContentByClass($indexableContent);
         if (empty($indexableContent) && $this->getConfiguration()->getLoggingIndexingMissingTypo3SearchMarkers()) {
-            $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
-            $this->logger->log(SolrLogManager::WARNING, 'No TYPO3SEARCH markers found.');
+            $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+            $this->logger->warning('No TYPO3SEARCH markers found.');
         }
 
         return $indexableContent;

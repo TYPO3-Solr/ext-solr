@@ -89,7 +89,7 @@ additionalPersistentArgumentNames
 
 Comma-separated list of additional argument names, that should be added to the persistent arguments that are kept for sub request, like the facet and sorting urls. Hard coded argument names are q, filter and sort.
 
-Till solr version 6.5.x all parameters of the plugin namespace was added to the url again. With this setting you could enable this behavior again, but only with a whitelist of argument names.
+Till Solr version 6.5.x all parameters of the plugin namespace was added to the url again. With this setting you could enable this behavior again, but only with a whitelist of argument names.
 
 query
 -----
@@ -115,7 +115,7 @@ query.allowedSites
 :Since: 2.2
 :Default: __solr_current_site
 
-When indexing documents (pages, records, files, ...) into the Solr index, the solr extension adds a "siteHash". The siteHash is used to allow indexing multiple sites into one index and still have each site only find its own documents. This is achieved by adding a filter on the siteHash.
+When indexing documents (pages, records, files, ...) into the Solr index, the Solr extension adds a "siteHash". The siteHash is used to allow indexing multiple sites into one index and still have each site only find its own documents. This is achieved by adding a filter on the siteHash.
 
 Sometimes though, you want to search across multiple domains, then the siteHash is a blocker. Using the allowedSites setting you can set a comma-separated list of domains who's documents are allowed to be included in the current domain's search results. The default value is **__solr_current_site** which is a magic string/variable that is replaced with the current site's domain when querying the Solr server.
 
@@ -199,7 +199,7 @@ query.boostFunction
 :Example: recip(ms(NOW,created),3.16e-11,1,1)
 
 A boost function can be useful to influence the relevance calculation and boost some documents to appear more at the beginning of the result list.
-Technically the parameter will be mapped to the **"bf"** parameter in the solr query.
+Technically the parameter will be mapped to the **"bf"** parameter in the Solr query.
 
 Use cases for example could be:
 
@@ -225,7 +225,7 @@ This could be done with:
 query.boostQuery
 ~~~~~~~~~~~~~~~~
 
-:Type: String
+:Type: Array
 :TS Path: plugin.tx_solr.search.query.boostQuery
 :Since: 2.0
 :Default: (empty)
@@ -241,7 +241,7 @@ Example (boosts tt_news documents by factor 10):
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.search.query.boostQuery = (type:tt_news)^10
+    plugin.tx_solr.search.query.boostQuery.boostNews = (type:tt_news)^10
 
 
 query.tieParameter
@@ -472,7 +472,7 @@ results.resultsHighlighting.highlightFields
 
 A comma-separated list of fields to highlight.
 
-Note: The highlighting in solr (based on FastVectorHighlighter requires a field datatype with **termVectors=on**, **termPositions=on** and **termOffsets=on** which is the case for the content field).
+Note: The highlighting in Solr (based on FastVectorHighlighter requires a field datatype with **termVectors=on**, **termPositions=on** and **termOffsets=on** which is the case for the content field).
 If you add other fields here, make sure that you are using a datatype where this is configured.
 
 results.resultsHighlighting.fragmentSize
@@ -846,7 +846,7 @@ The following example shows how to keep all options of all facets by keeping the
 plugin.tx_solr.search.faceting.keepAllFacetsOnSelection = 1
 plugin.tx_solr.search.faceting.countAllFacetsForSelection = 1
 plugin.tx_solr.search.faceting.minimumCount = 0
-```
+```````````````````````````````````````````````
 
 faceting.showAllLink.wrap
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -884,7 +884,7 @@ Index style: tx_solr[filter][0]=type:pages
 Associative style: tx_solr[filter][type:pages]=1
 
 faceting.urlParameterSort
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Boolean
 :TS Path: plugin.tx_solr.search.faceting.urlParameterSort
@@ -973,7 +973,7 @@ faceting.facets.[facetName].addFieldAsTag
 :Required: no
 :Default: false
 
-When you want to add fields as ```additionalExcludeTags``` for a facet a tag for this facet needs to exist. You can use this setting to force the creation of a tag for this facet in the solr query.
+When you want to add fields as ```additionalExcludeTags``` for a facet a tag for this facet needs to exist. You can use this setting to force the creation of a tag for this facet in the Solr query.
 
 faceting.facets.[facetName].field
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1150,6 +1150,17 @@ Using `faceting.facets.[facetName].manualSortOrder = Travel, Health` will result
     + Economy (185)
     + Culture (179)
     + Automobile (99)
+
+faceting.facets.[facetName].manualSortOrderDelimiter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].manualSortOrderDelimiter
+:Since: 11.5
+:Default: ,
+
+Define an alternative delimiter instead of the default comma (`,`) for the manualSortOrder option.
+This is especially useful if the `,` is part of a facet option value.
 
 faceting.facets.[facetName].minimumCount
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1357,7 +1368,7 @@ EXT:solr provides the following renderingInstructions that you can use in your p
 **FormatDate**:
 
 This rendering instruction can be used in combination with a date field or an integer field that hold a timestamp. You can use this rendering instruction to format the facet value on rendering.
-A common usecase for this is, when the datatype in solr needs to be sortable (date or int) but you need to render the date as readable date option in the frontend:
+A common usecase for this is, when the datatype in Solr needs to be sortable (date or int) but you need to render the date as readable date option in the frontend:
 
 
 .. code-block:: typoscript
@@ -1412,14 +1423,25 @@ If enabled, elevated results are marked with CSS class "results-elevated".
 variants
 --------
 
-By using variants you can shrink down multiple documents with the same value in one field into one document and make similar documents available in the variants property.
-By default the field variantId is used as Solr collapsing criteria. This can be used e.g. as one approach of deduplication to group similar documents into on "root" SearchResult.
+By using variants you can shrink down multiple documents with the same value
+in one field into one document and make similar documents available in
+the variants property.
+By default the field variantId is used as Solr collapsing criteria.
+This can be used e.g. as one approach of deduplication to group similar
+documents into on "root" SearchResult.
 
-To use the different variants of the documents you can access "document.variants" to access the expanded documents.
+To use the different variants of the documents you can
+access "document.variants" to access the expanded documents.
 
-This can be used for example for de-duplication to list variants of the same document below a certain document.
+This can be used for example for de-duplication to list variants of
+the same document below a certain document.
 
 Note: Internally this is implemented with Solr field collapsing
+
+..  warning::
+
+    If you're additionally using the `grouping` feature, the `variants`
+    feature will be deactivated completely.
 
 :Type: Boolean
 :TS Path: plugin.tx_solr.search.variants
@@ -1444,7 +1466,8 @@ variants.variantField
 
 Used to expand the document variants to the document.variants property.
 
-**Note:**: The field must be a numeric field or a string field! Not a text field!
+**Note:**: The field must be a numeric field or a string field! Not a
+text field!
 
 :Type: String
 :TS Path: plugin.tx_solr.search.variants.variantField
@@ -1456,9 +1479,120 @@ variants.limit
 
 Limit of expanded documents.
 
-Though this setting limits the returned variants, you still can get the number of existing variants, it's set in "document.variantsNumFound" (since EXT:solr 10)
+Though this setting limits the returned variants, you still can get the number
+of existing variants, it's set in "document.variantsNumFound" (since
+EXT:solr 10)
 
 :Type: Integer
 :TS Path: plugin.tx_solr.search.variants.limit
 :Since: 6.0
 :Default: 10
+
+grouping
+--------
+
+The Solr grouping feature can be used to group documents based on a Solr field
+or a set of Solr queries.
+
+..  note::
+
+    The `grouping` feature has a higher value than the `collapsing/variant`
+    feature. So if you use the `grouping` feature, the `variant` feature
+    is deactivated.
+
+The following example shows how to group documents based on the "type" field:
+
+..  code-block:: typoscript
+
+    plugin.tx_solr {
+        search {
+            grouping = 1
+            grouping {
+                numberOfGroups = 5
+                numberOfResultsPerGroup = 5
+                allowGetParameterSwitch = 0
+                groups {
+                    typeGroup {
+                        field = type
+                    }
+                }
+            }
+        }
+    }
+
+
+The next example shows how to group documents based on queries:
+
+..  code-block:: typoscript
+
+    plugin.tx_solr {
+        search {
+            grouping = 1
+            grouping {
+                numberOfGroups = 5
+                numberOfResultsPerGroup = 5
+                allowGetParameterSwitch = 0
+                groups {
+                    pidQuery {
+                        queries {
+                            lessThenTen = pid:[0 TO 10]
+                            lessThen30 = pid:[11 TO 30]
+                            rest = pid:[30 TO *]
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+grouping.numberOfGroups
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.grouping.numberOfGroups
+:Default: 5
+:Since: 12.0
+
+grouping.numberOfResultsPerGroup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.grouping.numberOfResultsPerGroup
+:Default: 5
+:Since: 12.0
+
+grouping.allowGetParameterSwitch
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.grouping.allowGetParameterSwitch
+:Default: 0
+:Since: 12.0
+
+If set, grouping can be disabled via "tx_solr[grouping]=off"
+
+grouping.groups.[groupName].field
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.grouping.[groupName].field
+:Default: empty
+:Since: 12.0
+
+Defines the Solr field where a group should be build on.
+
+Note: Use either field or queries no mix. Groups with field are field groups,
+groups with queries are query groups.
+
+grouping.groups.[groupName].queries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Array
+:TS Path: plugin.tx_solr.search.grouping.[groupName].queries
+:Default: empty
+:Since: 12.0
+
+Defines an array of queries to group the results in.
+
+Note: Use either field or queries no mix. Groups with field are field groups,
+groups with queries are query groups.

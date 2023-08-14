@@ -24,25 +24,16 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
  */
 class QueryGroupPackage extends AbstractFacetPackage
 {
-    /**
-     * @return string
-     */
     public function getParserClassName(): string
     {
         return QueryGroupFacetParser::class;
     }
 
-    /**
-     * @return string
-     */
     public function getQueryBuilderClassName(): string
     {
         return QueryGroupFacetQueryBuilder::class;
     }
 
-    /**
-     * @return string
-     */
     public function getUrlDecoderClassName(): string
     {
         return QueryGroupUrlDecoder::class;

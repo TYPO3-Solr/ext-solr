@@ -1,0 +1,69 @@
+# There is following scenario:
+#
+#  [0]
+#   |
+#   ——[20] Shared-Pages (Not root)
+#   |   |
+#   |   ——[24] FirstShared (Not root)
+#   |
+#   ——[ 1] Page (Root)
+#       |
+#       ——[14] Mount Point (to [24] to show contents from)
+"pages",
+,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title"
+# Site tree
+,1,0,1,1,0,0,"/","Page (Root)"
+,14,1,0,7,24,1,"/mount-point","Mount Point"
+# Shared Pages tree
+,20,0,0,254,0,0,"/","Shared-Pages"
+,24,20,0,1,0,0,"/first-shared","FirstShared (Not root)"
+"tt_content",
+,"uid","pid","colPos","CType","bodytext"
+,99,24,0,"text","Some Lorem Ipsum conteint!"
+"tx_solr_indexqueue_item",
+,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors"
+,4711,1,"pages",24,"pages",1449151778,0,0,0,0,0
+"sys_template",
+,"uid","pid","root","clear","sorting","config"
+,1,1,1,3,100,"
+page = PAGE
+page.typeNum = 0
+config.index_enable = 1
+
+plugin.tx_solr {
+    enabled = 1
+
+    index {
+        fieldProcessingInstructions {
+            changed = timestampToIsoDate
+            created = timestampToIsoDate
+            endtime = timestampToUtcIsoDate
+            rootline = pageUidToHierarchy
+        }
+
+        queue {
+            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
+            pages = 1
+            pages {
+                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+
+                // allowed page types (doktype) when indexing records from pages
+                allowedPageTypes = 1,7
+
+                indexingPriority = 0
+
+                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                indexer {
+                    // add options for the indexer here
+                }
+
+                // Only index standard pages and mount points that are not overlayed.
+                additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+
+                fields {
+                    sortSubTitle_stringS = subtitle
+                }
+            }
+        }
+    }
+}"

@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase to check if the configuration object can be used as expected
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class TypoScriptConfigurationTest extends UnitTest
+class TypoScriptConfigurationTest extends SetUpUnitTestCase
 {
     /**
      * @var TypoScriptConfiguration
@@ -131,13 +131,9 @@ class TypoScriptConfigurationTest extends UnitTest
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $customTableExpected = @$configuration->getIndexQueueTableNameOrFallbackToConfigurationName('pages');
-        self::assertSame($customTableExpected, 'pages', 'Can not fallback to configurationName');
         $customTableExpected = $configuration->getIndexQueueTypeOrFallbackToConfigurationName('pages');
         self::assertSame($customTableExpected, 'pages', 'Can not fallback to configurationName');
 
-        $customTableExpected = @$configuration->getIndexQueueTableNameOrFallbackToConfigurationName('custom');
-        self::assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
         $customTableExpected = @$configuration->getIndexQueueTypeOrFallbackToConfigurationName('custom');
         self::assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
     }
@@ -841,6 +837,32 @@ class TypoScriptConfigurationTest extends UnitTest
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         self::assertFalse($configuration->getIsSearchGroupingEnabled(), 'Expected grouping to be disabled');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetGroupingAllowGetParameterSwitch()
+    {
+        $fakeConfigurationArray = [
+            'plugin.' => [
+                'tx_solr.' => [
+                    'search.' => [
+                        'grouping' => 1,
+                        'grouping.' => [
+                            'allowGetParameterSwitch' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        self::assertFalse($configuration->getIsGroupingGetParameterSwitchEnabled(), 'Expected allowGetParameterSwitch to be disabled');
+
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['grouping.']['allowGetParameterSwitch'] = 1;
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        self::assertTrue($configuration->getIsGroupingGetParameterSwitchEnabled(), 'Expected allowGetParameterSwitch to be enabled');
     }
 
     /**

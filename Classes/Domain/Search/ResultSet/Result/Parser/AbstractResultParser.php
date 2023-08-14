@@ -27,39 +27,28 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractResultParser
 {
-    /**
-     * @var SearchResultBuilder
-     */
-    protected $searchResultBuilder;
+    protected SearchResultBuilder $searchResultBuilder;
 
-    /**
-     * @var DocumentEscapeService
-     */
-    protected $documentEscapeService;
+    protected DocumentEscapeService $documentEscapeService;
 
-    /**
-     * AbstractResultParser constructor.
-     * @param SearchResultBuilder|null $resultBuilder
-     * @param DocumentEscapeService|null $documentEscapeService
-     */
     public function __construct(
         SearchResultBuilder $resultBuilder = null,
-        DocumentEscapeService $documentEscapeService = null
+        DocumentEscapeService $documentEscapeService = null,
     ) {
         $this->searchResultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
         $this->documentEscapeService = $documentEscapeService ?? GeneralUtility::makeInstance(DocumentEscapeService::class);
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @param bool $useRawDocuments
-     * @return SearchResultSet
+     * Enriches and hydrates the SearchResultSet with required data structures.
      */
-    abstract public function parse(SearchResultSet $resultSet, bool $useRawDocuments = true): SearchResultSet;
+    abstract public function parse(
+        SearchResultSet $resultSet,
+        bool $useRawDocuments = true,
+    ): SearchResultSet;
 
     /**
-     * @param SearchResultSet $resultSet
-     * @return bool
+     * Checks whether the given SearchResultSet can be parsed with parser implementation.
      */
     abstract public function canParse(SearchResultSet $resultSet): bool;
 }

@@ -33,10 +33,11 @@ class QueryGroupUrlDecoder implements FacetUrlDecoderInterface
      *
      * @param string $value the filter query from plugin
      * @param array $configuration options set in a facet's configuration
+     *
      * @return string Value to be used in a Lucene filter
      */
     public function decode(string $value, array $configuration = []): string
     {
-        return $configuration[$value . '.']['query'];
+        return $configuration[$value . '.']['query'] ?? '';
     }
 }

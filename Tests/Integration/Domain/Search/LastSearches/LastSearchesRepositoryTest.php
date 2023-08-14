@@ -21,47 +21,40 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LastSearchesRepositoryTest extends IntegrationTest
 {
-    /**
-     * @var LastSearchesRepository
-     */
-    protected $lastSearchesRepository;
+    protected LastSearchesRepository $lastSearchesRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->lastSearchesRepository = GeneralUtility::makeInstance(LastSearchesRepository::class);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/last_searches.csv');
     }
 
     /**
      * @test
      */
-    public function canFindAllKeywords()
+    public function canFindAllKeywords(): void
     {
-        $this->importDataSetFromFixture('can_find_and_add_last_searches.xml');
-        $actual = $this->lastSearchesRepository->findAllKeywords(10);
+        $actual = $this->lastSearchesRepository->findAllKeywords();
         self::assertSame(['4', '3', '2', '1', '0'], $actual);
     }
 
     /**
      * @test
      */
-    public function addWillInsertNewRowIfLastSearchesLimitIsNotExceeded()
+    public function addWillInsertNewRowIfLastSearchesLimitIsNotExceeded(): void
     {
-        $this->importDataSetFromFixture('can_find_and_add_last_searches.xml');
-
         $this->lastSearchesRepository->add('5', 6);
 
-        $actual = $this->lastSearchesRepository->findAllKeywords(10);
+        $actual = $this->lastSearchesRepository->findAllKeywords();
         self::assertSame(['5', '4', '3', '2', '1', '0'], $actual);
     }
 
     /**
      * @test
      */
-    public function addWillUpdateOldestRowIfLastSearchesLimitIsExceeded()
+    public function addWillUpdateOldestRowIfLastSearchesLimitIsExceeded(): void
     {
-        $this->importDataSetFromFixture('can_find_and_add_last_searches.xml');
-
         $this->lastSearchesRepository->add('5', 5);
 
         $actual = $this->lastSearchesRepository->findAllKeywords();
@@ -71,10 +64,8 @@ class LastSearchesRepositoryTest extends IntegrationTest
     /**
      * @test
      */
-    public function lastUpdatedRowIsOnFirstPosition()
+    public function lastUpdatedRowIsOnFirstPosition(): void
     {
-        $this->importDataSetFromFixture('can_find_and_add_last_searches.xml');
-
         $this->lastSearchesRepository->add('1', 5);
 
         $actual = $this->lastSearchesRepository->findAllKeywords();

@@ -18,9 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test for the QueryGroupFacet options collection
@@ -28,16 +26,14 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  * @author Timo Hund <timo.hund@dkd.de>
  * @author Frans Saris <frans@beech.it>
  */
-class OptionCollectionTest extends UnitTest
+class OptionCollectionTest extends SetUpUnitTestCase
 {
     /**
      * @test
      */
     public function canGetManualSortedCopy()
     {
-        GeneralUtility::setSingletonInstance(ObjectManager::class, $this->createMock(ObjectManager::class));
-
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new QueryGroupFacet($searchResultSetMock, 'age', 'created');
 
         $week = new Option($facet, 'Last week', '1week', 9);

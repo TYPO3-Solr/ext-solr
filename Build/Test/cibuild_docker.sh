@@ -74,8 +74,7 @@ assertDockerVersionIsGtOrEq193 ()
   local DOCKER_VERSION_MINOR
   DOCKER_VERSION_MINOR=$(echo "$DOCKER_VERSION"| cut -d'.' -f 2)
 
-  if [ "${DOCKER_VERSION_MAJOR}" -ge 19 ] && \
-     [ "${DOCKER_VERSION_MINOR}" -ge 3 ] ; then
+  if { [ "${DOCKER_VERSION_MAJOR}" -eq 19 ] && [ "${DOCKER_VERSION_MINOR}" -ge 3 ]; } || [ "${DOCKER_VERSION_MAJOR}" -gt 19 ]; then
       prettyPrintOrExitOnError 0
   else
     echo -en "${RED}"' ✘\n'"${NC}"
@@ -154,6 +153,14 @@ isCoreAvailable ()
   return 0;
 }
 
+isCoreUnavailable ()
+{
+  if ! isCoreAvailable $1; then
+    return 0;
+  fi
+  return 1;
+}
+
 pingCore ()
 {
   # shellcheck disable=SC2015
@@ -178,7 +185,7 @@ getExpandedListOfPathsAsSudo ()
 
 assertVolumeExportHasNotBeenChanged ()
 {
-  echo -n "Check Dockerfile's VOLUME defintion has not been changed"
+  echo -n "Check Dockerfile's VOLUME definition has not been changed."
   local EXPORTED_VOLUME
   EXPORTED_VOLUME=$(docker image inspect --format='{{ range $a, $b := .Config.Volumes }}{{ printf "%s " $a }}{{end}}' $LOCAL_IMAGE_NAME)
   if [[ "$EXPORTED_VOLUME" == "$DEFAULT_IMAGE_VOLUME_EXPORT_PATH " ]]; then
@@ -263,6 +270,48 @@ assertNecessaryPathsAreOwnedBySolr ()
   isPathOwnedBySolr "${paths[@]}" || { echo -e "${RED}"'\nThe image has files, which are not owned by solr(8983) user.\n Please fix this issue.'"${NC}"; cleanUp; exit 1; }
 }
 
+assertCoresAreSwitchableViaEnvVar ()
+{
+  echo -e "\nCheck all cores are disabled except desired by \$TYPO3_SOLR_ENABLED_CORES env:"
+  echo -n "  stop container $LOCAL_CONTAINER_NAME" prettyPrintOrExitOnError $? "$(docker stop "$LOCAL_CONTAINER_NAME" 2>&1)"
+
+  echo -n "Starting container"
+  prettyPrintOrExitOnError $? "$(docker run --env TYPO3_SOLR_ENABLED_CORES='german english danish' --name="$LOCAL_CONTAINER_NAME" -d -p 127.0.0.1:8998:8983 -v "$LOCAL_VOLUME_NAME":"$DEFAULT_IMAGE_VOLUME_EXPORT_PATH" "$LOCAL_IMAGE_NAME" 2>&1)"
+
+  ENABLED_CORES=(
+    "core_de"
+    "core_en"
+    "core_da"
+  )
+
+  SOME_DISABLED_CORES=(
+    "core_fi"
+    "core_fr"
+    "core_gl"
+    "core_el"
+    "core_hi"
+    "core_hu"
+    "core_id"
+    "core_it"
+    "core_ja"
+  )
+
+  echo -e "\nCheck enabled cores are available:"
+  for core in "${ENABLED_CORES[@]}"
+  do
+    echo -n "  $core is enabled"
+    prettyPrintOrExitOnError $? "$(isCoreAvailable "$core" 2>&1)"
+  done
+
+  echo -e "\nCheck few other cores are really disabled:"
+  for core in "${SOME_DISABLED_CORES[@]}"
+  do
+    echo -n "  $core is disabled"
+    prettyPrintOrExitOnError $? "$(isCoreUnavailable "$core" 2>&1)"
+  done
+
+}
+
 ### run the tests
 
 assertDockerVersionIsGtOrEq193
@@ -276,6 +325,8 @@ assertAllCoresAreQueriable
 
 assertDataPathIsCreatedByApacheSolr
 assertNecessaryPathsAreOwnedBySolr
+
+assertCoresAreSwitchableViaEnvVar
 
 
 echo -e "${GREEN}"'\nAll checks passed successfully!\n'"${NC}"

@@ -30,14 +30,8 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
  */
 class ConfigurationService
 {
-    /**
-     * @var FlexFormService
-     */
     protected FlexFormService $flexFormService;
 
-    /**
-     * @var TypoScriptService
-     */
     protected TypoScriptService $typoScriptService;
 
     public function __construct()
@@ -46,18 +40,12 @@ class ConfigurationService
         $this->typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
     }
 
-    /**
-     * @param FlexFormService $flexFormService
-     */
-    public function setFlexFormService(FlexFormService $flexFormService)
+    public function setFlexFormService(FlexFormService $flexFormService): void
     {
         $this->flexFormService = $flexFormService;
     }
 
-    /**
-     * @param TypoScriptService $typoScriptService
-     */
-    public function setTypoScriptService(TypoScriptService $typoScriptService)
+    public function setTypoScriptService(TypoScriptService $typoScriptService): void
     {
         $this->typoScriptService = $typoScriptService;
     }
@@ -66,9 +54,8 @@ class ConfigurationService
      * Override the given solrConfiguration with flex form configuration.
      *
      * @param string $flexFormData The raw data from database.
-     * @param TypoScriptConfiguration $solrTypoScriptConfiguration
      */
-    public function overrideConfigurationWithFlexFormSettings(string $flexFormData, TypoScriptConfiguration $solrTypoScriptConfiguration)
+    public function overrideConfigurationWithFlexFormSettings(string $flexFormData, TypoScriptConfiguration $solrTypoScriptConfiguration): void
     {
         if (empty($flexFormData)) {
             return;
@@ -85,10 +72,6 @@ class ConfigurationService
      * Override filter in configuration.
      *
      * Will parse the filter from flex form structure and rewrite it as typoscript structure.
-     *
-     * @param array $flexFormConfiguration
-     *
-     * @return array
      */
     protected function overrideFilter(array $flexFormConfiguration): array
     {
@@ -112,10 +95,6 @@ class ConfigurationService
 
     /**
      * Returns filter in typoscript form from flex form.
-     *
-     * @param array $flexFormConfiguration
-     *
-     * @return array
      */
     protected function getFilterFromFlexForm(array $flexFormConfiguration): array
     {
@@ -132,11 +111,11 @@ class ConfigurationService
             $fieldName = $filter['field'];
             $fieldValue = $filter['value'];
 
-            if (!is_numeric($fieldValue) && strpos($fieldValue, '?') === false && strpos($fieldValue, '*') === false) {
+            if (!is_numeric($fieldValue) && !str_contains($fieldValue, '?') && !str_contains($fieldValue, '*')) {
                 $fieldValue = '"' . str_replace('"', '\"', $fieldValue) . '"';
             }
 
-            $filterConfiguration[] =  $fieldName . ':' . $fieldValue;
+            $filterConfiguration[] = $fieldName . ':' . $fieldValue;
         }
         return $filterConfiguration;
     }
