@@ -9,6 +9,7 @@
 	<lib dir="${solr.install.dir:../../../..}/modules/langid/lib/" regex=".*\.jar" />
 	<lib dir="${solr.install.dir:../../../..}/modules/analytics/lib/" regex=".*\.jar" />
 	<lib dir="${solr.install.dir:../../../..}/modules/analysis-extras/lib/" regex=".*\.jar" />
+	<lib dir="${solr.install.dir:../../../..}/modules/scripting/lib/" regex=".*\.jar" />
 
 	<!-- TYPO3 Plugins -->
 	<lib dir="typo3lib" regex=".*\.jar" />
