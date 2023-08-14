@@ -134,7 +134,7 @@ class Queue
      */
     public function updateItem(
         string $itemType,
-        int|string $itemUid,
+        int $itemUid,
         int $forcedChangeTime = 0,
     ): int {
         $updateCount = $this->updateOrAddItemForAllRelatedRootPages($itemType, $itemUid, $forcedChangeTime);
@@ -151,7 +151,7 @@ class Queue
      */
     protected function updateOrAddItemForAllRelatedRootPages(
         string $itemType,
-        int|string $itemUid,
+        int $itemUid,
         int $forcedChangeTime,
     ): int {
         $updateCount = 0;
@@ -239,7 +239,7 @@ class Queue
      */
     private function addNewItem(
         string $itemType,
-        int|string $itemUid,
+        int $itemUid,
         string $indexingConfiguration,
         int $rootPageId,
         int $indexingPriority = 0
@@ -265,7 +265,7 @@ class Queue
      */
     protected function getRecordCached(
         string $itemType,
-        int|string $itemUid,
+        int $itemUid,
         string $additionalRecordFields,
     ): ?array {
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
@@ -293,7 +293,7 @@ class Queue
      */
     protected function getItemChangedTime(
         string $itemType,
-        int|string $itemUid,
+        int $itemUid,
     ): int {
         $itemTypeHasStartTimeColumn = false;
         $changedTimeColumns = $GLOBALS['TCA'][$itemType]['ctrl']['tstamp'];
@@ -358,7 +358,7 @@ class Queue
      */
     public function containsItem(
         string $itemType,
-        int|string $itemUid
+        int $itemUid,
     ): bool {
         return $this->queueItemRepository->containsItem($itemType, (int)$itemUid);
     }
@@ -370,7 +370,7 @@ class Queue
      */
     public function containsItemWithRootPageId(
         string $itemType,
-        int|string $itemUid,
+        int $itemUid,
         int $rootPageId,
     ): bool {
         return $this->queueItemRepository->containsItemWithRootPageId($itemType, (int)$itemUid, $rootPageId);
@@ -384,7 +384,7 @@ class Queue
      */
     public function containsIndexedItem(
         string $itemType,
-        int|string $itemUid,
+        int $itemUid,
     ): bool {
         return $this->queueItemRepository->containsIndexedItem($itemType, (int)$itemUid);
     }
@@ -396,7 +396,7 @@ class Queue
      */
     public function deleteItem(
         string $itemType,
-        int|string $itemUid,
+        int $itemUid,
     ): void {
         $this->queueItemRepository->deleteItem($itemType, (int)$itemUid);
     }
@@ -449,8 +449,10 @@ class Queue
      *
      * @throws DBALException
      */
-    public function getItems(string $itemType, int|string $itemUid): array
-    {
+    public function getItems(
+        string $itemType,
+        int $itemUid,
+    ): array {
         return $this->queueItemRepository->findItemsByItemTypeAndItemUid($itemType, (int)$itemUid);
     }
 
