@@ -30,5 +30,6 @@ Further details including a comparison chart are provided at the program homepag
 | **Read online:** | https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/ |
 | **TER:**         | https://extensions.typo3.org/extension/solr                     |
 | **Homepage:**    | https://www.typo3-solr.com/                                     |
+| **Fund:**        | https://shop.dkd.de/Produkte/Apache-Solr-fuer-TYPO3/            |
 
 Powered by the TYPO3 community and <br><br>![dkd Internet Service GmbH](./Resources/Public/Images/dkd_logo.png)
