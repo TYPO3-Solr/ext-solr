@@ -102,7 +102,7 @@ class PageFieldMappingIndexer
      * @param string $solrFieldName The Solr field name to resolve the value from the item's record
      * @return string|array The resolved value to be indexed
      */
-    protected function resolveFieldValue(string $solrFieldName, Document $pageDocument, array $pageRecord): array|string
+    protected function resolveFieldValue(string $solrFieldName, Document $pageDocument, array $pageRecord): mixed
     {
         $pageIndexingConfiguration = $this->configuration->getIndexQueueFieldsConfigurationByConfigurationName($this->pageIndexingConfigurationName);
 

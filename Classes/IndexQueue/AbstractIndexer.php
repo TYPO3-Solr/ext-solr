@@ -119,7 +119,7 @@ abstract class AbstractIndexer
         string $solrFieldName,
         array $data,
         TypoScriptFrontendController $tsfe
-    ): array|float|int|string|null {
+    ): mixed {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
 
@@ -276,7 +276,7 @@ abstract class AbstractIndexer
      * @param string $fieldType The dynamic field's type
      * @return int|float|string|null Returns the value in the correct format for the field type
      */
-    protected function ensureFieldValueType(mixed $value, string $fieldType): int|float|string|null
+    protected function ensureFieldValueType(mixed $value, string $fieldType): mixed
     {
         switch ($fieldType) {
             case 'int':
