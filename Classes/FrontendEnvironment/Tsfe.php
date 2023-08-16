@@ -167,11 +167,11 @@ class Tsfe implements SingletonInterface
 
             $backedUpBackendUser = $GLOBALS['BE_USER'] ?? null;
             try {
+                $serverRequest = $serverRequest->withAttribute('frontend.controller', $tsfe);
                 $tsfe->determineId($serverRequest);
-                $serverRequest->withAttribute('frontend.controller', $tsfe);
                 $tsfe->no_cache = false;
-                // @todo T12: Check if following line really needed
-                $tsfe->getFromCache($serverRequest);
+                /** @var ServerRequest $serverRequest */
+                $serverRequest = $tsfe->getFromCache($serverRequest);
                 // The manual releasing of locks is low level api and should be avoided in EXT:solr.
                 $tsfe->releaseLocks();
 
@@ -193,6 +193,7 @@ class Tsfe implements SingletonInterface
                 $GLOBALS['BE_USER'] = $backedUpBackendUser;
             }
 
+            $this->serverRequestCache[$cacheIdentifier] = $serverRequest;
             $this->tsfeCache[$cacheIdentifier] = $tsfe;
         }
 
