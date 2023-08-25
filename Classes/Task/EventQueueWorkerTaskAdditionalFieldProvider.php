@@ -48,8 +48,11 @@ class EventQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
         /** @var EventQueueWorkerTask $task */
         $additionalFields = [];
 
-        if (!$task instanceof EventQueueWorkerTask) {
+        if ($task !== null && !($task instanceof EventQueueWorkerTask)) {
             return $additionalFields;
+        }
+        if ($schedulerModule->getCurrentAction()->equals(Action::ADD)) {
+            $taskInfo['solr_eventqueueworkertask_limit'] = EventQueueWorkerTask::DEFAULT_PROCESSING_LIMIT;
         }
 
         if ($schedulerModule->getCurrentAction()->equals(Action::EDIT)) {
@@ -95,6 +98,6 @@ class EventQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
             return;
         }
 
-        $task->setLimit($submittedData['solr_eventqueueworkertask_limit']);
+        $task->setLimit((int)$submittedData['solr_eventqueueworkertask_limit']);
     }
 }
