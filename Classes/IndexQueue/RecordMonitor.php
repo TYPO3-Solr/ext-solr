@@ -24,6 +24,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwapp
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Exception\Page\PageNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -38,6 +39,11 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  */
 class RecordMonitor
 {
+    /**
+     * @var array
+     */
+    protected array $trackedRecords = [];
+
     /**
      * @var EventDispatcherInterface
      */
@@ -66,10 +72,17 @@ class RecordMonitor
         $table,
         $uid
     ): void {
-        if ($command === 'delete' && $table === 'tt_content' && ($GLOBALS['BE_USER']->workspace ?? null) == 0) {
+        if (($GLOBALS['BE_USER']->workspace ?? null) != 0) {
+            return;
+        }
+
+        if ($command === 'delete' && $table === 'tt_content') {
             $this->eventDispatcher->dispatch(
                 new ContentElementDeletedEvent($uid)
             );
+        } elseif ($command === 'move' && $table === 'pages') {
+            $pageRow = BackendUtility::getRecord('pages', $uid);
+            $this->trackedRecords['pages'][$uid] = $pageRow;
         }
     }
 
@@ -104,9 +117,11 @@ class RecordMonitor
 
         // moving pages/records in LIVE workspace
         if ($command === 'move' && ($GLOBALS['BE_USER']->workspace ?? null) == 0) {
-            $this->eventDispatcher->dispatch(
-                new RecordMovedEvent($uid, $table)
-            );
+            $event = new RecordMovedEvent($uid, $table);
+            if ($table === 'pages' && ($this->trackedRecords['pages'][$uid] ?? null) !== null) {
+                $event->setPreviousParentId((int)$this->trackedRecords['pages'][$uid]['pid']);
+            }
+            $this->eventDispatcher->dispatch($event);
         }
     }
 

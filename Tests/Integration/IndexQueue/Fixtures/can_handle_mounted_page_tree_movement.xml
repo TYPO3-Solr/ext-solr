@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<pages>
+		<uid>2</uid>
+		<doktype>1</doktype>
+		<pid>1</pid>
+		<title>1st subpage in root 1</title>
+		<sorting>10</sorting>
+	</pages>
+	<pages>
+		<uid>3</uid>
+		<doktype>7</doktype>
+		<pid>1</pid>
+		<title>mount point for subtree</title>
+		<sorting>20</sorting>
+		<mount_pid_ol>0</mount_pid_ol>
+		<mount_pid>10</mount_pid>
+	</pages>
+	<pages>
+		<uid>4</uid>
+		<doktype>254</doktype>
+		<pid>1</pid>
+		<title>sysfolder with set option no_search_sub_entries</title>
+		<no_search_sub_entries>1</no_search_sub_entries>
+		<sorting>99</sorting>
+	</pages>
+	<pages>
+		<uid>10</uid>
+		<pid>1</pid>
+		<doktype>1</doktype>
+		<hidden>0</hidden>
+		<title>root of subtree to be moved</title>
+		<sorting>30</sorting>
+	</pages>
+	<pages>
+		<uid>11</uid>
+		<doktype>1</doktype>
+		<pid>10</pid>
+		<title>first child of subtree to be moved</title>
+	</pages>
+</dataset>
