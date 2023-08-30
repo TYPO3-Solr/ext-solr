@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events;
 /**
  * Event fired if a page is moved
  */
-class PageMovedEvent extends AbstractDataUpdateEvent
+class PageMovedEvent extends AbstractRecordMovedEvent
 {
     /**
      * Constructor

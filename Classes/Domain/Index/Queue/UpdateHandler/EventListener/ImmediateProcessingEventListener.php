@@ -104,7 +104,7 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
     protected function handleRecordMovedEvent(RecordMovedEvent $event): void
     {
         if ($event->isPageUpdate()) {
-            $this->getDataUpdateHandler()->handleMovedPage($event->getUid());
+            $this->getDataUpdateHandler()->handleMovedPage($event->getUid(), $event->getPreviousParentId());
         } else {
             $this->getDataUpdateHandler()->handleMovedRecord($event->getUid(), $event->getTable());
         }
@@ -150,7 +150,7 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
      */
     protected function handlePageMovedEvent(PageMovedEvent $event): void
     {
-        $this->getGarbageHandler()->handlePageMovement($event->getUid());
+        $this->getGarbageHandler()->handlePageMovement($event->getUid(), $event->getPreviousParentId());
     }
 
     /**

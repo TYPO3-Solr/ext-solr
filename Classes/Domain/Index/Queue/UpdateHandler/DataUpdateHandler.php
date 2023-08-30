@@ -231,12 +231,27 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * Handle page move
      *
+     * @param int $uid
+     * @param int|null $previousParentId
      * @throws DBALException
      * @throws UnexpectedTYPO3SiteInitializationException
      */
-    public function handleMovedPage(int $uid): void
+    public function handleMovedPage(int $uid, ?int $previousParentId = null): void
     {
+        $excludedPages = $this->pagesRepository->findAllPagesWithinNoSearchSubEntriesMarkedPages();
+        if (in_array($uid, $excludedPages)) {
+            return;
+        }
+
         $this->applyPageChangesToQueue($uid);
+
+        if ($previousParentId !== null) {
+            $pageRecord = BackendUtility::getRecord('pages', $uid);
+            if ($pageRecord !== null && (int)$pageRecord['pid'] !== $previousParentId) {
+                $treePageIds = $this->getSubPageIds($uid);
+                $this->updatePageIdItems($treePageIds);
+            }
+        }
     }
 
     /**
@@ -483,7 +498,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
     protected function updatePageIdItems(array $treePageIds): void
     {
         foreach ($treePageIds as $treePageId) {
-            $this->indexQueue->updateItem('pages', $treePageId);
+            $this->indexQueue->updateItem('pages', $treePageId, time());
+            $this->mountPageUpdater->update($treePageId);
         }
     }
 

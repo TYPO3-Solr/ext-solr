@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializat
 use Doctrine\DBAL\Exception as DBALException;
 use PDO;
 use Throwable;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
@@ -79,20 +80,30 @@ class GarbageHandler extends AbstractUpdateHandler
     /**
      * Handles moved pages
      *
+     * As rootline and page slug might have changed on page movement,
+     * document have to be removed from Solr. Reindexing is taken
+     * care of by the DataUpdateHandler.
+     *
+     * @param int $uid
+     * @param int|null $previousParentId
      * @throws DBALException
      * @throws UnexpectedTYPO3SiteInitializationException
      */
-    public function handlePageMovement(int $uid): void
+    public function handlePageMovement(int $uid, ?int $previousParentId = null): void
     {
-        // TODO the below comment is not valid anymore, pid has been removed from doc ID
-        // ...still needed?
-
-        // must be removed from index since the pid changes and
-        // is part of the Solr document ID
         $this->collectGarbage('pages', $uid);
 
-        // now re-index with new properties
-        $this->indexQueue->updateItem('pages', $uid);
+        // collect garbage of subpages
+        if ($previousParentId !== null) {
+            $pageRecord = BackendUtility::getRecord('pages', $uid);
+            if ($pageRecord !== null && (int)$pageRecord['pid'] !== $previousParentId) {
+                $subPageIds = $this->getSubPageIds($uid);
+                array_walk(
+                    $subPageIds,
+                    fn (int $subPageId) => $this->collectGarbage('pages', $subPageId)
+                );
+            }
+        }
     }
 
     /**
