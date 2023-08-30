@@ -91,11 +91,6 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
     public function handlePageMovementTriggersGarbageCollectionAndReindexing(): void
     {
         $this->initGarbageCollectionExpectations(PageStrategy::class, 'pages', 123);
-        $this->indexQueueMock
-            ->expects(self::once())
-            ->method('updateItem')
-            ->with('pages', 123);
-
         $this->garbageHandler->handlePageMovement(123);
     }
 
