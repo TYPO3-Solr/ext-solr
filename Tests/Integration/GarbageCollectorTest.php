@@ -330,6 +330,83 @@ class GarbageCollectorTest extends IntegrationTest
     /**
      * @test
      */
+    public function canCollectGarbageIfPageTreeIsMoved(): void
+    {
+        $this->importDataSetFromFixture('can_collect_garbage_if_page_tree_is_moved.xml');
+
+        $this->assertEmptyIndexQueue();
+        $this->addToQueueAndIndexRecord('pages', 10);
+        $this->addToQueueAndIndexRecord('pages', 11);
+        $this->addToQueueAndIndexRecord('pages', 12);
+        $this->addToQueueAndIndexRecord('pages', 13);
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrContainsDocumentCount(4);
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => 2]]],
+            $this->fakeBEUser(1, 0)
+        );
+
+        $this->dataHandler->process_cmdmap();
+        $this->assertIndexQueueContainsItemAmount(4);
+        $this->assertSolrContainsDocumentCount(0);
+    }
+
+    /**
+     * @test
+     */
+    public function canCollectGarbageIfPageTreeIsMovedToSysfolderWithDisabledOptionIncludeSubEntriesInSearch(): void
+    {
+        $this->importDataSetFromFixture('can_collect_garbage_if_page_tree_is_moved.xml');
+
+        $this->assertEmptyIndexQueue();
+        $this->addToQueueAndIndexRecord('pages', 10);
+        $this->addToQueueAndIndexRecord('pages', 11);
+        $this->addToQueueAndIndexRecord('pages', 12);
+        $this->addToQueueAndIndexRecord('pages', 13);
+        $this->waitToBeVisibleInSolr();
+        $this->assertIndexQueueContainsItemAmount(4);
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => 4]]],
+            $this->fakeBEUser(1, 0)
+        );
+        $this->dataHandler->process_cmdmap();
+        $this->assertEmptyIndexQueue();
+        $this->assertSolrContainsDocumentCount(0);
+    }
+
+    /**
+     * @test
+     */
+    public function canCollectGarbageIfPageTreeIsMovedButStaysOnSamePage(): void
+    {
+        $this->importDataSetFromFixture('can_collect_garbage_if_page_tree_is_moved.xml');
+
+        $this->assertEmptyIndexQueue();
+        $this->addToQueueAndIndexRecord('pages', 10);
+        $this->addToQueueAndIndexRecord('pages', 11);
+        $this->addToQueueAndIndexRecord('pages', 12);
+        $this->addToQueueAndIndexRecord('pages', 13);
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrContainsDocumentCount(4);
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => -2]]],
+            $this->fakeBEUser(1, 0)
+        );
+
+        $this->dataHandler->process_cmdmap();
+        $this->assertIndexQueueContainsItemAmount(4);
+        $this->assertSolrContainsDocumentCount(3);
+    }
+
+    /**
+     * @test
+     */
     public function canRemoveDeletedContentElement(): void
     {
         $this->prepareCanRemoveDeletedContentElement();

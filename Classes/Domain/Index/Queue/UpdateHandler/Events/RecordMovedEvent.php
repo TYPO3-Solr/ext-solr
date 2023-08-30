@@ -20,6 +20,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events;
 /**
  * Event fired if a record is moved
  */
-class RecordMovedEvent extends AbstractDataUpdateEvent
+class RecordMovedEvent extends AbstractRecordMovedEvent
 {
 }

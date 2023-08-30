@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbag
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -79,11 +80,18 @@ class GarbageCollector implements SingletonInterface
      */
     public function processCmdmap_preProcess($command, $table, $uid, $value, DataHandler $tceMain): void
     {
-        // workspaces: collect garbage only for LIVE workspace
-        if ($command === 'delete' && ($GLOBALS['BE_USER']->workspace ?? null) == 0) {
+        // workspaces: process command map only for LIVE workspace
+        if (($GLOBALS['BE_USER']->workspace ?? null) != 0) {
+            return;
+        }
+
+        if ($command === 'delete') {
             $this->eventDispatcher->dispatch(
                 new RecordDeletedEvent((int)$uid, (string)$table)
             );
+        } elseif ($command === 'move' && $table === 'pages') {
+            $pageRow = BackendUtility::getRecord('pages', $uid);
+            $this->trackedRecords['pages'][$uid] = $pageRow;
         }
     }
 
@@ -115,9 +123,11 @@ class GarbageCollector implements SingletonInterface
     {
         // workspaces: collect garbage only for LIVE workspace
         if ($command === 'move' && $table === 'pages' && ($GLOBALS['BE_USER']->workspace ?? null) == 0) {
-            $this->eventDispatcher->dispatch(
-                new PageMovedEvent((int)$uid)
-            );
+            $event = new PageMovedEvent((int)$uid);
+            if (($this->trackedRecords['pages'][$uid] ?? null) !== null) {
+                $event->setPreviousParentId((int)$this->trackedRecords['pages'][$uid]['pid']);
+            }
+            $this->eventDispatcher->dispatch($event);
         }
     }
 

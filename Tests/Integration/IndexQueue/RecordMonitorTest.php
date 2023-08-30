@@ -805,6 +805,57 @@ class RecordMonitorTest extends IntegrationTest
     /**
      * @test
      */
+    public function canHandePageTreeMovement(): void
+    {
+        $this->importDataSetFromFixture('can_handle_page_tree_movement.xml');
+        $this->assertEmptyIndexQueue();
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => 2]]],
+            $this->fakeBEUser(1, 0)
+        );
+        $this->dataHandler->process_cmdmap();
+        $this->assertIndexQueueContainsItemAmount(4);
+    }
+
+    /**
+     * @test
+     */
+    public function canHandePageTreeMovementIfPageTreeIsMovedToSysfolderWithDisabledOptionIncludeSubEntriesInSearch(): void
+    {
+        $this->importDataSetFromFixture('can_handle_page_tree_movement.xml');
+        $this->assertEmptyIndexQueue();
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => 4]]],
+            $this->fakeBEUser(1, 0)
+        );
+        $this->dataHandler->process_cmdmap();
+        $this->assertEmptyIndexQueue();
+    }
+
+    /**
+     * @test
+     */
+    public function canHandePageTreeMovementIfPageTreeIsMounted(): void
+    {
+        $this->importDataSetFromFixture('can_handle_mounted_page_tree_movement.xml');
+        $this->assertEmptyIndexQueue();
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => 2]]],
+            $this->fakeBEUser(1, 0)
+        );
+        $this->dataHandler->process_cmdmap();
+        $this->assertIndexQueueContainsItemAmount(3);
+    }
+
+    /**
+     * @test
+     */
     public function mountPointIsOnlyAddedOnceForEachTree(): void
     {
         $data = $this->prepareMountPointIsOnlyAddedOnceForEachTree();
