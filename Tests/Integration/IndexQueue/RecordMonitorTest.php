@@ -30,6 +30,7 @@ use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Psr\Log\LogLevel;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -79,6 +80,8 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected $eventQueue;
 
+    protected BackendUserAuthentication $backendUser;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -89,6 +92,10 @@ class RecordMonitorTest extends IntegrationTest
         $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
         $this->extensionConfiguration->set('solr', ['monitoringType' => 0]);
+        // fake that a backend user is logged in
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/be_users.csv');
+        $this->backendUser = $this->setUpBackendUser(1);
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
     }
 
     protected function tearDown(): void
@@ -100,7 +107,9 @@ class RecordMonitorTest extends IntegrationTest
             $this->dataHandler,
             $this->indexQueue,
             $this->extensionConfiguration,
-            $this->eventQueue
+            $this->eventQueue,
+            $this->backendUser,
+            $GLOBALS['LANG']
         );
         parent::tearDown();
     }
@@ -791,6 +800,57 @@ class RecordMonitorTest extends IntegrationTest
 
         $dataHandler = $this->dataHandler;
         $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 8, $changeSet, $dataHandler);
+    }
+
+    /**
+     * @test
+     */
+    public function canHandePageTreeMovement(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_handle_page_tree_movement.csv');
+        $this->assertEmptyIndexQueue();
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => 2]]],
+            $this->backendUser
+        );
+        $this->dataHandler->process_cmdmap();
+        $this->assertIndexQueueContainsItemAmount(4);
+    }
+
+    /**
+     * @test
+     */
+    public function canHandePageTreeMovementIfPageTreeIsMovedToSysfolderWithDisabledOptionIncludeSubEntriesInSearch(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_handle_page_tree_movement.csv');
+        $this->assertEmptyIndexQueue();
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => 4]]],
+            $this->backendUser
+        );
+        $this->dataHandler->process_cmdmap();
+        $this->assertEmptyIndexQueue();
+    }
+
+    /**
+     * @test
+     */
+    public function canHandePageTreeMovementIfPageTreeIsMounted(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_handle_mounted_page_tree_movement.csv');
+        $this->assertEmptyIndexQueue();
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => 2]]],
+            $this->backendUser
+        );
+        $this->dataHandler->process_cmdmap();
+        $this->assertIndexQueueContainsItemAmount(3);
     }
 
     /**
@@ -1842,8 +1902,6 @@ class RecordMonitorTest extends IntegrationTest
     public function canCreateSiteOneRootLevel(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_can_create_new_page.csv');
-        $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/be_users.csv');
-        $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
 
         $this->assertIndexQueueContainsItemAmount(0);
         $dataHandler = $this->getDataHandler();
@@ -1862,8 +1920,6 @@ class RecordMonitorTest extends IntegrationTest
     public function canCreateSubPageBelowSiteRoot(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_can_create_new_page.csv');
-        $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/be_users.csv');
-        $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
 
         $this->assertIndexQueueContainsItemAmount(0);
         $dataHandler = $this->getDataHandler();

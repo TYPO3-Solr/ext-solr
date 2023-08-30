@@ -116,7 +116,9 @@ class GarbageCollectorTest extends IntegrationTest
             $this->garbageCollector,
             $this->indexer,
             $this->extensionConfiguration,
-            $this->eventQueue
+            $this->eventQueue,
+            $this->backendUser,
+            $GLOBALS['LANG']
         );
         parent::tearDown();
     }
@@ -335,6 +337,83 @@ class GarbageCollectorTest extends IntegrationTest
 
         $dataHandler = $this->dataHandler;
         $this->garbageCollector->processDatamap_afterDatabaseOperations('update', 'pages', 2, $changeSet, $dataHandler);
+    }
+
+    /**
+     * @test
+     */
+    public function canCollectGarbageIfPageTreeIsMoved(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_collect_garbage_if_page_tree_is_moved.csv');
+
+        $this->assertEmptyIndexQueue();
+        $this->addToQueueAndIndexRecord('pages', 10);
+        $this->addToQueueAndIndexRecord('pages', 11);
+        $this->addToQueueAndIndexRecord('pages', 12);
+        $this->addToQueueAndIndexRecord('pages', 13);
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrContainsDocumentCount(4);
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => 2]]],
+            $this->backendUser
+        );
+
+        $this->dataHandler->process_cmdmap();
+        $this->assertIndexQueueContainsItemAmount(4);
+        $this->assertSolrContainsDocumentCount(0);
+    }
+
+    /**
+     * @test
+     */
+    public function canCollectGarbageIfPageTreeIsMovedToSysfolderWithDisabledOptionIncludeSubEntriesInSearch(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_collect_garbage_if_page_tree_is_moved.csv');
+
+        $this->assertEmptyIndexQueue();
+        $this->addToQueueAndIndexRecord('pages', 10);
+        $this->addToQueueAndIndexRecord('pages', 11);
+        $this->addToQueueAndIndexRecord('pages', 12);
+        $this->addToQueueAndIndexRecord('pages', 13);
+        $this->waitToBeVisibleInSolr();
+        $this->assertIndexQueueContainsItemAmount(4);
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => 4]]],
+            $this->backendUser
+        );
+        $this->dataHandler->process_cmdmap();
+        $this->assertEmptyIndexQueue();
+        $this->assertSolrContainsDocumentCount(0);
+    }
+
+    /**
+     * @test
+     */
+    public function canCollectGarbageIfPageTreeIsMovedButStaysOnSamePage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_collect_garbage_if_page_tree_is_moved.csv');
+
+        $this->assertEmptyIndexQueue();
+        $this->addToQueueAndIndexRecord('pages', 10);
+        $this->addToQueueAndIndexRecord('pages', 11);
+        $this->addToQueueAndIndexRecord('pages', 12);
+        $this->addToQueueAndIndexRecord('pages', 13);
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrContainsDocumentCount(4);
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [10 => ['move' => -2]]],
+            $this->backendUser
+        );
+
+        $this->dataHandler->process_cmdmap();
+        $this->assertIndexQueueContainsItemAmount(4);
+        $this->assertSolrContainsDocumentCount(3);
     }
 
     /**
