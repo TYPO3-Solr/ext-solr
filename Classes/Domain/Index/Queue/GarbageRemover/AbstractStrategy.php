@@ -111,6 +111,10 @@ abstract class AbstractStrategy
             try {
                 $site = $indexQueueItem->getSite();
             } catch (InvalidArgumentException $e) {
+                $site = null;
+            }
+
+            if ($site === null) {
                 $this->queue->deleteItem($indexQueueItem->getType(), $indexQueueItem->getIndexQueueUid());
                 continue;
             }
