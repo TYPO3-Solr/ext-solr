@@ -43,7 +43,6 @@ class SearchTest extends UnitTest
 
     protected function setUp(): void
     {
-//        $this->solrReadServiceMock = $this->getDumbMock(SolrReadService::class);
         $this->solrReadServiceMock = $this->getMockBuilder(SolrReadService::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['search'])

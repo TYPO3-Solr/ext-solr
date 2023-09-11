@@ -63,18 +63,19 @@ class FrequentSearchesServiceTest extends UnitTest
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 
         $this->frequentSearchesService = new class($this->configurationMock, $this->cacheMock, $this->tsfeMock, $this->statisticsRepositoryMock) extends FrequentSearchesService {
-//            protected function getCacheIdentifier(array $frequentSearchConfiguration) : string {
-//                $identifier = 'frequentSearchesTags';
-//                if (isset($frequentSearchConfiguration['select.']['checkRootPageId']) && $frequentSearchConfiguration['select.']['checkRootPageId']) {
-//                    $identifier .= '_RP' . 4710;
-//                }
-//                if (isset($frequentSearchConfiguration['select.']['checkLanguage']) && $frequentSearchConfiguration['select.']['checkLanguage']) {
-//                    $identifier .= '_L' . 0;
-//                }
-//
-//                $identifier .= '_' . md5(serialize($frequentSearchConfiguration));
-//                return $identifier;
-//            }
+            protected function getCacheIdentifier(array $frequentSearchConfiguration): string
+            {
+                $identifier = 'frequentSearchesTags';
+                if (isset($frequentSearchConfiguration['select.']['checkRootPageId']) && $frequentSearchConfiguration['select.']['checkRootPageId']) {
+                    $identifier .= '_RP' . 4710;
+                }
+                if (isset($frequentSearchConfiguration['select.']['checkLanguage']) && $frequentSearchConfiguration['select.']['checkLanguage']) {
+                    $identifier .= '_L' . 0;
+                }
+
+                $identifier .= '_' . md5(serialize($frequentSearchConfiguration));
+                return $identifier;
+            }
         };
         parent::setUp();
     }

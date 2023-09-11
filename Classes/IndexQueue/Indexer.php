@@ -467,9 +467,6 @@ class Indexer extends AbstractIndexer
      */
     protected function processDocuments(Item $item, array $documents): array
     {
-//        // needs to respect the TS settings for the page the item is on, conditions may apply
-//        $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($item->getRootPageUid());
-
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $solrConfiguration = $siteRepository->getSiteByPageId($item->getRootPageUid())->getSolrConfiguration();
         $fieldProcessingInstructions = $solrConfiguration->getIndexFieldProcessingInstructionsConfiguration();
