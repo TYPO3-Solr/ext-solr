@@ -254,8 +254,6 @@ class IndexerTest extends IntegrationTest
     {
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
 
-//        $this->writeDefaultSolrTestSiteConfiguration();
-
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));

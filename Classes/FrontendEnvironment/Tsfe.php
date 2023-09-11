@@ -98,9 +98,9 @@ class Tsfe implements SingletonInterface
             $reusedCacheIdentifier = $this->getCacheIdentifier($pidToUse, $language, $rootPageId);
             $this->serverRequestCache[$cacheIdentifier] = $this->serverRequestCache[$reusedCacheIdentifier];
             $this->tsfeCache[$cacheIdentifier] = $this->tsfeCache[$reusedCacheIdentifier];
-//            if ($rootPageId === null) {
-//                // @Todo: Resolve and set TSFE object for $rootPageId.
-//            }
+            // if ($rootPageId === null) {
+            //     @Todo: Resolve and set TSFE object for $rootPageId.
+            // }
             return;
         }
 
