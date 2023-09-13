@@ -19,8 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Utility;
 
 /**
  * This utility class contains several functions used inside the middleware and enhancer for routing purposes
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 class RoutingUtility
 {

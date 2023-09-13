@@ -18,8 +18,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
 /**
  * The implementation can be used to influence a SearchResultSet that is
  * created and processed in the SearchResultSetService.
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 interface SearchResultSetProcessor
 {

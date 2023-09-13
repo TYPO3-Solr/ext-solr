@@ -31,8 +31,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 /**
  * Class DocumentScoreAnalyzerViewHelper
  *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  *
  * @noinspection PhpUnused Used in {@link Resources/Private/Partials/Result/Document.html}
  */

@@ -20,8 +20,6 @@ use RuntimeException;
 /**
  * Exception that is thrown when trying to add a field to a Solr document using
  * a reserved name.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class InvalidFieldNameException extends RuntimeException
 {

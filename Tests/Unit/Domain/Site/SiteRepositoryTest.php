@@ -30,9 +30,6 @@ use TYPO3\CMS\Core\Site\SiteFinder;
  * Testcase to check if the SiteRepository class works as expected.
  *
  * The unit test is used to make sure that the SiteRepository works as expected
- *
- * @author Thomas Hohn <tho@systime.dk>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SiteRepositoryTest extends SetUpUnitTestCase
 {
@@ -203,9 +200,6 @@ class SiteRepositoryTest extends SetUpUnitTestCase
         return $siteMock;
     }
 
-    /**
-     * @param array $sitesInTYPO3
-     */
     protected function fakeSitesInTYPO3Systems(array $sitesInTYPO3): void
     {
         $this->siteFinderMock->expects(self::any())->method('getAllSites')->willReturn($sitesInTYPO3);

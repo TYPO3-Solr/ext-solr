@@ -21,8 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class to parse the schema from a solr response.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SchemaParser
 {

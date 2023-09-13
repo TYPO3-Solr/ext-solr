@@ -43,8 +43,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * 3-1/10/100/11
  *
  * which is finally saved in a multi-value field.
- *
- * @author Steffen Ritter <steffen.ritter@typo3.org>
  */
 class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor
 {

@@ -19,9 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class QueueStatisticTest extends SetUpUnitTestCase
 {
     /**

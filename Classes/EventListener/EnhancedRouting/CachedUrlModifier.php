@@ -23,8 +23,6 @@ use ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEv
  * This modifier is in use if the URL processed by a route enhancer
  *
  * In this case some characters need to be replaced in order to do a placeholder replacement later
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 class CachedUrlModifier
 {

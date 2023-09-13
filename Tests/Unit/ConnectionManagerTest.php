@@ -36,8 +36,6 @@ use UnexpectedValueException;
 
 /**
  * PHP Unit test for connection manager
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class ConnectionManagerTest extends SetUpUnitTestCase
 {

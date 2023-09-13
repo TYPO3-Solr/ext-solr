@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\ContentObject\Classification;
 
 /**
  * Tests for the SOLR_CLASSIFICATION cObj.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ClassificationTest extends SetUpContentObject
 {
@@ -58,9 +56,6 @@ class ClassificationTest extends SetUpContentObject
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
     public function excludePatternDataProvider(): array
     {
         return [

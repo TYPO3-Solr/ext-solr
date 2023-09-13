@@ -35,8 +35,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  *
  * Responsibility: The RootPageResolver is responsible to determine all relevant site root page id's
  * for a certain records, by table and uid.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class RootPageResolver implements SingletonInterface
 {

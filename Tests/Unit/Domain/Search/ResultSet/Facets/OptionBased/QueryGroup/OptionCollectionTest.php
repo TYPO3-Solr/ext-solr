@@ -22,9 +22,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test for the QueryGroupFacet options collection
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * @author Frans Saris <frans@beech.it>
  */
 class OptionCollectionTest extends SetUpUnitTestCase
 {

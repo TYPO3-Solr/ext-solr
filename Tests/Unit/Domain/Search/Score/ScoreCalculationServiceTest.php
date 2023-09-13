@@ -18,14 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Score;
 use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
-/**
- * @author Timo Schmidt <timo.schmidt@dkd.de>
- */
 class ScoreCalculationServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var ScoreCalculationService
-     */
     protected ScoreCalculationService $scoreCalculationService;
 
     protected function setUp(): void

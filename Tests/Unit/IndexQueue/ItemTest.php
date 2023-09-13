@@ -19,9 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class ItemTest extends SetUpUnitTestCase
 {
     /**
@@ -50,9 +47,6 @@ class ItemTest extends SetUpUnitTestCase
         self::assertSame('pages', $type, 'Can not get type from queue item');
     }
 
-    /**
-     * @return array
-     */
     public function getStateDataProvider(): array
     {
         return [

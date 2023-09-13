@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\Search;
 
 /**
  * This event is triggered before setting the form values
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 final class BeforeSearchFormIsShownEvent
 {

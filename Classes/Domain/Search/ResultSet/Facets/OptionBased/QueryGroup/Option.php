@@ -19,9 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractO
 
 /**
  * Value object that represent an option of a queryGroup facet.
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class Option extends AbstractOptionFacetItem
 {

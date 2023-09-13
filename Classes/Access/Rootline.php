@@ -53,8 +53,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  * In this case the lower case R tells us that we're dealing with a record
  * like tt_news or the like. For records the groups are checked using OR
  * instead of using AND as it would be the case with content elements.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Rootline
 {

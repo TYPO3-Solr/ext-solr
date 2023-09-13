@@ -28,8 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * Adds page document fields as configured in
  * plugin.tx_solr.index.additionalFields.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class AdditionalFieldsForPageIndexing
 {

@@ -220,8 +220,6 @@ class Tsfe implements SingletonInterface
      * of EXT:solr* stack is wanted and the language id does not matter.
      *
      * NOTE: This method MUST NOT be used on indexing context.
-     *
-     * @param int ...$languageFallbackChain
      */
     public function getTsfeByPageIdAndLanguageFallbackChain(int $pageId, int ...$languageFallbackChain): ?TypoScriptFrontendController
     {
@@ -357,8 +355,6 @@ class Tsfe implements SingletonInterface
     /**
      * Checks if the page is available for TSFE.
      *
-     * @param array $pageRecord
-     * @return bool
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     protected function isPageAvailableForTSFE(array $pageRecord): bool

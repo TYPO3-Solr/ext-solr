@@ -25,7 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Event listener to handle path elements containing placeholder
  *
- * @author Lars Tode <lars.tode@dkd.de>
  *
  * @noinspection PhpUnused Listener for {@link BeforeCachedVariablesAreProcessedEvent}
  */

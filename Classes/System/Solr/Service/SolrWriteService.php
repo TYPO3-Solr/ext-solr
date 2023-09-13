@@ -24,8 +24,6 @@ use Throwable;
 
 /**
  * Class SolrWriteService
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SolrWriteService extends AbstractSolrService
 {

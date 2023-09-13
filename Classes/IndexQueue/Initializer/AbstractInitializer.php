@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Abstract Index Queue initializer with implementation  of methods for common
  * needs during Index Queue initialization.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 abstract class AbstractInitializer implements IndexQueueInitializer
 {

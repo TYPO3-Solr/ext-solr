@@ -22,8 +22,6 @@ use Doctrine\DBAL\Exception as DBALException;
 
 /**
  * Repository class for sys_category items of the TYPO3 system.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SystemCategoryRepository extends AbstractRepository
 {

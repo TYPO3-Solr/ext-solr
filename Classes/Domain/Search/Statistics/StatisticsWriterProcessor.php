@@ -28,10 +28,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Writes statistics after searches have been conducted.
- *
- * @author Ingo Renner <ingo@typo3.org>
- * @author Dimitri Ebert <dimitri.ebert@dkd.de>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class StatisticsWriterProcessor
 {

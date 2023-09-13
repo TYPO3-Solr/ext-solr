@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Pagination\AbstractPaginator;
 
 /**
  * Class ResultsPaginator
- *
- * @author Rudy Gnodde <rudy.gnodde@beech.it>
  */
 class ResultsPaginator extends AbstractPaginator
 {

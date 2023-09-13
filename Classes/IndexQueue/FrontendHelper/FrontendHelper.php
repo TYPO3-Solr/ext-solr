@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 
 /**
  * Index Queue Frontend Helper interface.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 interface FrontendHelper
 {

@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for the numericRange queryBuilder
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class NumericRangeFacetQueryBuilderTest extends SetUpUnitTestCase
 {

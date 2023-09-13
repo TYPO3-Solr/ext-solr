@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class to handle solr search requests
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Search
 {

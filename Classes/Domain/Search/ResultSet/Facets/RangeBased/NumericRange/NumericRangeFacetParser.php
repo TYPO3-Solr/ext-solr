@@ -23,9 +23,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
  * Class NumericRangeFacetParser
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class NumericRangeFacetParser extends AbstractRangeFacetParser
 {

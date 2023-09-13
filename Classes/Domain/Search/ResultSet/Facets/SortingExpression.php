@@ -19,9 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /**
  * Expression for facet sorting
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * @author Jens Jacobsen <jens.jacobsen@ueberbit.de>
  */
 class SortingExpression
 {

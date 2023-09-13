@@ -39,8 +39,6 @@ use TYPO3\CMS\Scheduler\Scheduler;
 
 /**
  * Testcase for the record monitor
- *
- * @author Timo Schmidt
  */
 class RecordMonitorTest extends IntegrationTest
 {
@@ -119,9 +117,6 @@ class RecordMonitorTest extends IntegrationTest
         );
     }
 
-    /**
-     * @param int $amount
-     */
     protected function assertIndexQueueContainsItemAmount(int $amount): void
     {
         $itemsInQueue = $this->indexQueue->getAllItemsCount();
@@ -846,8 +841,6 @@ class RecordMonitorTest extends IntegrationTest
     /**
      * Prepares the test cases mountPointIsOnlyAddedOnceForEachTree and
      * mountPointIsOnlyAddedOnceForEachTreeInDelayedMode
-     *
-     * @return array
      */
     protected function prepareMountPointIsOnlyAddedOnceForEachTree(): array
     {
@@ -1450,9 +1443,6 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
-    /**
-     * @return array
-     */
     public function updateRecordOutsideSiteRootWithAdditionalWhereClauseDataProvider(): array
     {
         return [
@@ -1470,9 +1460,6 @@ class RecordMonitorTest extends IntegrationTest
     /**
      * @dataProvider updateRecordOutsideSiteRootWithAdditionalWhereClauseDataProvider
      * @test
-     *
-     * @param int $uid
-     * @param int $root
      */
     public function updateRecordOutsideSiteRootWithAdditionalWhereClause(int $uid, int $root): void
     {
@@ -1486,9 +1473,6 @@ class RecordMonitorTest extends IntegrationTest
     /**
      * @dataProvider updateRecordOutsideSiteRootWithAdditionalWhereClauseDataProvider
      * @test
-     *
-     * @param int $uid
-     * @param int $root
      */
     public function updateRecordOutsideSiteRootWithAdditionalWhereClauseInDelayedMode(int $uid, int $root): void
     {
@@ -1510,8 +1494,6 @@ class RecordMonitorTest extends IntegrationTest
     /**
      * Prepares the test cases updateRecordOutsideSiteRootWithAdditionalWhereClause and
      * updateRecordOutsideSiteRootWithAdditionalWhereClauseInDelayedMode
-     *
-     * @param int $uid
      */
     protected function prepareUpdateRecordOutsideSiteRootWithAdditionalWhereClause(int $uid): void
     {
@@ -1804,9 +1786,6 @@ class RecordMonitorTest extends IntegrationTest
      * - updateRecordMonitoringTablesConfiguredNotForTableBeingUpdatedInDelayedModed
      * - updateRecordMonitoringTablesConfiguredForTableBeingUpdated
      * - updateRecordMonitoringTablesConfiguredForTableBeingUpdatedInDelayedModed
-     *
-     * @param int $monitoringType
-     * @param string $useConfigurationMonitorTables
      */
     protected function prepareUpdateRecordMonitoringTablesTests(int $monitoringType, string $useConfigurationMonitorTables): void
     {
@@ -1913,8 +1892,6 @@ class RecordMonitorTest extends IntegrationTest
 
     /**
      * Returns the data handler
-     *
-     * @return DataHandler
      */
     protected function getDataHandler(): DataHandler
     {

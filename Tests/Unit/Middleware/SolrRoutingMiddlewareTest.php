@@ -36,8 +36,6 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 /**
  * Test case to validate the behaviour of the middle ware
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
 {

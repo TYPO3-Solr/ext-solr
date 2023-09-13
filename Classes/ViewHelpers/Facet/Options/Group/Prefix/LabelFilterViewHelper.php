@@ -23,8 +23,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class LabelFilterViewHelper
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class LabelFilterViewHelper extends AbstractSolrFrontendViewHelper
 {

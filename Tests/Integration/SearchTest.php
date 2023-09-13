@@ -32,8 +32,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Test class to perform a search on a real solr server
- *
- * @author Timo Schmidt
  */
 class SearchTest extends IntegrationTest
 {

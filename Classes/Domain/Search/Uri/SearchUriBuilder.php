@@ -39,9 +39,6 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  * The SearchUriBuilder is responsible to build uris, that are used in the
  * searchContext. It can use the previous request with its persistent
  * arguments to build the url for a search sub request.
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SearchUriBuilder
 {

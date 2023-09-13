@@ -19,8 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedE
 
 /**
  * Testcase for the RecordMovedEvent
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class RecordMovedEventTest extends SetUpDataUpdateEvent
 {

@@ -24,9 +24,6 @@ use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class RemoveAllFacetsViewHelperTest extends SetUpFacetItemViewHelper
 {
     /**

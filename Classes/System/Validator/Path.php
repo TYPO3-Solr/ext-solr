@@ -17,8 +17,6 @@ namespace ApacheSolrForTypo3\Solr\System\Validator;
 
 /**
  * Class Path is used for Solr Path related methods
- *
- * @author Thomas Hohn <tho@systime.dk>
  */
 class Path
 {

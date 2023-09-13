@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Site\SiteFinder;
  * SiteHashService
  *
  * Responsible to provide sitehash related service methods.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SiteHashService
 {

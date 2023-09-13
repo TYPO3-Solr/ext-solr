@@ -22,9 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Value object that represent the options facet.
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class HierarchyFacet extends AbstractFacet
 {

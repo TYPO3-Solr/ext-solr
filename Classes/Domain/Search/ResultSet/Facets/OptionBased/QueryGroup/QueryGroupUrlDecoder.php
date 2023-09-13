@@ -21,9 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderInterf
 
 /**
  * Filter encoder to build facet query parameters
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * @author Ingo Renner <ingo@typo3.org>
  */
 class QueryGroupUrlDecoder implements FacetUrlDecoderInterface
 {

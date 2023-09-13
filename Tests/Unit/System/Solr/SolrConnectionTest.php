@@ -32,23 +32,10 @@ use Solarium\Core\Client\Endpoint;
 
 /**
  * Class SolrConnectionTest
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SolrConnectionTest extends SetUpUnitTestCase
 {
     /**
-     * @param Node|null $readNode
-     * @param Node|null $writeNode
-     * @param TypoScriptConfiguration|null $configuration
-     * @param SynonymParser|null $synonymParser
-     * @param StopWordParser|null $stopWordParser
-     * @param SchemaParser|null $schemaParser
-     * @param SolrLogManager|null $logManager
-     * @param ClientInterface|null $psr7Client
-     * @param RequestFactoryInterface|null $requestFactory
-     * @param StreamFactoryInterface|null $streamFactory
-     * @param EventDispatcherInterface|null $eventDispatcher
      * @return SolrConnection
      */
     protected function getSolrConnectionWithDummyConstructorArgs(
@@ -124,9 +111,6 @@ class SolrConnectionTest extends SetUpUnitTestCase
         $connection->getAdminService();
     }
 
-    /**
-     * @return array
-     */
     public function coreNameDataProvider(): array
     {
         return [
@@ -150,9 +134,6 @@ class SolrConnectionTest extends SetUpUnitTestCase
         self::assertSame($expectedCoreName, $solrService->getReadService()->getPrimaryEndpoint()->getCore());
     }
 
-    /**
-     * @return array
-     */
     public function coreBasePathDataProvider(): array
     {
         return [

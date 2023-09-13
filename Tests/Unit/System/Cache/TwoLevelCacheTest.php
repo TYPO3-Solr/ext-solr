@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 
 /**
  * Unit testcase to check if the two level cache is working as expected.
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class TwoLevelCacheTest extends SetUpUnitTestCase
 {

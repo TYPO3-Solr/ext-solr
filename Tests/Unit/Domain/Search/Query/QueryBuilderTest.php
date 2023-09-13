@@ -42,9 +42,6 @@ use Solarium\QueryType\Select\RequestBuilder;
 
 use function str_starts_with;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class QueryBuilderTest extends SetUpUnitTestCase
 {
     protected TypoScriptConfiguration|MockObject $configurationMock;

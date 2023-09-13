@@ -31,8 +31,6 @@ use TYPO3\CMS\Reports\Status;
 /**
  * Provides a status report, which checks whether the configuration of the
  * extension is ok.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class SolrConfigurationStatus extends AbstractSolrStatus
 {

@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * TestCase to check if the index queue can be initialized by the ReIndex Task
- *
- * @author Timo Schmidt
  */
 class ReIndexTaskTest extends IntegrationTest
 {
@@ -73,9 +71,6 @@ class ReIndexTaskTest extends IntegrationTest
         );
     }
 
-    /**
-     * @param $amount
-     */
     protected function assertIndexQueryContainsItemAmount($amount)
     {
         self::assertEquals(

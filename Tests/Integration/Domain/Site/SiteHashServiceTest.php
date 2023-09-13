@@ -23,8 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Testcase to check if the SiteHashService class works as expected.
  *
  * The integration test is used to check if we get the expected results with a defined database state.
- *
- * @author Timo Hund <timo.hund.de>
  */
 class SiteHashServiceTest extends IntegrationTest
 {
@@ -34,9 +32,6 @@ class SiteHashServiceTest extends IntegrationTest
         $this->writeDefaultSolrTestSiteConfiguration();
     }
 
-    /**
-     * @return array
-     */
     public function canResolveSiteHashAllowedSitesDataProvider(): array
     {
         return [

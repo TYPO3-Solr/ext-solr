@@ -31,7 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * <SystemHash>/type/uid
  *
  * A file from one system will get the same variantId, which could be useful for de-duplication.
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class IdBuilder
 {

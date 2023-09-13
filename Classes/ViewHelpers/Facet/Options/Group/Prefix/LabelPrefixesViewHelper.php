@@ -25,8 +25,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class LabelPrefixesViewHelper
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
 {

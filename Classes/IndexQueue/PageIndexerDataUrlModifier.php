@@ -17,8 +17,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /**
  * Allows to modify the data url before call the frontend form the index queue
- *
- * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
 interface PageIndexerDataUrlModifier
 {

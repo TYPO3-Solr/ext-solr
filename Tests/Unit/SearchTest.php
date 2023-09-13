@@ -31,14 +31,8 @@ class SearchTest extends SetUpUnitTestCase
      */
     protected SolrConnection|MockObject $solrConnectionMock;
 
-    /**
-     * @var SolrReadService|MockObject
-     */
     protected SolrReadService|MockObject $solrReadServiceMock;
 
-    /**
-     * @var Search
-     */
     protected Search $search;
 
     protected function setUp(): void

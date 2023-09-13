@@ -19,8 +19,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 /**
  * Garbage Collector Post Processor interface
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 interface GarbageCollectorPostProcessor
 {

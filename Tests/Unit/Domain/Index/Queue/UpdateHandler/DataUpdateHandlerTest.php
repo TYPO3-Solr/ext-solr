@@ -29,8 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the DataUpdateHandler class.
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class DataUpdateHandlerTest extends SetUpUpdateHandler
 {
@@ -291,8 +289,6 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
 
     /**
      * Init basic page update expectations
-     *
-     * @param array $dummyPageRecord
      */
     protected function initBasicPageUpdateExpectations(array $dummyPageRecord): void
     {
@@ -955,9 +951,6 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
 
     /**
      * Inits a site repository and site mock to return a configuration mock
-     *
-     * @param int $pageId
-     * @return MockObject
      */
     protected function initSiteForDummyConfiguration(int $pageId): MockObject
     {

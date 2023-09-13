@@ -23,9 +23,6 @@ use InvalidArgumentException;
 
 /**
  * Class AbstractValueViewHelper
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 abstract class AbstractValueViewHelper extends AbstractUriViewHelper
 {

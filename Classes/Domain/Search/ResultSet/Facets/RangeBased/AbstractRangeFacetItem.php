@@ -22,9 +22,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 
 /**
  * Abstract class that is used as base class for range facet items
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 abstract class AbstractRangeFacetItem extends AbstractFacetItem
 {

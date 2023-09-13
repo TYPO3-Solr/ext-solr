@@ -17,9 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Score;
 
 /**
  * Provides the functionality to calculate scores and renders them in a minimalistic template.
- *
- * @author Ingo Renner <ingo.renner@gmail.com>
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class ScoreCalculationService
 {

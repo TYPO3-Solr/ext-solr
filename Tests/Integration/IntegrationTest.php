@@ -36,8 +36,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * Base class for all integration tests in the EXT:solr project
- *
- * @author Timo Schmidt
  */
 abstract class IntegrationTest extends FunctionalTestCase
 {
@@ -87,9 +85,6 @@ abstract class IntegrationTest extends FunctionalTestCase
         $this->failWhenSolrDeprecationIsCreated();
     }
 
-    /**
-     * @param string|null $coreName
-     */
     protected function cleanUpSolrServerAndAssertEmpty(?string $coreName = 'core_en'): void
     {
         $this->validateTestCoreName($coreName);
@@ -106,11 +101,6 @@ abstract class IntegrationTest extends FunctionalTestCase
         $this->assertSolrIsEmpty();
     }
 
-    /**
-     * @param string|null $coreName
-     *
-     * @return array|false
-     */
     protected function waitToBeVisibleInSolr(?string $coreName = 'core_en'): array|false
     {
         $this->validateTestCoreName($coreName);

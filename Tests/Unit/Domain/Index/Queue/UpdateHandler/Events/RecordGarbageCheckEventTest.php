@@ -20,8 +20,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbag
 
 /**
  * Testcase for the RecordGarbageCheckEvent
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class RecordGarbageCheckEventTest extends SetUpDataUpdateEvent
 {
@@ -30,8 +28,6 @@ class RecordGarbageCheckEventTest extends SetUpDataUpdateEvent
 
     /**
      * @test
-     *
-     * @return AbstractDataUpdateEvent
      */
     public function canInitAndReturnBasicProperties(): AbstractDataUpdateEvent
     {

@@ -24,8 +24,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Index Administration Module
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class IndexAdministrationModuleController extends AbstractModuleController
 {

@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract testcase for the update handlers
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 abstract class SetUpUpdateHandler extends SetUpUnitTestCase
 {
@@ -57,9 +55,6 @@ abstract class SetUpUpdateHandler extends SetUpUnitTestCase
      */
     protected $indexQueueMock;
 
-    /**
-     * @var PagesRepository|MockObject
-     */
     protected PagesRepository|MockObject $pagesRepositoryMock;
 
     protected function setUp(): void

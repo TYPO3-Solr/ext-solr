@@ -30,8 +30,6 @@ use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 /**
  * A worker indexing the items in the index queue. Needs to be set up as one
  * task per root page.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderInterface
 {

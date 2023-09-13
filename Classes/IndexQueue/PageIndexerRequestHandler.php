@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * requested by them.
  *
  * This is added in the PSR-7 Frontend Request as "solr.pageIndexingInstructions" attribute
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class PageIndexerRequestHandler
 {

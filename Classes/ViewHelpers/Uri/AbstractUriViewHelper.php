@@ -30,9 +30,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class AbstractUriViewHelper
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
 {

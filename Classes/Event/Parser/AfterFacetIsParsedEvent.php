@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 
 /**
  * This event is dispatched after a facet is parsed.
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 final class AfterFacetIsParsedEvent
 {

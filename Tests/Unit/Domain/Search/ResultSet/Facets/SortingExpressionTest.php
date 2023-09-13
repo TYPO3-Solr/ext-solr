@@ -22,9 +22,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test for the SortingExpression
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * @author Jens Jacobsen <jens.jacobsen@ueberbit.de>
  */
 class SortingExpressionTest extends SetUpUnitTestCase
 {
@@ -77,9 +74,6 @@ class SortingExpressionTest extends SetUpUnitTestCase
 
     /**
      * @param string|int|bool $sorting
-     * @param string $direction
-     * @param bool $isJson
-     * @param string $expectedResult
      * @dataProvider canBuildSortExpressionDataProvider
      * @test
      */

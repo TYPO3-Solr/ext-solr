@@ -27,9 +27,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\SetUpFacet
 
 /**
  * Class QueryGroupFacetParserTest
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * @author Frans Saris <frans@beech.it>
  */
 class QueryGroupFacetParserTest extends SetUpFacetParser
 {

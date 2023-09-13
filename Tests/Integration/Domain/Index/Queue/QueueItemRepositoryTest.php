@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the QueueItemRepository
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class QueueItemRepositoryTest extends IntegrationTest
 {

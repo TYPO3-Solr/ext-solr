@@ -23,8 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Core selector form field.
- *
- * @author Jens Jacobsen <typo3@jens-jacobsen.de>
  */
 class CoreSelectorField
 {

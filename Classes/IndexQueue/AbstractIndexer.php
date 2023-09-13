@@ -30,8 +30,6 @@ use UnexpectedValueException;
 /**
  * An abstract indexer class to collect a few common methods shared with other
  * indexers.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 abstract class AbstractIndexer
 {

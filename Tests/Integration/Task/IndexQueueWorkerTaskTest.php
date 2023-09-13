@@ -23,8 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * TestCase to check if we can index from index queue worker task into a solr server
- *
- * @author Timo Schmidt
  */
 class IndexQueueWorkerTaskTest extends IntegrationTest
 {

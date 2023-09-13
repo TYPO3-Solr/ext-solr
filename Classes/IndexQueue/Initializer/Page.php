@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Index Queue initializer for pages which also covers resolution of mount
  * pages.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Page extends AbstractInitializer
 {

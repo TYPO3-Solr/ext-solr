@@ -29,15 +29,9 @@ use Solarium\QueryType\Select\RequestBuilder;
 
 /**
  * Testcase for RelevanceComponent
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class RelevanceComponentTest extends SetUpUnitTestCase
 {
-    /**
-     * @param $query
-     * @return array
-     */
     protected function getQueryParameters($query): array
     {
         $requestBuilder = new RequestBuilder();

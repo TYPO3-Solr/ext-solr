@@ -22,9 +22,6 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class RootPageResolverTest extends SetUpUnitTestCase
 {
     protected TwoLevelCache|MockObject $cacheMock;

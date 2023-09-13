@@ -20,8 +20,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Class DefaultUrlEncoderTest
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class DefaultUrlDecoderTest extends SetUpUnitTestCase
 {

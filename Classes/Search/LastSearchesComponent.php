@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Writes the last searches
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class LastSearchesComponent
 {

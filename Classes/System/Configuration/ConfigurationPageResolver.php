@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
 /**
  * This class is responsible to find the closest page id from the rootline where
  * a typoscript template is stored on.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ConfigurationPageResolver
 {

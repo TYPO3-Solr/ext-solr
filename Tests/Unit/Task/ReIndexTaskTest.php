@@ -20,8 +20,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for ReIndexTask
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ReIndexTaskTest extends SetUpUnitTestCase
 {

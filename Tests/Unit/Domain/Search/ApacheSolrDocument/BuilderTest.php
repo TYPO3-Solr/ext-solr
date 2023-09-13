@@ -29,8 +29,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Testcase for the Builder of ApacheSolrDocument
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class BuilderTest extends SetUpUnitTestCase
 {

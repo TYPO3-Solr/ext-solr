@@ -23,8 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This event listener concat the filter if configured or masking is active.
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 class PostEnhancedUriProcessor
 {

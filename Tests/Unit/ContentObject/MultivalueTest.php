@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
 
 /**
  * Tests for the SOLR_MULTIVALUE cObj.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class MultivalueTest extends SetUpContentObject
 {

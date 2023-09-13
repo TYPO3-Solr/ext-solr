@@ -22,9 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A field processor that converts timestamps to ISO dates as needed by Solr
- *
- * @author Ingo Renner <ingo@typo3.org>
- * @copyright (c) 2009-2015 Ingo Renner <ingo@typo3.org>
  */
 class TimestampToIsoDate implements FieldProcessor
 {

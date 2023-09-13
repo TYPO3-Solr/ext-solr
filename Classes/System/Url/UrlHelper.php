@@ -19,8 +19,6 @@ use TYPO3\CMS\Core\Http\Uri;
 
 /**
  * Class UrlHelper
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class UrlHelper extends Uri
 {

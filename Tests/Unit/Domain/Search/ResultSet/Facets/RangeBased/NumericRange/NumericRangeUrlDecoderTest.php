@@ -22,10 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for query parser range
- *
- * @author Markus Goldbach <markus.goldbach@dkd.de>
- * @author Ingo Renner <ingo@typo3.org>
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
 {
@@ -44,8 +40,6 @@ class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
 
     /**
      * Provides data for filter decoding tests
-     *
-     * @return array
      */
     public function rangeQueryParsingDataProvider(): array
     {
@@ -61,10 +55,6 @@ class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
      *
      * @dataProvider rangeQueryParsingDataProvider
      * @test
-     *
-     * @param string $firstValue
-     * @param string $secondValue
-     * @param string $expectedResult
      */
     public function canParseRangeQuery(string $firstValue, string $secondValue, string $expectedResult)
     {

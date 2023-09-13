@@ -26,8 +26,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 /**
  * Class QueryViewHelper
  *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  *
  * @noinspection PhpUnused used in Fluid templates <s:debug.query />
  */

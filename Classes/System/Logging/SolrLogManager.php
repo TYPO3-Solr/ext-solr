@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Wrapper to for the TYPO3 Logging Framework
- *
- * @author Thomas Hohn <tho@systime.dk>
  */
 class SolrLogManager implements LoggerInterface
 {
@@ -55,10 +53,6 @@ class SolrLogManager implements LoggerInterface
 
     /**
      * Logs with an arbitrary level.
-     *
-     * @param mixed $level
-     * @param string|\Stringable $message
-     * @param array $context
      */
     public function log($level, string|\Stringable $message, array $context = []): void
     {

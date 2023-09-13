@@ -25,10 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class SuggestController
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
- * @copyright (c) 2017 Timo Hund <timo.hund@dkd.de>
  */
 class SuggestController extends AbstractBaseController
 {

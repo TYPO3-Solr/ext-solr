@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * for a specific key.
  *
  * Can be used to retrieve different "strategies" for the same thing.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class AbstractClassRegistry implements SingletonInterface
 {

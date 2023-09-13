@@ -51,9 +51,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  * records like news records, tt_address, and so on.
  * Specialized indexers can extend this class to handle advanced stuff like
  * category resolution in news records or file indexing.
- *
- * @author Ingo Renner <ingo@typo3.org>
- * @copyright  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
  */
 class Indexer extends AbstractIndexer
 {
@@ -594,8 +591,6 @@ class Indexer extends AbstractIndexer
     /**
      * Checks for which languages connections have been configured for translation overlays and returns these connections.
      *
-     * @param array $translationOverlays
-     * @param int $rootPageId
      * @return SolrConnection[]
      *
      * @throws DBALException

@@ -25,8 +25,6 @@ use TYPO3\CMS\Reports\Status;
 
 /**
  * Integration test for the Solr version test
- *
- * @author Timo Hund
  */
 class SolrVersionStatusTest extends IntegrationTest
 {

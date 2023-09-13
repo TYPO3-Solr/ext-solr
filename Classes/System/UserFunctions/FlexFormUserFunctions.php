@@ -31,8 +31,6 @@ use function str_starts_with;
 
 /**
  * This class contains all user functions for flexforms.
- *
- * @author Daniel Siepmann <coding@daniel-siepmann.de>
  */
 class FlexFormUserFunctions
 {

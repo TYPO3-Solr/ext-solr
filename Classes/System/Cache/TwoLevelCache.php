@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Provides a two level cache that uses an in memory cache as the first level cache and
  * the TYPO3 caching framework cache as the second level cache.
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class TwoLevelCache
 {

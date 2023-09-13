@@ -50,8 +50,6 @@ use UnexpectedValueException;
  * should be used by the Index Queue.
  *
  * Once the FrontendHelper construct is separated, this will be a standalone Indexer.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class PageIndexer implements FrontendHelper, SingletonInterface
 {

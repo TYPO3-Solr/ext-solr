@@ -19,8 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentEleme
 
 /**
  * Testcase for the ContentElementDeletedEvent
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class ContentElementDeletedEventTest extends SetUpDataUpdateEvent
 {

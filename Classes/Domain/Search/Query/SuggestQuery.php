@@ -23,9 +23,6 @@ use ApacheSolrForTypo3\Solr\Util;
 
 /**
  * A query specialized to get search suggestions
- *
- * @author Ingo Renner <ingo@typo3.org>
- * @copyright (c) 2009-2015 Ingo Renner <ingo@typo3.org>
  */
 class SuggestQuery extends Query
 {

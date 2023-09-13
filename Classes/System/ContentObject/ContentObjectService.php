@@ -22,8 +22,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * StdWrap Service that can be used to apply the ContentObjectRenderer stdWrap functionality on data.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ContentObjectService
 {

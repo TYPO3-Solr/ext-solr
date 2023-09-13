@@ -23,9 +23,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class PageBrowserRangeViewHelper
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
 {

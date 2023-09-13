@@ -25,8 +25,6 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
  * Service to ease work with configurations.
- *
- * @author Daniel Siepmann <coding@daniel-siepmann.de>
  */
 class ConfigurationService
 {

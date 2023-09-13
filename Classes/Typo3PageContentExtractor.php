@@ -24,8 +24,6 @@ use function libxml_use_internal_errors;
 
 /**
  * Content extraction class for TYPO3 pages.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Typo3PageContentExtractor extends HtmlContentExtractor
 {

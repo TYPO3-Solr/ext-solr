@@ -22,9 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ApacheSolrDocumentRepositoryTest extends IntegrationTest
 {
-    /**
-     * @var Repository|null
-     */
     protected ?Repository $apacheSolrDocumentRepository = null;
 
     protected function setUp(): void

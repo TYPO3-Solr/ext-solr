@@ -17,8 +17,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /**
  * Serialized value detector interface
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 interface SerializedValueDetector
 {

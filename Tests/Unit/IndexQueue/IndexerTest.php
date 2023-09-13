@@ -50,9 +50,6 @@ class IndexerTest extends SetUpUnitTestCase
     }
 
     /**
-     * @param int $httpStatus
-     * @param bool $itemIndexed
-     *
      * @test
      * @dataProvider canTriggerIndexingAndIndicateIndexStatusDataProvider
      */

@@ -20,9 +20,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Class AddFacetItemViewHelper
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class AddFacetItemViewHelper extends AbstractValueViewHelper
 {

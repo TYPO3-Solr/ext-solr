@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 
 /**
  * Class ResultsPagination
- *
- * @author Rudy Gnodde <rudy.gnodde@beech.it>
  */
 class ResultsPagination implements PaginationInterface
 {

@@ -22,9 +22,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * Class AbstractSolrFrontendTagBasedViewHelper
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 abstract class AbstractSolrFrontendTagBasedViewHelper extends AbstractSolrTagBasedViewHelper
 {

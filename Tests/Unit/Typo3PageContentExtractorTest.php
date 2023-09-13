@@ -21,8 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Tests the TYPO3 page content extractor
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Typo3PageContentExtractorTest extends SetUpUnitTestCase
 {

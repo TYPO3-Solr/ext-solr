@@ -35,8 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This service class bundles method required to process and manipulate routes.
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 class RoutingService implements LoggerAwareInterface
 {

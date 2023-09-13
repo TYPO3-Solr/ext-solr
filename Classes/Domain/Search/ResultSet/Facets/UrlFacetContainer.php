@@ -23,7 +23,6 @@ use Countable;
 /**
  * Data bag for facets inside an url
  *
- * @author Lars Tode <lars.tode@dkd.de>
  * @api
  */
 class UrlFacetContainer implements Countable

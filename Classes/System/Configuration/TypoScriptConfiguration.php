@@ -45,10 +45,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * This was only introduced to be backwards compatible in long term only "getValueByPath", "isValidPath" or
  * speaking methods for configuration settings should be used!
- *
- * @author Marc Bastian Heinrichs <mbh@mbh-software.de>
- * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @copyright (c) 2016 Timo Schmidt <timo.schmidt@dkd.de>
  */
 class TypoScriptConfiguration
 {

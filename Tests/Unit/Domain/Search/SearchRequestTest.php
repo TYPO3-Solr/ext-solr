@@ -19,9 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
-/**
- * @author Timo Schmidt <timo.schmidt@dkd.de>
- */
 class SearchRequestTest extends SetUpUnitTestCase
 {
     /**
@@ -366,7 +363,6 @@ class SearchRequestTest extends SetUpUnitTestCase
     }
 
     /**
-     * @param $query
      * @return SearchRequest
      */
     protected function getSearchRequestFromQueryString($query)

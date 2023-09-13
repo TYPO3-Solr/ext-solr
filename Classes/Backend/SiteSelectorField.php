@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * SiteSelectorField
  *
  * Responsible for generating SiteSelectorField
- *
- * @author Thomas Hohn <tho@systime.dk>
  */
 class SiteSelectorField
 {

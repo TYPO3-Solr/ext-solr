@@ -39,9 +39,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class QueueInitializerServiceTest extends SetUpUnitTestCase
 {
     /**

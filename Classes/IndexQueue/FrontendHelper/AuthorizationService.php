@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Authentication\AbstractAuthenticationService;
 /**
  * Authentication service to authorize the Index Queue page indexer to access
  * protected pages.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class AuthorizationService extends AbstractAuthenticationService
 {

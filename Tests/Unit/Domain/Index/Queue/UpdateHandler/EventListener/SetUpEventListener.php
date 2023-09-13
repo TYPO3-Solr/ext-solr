@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract testcase for the event listeners
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 abstract class SetUpEventListener extends SetUpUnitTestCase
 {
@@ -69,8 +67,6 @@ abstract class SetUpEventListener extends SetUpUnitTestCase
     }
 
     /**
-     * @param int $currentType
-     *
      * @test
      * @dataProvider inactiveMonitoringDataProvider
      */
@@ -105,8 +101,6 @@ abstract class SetUpEventListener extends SetUpUnitTestCase
 
     /**
      * Returns the current monitoring type
-     *
-     * @return int
      */
     abstract protected function getMonitoringType(): int;
 }

@@ -24,8 +24,6 @@ use TYPO3\CMS\Reports\Status;
 /**
  * Provides a status report about whether the php.ini setting allow_url_fopen
  * is activated or not.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class AllowUrlFOpenStatus extends AbstractSolrStatus
 {

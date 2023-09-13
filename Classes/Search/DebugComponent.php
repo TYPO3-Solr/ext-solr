@@ -22,8 +22,6 @@ use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 
 /**
  * Debug search component
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class DebugComponent
 {

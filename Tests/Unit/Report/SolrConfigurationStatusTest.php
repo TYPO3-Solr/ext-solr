@@ -23,8 +23,6 @@ use TYPO3\CMS\Reports\Status;
 
 /**
  * Testcase for the SolrConfigurationStatus class.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SolrConfigurationStatusTest extends SetUpUnitTestCase
 {

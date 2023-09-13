@@ -31,8 +31,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * The UserGroupDetector is responsible to identify the fe_group references on records that are visible on the page (not the page itself).
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class UserGroupDetector implements
     FrontendHelper,

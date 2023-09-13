@@ -21,10 +21,6 @@ use Exception;
 
 /**
  * Testcase to check if the configuration object can be used as expected
- *
- * @author Hendrik Putzek <hendrik.putzek@dkd.de>
- * @author Timo Hund <timo.hund@dkd.de>
- * @copyright (c) 2011-2016 Timo Schmidt <timo.hund@dkd.de>
  */
 class FormatService
 {

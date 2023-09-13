@@ -34,8 +34,6 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Adds additional field to specify the Solr server to initialize the index queue for
- *
- * @author Christoph Moeller <support@network-publishing.de>
  */
 class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {

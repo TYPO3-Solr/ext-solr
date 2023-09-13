@@ -37,8 +37,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class SiteRepository is responsible to retrieve instances of Site objects
- *
- * @author Thomas Hohn <tho@systime.dk>
  */
 class SiteRepository
 {

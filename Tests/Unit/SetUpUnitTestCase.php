@@ -21,8 +21,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Base class for all unit tests in the solr project
- *
- * @author Timo Hund
  */
 abstract class SetUpUnitTestCase extends UnitTestCase
 {
@@ -36,8 +34,6 @@ abstract class SetUpUnitTestCase extends UnitTestCase
 
     /**
      * Returns the absolute root path to the fixtures.
-     *
-     * @return string
      */
     protected function getFixtureRootPath(): string
     {
@@ -46,9 +42,6 @@ abstract class SetUpUnitTestCase extends UnitTestCase
 
     /**
      * Returns the absolute path to a fixture file.
-     *
-     * @param $fixtureName
-     * @return string
      */
     protected function getFixturePathByName($fixtureName): string
     {
@@ -59,7 +52,6 @@ abstract class SetUpUnitTestCase extends UnitTestCase
      * Returns the content of a fixture file.
      *
      * @param string $fixtureName
-     * @return string
      */
     protected function getFixtureContentByName($fixtureName): string
     {
@@ -82,8 +74,6 @@ abstract class SetUpUnitTestCase extends UnitTestCase
      *
      * @param object $object The object to be invoked
      * @param string $name the name of the method to call
-     * @param mixed $arguments
-     * @return mixed
      * @throws ReflectionException
      */
     protected function callInaccessibleMethod($object, $name, ...$arguments)

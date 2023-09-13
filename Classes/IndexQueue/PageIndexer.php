@@ -35,8 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * In the case of pages we can't directly index the page records, we need to
  * retrieve the content that belongs to a page from tt_content, too.
  * Also, plugins may be included on a page and thus may need to be executed.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class PageIndexer extends Indexer
 {

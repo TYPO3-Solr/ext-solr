@@ -21,8 +21,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * This event will be triggered before process variable keys and values
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 class BeforeCachedVariablesAreProcessedEvent
 {

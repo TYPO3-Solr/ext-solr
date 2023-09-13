@@ -21,9 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemColl
 
 /**
  * Collection for facet options.
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class NodeCollection extends AbstractFacetItemCollection
 {

@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * Query Filter Encoder Interface
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 interface FacetQueryBuilderInterface
 {

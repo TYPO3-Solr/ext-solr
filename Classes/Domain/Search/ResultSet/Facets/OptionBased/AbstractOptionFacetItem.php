@@ -22,9 +22,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 
 /**
  * Base class for all facet items that are represented as option
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class AbstractOptionFacetItem extends AbstractFacetItem
 {

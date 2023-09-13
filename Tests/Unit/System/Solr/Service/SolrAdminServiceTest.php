@@ -27,8 +27,6 @@ use function json_encode;
 
 /**
  * Tests the SolrAdminService class
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SolrAdminServiceTest extends SetUpUnitTestCase
 {

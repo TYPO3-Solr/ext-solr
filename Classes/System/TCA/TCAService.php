@@ -23,8 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class to encapsulate TCA specific logic
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class TCAService
 {

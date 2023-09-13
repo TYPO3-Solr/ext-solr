@@ -23,9 +23,6 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
  * Collection for facet options.
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class OptionCollection extends AbstractFacetItemCollection
 {

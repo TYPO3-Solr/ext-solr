@@ -23,8 +23,6 @@ use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
  * Rootline class. This class is used to perform operations on a rootline array.
  * The constructor requires a rootline array as arguments (as you get it from
  * PageRepository::getRootline or TSFE->rootline.)
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class Rootline
 {

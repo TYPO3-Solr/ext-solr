@@ -22,9 +22,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\SetUpFacet
 
 /**
  * Class HierarchyFacetParserTest
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * @author Frans Saris <frans@beech.it>
  */
 class HierarchyFacetParserTest extends SetUpFacetParser
 {
@@ -111,8 +108,6 @@ class HierarchyFacetParserTest extends SetUpFacetParser
 
     /**
      * Traverses the hierarchy facet and checks if some has more than one child.
-     *
-     * @param Node $node
      */
     protected function assertNoNodeHasMoreThanOneChildInTheHierarchy(Node $node)
     {
