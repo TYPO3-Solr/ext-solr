@@ -27,7 +27,7 @@ final class AfterIndexQueueItemHasBeenMarkedForReindexingEvent
 {
     public function __construct(
         private readonly string $itemType,
-        private readonly int|string $itemUid,
+        private readonly int $itemUid,
         private readonly int $forcedChangeTime,
         private int $updateCount,
         private ?array $validLanguageUids
@@ -39,7 +39,7 @@ final class AfterIndexQueueItemHasBeenMarkedForReindexingEvent
         return $this->itemType;
     }
 
-    public function getItemUid(): int|string
+    public function getItemUid(): int
     {
         return $this->itemUid;
     }
