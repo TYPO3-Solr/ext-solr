@@ -264,6 +264,14 @@ class Indexer extends AbstractIndexer
         ) {
             return null;
         }
+        // skip translated records for default language within "free content mode"-languages
+        if ($language === 0
+            && isset($languageField)
+            && (int)($itemRecord[$languageField] ?? null) !== $language
+            && $this->isLanguageInAFreeContentMode($item, (int)($itemRecord[$languageField] ?? null))
+        ) {
+            return null;
+        }
 
         $pidToUse = $this->getPageIdOfItem($item);
 
