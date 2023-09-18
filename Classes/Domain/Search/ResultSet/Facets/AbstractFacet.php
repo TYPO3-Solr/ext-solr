@@ -41,8 +41,7 @@ abstract class AbstractFacet
         protected string $field,
         protected string $label = '',
         protected array $facetConfiguration = []
-    ) {
-    }
+    ) {}
 
     /**
      * Returns facet name

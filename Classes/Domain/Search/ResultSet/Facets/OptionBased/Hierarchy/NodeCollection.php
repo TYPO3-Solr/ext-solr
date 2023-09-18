@@ -25,6 +25,4 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemColl
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class NodeCollection extends AbstractFacetItemCollection
-{
-}
+class NodeCollection extends AbstractFacetItemCollection {}

@@ -34,8 +34,7 @@ class AfterFrontendPageUriForIndexingHasBeenGeneratedEvent
         protected readonly int $languageId,
         protected readonly string $mountPointParameter,
         protected readonly array $options
-    ) {
-    }
+    ) {}
 
     public function getItem(): Item
     {

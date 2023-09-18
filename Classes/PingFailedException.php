@@ -22,6 +22,4 @@ namespace ApacheSolrForTypo3\Solr;
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class PingFailedException extends Exception
-{
-}
+class PingFailedException extends Exception {}

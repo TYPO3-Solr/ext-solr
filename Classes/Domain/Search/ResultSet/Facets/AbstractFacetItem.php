@@ -31,8 +31,7 @@ abstract class AbstractFacetItem
         protected int $documentCount = 0,
         protected bool $selected = false,
         protected array $metrics = []
-    ) {
-    }
+    ) {}
 
     public function getDocumentCount(): int
     {

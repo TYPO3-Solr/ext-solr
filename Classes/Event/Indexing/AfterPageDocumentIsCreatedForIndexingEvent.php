@@ -40,8 +40,7 @@ final class AfterPageDocumentIsCreatedForIndexingEvent
         private readonly SiteLanguage $siteLanguage,
         private readonly array $record,
         private readonly TypoScriptConfiguration $configuration
-    ) {
-    }
+    ) {}
 
     public function getDocument(): Document
     {

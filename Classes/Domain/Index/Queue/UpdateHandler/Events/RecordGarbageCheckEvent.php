@@ -20,6 +20,4 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events;
 /**
  * Event fired if a record garbage check is triggered
  */
-class RecordGarbageCheckEvent extends AbstractDataUpdateEvent
-{
-}
+class RecordGarbageCheckEvent extends AbstractDataUpdateEvent {}

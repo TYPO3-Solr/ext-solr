@@ -21,6 +21,4 @@ use ApacheSolrForTypo3\Solr\Exception as ExtSolrException;
  * Exception that is thrown on initialization of EXT:solr FrontendEnvironment.
  * This exception should be used for any errors on indexing .
  */
-class Exception extends ExtSolrException
-{
-}
+class Exception extends ExtSolrException {}

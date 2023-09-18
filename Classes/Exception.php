@@ -20,6 +20,4 @@ namespace ApacheSolrForTypo3\Solr;
 /**
  * Generic Apache Solr for TYPO3 exception
  */
-class Exception extends \Exception
-{
-}
+class Exception extends \Exception {}

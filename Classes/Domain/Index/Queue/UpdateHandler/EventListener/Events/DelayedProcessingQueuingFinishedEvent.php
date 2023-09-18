@@ -20,6 +20,4 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener
 /**
  * Delayed processing queuing finished event
  */
-class DelayedProcessingQueuingFinishedEvent extends AbstractProcessingFinishedEvent
-{
-}
+class DelayedProcessingQueuingFinishedEvent extends AbstractProcessingFinishedEvent {}

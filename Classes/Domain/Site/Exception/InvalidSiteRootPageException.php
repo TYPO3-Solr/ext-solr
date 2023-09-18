@@ -19,6 +19,4 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site\Exception;
 
 use ApacheSolrForTypo3\Solr\Exception;
 
-class InvalidSiteRootPageException extends Exception
-{
-}
+class InvalidSiteRootPageException extends Exception {}

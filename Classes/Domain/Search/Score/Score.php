@@ -27,8 +27,7 @@ class Score
         protected string $fieldName = '',
         protected float $score = 0.0,
         protected string $searchTerm = '',
-    ) {
-    }
+    ) {}
 
     public function getBoost(): float
     {

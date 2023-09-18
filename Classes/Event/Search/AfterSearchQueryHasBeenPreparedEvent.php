@@ -37,8 +37,7 @@ final class AfterSearchQueryHasBeenPreparedEvent
         private readonly SearchRequest $searchRequest,
         private readonly Search $search,
         private readonly TypoScriptConfiguration $typoScriptConfiguration
-    ) {
-    }
+    ) {}
 
     public function getQuery(): Query
     {

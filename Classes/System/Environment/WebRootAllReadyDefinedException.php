@@ -22,6 +22,4 @@ use ApacheSolrForTypo3\Solr\Exception;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class WebRootAllReadyDefinedException extends Exception
-{
-}
+class WebRootAllReadyDefinedException extends Exception {}

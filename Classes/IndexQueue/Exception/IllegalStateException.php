@@ -20,6 +20,4 @@ use ApacheSolrForTypo3\Solr\Exception;
 /**
  * Exception that is thrown on indexing process and any potentially unusual state.
  */
-class IllegalStateException extends Exception
-{
-}
+class IllegalStateException extends Exception {}

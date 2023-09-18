@@ -38,8 +38,7 @@ class SettingsPreviewOnPlugins
 
     public function __construct(
         protected FlexFormService $flexFormService
-    ) {
-    }
+    ) {}
 
     public function __invoke(PageContentPreviewRenderingEvent $event): void
     {

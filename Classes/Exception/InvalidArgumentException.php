@@ -22,6 +22,4 @@ use ApacheSolrForTypo3\Solr\Exception;
 /**
  * Exception that is thrown if a given argument is invalid.
  */
-class InvalidArgumentException extends Exception
-{
-}
+class InvalidArgumentException extends Exception {}

@@ -27,9 +27,7 @@ use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
  */
 class DebugComponent
 {
-    public function __construct(protected readonly QueryBuilder $queryBuilder)
-    {
-    }
+    public function __construct(protected readonly QueryBuilder $queryBuilder) {}
 
     /**
      * Initializes the search component.

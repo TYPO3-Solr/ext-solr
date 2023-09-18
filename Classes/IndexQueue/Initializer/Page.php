@@ -47,9 +47,7 @@ class Page extends AbstractInitializer
      *
      * @param string $type Type to initialize (ignored).
      */
-    public function setType(string $type): void
-    {
-    }
+    public function setType(string $type): void {}
 
     /**
      * Initializes Index Queue page items for a site. Includes regular pages

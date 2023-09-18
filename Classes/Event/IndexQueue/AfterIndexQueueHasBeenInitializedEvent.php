@@ -35,8 +35,7 @@ final class AfterIndexQueueHasBeenInitializedEvent
         private readonly string $type,
         private readonly array $indexingConfiguration,
         private bool $isInitialized
-    ) {
-    }
+    ) {}
 
     public function getInitializer(): AbstractInitializer
     {

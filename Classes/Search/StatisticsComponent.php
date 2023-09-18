@@ -32,8 +32,7 @@ class StatisticsComponent
     public function __construct(
         protected readonly QueryBuilder $queryBuilder,
         protected readonly StatisticsWriterProcessor $statisticsWriterProcessor
-    ) {
-    }
+    ) {}
 
     /**
      * Enables the query's debug mode to get more detailed information.

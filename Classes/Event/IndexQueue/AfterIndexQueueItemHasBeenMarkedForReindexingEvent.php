@@ -31,8 +31,7 @@ final class AfterIndexQueueItemHasBeenMarkedForReindexingEvent
         private readonly int $forcedChangeTime,
         private int $updateCount,
         private ?array $validLanguageUids
-    ) {
-    }
+    ) {}
 
     public function getItemType(): string
     {

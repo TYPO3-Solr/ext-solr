@@ -25,6 +25,4 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemColl
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class NumericRangeCollection extends AbstractFacetItemCollection
-{
-}
+class NumericRangeCollection extends AbstractFacetItemCollection {}

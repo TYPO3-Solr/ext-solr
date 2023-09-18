@@ -52,9 +52,7 @@ class ResultsPaginator extends AbstractPaginator
     /**
      * Update paginated items
      */
-    public function updatePaginatedItems(int $itemsPerPage, int $offset): void
-    {
-    }
+    public function updatePaginatedItems(int $itemsPerPage, int $offset): void {}
 
     /**
      * Get amount of items on current page

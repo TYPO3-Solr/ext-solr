@@ -37,8 +37,7 @@ class IdBuilder
 {
     public function __construct(
         protected readonly EventDispatcherInterface $eventDispatcher
-    ) {
-    }
+    ) {}
 
     /**
      * This method is used to build a variantId.

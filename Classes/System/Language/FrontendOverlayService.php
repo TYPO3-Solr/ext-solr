@@ -37,8 +37,7 @@ class FrontendOverlayService
     public function __construct(
         protected readonly TCAService $tcaService,
         protected readonly TypoScriptFrontendController $tsfe
-    ) {
-    }
+    ) {}
 
     /**
      * Return the translated record

@@ -20,6 +20,4 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
 /**
  * This exception should be thrown when the response from solr was incomplete
  */
-class SolrIncompleteResponseException extends SolrCommunicationException
-{
-}
+class SolrIncompleteResponseException extends SolrCommunicationException {}

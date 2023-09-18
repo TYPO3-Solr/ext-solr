@@ -103,8 +103,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
      */
     public function resolveFieldValue(array $indexingConfiguration, string $solrFieldName, array $data, $expectedValue): void
     {
-        $subject = new class () extends AbstractIndexer {
-        };
+        $subject = new class () extends AbstractIndexer {};
         $tsfe = $this->createMock(TypoScriptFrontendController::class);
         self::assertEquals(
             $this->callInaccessibleMethod(

@@ -19,6 +19,4 @@ namespace ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception;
 
 use TYPO3\CMS\Extbase\Mvc\Exception;
 
-class InvalidViewObjectNameException extends Exception
-{
-}
+class InvalidViewObjectNameException extends Exception {}

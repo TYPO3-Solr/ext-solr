@@ -22,6 +22,4 @@ use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class RootlineElementFormatException extends InvalidArgumentException
-{
-}
+class RootlineElementFormatException extends InvalidArgumentException {}
