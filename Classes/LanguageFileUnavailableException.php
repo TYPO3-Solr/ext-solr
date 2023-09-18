@@ -20,6 +20,4 @@ namespace ApacheSolrForTypo3\Solr;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class LanguageFileUnavailableException extends Exception
-{
-}
+class LanguageFileUnavailableException extends Exception {}

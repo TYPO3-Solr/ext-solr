@@ -39,8 +39,7 @@ class Builder
 {
     public function __construct(
         protected readonly IdBuilder $variantIdBuilder
-    ) {
-    }
+    ) {}
 
     /**
      * This method can be used to build a Document from a TYPO3 page.

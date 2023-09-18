@@ -32,9 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SortingComponent
 {
-    public function __construct(protected readonly QueryBuilder $queryBuilder)
-    {
-    }
+    public function __construct(protected readonly QueryBuilder $queryBuilder) {}
 
     /**
      * Sets the sorting query parameters

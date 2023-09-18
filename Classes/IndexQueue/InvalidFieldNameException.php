@@ -23,6 +23,4 @@ use RuntimeException;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class InvalidFieldNameException extends RuntimeException
-{
-}
+class InvalidFieldNameException extends RuntimeException {}

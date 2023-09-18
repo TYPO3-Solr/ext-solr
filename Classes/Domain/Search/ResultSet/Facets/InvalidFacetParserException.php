@@ -17,6 +17,4 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Exception;
 
-class InvalidFacetParserException extends Exception
-{
-}
+class InvalidFacetParserException extends Exception {}

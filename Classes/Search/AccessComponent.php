@@ -31,8 +31,7 @@ class AccessComponent
 {
     public function __construct(
         protected readonly QueryBuilder $queryBuilder
-    ) {
-    }
+    ) {}
 
     /**
      * Initializes the search component.

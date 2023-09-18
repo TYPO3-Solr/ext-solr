@@ -20,6 +20,4 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events;
 /**
  * Event fired if a record is deleted
  */
-class RecordDeletedEvent extends AbstractDataUpdateEvent
-{
-}
+class RecordDeletedEvent extends AbstractDataUpdateEvent {}

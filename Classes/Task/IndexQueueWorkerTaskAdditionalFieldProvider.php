@@ -37,8 +37,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
 {
     public function __construct(
         protected readonly SiteRepository $siteRepository
-    ) {
-    }
+    ) {}
 
     /**
      * Used to define fields to provide the TYPO3 site to index and number of

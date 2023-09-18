@@ -37,8 +37,7 @@ class BeforeDocumentsAreIndexedEvent
         private readonly Item $indexQueueItem,
         /**  @var Document[] */
         private array $documents,
-    ) {
-    }
+    ) {}
 
     public function getSite(): Site
     {

@@ -30,9 +30,7 @@ use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
  */
 class GroupingComponent
 {
-    public function __construct(protected readonly QueryBuilder $queryBuilder)
-    {
-    }
+    public function __construct(protected readonly QueryBuilder $queryBuilder) {}
 
     /**
      * Triggers grouping if activated

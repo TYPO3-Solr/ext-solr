@@ -20,6 +20,4 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
 /**
  * This exception is used when the solr server is unavailable.
  */
-class SolrUnavailableException extends SolrCommunicationException
-{
-}
+class SolrUnavailableException extends SolrCommunicationException {}

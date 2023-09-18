@@ -20,6 +20,4 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events;
 /**
  * Event fired if a version is swapped
  */
-class VersionSwappedEvent extends AbstractDataUpdateEvent
-{
-}
+class VersionSwappedEvent extends AbstractDataUpdateEvent {}

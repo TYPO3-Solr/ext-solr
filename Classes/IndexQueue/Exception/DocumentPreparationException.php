@@ -18,6 +18,4 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Exception;
 /**
  * Exception that is thrown on TYPO3 side in indexing process.
  */
-class DocumentPreparationException extends IndexingException
-{
-}
+class DocumentPreparationException extends IndexingException {}

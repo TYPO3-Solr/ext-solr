@@ -20,6 +20,4 @@ namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-interface SolrRouteEnhancerInterface
-{
-}
+interface SolrRouteEnhancerInterface {}

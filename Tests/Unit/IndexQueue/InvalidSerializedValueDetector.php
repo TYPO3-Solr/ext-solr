@@ -15,6 +15,4 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
-class InvalidSerializedValueDetector
-{
-}
+class InvalidSerializedValueDetector {}

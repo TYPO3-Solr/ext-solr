@@ -28,8 +28,7 @@ final class AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent
         private readonly string $table,
         private readonly array $uids,
         private array $records
-    ) {
-    }
+    ) {}
 
     public function getTable(): string
     {

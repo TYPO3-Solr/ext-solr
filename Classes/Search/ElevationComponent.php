@@ -27,9 +27,7 @@ use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
  */
 class ElevationComponent
 {
-    public function __construct(protected readonly QueryBuilder $queryBuilder)
-    {
-    }
+    public function __construct(protected readonly QueryBuilder $queryBuilder) {}
 
     /**
      * Enables the query's elevation mode.

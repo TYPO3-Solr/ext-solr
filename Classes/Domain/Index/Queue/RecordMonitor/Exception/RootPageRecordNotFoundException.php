@@ -20,6 +20,4 @@ use ApacheSolrForTypo3\Solr\Exception;
 /**
  * Exception that is thrown if the record of the root page couldn't be found
  */
-class RootPageRecordNotFoundException extends Exception
-{
-}
+class RootPageRecordNotFoundException extends Exception {}

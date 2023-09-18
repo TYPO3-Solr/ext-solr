@@ -29,8 +29,7 @@ class RelevanceComponent
 {
     public function __construct(
         protected readonly QueryBuilder $queryBuilder
-    ) {
-    }
+    ) {}
 
     /**
      * Sets minimum match, boost function, boost query and tie-breaker.

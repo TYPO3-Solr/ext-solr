@@ -17,6 +17,4 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
-class SearchQuery extends Query
-{
-}
+class SearchQuery extends Query {}
