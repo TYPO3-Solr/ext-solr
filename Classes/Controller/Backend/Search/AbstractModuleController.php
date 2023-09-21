@@ -155,13 +155,6 @@ abstract class AbstractModuleController extends ActionController
             return;
         }
 
-        //        @todo: https://github.com/TYPO3-Solr/ext-solr/issues/3489
-        //               Migrate following lines to TYPO3 12 conform way or remove them.
-        //        $this->moduleTemplate->addJavaScriptCode(
-        //            'mainJsFunctions',
-        //            '
-        //                top.fsMod.recentIds["searchbackend"] = ' . $this->selectedPageUID . ';'
-        //        );
         if ($this->selectedSite === null) {
             return;
         }
