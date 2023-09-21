@@ -222,11 +222,6 @@ abstract class AbstractModuleController extends ActionController
             return;
         }
 
-        $this->moduleTemplate->addJavaScriptCode(
-            'mainJsFunctions',
-            '
-                top.fsMod.recentIds["searchbackend"] = ' . $this->selectedPageUID . ';'
-        );
         if ($this->selectedSite === null) {
             return;
         }
