@@ -126,7 +126,6 @@ class SearchControllerTest extends IntegrationTest
      */
     public function canDoAPaginatedSearch()
     {
-        self::markTestSkipped('Skipped due https://github.com/TYPO3-Solr/ext-solr/issues/3691');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
