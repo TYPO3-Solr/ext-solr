@@ -37,7 +37,6 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
 use Throwable;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -196,9 +195,9 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         $this->solrConnection = $this->getSolrConnection($indexQueueItem, $tsfe->getLanguage(), $this->configuration->getLoggingExceptions());
 
         $document = $this->getPageDocument($tsfe, $this->generatePageUrl($tsfe), $this->getAccessRootline(), $tsfe->MP);
-        $document = $this->substitutePageDocument($document, $tsfe->getSite(), $tsfe->getLanguage(), $tsfe->page, $indexQueueItem);
+        $document = $this->substitutePageDocument($document, $tsfe->page, $indexQueueItem, $tsfe);
 
-        $this->responseData['pageIndexed'] = (int)$this->indexPage($document, $indexQueueItem, $tsfe->getSite(), $tsfe->getLanguage());
+        $this->responseData['pageIndexed'] = (int)$this->indexPage($document, $indexQueueItem, $tsfe);
         $this->responseData['originalPageDocument'] = (array)$document;
         $this->responseData['solrConnection'] = [
             'rootPage' => $indexQueueItem->getRootPageUid(),
@@ -261,9 +260,13 @@ class PageIndexer implements FrontendHelper, SingletonInterface
      * @param Document $pageDocument The page document created by this indexer.
      * @return Document An Apache Solr document representing the currently indexed page
      */
-    protected function substitutePageDocument(Document $pageDocument, Site $site, SiteLanguage $siteLanguage, array $pageRecord, Item $indexQueueItem): Document
-    {
-        $event = new AfterPageDocumentIsCreatedForIndexingEvent($pageDocument, $indexQueueItem, $site, $siteLanguage, $pageRecord, $this->configuration);
+    protected function substitutePageDocument(
+        Document $pageDocument,
+        array $pageRecord,
+        Item $indexQueueItem,
+        TypoScriptFrontendController $tsfe,
+    ): Document {
+        $event = new AfterPageDocumentIsCreatedForIndexingEvent($pageDocument, $indexQueueItem, $pageRecord, $tsfe, $this->configuration);
         $event = $this->getEventDispatcher()->dispatch($event);
         return $event->getDocument();
     }
@@ -284,15 +287,18 @@ class PageIndexer implements FrontendHelper, SingletonInterface
      *
      * @return bool TRUE after successfully indexing the page, FALSE on error
      */
-    public function indexPage(Document $pageDocument, Item $indexQueueItem, Site $site, SiteLanguage $siteLanguage): bool
-    {
-        $event = new BeforePageDocumentIsProcessedForIndexingEvent($pageDocument, $site, $siteLanguage, $indexQueueItem);
+    public function indexPage(
+        Document $pageDocument,
+        Item $indexQueueItem,
+        TypoScriptFrontendController $tsfe,
+    ): bool {
+        $event = new BeforePageDocumentIsProcessedForIndexingEvent($pageDocument, $indexQueueItem, $tsfe);
         $event = $this->getEventDispatcher()->dispatch($event);
         $documents = $event->getDocuments();
 
         $this->processDocuments($documents);
 
-        $event = new BeforeDocumentsAreIndexedEvent($pageDocument, $site, $siteLanguage, $indexQueueItem, $documents);
+        $event = new BeforeDocumentsAreIndexedEvent($pageDocument, $indexQueueItem, $documents, $tsfe);
         $event = $this->getEventDispatcher()->dispatch($event);
         $documents = $event->getDocuments();
 

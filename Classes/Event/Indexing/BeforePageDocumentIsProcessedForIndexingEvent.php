@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Allows to add more documents to the Solr index.
@@ -37,21 +38,20 @@ class BeforePageDocumentIsProcessedForIndexingEvent
 
     public function __construct(
         private readonly Document $document,
-        private readonly Site $site,
-        private readonly SiteLanguage $siteLanguage,
-        private readonly Item $indexQueueItem
+        private readonly Item $indexQueueItem,
+        private readonly TypoScriptFrontendController $tsfe,
     ) {
         $this->documents[] = $this->document;
     }
 
     public function getSite(): Site
     {
-        return $this->site;
+        return $this->tsfe->getSite();
     }
 
     public function getSiteLanguage(): SiteLanguage
     {
-        return $this->siteLanguage;
+        return $this->tsfe->getLanguage();
     }
 
     public function getIndexQueueItem(): Item
@@ -78,5 +78,10 @@ class BeforePageDocumentIsProcessedForIndexingEvent
     public function getDocuments(): array
     {
         return $this->documents;
+    }
+
+    public function getTsfe(): TypoScriptFrontendController
+    {
+        return clone $this->tsfe;
     }
 }
