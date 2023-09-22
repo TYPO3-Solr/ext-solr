@@ -36,6 +36,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
 use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class IndexerTest
@@ -63,7 +64,11 @@ class IndexerTest extends SetUpUnitTestCase
 
         $indexer = $this->getAccessibleMock(
             Indexer::class,
-            ['itemToDocument', 'processDocuments'],
+            [
+                'itemToDocument',
+                'processDocuments',
+                'getTsfeByItemAndLanguageId',
+            ],
             [],
             '',
             false
@@ -94,6 +99,12 @@ class IndexerTest extends SetUpUnitTestCase
             ->method('processDocuments')
             ->with($itemMock, [$itemDocumentMock])
             ->willReturnArgument(1);
+        $indexer
+            ->expects(self::any())
+            ->method('getTsfeByItemAndLanguageId')
+            ->willReturn(
+                $this->createMock(TypoScriptFrontendController::class)
+            );
 
         $writeServiceMock
             ->expects(self::atLeastOnce())
@@ -138,11 +149,20 @@ class IndexerTest extends SetUpUnitTestCase
     {
         $indexer = $this->getAccessibleMock(
             Indexer::class,
-            null,
+            [
+                'getTsfeByItemAndLanguageId',
+            ],
             [],
             '',
             false
         );
+
+        $indexer
+            ->expects(self::any())
+            ->method('getTsfeByItemAndLanguageId')
+            ->willReturn(
+                $this->createMock(TypoScriptFrontendController::class)
+            );
 
         $eventDispatcher = new MockEventDispatcher();
         if ($listener) {

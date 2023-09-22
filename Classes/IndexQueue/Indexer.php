@@ -45,6 +45,7 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * A general purpose indexer to be used for indexing of any kind of regular
@@ -169,7 +170,15 @@ class Indexer extends AbstractIndexer
 
         $documents = $this->processDocuments($item, $documents);
 
-        $event = new BeforeDocumentsAreIndexedEvent($itemDocument, $item->getSite()->getTypo3SiteObject(), $item->getSite()->getTypo3SiteObject()->getLanguageById($language), $item, $documents);
+        $event = new BeforeDocumentsAreIndexedEvent(
+            $itemDocument,
+            $item,
+            $documents,
+            $this->getTsfeByItemAndLanguageId(
+                $item,
+                $language,
+            ),
+        );
         $event = $this->eventDispatcher->dispatch($event);
         $documents = $event->getDocuments();
 
@@ -309,7 +318,7 @@ class Indexer extends AbstractIndexer
         }
     }
 
-    protected function getPageIdOfItem(Item $item): int
+    protected function getPageIdOfItem(Item $item): ?int
     {
         if ($item->getType() === 'pages') {
             return $item->getRecordUid();
@@ -368,12 +377,24 @@ class Indexer extends AbstractIndexer
         if (!is_null($itemRecord)) {
             $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
             $document = $this->getBaseDocument($item, $itemRecord);
-            $pidToUse = $this->getPageIdOfItem($item);
-            $tsfe = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdAndLanguageId($pidToUse, $language, $item->getRootPageUid());
+            $tsfe = $this->getTsfeByItemAndLanguageId($item, $language);
             $document = $this->addDocumentFieldsFromTyposcript($document, $itemIndexingConfiguration, $itemRecord, $tsfe);
         }
 
         return $document;
+    }
+
+    protected function getTsfeByItemAndLanguageId(
+        Item $item,
+        int $language = 0,
+    ): TypoScriptFrontendController {
+        $pidToUse = $this->getPageIdOfItem($item);
+        return GeneralUtility::makeInstance(Tsfe::class)
+            ->getTsfeByPageIdAndLanguageId(
+                $pidToUse,
+                $language,
+                $item->getRootPageUid()
+            );
     }
 
     /**
@@ -430,9 +451,11 @@ class Indexer extends AbstractIndexer
     {
         $event = new BeforeDocumentIsProcessedForIndexingEvent(
             $itemDocument,
-            $item->getSite()->getTypo3SiteObject(),
-            $item->getSite()->getTypo3SiteObject()->getLanguageById($language),
-            $item
+            $item,
+            $this->getTsfeByItemAndLanguageId(
+                $item,
+                $language,
+            )
         );
         $event = $this->eventDispatcher->dispatch($event);
         return $event->getDocuments();

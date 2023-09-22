@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Allows third party extensions to replace or modify the page document
@@ -36,9 +37,8 @@ final class AfterPageDocumentIsCreatedForIndexingEvent
     public function __construct(
         private Document $document,
         private readonly Item $indexQueueItem,
-        private readonly Site $site,
-        private readonly SiteLanguage $siteLanguage,
         private readonly array $record,
+        private readonly TypoScriptFrontendController $tsfe,
         private readonly TypoScriptConfiguration $configuration
     ) {}
 
@@ -64,12 +64,12 @@ final class AfterPageDocumentIsCreatedForIndexingEvent
 
     public function getSite(): Site
     {
-        return $this->site;
+        return $this->tsfe->getSite();
     }
 
     public function getSiteLanguage(): SiteLanguage
     {
-        return $this->siteLanguage;
+        return $this->tsfe->getLanguage();
     }
 
     public function getRecord(): array
@@ -80,5 +80,10 @@ final class AfterPageDocumentIsCreatedForIndexingEvent
     public function getConfiguration(): TypoScriptConfiguration
     {
         return $this->configuration;
+    }
+
+    public function getTsfe(): TypoScriptFrontendController
+    {
+        return clone $this->tsfe;
     }
 }
