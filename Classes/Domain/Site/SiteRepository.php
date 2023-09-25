@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -46,8 +45,6 @@ class SiteRepository
 
     protected TwoLevelCache $runtimeCache;
 
-    protected Registry $registry;
-
     protected SiteFinder $siteFinder;
 
     protected ExtensionConfiguration $extensionConfiguration;
@@ -57,14 +54,12 @@ class SiteRepository
     public function __construct(
         RootPageResolver $rootPageResolver = null,
         TwoLevelCache $twoLevelCache = null,
-        Registry $registry = null,
         SiteFinder $siteFinder = null,
         ExtensionConfiguration $extensionConfiguration = null,
         FrontendEnvironment $frontendEnvironment = null
     ) {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
-        $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
         $this->siteFinder = $siteFinder ?? GeneralUtility::makeInstance(SiteFinder::class);
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
