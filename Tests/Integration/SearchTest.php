@@ -89,6 +89,72 @@ class SearchTest extends IntegrationTest
     /**
      * @test
      */
+    public function canHighlightTerms(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
+        $this->fillIndexForPhraseSearchTests();
+        $searchInstance = GeneralUtility::makeInstance(Search::class);
+
+        // fragmentSize 50 => fastVector
+        $typoScriptConfiguration = new TypoScriptConfiguration([
+            'plugin.' => [
+                'tx_solr.' => [
+                    'search.' => [
+                        'query.' => ['queryFields' => 'content,title'],
+                        'results.' => [
+                            'resultsHighlighting' => 1,
+                            'resultsHighlighting.' => [
+                                'fragmentSize' => 50,
+                                'wrap' => '<mark>|</mark>',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+        $queryBuilder = new QueryBuilder($typoScriptConfiguration);
+        $query = $queryBuilder->buildSearchQuery('enterprise');
+        $parsedData = $searchInstance->search($query)->getParsedData();
+        $highlightString = current((array)$parsedData->highlighting)?->title[0];
+
+        // fragmentSize 20 => fastVector
+        $typoScriptConfiguration->mergeSolrConfiguration([
+            'search.' => [
+                'results.' => [
+                    'resultsHighlighting.' => [
+                        'fragmentSize' => 20,
+                    ],
+                ],
+            ],
+        ]);
+        $query = $queryBuilder->buildSearchQuery('enterprise');
+        $parsedData = $searchInstance->search($query)->getParsedData();
+        $highlightString2 = current((array)$parsedData->highlighting)?->title[0];
+
+        // fragmentSize 10 => original
+        $typoScriptConfiguration->mergeSolrConfiguration([
+            'search.' => [
+                'results.' => [
+                    'resultsHighlighting.' => [
+                        'fragmentSize' => 10,
+                    ],
+                ],
+            ],
+        ]);
+        $query = $queryBuilder->buildSearchQuery('enterprise');
+        $parsedData = $searchInstance->search($query)->getParsedData();
+        $highlightString3 = current((array)$parsedData->highlighting)?->title[0];
+
+        self::assertStringContainsString('<mark>', $highlightString);
+        self::assertStringContainsString('<mark>', $highlightString2);
+        self::assertStringContainsString('<mark>', $highlightString3);
+        self::assertTrue((strlen($highlightString) > strlen($highlightString2)));
+        self::assertTrue((strlen($highlightString2) > strlen($highlightString3)));
+    }
+
+    /**
+     * @test
+     */
     public function implicitPhraseSearchingBoostsDocsWithOccurringPhrase(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');

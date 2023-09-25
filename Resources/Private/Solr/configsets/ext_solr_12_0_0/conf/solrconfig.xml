@@ -155,6 +155,7 @@
 			<int name="hl.snippets">3</int>
 			<str name="hl.mergeContiguous">true</str>
 			<str name="hl.requireFieldMatch">true</str>
+			<str name="hl.method">original</str>
 
 			<str name="f.content.hl.alternateField">content</str>
 			<str name="f.content.hl.maxAlternateFieldLength">200</str>
