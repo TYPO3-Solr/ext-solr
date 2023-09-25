@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -38,7 +37,6 @@ class SiteRepositoryTest extends SetUpUnitTestCase
 {
     protected TwoLevelCache|MockObject $cacheMock;
     protected RootPageResolver|MockObject $rootPageResolverMock;
-    protected Registry|MockObject $registryMock;
     protected SiteRepository|MockObject $siteRepository;
     protected SiteFinder|MockObject $siteFinderMock;
 
@@ -47,12 +45,11 @@ class SiteRepositoryTest extends SetUpUnitTestCase
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         $this->cacheMock = $this->createMock(TwoLevelCache::class);
         $this->rootPageResolverMock = $this->createMock(RootPageResolver::class);
-        $this->registryMock = $this->createMock(Registry::class);
         $this->siteFinderMock = $this->createMock(SiteFinder::class);
 
         // we mock buildSite to avoid the creation of real Site objects and pass all dependencies as mock
         $this->siteRepository = $this->getMockBuilder(SiteRepository::class)
-            ->setConstructorArgs([$this->rootPageResolverMock, $this->cacheMock, $this->registryMock, $this->siteFinderMock])
+            ->setConstructorArgs([$this->rootPageResolverMock, $this->cacheMock, $this->siteFinderMock])
             ->onlyMethods(['buildSite'])
             ->getMock();
         parent::setUp();

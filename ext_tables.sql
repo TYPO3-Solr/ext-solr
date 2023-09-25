@@ -103,13 +103,6 @@ CREATE TABLE tx_solr_eventqueue_item (
 ) ENGINE=InnoDB;
 
 #
-# Update size of entry_value for table 'sys_registry'
-#
-CREATE TABLE sys_registry (
-	entry_value longblob
-) ENGINE=InnoDB;
-
-#
 # Extending 'pages' table with extra keys
 #
 CREATE TABLE pages (

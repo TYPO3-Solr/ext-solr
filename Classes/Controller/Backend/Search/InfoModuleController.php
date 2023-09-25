@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -207,13 +206,9 @@ class InfoModuleController extends AbstractModuleController
             ];
             if ($coreAdmin->ping()) {
                 $lukeData = $coreAdmin->getLukeMetaData();
-
-                /** @var Registry $registry */
-                $registry = GeneralUtility::makeInstance(Registry::class);
-                $limit = $registry->get('tx_solr', 'luke.limit', 20000);
                 $limitNote = '';
 
-                if (isset($lukeData->index->numDocs) && $lukeData->index->numDocs > $limit) {
+                if (isset($lukeData->index->numDocs) && $lukeData->index->numDocs > 20000) {
                     $limitNote = '<em>Too many terms</em>';
                 } elseif (isset($lukeData->index->numDocs)) {
                     $limitNote = 'Nothing indexed';
