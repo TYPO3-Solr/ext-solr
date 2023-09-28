@@ -29,7 +29,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * Previously used with
  * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']
  */
-class BeforeDocumentsAreIndexedEvent
+final class BeforeDocumentsAreIndexedEvent
 {
     public function __construct(
         private readonly Document $document,
@@ -73,6 +73,14 @@ class BeforeDocumentsAreIndexedEvent
     public function getDocuments(): array
     {
         return $this->documents;
+    }
+
+    /**
+     * @param Document[] $documents
+     */
+    public function setDocuments(array $documents): void
+    {
+        $this->documents = $documents;
     }
 
     public function getTsfe(): TypoScriptFrontendController
