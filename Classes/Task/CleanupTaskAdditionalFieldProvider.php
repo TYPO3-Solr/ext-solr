@@ -166,7 +166,7 @@ class CleanupTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * class matches.
      *
      * @param array $submittedData array containing the data submitted by the user
-     * @param ReIndexTask $task reference to the current task object
+     * @param CleanupIndexTask $task reference to the current task object
      */
     public function saveAdditionalFields(
         array $submittedData,
