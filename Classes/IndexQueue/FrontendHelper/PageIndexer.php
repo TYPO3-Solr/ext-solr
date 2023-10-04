@@ -54,6 +54,8 @@ use UnexpectedValueException;
  */
 class PageIndexer implements FrontendHelper, SingletonInterface
 {
+    protected bool $activated = false;
+
     /**
      * This frontend helper's executed action.
      */
@@ -92,6 +94,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
     public function activate(): void
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->activated = true;
     }
 
     /**
@@ -141,7 +144,8 @@ class PageIndexer implements FrontendHelper, SingletonInterface
     public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
     {
         $this->request = $event->getRequest()->getAttribute('solr.pageIndexingInstructions');
-        if (!$this->request) {
+
+        if (!$this->request || $this->activated === false) {
             return;
         }
         $this->setupConfiguration();
@@ -381,6 +385,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
      */
     public function deactivate(PageIndexerResponse $response): void
     {
+        $this->activated = false;
         $response->addActionResult($this->action, $this->responseData);
     }
 }

@@ -20,6 +20,5 @@ parameters:
     - '#^Variable \$_EXTKEY might not be defined\.#'
     - '#^Method .*\\QueryBuilder::buildSuggestQuery\(\) should return .*\\SuggestQuery but returns .*\\Search\\Query\\Query\|null.#'
     - '#^Method .*\\QueryBuilder::use.*FromTypoScript\(\) should return .*\\QueryBuilder but returns .*\\AbstractQueryBuilder.#'
-    - '#^Access to protected property .*\\PageRepository::\$where_groupAccess.#'
     - '#^Unreachable statement - code above always terminates.#'
     - '#^Parameter \#1 \$queryAlternative of method .*\\DisMax::setQueryAlternative\(\) expects string, null given.#'
