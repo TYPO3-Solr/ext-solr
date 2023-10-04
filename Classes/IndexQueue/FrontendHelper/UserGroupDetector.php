@@ -124,17 +124,13 @@ class UserGroupDetector implements
      * @param int $uid The page ID
      * @param bool $disableGroupAccessCheck If set, the check for group access is disabled. VERY rarely used
      * @param PageRepository $parentObject parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
-     *
-     * @noinspection PhpMissingReturnTypeInspection
      */
     public function getPage_preProcess(
         &$uid,
         &$disableGroupAccessCheck,
         PageRepository $parentObject
-    ) {
+    ): void {
         $disableGroupAccessCheck = true;
-        // @todo: Check if reset "where_groupAccess" really wanted. Most probably the core aspect 'frontend.user' must be used instead.
-        $parentObject->where_groupAccess = ''; // just to be on the safe side
     }
 
     /**
@@ -190,7 +186,7 @@ class UserGroupDetector implements
         if (isset($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group'])) {
             $frontendGroups = $record[$this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']] ?? null;
 
-            if (empty($frontendGroups)) {
+            if (empty($frontendGroups) || $frontendGroups === '-1') {
                 // default = public access
                 $frontendGroups = 0;
             } elseif ($this->request->getParameter('loggingEnabled')) {
@@ -222,7 +218,10 @@ class UserGroupDetector implements
 
         // clean up: filter double groups
         $frontendGroups = array_unique($frontendGroups);
-        $frontendGroups = array_values($frontendGroups);
+        $frontendGroups = array_filter(
+            array_values($frontendGroups),
+            static fn (int $val): bool => ($val !== -1)
+        );
 
         if (empty($frontendGroups)) {
             // most likely an empty page with no content elements => public

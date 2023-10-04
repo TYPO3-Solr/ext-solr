@@ -40,9 +40,13 @@ class FrontendGroupsModifier
     public function __invoke(ModifyResolvedFrontendGroupsEvent $event): void
     {
         $pageIndexerRequest = $event->getRequest()->getAttribute('solr.pageIndexingInstructions');
-        if (!$pageIndexerRequest instanceof PageIndexerRequest) {
+        if (!$pageIndexerRequest instanceof PageIndexerRequest
+            || ((int)$pageIndexerRequest->getParameter('userGroup') === 0
+                && (int)$pageIndexerRequest->getParameter('pageUserGroup') < 1)
+        ) {
             return;
         }
+
         if (!$pageIndexerRequest->isAuthenticated()) {
             $logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
             $logger->error(
@@ -58,7 +62,7 @@ class FrontendGroupsModifier
                         'error' => [
                             'code' => 403,
                             'message' => 'Invalid Index Queue Request.',
-                            ],
+                        ],
                     ],
                     403
                 ),
@@ -67,6 +71,9 @@ class FrontendGroupsModifier
         }
 
         $groups = $this->resolveFrontendUserGroups($pageIndexerRequest);
+        if ((int)$pageIndexerRequest->getParameter('pageUserGroup') > 0) {
+            $groups[] = (int)$pageIndexerRequest->getParameter('pageUserGroup');
+        }
         $groupData = [];
         foreach ($groups as $groupUid) {
             if (in_array($groupUid, [-2, -1])) {

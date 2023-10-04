@@ -59,16 +59,9 @@ class PageIndexer extends Indexer
             return false;
         }
 
-        $solrConnections = $this->getSolrConnectionsByItem($item);
-        foreach ($solrConnections as $systemLanguageUid => $solrConnection) {
+        $systemLanguageUids = array_keys($this->getSolrConnectionsByItem($item));
+        foreach ($systemLanguageUids as $systemLanguageUid) {
             $contentAccessGroups = $this->getAccessGroupsFromContent($item, $systemLanguageUid);
-
-            if (empty($contentAccessGroups)) {
-                // might be an empty page w/no content elements or some TYPO3 error / bug
-                // FIXME logging needed
-                continue;
-            }
-
             foreach ($contentAccessGroups as $userGroup) {
                 $this->indexPage($item, $systemLanguageUid, $userGroup);
             }
@@ -299,6 +292,12 @@ class PageIndexer extends Indexer
         $request->setIndexQueueItem($item);
         $request->addAction('indexPage');
         $request->setParameter('accessRootline', $accessRootline);
+        $request->setParameter('userGroup', $userGroup);
+
+        $feGroupColumn = $GLOBALS['TCA']['pages']['ctrl']['enablecolumns']['fe_group'] ?? '';
+        if (!empty($feGroupColumn)) {
+            $request->setParameter('pageUserGroup', $item->getRecord()[$feGroupColumn]);
+        }
 
         $indexRequestUrl = $this->getDataUrl($item, $language);
         $response = $request->send($indexRequestUrl);
@@ -329,7 +328,6 @@ class PageIndexer extends Indexer
 
         if (empty($indexActionResult['pageIndexed'])) {
             $message = 'Failed indexing page Index Queue item: ' . $item->getIndexQueueUid() . ' url: ' . $indexRequestUrl;
-
             throw new \RuntimeException($message, 1331837081);
         }
 

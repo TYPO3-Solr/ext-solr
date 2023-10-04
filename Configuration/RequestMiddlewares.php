@@ -4,7 +4,7 @@
 $requestMiddlewares = [
     'apache-solr-for-typo3/page-indexer-initialization' => [
         'target' => \ApacheSolrForTypo3\Solr\Middleware\PageIndexerInitialization::class,
-        'before' => ['typo3/cms-frontend/tsfe'],
+        'before' => ['typo3/cms-frontend/tsfe', 'typo3/cms-frontend/authentication'],
         'after' => ['typo3/cms-core/normalized-params-attribute'],
     ],
 ];

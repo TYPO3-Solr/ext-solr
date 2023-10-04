@@ -381,6 +381,16 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
+     * Returns the Item for given index queue uid
+     */
+    protected function getIndexQueueItem(int $itemUid): Item
+    {
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
+        $itemData = $connection->select(['*'], 'tx_solr_indexqueue_item', ['uid' => $itemUid])->fetchAssociative();
+        return new Item($itemData);
+    }
+
+    /**
      * Executes a Frontend request within the same PHP process to trigger the indexing of a page.
      */
     protected function executePageIndexer(string $url, Item $item, int $frontendUserId = null): ResponseInterface

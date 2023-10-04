@@ -17,10 +17,8 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
@@ -352,8 +350,7 @@ class PageIndexerTest extends IntegrationTest
         $url = rtrim($domain, '/') . '/' . ltrim($siteLanguageBase, '/') . '?' . $queryString;
 
         // Now add the headers for item 4711 to the request
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
-        $item = $connection->select(['*'], 'tx_solr_indexqueue_item', ['uid' => 4711])->fetchAssociative();
-        return $this->executePageIndexer($url, new Item($item));
+        $item = $this->getIndexQueueItem(4711);
+        return $this->executePageIndexer($url, $item);
     }
 }

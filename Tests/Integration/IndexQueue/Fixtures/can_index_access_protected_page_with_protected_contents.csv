@@ -1,0 +1,17 @@
+"fe_groups",
+,"uid","pid","title"
+,1,1,"group 1"
+,2,1,"group 2"
+"pages",
+,"uid","pid","sys_language_uid","l10n_parent","is_siteroot","doktype","slug","title","subtitle","crdate","tstamp","fe_group",
+,2,1,0,0,0,1,"/protected_page","protected page","",1449151778,1449151778,1
+,3,1,1,2,0,1,"/protected_page_de","protected page de","",1449151778,1449151778,1
+"tt_content",
+,"uid","pid","sys_language_uid","l18n_parent","CType","header","fe_group","sorting"
+,11,"2",0,0,"header","public content of protected page",0,10
+,12,"2",1,11,"header","public content of protected page de",0,10
+,13,"2",0,0,"header","protected content of protected page",2,20
+,14,"2",1,13,"header","protected content of protected page de",2,20
+"tx_solr_indexqueue_item",
+,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors"
+,4711,1,"pages",2,"pages",1449151778,0,0,0,0,0
