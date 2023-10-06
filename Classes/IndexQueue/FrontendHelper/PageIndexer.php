@@ -192,9 +192,9 @@ class PageIndexer implements FrontendHelper, SingletonInterface
     }
 
     /**
-     * @internal currently only public for tests
+     * Index item
      */
-    public function index(Item $indexQueueItem, TypoScriptFrontendController $tsfe): void
+    protected function index(Item $indexQueueItem, TypoScriptFrontendController $tsfe): void
     {
         $this->solrConnection = $this->getSolrConnection($indexQueueItem, $tsfe->getLanguage(), $this->configuration->getLoggingExceptions());
 
@@ -291,7 +291,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
      *
      * @return bool TRUE after successfully indexing the page, FALSE on error
      */
-    public function indexPage(
+    protected function indexPage(
         Document $pageDocument,
         Item $indexQueueItem,
         TypoScriptFrontendController $tsfe,
@@ -366,11 +366,13 @@ class PageIndexer implements FrontendHelper, SingletonInterface
     }
 
     /**
-     * @internal only used for tests
+     * Initialize PageIndexer
+     *
+     * As the Solr configuration initialization might affect the request
+     * we cannot initialize the configuration directly on activation
      */
-    public function setupConfiguration(): void
+    protected function setupConfiguration(): void
     {
-        // currently needed for tests, will be separated.
         $this->logger = new SolrLogManager(__CLASS__, GeneralUtility::makeInstance(DebugWriter::class));
         $this->configuration = Util::getSolrConfiguration();
     }
@@ -385,7 +387,19 @@ class PageIndexer implements FrontendHelper, SingletonInterface
      */
     public function deactivate(PageIndexerResponse $response): void
     {
+        if ($this->activated) {
+            if (!isset($this->responseData['pageIndexed'])) {
+                $this->responseData['pageIndexed'] = false;
+            }
+            $response->addActionResult($this->action, $this->responseData);
+
+            $this->setupConfiguration();
+            if ($this->configuration->getLoggingExceptions()) {
+                $this->logger->error(
+                    'Unknown exception while trying to index page',
+                );
+            }
+        }
         $this->activated = false;
-        $response->addActionResult($this->action, $this->responseData);
     }
 }

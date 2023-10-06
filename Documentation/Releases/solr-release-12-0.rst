@@ -158,6 +158,14 @@ If you've used this class or the SolrConnection directly, you have to adapt your
 
 Note: With dropping the Node implementation we also dropped the backwards compatibility that allows to define the Solr path segment "/solr" within "solr_path_read" or "solr_path_write". Be sure your configuration doesn't contain this path segment!
 
+!!! Changed visibility of ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer methods
+-----------------------------------------------------------------------------------------------
+
+For testing purposes some methods of the PageIndexer were defined as public, these methods are now protected. The tests are adapted accordingly, so that there is no need to declare the methods as public.
+If you have used one of this methods, you have to adapt your code. Affected methods:
+- setupConfiguration
+- index
+- indexPage
 
 !!! Solr route enhancer disabled by default
 -------------------------------------------

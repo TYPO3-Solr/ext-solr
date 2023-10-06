@@ -1,68 +1,38 @@
 "pages",,,,,,,
 ,"uid","pid","is_siteroot","doktype","hidden","slug","title"
 # 100% matching
-,1,0,1,1,0,"/","Bigram Phrase Search"
+,2,1,1,1,0,"/","Bigram Phrase Search"
 # bigram phrase slop = 0
-,2,1,0,1,0,"/dump-sentence","This is some dump sentence to match Bigram Phrase"
-,3,1,0,1,0,"/match-phrase-search","This is some dump sentence to match Phrase Search"
+,3,1,0,1,0,"/dump-sentence","This is some dump sentence to match Bigram Phrase"
+,4,1,0,1,0,"/match-phrase-search","This is some dump sentence to match Phrase Search"
 # bigram phrase slop = 1
-,4,1,0,1,0,"/slop-1-bigram-gag-phrase","This is some dump sentence to match slop 1 Bigram gag Phrase"
-,5,1,0,1,0,"/slop-1-phrase-gag-search","This is some dump sentence to match slop 1 Phrase gag Search"
+,5,1,0,1,0,"/slop-1-bigram-gag-phrase","This is some dump sentence to match slop 1 Bigram gag Phrase"
+,6,1,0,1,0,"/slop-1-phrase-gag-search","This is some dump sentence to match slop 1 Phrase gag Search"
 # bigram phrase slop = 2
-,6,1,0,1,0,"/slop-2-bigram-gag-gag-phrase","This is some dump sentence to match slop 2 Bigram gag gag Phrase"
-,7,1,0,1,0,"/slop-2-phrase-gag-gag-search","This is some dump sentence to match slop 2 Phrase gag gag Search"
-,8,1,0,1,0,"/no-docs-match","This is some dump sentence to match no docs"
-,9,1,0,1,0,"/no-match","This is some dump sentence to match nothing"
-,10,1,0,1,0,"/bphrase-disabled","To disable BPhrase set it to 0."
-,11,1,0,1,0,"/match-phrase-only","This is some dump sentence to match Phrase only"
-,12,1,0,1,0,"/match-search-only","This is some dump sentence to match Search only"
-,13,1,0,1,0,"/match-bigram-only","This is some dump sentence to match Bigram only"
-,14,1,0,1,0,"/implicit-bigram-phrase-pf2","Implicit Bigram gag gag gag gag Phrase gag gag gag gag searches in pf2 fields."
-,15,1,0,1,0,"/bigram-gag-gag-gag-gag-phrase","Bigram gag gag gag gag Phrase gag gag gag gag Search is fascinating feature."
-"sys_template",,,,,,,
-,"uid","pid","root","clear","sorting","constants","config",
-,1,1,1,3,100,"","
-page = PAGE
-page.typeNum = 0
-
-plugin.tx_solr {
-    search.query.bigramPhrase = 1
-    enabled = 1
-
-    index {
-        fieldProcessingInstructions {
-            changed = timestampToIsoDate
-            created = timestampToIsoDate
-            endtime = timestampToUtcIsoDate
-            rootline = pageUidToHierarchy
-        }
-
-        queue {
-
-            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
-
-            pages = 1
-            pages {
-                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
-
-                // allowed page types (doktype) when indexing pages
-                allowedPageTypes = 1,7
-
-                indexingPriority = 0
-
-                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
-                indexer {
-                    // add options for the indexer here
-                }
-
-                // Only index standard pages and mount points that are not overlayed.
-                additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
-
-                fields {
-                    sortSubTitle_stringS = subtitle
-                }
-            }
-
-        }
-    }
-}"
+,7,1,0,1,0,"/slop-2-bigram-gag-gag-phrase","This is some dump sentence to match slop 2 Bigram gag gag Phrase"
+,8,1,0,1,0,"/slop-2-phrase-gag-gag-search","This is some dump sentence to match slop 2 Phrase gag gag Search"
+,9,1,0,1,0,"/no-docs-match","This is some dump sentence to match no docs"
+,10,1,0,1,0,"/no-match","This is some dump sentence to match nothing"
+,11,1,0,1,0,"/bphrase-disabled","To disable BPhrase set it to 0."
+,12,1,0,1,0,"/match-phrase-only","This is some dump sentence to match Phrase only"
+,13,1,0,1,0,"/match-search-only","This is some dump sentence to match Search only"
+,14,1,0,1,0,"/match-bigram-only","This is some dump sentence to match Bigram only"
+,15,1,0,1,0,"/implicit-bigram-phrase-pf2","Implicit Bigram gag gag gag gag Phrase gag gag gag gag searches in pf2 fields."
+,16,1,0,1,0,"/bigram-gag-gag-gag-gag-phrase","Bigram gag gag gag gag Phrase gag gag gag gag Search is fascinating feature."
+"tx_solr_indexqueue_item",
+,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors"
+,2,1,"pages",2,"pages",1449151778,0,0,0,0,0
+,3,1,"pages",3,"pages",1449151778,0,0,0,0,0
+,4,1,"pages",4,"pages",1449151778,0,0,0,0,0
+,5,1,"pages",5,"pages",1449151778,0,0,0,0,0
+,6,1,"pages",6,"pages",1449151778,0,0,0,0,0
+,7,1,"pages",7,"pages",1449151778,0,0,0,0,0
+,8,1,"pages",8,"pages",1449151778,0,0,0,0,0
+,9,1,"pages",9,"pages",1449151778,0,0,0,0,0
+,10,1,"pages",10,"pages",1449151778,0,0,0,0,0
+,11,1,"pages",11,"pages",1449151778,0,0,0,0,0
+,12,1,"pages",12,"pages",1449151778,0,0,0,0,0
+,13,1,"pages",13,"pages",1449151778,0,0,0,0,0
+,14,1,"pages",14,"pages",1449151778,0,0,0,0,0
+,15,1,"pages",15,"pages",1449151778,0,0,0,0,0
+,16,1,"pages",16,"pages",1449151778,0,0,0,0,0
