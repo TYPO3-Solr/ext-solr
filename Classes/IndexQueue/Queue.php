@@ -455,7 +455,7 @@ class Queue
     {
         if (!empty($page['content_from_pid'])) {
             // canonical page, get the original page's last changed time
-            return $this->queueItemRepository->getPageItemChangedTimeByPageUid((int)$page['content_from_pid']);
+            return $this->queueItemRepository->getPageItemChangedTimeByPageUid((int)$page['content_from_pid']) ?? 0;
         }
         return $this->queueItemRepository->getPageItemChangedTimeByPageUid((int)$page['uid']) ?? 0;
     }
