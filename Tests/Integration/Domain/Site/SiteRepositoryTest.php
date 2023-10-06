@@ -106,6 +106,6 @@ class SiteRepositoryTest extends IntegrationTest
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_site_by_page_id.csv');
         $site = $this->siteRepository->getSiteByPageId(1);
         $domain = $site->getDomain();
-        self::assertSame('testone.site', $domain, 'Can not configured domain with sys_domain record');
+        self::assertSame('testone.site', $domain, 'Can not get the domain from Site-Config.');
     }
 }

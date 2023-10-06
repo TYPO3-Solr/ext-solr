@@ -451,7 +451,6 @@ The following example shows, how you can configure a custom switchable entry tem
 When you deploy a system automatically and you use EXT:solr there are some things that might be complicated:
 
 * You want to use a different Solr endpoint for each environment
-* EXT:solr depends on an existing domain record
 
 To avoid that, you can set or generate these settings in the TYPO3 AdditionalConfigruation.php file and use them in your system.
 
