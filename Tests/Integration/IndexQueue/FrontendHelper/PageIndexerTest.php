@@ -19,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
@@ -35,12 +34,6 @@ class PageIndexerTest extends IntegrationTest
         'typo3conf/ext/solr',
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension3',
     ];
-
-    /**
-     * @inheritdoc
-     * @todo: Remove unnecessary fixtures and remove that property as intended.
-     */
-    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
     protected function setUp(): void
     {
@@ -60,13 +53,24 @@ class PageIndexerTest extends IntegrationTest
     /**
      * @test
      */
-    public function canIndexPageIntoSolr()
+    public function canIndexPageIntoSolr(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_into_solr.csv');
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(
+            1,
+            /* @lang TYPO3_TypoScript */
+            '
+            plugin.tx_solr.index.queue.pages.fields {
+              sortSubTitle_stringS = subtitle
+              custom_stringS = TEXT
+              custom_stringS.value = my text
+            }
+            '
+        );
 
-        $this->indexQueuedPage();
+        $this->indexQueuedPage(2);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -81,13 +85,28 @@ class PageIndexerTest extends IntegrationTest
     /**
      * @test
      */
-    public function canIndexPageWithCustomPageTypeIntoSolr()
+    public function canIndexPageWithCustomPageTypeIntoSolr(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_pagetype_into_solr.csv');
 
-        $this->indexQueuedPage();
+        // @TODO: Check page type in fixture, currently not set to 130
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(
+            1,
+            /* @lang TYPO3_TypoScript */
+            '
+            plugin.tx_solr.index.queue.mytype < plugin.tx_solr.index.queue.pages
+            plugin.tx_solr.index.queue.mytype {
+              allowedPageTypes = 130
+              additionalWhereClause = doktype = 130
+              fields.custom_stringS = TEXT
+              fields.custom_stringS.value = my text from custom page type
+            }
+            '
+        );
+
+        $this->indexQueuedPage(2);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -103,15 +122,27 @@ class PageIndexerTest extends IntegrationTest
      *
      * @test
      */
-    public function canIndexTranslatedPageToPageRelation()
+    public function canIndexTranslatedPageToPageRelation(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_page_with_relation_to_page.csv');
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(
+            1,
+            /* @lang TYPO3_TypoScript */
+            '
+            plugin.tx_solr.index.queue.pages.fields.relatedPageTitles_stringM = SOLR_RELATION
+            plugin.tx_solr.index.queue.pages.fields.relatedPageTitles_stringM {
+              localField = page_relations
+              enableRecursiveValueResolution = 0
+              multiValue = 1
+            }
+            '
+        );
 
-        $this->indexQueuedPage(1, '/en/');
-        $this->indexQueuedPage(1, '/de/');
+        $this->indexQueuedPage(2, '/en/');
+        $this->indexQueuedPage(2, '/de/');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr('core_en');
@@ -134,11 +165,24 @@ class PageIndexerTest extends IntegrationTest
      *
      * @test
      */
-    public function canIndexPageToCategoryRelation()
+    public function canIndexPageToCategoryRelation(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_page_with_relation_to_category.csv');
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(
+            1,
+            /* @lang TYPO3_TypoScript */
+            '
+            plugin.tx_solr.index.queue.pages.fields.categories_stringM = SOLR_RELATION
+            plugin.tx_solr.index.queue.pages.fields.categories_stringM {
+              localField = categories
+              foreignLabelField = title
+              multiValue = 1
+            }
+            '
+        );
+
         $this->indexQueuedPage(10);
 
         $this->waitToBeVisibleInSolr('core_en');
@@ -153,10 +197,21 @@ class PageIndexerTest extends IntegrationTest
     /**
      * @test
      */
-    public function canIndexPageIntoSolrWithAdditionalFields()
+    public function canIndexPageIntoSolrWithAdditionalFields(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_with_additional_fields_into_solr.csv');
-        $this->indexQueuedPage();
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(
+            1,
+            /* @lang TYPO3_TypoScript */
+            '
+            plugin.tx_solr.index.additionalFields {
+              additional_sortSubTitle_stringS = subtitle
+              additional_custom_stringS = TEXT
+              additional_custom_stringS.value = my text
+            }
+            '
+        );
+        $this->indexQueuedPage(2);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -176,9 +231,18 @@ class PageIndexerTest extends IntegrationTest
     /**
      * @test
      */
-    public function canIndexPageIntoSolrWithAdditionalFieldsFromRootLine()
+    public function canIndexPageIntoSolrWithAdditionalFieldsFromRootLine(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_overwrite_configuration_in_rootline.csv');
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(
+            1,
+            /* @lang TYPO3_TypoScript */
+            '
+            plugin.tx_solr.index.queue.pages.fields.additional_stringS = TEXT
+            plugin.tx_solr.index.queue.pages.fields.additional_stringS.value = from rootline
+            '
+        );
+
         $this->indexQueuedPage(2);
 
         // we wait to make sure the document will be available in solr
@@ -195,10 +259,13 @@ class PageIndexerTest extends IntegrationTest
     /**
      * @test
      */
-    public function canExecutePostProcessor()
+    public function canExecutePostProcessor(): void
     {
+        $this->cleanUpSolrServerAndAssertEmpty();
+
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_into_solr.csv');
-        $this->indexQueuedPage();
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
+        $this->indexQueuedPage(2);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -211,10 +278,20 @@ class PageIndexerTest extends IntegrationTest
     /**
      * @test
      */
-    public function canExecuteAdditionalPageIndexer()
+    public function canExecuteAdditionalPageIndexer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_into_solr.csv');
-        $this->indexQueuedPage(1, '/en/', ['additionalTestPageIndexer' => true]);
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(
+            1,
+            /* @lang TYPO3_TypoScript */
+            '
+            plugin.tx_solr.index.queue.pages.fields {
+              custom_stringS = TEXT
+              custom_stringS.value = my text
+            }
+            '
+        );
+        $this->indexQueuedPage(2, '/en/', ['additionalTestPageIndexer' => true]);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -242,12 +319,13 @@ class PageIndexerTest extends IntegrationTest
      *
      * @test
      */
-    public function canIndexMountedPage()
+    public function canIndexMountedPage(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 1;
 
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_mounted_page.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $this->indexQueuedPage(24, '/en/', ['MP' => '24-14']);
 
         // we wait to make sure the document will be available in solr
@@ -276,10 +354,11 @@ class PageIndexerTest extends IntegrationTest
      *  ——[24] Mount Point (to [24] to show contents from)
      * @test
      */
-    public function canIndexMultipleMountedPage()
+    public function canIndexMultipleMountedPage(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_multiple_mounted_page.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $this->indexQueuedPage(44, '/en/', ['MP' => '44-14']);
         $this->indexQueuedPage(44, '/en/', ['MP' => '44-24']);
 
@@ -300,39 +379,16 @@ class PageIndexerTest extends IntegrationTest
      *
      * @test
      */
-    public function phpProcessDoesNotDieIfPageIsNotAvailable()
+    public function phpProcessDoesNotDieIfPageIsNotAvailable(): void
     {
-        // @todo: 1636120156
-        self::markTestIncomplete('The behaviour since TYPO3 11 and EXT:solr 11.5 must be checked twice, to be able to finalize request properly and mark items failed.');
-        $this->registerShutdownFunctionToPrintExplanationOf404HandlingOnCMSIfDieIsCalled();
-        $this->expectException(SiteNotFoundException::class);
-
         $this->importCSVDataSet(__DIR__ . '/Fixtures/does_not_die_if_page_not_available.csv');
-        $this->indexQueuedPage(1636120156);
-    }
+        $response = $this->indexQueuedPage(1636120156);
 
-    /**
-     * Registers shutdown function to print proper information about TYPO3 CMS behaviour on unavailable pages.
-     */
-    protected function registerShutdownFunctionToPrintExplanationOf404HandlingOnCMSIfDieIsCalled()
-    {
-        register_shutdown_function(function () {
-            // prompt only after phpProcessDoesNotDieIfPageIsNotAvailable() test case
-            if ($this->getName() !== 'phpProcessDoesNotDieIfPageIsNotAvailable') {
-                return;
-            }
+        $decodedResponse = json_decode($response->getBody()->getContents(), true);
+        self::assertIsArray($decodedResponse, 'Response couldn\'t be decoded');
 
-            // don't show HTML or other stuff from CMS in output
-            ob_clean();
-
-            $message = PHP_EOL . PHP_EOL . PHP_EOL .
-                'Note: This test case kills whole PHPUnit process on failing, which is expected behaviour, because TYPO3 CMS uses die() function in cases if page or record is not available.';
-            $message .= PHP_EOL . PHP_EOL . 'TYPO3 CMS API for registering shutdown callbacks for handling of unavailable pages is changed.' . PHP_EOL .
-                'TypoScriptFrontendController::pageUnavailableAndExit() is not called anymore.' . PHP_EOL .
-                'Please refer to the TYPO3 CMS documentation and use new API for this functionality.';
-
-            printf(PHP_EOL . PHP_EOL . "\033[01;31m%s\033[0m", $message);
-        });
+        $actionResults = unserialize($decodedResponse['actionResults']['indexPage']);
+        self::assertFalse($actionResults['pageIndexed'] ?? null, 'Index page result not set to false as expected!');
     }
 
     /**
