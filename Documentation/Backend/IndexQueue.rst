@@ -106,8 +106,8 @@ The TypoScript constant "plugin.tx_news.settings.detailPid" is used to configure
 Sysfolders outside the siteroot
 -------------------------------
 
-The page with a domain record act as a siteroot in EXT:solr. It is a good practice not to nest the siteroots and do the configuration on the root page.
-Changes on records that are done in the TYPO3 backend are detected and the Solr document will be readded to the index queue when something was changed.
+It is a good practice not to nest the siteroots and do the configuration on the root page.
+Changes on records that are done in the TYPO3 backend are detected and the Solr document will be re-added to the index queue when something was changed.
 
 By default only records are monitored for a site that are in the tree of the site. If you want to index records and detect changes on records in a different siteroot, the
 index queue configuration needs to contains "additionalPageIds" (e.g.: 'plugin.tx_solr.index.queue.<queueName>.additionalPageIds = 45,48').

@@ -69,7 +69,7 @@ This Module can be used to setup and configure the Apache Solr connections.
 
 .. warning::
 
-   EXT:Solr needs a proper domain as base for the site. If the base is set to "/" or a similar relative path, the Indexing will throw an error, so please make sure that "base" is a fully qualified domain like "https://my.project.tld/"
+   EXT:Solr needs a proper domain/host as base for the site. If the base is set to "/" or a similar relative path, the Indexing will throw an error, so please make sure that "base" is a fully qualified domain like "https://my.project.tld/"
 
 
 Configure Solr Connections

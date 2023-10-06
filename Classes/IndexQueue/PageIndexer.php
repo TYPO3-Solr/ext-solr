@@ -229,8 +229,7 @@ class PageIndexer extends Indexer
     /**
      * Determines a page ID's URL.
      *
-     * Tries to find a domain record to use to build a URL for a given page ID
-     * and then actually build and return the page URL.
+     * Builds a URL for a given page ID and then actually build and return the page URL.
      *
      * @throws DBALException
      * @throws \Exception
