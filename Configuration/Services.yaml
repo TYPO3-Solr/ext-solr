@@ -86,17 +86,17 @@ services:
     tags:
       - name: event.listener
         identifier: 'solr.routing.cachedurl-modifier'
-        event: ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent
+        event: ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent
   ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\CachedPathVariableModifier:
     tags:
       - name: event.listener
         identifier: 'solr.routing.cachedurl-modifier'
-        event: ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent
+        event: ApacheSolrForTypo3\Solr\Event\Routing\BeforeCachedVariablesAreProcessedEvent
   ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\PostEnhancedUriProcessor:
     tags:
       - name: event.listener
         identifier: 'solr.routing.postenhanceduriprocessor-modifier'
-        event: ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent
+        event: ApacheSolrForTypo3\Solr\Event\Routing\AfterUriIsProcessedEvent
   ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\NoProcessingEventListener:
     arguments:
       $extensionConfiguration: '@ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration'

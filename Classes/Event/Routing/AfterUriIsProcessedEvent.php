@@ -34,7 +34,7 @@ class AfterUriIsProcessedEvent
     protected UriInterface $uri;
 
     /**
-     * BeforeReplaceVariableInCachedUrlEvent constructor.
+     * AfterUriIsProcessedEvent constructor.
      */
     public function __construct(UriInterface $uri, array $routerConfiguration)
     {
