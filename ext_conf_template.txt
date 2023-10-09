@@ -1,3 +1,5 @@
+# customcategory=Routes=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.category.routeEnhancer
+
 # cat=basic/enable/8; type=string; label=A list of white listed plugin namespaces (Required by cacheHash/excludedParameters and plugin flex form): Note: This list only is available in Plugin -> Options -> Plugin Namespace
 pluginNamespaces = tx_solr
 
@@ -18,3 +20,6 @@ allowSelfSignedCertificates = 0
 
 # cat=basic/enable/50; type=options[LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.0=0,LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.1=1,LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.2=2]; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType
 monitoringType = 0
+
+# cat=Routes/enable/10; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.enableRouteEnhancer
+enableRouteEnhancer = 0

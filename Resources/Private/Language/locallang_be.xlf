@@ -3,6 +3,9 @@
 	<file source-language="en" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_be.xlf" date="2021-12-15T13:10:00Z" product-name="solr">
 		<header/>
 		<body>
+			<trans-unit id="extConf.category.routeEnhancer" resname="extConf.category.routeEnhancer">
+				<source>Route Enhancer</source>
+			</trans-unit>
 			<trans-unit id="extConf.monitoringType" xml:space="preserve">
 				<source>Monitoring: Define how data updates should be monitored</source>
 			</trans-unit>
@@ -14,6 +17,9 @@
 			</trans-unit>
 			<trans-unit id="extConf.monitoringType.I.2" xml:space="preserve">
 				<source>No monitoring at all</source>
+			</trans-unit>
+			<trans-unit id="extConf.enableRouteEnhancer" xml:space="preserve">
+				<source>Enable route enhancer: If you want to use speaking URLs for Solr facets, you have to enable this option, otherwise the required Middleware is not active and the route enhancer has no effect.</source>
 			</trans-unit>
 
 			<trans-unit id="task.eventQueueWorkerTask.title" xml:space="preserve">

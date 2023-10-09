@@ -154,9 +154,20 @@ If you've used this class or the SolrConnection directly, you have to adapt your
 - use \Solarium\Core\Client\Endpoint instead of \ApacheSolrForTypo3\Solr\System\Solr\Node
 - call \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection->getEndpoint() instead of \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection\getNode(),
   method will return Solarium Endpoint
-- Node could be converted to string to get the core base URI, getCoreBaseUri() can be used instead. 
+- Node could be converted to string to get the core base URI, getCoreBaseUri() can be used instead.
 
 Note: With dropping the Node implementation we also dropped the backwards compatibility that allows to define the Solr path segment "/solr" within "solr_path_read" or "solr_path_write". Be sure your configuration doesn't contain this path segment!
+
+
+!!! Solr route enhancer disabled by default
+-------------------------------------------
+
+EXT:solr offers the possibility to create speaking URLs for Solr facets, but as this feature requires additional configuration and costly processing this feature is now disabled by default.
+
+If you've already used the route enhancer you must set option "enableRouteEnhancer":
+
+:php:`$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr']['enableRouteEnhancer']`
+
 
 
 Frontend Helper Changes

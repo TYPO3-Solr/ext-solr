@@ -16,6 +16,8 @@
 namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
 
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Utility\RoutingUtility;
 use TYPO3\CMS\Core\Routing\Enhancer\AbstractEnhancer;
 use TYPO3\CMS\Core\Routing\Enhancer\RoutingEnhancerInterface;
@@ -25,6 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements RoutingEnhancerInterface, SolrRouteEnhancerInterface
 {
+    protected bool $isEnabled;
     protected array $configuration;
 
     protected string $namespace;
@@ -33,6 +36,9 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
     {
         $this->configuration = $configuration;
         $this->namespace = $this->configuration['extensionKey'] ?? 'tx_solr';
+
+        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        $this->isEnabled = $extensionConfiguration->getIsRouteEnhancerEnabled();
     }
 
     /**
@@ -40,6 +46,15 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
      */
     public function enhanceForMatching(RouteCollection $collection): void
     {
+        if (!$this->isEnabled) {
+            $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+            $logger->error(
+                'Solr routing enhancer deactivated in Solr configuration,'
+                . ' set enableRouteEnhancer or remove SolrFacetMaskAndCombineEnhancer'
+            );
+            return;
+        }
+
         /** @var Route $defaultPageRoute */
         $defaultPageRoute = $collection->get('default');
         $variant = $this->getVariant($defaultPageRoute, $this->configuration);
@@ -79,8 +94,8 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
      */
     public function enhanceForGeneration(RouteCollection $collection, array $parameters): void
     {
-        // No parameter for this namespace given, so this route does not fit the requirements
-        if (!is_array($parameters[$this->namespace] ?? null)) {
+        // Disabled or no parameter for this namespace given, so this route does not fit the requirements
+        if (!$this->isEnabled || !is_array($parameters[$this->namespace] ?? null)) {
             return;
         }
         /** @var Route $defaultPageRoute */
