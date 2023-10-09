@@ -151,6 +151,14 @@ class ExtensionConfiguration
         return (int)$this->getConfigurationOrDefaultValue('monitoringType', 0);
     }
 
+    /**
+     * Get configuration for enableRouteEnhancer
+     */
+    public function getIsRouteEnhancerEnabled(): bool
+    {
+        return (bool)$this->getConfigurationOrDefaultValue('enableRouteEnhancer', false);
+    }
+
     protected function getConfigurationOrDefaultValue(string $key, mixed $defaultValue = null): mixed
     {
         return $this->configuration[$key] ?? $defaultValue;
