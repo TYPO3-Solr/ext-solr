@@ -52,6 +52,6 @@ SearchUriBuilder
 The SearchUriBuilder is responsible to build uris, that are used in the searchContext. Since the route enhancer is introduced you can use the following
 event to influence the build uris:
 
-- BeforeReplaceVariableInCachedUrlEvent
-- BeforeProcessCachedVariablesEvent
-- PostProcessUriEvent
+- BeforeVariableInCachedUrlAreReplacedEvent
+- BeforeCachedVariablesAreProcessedEvent
+- AfterUriIsProcessedEvent

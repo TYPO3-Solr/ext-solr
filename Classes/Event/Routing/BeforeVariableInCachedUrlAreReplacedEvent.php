@@ -34,7 +34,7 @@ class BeforeVariableInCachedUrlAreReplacedEvent
     protected bool $routing = false;
 
     /**
-     * BeforeReplaceVariableInCachedUrlEvent constructor.
+     * BeforeVariableInCachedUrlAreReplacedEvent constructor.
      */
     public function __construct(UriInterface $uri, bool $routing = false)
     {

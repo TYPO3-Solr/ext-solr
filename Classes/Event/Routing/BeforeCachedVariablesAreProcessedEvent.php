@@ -47,7 +47,7 @@ class BeforeCachedVariablesAreProcessedEvent
     protected array $variableValues = [];
 
     /**
-     * BeforeReplaceVariableInCachedUrlEvent constructor.
+     * BeforeCachedVariablesAreProcessedEvent constructor.
      */
     public function __construct(
         UriInterface $uri,
