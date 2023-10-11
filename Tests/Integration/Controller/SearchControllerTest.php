@@ -20,7 +20,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use DOMDocument;
+use Traversable;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
@@ -95,7 +98,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canShowSearchForm()
+    public function canShowSearchForm(): void
     {
         $response = $this->executeFrontendSubRequest($this->getPreparedRequest());
         $content = (string)$response->getBody();
@@ -106,7 +109,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canSearchForPrices()
+    public function canSearchForPrices(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([2, 3]);
@@ -124,7 +127,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canDoAPaginatedSearch()
+    public function canDoAPaginatedSearch(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -160,7 +163,7 @@ class SearchControllerTest extends IntegrationTest
         self::assertStringContainsString('Displaying results 6 to 8 of 8', $resultPage2, 'Wrong result count indicated in template of pagination page 2.');
     }
 
-    protected function assertCanChangeResultsPerPage()
+    protected function assertCanChangeResultsPerPage(): void
     {
         $resultPage = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
@@ -176,7 +179,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canGetADidYouMeanProposalForATypo()
+    public function canGetADidYouMeanProposalForATypo(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -203,7 +206,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canAutoCorrectATypo()
+    public function canAutoCorrectATypo(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -234,7 +237,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canRenderAFacetWithFluid()
+    public function canRenderAFacetWithFluid(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
 
@@ -268,8 +271,88 @@ class SearchControllerTest extends IntegrationTest
     /**
      * @test
      * @group frontend
+     *
+     * @dataProvider canRenderSpeakingFacetUrlsDataProvider
      */
-    public function canDoAnInitialEmptySearchWithoutResults()
+    public function canRenderSpeakingFacetUrls(int $enableRouteEnhancer, int $expectedMatchesDefaultUrl, int $expectedMatchesSpeakingUrl): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
+
+        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        $extensionConfiguration->set('solr', ['enableRouteEnhancer' => $enableRouteEnhancer]);
+
+        $this->mergeSiteConfiguration(
+            'integration_tree_one',
+            [
+                'routeEnhancers' => [
+                    'solrContentType' => [
+                        'type' => 'SolrFacetMaskAndCombineEnhancer',
+                        'extensionKey' => 'tx_solr',
+                        'routePath' => '/contentType/{type}',
+                        '_arguments' => [
+                            'type' => 'filter-type',
+                        ],
+                        'requirements' => [
+                            'type' => '.*',
+                        ],
+                    ],
+                ],
+            ],
+        );
+
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            /* @lang TYPO3_TypoScript */
+            '
+            plugin.tx_solr.search.faceting = 1
+            plugin.tx_solr.search.faceting.facets.type {
+                label = Content Type
+                field = type
+            }
+            '
+        );
+
+        $this->indexPages([1, 2]);
+
+        $request = $this->getPreparedRequest()->withQueryParameter('tx_solr[q]', '*');
+        $response = $this->executeFrontendSubRequest($request);
+        $resultPage1 = (string)$response->getBody();
+
+        self::assertEquals(
+            $expectedMatchesDefaultUrl,
+            preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?href="\/en\/search\?tx_solr.*?<\/ul>/s', $resultPage1),
+            'Could not find speaking facet url pages'
+        );
+        self::assertEquals(
+            $expectedMatchesSpeakingUrl,
+            preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?href="\/en\/search\/contentType\/pages\?tx_solr.*?<\/ul>/s', $resultPage1),
+            'Could not find speaking facet url pages'
+        );
+    }
+
+    /**
+     * Data provider for canRenderSpeakingFacetUrls
+     */
+    public function canRenderSpeakingFacetUrlsDataProvider(): Traversable
+    {
+        yield 'route enhancer inactive' => [
+            0,
+            1,
+            0,
+        ];
+
+        yield 'route enhancer active' => [
+            0,
+            1,
+            0,
+        ];
+    }
+
+    /**
+     * @test
+     * @group frontend
+     */
+    public function canDoAnInitialEmptySearchWithoutResults(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -300,7 +383,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canDoAnInitialEmptySearchWithResults()
+    public function canDoAnInitialEmptySearchWithResults(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -332,7 +415,7 @@ class SearchControllerTest extends IntegrationTest
      * @group frontend
      * @todo: https://github.com/TYPO3-Solr/ext-solr/issues/3150
      */
-    public function canDoAnInitialSearchWithoutResults()
+    public function canDoAnInitialSearchWithoutResults(): void
     {
         self::markTestSkipped('Something is wrong with refactored pagination. See https://github.com/TYPO3-Solr/ext-solr/issues/3150');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -364,7 +447,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canDoAnInitialSearchWithResults()
+    public function canDoAnInitialSearchWithResults(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -395,7 +478,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function removeOptionLinkWillBeShownWhenFacetWasSelected()
+    public function removeOptionLinkWillBeShownWhenFacetWasSelected(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -428,7 +511,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function removeOptionLinkWillBeShownWhenAFacetOptionLeadsToAZeroResults()
+    public function removeOptionLinkWillBeShownWhenAFacetOptionLeadsToAZeroResults(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -460,7 +543,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canFilterOnPageSections()
+    public function canFilterOnPageSections(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -486,7 +569,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function exceptionWillBeThrownWhenAWrongTemplateIsConfiguredForTheFacet()
+    public function exceptionWillBeThrownWhenAWrongTemplateIsConfiguredForTheFacet(): void
     {
         // we expected that an exception will be thrown when a facet is rendered
         // where an unknown partialName is referenced
@@ -521,7 +604,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canRenderAScoreAnalysisWhenBackendUserIsLoggedIn()
+    public function canRenderAScoreAnalysisWhenBackendUserIsLoggedIn(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
 
@@ -543,7 +626,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canSortFacetsByLex()
+    public function canSortFacetsByLex(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -600,7 +683,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canSortFacetsByOptionCountWhenNothingIsConfigured()
+    public function canSortFacetsByOptionCountWhenNothingIsConfigured(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -656,7 +739,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canRenderQueryGroupFacet()
+    public function canRenderQueryGroupFacet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -755,7 +838,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canRenderHierarchicalFacet()
+    public function canRenderHierarchicalFacet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addPageHierarchyFacetConfiguration();
@@ -777,7 +860,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canFacetOnHierarchicalFacetItem()
+    public function canFacetOnHierarchicalFacetItem(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addPageHierarchyFacetConfiguration();
@@ -799,7 +882,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canFacetOnHierarchicalTextCategory()
+    public function canFacetOnHierarchicalTextCategory(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_render_path_facet_with_search_controller.csv');
 
@@ -851,7 +934,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canDefineAManualSortOrder()
+    public function canDefineAManualSortOrder(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -906,7 +989,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canSeeTheParsedQueryWhenABackendUserIsLoggedIn()
+    public function canSeeTheParsedQueryWhenABackendUserIsLoggedIn(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -953,7 +1036,7 @@ class SearchControllerTest extends IntegrationTest
      *
      * @todo: See: https://github.com/TYPO3/testing-framework/issues/324
      */
-    public function frontendWillRenderErrorMessageIfSolrNotAvailable(string $action, array $getArguments)
+    public function frontendWillRenderErrorMessageIfSolrNotAvailable(string $action, array $getArguments): void
     {
         $this->mergeSiteConfiguration(
             'integration_tree_one',
@@ -1018,7 +1101,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canShowLastSearchesFromDatabaseInResponse()
+    public function canShowLastSearchesFromDatabaseInResponse(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -1050,7 +1133,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canNotStoreQueyStringInLastSearchesWhenQueryDoesNotReturnAResult()
+    public function canNotStoreQueyStringInLastSearchesWhenQueryDoesNotReturnAResult(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -1083,7 +1166,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canOverwriteAFilterWithTheFlexformSettings()
+    public function canOverwriteAFilterWithTheFlexformSettings(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -1107,7 +1190,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canRenderDateRangeFacet()
+    public function canRenderDateRangeFacet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -1137,7 +1220,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canRenderASecondFacetOnTheTypeField()
+    public function canRenderASecondFacetOnTheTypeField(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -1173,7 +1256,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canSortByMetric()
+    public function canSortByMetric(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_sort_by_metric.csv');
@@ -1221,7 +1304,7 @@ class SearchControllerTest extends IntegrationTest
      *   Fits removed canRenderSearchFormOnly() test case as well.
      *     Removed code: https://github.com/TYPO3-Solr/ext-solr/blob/03080d4d55eeb9d50b15348f445d23e57e34e461/Tests/Integration/Controller/SearchControllerTest.php#L1053-L1062
      */
-    public function formActionIsRenderingTheForm()
+    public function formActionIsRenderingTheForm(): void
     {
         $connection = $this->getConnectionPool()->getConnectionForTable('tt_content');
         $connection->update(
@@ -1243,7 +1326,7 @@ class SearchControllerTest extends IntegrationTest
      * @group frontend
      * @todo : https://github.com/TYPO3-Solr/ext-solr/issues/3166
      */
-    public function searchingAndRenderingFrequentSearchesIsShowingTheTermAsFrequentSearch()
+    public function searchingAndRenderingFrequentSearchesIsShowingTheTermAsFrequentSearch(): void
     {
         self::markTestIncomplete('See: https://github.com/TYPO3-Solr/ext-solr/issues/3166');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -1268,7 +1351,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canRenderDetailAction()
+    public function canRenderDetailAction(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([2]);
@@ -1290,7 +1373,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canOverrideTemplatesAndPartialsViaTypoScriptSetup()
+    public function canOverrideTemplatesAndPartialsViaTypoScriptSetup(): void
     {
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -1317,7 +1400,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canOverrideTemplatesAndPartialsViaTypoScriptConstants()
+    public function canOverrideTemplatesAndPartialsViaTypoScriptConstants(): void
     {
         $this->addTypoScriptConstantsToTemplateRecord(
             1,
@@ -1342,7 +1425,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canPassCustomSettingsToView()
+    public function canPassCustomSettingsToView(): void
     {
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -1371,7 +1454,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canRenderAsUserObjectWithCustomEntryTemplateInTypoScript()
+    public function canRenderAsUserObjectWithCustomEntryTemplateInTypoScript(): void
     {
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -1394,7 +1477,7 @@ class SearchControllerTest extends IntegrationTest
      * @param string $id
      * @return string
      */
-    protected function getIdContent($content, $id)
+    protected function getIdContent($content, $id): string
     {
         if (!str_contains($content, $id)) {
             return '';
@@ -1415,7 +1498,7 @@ class SearchControllerTest extends IntegrationTest
      * @param string $content
      * @param $id
      */
-    protected function assertContainerByIdContains($expectedToContain, $content, $id)
+    protected function assertContainerByIdContains($expectedToContain, $content, $id): void
     {
         $containerContent = $this->getIdContent($content, $id);
         self::assertStringContainsString($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id . ' contains ' . $expectedToContain);
@@ -1428,7 +1511,7 @@ class SearchControllerTest extends IntegrationTest
      * @param string $content
      * @param $id
      */
-    protected function assertContainerByIdNotContains($expectedToContain, $content, $id)
+    protected function assertContainerByIdNotContains($expectedToContain, $content, $id): void
     {
         $containerContent = $this->getIdContent($content, $id);
         self::assertStringNotContainsString($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id . ' not contains ' . $expectedToContain);
@@ -1439,7 +1522,7 @@ class SearchControllerTest extends IntegrationTest
      *
      * @param string $content
      */
-    protected function assertPaginationVisible($content)
+    protected function assertPaginationVisible($content): void
     {
         self::assertStringContainsString('class="solr-pagination"', $content, 'No pagination container visible');
         self::assertStringContainsString('ul class="pagination"', $content, 'Could not see pagination list');
