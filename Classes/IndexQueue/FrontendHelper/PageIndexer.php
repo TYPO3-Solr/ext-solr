@@ -390,15 +390,15 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         if ($this->activated) {
             if (!isset($this->responseData['pageIndexed'])) {
                 $this->responseData['pageIndexed'] = false;
+
+                $this->setupConfiguration();
+                if ($this->configuration->getLoggingExceptions()) {
+                    $this->logger->error(
+                        'Unknown exception while trying to index page',
+                    );
+                }
             }
             $response->addActionResult($this->action, $this->responseData);
-
-            $this->setupConfiguration();
-            if ($this->configuration->getLoggingExceptions()) {
-                $this->logger->error(
-                    'Unknown exception while trying to index page',
-                );
-            }
         }
         $this->activated = false;
     }
