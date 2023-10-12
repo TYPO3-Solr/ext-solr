@@ -72,6 +72,21 @@ We provide an addon called EXT:solrfal, that allows you to index files from FAL 
 
 |
 
+**The indexer does not generate URLs to restricted pages. How can I force the generation of URLs?**
+
+If you have a detail page for e.g. news records that is restricted, please use the typolink attribute `linkAccessRestrictedPages <https://docs.typo3.org/m/typo3/reference-typoscript/main/en-us/Functions/Typolink.html#linkaccessrestrictedpages>`_ :
+
+|
+
+.. code-block:: typoscript
+
+    default = TEXT
+    default {
+      // ... other typolink settings
+      typolink.linkAccessRestrictedPages = 1
+    }
+|
+
 **How can i use Fluid templates with EXT:solr < v7.0.0?**
 
 For the Fluid rendering in EXT:Solr >= 5.0 <= 6.1 we provide the addon EXT:solrfluid, that allows you to render your search results with Fluid.
