@@ -321,7 +321,7 @@ class Relation extends AbstractContentObject
             // adjust configuration for next level
             $this->configuration['localField'] = $foreignTableLabelField;
             $parentContentObject->data = $relatedRecord;
-            if (str_contains($this->configuration['foreignLabelField'], '.')) {
+            if (str_contains($this->configuration['foreignLabelField'] ?? '', '.')) {
                 [, $this->configuration['foreignLabelField']] = explode(
                     '.',
                     $this->configuration['foreignLabelField'],
