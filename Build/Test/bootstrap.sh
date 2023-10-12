@@ -96,22 +96,12 @@ if [[ $TYPO3_VERSION = *"main"* ]]; then
   composer config minimum-stability dev
 fi
 
-if ! composer require --dev --update-with-dependencies --prefer-source \
-  typo3/cms-core:"$TYPO3_VERSION" \
-  typo3/cms-backend:"$TYPO3_VERSION" \
-  typo3/cms-recordlist:"$TYPO3_VERSION" \
-  typo3/cms-fluid:"$TYPO3_VERSION" \
-  typo3/cms-fluid-styled-content:"$TYPO3_VERSION" \
-  typo3/cms-frontend:"$TYPO3_VERSION" \
-  typo3/cms-extbase:"$TYPO3_VERSION" \
-  typo3/cms-reports:"$TYPO3_VERSION" \
-  typo3/cms-scheduler:"$TYPO3_VERSION" \
-  typo3/cms-tstemplate:"$TYPO3_VERSION" \
-  typo3/cms-install:"$TYPO3_VERSION"
+if ! composer tests:setup
 then
   echo "The test environment could not be installed by composer as expected. Please fix this issue."
   exit 1
 fi
+
 
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
 
