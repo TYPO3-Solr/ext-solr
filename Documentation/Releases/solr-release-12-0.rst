@@ -190,6 +190,24 @@ a minimum by only having two methods available:
 The actual PageIndexerRequest object is now available as a property of TYPO3's
 Request object as attribute named "solr.pageIndexingInstructions".
 
+!!!Complex query in FlexForm filter value
+-----------------------------------------
+
+It is now possible to use complex query in FlexForm filter value.
+If the value contains space and no special characters, the value is always automatically escaped.
+
+The old behaviour is still working,
+so if a string value contains space(s) and no special characters of the solr query parser,
+the string is always wrapped with double quotes.
+But if the string contains special characters no wrapping happen
+special characters are: :php:`+ - && || ! ( ) { } [ ] ^ " ~ * ? : \`
+
+There is some cases where this change can break,
+for example if the filter value is something like
+:php:`toto AND tata` or :php:`music (rock)` or `my "flow" is`.
+Here the wrapping and the escaping of the inner double quote have to be manually updated like this
+:php:`"toto AND tata"` or :php:`"music (rock)"` and :php:`"my \"flow\" is"`.
+
 Contributors
 ============
 
@@ -224,5 +242,3 @@ https://shop.dkd.de/Produkte/Apache-Solr-fuer-TYPO3/
 or call:
 
 +49 (0)69 - 2475218 0
-
-
