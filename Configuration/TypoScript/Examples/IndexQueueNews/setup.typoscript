@@ -65,6 +65,7 @@ plugin.tx_solr.index.queue {
 					typolink.parameter.field = internalurl
 					typolink.useCacheHash = 1
 					typolink.returnLast = url
+					typolink.linkAccessRestrictedPages = 1
 				}
 
 				# External
@@ -81,6 +82,7 @@ plugin.tx_solr.index.queue {
 					typolink.additionalParams.insertData = 1
 					typolink.useCacheHash = 1
 					typolink.returnLast = url
+					typolink.linkAccessRestrictedPages = 1
 				}
 			}
 		}
