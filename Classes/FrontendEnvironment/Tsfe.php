@@ -175,8 +175,8 @@ class Tsfe implements SingletonInterface
 
             $backedUpBackendUser = $GLOBALS['BE_USER'] ?? null;
             try {
+                $serverRequest = $serverRequest->withAttribute('frontend.controller', $tsfe);
                 $tsfe->determineId($serverRequest);
-                $serverRequest->withAttribute('frontend.controller', $tsfe);
                 $tsfe->no_cache = false;
                 $tsfe->getConfigArray($serverRequest);
 
@@ -198,6 +198,7 @@ class Tsfe implements SingletonInterface
                 $GLOBALS['BE_USER'] = $backedUpBackendUser;
             }
 
+            $this->serverRequestCache[$cacheIdentifier] = $serverRequest;
             $this->tsfeCache[$cacheIdentifier] = $tsfe;
         }
 
