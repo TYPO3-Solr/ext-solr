@@ -97,10 +97,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
         self::assertEquals('options', $myFacet->getType());
     }
 
-    /**
-     * @return array
-     */
-    public function getIncludeInAvailableFacetsDataProvider()
+    public function getIncludeInAvailableFacetsDataProvider(): array
     {
         return [
             'default' => [null, true],
@@ -112,15 +109,23 @@ class OptionsFacetTest extends SetUpUnitTestCase
     }
 
     /**
-     * @param mixed $includeInAvailableFacetsConfiguration
-     * @param mixed $expectedResult
      * @dataProvider getIncludeInAvailableFacetsDataProvider
      * @test
      */
-    public function getIncludeInAvailableFacets($includeInAvailableFacetsConfiguration, $expectedResult)
-    {
+    public function getIncludeInAvailableFacetsCastsSettingsToBoolProperly(
+        null|int|string $includeInAvailableFacetsConfiguration,
+        bool $expectedResult,
+    ): void {
         $resultSetMock = $this->createMock(SearchResultSet::class);
-        $myFacet = new OptionsFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle', ['includeInAvailableFacets' => $includeInAvailableFacetsConfiguration]);
+        $myFacet = new OptionsFacet(
+            $resultSetMock,
+            'myFacet',
+            'myFacetFieldName',
+            'myTitle',
+            [
+                'includeInAvailableFacets' => $includeInAvailableFacetsConfiguration,
+            ],
+        );
 
         self::assertSame($myFacet->getIncludeInAvailableFacets(), $expectedResult, 'Method getIncludeInAvailableFacets returns unexpected result');
     }
