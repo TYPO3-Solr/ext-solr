@@ -98,12 +98,13 @@ class ConfigurationService
      */
     protected function getFilterFromFlexForm(array $flexFormConfiguration): array
     {
-        $filterConfiguration = [];
         $filters = ObjectAccess::getPropertyPath($flexFormConfiguration, 'search.query.filter');
 
         if (empty($filters)) {
-            return $filterConfiguration;
+            return [];
         }
+
+        $filterConfiguration = [];
 
         foreach ($filters as $filter) {
             $filter = $filter['field'];
@@ -111,12 +112,17 @@ class ConfigurationService
             $fieldName = $filter['field'];
             $fieldValue = $filter['value'];
 
-            if (!is_numeric($fieldValue) && !str_contains($fieldValue, '?') && !str_contains($fieldValue, '*')) {
-                $fieldValue = '"' . str_replace('"', '\"', $fieldValue) . '"';
+            if (
+                !is_numeric($fieldValue)
+                && !preg_match('/[+\-&|!(){}\[\]^"~*?:\\\\]|AND|NOT|OR/', $fieldValue)
+                && str_contains($fieldValue, ' ')
+            ) {
+                $fieldValue = '"' . $fieldValue . '"';
             }
 
             $filterConfiguration[] = $fieldName . ':' . $fieldValue;
         }
+
         return $filterConfiguration;
     }
 }
