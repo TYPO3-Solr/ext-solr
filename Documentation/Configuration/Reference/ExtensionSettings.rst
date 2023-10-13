@@ -8,6 +8,28 @@ Extension Configuration
 
 The following settings can be defined in the "Settings":>"Extension Configuration":>"solr"
 
+pluginNamespaces
+----------------
+
+:Type: String
+:Since: 11.1
+:Default: tx_solr
+
+A list of white listed plugin namespaces (Required by cacheHash/excludedParameters and plugin flex form).
+
+..  note::
+    This list only is available in Plugin -> Options -> Plugin Namespace.
+
+includeGlobalQParameterInCacheHash
+----------------------------------
+
+:Type: Boolean
+:Since: 11.1
+:Default: 0
+
+Include/Exclude global q parameter in/from cacheHash.
+
+
 useConfigurationFromClosestTemplate
 -----------------------------------
 
@@ -28,6 +50,15 @@ useConfigurationTrackRecordsOutsideSiteroot
 A common common scenario is to have a site and a storage folder for records parallel to it
 on the same level (f.e.)
 If you don't want this behaviour - it should be set to false.
+
+useConfigurationMonitorTables
+-----------------------------
+
+:Type: String
+:Since: 6.1
+:Default:
+
+Monitor tables - explicitly monitor these (still requires TypoScript configuration)
 
 allowSelfSignedCertificates
 ---------------------------
@@ -53,3 +84,14 @@ options are available:
 
 - Delayed: Record update events will be queue and processed later, the scheduler task "Event Queue Worker" is required for processing.
 - No monitoring: Monitoring is completely disabled, please note that you have to take care of Solr index updates yourself.
+
+enableRouteEnhancer
+-------------------
+
+:Type: Boolean
+:Since: 12.0
+:Default: 0
+
+To use the EXT:solr possibility to create speaking URLs for Solr facets, activate this option.
+
+As this feature requires additional configuration and costly processing, it's disabled by default.
