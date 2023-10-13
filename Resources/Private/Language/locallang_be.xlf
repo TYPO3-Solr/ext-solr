@@ -3,35 +3,57 @@
 	<file source-language="en" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_be.xlf" date="2021-12-15T13:10:00Z" product-name="solr">
 		<header/>
 		<body>
+			<trans-unit id="extConf.category.monitoring" resname="extConf.category.monitoring">
+				<source>Monitoring</source>
+			</trans-unit>
 			<trans-unit id="extConf.category.routeEnhancer" resname="extConf.category.routeEnhancer">
 				<source>Route Enhancer</source>
 			</trans-unit>
-			<trans-unit id="extConf.monitoringType" xml:space="preserve">
-				<source>Monitoring: Define how data updates should be monitored</source>
+			<trans-unit id="extConf.allowSelfSignedCertificates" resname="extConf.allowSelfSignedCertificates">
+				<source>Allow self signed certificates</source>
 			</trans-unit>
-			<trans-unit id="extConf.monitoringType.I.0" xml:space="preserve">
-				<source>Immediate</source>
-			</trans-unit>
-			<trans-unit id="extConf.monitoringType.I.1" xml:space="preserve">
-				<source>Delayed (Scheduler task)</source>
-			</trans-unit>
-			<trans-unit id="extConf.monitoringType.I.2" xml:space="preserve">
-				<source>No monitoring at all</source>
-			</trans-unit>
-			<trans-unit id="extConf.enableRouteEnhancer" xml:space="preserve">
+			<trans-unit id="extConf.enableRouteEnhancer" resname="extConf.enableRouteEnhancer">
 				<source>Enable route enhancer: If you want to use speaking URLs for Solr facets, you have to enable this option, otherwise the required Middleware is not active and the route enhancer has no effect.</source>
 			</trans-unit>
+			<trans-unit id="extConf.includeGlobalQParameterInCacheHash" resname="extConf.includeGlobalQParameterInCacheHash">
+				<source>Include/Exclude global q parameter in/from cacheHash.</source>
+			</trans-unit>
+			<trans-unit id="extConf.monitoringType" resname="extConf.monitoringType">
+				<source>Monitoring type: Define how data updates should be monitored.</source>
+			</trans-unit>
+			<trans-unit id="extConf.monitoringType.I.0" resname="extConf.monitoringType.I.0">
+				<source>Immediate</source>
+			</trans-unit>
+			<trans-unit id="extConf.monitoringType.I.1" resname="extConf.monitoringType.I.1">
+				<source>Delayed (Scheduler task)</source>
+			</trans-unit>
+			<trans-unit id="extConf.monitoringType.I.2" resname="extConf.monitoringType.I.2">
+				<source>No monitoring at all</source>
+			</trans-unit>
+			<trans-unit id="extConf.pluginNamespaces" resname="extConf.pluginNamespaces">
+				<source>A list of white listed plugin namespaces: Required by cacheHash/excludedParameters and plugin flex form. Note: This list only is available in Plugin -> Options -> Plugin Namespace</source>
+			</trans-unit>
+			<trans-unit id="extConf.useConfigurationFromClosestTemplate" resname="extConf.useConfigurationFromClosestTemplate">
+				<source>Use closest rootpage for configuration: Performance improvement</source>
+			</trans-unit>
+			<trans-unit id="extConf.useConfigurationTrackRecordsOutsideSiteroot" resname="extConf.useConfigurationTrackRecordsOutsideSiteroot">
+				<source>Enable/Disable record tracking outside siteroot</source>
+			</trans-unit>
+			<trans-unit id="extConf.useConfigurationMonitorTables" resname="extConf.useConfigurationMonitorTables">
+				<source>Monitor tables - explicitly monitor these: Still requires TypoScript configuration!</source>
+			</trans-unit>
 
-			<trans-unit id="task.eventQueueWorkerTask.title" xml:space="preserve">
+
+			<trans-unit id="task.eventQueueWorkerTask.title" resname="task.eventQueueWorkerTask.title">
 				<source>Event Queue Worker</source>
 			</trans-unit>
-			<trans-unit id="task.eventQueueWorkerTask.description" xml:space="preserve">
+			<trans-unit id="task.eventQueueWorkerTask.description" resname="task.eventQueueWorkerTask.description">
 				<source>Task handling the queue data update events. Required if monitoringType is set to "Delayed".</source>
 			</trans-unit>
-			<trans-unit id="task.eventQueueWorkerTask.limit" xml:space="preserve">
+			<trans-unit id="task.eventQueueWorkerTask.limit" resname="task.eventQueueWorkerTask.limit">
 				<source>Processing limit, the number of events to process</source>
 			</trans-unit>
-			<trans-unit id="task.eventQueueWorkerTask.statusMsg" xml:space="preserve">
+			<trans-unit id="task.eventQueueWorkerTask.statusMsg" resname="task.eventQueueWorkerTask.statusMsg">
 				<source>Data update events to process: %1$d, Errors: %2$d. %3$d events will be processed per run.</source>
 			</trans-unit>
 		</body>

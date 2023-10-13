@@ -1,25 +1,26 @@
+# customcategory=Monitoring=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.category.monitoring
 # customcategory=Routes=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.category.routeEnhancer
 
-# cat=basic/enable/8; type=string; label=A list of white listed plugin namespaces (Required by cacheHash/excludedParameters and plugin flex form): Note: This list only is available in Plugin -> Options -> Plugin Namespace
+# cat=basic/enable/a0; type=string; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.pluginNamespaces
 pluginNamespaces = tx_solr
 
-# cat=basic/enable/9; type=boolean; label=Include/Exclude global q parameter in/from cacheHash
+# cat=basic/enable/a1; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.includeGlobalQParameterInCacheHash
 includeGlobalQParameterInCacheHash = 0
 
-# cat=basic/enable/10; type=boolean; label=Use closest rootpage for configuration (Performance improvement)
+# cat=basic/enable/b1; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.useConfigurationFromClosestTemplate
 useConfigurationFromClosestTemplate = 0
 
-# cat=basic/enable/20; type=boolean; label=Enable/Disable record tracking outside siteroot
+# cat=Monitoring/enable/c1; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.useConfigurationTrackRecordsOutsideSiteroot
 useConfigurationTrackRecordsOutsideSiteroot = 1
 
-# cat=basic/enable/30; type=string; label=Monitor tables - explicitly monitor these (still requires TS configuration)
+# cat=Monitoring/enable/c2; type=string; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.useConfigurationMonitorTables
 useConfigurationMonitorTables =
 
-# cat=basic/enable/40; type=boolean; label=Allow self signed certificates
-allowSelfSignedCertificates = 0
-
-# cat=basic/enable/50; type=options[LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.0=0,LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.1=1,LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.2=2]; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType
+# cat=Monitoring/enable/c3; type=options[LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.0=0,LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.1=1,LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.2=2]; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType
 monitoringType = 0
 
-# cat=Routes/enable/10; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.enableRouteEnhancer
+# cat=Routes/enable/d; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.enableRouteEnhancer
 enableRouteEnhancer = 0
+
+# cat=advanced/enable/e; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.allowSelfSignedCertificates
+allowSelfSignedCertificates = 0
