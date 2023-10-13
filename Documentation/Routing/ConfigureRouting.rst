@@ -16,6 +16,10 @@ The extension key have to be set to `tx_solr`.
 
 Solr specific configuration will placed inside of key `solr`.
 
+..  note::
+    To use the EXT:solr possibility to create speaking URLs for Solr facets, activate option enableRouteEnhancer in the
+    Extension Configuration.
+
 The following example shows a the basement of the enhancer configuration.
 
 .. code-block:: yaml
