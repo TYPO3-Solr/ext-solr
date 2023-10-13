@@ -18,3 +18,4 @@ Releases
    solr-release-11-1
    solr-release-11-2
    solr-release-11-5
+   solr-release-12-0
