@@ -8,8 +8,14 @@ Extension Configuration
 
 The following settings can be defined in the "Settings":>"Extension Configuration":>"solr"
 
+Basic
+-----
+
+
+.. figure:: /Images/Backend/extensionconfiguration-basic.png
+
 pluginNamespaces
-----------------
+~~~~~~~~~~~~~~~~
 
 :Type: String
 :Since: 11.1
@@ -21,7 +27,7 @@ A list of white listed plugin namespaces (Required by cacheHash/excludedParamete
     This list only is available in Plugin -> Options -> Plugin Namespace.
 
 includeGlobalQParameterInCacheHash
-----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Boolean
 :Since: 11.1
@@ -29,9 +35,8 @@ includeGlobalQParameterInCacheHash
 
 Include/Exclude global q parameter in/from cacheHash.
 
-
 useConfigurationFromClosestTemplate
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Boolean
 :Since: 6.1
@@ -40,8 +45,14 @@ useConfigurationFromClosestTemplate
 When this setting is active the closest page with a TypoScript template will be used to fetch the configuration.
 This improves the performance but limits also the possibilities. E.g. conditions can not be used that are related to a certain page.
 
+
+Monitoring
+----------
+
+.. figure:: /Images/Backend/extensionconfiguration-monitoring.png
+
 useConfigurationTrackRecordsOutsideSiteroot
--------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Boolean
 :Since: 6.1
@@ -60,17 +71,8 @@ useConfigurationMonitorTables
 
 Monitor tables - explicitly monitor these (still requires TypoScript configuration)
 
-allowSelfSignedCertificates
----------------------------
-
-:Type: Boolean
-:Since: 6.1
-:Default: 0
-
-Can be used to allow self signed certificates - when using the SSL protocol.
-
 monitoringType
---------------
+~~~~~~~~~~~~~~
 
 :Type: Int
 :Since: 11.2
@@ -85,8 +87,13 @@ options are available:
 - Delayed: Record update events will be queue and processed later, the scheduler task "Event Queue Worker" is required for processing.
 - No monitoring: Monitoring is completely disabled, please note that you have to take care of Solr index updates yourself.
 
+Route Enhancer
+--------------
+
+.. figure:: /Images/Backend/extensionconfiguration-routeenhancer.png
+
 enableRouteEnhancer
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 :Type: Boolean
 :Since: 12.0
@@ -95,3 +102,18 @@ enableRouteEnhancer
 To use the EXT:solr possibility to create speaking URLs for Solr facets, activate this option.
 
 As this feature requires additional configuration and costly processing, it's disabled by default.
+
+Advanced
+--------
+
+.. figure:: /Images/Backend/extensionconfiguration-advanced.png
+
+allowSelfSignedCertificates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:Since: 6.1
+:Default: 0
+
+Can be used to allow self signed certificates - when using the SSL protocol.
+
