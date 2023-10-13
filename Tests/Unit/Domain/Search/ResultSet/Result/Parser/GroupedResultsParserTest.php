@@ -71,17 +71,20 @@ class GroupedResultsParserTest extends SetUpUnitTestCase
             'typeGroup.' => [
                 'field' => 'type',
             ],
+            'pidGroup' => [
+                'field' => 'pid',
+            ],
         ]);
         $configurationMock->expects(self::any())->method('getSearchGroupingResultLimit')->willReturn(5);
 
-        $resultSet = $this->getSearchResultSetMockFromConfigurationAndFixtureFileName($configurationMock, 'fake_solr_response_group_on_type_field.json');
+        $resultSet = $this->getSearchResultSetMockFromConfigurationAndFixtureFileName($configurationMock, 'fake_solr_response_group_on_fields.json');
 
         $parser = new GroupedResultParser();
         $searchResultsSet = $parser->parse($resultSet);
         $searchResultsCollection = $searchResultsSet->getSearchResults();
 
         self::assertTrue($searchResultsCollection->getHasGroups());
-        self::assertSame(1, $searchResultsCollection->getGroups()->getCount(), 'There should be 1 Groups of search results');
+        self::assertSame(2, $searchResultsCollection->getGroups()->getCount(), 'There should be 1 Groups of search results');
         self::assertSame(2, $searchResultsCollection->getGroups()->getByPosition(0)->getGroupItems()->getCount(), 'The group should contain two group items');
 
         /** @var Group $firstGroup */
@@ -95,8 +98,8 @@ class GroupedResultsParserTest extends SetUpUnitTestCase
         self::assertSame('tx_news_domain_model_news', $typeGroup->getByPosition(1)->getGroupValue(), 'There should be 2 documents in the group news');
         self::assertSame(2, $typeGroup->getByPosition(1)->getSearchResults()->getCount(), 'There should be 2 documents in the group news');
 
-        self::assertSame(7, $searchResultsCollection->getCount(), 'There should be a 7 search results when they are fetched without groups');
-        self::assertSame(44, $resultSet->getAllResultCount(), 'Unexpected allResultCount');
+        self::assertSame(10, $searchResultsCollection->getCount(), 'There should be a 7 search results when they are fetched without groups');
+        self::assertSame(47, $resultSet->getAllResultCount(), 'Unexpected allResultCount');
     }
 
     protected function getSearchResultSetMockFromConfigurationAndFixtureFileName(

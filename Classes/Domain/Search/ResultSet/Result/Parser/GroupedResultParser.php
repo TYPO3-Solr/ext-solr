@@ -124,7 +124,7 @@ class GroupedResultParser extends AbstractResultParser
         $groupItems = new GroupItemCollection();
 
         foreach ($rawGroupedResult->groups as $rawGroup) {
-            $groupValue = $rawGroup->groupValue;
+            $groupValue = (string)$rawGroup->groupValue;
             $groupItem = $this->buildGroupItemAndAddDocuments($resultSet->getUsedSearchRequest(), $group, $groupValue, $rawGroup);
 
             if ($groupItem->getSearchResults()->count() >= 0) {
