@@ -139,6 +139,17 @@ class PageIndexerTest extends IntegrationTest
             ],
         ];
 
+        yield 'page for any login(-2)' => [
+            'can_index_access_protected_page_show_at_any_login',
+            1,
+            [
+                '2:-2/c:0',
+            ],
+            [
+                'access restricted content for any login',
+            ],
+        ];
+
         yield 'protected page with protected content' => [
             'can_index_access_protected_page_with_protected_contents',
             2,
