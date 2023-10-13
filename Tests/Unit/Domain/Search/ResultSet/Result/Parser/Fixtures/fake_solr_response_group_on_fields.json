@@ -9,7 +9,10 @@
       "expand.rows":"10",
       "qf":"content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline description^4.0 abstract subtitle navtitle author",
       "hl.fl":"content",
-      "group.field":"type",
+      "group.field":[
+      "pid",
+      "type"
+    ],
       "f.content.hl.alternateField":"content",
       "group":"true",
       "hl.tag.pre":"<span class=\"results-highlight\">",
@@ -57,6 +60,133 @@
       "spellcheck.count":"1",
       "facet":"true"}},
   "grouped":{
+    "pid": {
+      "matches": 3,
+      "ngroups": 11,
+      "groups": [
+        {
+          "groupValue": 1,
+          "doclist": {
+            "numFound": 1,
+            "start": 0,
+            "maxScore": 1.0,
+            "numFoundExact": true,
+            "docs": [
+              {
+                "id": "ab1836b799d615f95624eb0db4d63418cd011bd7/pages/80/0/0/0",
+                "site": "solr-ddev-site.ddev.site",
+                "siteHash": "ab1836b799d615f95624eb0db4d63418cd011bd7",
+                "type": "pages",
+                "uid": 80,
+                "pid": 1,
+                "variantId": "7732bb423cb33d153eb30c5b447e1b13fb48c784/pages/80",
+                "typeNum": 0,
+                "created": "2023-07-21T11:56:01Z",
+                "changed": "2023-07-21T11:56:01Z",
+                "rootline": [
+                  "0-1/",
+                  "1-1/80/"
+                ],
+                "access": [
+                  "c:0"
+                ],
+                "title": "Customize",
+                "titleExact": "Customize",
+                "subTitle": "",
+                "navTitle": "",
+                "author": "",
+                "description": "",
+                "abstract": "",
+                "content": "Lorem Ipsum 80 ... and co.",
+                "contentExact": "Lorem Ipsum 80 ... and co.",
+                "teaser": "Lorem Ipsum teaser 80 ... and co.",
+                "url": "/customize",
+                "_version_": 1779680344154308608,
+                "indexed": "2023-10-13T22:17:15Z",
+                "score": 1.0
+              }
+            ]
+          }
+        },
+        {
+          "groupValue": 13,
+          "doclist": {
+            "numFound": 2,
+            "start": 0,
+            "maxScore": 1.0,
+            "numFoundExact": true,
+            "docs": [
+              {
+                "id": "ab1836b799d615f95624eb0db4d63418cd011bd7/pages/46/0/0/0",
+                "site": "solr-ddev-site.ddev.site",
+                "siteHash": "ab1836b799d615f95624eb0db4d63418cd011bd7",
+                "type": "pages",
+                "uid": 46,
+                "pid": 13,
+                "variantId": "7732bb423cb33d153eb30c5b447e1b13fb48c784/pages/46",
+                "typeNum": 0,
+                "created": "2023-07-21T11:56:01Z",
+                "changed": "2023-09-22T13:27:35Z",
+                "rootline": [
+                  "0-1/",
+                  "1-1/7/",
+                  "2-1/7/44/",
+                  "3-1/7/44/46/"
+                ],
+                "access": [
+                  "c:0"
+                ],
+                "title": "Media",
+                "titleExact": "Media",
+                "subTitle": "",
+                "navTitle": "",
+                "author": "",
+                "content": "Lorem Ipsum 46 ... and co.",
+                "contentExact": "Lorem Ipsum 46 ... and co.",
+                "teaser": "Lorem Ipsum teaser 46 ... and co.",
+                "url": "/content-examples/media/media",
+                "_version_": 1779680340554547200,
+                "indexed": "2023-10-13T22:17:12Z",
+                "score": 1.0
+              },
+              {
+                "id": "ab1836b799d615f95624eb0db4d63418cd011bd7/pages/54/0/0/0",
+                "site": "solr-ddev-site.ddev.site",
+                "siteHash": "ab1836b799d615f95624eb0db4d63418cd011bd7",
+                "type": "pages",
+                "uid": 54,
+                "pid": 13,
+                "variantId": "7732bb423cb33d153eb30c5b447e1b13fb48c784/pages/54",
+                "typeNum": 0,
+                "created": "2023-07-21T11:56:01Z",
+                "changed": "2023-07-21T11:56:01Z",
+                "rootline": [
+                  "0-1/",
+                  "1-1/7/",
+                  "2-1/7/44/",
+                  "3-1/7/44/54/"
+                ],
+                "access": [
+                  "c:0"
+                ],
+                "title": "Audio",
+                "titleExact": "Audio",
+                "subTitle": "",
+                "navTitle": "",
+                "author": "",
+                "content": "Lorem Ipsum 54 ... and co.",
+                "contentExact": "Lorem Ipsum 54 ... and co.",
+                "teaser": "Lorem Ipsum teaser 54 ... and co.",
+                "url": "/content-examples/media/audio",
+                "_version_": 1779680381338910720,
+                "indexed": "2023-10-13T22:17:51Z",
+                "score": 1.0
+              }
+            ]
+          }
+        }
+      ]
+    },
     "type":{
       "matches":44,
       "ngroups":2,
