@@ -15,7 +15,7 @@ RUN rm -fR /opt/solr/server/solr/* \
   && echo "# EXT:solr relevant changes: " >> /etc/default/solr.in.sh \
     && echo "SOLR_ENABLE_REMOTE_STREAMING=true" >> /etc/default/solr.in.sh \
     && echo "SOLR_ENABLE_STREAM_BODY=true" >> /etc/default/solr.in.sh \
-    && echo "# END: EXT:solr" >> /etc/default/solr.in.sh \
+    && echo "# END: EXT:solr" >> /etc/default/solr.in.sh
 
 COPY Docker/SolrServer/docker-entrypoint-initdb.d/ /docker-entrypoint-initdb.d
 USER solr
