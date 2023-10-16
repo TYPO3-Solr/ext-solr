@@ -413,11 +413,9 @@ class SearchControllerTest extends IntegrationTest
     /**
      * @test
      * @group frontend
-     * @todo: https://github.com/TYPO3-Solr/ext-solr/issues/3150
      */
     public function canDoAnInitialSearchWithoutResults(): void
     {
-        self::markTestSkipped('Something is wrong with refactored pagination. See https://github.com/TYPO3-Solr/ext-solr/issues/3150');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -1055,7 +1053,7 @@ class SearchControllerTest extends IntegrationTest
 
         self::assertStringContainsString('Search is currently not available.', (string)$response->getBody(), 'Response did not contain solr unavailable error message');
         self::markTestIncomplete('The status code can not be checked currently. See: https://github.com/TYPO3/testing-framework/issues/324');
-        //$this->assertEquals(503, $response->getStatusCode());
+        //self::assertEquals(503, $response->getStatusCode());
     }
 
     /**
