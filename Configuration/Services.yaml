@@ -144,3 +144,13 @@ services:
       - name: event.listener
         identifier: 'solr.index.pageIndexer.FrontendUserAuthenticator'
         event: TYPO3\CMS\Frontend\Authentication\ModifyResolvedFrontendGroupsEvent
+
+  ApacheSolrForTypo3\Solr\EventListener\Extbase\PersistenceEventListener:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.ExtbaseEntityPersisted'
+        method: 'entityPersisted'
+      - name: event.listener
+        identifier: 'solr.index.ExtbaseEntityRemoved'
+        method: 'entityRemoved'
