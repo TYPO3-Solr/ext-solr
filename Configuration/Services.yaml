@@ -284,6 +284,16 @@ services:
       - name: event.listener
         identifier: 'solr.index.PageFieldMappingIndexer'
 
+  ApacheSolrForTypo3\Solr\EventListener\Extbase\PersistenceEventListener:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.ExtbaseEntityPersisted'
+        method: 'entityPersisted'
+      - name: event.listener
+        identifier: 'solr.index.ExtbaseEntityRemoved'
+        method: 'entityRemoved'
+
   ###  EXT:solr content objects
   ApacheSolrForTypo3\Solr\ContentObject\Classification:
     tags:

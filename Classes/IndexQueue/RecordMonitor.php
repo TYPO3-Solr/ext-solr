@@ -21,7 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentEleme
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use ApacheSolrForTypo3\Solr\Trait\SkipMonitoringTrait;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -39,6 +39,8 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  */
 class RecordMonitor
 {
+    use SkipMonitoringTrait;
+
     protected array $trackedRecords = [];
     protected EventDispatcherInterface $eventDispatcher;
 
@@ -163,26 +165,6 @@ class RecordMonitor
         $this->eventDispatcher->dispatch(
             new RecordUpdatedEvent((int)$recordUid, $table, $fields)
         );
-    }
-
-    /**
-     * Check if the provided table is explicitly configured for monitoring
-     */
-    protected function skipMonitoringOfTable(string $table): bool
-    {
-        static $configurationMonitorTables;
-
-        if (empty($configurationMonitorTables)) {
-            $configuration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-            $configurationMonitorTables = $configuration->getIsUseConfigurationMonitorTables();
-        }
-
-        // No explicit configuration => all tables should be monitored
-        if (empty($configurationMonitorTables)) {
-            return false;
-        }
-
-        return !in_array($table, $configurationMonitorTables);
     }
 
     /**
