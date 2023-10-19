@@ -41,7 +41,11 @@ class SolrWriteService extends AbstractSolrService
     {
         try {
             $response = $this->createAndExecuteRequest($query);
-            return [$response->file, $response->file_metadata];
+            return [
+                $response->file,
+                $response->file_metadata,
+                $response,
+            ];
         } catch (Throwable $e) {
             $param = $query->getRequestBuilder()->build($query)->getParams();
             $this->logger->error(
