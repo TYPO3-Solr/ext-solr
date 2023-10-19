@@ -1,9 +1,14 @@
-/Build/ export-ignore
-/Tests/ export-ignore
 /.dockerignore export-ignore
+/.editorconfig export-ignore
 /.gitattributes export-ignore
+/.github export-ignore
+/.gitignore export-ignore
+/.php-cs-fixer.php export-ignore
 /.scrutinizer.yml export-ignore
 /.styleci.yml export-ignore
-/Dockerfile export-ignore
+/Build/ export-ignore
 /CONTRIBUTING.md export-ignore
-/.github
+/dependabot.yml export-ignore
+/Dockerfile export-ignore
+/PULL_REQUEST_TEMPLATE.md export-ignore
+/Tests/ export-ignore

@@ -48,8 +48,10 @@
   },
   "replace": {
     "apache-solr-for-typo3/solrfluid": "*",
+    "apache-solr-for-typo3/solrfluidgrouping": "*",
     "typo3-ter/solr": "self.version",
-    "typo3-ter/solrfluid": "*"
+    "typo3-ter/solrfluid": "*",
+    "typo3-ter/solrfluidgrouping": "*"
   },
   "autoload": {
     "psr-4": {
