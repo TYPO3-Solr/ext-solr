@@ -27,8 +27,8 @@ fi
 dockrun_t3rd makehtml-no-cache
 
 if [[ "$BUILD_DOCS_FOR_PRODUCTION" == 1 || "$BUILD_DOCS_FOR_PRODUCTION" == "true" ]]; then
-  rm -Rf "${PRODUCTION_DOCS_PATH}"
+  rm -Rf "${PRODUCTION_DOCS_PATH}" "Documentation.HTML"
   mv -v "Documentation-GENERATED-temp/Result/project/0.0.0" "${PRODUCTION_DOCS_PATH}"
-  ln -sf "${PRODUCTION_DOCS_PATH}" "Documentation.HTML"
+  ln -s "${PRODUCTION_DOCS_PATH}" "Documentation.HTML"
   rm -Rf "Documentation-GENERATED-temp"
 fi
