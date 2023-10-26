@@ -349,6 +349,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             foreach ($documentChunks as $documentChunk) {
                 $response = $this->solrConnection->getWriteService()->addDocuments($documentChunk);
                 if ($response->getHttpStatus() != 200) {
+                    $this->logger->error('Solr could not index page.', [$response->getRawResponse()]);
                     throw new \RuntimeException('Solr Request failed.', 1331834983);
                 }
             }
