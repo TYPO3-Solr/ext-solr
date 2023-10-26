@@ -1,20 +1,20 @@
-.. include:: /Includes.rst.txt
-
-
+..  include:: /Includes.rst.txt
+..  index:: Releases
 .. _releases:
 
+********
 Releases
-========
+********
+
+
+|
 
 .. toctree::
-   :maxdepth: 5
+    :titlesonly:
+    :glob:
 
-   solr-release-7-0
-   solr-release-8-0
-   solr-release-8-1
-   solr-release-9-0
-   solr-release-10-0
-   solr-release-11-0
-   solr-release-11-1
-   solr-release-11-2
-   solr-release-11-5
+    new-releases
+    solr-release-11-6
+    solr-release-11-2
+    solr-release-11-0
+    archive

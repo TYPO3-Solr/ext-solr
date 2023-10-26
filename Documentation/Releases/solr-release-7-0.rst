@@ -1,11 +1,10 @@
 .. include:: /Includes.rst.txt
-
-
+..  index:: Archive
 .. _releases-7:
 
-===========================
-Apache Solr for TYPO3 7.0.0
-===========================
+=============
+Release 7.0.0
+=============
 
 We are happy to release EXT:solr 7.0.0. This release brings several smaller and some bigger changes
 

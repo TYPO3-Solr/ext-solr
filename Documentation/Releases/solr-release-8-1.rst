@@ -1,11 +1,10 @@
 .. include:: /Includes.rst.txt
+..  index:: Archive
+.. _releases-8.1:
 
-
-.. .. _releases-8.1:
-
-===========================
-Apache Solr for TYPO3 8.1.0
-===========================
+=============
+Release 8.1.0
+=============
 
 We are happy to release EXT:solr 8.1.0. The focus of EXT:solr 8.1.0 was, to improve the API for the new EB addon's "solrconsole" and "solrdebugtools".
 

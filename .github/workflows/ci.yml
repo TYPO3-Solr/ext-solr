@@ -2,11 +2,11 @@ name: build
 
 on:
   push:
-    branches: [ main, release-11.5.x, release-11.1.x, release-11.0.x ]
+    branches: [ main, release-11.6.x ]
     tags:
       - "**"
   pull_request:
-    branches: [ main, release-11.5.x, release-11.1.x, release-11.0.x ]
+    branches: [ main, release-11.6.x ]
 
 env:
   CI_BUILD_DIRECTORY: '/home/runner/work/ext-solr/ext-solr/.Build'
@@ -67,8 +67,6 @@ jobs:
           echo -e "matrix : "
           echo $matrix
           echo ::set-output name=matrix::$(echo $matrix)
-          >&2 echo -e "Example Annotation on error. Is visible in Actions wokflow view."
-          >&2 echo -e "Non-stable releases can not be published to TER. The tag 11.5.0-beta-1 is invalid for TER."
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
