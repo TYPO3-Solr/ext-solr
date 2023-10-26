@@ -51,6 +51,9 @@ This is a maintenance release for TYPO3 11.5, containing:
 Release 11.5.2
 --------------
 
+Release 11.5.2
+--------------
+
 This is a maintenance release for TYPO3 11.5, containing:
 
 - [BUGFIX:BP:11.5] Fix error when indexing pages with field processing instruction categoryUidToHierarchy by @dkd-kaehm in `#3462 <https://github.com/TYPO3-Solr/ext-solr/pull/3462>`__
@@ -86,7 +89,7 @@ Release 11.5.1
 We are happy to publish EXT:solr 11.5.1 maintenance release
 
 New in this release
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 - [BUGFIX] Do not include removed strptime() by @dkd-kaehm in https://github.com/TYPO3-Solr/ext-solr/pull/3335
 - [BUGFIX:BP:11.5] Do not handle page updates on new page with uid 0 by @rr-it in https://github.com/TYPO3-Solr/ext-solr/pull/3344
@@ -115,6 +118,10 @@ https://github.com/TYPO3-Solr/ext-solr/releases/tag/11.5.1
 Release 11.5.0
 --------------
 
+
+Release 11.5.0
+--------------
+
 We are happy to release EXT:solr 11.5.0.
 The focus of this release has been on TYPO3 11 LTS compatibility.
 
@@ -123,10 +130,10 @@ The focus of this release has been on TYPO3 11 LTS compatibility.
 **Important**: This version is installable with TYPO3 11 LTS on v11.5.14+ only and contains some breaking changes, see details below.
 
 New in this release
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 Support of TYPO3 11 LTS
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 
 With EXT:solr 11.5 we provide the support of TYPO3 11 LTS.
 
@@ -134,7 +141,7 @@ Please note that we require at least TYPO3 11.5.14, as this version contains som
 
 
 Bootstrap 5.1
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 The default templates provided by EXT:solr were adapted for Bootstrap 5.1.
 
@@ -142,7 +149,7 @@ The templates are also prepared to display some icons with Bootstrap Icons, but 
 
 
 Custom field processors
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 
 fieldProcessingInstructions can be used for processing values during indexing, e.g. timestampToIsoDate or uppercase. Now you can register and use your own field processors via:
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProcessor'] = ACustomFieldProcessor::class;
@@ -150,7 +157,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProce
 Custom processors have to implement interface ApacheSolrForTypo3\Solr\FieldProcessor\FieldProcessor.
 
 N-Gram Filter for strings
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Provides a new field type and dynamic fields for strings
 with enabled Edge-N-Gram filter.
@@ -160,7 +167,7 @@ Now the following fields can be used:
 - \*_stringEdgeNgramM
 
 Improve and Fix TSFE Initialization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The initialization of TSFE within indexing and Backends modules contexts is refactored.
 
@@ -178,7 +185,7 @@ Note: Since TYPO3 11 LTS does not allow to instantiate TSFE for sys folders and 
       the initialization of TSFE will be done for first and closest page(not spacer or folder) within the site rootline.
 
 Get "free content mode" working
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In previous releases of EXT:solr the language handling for "free-content-mode" inconsistent.
 The behavior of "free-content-mode" related records varied in RecordMonitor, Initializing and Indexing contexts,
@@ -188,13 +195,13 @@ This change brings the RecordMonitor, Initializing and Indexing contexts for "fr
 into the same line, so the "free-content-mode" records are processed the same way.
 
 Make pageRangeFirst and pageRangeLast accessible in fluid
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 With these two additional getters it is possible to access the variables
 in fluid templates. See: `#3254 <https://github.com/TYPO3-Solr/ext-solr/issues/3254>`_
 
 Add custom field processors
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Custom field processors can be registered with
 
@@ -202,13 +209,15 @@ Custom field processors can be registered with
 
    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProcessor'] = ACustomFieldProcessor::class;
 
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProcessor'] = ACustomFieldProcessor::class;
+
 And many more
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 Please see the list of changes below or `the full changelog: <https://github.com/TYPO3-Solr/ext-solr/compare/c0a3e62053e1c929c914d25ced1fef3d9868d4f9...11.5.0>`_.
 
 The list of all changes:
-~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 - [TASK] Prepare schemas for EXT:solr 11.5.x `c0a3e6205 <https://github.com/TYPO3-Solr/ext-solr/commit/c0a3e6205>`_
 - [TASK] Provide N-Gram Filter for strings `13b90a996 <https://github.com/TYPO3-Solr/ext-solr/commit/13b90a996>`_

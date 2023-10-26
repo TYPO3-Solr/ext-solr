@@ -13,6 +13,7 @@ Archive
     :titlesonly:
     :glob:
 
+    solr-release-11-5
     solr-release-11-1
     solr-release-10-0
     solr-release-9-0
