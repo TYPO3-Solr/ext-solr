@@ -142,7 +142,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-release-11.5.x": "11.5.x-dev"
+      "dev-release-11.6.x": "11.6.x-dev"
     },
     "typo3/cms": {
       "extension-key": "solr",
@@ -163,9 +163,13 @@
           "8.11.2",
           "8.11.1"
         ],
-        "configset": "ext_solr_11_5_0"
+        "configset": "ext_solr_11_6_0"
       },
       "ext-solrfal": {
+      },
+      "stack-for-ci": {
+        "sclable/xml-lint": "*",
+        "scrutinizer/ocular": "*"
       }
     }
   }
