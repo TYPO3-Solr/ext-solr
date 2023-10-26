@@ -24,7 +24,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Used versions (please complete the following information):**
- - TYPO3 Version: [e.g. 11.5.26]
+ - TYPO3 Version: [e.g. 12.4.0]
  - Browser: [e.g. chrome, safari]
  - EXT:solr Version: [e.g. 12.0.0]
  - Used Apache Solr Version: [e.g. 9.3.1]

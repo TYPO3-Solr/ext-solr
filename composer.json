@@ -41,9 +41,7 @@
     "phpunit/phpunit": "^9.5",
     "phpspec/prophecy-phpunit":"*",
     "typo3/testing-framework": "^6.12",
-    "typo3/cms-fluid-styled-content": "*",
-    "scrutinizer/ocular": "*",
-    "sclable/xml-lint": "*"
+    "typo3/cms-fluid-styled-content": "*"
   },
   "replace": {
     "apache-solr-for-typo3/solrfluid": "*",
@@ -61,11 +59,32 @@
       "TYPO3\\CMS\\Core\\Tests\\": ".Build/Web/typo3/sysext/core/Tests/"
     }
   },
+  "minimum-stability": "stable",
   "prefer-stable": true,
   "config": {
     "allow-plugins": true,
     "vendor-dir": ".Build/vendor",
-    "bin-dir": ".Build/bin"
+    "bin-dir": ".Build/bin",
+    "sort-packages": true,
+    "preferred-install": {
+      "typo3/cms-core": "source",
+      "*": "dist"
+    }
+  },
+  "scripts-descriptions": {
+    "t3:docs:build": "Renders the docs. Note: Can not run inside docker container, because uses TYPO3 dockrun_t3rd",
+    "t3:docs:build:prod": "Same as t3:docs:build, but places the rendered docs in Resources/Public/Documentation and symlinks them to EXT:tika/Documentation.HTML",
+    "t3:docs:clean": "Deletes all rendered docs created by t3:docs:build or t3:docs:build:prod.",
+    "t3:standards:fix": "Fixes a possible TYPO3 coding standards errors.",
+
+    "tests:env":  "Checks the requierements in environment for tests.",
+    "tests:integration": "Runs integration tests",
+    "tests:lint-xml": "Lints the XML/XLF files. Depends on global installed sclable/xml-lint. See tests:setup:global-require",
+    "tests:phpstan": "Runs PHPStan analys",
+    "tests:restore-git": "[Internal script], which is used after tests:setup to restore the composer.json.",
+    "tests:setup": "Installs composer dependencies, requiered for tests.",
+    "tests:setup:global-require": "Installs global composer dependencies. Those are moved to global, to avoid collisions and downgrades on libs.",
+    "tests:unit": "Runs unit tests"
   },
   "scripts-descriptions": {
     "t3:docs:build": "Renders the docs. Note: Can not run inside docker container, because uses TYPO3 dockrun_t3rd",
@@ -95,7 +114,7 @@
       "rm -Rf Documentation-GENERATED-temp/ $(readlink -f Documentation.HTML) Documentation.HTML"
     ],
     "extension-create-libs": [
-      "@composer req -d Resources/Private/Php/ComposerLibraries solarium/solarium:$(Build/Helpers/GET_LACAL_PACKAGE_VERSION_CONSTRAINT.sh solarium/solarium)"
+      "@composer req -d Resources/Private/Php/ComposerLibraries solarium/solarium:$(Build/Helpers/GET_LOCAL_PACKAGE_VERSION_CONSTRAINT.sh solarium/solarium)"
     ],
     "extension-build": [
       "@extension-create-libs"
@@ -105,22 +124,33 @@
       "if [ -z ${TYPO3_VERSION+x} ]; then >&2 echo \"Can not proceed, because env var TYPO3_VERSION is not set\"; exit 1; else echo \"Setup test environment for TYPO3 ${TYPO3_VERSION}\"; fi",
       "if echo $TYPO3_VERSION | grep -q \"dev\"; then $COMPOSER_BINARY config minimum-stability dev; fi"
     ],
+    "tests:setup:global-require": [
+      "echo \"Install global composer dependencies.\"",
+      "@composer global require sclable/xml-lint",
+      "@composer global require scrutinizer/ocular"
+    ],
     "tests:setup": [
+      "# @todo: Abort if composer.json has not staged/commited changes on composer.json, to avoid losing necessery changes.",
       "@tests:env",
-      "@composer req --prefer-source --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
+      "@composer req --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
       "@tests:restore-git"
     ],
     "tests:unit": [
-      "phpunit --colors --config=Build/Test/UnitTests.xml --bootstrap=Build/Test/UnitTestsBootstrap.php"
+      "phpunit --config=Build/Test/UnitTests.xml"
     ],
     "tests:integration": [
-      "phpunit --colors --config=Build/Test/IntegrationTests.xml --bootstrap=.Build/Web/typo3conf/ext/solr/Build/Test/IntegrationTestsBootstrap.php"
+      "Composer\\Config::disableProcessTimeout",
+      "phpunit --config=Build/Test/IntegrationTests.xml"
+    ],
+    "tests:phpstan": [
+      "phpstan analyze -c Build/Test/phpstan.neon"
     ],
     "t3:standards:fix": [
       "php-cs-fixer fix"
     ],
-    "lint:xlf": [
-      "xmllint Resources/Private/Language/ -p '*.xlf'"
+    "tests:lint-xml": [
+      "echo \"Run XML Lint\"",
+      "if ! $($COMPOSER_BINARY config home)/vendor/bin/xmllint Resources/Private/Language/ --pattern='*.xlf' --exclude=.Build/*; then echo \"Some XML files are not valid\" && echo \"Please fix the files listed above\" && export EXIT_CODE=4; else echo \"No syntax errors! Great job!\"; fi"
     ]
   },
   "extra": {
@@ -129,7 +159,6 @@
     },
     "typo3/cms": {
       "extension-key": "solr",
-      "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
     },
     "TYPO3-Solr": {
