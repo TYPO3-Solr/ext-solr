@@ -23,18 +23,21 @@ jobs:
     outputs:
       matrix: ${{ steps.collect_build_matrix.outputs.matrix }}
     steps:
-      # Workaround for issue with actions/checkout@v2 wrong PR commit checkout: See https://github.com/actions/checkout/issues/299#issuecomment-677674415
+      # Workaround for issue with actions/checkout "wrong PR commit checkout":
+      #   See:
+      #   ** https://github.com/actions/checkout/issues/299#issuecomment-677674415
+      #   ** https://github.com/actions/checkout/issues/1359#issuecomment-1631503791
       -
         name: Checkout current state of Pull Request
         if: github.event_name == 'pull_request'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
         if: github.event_name == 'push'
-        uses: actions/checkout@v2
-      # End: Workaround for issue with actions/checkout@v2 wrong PR commit checkout
+        uses: actions/checkout@v3
+      # End: Workaround for issue with actions/checkout...
       -
         name: "Resolve target branch of pull request."
         if: github.event_name == 'pull_request'
@@ -104,7 +107,6 @@ jobs:
       TYPO3_DATABASE_HOST: '127.0.0.1'
       TYPO3_DATABASE_USERNAME: 'root'
       TYPO3_DATABASE_PASSWORD: 'root'
-      PHP_CS_FIXER_VERSION: '^3.2.1'
       TYPO3_VERSION: ${{ matrix.TYPO3 }}
 
     name: TYPO3 ${{ matrix.TYPO3 }} on PHP ${{ matrix.PHP }}
@@ -128,7 +130,7 @@ jobs:
         name: Mount RAMFS
         run: |
           mkdir -p ${{ env.CI_BUILD_DIRECTORY }}
-          sudo mount -t tmpfs -o size=3G none ${{ env.CI_BUILD_DIRECTORY }}
+          sudo mount -t tmpfs -o size=1G none ${{ env.CI_BUILD_DIRECTORY }}
           sudo mkdir -p ${{ env.CI_BUILD_DIRECTORY }}/data-{solr,mysql} \
             && sudo chown $USER ${{ env.CI_BUILD_DIRECTORY }}/data-mysql \
             && sudo chown 8983:8983 ${{ env.CI_BUILD_DIRECTORY }}/data-solr
@@ -160,10 +162,9 @@ jobs:
         with:
           php-version: ${{ matrix.PHP }}
           coverage: pcov
-          tools: composer:2.1.14
+          tools: composer:2.5.5
       -
         name: CI-Bootstrap
-        if: steps.restore_ci_build_caches.outputs.cache-hit != 'true'
         run: |
           ./Build/Test/bootstrap.sh --skip-solr-install
           echo "Current Size of EXT:Solr build Artefacts before run: " \
