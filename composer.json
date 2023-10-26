@@ -72,7 +72,11 @@
     "allow-plugins": true,
     "vendor-dir": ".Build/vendor",
     "bin-dir": ".Build/bin",
-    "sort-packages": true
+    "sort-packages": true,
+    "preferred-install": {
+      "typo3/cms-core": "source",
+      "*": "dist"
+    }
   },
   "scripts": {
     "post-autoload-dump": [
@@ -103,8 +107,6 @@
     "tests:setup": [
       "@tests:env",
       "@composer req --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
-      "@composer reinstall --prefer-source typo3/cms-core",
-      "@composer dump-autoload",
       "@tests:restore-git"
     ],
     "tests:unit": [
