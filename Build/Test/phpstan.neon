@@ -1,0 +1,20 @@
+includes:
+  - %rootDir%/../phpstan-phpunit/extension.neon
+
+parameters:
+  level: 0
+  treatPhpDocTypesAsCertain: false
+
+  bootstrapFiles:
+    - phpstan-constants.php
+
+  universalObjectCratesClasses:
+    - ApacheSolrForTypo3\Solr\System\Solr\Document\Document
+    - ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult
+
+  paths:
+    - %currentWorkingDirectory%/Classes
+    - %currentWorkingDirectory%/Tests
+
+  ignoreErrors:
+    - '#^Variable \$_EXTKEY might not be defined\.#'
