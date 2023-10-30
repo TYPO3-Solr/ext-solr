@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\RequestBuilder;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -40,9 +41,16 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
 
     protected static SearchUriBuilder $searchUriBuilder;
 
+    protected static RequestBuilder $requestBuilder;
+
     public function injectSearchUriBuilder(SearchUriBuilder $searchUriBuilder): void
     {
         self::$searchUriBuilder = $searchUriBuilder;
+    }
+
+    public function injectRequestBuilder(RequestBuilder $requestBuilder): void
+    {
+        self::$requestBuilder = $requestBuilder;
     }
 
     protected static function getSearchUriBuilder(RenderingContextInterface $renderingContext = null): SearchUriBuilder
@@ -50,11 +58,14 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
         if (!isset(self::$searchUriBuilder)) {
             self::$searchUriBuilder = GeneralUtility::makeInstance(SearchUriBuilder::class);
         }
+        if (!isset(self::$requestBuilder)) {
+            self::$requestBuilder = GeneralUtility::makeInstance(RequestBuilder::class);
+        }
 
         if ($renderingContext instanceof RenderingContext) {
             $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-            /** @phpstan-ignore-next-line */
-            $uriBuilder->reset()->setRequest($renderingContext->getRequest());
+            $request = self::$requestBuilder->build($renderingContext->getRequest());
+            $uriBuilder->reset()->setRequest($request);
             self::$searchUriBuilder->injectUriBuilder($uriBuilder);
         }
 
