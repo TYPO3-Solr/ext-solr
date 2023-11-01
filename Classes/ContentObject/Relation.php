@@ -170,7 +170,7 @@ class Relation extends AbstractContentObject
                 && !empty($this->configuration['enableRecursiveValueResolution'])
             ) {
                 $this->configuration['localField'] = $foreignTableLabelField;
-                if (str_contains($this->configuration['foreignLabelField'], '.')) {
+                if (str_contains($this->configuration['foreignLabelField'] ?? '', '.')) {
                     $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
                     unset($foreignTableLabelFieldArr[0]);
                     $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
