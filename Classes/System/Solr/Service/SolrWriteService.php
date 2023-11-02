@@ -58,9 +58,16 @@ class SolrWriteService extends AbstractSolrService
                     'exception' => $e->getMessage(),
                 ]
             );
+            return [
+                null,
+                null,
+                new ResponseAdapter(
+                    $e->getTraceAsString(),
+                    $e->getCode(),
+                    $e->getMessage()
+                ),
+            ];
         }
-
-        return [];
     }
 
     /**
