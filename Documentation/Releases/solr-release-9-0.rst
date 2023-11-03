@@ -1,11 +1,10 @@
 .. include:: /Includes.rst.txt
-
-
+..  index:: Archive
 .. _releases-9:
 
-===========================
-Apache Solr for TYPO3 9.0.0
-===========================
+=============
+Release 9.0.0
+=============
 
 We are happy to release EXT:solr 9.0.0. The focus of EXT:solr 9.0.0 was, to support the latest version of Apache Solr (7.6.0) and to drop the usage of the solrphpclient and use the solarium php API instead.
 

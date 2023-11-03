@@ -1,11 +1,10 @@
 .. include:: /Includes.rst.txt
-
-
+..  index:: Archive
 .. _releases-8:
 
-===========================
-Apache Solr for TYPO3 8.0.0
-===========================
+=============
+Release 8.0.0
+=============
 
 We are happy to release EXT:solr 8.0.0. The focus of EXT:solr 8.0.0 was, to improve the user experience in the frontend and backend.
 
