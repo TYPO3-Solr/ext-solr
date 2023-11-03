@@ -51,9 +51,6 @@ This is a maintenance release for TYPO3 11.5, containing:
 Release 11.5.2
 --------------
 
-Release 11.5.2
---------------
-
 This is a maintenance release for TYPO3 11.5, containing:
 
 - [BUGFIX:BP:11.5] Fix error when indexing pages with field processing instruction categoryUidToHierarchy by @dkd-kaehm in `#3462 <https://github.com/TYPO3-Solr/ext-solr/pull/3462>`__
