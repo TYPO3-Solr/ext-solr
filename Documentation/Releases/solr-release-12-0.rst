@@ -1,11 +1,14 @@
 .. include:: ../Includes.rst.txt
-
-
 .. _releases-12-0:
 
-============================
-Apache Solr for TYPO3 12.0.0
-============================
+=============
+Releases 12.0
+=============
+
+..  include:: HintAboutOutdatedChangelog.rst.txt
+
+Release 12.0.0
+==============
 
 We are happy to release EXT:solr 12.0.0.
 The focus of this release has been on TYPO3 12 LTS compatibility.
@@ -28,8 +31,8 @@ This release requires Apache Solr v 9.3.0+.
 **Note**: On third party installations enabling stream feature via the ENV vars or system properties is required.
 
 Following variables must be set in solr.in.sh file or in Solr system props:
-* `SOLR_ENABLE_REMOTE_STREAMING=true`
-* `SOLR_ENABLE_STREAM_BODY=true`
+* :bash:`SOLR_ENABLE_REMOTE_STREAMING=true`
+* :bash:`SOLR_ENABLE_STREAM_BODY=true`
 
 For more information see:
 * https://solr.apache.org/guide/solr/latest/upgrade-notes/major-changes-in-solr-9.html#security
@@ -57,15 +60,13 @@ and the interfaces :php:`ApacheSolrForTypo3\Solr\Query\Modifier` as well
 as :php:`ApacheSolrForTypo3\Solr\Search\QueryAware` and :php:`ApacheSolrForTypo3\Solr\Search\SearchAware`
 have been removed. The modifiers have been merged into Components.
 
-Registration does not happen in `ext_localconf.php` anymore via `ApacheSolrForTypo3\Solr\Search\SearchComponentManager`
+Registration does not happen in :file:`ext_localconf.php` anymore via :php:`ApacheSolrForTypo3\Solr\Search\SearchComponentManager`
 which has been removed, but now happens in :file:`Configuration/Services.yaml`
 as documented in TYPO3 Core's PSR-14 Registration API.
 
 Related hooks around this system have been moved to PSR-14 events as well:
-* :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['beforeSearch']` has
-  been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\AfterInitialSearchResultSetHasBeenCreatedEvent`
-* :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']` has been
-  been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\AfterSearchHasBeenExecutedEvent`
+* :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['beforeSearch']` has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\AfterInitialSearchResultSetHasBeenCreatedEvent`
+* :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']` has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\AfterSearchHasBeenExecutedEvent`
 
 
 SignalSlots replaced by PSR-14 events
@@ -154,8 +155,7 @@ Former EXT:solr versions used an own node implementation for Solr endpoints, thi
 
 If you've used this class or the SolrConnection directly, you have to adapt your PHP code:
 - use \Solarium\Core\Client\Endpoint instead of \ApacheSolrForTypo3\Solr\System\Solr\Node
-- call \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection->getEndpoint() instead of \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection\getNode(),
-  method will return Solarium Endpoint
+- call \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection->getEndpoint() instead of \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection\getNode(), method will return Solarium Endpoint
 - Node could be converted to string to get the core base URI, getCoreBaseUri() can be used instead.
 
 Note: With dropping the Node implementation we also dropped the backwards compatibility that allows to define the Solr path segment "/solr" within "solr_path_read" or "solr_path_write". Be sure your configuration doesn't contain this path segment!
@@ -201,7 +201,7 @@ The old behaviour is still working,
 so if a string value contains space(s) and no special characters of the solr query parser,
 the string is always wrapped with double quotes.
 But if the string contains special characters no wrapping happen
-special characters are: :php:`+ - && || ! ( ) { } [ ] ^ " ~ * ? : \`
+special characters are: :php:`+ - && || ! ( ) { } [ ] ^ " ~ * ? : \ `
 
 There is some cases where this change can break,
 for example if the filter value is something like
@@ -244,7 +244,7 @@ All Changes
 - [TASK:T12] Fix Tests for ApacheSolrForTypo3\Solr\Controller\Backend\* `2be0e56b4 on @2023-02-17 <https://github.com/TYPO3-Solr/ext-solr/commit/2be0e56b4>`_ (thanks to Rafael Kähm)
 - [TASK:T12] Migrate PageModuleSummary to PageContentPreviewRendering `6baf77409 on @2023-02-17 <https://github.com/TYPO3-Solr/ext-solr/commit/6baf77409>`_ (thanks to Rafael Kähm)
 - Task: Move pageTsConfig to Configuration/page.tsconfig `f456e0f29 on @2023-02-19 <https://github.com/TYPO3-Solr/ext-solr/commit/f456e0f29>`_ (thanks to Christoph Lehmann)
-- [TASK:T12] Fix tests for *\Facets\* namespace `f22028dd5 on @2023-02-18 <https://github.com/TYPO3-Solr/ext-solr/commit/f22028dd5>`_ (thanks to Rafael Kähm)
+- [TASK:T12] Fix tests for \*\Facets\* namespace `f22028dd5 on @2023-02-18 <https://github.com/TYPO3-Solr/ext-solr/commit/f22028dd5>`_ (thanks to Rafael Kähm)
 - [TASK:T12] Fix Unit\IndexQueue\PageIndexerRequestTest tests `2aa944e13 on @2023-02-18 <https://github.com/TYPO3-Solr/ext-solr/commit/2aa944e13>`_ (thanks to Rafael Kähm)
 - [TASK:T12] Partially migrated ControllerContext `54fcbcb6e on @2023-02-24 <https://github.com/TYPO3-Solr/ext-solr/commit/54fcbcb6e>`_ (thanks to Rafael Kähm)
 - [TASK:T12] Remove usages of sys_language `2c82e4984 on @2023-02-24 <https://github.com/TYPO3-Solr/ext-solr/commit/2c82e4984>`_ (thanks to Rafael Kähm)

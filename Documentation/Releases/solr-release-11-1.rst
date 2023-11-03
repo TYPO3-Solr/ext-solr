@@ -1,11 +1,12 @@
 .. include:: /Includes.rst.txt
-
-
+..  index:: Archive
 .. _releases-11-1:
 
-============================
-Apache Solr for TYPO3 11.1.0
-============================
+==============
+Release 11.1.0
+==============
+
+..  include:: HintAboutOutdatedChangelog.rst.txt
 
 We are happy to release EXT:solr 11.1.0.
 The focus of this release has been on URL and SEO optimizations.

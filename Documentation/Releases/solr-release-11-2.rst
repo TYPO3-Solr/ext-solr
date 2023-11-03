@@ -1,14 +1,16 @@
-.. include:: ../Includes.rst.txt
-
-
+..  include:: /Includes.rst.txt
+..  index:: Releases
 .. _releases-11-2:
 
-==========================
-Apache Solr for TYPO3 11.2
-==========================
+=============
+Releases 11.2
+=============
 
-Apache Solr for TYPO3 11.2.2 - Last non ELTS release
-====================================================
+..  include:: HintAboutOutdatedChangelog.rst.txt
+
+
+Release 11.2.2
+--------------
 
 This is a maintenance release for TYPO3 10.4 and the last non ELTS release, as TYPO3 10 LTS reaches the ELTS phase on April 30, 2023.
 
@@ -35,8 +37,8 @@ This release contains:
 - [TASK:BP:11.2] Disable sql handler by @dkd-friedrich in #3604
 
 
-Apache Solr for TYPO3 11.2.1
-============================
+Release 11.2.1
+==============
 
 This is a maintenance release for TYPO3 10.4, containing:
 
@@ -62,14 +64,11 @@ This is a maintenance release for TYPO3 10.4, containing:
 - [BUGFIX:BP:11.2] Fix write connection (#2916)
 
 
-Apache Solr for TYPO3 11.2.0
-============================
+Release 11.2.0
+==============
 
 We are happy to release EXT:solr 11.2.0.
 The focus of this release has been on supporting the latest Apache Solr version 8.11.1 and on optimizing the data update monitoring.
-
-New in this release
--------------------
 
 Apache Solr 8.11.1 support
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
