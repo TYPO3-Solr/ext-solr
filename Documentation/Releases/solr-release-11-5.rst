@@ -7,6 +7,37 @@
 Apache Solr for TYPO3 11.5
 ==========================
 
+Apache Solr for TYPO3 11.5.4
+============================
+
+
+This is a maintenance release for TYPO3 11.5 and the last release that supports Apache Solr 8.11. Next EXT:solr release for TYPO3 11.5 will be 11.6.0, it
+will contain support for Apache Solr 9 and some breaking improvements.
+
+11.5.4 contains the following changes:
+
+- [TASK] Fix CI 2023.09.11 on release-11.5.x by @dkd-kaehm in `#3777 <https://github.com/TYPO3-Solr/ext-solr/pull/3777>`__
+- [BUGFIX:BP:11.5] Fix EXT:solr route enhancer by @dkd-friedrich in `#3743 <https://github.com/TYPO3-Solr/ext-solr/pull/3743>`__
+- [BUG] Fix detection of "draft records" in workspaces by @baschny in `#3642 <https://github.com/TYPO3-Solr/ext-solr/pull/3642>`__
+- [BUGFIX] Do not index translations on default language in languages free mode by @dkd-kaehm in `#3786 <https://github.com/TYPO3-Solr/ext-solr/pull/3786>`__
+- [BUGFIX:BP:11.5] Retry Uri Building after exception by @dkd-friedrich in `#3789 <https://github.com/TYPO3-Solr/ext-solr/pull/3789>`__
+- [BUGFIX] Delete index documents without available site by @dkd-kaehm in `#3778 <https://github.com/TYPO3-Solr/ext-solr/pull/3778>`__
+- [TASK:BP:11.5] Ensure recursive page update on page movement by @dkd-friedrich in `#3771 <https://github.com/TYPO3-Solr/ext-solr/pull/3771>`__
+- [FEATURE:BP:11.5] Add index queue indices by @dkd-friedrich in `#3791 <https://github.com/TYPO3-Solr/ext-solr/pull/3791>`__
+- [TASK:BP:11.5] Migrate top.fsMod by @dkd-friedrich in `#3795 <https://github.com/TYPO3-Solr/ext-solr/pull/3795>`__
+- [BUGFIX:BP:11.5] Return value getPageItemChangedTime() must be of the type int by @dkd-kaehm in `#3813 <https://github.com/TYPO3-Solr/ext-solr/pull/3813>`__
+- [TASK:BP:11.5] Remove duplicate withHeader() by @dkd-kaehm in `#3817 <https://github.com/TYPO3-Solr/ext-solr/pull/3626>`__
+- [BUGFIX:BP:11.5] Do not list cores twice in Index Inspector by @dkd-kaehm in `#3818 <https://github.com/TYPO3-Solr/ext-solr/pull/3818>`__
+- [BUGFIX] Fixes multiple sortings by @BastiLu in `#3762 <https://github.com/TYPO3-Solr/ext-solr/pull/3762>`__
+- [BUGFIX:BP:11.5] Fix missing frontend.typoscript request attribute while indexing by @dkd-kaehm in `#3822 <https://github.com/TYPO3-Solr/ext-solr/pull/3822>`__
+- [BUGFIX] Prevent indexing error on missing 'foreignLabelField' by @kitzberger in `#3740 <https://github.com/TYPO3-Solr/ext-solr/pull/3740>`__
+- [BUGFIX:BP:11.5] Force score to float by @dkd-kaehm in `#3824 <https://github.com/TYPO3-Solr/ext-solr/pull/3824>`__
+- [BUGFIX:BP:11.5] Fix possible notice by @dkd-kaehm in `#3825 <https://github.com/TYPO3-Solr/ext-solr/pull/3825>`__
+- [DOC:BP:11.5] Add FAQ how to generate URLs to restricted pages by @dkd-kaehm in `#3826 <https://github.com/TYPO3-Solr/ext-solr/pull/3826>`__
+- [BUGFIX:BP:11.5] Handle float values in options facet parser by @dkd-kaehm in `#3827 <https://github.com/TYPO3-Solr/ext-solr/pull/3827>`__
+- [BUGFIX:BP:11.5] handle localizations with un-available tsfe more gracefully by @dkd-kaehm in `#3832 <https://github.com/TYPO3-Solr/ext-solr/pull/3832>`__
+- [TASK] Update the version matrix by @dkd-friedrich in `#3860 <https://github.com/TYPO3-Solr/ext-solr/pull/3860>`__
+
 Apache Solr for TYPO3 11.5.3
 ============================
 
