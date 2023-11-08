@@ -1596,3 +1596,16 @@ Defines an array of queries to group the results in.
 
 Note: Use either field or queries no mix. Groups with field are field groups,
 groups with queries are query groups.
+
+grouping.groups.[groupName].sortBy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.grouping.groups.[groupName].sortBy
+:Since: 12.0
+
+Allows to set a custom sorting for the group. Useful especially if you have already set `plugin.tx_solr.search.query.sortBy`. By default Solr will sort within a group by relevance, using this setting you can sort by any sortable field.
+
+Needs a Solr field name followed by asc for ascending order or desc for descending.
+
+
