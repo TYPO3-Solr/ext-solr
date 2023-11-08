@@ -1,20 +1,15 @@
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
-
-
+..  include:: /Includes.rst.txt
+..  index:: Releases
 .. _releases-11:
 
-==========================
-Apache Solr for TYPO3 11.0
-==========================
+=============
+Releases 11.0
+=============
 
+..  include:: HintAboutOutdatedChangelog.rst.txt
 
-Apache Solr for TYPO3 11.0.8
-============================
+Release 11.0.8
+--------------
 
 We are happy to release EXT:solr 11.0.8 maintenance release, this release is a non-public ELTS release.
 
@@ -49,8 +44,9 @@ Small improvements and bugfixes
 - [TASK] Update version matrix by @dkd-friedrich in #8
 
 
-Apache Solr for TYPO3 11.0.7
-============================
+
+Release 11.0.7
+--------------
 
 TYPO3 9 LTS reached the ELTS stage: free community support for TYPO3 9 LTS ended on 30 sept. 2021.
 We'll join the TYPO3s ELTS regiment and provide EXT:solr support for TYPO3 9 ELTS upwardly via our EB program.
@@ -58,8 +54,8 @@ Therefore the EXT:solr release-11.0.x will not be maintained in TYPO3-Solr/ext-s
 The new EXT:solr 11.0.8+ for TYPO3 9 ELTS versions will be provided via dkds EB program.
 
 
-Apache Solr for TYPO3 11.0.6
-============================
+Release 11.0.6
+--------------
 
 This is a bugfix-only release that contains only bugfixes
 
@@ -73,8 +69,8 @@ This is a bugfix-only release that contains:
 - [TASK:11.0] Replace mirrors for Apache Solr binaries on install-solr.sh (#3094)
 
 
-Apache Solr for TYPO3 11.0.5
-============================
+Release 11.0.5
+--------------
 
 This is a bugfix-only release that contains only bugfixes
 
@@ -97,13 +93,13 @@ This is a bugfix-only release that contains only bugfixes
 - [BUGFIX] Fix type error in UrlHelper 17f1653 (#2756)
 
 
-Apache Solr for TYPO3 11.0.4
-============================
+Release 11.0.4
+--------------
 
 This is a bugfix-only release that contains
 
 - [BUGFIX] Removes secondary parameter c6a9dcc (#2746)
-- [DOCS] Use *_PORT variable for setting the port fca6f68 (#2759)
+- [DOCS] Use \*_PORT variable for setting the port fca6f68 (#2759)
 - [BUGFIX] Correct Content-Type header for suggest response e843b44 (#2783)
 - [TASK] Change configuration files to TYPO3 file extensions 6d513e6 (#2813)
 - [BUGFIX] garbage collector on translations 9adcc40 (#2797)
@@ -132,8 +128,8 @@ This is a bugfix-only release that contains
 - [BUGFIX] Make relevance sorting option markable as active bc813c8 (#2922)
 
 
-Apache Solr for TYPO3 11.0.3
-============================
+Release 11.0.3
+--------------
 
 This is a bugfix-only release that contains only a few bugfixes
 
@@ -153,8 +149,8 @@ This is a bugfix-only release that contains only a few bugfixes
 - [DOCS] Multiple improvements to the docs
 
 
-Apache Solr for TYPO3 11.0.2
-============================
+Release 11.0.2
+--------------
 
 This is a bugfix-only release that contains only a few bugfixes
 
@@ -172,8 +168,8 @@ This is a bugfix-only release that contains only a few bugfixes
 - [BUGFIX] Prevent SiteNotFoundException in reports module
 
 
-Apache Solr for TYPO3 11.0.1
-============================
+Release 11.0.1
+--------------
 
 This is a bugfix-only release that contains only a few bugfixes
 
@@ -181,9 +177,8 @@ This is a bugfix-only release that contains only a few bugfixes
 - [BUGFIX] Fix failing build on docker hub
 
 
-Apache Solr for TYPO3 11.0.0
-============================
-
+Release 11.0.0
+--------------
 
 We are happy to release EXT:solr 11.0.0.
 The focus of this release was the support of TYPO3 10 LTS.
@@ -193,24 +188,21 @@ EXT:solr 11 requires the usage of the TYPO3 site handling for the configuration 
 
 The ```legacyMode``` that allows the usage of domain records and configuration of solr cores in TypoScript was dropped with EXT:solr 11.
 
+
 New in this release
 -------------------
 
-Support of TYPO3 10 LTS
-~~~~~~~~~~~~~~~~~~~~~~~
-
 With EXT:solr 11 we provide the support of TYPO3 10 LTS. If you update to EXT:solr 11, make sure, that you are using the TYPO3 site management to manage your Apache Solr endpoints.
-
 Thanks to: Achim Fritz & b13 for the support on that topic
+
 
 Support of Apache Solr 8.5.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 With EXT:solr 11 we support Apache Solr 8.5.1, the latest release of Apache Solr.
 
-To see what was changed in Apache Solr 8.5.x please read the release notes of Apache Solr:
+To see what was changed in Apache Solr 8.5.x please read the `release notes of Apache Solr <https://archive.apache.org/dist/lucene/solr/8.5.1/changes/Changes.html>`_
 
-https://archive.apache.org/dist/lucene/solr/8.5.1/changes/Changes.html
 
 Small improvements and bugfixes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

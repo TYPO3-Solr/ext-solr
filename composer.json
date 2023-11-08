@@ -67,10 +67,32 @@
     "vendor-dir": ".Build/vendor",
     "bin-dir": ".Build/bin"
   },
+  "scripts-descriptions": {
+    "t3:docs:build": "Renders the docs. Note: Can not run inside docker container, because uses TYPO3 dockrun_t3rd",
+    "t3:docs:build:prod": "Same as t3:docs:build, but places the rendered docs in Resources/Public/Documentation and symlinks them to EXT:tika/Documentation.HTML",
+    "t3:docs:clean": "Deletes all rendered docs created by t3:docs:build or t3:docs:build:prod.",
+    "t3:standards:fix": "Fixes a possible TYPO3 coding standards errors.",
+
+    "tests:env":  "Checks the requierements in environment for tests.",
+    "tests:integration": "Runs integration tests",
+    "tests:restore-git": "[Internal script], which is used after tests:setup to restore the composer.json.",
+    "tests:setup": "Installs composer dependencies, requiered for tests.",
+    "tests:unit": "Runs unit tests"
+  },
   "scripts": {
     "post-autoload-dump": [
       "mkdir -p .Build/Web/typo3conf/ext/",
       "[ -L .Build/Web/typo3conf/ext/solr ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/solr"
+    ],
+    "t3:docs:build": [
+      "rm -Rf Documentation-GENERATED-temp/",
+      "./Build/generate_documentation.sh"
+    ],
+    "t3:docs:build:prod": [
+      "BUILD_DOCS_FOR_PRODUCTION=1 $COMPOSER_BINARY t3:docs:build"
+    ],
+    "t3:docs:clean": [
+      "rm -Rf Documentation-GENERATED-temp/ $(readlink -f Documentation.HTML) Documentation.HTML"
     ],
     "extension-create-libs": [
       "@composer req -d Resources/Private/Php/ComposerLibraries solarium/solarium:$(Build/Helpers/GET_LACAL_PACKAGE_VERSION_CONSTRAINT.sh solarium/solarium)"
