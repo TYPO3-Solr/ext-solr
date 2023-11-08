@@ -56,6 +56,7 @@
   "autoload-dev": {
     "psr-4": {
       "ApacheSolrForTypo3\\Solr\\Tests\\": "Tests/",
+      "ApacheSolrForTypo3\\FakeExtension\\": "Tests/Integration/Fixtures/Extensions/fake_extension/Classes/",
       "TYPO3\\CMS\\Core\\Tests\\": ".Build/Web/typo3/sysext/core/Tests/"
     }
   },
