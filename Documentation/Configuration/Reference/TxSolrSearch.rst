@@ -1575,7 +1575,7 @@ grouping.groups.[groupName].field
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: String
-:TS Path: plugin.tx_solr.search.grouping.[groupName].field
+:TS Path: plugin.tx_solr.search.grouping.groups.[groupName].field
 :Default: empty
 :Since: 12.0
 
@@ -1588,7 +1588,7 @@ grouping.groups.[groupName].queries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Array
-:TS Path: plugin.tx_solr.search.grouping.[groupName].queries
+:TS Path: plugin.tx_solr.search.grouping.groups.[groupName].queries
 :Default: empty
 :Since: 12.0
 
