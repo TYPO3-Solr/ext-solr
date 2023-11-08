@@ -1,11 +1,13 @@
 .. include:: /Includes.rst.txt
-
-
+..  index:: Archive
 .. _releases-10:
 
-============================
-Apache Solr for TYPO3 10.0.0
-============================
+=============
+Releases 10.0
+=============
+
+..  include:: HintAboutOutdatedChangelog.rst.txt
+
 
 We are happy to release EXT:solr 10.0.0.
 The focus of EXT:solr 10.0.0 was, to support the `site handling <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/SiteHandling/Index.html />`_ that was introduced in TYPO3 9 LTS .

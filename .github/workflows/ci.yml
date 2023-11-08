@@ -66,9 +66,7 @@ jobs:
           echo "BRANCH_NAME="$BRANCH_NAME
           echo -e "matrix : "
           echo $matrix
-          echo ::set-output name=matrix::$(echo $matrix)
-          >&2 echo -e "Example Annotation on error. Is visible in Actions wokflow view."
-          >&2 echo -e "Non-stable releases can not be published to TER. The tag 11.5.0-beta-1 is invalid for TER."
+          echo "matrix=$(echo $matrix)" >> $GITHUB_OUTPUT
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1

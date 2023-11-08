@@ -1,15 +1,15 @@
-.. include:: ../Includes.rst.txt
-
-
+..  include:: /Includes.rst.txt
+..  index:: Archive
 .. _releases-11-5:
 
-==========================
-Apache Solr for TYPO3 11.5
-==========================
+=============
+Releases 11.5
+=============
 
-Apache Solr for TYPO3 11.5.4
-============================
+..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 11.5.4
+--------------
 
 This is a maintenance release for TYPO3 11.5 and the last release that supports Apache Solr 8.11. Next EXT:solr release for TYPO3 11.5 will be 11.6.0, it
 will contain support for Apache Solr 9 and some breaking improvements.
@@ -38,8 +38,9 @@ will contain support for Apache Solr 9 and some breaking improvements.
 - [BUGFIX:BP:11.5] handle localizations with un-available tsfe more gracefully by @dkd-kaehm in `#3832 <https://github.com/TYPO3-Solr/ext-solr/pull/3832>`__
 - [TASK] Update the version matrix by @dkd-friedrich in `#3860 <https://github.com/TYPO3-Solr/ext-solr/pull/3860>`__
 
-Apache Solr for TYPO3 11.5.3
-============================
+
+Release 11.5.3
+--------------
 
 This is a maintenance release for TYPO3 11.5, containing:
 
@@ -47,8 +48,8 @@ This is a maintenance release for TYPO3 11.5, containing:
 - [DOC] Fix wrong type for boostQuery in the docs and example by @dkd-kaehm in `#3e7ff72 <https://github.com/TYPO3-Solr/ext-solr/commit/3e7ff72b7bc8ddd9cb7f5b7e998a328773483dfb>`__
 - [TASK] Fix unit tests for 2023.06.07 by @dkd-kaehm in `#3695 <https://github.com/TYPO3-Solr/ext-solr/pull/3695>`__
 
-Apache Solr for TYPO3 11.5.2
-============================
+Release 11.5.2
+--------------
 
 This is a maintenance release for TYPO3 11.5, containing:
 
@@ -79,8 +80,8 @@ This is a maintenance release for TYPO3 11.5, containing:
 - [BUGFIX:BP:11.5] return empty string for renderStatic if there is no content … by @dkd-friedrich in `#3612 <https://github.com/TYPO3-Solr/ext-solr/pull/3612>`__
 
 
-Apache Solr for TYPO3 11.5.1
-============================
+Release 11.5.1
+--------------
 
 We are happy to publish EXT:solr 11.5.1 maintenance release
 
@@ -111,9 +112,8 @@ New in this release
 Please read the release notes:
 https://github.com/TYPO3-Solr/ext-solr/releases/tag/11.5.1
 
-============================
-Apache Solr for TYPO3 11.5.0
-============================
+Release 11.5.0
+--------------
 
 We are happy to release EXT:solr 11.5.0.
 The focus of this release has been on TYPO3 11 LTS compatibility.
@@ -156,8 +156,8 @@ Provides a new field type and dynamic fields for strings
 with enabled Edge-N-Gram filter.
 
 Now the following fields can be used:
-- *_stringEdgeNgramS
-- *_stringEdgeNgramM
+- \*_stringEdgeNgramS
+- \*_stringEdgeNgramM
 
 Improve and Fix TSFE Initialization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -199,6 +199,7 @@ Add custom field processors
 Custom field processors can be registered with
 
 .. code-block:: php
+
    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProcessor'] = ACustomFieldProcessor::class;
 
 And many more
@@ -302,7 +303,7 @@ The list of all changes:
 - [TASK] Remove not used `strptime()` adaption for windows. `ad5c03932 <https://github.com/TYPO3-Solr/ext-solr/commit/ad5c03932>`_
 - [BUGFIX] Ensure BE_USER is kept when initializing TSFE `c7c0ba8ad <https://github.com/TYPO3-Solr/ext-solr/commit/c7c0ba8ad>`_
 - [TASK:11.5] Minimal changes to Templates to make Bootstrap 5.1 working `d5940d393 <https://github.com/TYPO3-Solr/ext-solr/commit/d5940d393>`_
-- [TASK] Standardize *.php files header declaration `514717864 <https://github.com/TYPO3-Solr/ext-solr/commit/514717864>`_
+- [TASK] Standardize \*.php files header declaration `514717864 <https://github.com/TYPO3-Solr/ext-solr/commit/514717864>`_
 - [TASK] Use and apply TYPO3 coding standards, rector and type hinting `61076e3ed <https://github.com/TYPO3-Solr/ext-solr/commit/61076e3ed>`_
 - [BUGFIX] Skip rootline check in be for records stored at pid 0 `6800394c0 <https://github.com/TYPO3-Solr/ext-solr/commit/6800394c0>`_
 - [BUGFIX] Prevent "undefined array key" warnings with php 8 in page indexer `d4afa18d1 <https://github.com/TYPO3-Solr/ext-solr/commit/d4afa18d1>`_
