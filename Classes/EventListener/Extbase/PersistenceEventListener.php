@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\EventListener\Extbase;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
-use ApacheSolrForTypo3\Solr\Trait\SkipMonitoringTrait;
+use ApacheSolrForTypo3\Solr\Traits\SkipMonitoringTrait;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Extbase\Event\Persistence\EntityPersistedEvent;
 use TYPO3\CMS\Extbase\Event\Persistence\EntityRemovedFromPersistenceEvent;
