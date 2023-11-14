@@ -336,7 +336,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
                 if ($scan) {
                     $elements = explode('/', $path);
-                    if (empty($elements)) {
+                    if (empty($elements) || $path === '') {
                         $scan = false;
                     } else {
                         array_pop($elements);
