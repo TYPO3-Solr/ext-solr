@@ -275,7 +275,9 @@ class SearchRequest
 
         foreach ($explodedSortings as $sorting) {
             $sortingSeperated = explode(' ', $sorting);
-            $parsedSortings[$sortingSeperated[0]] = $sortingSeperated[1];
+            if (count($sortingSeperated) === 2) {
+                $parsedSortings[$sortingSeperated[0]] = $sortingSeperated[1];
+            }
         }
 
         return $parsedSortings;
