@@ -8,11 +8,21 @@ Releases 11.5
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
-Release 11.5.4
+Release 11.5.5
 --------------
 
-This is a maintenance release for TYPO3 11.5 and the last release that supports Apache Solr 8.11. Next EXT:solr release for TYPO3 11.5 will be 11.6.0, it
+This is a maintenance release for TYPO3 11.5 and the last release that supports Apache Solr 8.11.
+Next EXT:solr release for TYPO3 11.5 will be 11.6.0, it
 will contain support for Apache Solr 9 and some breaking improvements.
+
+**Note:** This change requires the database schema update, due of database schema change from `pull-request #3880 <https://github.com/TYPO3-Solr/ext-solr/pull/3880>`__
+
+11.5.5 contains the following changes:
+
+- !!![BUGFIX:11.5] Exception with tx_solr_statistics after latest TYPO3 security update by @dkd-kaehm in `#3880 <https://github.com/TYPO3-Solr/ext-solr/pull/3880>`__
+
+Release 11.5.4
+--------------
 
 11.5.4 contains the following changes:
 

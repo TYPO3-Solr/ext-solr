@@ -25,6 +25,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -82,6 +83,7 @@ class StatisticsWriterProcessorTest extends SetUpUnitTestCase
     public function canWriteExpectedStatisticsData()
     {
         $fakeTSFE = $this->createMock(TypoScriptFrontendController::class);
+        $fakeTSFE->fe_user = $this->createMock(FrontendUserAuthentication::class);
         $fakeTSFE->id = 888;
         $fakeTime = 100;
         $fakeIP = '192.168.2.22';
