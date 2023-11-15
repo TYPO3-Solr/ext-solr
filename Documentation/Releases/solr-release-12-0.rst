@@ -12,9 +12,28 @@ Release 12.0.1
 
 This is a maintenance release for TYPO3 12.4 LTS, containing:
 
-**Note:** This change requires the database schema update, due of database schema change from `pull-request #3881 <https://github.com/TYPO3-Solr/ext-solr/pull/3881>`__
+**Note:** This release requires the database schema update, due of database schema change from `pull-request #3881 <https://github.com/TYPO3-Solr/ext-solr/pull/3881>`__
 
-- !!![BUGFIX] Exception with tx_solr_statistics after latest TYPO3 security update by @dkd-kaehm in `#3881 <https://github.com/TYPO3-Solr/ext-solr/pull/3881>`__
+- [BUGFIX] Remove superfluous char in Dockerfile `e49a07e12 on @2023-10-16 <https://github.com/TYPO3-Solr/ext-solrfal/commit/e49a07e12>`_ (thanks to Christoph Lehmann)
+- [TASK] Add response object to return array of SolrWriteService::extractByQuery() `0b1a6a102 on @2023-10-19 <https://github.com/TYPO3-Solr/ext-solrfal/commit/0b1a6a102>`_ (thanks to Rafael Kähm)
+- [TASK] Add replace for EXT:solrfluidgrouping in composer json `601873a61 on @2023-10-19 <https://github.com/TYPO3-Solr/ext-solrfal/commit/601873a61>`_ (thanks to Rafael Kähm)
+- [BUGFIX][DOC] avoid creation of symlink inside the prod docs `8bfcb60d4 on @2023-10-20 <https://github.com/TYPO3-Solr/ext-solrfal/commit/8bfcb60d4>`_ (thanks to Rafael Kähm)
+- [TASK] Log solr response in case of Page indexing issue `8bc498e06 on @2023-10-26 <https://github.com/TYPO3-Solr/ext-solrfal/commit/8bc498e06>`_ (thanks to Daniel Siepmann)
+- [TASK] Use composers "preferred-install" config instead of reinstall `7c9279ff7 on @2023-10-26 <https://github.com/TYPO3-Solr/ext-solrfal/commit/7c9279ff7>`_ (thanks to Rafael Kähm)
+- [BUGFIX] Provide proper Uri Builder Request in VH `4303220b8 on @2023-10-30 <https://github.com/TYPO3-Solr/ext-solrfal/commit/4303220b8>`_ (thanks to Daniel Siepmann)
+- [BUGFIX] prevent empty array key if foreignLabelField is null `ae6381b43 on @2023-11-01 <https://github.com/TYPO3-Solr/ext-solrfal/commit/ae6381b43>`_ (thanks to clickstorm)
+- [FEATURE] Monitor extbase records `ed211e410 on @2023-10-17 <https://github.com/TYPO3-Solr/ext-solrfal/commit/ed211e410>`_ (thanks to Christoph Lehmann)
+- [TASK] Update the version matrix `c83b388fe on @2023-11-06 <https://github.com/TYPO3-Solr/ext-solrfal/commit/c83b388fe>`_ (thanks to Markus Friedrich)
+- [DOC] Fix changelogs and add hints about outdated state on branches `8d200cb2a on @2023-11-03 <https://github.com/TYPO3-Solr/ext-solrfal/commit/8d200cb2a>`_ (thanks to Rafael Kähm)
+- [BUGFIX] TikaStatus can't handle all response types of SolrWriteService->extractByQuery() `65665b09d on @2023-11-02 <https://github.com/TYPO3-Solr/ext-solrfal/commit/65665b09d>`_ (thanks to Rafael Kähm)
+- Add missing groups-key to TS Path `5c61b7543 on @2023-11-08 <https://github.com/TYPO3-Solr/ext-solrfal/commit/5c61b7543>`_ (thanks to Julian Hofmann)
+- Add `grouping.groups.[groupName].sortBy` `ece1b9975 on @2023-11-08 <https://github.com/TYPO3-Solr/ext-solrfal/commit/ece1b9975>`_ (thanks to Julian Hofmann)
+- [TASK] Rename namespace \\Trait\\ to \\Traits\\, due of consistency with 11.6.x `b3d5cb790 on @2023-11-08 <https://github.com/TYPO3-Solr/ext-solrfal/commit/b3d5cb790>`_ (thanks to Rafael Kähm)
+- !!![BUGFIX] Exception with tx_solr_statistics after latest TYPO3 security update `635883f6d on @2023-11-15 <https://github.com/TYPO3-Solr/ext-solrfal/commit/635883f6d>`_ (thanks to Rafael Kähm)
+- [BUGFIX] check if all sorting parts are present before access `e5826f30e on @2023-11-14 <https://github.com/TYPO3-Solr/ext-solrfal/commit/e5826f30e>`_ (thanks to Johannes)
+- [BUGFIX] Indexer does not work for extbase-records with sys_language_uid=-1 `d438c5470 on @2023-11-15 <https://github.com/TYPO3-Solr/ext-solrfal/commit/d438c5470>`_ (thanks to Rafael Kähm)
+- [BUGFIX]  Infinite loop in SolrRoutingMiddleware #3873 `667bbb48b on @2023-11-14 <https://github.com/TYPO3-Solr/ext-solrfal/commit/667bbb48b>`_ (thanks to Jaro von Flocken)
+- `Release 12.0.1 <https://github.com/TYPO3-Solr/ext-solr/releases/tag/12.0.0>`_ (thanks to all `contributors <https://github.com/TYPO3-Solr/ext-solr/graphs/contributors>`_ and `our EB Partners <https://www.typo3-solr.com/sponsors/our-sponsors/>`_)
 
 Release 12.0.0
 --------------
