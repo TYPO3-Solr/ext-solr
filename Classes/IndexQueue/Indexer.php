@@ -717,7 +717,7 @@ class Indexer extends AbstractIndexer
      */
     protected function isLanguageInAFreeContentMode(Item $item, int $language): bool
     {
-        if ($language === 0) {
+        if ($language === 0 || $language === -1) {
             return false;
         }
         $typo3site = $item->getSite()->getTypo3SiteObject();
