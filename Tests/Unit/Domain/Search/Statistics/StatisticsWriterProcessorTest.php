@@ -25,6 +25,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -83,6 +84,7 @@ class StatisticsWriterProcessorTest extends UnitTest
     {
         /* @var TypoScriptFrontendController $fakeTSFE */
         $fakeTSFE = $this->getDumbMock(TypoScriptFrontendController::class);
+        $fakeTSFE->fe_user = $this->getDumbMock(FrontendUserAuthentication::class);
         $fakeTSFE->id = 888;
         $fakeTime = 100;
         $fakeIP = '192.168.2.22';
