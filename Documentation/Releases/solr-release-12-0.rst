@@ -7,8 +7,17 @@ Releases 12.0
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 12.0.1
+--------------
+
+This is a maintenance release for TYPO3 12.4 LTS, containing:
+
+**Note:** This change requires the database schema update, due of database schema change from `pull-request #3881 <https://github.com/TYPO3-Solr/ext-solr/pull/3881>`__
+
+- !!![BUGFIX] Exception with tx_solr_statistics after latest TYPO3 security update by @dkd-kaehm in `#3881 <https://github.com/TYPO3-Solr/ext-solr/pull/3881>`__
+
 Release 12.0.0
-==============
+--------------
 
 We are happy to release EXT:solr 12.0.0.
 The focus of this release has been on TYPO3 12 LTS compatibility.
@@ -16,15 +25,15 @@ The focus of this release has been on TYPO3 12 LTS compatibility.
 Please note that we require at least TYPO3 12.4.3, as this version contains some change `concerning to Fluid <https://github.com/TYPO3-Solr/ext-solr/commit/a528113bf>`_.
 
 New in this release
-===================
+~~~~~~~~~~~~~~~~~~~
 
 Support of TYPO3 12 LTS
------------------------
+^^^^^^^^^^^^^^^^^^^^^^^
 
 With EXT:solr 12.0 we provide the support of TYPO3 12 LTS.
 
 !!! Upgrade to Apache Solr 9.3.0
---------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This release requires Apache Solr v 9.3.0+.
 
@@ -40,7 +49,7 @@ For more information see:
 
 
 Reworked Search Query Component System
---------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The Search Component system, which is used to enrich the search query (e.g.
 by faceting, boosting, debug analysis), has been completely reworked by
@@ -70,7 +79,7 @@ Related hooks around this system have been moved to PSR-14 events as well:
 
 
 SignalSlots replaced by PSR-14 events
--------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The previously available Extbase Signals have been removed from EXT:solr in favor of PSR-14 Events.
 
@@ -94,7 +103,7 @@ The previously available Extbase Signals have been removed from EXT:solr in favo
   has been removed (see the new PSR-14 events below)
 
 Hooks replaced by PSR-14 events
--------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The previously available hooks and their respective interfaces have been removed from EXT:solr.
 
@@ -133,7 +142,7 @@ The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQ
 is now superseded by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\AfterIndexQueueItemHasBeenMarkedForReindexingEvent`
 
 PSR-14 events renamed
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
 Previous PSR-14 events have been renamed to be consistent with other PSR-14 Events in EXT:solr.
 
@@ -142,14 +151,14 @@ Previous PSR-14 events have been renamed to be consistent with other PSR-14 Even
 * :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent` is now named :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent`
 
 !!! Shortcut pages not indexed anymore
---------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Currently there is no important reason to index the shortcut pages,
 because the target pages are indexed as expected and the shortcuts are 307-redirected to their targets.
 So contents can be found in search results as expected.
 
 !!! Deprecated Node class removed
----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Former EXT:solr versions used an own node implementation for Solr endpoints, this implementation (\ApacheSolrForTypo3\Solr\System\Solr\Node) is now removed in favor of the Endpoint implementation of Solarium.
 
@@ -161,7 +170,7 @@ If you've used this class or the SolrConnection directly, you have to adapt your
 Note: With dropping the Node implementation we also dropped the backwards compatibility that allows to define the Solr path segment "/solr" within "solr_path_read" or "solr_path_write". Be sure your configuration doesn't contain this path segment!
 
 !!! Changed visibility of ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer methods
------------------------------------------------------------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For testing purposes some methods of the PageIndexer were defined as public, these methods are now protected. The tests are adapted accordingly, so that there is no need to declare the methods as public.
 If you have used one of this methods, you have to adapt your code. Affected methods:
@@ -170,7 +179,7 @@ If you have used one of this methods, you have to adapt your code. Affected meth
 - indexPage
 
 !!! Solr route enhancer disabled by default
--------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 EXT:solr offers the possibility to create speaking URLs for Solr facets, but as this feature requires additional configuration and costly processing this feature is now disabled by default.
 
@@ -180,7 +189,7 @@ If you've already used the route enhancer you must set option "enableRouteEnhanc
 
 
 Frontend Helper Changes
------------------------
+^^^^^^^^^^^^^^^^^^^^^^^
 
 The FrontendHelper logic revolving around PageIndexer has been reduced to
 a minimum by only having two methods available:
@@ -192,7 +201,7 @@ The actual PageIndexerRequest object is now available as a property of TYPO3's
 Request object as attribute named "solr.pageIndexingInstructions".
 
 !!!Complex query in FlexForm filter value
------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 It is now possible to use complex query in FlexForm filter value.
 If the value contains space and no special characters, the value is always automatically escaped.

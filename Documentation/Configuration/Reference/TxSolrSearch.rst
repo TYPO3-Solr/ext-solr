@@ -1598,7 +1598,7 @@ Note: Use either field or queries no mix. Groups with field are field groups,
 groups with queries are query groups.
 
 grouping.groups.[groupName].sortBy
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: String
 :TS Path: plugin.tx_solr.search.grouping.groups.[groupName].sortBy
