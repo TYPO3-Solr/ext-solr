@@ -17,7 +17,11 @@ will contain support for Apache Solr 9 and some breaking improvements.
 
 11.5.5 contains the following changes:
 
-- !!![BUGFIX:11.5] Exception with tx_solr_statistics after latest TYPO3 security update by @dkd-kaehm in `#3880 <https://github.com/TYPO3-Solr/ext-solr/pull/3880>`__
+- [DOC] Fix changelogs and add hints about outdated state on branches `99549d94e on @2023-11-08 <https://github.com/TYPO3-Solr/ext-solrfal/commit/99549d94e>`__ (thanks to Rafael Kähm)
+- !!![BUGFIX] Exception with tx_solr_statistics after latest TYPO3 security update `bc6a4d9d3 on @2023-11-15 <https://github.com/TYPO3-Solr/ext-solrfal/commit/bc6a4d9d3>`__ (thanks to Rafael Kähm)
+- [BUGFIX] check if all sorting parts are present before access `d54a476c8 on @2023-11-14 <https://github.com/TYPO3-Solr/ext-solrfal/commit/d54a476c8>`__ (thanks to Johannes)
+- [BUGFIX] Indexer does not work for extbase-records with sys_language_uid=-1 `ce3a3ea61 on @2023-11-15 <https://github.com/TYPO3-Solr/ext-solrfal/commit/ce3a3ea61>`__ (thanks to Rafael Kähm)
+- [BUGFIX]  Infinite loop in SolrRoutingMiddleware #3873 `7c9dae186 on @2023-11-14 <https://github.com/TYPO3-Solr/ext-solrfal/commit/7c9dae186>`__ (thanks to Jaro von Flocken)
 
 Release 11.5.4
 --------------
