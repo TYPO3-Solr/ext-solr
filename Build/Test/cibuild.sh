@@ -1,26 +1,19 @@
 #!/usr/bin/env bash
 
-TYPO3_PATH_WEB="$(pwd)/.Build/Web/"
-export TYPO3_PATH_WEB
-TYPO3_PATH_PACKAGES="$(pwd)/.Build/vendor/"
-export TYPO3_PATH_PACKAGES
+EXIT_CODE=0
 
-TYPO3_BIN_DIR="$(pwd)/.Build/bin/"
-export TYPO3_BIN_DIR
-export PATH="$TYPO3_BIN_DIR:$PATH"
-
-COMPOSER_BIN_DIR="$(composer config home)/vendor/bin"
-export COMPOSER_BIN_DIR
-
-# Add COMPOSER_BIN_DIR to $PATH, if not present
-if [[ $PATH != *"$COMPOSER_BIN_DIR"* ]]; then
-  export PATH="$COMPOSER_BIN_DIR:$PATH"
+COMPOSERS_BIN_DIR="$(composer config home)/vendor/bin"
+# Add COMPOSERS_BIN_DIR to $PATH, if not present
+## Note: That is not https://getcomposer.org/doc/03-cli.md#composer-bin-dir
+##       avoid collisions on that.
+if [[ $PATH != *"$COMPOSERS_BIN_DIR"* ]]; then
+  export PATH="$COMPOSERS_BIN_DIR:$PATH"
 fi
 
 EXIT_CODE=0
 
 echo "PWD: $(pwd)"
-echo "COMPOSER_BIN_DIR: $COMPOSER_BIN_DIR"
+echo "COMPOSERS_BIN_DIR: $COMPOSERS_BIN_DIR"
 echo "PATH: $PATH"
 
 echo "Run PHP Lint"
@@ -32,49 +25,32 @@ else
   echo "No syntax errors! Great job!"
 fi
 
-echo "Check compliance against TYPO3 Coding Standards"
-if ! .Build/bin/php-cs-fixer --version > /dev/null 2>&1
+
+echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
+if ! composer t3:standards:fix -- --diff --verbose --dry-run && rm .php-cs-fixer.cache
 then
-  echo "TYPO3 https://github.com/TYPO3/coding-standards is not set properly."
-  echo "Please fix that asap to avoid unwanted changes in the future."
-  EXIT_CODE=1
+  echo "Some files are not compliant to TYPO3 Coding Standards"
+  echo "Please fix the files listed above."
+  echo "Tip for auto fix: "
+  echo "  TYPO3_VERSION=\"${TYPO3_VERSION}\" composer tests:setup && composer t3:standards:fix"
+  EXIT_CODE=3
 else
-  echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
-  if ! composer t3:standards:fix -- --diff --verbose --dry-run && rm .php-cs-fixer.cache
-  then
-    echo "Some files are not compliant to TYPO3 Coding Standards"
-    echo "Please fix the files listed above."
-    echo "Tip for auto fix: "
-    echo "  composer tests:setup && composer t3:standards:fix"
-    EXIT_CODE=1
-  else
-    echo "The code is TYPO3 Coding Standards compliant! Great job!"
-  fi
+  echo "The code is TYPO3 Coding Standards compliant! Great job!"
 fi
 echo -e "\n\n"
 
 echo "Run XML Lint"
-if ! xmllint --version > /dev/null 2>&1; then
-  echo "XML Lint not found, skipping XML linting."
-else
-  echo -e "\n\n"
-  echo "Check syntax of XML files"
-  if ! composer lint:xlf
-  then
-    echo "Some XML files are not valid"
-    echo "Please fix the files listed above"
-    EXIT_CODE=1
-  fi
+if ! composer tests:lint-xml
+then
+  EXIT_CODE=4
 fi
-
 
 echo -e "\n\n"
 echo "Run unit tests"
-UNIT_BOOTSTRAP=".Build/vendor/nimut/testing-framework/res/Configuration/UnitTestsBootstrap.php"
-if ! .Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --bootstrap=$UNIT_BOOTSTRAP --coverage-clover=coverage.unit.clover
+if ! composer tests:unit -- --coverage-clover=coverage.unit.clover
 then
   echo "Error during running the unit tests please check and fix them"
-  EXIT_CODE=1
+  EXIT_CODE=5
 fi
 
 #
@@ -111,18 +87,10 @@ fi
 
 echo -e "\n\n"
 echo "Run integration tests"
-INTEGRATION_BOOTSTRAP=".Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTestsBootstrap.php"
-if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.clover
+if ! composer tests:integration -- --coverage-clover=coverage.integration.clover
 then
   echo "Error during running the integration tests please check and fix them"
-  EXIT_CODE=1
-fi
-
-echo "Run frontend-related integration tests"
-if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationFrontendTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.frontend.clover
-then
-  echo "Error during running the frontend-related integration tests please check and fix them"
-  EXIT_CODE=1
+  EXIT_CODE=6
 fi
 
 exit $EXIT_CODE
