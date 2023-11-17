@@ -192,6 +192,7 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilder
             $query->getHighlighting()->setUseFastVectorHighlighter(true);
             $query->getHighlighting()->setTagPrefix($this->getPrefix());
             $query->getHighlighting()->setTagPostfix($this->getPostfix());
+            $query->getHighlighting()->setMethod('fastVector');
         } else {
             $query->getHighlighting()->setUseFastVectorHighlighter(false);
             $query->getHighlighting()->setTagPrefix('');
