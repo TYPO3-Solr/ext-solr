@@ -48,16 +48,16 @@ class SiteHighlighterUrlModifier
 
         /** @var UrlHelper $urlHelper */
         $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, /** @scrutinizer ignore-type */ $url);
-        $urlHelper->addQueryParameter('sword_list', $searchWords);
+        $urlHelper = $urlHelper->withQueryParameter('sword_list', $searchWords);
 
         if ($addNoCache) {
-            $urlHelper->addQueryParameter('no_cache', '1');
+            $urlHelper = $urlHelper->withQueryParameter('no_cache', '1');
         }
 
         if (!$keepCHash) {
-            $urlHelper->removeQueryParameter('cHash');
+            $urlHelper = $urlHelper->withoutQueryParameter('cHash');
         }
 
-        return $urlHelper->getUrl();
+        return (string)$urlHelper;
     }
 }
