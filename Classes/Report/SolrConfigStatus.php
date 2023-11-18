@@ -49,7 +49,7 @@ class SolrConfigStatus extends AbstractSolrStatus
      *
      * @var string
      */
-    const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-11-2-0--20220113';
+    const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-11-2-0-elts--20231117';
 
     /**
      * Compiles a collection of solrconfig version checks against each configured
