@@ -227,6 +227,6 @@ class SolrAdminServiceTest extends IntegrationTest
         $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_de', 'key' => 'admin'], true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
-        self::assertSame('core_de', $this->solrAdminService->getSchema()->getManagedResourceId(), 'Could not get the id of managed resources from core.');
+        self::assertSame('german', $this->solrAdminService->getSchema()->getManagedResourceId(), 'Could not get the id of managed resources from core.');
     }
 }
