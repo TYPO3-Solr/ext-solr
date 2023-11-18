@@ -6,8 +6,8 @@
 	convertWarningsToExceptions="true"
 	forceCoversAnnotation="false"
 	processIsolation="true"
-	stopOnError="true"
-	stopOnFailure="true"
+	stopOnError="false"
+	stopOnFailure="false"
 	stopOnIncomplete="false"
 	stopOnSkipped="false"
 	verbose="false">

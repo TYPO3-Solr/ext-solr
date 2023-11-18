@@ -17,6 +17,8 @@ if [[ $PATH != *"$COMPOSER_BIN_DIR"* ]]; then
   export PATH="$COMPOSER_BIN_DIR:$PATH"
 fi
 
+EXIT_CODE=0
+
 echo "PWD: $(pwd)"
 echo "COMPOSER_BIN_DIR: $COMPOSER_BIN_DIR"
 echo "PATH: $PATH"
@@ -25,7 +27,7 @@ echo "Run PHP Lint"
 if ! find . -name \*.php ! -path "./.Build/*" 2>/dev/null | parallel --gnu php -d display_errors=stderr -l {} > /dev/null
 then
   echo "There are syntax errors, please check and fix them."
-  exit 1
+  EXIT_CODE=1
 else
   echo "No syntax errors! Great job!"
 fi
@@ -35,7 +37,7 @@ if ! .Build/bin/php-cs-fixer --version > /dev/null 2>&1
 then
   echo "TYPO3 https://github.com/TYPO3/coding-standards is not set properly."
   echo "Please fix that asap to avoid unwanted changes in the future."
-  exit 1
+  EXIT_CODE=1
 else
   echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
   if ! composer t3:standards:fix -- --diff --verbose --dry-run && rm .php-cs-fixer.cache
@@ -44,7 +46,7 @@ else
     echo "Please fix the files listed above."
     echo "Tip for auto fix: "
     echo "  composer tests:setup && composer t3:standards:fix"
-    exit 1
+    EXIT_CODE=1
   else
     echo "The code is TYPO3 Coding Standards compliant! Great job!"
   fi
@@ -61,7 +63,7 @@ else
   then
     echo "Some XML files are not valid"
     echo "Please fix the files listed above"
-    exit 1
+    EXIT_CODE=1
   fi
 fi
 
@@ -72,7 +74,7 @@ UNIT_BOOTSTRAP=".Build/vendor/nimut/testing-framework/res/Configuration/UnitTest
 if ! .Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --bootstrap=$UNIT_BOOTSTRAP --coverage-clover=coverage.unit.clover
 then
   echo "Error during running the unit tests please check and fix them"
-  exit 1
+  EXIT_CODE=1
 fi
 
 #
@@ -83,28 +85,28 @@ if [[ -n $TYPO3_DATABASE_NAME ]]; then
   export typo3DatabaseName=$TYPO3_DATABASE_NAME
 else
   echo "No environment variable TYPO3_DATABASE_NAME set. Please set it to run the integration tests."
-  exit 1
+  EXIT_CODE=1
 fi
 
 if [[ -n $TYPO3_DATABASE_HOST ]]; then
   export typo3DatabaseHost=$TYPO3_DATABASE_HOST
 else
   echo "No environment variable TYPO3_DATABASE_HOST set. Please set it to run the integration tests."
-  exit 1
+  EXIT_CODE=1
 fi
 
 if [[ -n $TYPO3_DATABASE_USERNAME ]]; then
   export typo3DatabaseUsername=$TYPO3_DATABASE_USERNAME
 else
   echo "No environment variable TYPO3_DATABASE_USERNAME set. Please set it to run the integration tests."
-  exit 1
+  EXIT_CODE=1
 fi
 
 if [[ -n $TYPO3_DATABASE_PASSWORD ]]; then
   export typo3DatabasePassword=$TYPO3_DATABASE_PASSWORD
 else
   echo "No environment variable TYPO3_DATABASE_PASSWORD set. Please set it to run the integration tests."
-  exit 1
+  EXIT_CODE=1
 fi
 
 echo -e "\n\n"
@@ -113,12 +115,14 @@ INTEGRATION_BOOTSTRAP=".Build/vendor/nimut/testing-framework/res/Configuration/F
 if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.clover
 then
   echo "Error during running the integration tests please check and fix them"
-  exit 1
+  EXIT_CODE=1
 fi
 
 echo "Run frontend-related integration tests"
 if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationFrontendTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.frontend.clover
 then
   echo "Error during running the frontend-related integration tests please check and fix them"
-  exit 1;
+  EXIT_CODE=1
 fi
+
+exit $EXIT_CODE
