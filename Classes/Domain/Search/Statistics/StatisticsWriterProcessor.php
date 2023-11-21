@@ -97,7 +97,6 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             // @extensionScannerIgnoreLine
             'time_processing' => $response->debug->timing->process->time ?? 0,
             'feuser_id' => isset($TSFE->fe_user->user) ? (int)$TSFE->fe_user->user['uid'] ?? 0 : 0,
-            'cookie' => $TSFE->fe_user->getSession()->getIdentifier() ?? '',
             'ip' => IpAnonymizationUtility::anonymizeIp($this->getUserIp(), $ipMaskLength),
             'page' => $page,
             'keywords' => $keywords,
