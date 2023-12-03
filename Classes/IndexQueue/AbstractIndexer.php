@@ -77,13 +77,14 @@ abstract class AbstractIndexer
             }
 
             $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data, $tsfe);
-            if ($fieldValue === null) {
+            if ($fieldValue === null
+                || $fieldValue === ''
+                || (is_array($fieldValue) && empty($fieldValue))
+            ) {
                 continue;
             }
 
-            if (!empty($fieldValue)) {
-                $document->setField($solrFieldName, $fieldValue);
-            }
+            $document->setField($solrFieldName, $fieldValue);
         }
 
         return $document;
