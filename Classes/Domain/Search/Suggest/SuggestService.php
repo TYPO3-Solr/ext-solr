@@ -26,12 +26,14 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollectio
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSuggestQueryHasBeenPreparedEvent;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -81,7 +83,7 @@ class SuggestService
         $frontendUserGroupIds = Util::getFrontendUserGroups();
 
         $suggestQuery = $this->queryBuilder->buildSuggestQuery($searchRequest->getRawUserQuery(), $additionalFilters, $requestId, $frontendUserGroupIds);
-        $solrSuggestions = $this->getSolrSuggestions($suggestQuery);
+        $solrSuggestions = $this->getSolrSuggestions($suggestQuery, $searchRequest);
 
         if ($solrSuggestions === []) {
             return ['status' => false];
@@ -146,12 +148,17 @@ class SuggestService
      * @throws NoSolrConnectionFoundException
      * @throws DBALException
      */
-    protected function getSolrSuggestions(SuggestQuery $suggestQuery): array
+    protected function getSolrSuggestions(SuggestQuery $suggestQuery, SearchRequest $searchRequest): array
     {
         $pageId = $this->tsfe->getRequestedId();
         $languageId = $this->tsfe->getLanguage()->getLanguageId();
         $solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($pageId, $languageId);
         $search = GeneralUtility::makeInstance(Search::class, $solr);
+
+        $event = new AfterSuggestQueryHasBeenPreparedEvent($suggestQuery, $searchRequest, $search, $this->typoScriptConfiguration);
+        $event = GeneralUtility::makeInstance(EventDispatcherInterface::class)->dispatch($event);
+        $suggestQuery = $event->getQuery();
+
         $response = $search->search($suggestQuery, 0, 0);
 
         $rawResponse = $response->getRawResponse();
