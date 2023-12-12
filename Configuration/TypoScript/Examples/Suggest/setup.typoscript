@@ -23,7 +23,7 @@ tx_solr_suggest {
     }
 }
 
-[traverse(request.getQueryParams(), 'tx_solr/callback') == '']
+[request && traverse(request.getQueryParams(), 'tx_solr/callback') == '']
     tx_solr_suggest.config.additionalHeaders.10.header = Content-type: application/json
 [global]
 
