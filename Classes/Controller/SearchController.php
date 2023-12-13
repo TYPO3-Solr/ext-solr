@@ -143,6 +143,7 @@ class SearchController extends AbstractBaseController
                 'arguments' => $afterSearchEvent->getArguments(),
                 'pagination' => $afterSearchEvent->getPagination(),
                 'currentPage' => $afterSearchEvent->getCurrentPage(),
+                'additionalVariables' => $afterSearchEvent->getAdditionalVariables(),
             ];
 
             $this->view->assignMultiple($values);
