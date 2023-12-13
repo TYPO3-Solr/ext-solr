@@ -24,7 +24,9 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRange;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Event\Parser\AfterFacetIsParsedEvent;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -35,6 +37,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractRangeFacetParser extends AbstractFacetParser
 {
+    protected ?EventDispatcherInterface $eventDispatcher;
+
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     protected function getParsedFacet(
         SearchResultSet $resultSet,
         string $facetName,
@@ -107,6 +116,13 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
                 true
             );
             $facet->setRange($range);
+        }
+
+        if (isset($this->eventDispatcher)) {
+            /** @var AfterFacetIsParsedEvent $afterFacetIsParsedEvent */
+            $afterFacetIsParsedEvent = $this->eventDispatcher
+                ->dispatch(new AfterFacetIsParsedEvent($facet, $facetConfiguration));
+            $facet = $afterFacetIsParsedEvent->getFacet();
         }
 
         return $facet;

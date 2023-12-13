@@ -14,6 +14,17 @@ services:
     autowire: true
     shared: false
 
+  facets:
+    namespace: ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\
+    resource: '../Classes/Domain/Search/ResultSet/Facets/*'
+    exclude:
+      - '../Classes/Domain/Search/ResultSet/Facets/{OptionBased/Hierarchy/Node.php,*/Abstract*}'
+      - '../Classes/Domain/Search/ResultSet/Facets/*/*/*Facet.php'
+      - '../Classes/Domain/Search/ResultSet/Facets/RangeBased/*/*RangeCount.php'
+    public: true
+    autowire: true
+    shared: false
+
   viewhelper:
     namespace: ApacheSolrForTypo3\Solr\ViewHelpers\
     resource: '../Classes/ViewHelpers/*'

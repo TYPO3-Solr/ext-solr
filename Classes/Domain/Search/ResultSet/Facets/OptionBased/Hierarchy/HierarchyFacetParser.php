@@ -20,7 +20,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hie
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Event\Parser\AfterFacetIsParsedEvent;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,6 +30,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class HierarchyFacetParser extends AbstractFacetParser
 {
+    protected ?EventDispatcherInterface $eventDispatcher;
+
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
         $response = $resultSet->getResponse();
@@ -71,6 +80,13 @@ class HierarchyFacetParser extends AbstractFacetParser
             $label = $this->getLabelFromRenderingInstructions($key, $count, $facetName, $facetConfiguration);
 
             $facet->createNode($parentKey, $key, $label, $value, $count, $isActive);
+        }
+
+        if (isset($this->eventDispatcher)) {
+            /** @var AfterFacetIsParsedEvent $afterFacetIsParsedEvent */
+            $afterFacetIsParsedEvent = $this->eventDispatcher
+                ->dispatch(new AfterFacetIsParsedEvent($facet, $facetConfiguration));
+            $facet = $afterFacetIsParsedEvent->getFacet();
         }
 
         return $facet;

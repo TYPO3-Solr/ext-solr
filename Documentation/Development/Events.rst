@@ -6,6 +6,12 @@ In version 11 we started with the implementation of events, using the EventDispa
 
 Step by step the events will replace older hooks and signals. In the following you will find a description of the available events
 
+.. tip::
+   If you miss any feature useful to the general public, please create a feature request
+   `in our issue tracker <https://github.com/TYPO3-Solr/ext-solr/issues/new?template=feature_request.md&title=%5BFEATURE%5D+new+event+for+>`__.
+
+
+
 Monitoring
 ^^^^^^^^^^
 
@@ -55,3 +61,10 @@ event to influence the build uris:
 - BeforeVariableInCachedUrlAreReplacedEvent
 - BeforeCachedVariablesAreProcessedEvent
 - AfterUriIsProcessedEvent
+
+Facets
+^^^^^^
+
+Currently EXT:solr provides following events for Facets-Component modification:
+
+- AfterFacetIsParsedEvent
