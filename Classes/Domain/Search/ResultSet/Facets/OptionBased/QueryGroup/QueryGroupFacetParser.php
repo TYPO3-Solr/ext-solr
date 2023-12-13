@@ -18,7 +18,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Que
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Event\Parser\AfterFacetIsParsedEvent;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -29,6 +31,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class QueryGroupFacetParser extends AbstractFacetParser
 {
+    protected ?EventDispatcherInterface $eventDispatcher;
+
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * Parses group params for Apache Solr query
      */
@@ -87,6 +96,13 @@ class QueryGroupFacetParser extends AbstractFacetParser
         // need to be handled in the frontend.
         $this->applyManualSortOrder($facet, $facetConfiguration);
         $this->applyReverseOrder($facet, $facetConfiguration);
+
+        if (isset($this->eventDispatcher)) {
+            /** @var AfterFacetIsParsedEvent $afterFacetIsParsedEvent */
+            $afterFacetIsParsedEvent = $this->eventDispatcher
+                ->dispatch(new AfterFacetIsParsedEvent($facet, $facetConfiguration));
+            $facet = $afterFacetIsParsedEvent->getFacet();
+        }
 
         return $facet;
     }
