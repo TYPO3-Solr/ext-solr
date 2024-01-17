@@ -52,8 +52,7 @@ fieldProcessingInstructions
 :Since: 1.2 2.0
 :Options: timestampToIsoDate, uppercase, pathToHierarchy (2.5-dkd), pageUidToHierarchy (2.5-dkd)
 
-Assigns processing instructions to Solr fields during indexing (Syntax: Solr index field = processing instruction name). Currently it is not possible to extend / add own processing instructions.
-Before documents are sent to the Solr server they are processed by the field processor service. Currently you can make a filed's value all uppercase, convert a UNIX timestamp to an ISO date, or transform a path into a hierarchy for hierarchical facets (2.0 only). Currently you can use only one processing instruction at a time.
+Assigns processing instructions to Solr fields during indexing (Syntax: Solr index field = processing instruction name). Before documents are sent to the Solr server they are processed by the field processor service. Currently you can make a filed's value all uppercase, convert a UNIX timestamp to an ISO date, or transform a path into a hierarchy for hierarchical facets (2.0 only). Currently you can use only one processing instruction at a time.
 
 Example:
 
@@ -64,6 +63,14 @@ Example:
         created = timestampToIsoDate
         endtime = timestampToIsoDate
     }
+
+Since version 11.5 it is possible to extend / add own processing instructions.
+
+.. code-block:: php
+
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProcessor'] = ACustomFieldProcessor::class;
+
+Custom processors have to implement interface `ApacheSolrForTypo3\Solr\FieldProcessor\FieldProcessor`.
 
 queue
 -----
