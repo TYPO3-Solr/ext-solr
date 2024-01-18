@@ -84,7 +84,7 @@ class Rootline
 
         foreach ($this->rootLineArray as $page) {
             if (Site::isRootPage($page)) {
-                $rootPageId = $page['uid'];
+                $rootPageId = (int)$page['uid'];
                 break;
             }
         }
