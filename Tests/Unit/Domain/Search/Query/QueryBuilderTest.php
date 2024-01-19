@@ -40,6 +40,8 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\QueryType\Select\RequestBuilder;
 use function str_starts_with;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -197,6 +199,92 @@ class QueryBuilderTest extends UnitTest
     {
         $query = $this->builder->buildSearchQuery('initializeWithEmpty');
         self::assertArrayNotHasKey('q.alt', $this->getAllQueryParameters($query), 'The alterativeQuery is not null when nothing was set');
+    }
+
+    /**
+     * @test
+     * @dataProvider buildSearchIsRespectingPageSectionFiltersDataProvider
+     */
+    public function buildSearchIsRespectingPageSectionFilters(
+        array $rootLines,
+        array $filterConfiguration,
+        string $expectedResult
+    ): void {
+        $rootLinesCount = count($rootLines);
+        $rootlineUtilityMock = $this->createMock(RootlineUtility::class);
+        $matcher = self::exactly($rootLinesCount);
+        $rootlineUtilityMock->method('get')->willReturnCallback(static function () use ($matcher, $rootLines): array {
+            if (isset($rootLines[$matcher->getInvocationCount()])) {
+                return $rootLines[$matcher->getInvocationCount()];
+            }
+            self::fail('unexpected invocation count');
+        });
+
+        for ($i = 0; $i < $rootLinesCount; $i++) {
+            GeneralUtility::addInstance(RootlineUtility::class, $rootlineUtilityMock);
+        }
+
+        $this->configurationMock->method('getSearchQueryFilterConfiguration')->willReturn($filterConfiguration);
+        $this->builder->newSearchQuery('*:*')->useFiltersFromTypoScript();
+        $query = $this->builder->getQuery();
+
+        $filter = $query->getFilterQuery('pageSections');
+        self::assertNotNull($filter);
+        self::assertEquals($expectedResult, $filter->getQuery());
+    }
+
+    public static function buildSearchIsRespectingPageSectionFiltersDataProvider(): \Traversable
+    {
+        yield 'static page section filter' => [
+            [
+                [
+                    1 => [
+                        'uid' => 123,
+                        'pid' => 1,
+                    ],
+                    0 => [
+                        'uid' => 1,
+                        'pid' => 0,
+                    ],
+                ],
+            ],
+            [
+                '__pageSections' => 123,
+            ],
+            'rootline:"2-0/1/123/"',
+        ];
+
+        yield 'static page section filter, with wrapping' => [
+            [
+                [
+                    1 => [
+                        'uid' => 123,
+                        'pid' => 1,
+                    ],
+                    0 => [
+                        'uid' => 1,
+                        'pid' => 0,
+                    ],
+                ],
+                [
+                    1 => [
+                        'uid' => 321,
+                        'pid' => 1,
+                    ],
+                    0 => [
+                        'uid' => 1,
+                        'pid' => 0,
+                    ],
+                ],
+            ],
+            [
+                '__pageSections' => 123,
+                '__pageSections.' => [
+                    'wrap' => '|,321',
+                ],
+            ],
+            'rootline:"2-0/1/123/" OR rootline:"2-0/1/321/"',
+        ];
     }
 
     /**
