@@ -296,6 +296,17 @@ query.filter.__pageSections
 
 This is a magic/reserved filter (thus the double underscore). It limits the query and the results to certain branches/sections of the page tree. Multiple starting points can be provided as a comma-separated list of page IDs.
 
+Since version 11.5.6 it's possible to apply a stdWrap to it.
+
+Example:
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.query.filter {
+        __pageSections = TEXT
+        __pageSections.data = leveluid:0
+    }
+
 
 query.sortBy
 ~~~~~~~~~~~~
