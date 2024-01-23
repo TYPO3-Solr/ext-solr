@@ -145,11 +145,12 @@ class PagesRepository extends AbstractRepository
             return $this->transientVariableCache->get($cacheIdentifier);
         }
 
-        $pageIdsList = $this->getTreeList($rootPageId, 9999, 0, 'deleted = 0');
+        $permClause = empty($initialPagesAdditionalWhereClause) ? 'deleted = 0' : ('deleted = 0 AND ' . $initialPagesAdditionalWhereClause);
+        $pageIdsList = $this->getTreeList($rootPageId, 9999, 0, $permClause);
         $pageIds = GeneralUtility::intExplode(',', $pageIdsList);
 
         if (!empty($initialPagesAdditionalWhereClause)) {
-            $pageIds = $this->filterPageIdsByInitialPagesAdditionalWhereClause($pageIds, $initialPagesAdditionalWhereClause);
+            $pageIds = $this->filterPageIdsByAdditionalWhereClause($pageIds, $initialPagesAdditionalWhereClause);
         }
 
         $this->transientVariableCache->set($cacheIdentifier, $pageIds);
@@ -157,12 +158,13 @@ class PagesRepository extends AbstractRepository
     }
 
     /**
-     * This method retrieves the pages ids from the current tree level a calls getPages recursive,
-     * when the maxDepth has not been reached.
+     * This method applies the $initialPagesAdditionalWhereClause filter on pages
+     * returned by $this->getTreeList() in order to it apply it on descendants of a
+     * given page
      *
      * @throws DBALException
      */
-    protected function filterPageIdsByInitialPagesAdditionalWhereClause(
+    protected function filterPageIdsByAdditionalWhereClause(
         array $pageIds,
         string $initialPagesAdditionalWhereClause
     ): array {
