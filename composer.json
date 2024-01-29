@@ -135,8 +135,12 @@
         "ext-solrdebugtools": "^10.0",
         "ext-solrfluidgrouping": "^10.0",
         "ext-solrmlt": "^10.0",
-        "Apache-Solr": "8.11.1",
-        "configset": "ext_solr_11_2_0"
+        "Apache-Solr": [
+          "9.3.0",
+          "9.4.0",
+          "9.4.1"
+        ],
+        "configset": "ext_solr_11_2_0_elts"
       },
       "ext-solrfal": {
       }

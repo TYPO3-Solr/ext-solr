@@ -12,15 +12,6 @@
 Apache Solr for TYPO3 11.0
 ==========================
 
-Apache Solr for TYPO3 11.0.9
-============================
-
-**Note:** This change requires the database schema update, due of database schema change from `pull-request #3880 <https://github.com/TYPO3-Solr/ext-solr/pull/3880>`__
-
-11.0.9 contains the following changes:
-
-- !!![BUGFIX] Exception with tx_solr_statistics after latest TYPO3 security update by @dkd-kaehm
-
 Apache Solr for TYPO3 11.0.8
 ============================
 
