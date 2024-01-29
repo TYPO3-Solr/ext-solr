@@ -10,11 +10,22 @@ Apache Solr for TYPO3 11.2
 Apache Solr for TYPO3 11.2.4
 ============================
 
-**Note:** This change requires the database schema update, due of database schema change from `pull-request #3880 <https://github.com/TYPO3-Solr/ext-solr/pull/3880>`__
+Support of Apache Solr 9.4.1
+----------------------------
 
-11.2.4 contains the following changes:
+Compatibility with Apache Solr 9.4.1 is checked and EXT:solr now accepts the following Apache Solr versions:
+- 9.3.0
+- 9.4.0
+- 9.4.1
 
-- !!![BUGFIX] Exception with tx_solr_statistics after latest TYPO3 security update by @dkd-kaehm
+To avoid breaking changes EXT:solr 11.0.9 doesn't require Solr 9.4.1, but it's strongly recommended to use the latest supported version.
+
+
+Small improvements and bugfixes
+-------------------------------
+
+- [BUGFIX:11.0] Exception with tx_solr_statistics after latest TYPO3 security update by @dkd-kaehm in #14
+
 
 Apache Solr for TYPO3 11.2.3 - Last non ELTS release
 ====================================================
