@@ -65,7 +65,11 @@ class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
         $numberOfResultsOnPage = $resultSet->getSearchResults()->getCount();
         $numberOfAllResults = $resultSet->getAllResultCount();
 
-        $resultsFrom = $search->getResponseBody()->start + 1;
+        $resultsFrom = 0;
+        if ($search->getResponseBody() !== null) {
+            $resultsFrom = $search->getResponseBody()->start + 1;
+        }
+
         $resultsTo = $resultsFrom + $numberOfResultsOnPage - 1;
         $variableProvider->add($from, $resultsFrom);
         $variableProvider->add($to, $resultsTo);
