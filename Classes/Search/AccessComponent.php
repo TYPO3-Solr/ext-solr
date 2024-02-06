@@ -40,6 +40,10 @@ class AccessComponent
      */
     public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
+        if (!isset($GLOBALS['TSFE'])) {
+            return;
+        }
+
         $query = $this->queryBuilder
             ->startFrom($event->getQuery())
             ->useSiteHashFromTypoScript($GLOBALS['TSFE']->id)
