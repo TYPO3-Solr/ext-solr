@@ -17,3 +17,12 @@ typo3conf
 typo3temp
 uploads
 vendor
+/composer.lock
+.Build
+Build/Test/.phpunit.result.cache
+Documentation/_make
+/Documentation-GENERATED-temp/
+var/
+
+*.cache
+*.log

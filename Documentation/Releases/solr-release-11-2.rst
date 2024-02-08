@@ -10,22 +10,28 @@ Apache Solr for TYPO3 11.2
 Apache Solr for TYPO3 11.2.4
 ============================
 
-Support of Apache Solr 9.4.1
+Support of Apache Solr 9.5.0
 ----------------------------
 
-Compatibility with Apache Solr 9.4.1 is checked and EXT:solr now accepts the following Apache Solr versions:
+Compatibility with Apache Solr 9.5.0 is checked and EXT:solr now accepts the following Apache Solr versions:
 - 9.3.0
 - 9.4.0
 - 9.4.1
-
-To avoid breaking changes EXT:solr 11.0.9 doesn't require Solr 9.4.1, but it's strongly recommended to use the latest supported version.
-
+- 9.5.0
 
 Small improvements and bugfixes
 -------------------------------
 
-- [BUGFIX:11.0] Exception with tx_solr_statistics after latest TYPO3 security update by @dkd-kaehm in #14
-
+- [BUGFIX] Handle float values in options facet parser by @dkd-kaehm in #11
+- [BUGFIX:11.2] Exception with tx_solr_statistics after latest TYPO3 security update by @dkd-kaehm in #14
+- !!![TASK] Update to Apache Solr 9.2 for TYPO3 10.4 ELTS by @dkd-kaehm in #19
+- [TASK] Remove unused field `cookie` in tx_solr_statistics by @dkd-kaehm in #21
+- [BUGFIX] Fix autosuggest with non-ascii terms by @dkd-friedrich in #28
+- [TASK] Prepare release-11.2.x ELTS by @dkd-kaehm in #17
+- [BUGFIX] Fix branch alias by @dkd-friedrich in #30
+- [TASK] Allow custom ELTS repository by @dkd-friedrich in #30
+- [BUGFIX:P:11.2] prevent undefined array key warning if filter is empty by Achim Fritz in #32
+- [TASK] Allow Apache Solr 9.5 by @dkd-friedrich in #31
 
 Apache Solr for TYPO3 11.2.3 - Last non ELTS release
 ====================================================

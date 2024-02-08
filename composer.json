@@ -3,7 +3,7 @@
   "type": "typo3-cms-extension",
   "description": "Apache Solr for TYPO3",
   "license": "GPL-3.0-or-later",
-  "keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
+  "keywords": ["typo3", "TYPO3 CMS", "solr", "search", "ELTS"],
   "homepage": "https://www.typo3-solr.com",
   "authors": [
     {
@@ -91,6 +91,12 @@
     "tests:unit": "Runs unit tests"
   },
   "scripts": {
+    "info:solr-versions": [
+      "@composer config extra.TYPO3-Solr.version-matrix.Apache-Solr"
+    ],
+    "info:recommended-solr-version": [
+      "@composer config extra.TYPO3-Solr.version-matrix.Apache-Solr.0"
+    ],
     "post-autoload-dump": [
       "mkdir -p .Build/Web/typo3conf/ext/",
       "[ -L .Build/Web/typo3conf/ext/solr ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/solr"
@@ -187,10 +193,10 @@
         "ext-solrfluidgrouping": "^10.0",
         "ext-solrmlt": "^10.0",
         "Apache-Solr": [
-          "9.3.0",
-          "9.4.0",
+          "9.5.0",
           "9.4.1",
-          "9.5.0"
+          "9.4.0",
+          "9.3.0"
         ],
         "configset": "ext_solr_11_2_0_elts"
       },
