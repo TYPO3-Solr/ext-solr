@@ -66,6 +66,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('simple_site.xml');
         $this->writeDefaultSolrTestSiteConfiguration();
+        $this->fakeBEUser(1);
         $this->fakeTSFE(1);
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
@@ -117,6 +118,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('simple_site.xml');
         $this->writeDefaultSolrTestSiteConfiguration();
+        $this->fakeBEUser(1);
         $this->fakeTSFE(1);
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 

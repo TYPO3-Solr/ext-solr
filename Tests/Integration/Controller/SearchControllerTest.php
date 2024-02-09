@@ -68,6 +68,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->fakeSingletonsForFrontendContext();
 
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
+        $this->fakeBEUser(1);
 
         /** @var  $searchController SearchController */
         $this->searchController = $this->objectManager->get(SearchController::class);

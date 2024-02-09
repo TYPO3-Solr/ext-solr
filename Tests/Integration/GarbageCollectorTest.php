@@ -100,6 +100,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->indexer = GeneralUtility::makeInstance(Indexer::class);
         $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
+        $this->fakeBEUser(1);
     }
 
     public function tearDown(): void
