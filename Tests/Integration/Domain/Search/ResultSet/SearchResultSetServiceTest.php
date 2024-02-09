@@ -39,6 +39,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     protected function setUp(): void
     {
         parent::setUp();
+        $this->fakeBEUser(1);
         $this->writeDefaultSolrTestSiteConfiguration();
     }
 
