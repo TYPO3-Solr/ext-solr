@@ -710,7 +710,7 @@ This way already logged in users will be redirected directly to the restricted p
 
 
 The solr container in DDEV setup keeps quitting?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The issue was experienced on a OsX M2 ARM64 setup, but might be relevant for others.
 
