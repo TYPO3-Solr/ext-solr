@@ -707,3 +707,17 @@ This can e. g. be achieved in the following way.
 * And last but not least there is the login page (e. g. 3rd subpage) in an unprotected area, which will never get hidden. So ext-solr can read its configuration here.
 
 This way already logged in users will be redirected directly to the restricted page / sub-tree, because the 1st subpage is hidden and so the restricted page is the first sub-page now.
+
+
+The solr container in DDEV setup keeps quitting?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The issue was experienced on a OsX M2 ARM64 setup, but might be relevant for others.
+
+We have experienced that using Colimas as docker provider in DDEV, caused the solr container to quit upon first HTTP request. This could happen when clicking the "Index Queue" backend module.
+
+The container log did not contain any output relevant to the container quitting.
+
+Changing to Docker Desktop as provider keep the container alive.
+
+Relevant DDEV link: https://ddev.readthedocs.io/en/latest/users/providers/
