@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -39,12 +40,6 @@ use TYPO3\CMS\Reports\Status;
  */
 class SolrVersionStatus extends AbstractSolrStatus
 {
-    const SUPPORTED_SOLR_VERSIONS = [
-        '9.3.0',
-        '9.4.0',
-        '9.4.1',
-    ];
-
     /**
      * Compiles a version check against each configured Solr server.
      */
@@ -71,14 +66,15 @@ class SolrVersionStatus extends AbstractSolrStatus
             }
 
             $solrVersion = $coreAdmin->getSolrServerVersion();
-            $isSupported = in_array($this->getCleanSolrVersion($solrVersion), self::SUPPORTED_SOLR_VERSIONS);
+            $supportedSolrVersions = $this->getSupportedSolrVersions();
+            $isSupported = in_array($this->getCleanSolrVersion($solrVersion), $supportedSolrVersions);
             if ($isSupported) {
                 continue;
             }
 
             $formattedVersion = $this->formatSolrVersion($solrVersion);
             $variables = [
-                'supportedSolrVersions' => self::SUPPORTED_SOLR_VERSIONS,
+                'supportedSolrVersions' => $supportedSolrVersions,
                 'currentVersion' => $formattedVersion,
                 'solr' => $coreAdmin,
             ];
@@ -95,6 +91,13 @@ class SolrVersionStatus extends AbstractSolrStatus
         }
 
         return $reports;
+    }
+
+    protected function getSupportedSolrVersions(): array
+    {
+        $composerContents = file_get_contents(ExtensionManagementUtility::extPath('solr') . 'composer.json');
+        $composerConfiguration = json_decode($composerContents, true, 25, JSON_OBJECT_AS_ARRAY);
+        return $composerConfiguration['extra']['TYPO3-Solr']['version-matrix']['Apache-Solr'] ?? [];
     }
 
     /**
