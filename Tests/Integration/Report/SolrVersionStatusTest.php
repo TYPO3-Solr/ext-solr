@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 use ApacheSolrForTypo3\Solr\Report\SolrVersionStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Reports\Status;
 
 /**
  * Integration test for the solr version test
@@ -41,7 +42,14 @@ class SolrVersionStatusTest extends IntegrationTest
 
         /** @var $solrVersionStatus  SolrVersionStatus */
         $solrVersionStatus = GeneralUtility::makeInstance(SolrVersionStatus::class);
-        $violations = $solrVersionStatus->getStatus();
-        self::assertEmpty($violations, 'We expect to get no violations against the test solr server');
+        $results = $solrVersionStatus->getStatus();
+        self::assertCount(6, $results);
+        self::assertEmpty(
+            array_filter(
+                $results,
+                static fn (Status $status): bool => $status->getSeverity() !== Status::OK
+            ),
+            'We expect to get no violations against the test Solr server '
+        );
     }
 }

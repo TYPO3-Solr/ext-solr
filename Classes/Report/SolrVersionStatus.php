@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -32,14 +33,6 @@ use TYPO3\CMS\Reports\Status;
  */
 class SolrVersionStatus extends AbstractSolrStatus
 {
-    /**
-     * Required Solr version. The version that gets installed when using the
-     * provided install-script EXT:solr/Resources/Private/Install/install-solr.sh
-     *
-     * @var string
-     */
-    const REQUIRED_SOLR_VERSION = '8.11.1';
-
     /**
      * Compiles a version check against each configured Solr server.
      *
@@ -61,13 +54,9 @@ class SolrVersionStatus extends AbstractSolrStatus
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . $url;
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */
                     'Apache Solr Version',
-                    /** @scrutinizer ignore-type */
                     'Not accessible',
-                    /** @scrutinizer ignore-type */
                     $pingFailedMsg,
-                    /** @scrutinizer ignore-type */
                     Status::ERROR
                 );
                 $reports[] = $status;
@@ -75,24 +64,32 @@ class SolrVersionStatus extends AbstractSolrStatus
             }
 
             $solrVersion = $coreAdmin->getSolrServerVersion();
-            $isOutdatedVersion = version_compare($this->getCleanSolrVersion($solrVersion), self::REQUIRED_SOLR_VERSION, '<');
+            $supportedSolrVersions = $this->getSupportedSolrVersions();
+            $isSupported = in_array($this->getCleanSolrVersion($solrVersion), $supportedSolrVersions);
 
-            if (!$isOutdatedVersion) {
+            if ($isSupported) {
+                $reports[] = GeneralUtility::makeInstance(
+                    Status::class,
+                    'Apache Solr Version',
+                    'OK',
+                    'Version of ' . $coreAdmin->__toString() . ' is ok: ' . $solrVersion,
+                    Status::OK
+                );
                 continue;
             }
 
             $formattedVersion = $this->formatSolrVersion($solrVersion);
-            $variables = ['requiredVersion' => self::REQUIRED_SOLR_VERSION, 'currentVersion' => $formattedVersion, 'solr' => $coreAdmin];
+            $variables = [
+                'supportedSolrVersions' => $supportedSolrVersions,
+                'currentVersion' => $formattedVersion,
+                'solr' => $coreAdmin,
+            ];
             $report = $this->getRenderedReport('SolrVersionStatus.html', $variables);
             $status = GeneralUtility::makeInstance(
                 Status::class,
-                /** @scrutinizer ignore-type */
                 'Apache Solr Version',
-                /** @scrutinizer ignore-type */
-                'Outdated, Unsupported',
-                /** @scrutinizer ignore-type */
+                'Unsupported',
                 $report,
-                /** @scrutinizer ignore-type */
                 Status::ERROR
             );
 
@@ -100,6 +97,13 @@ class SolrVersionStatus extends AbstractSolrStatus
         }
 
         return $reports;
+    }
+
+    protected function getSupportedSolrVersions(): array
+    {
+        $composerContents = file_get_contents(ExtensionManagementUtility::extPath('solr') . 'composer.json');
+        $composerConfiguration = json_decode($composerContents, true, 25, JSON_OBJECT_AS_ARRAY);
+        return $composerConfiguration['extra']['TYPO3-Solr']['version-matrix']['Apache-Solr'] ?? [];
     }
 
     /**

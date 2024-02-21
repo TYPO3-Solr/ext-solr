@@ -1,22 +1,34 @@
-<p style="margin-bottom: 10px;">Found an
-    outdated Apache Solr server version. <br />The <strong>minimum
-        required version is <code>{requiredVersion}</code></strong>, you have <code>{currentVersion}</code>.</p>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	data-namespace-typo3-fluid="true"
+>
+
+<p style="margin-bottom: 10px;">Found an unsupported Apache Solr server version. <br />
+	It is strongly recommended to use one of the explicitly tested versions, preferably the latest one.<br />
+	The currently supported versions are:
+	<f:for each="{supportedSolrVersions}" as="version" iteration="iterator">
+		<strong><code>{version}</code></strong>{f:if(condition: '{iterator.isLast}', then: '.', else: ',')}
+	</f:for>
+	<br />Your version is: <code>{currentVersion}</code>.
+</p>
 <table class="table table-condensed table-hover table-striped">
-    <thead>
-    <tr>
-        <td colspan="2">Affected Solr server</td>
-    </tr>
-    </thead>
-    <tr>
-        <th>Host</th>
-        <td>{solr.primaryEndpoint.host}</td>
-    </tr>
-    <tr>
-        <th>Path</th>
-        <td>{solr.corePath}</td>
-    </tr>
-    <tr>
-        <th>Port</th>
-        <td>{solr.primaryEndpoint.port}</td>
-    </tr>
+	<thead>
+	<tr>
+		<td colspan="2">Affected Solr server</td>
+	</tr>
+	</thead>
+	<tr>
+		<th>Host</th>
+		<td>{solr.primaryEndpoint.host}</td>
+	</tr>
+	<tr>
+		<th>Path</th>
+		<td>{solr.corePath}</td>
+	</tr>
+	<tr>
+		<th>Port</th>
+		<td>{solr.primaryEndpoint.port}</td>
+	</tr>
 </table>
+
+</html>
