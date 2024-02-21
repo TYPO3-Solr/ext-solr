@@ -6,6 +6,15 @@
 Releases 11.5
 =============
 
+
+Release 11.5.6
+--------------
+
+..  warning::
+   Apache Solr 8.11.3 contains a breaking change, see security fix "SOLR-14853: Make enableRemoteStreaming option global; not configSet". EXT:solr relies on stream bodies
+   which aren't enabled by default since 8.11.3. EXT:solr 11.5.6 contains all required settings, but if you're updating and not using our Docker image, you have to
+   set "enableRemoteStreaming=true" and "solr.enableStreamBody=true". TYPO3 reports module will print a warning if you have to reconfigure.
+
 Release 11.5.5
 --------------
 

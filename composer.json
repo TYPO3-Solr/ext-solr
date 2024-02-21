@@ -80,6 +80,12 @@
     "tests:unit": "Runs unit tests"
   },
   "scripts": {
+    "info:solr-versions": [
+      "@composer config extra.TYPO3-Solr.version-matrix.Apache-Solr"
+    ],
+    "info:recommended-solr-version": [
+      "@composer config extra.TYPO3-Solr.version-matrix.Apache-Solr.0"
+    ],
     "post-autoload-dump": [
       "mkdir -p .Build/Web/typo3conf/ext/",
       "[ -L .Build/Web/typo3conf/ext/solr ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/solr"
@@ -140,7 +146,11 @@
         "ext-solrdebugtools": "^11.0",
         "ext-solrfluidgrouping": "^11.0",
         "ext-solrmlt": "^11.0",
-        "Apache-Solr": "8.11.1",
+        "Apache-Solr": [
+          "8.11.3",
+          "8.11.2",
+          "8.11.1"
+        ],
         "configset": "ext_solr_11_5_0"
       },
       "ext-solrfal": {
