@@ -15,14 +15,14 @@ List of EXT:solr versions and the matching versions of Apache Solr and TYPO3 tha
 TYPO3     EXT:solr   EXT:tika   EXT:solrfal EXT:solrconsole EXT:solrdebugtools EXT:solrfluidgrouping            EXT:solrmlt     Apache Solr     Configset
 ========= ========== ========== =========== =============== ================== ================================ =============== =============== =================
 12.4      12.0       12.0       12.0        12.0            12.0               N/A (integrated in EXT:solr)     12.0 (Ø)        9.5.0¹          ext_solr_12_0_0
-11.5      11.5       11.0       11.0        11.0            11.0               11.0                             11.0 (Ø)        8.11.2¹         ext_solr_11_5_0
+11.5      11.5       11.0       11.0        11.0            11.0               11.0                             11.0 (Ø)        8.11.3¹         ext_solr_11_5_0
 ========= ========== ========== =========== =============== ================== ================================ =============== =============== =================
 
 | Ø  - not yet available
 | ᾱ  - non stable alpha release
 | β  - non stable beta release
 | rc - release candidate available
-|¹ - recommended Apache Solr version, check version matrix in composer.json (composer info:solr-versions) for full list
+| ¹  - recommended Apache Solr version, check version matrix in composer.json (`composer info:solr-versions`) for full list
 
 .. important::
 
@@ -47,8 +47,8 @@ TYPO3     EXT:solr    EXT:tika   EXT:solrfal EXT:solrconsole EXT:solrdebugtools 
 
 Our Apache Solr for TYPO3 EB-partners newsletter will keep you updated!
 
-Ø - not yet available
-¹ - recommended Apache Solr version, check version matrix in composer.json (composer info:solr-versions) for full list
+| Ø - not yet available
+| ¹ - recommended Apache Solr version, check version matrix in composer.json (`composer info:solr-versions`) for full list
 
 No longer supported versions
 ----------------------------

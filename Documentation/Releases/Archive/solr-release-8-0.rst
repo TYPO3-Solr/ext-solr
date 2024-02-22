@@ -1,20 +1,22 @@
 .. include:: /Includes.rst.txt
-..  index:: Archive
-.. _releases-8:
+.. _releases-archive-8:
 
-=============
+============
+Releases 8.0
+============
+
 Release 8.0.0
 =============
 
 We are happy to release EXT:solr 8.0.0. The focus of EXT:solr 8.0.0 was, to improve the user experience in the frontend and backend.
 
 New in this release
-===================
+-------------------
 
 In the following paragraphs we want to summarize the new features that will be shipped with EXT:solr 8.0.0
 
 New suggest
------------
+~~~~~~~~~~~
 
 We've replaced the old jQuery UI based autosuggest with a new suggest (https://github.com/devbridge/jQuery-Autocomplete). The advanced suggest can not only show the suggestions, it can also show a configurable amount of top search results.
 
@@ -29,7 +31,7 @@ Related pull request: https://github.com/TYPO3-Solr/ext-solr/pull/1638
 
 
 JSON Faceting for options facets
---------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Apache Solr offers a JSON API for faceting since several versions. Starting with the options facet we've added the support to use this JSON faceting API in EXT:solr.
 
@@ -68,7 +70,7 @@ Since we'replaced the whole internal communication from EXT:solr to Apache Solr 
 Related pull request: https://github.com/TYPO3-Solr/ext-solr/pull/1764
 
 Group facet options by prefix
------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When you have option facets with a lot of options, it would be nice to group those options by a prefix. An example is that you group all options by the starting letter to organize them in tabs:
 
@@ -84,7 +86,7 @@ Thanks: This feature was sponsored by https://www.linnearad.no/
 Related pull request: https://github.com/TYPO3-Solr/ext-solr/pull/1717
 
 Filterable options facet
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 In the previous section, the facets get grouped by prefix to organize a large number of options. Another way that you also often see on the web is to allow to filter the options with an additional input box above the facet.
 
@@ -98,7 +100,7 @@ Related pull request: https://github.com/TYPO3-Solr/ext-solr/pull/1741
 
 
 Default partials with bootstrap.css
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The old templating was created with custom CSS that was shipped with the extension. Since we want to decrease the effort that is required to create a mobile search and many integrators use bootstrap.css we decided to ship bootstrap templates by default. If you want to use another framework or your own custom CSS you are still able to do that with custom templates.
 
@@ -107,14 +109,14 @@ Nevertheless, the mobile search in a TYPO3 introduction installation with bootst
 Related pull request: https://github.com/TYPO3-Solr/ext-solr/pull/1738
 
 Performance improvements
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 In EXT:solr 7.x and below a ping request was done before each search. In EXT:solr 8.0.0 we just catch a failed search and handle the unavailability. This saves up to 30% time because we just need one HTTP request to Apache Solr instead of 2.
 
 Related pull request: https://github.com/TYPO3-Solr/ext-solr/pull/1660
 
 Improved index inspector
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 In the previous versions, we've introduced own backend modules that can also be used by regular TYPO3 users to perform several tasks. With EXT:solr 8.0.0 the index inspector will be moved from the common info module to our info module:
 
@@ -123,7 +125,7 @@ Besides the move, we also added the functionality to ReQueue a single document f
 Related pull request: https://github.com/TYPO3-Solr/ext-solr/pull/1763
 
 Use TYPO3 Guzzle for page index requests
-----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The indexing of pages is now done with the shipped Guzzle client in TYPO3.
 
@@ -132,7 +134,7 @@ Thanks: Thanks to Benni Mack from b13 who has implemented that feature http://ww
 Related pull request: https://github.com/TYPO3-Solr/ext-solr/pull/1837
 
 SOLR_CLASSIFICATION cObject
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When you index a lot of documents you might want to create facets based on patterns that occur in the content.
 
@@ -164,7 +166,7 @@ Thanks: Thanks to http://www.bibus.ch who sponsored the implementation of this f
 Related pull request: https://github.com/TYPO3-Solr/ext-solr/pull/1723
 
 Phrase support (phrase, bigram, trigram)
-----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 With plugin.tx_solr.search.query.(phrase/bigramPhrase/trigramPhrase).fields you can control what is passed to Solr with the ps,ps2 and ps3 value.
 
@@ -177,7 +179,7 @@ Related links:
 Related pull request: https://github.com/TYPO3-Solr/ext-solr/pull/1735
 
 Tie parameter support
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 With plugin.tx_solr.search.query.tieParameter you can now configure the tie value that is passed to Apache Solr.
 
@@ -194,7 +196,7 @@ Thanks: Thanks to Marcus Schwemer and in2code that sponsored and shared that fea
 Related pull request: https://github.com/TYPO3-Solr/ext-solr/pull/1690
 
 Doctrine ready
---------------
+~~~~~~~~~~~~~~
 
 TYPO3 8 introduced Doctrine DBAL for database queries and the old API will be removed in TYPO3 9. Since we've used a lot of repositories with custom SQL queries, we had to rewrite a lot of queries.
 
@@ -203,7 +205,7 @@ In EXT:solr we've used the chance to restructure the SQL related code and move t
 With EXT:solr 8 every usage of the old database API is removed and we are prepared in that way to be ready for TYPO3 9.
 
 Fluent API for Queries with the QueryBuilder
---------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Many parts of the code of EXT:solr deal with queries for Apache Solr that's no surprise :). The corresponding parts in the code especially the Query class had grown over time and reached a huge complexity.
 
@@ -245,7 +247,7 @@ Finally, this allows us to:
 
 
 On the way to TYPO3 9
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 With EXT:solr 8.0.0 we will not officially support TYPO3 9 since it is not an LTS release! Nevertheless, we want to stay close to the TYPO3 core and allow the usage in 9 already.
 
@@ -254,7 +256,7 @@ By now we mainly fix Doctrine and Composer related issues and support the droppe
 So to sum up... EXT:solr 8.0.0 will mainly support TYPO3 8 LTS and we will support TYPO3 9.x a good as we can without losing the backward compatibility to TYPO3 8 LTS.
 
 Bugfixes
-========
+--------
 
 * Can not set the facet sorting to count when global sorting is set to index: https://github.com/TYPO3-Solr/ext-solr/pull/1667
 * Filter with Flexform in backend does not work when value contains whitespaces: https://github.com/TYPO3-Solr/ext-solr/issues/1742
@@ -264,7 +266,7 @@ Bugfixes
 * partialName is missing in TypoScript reference:  https://github.com/TYPO3-Solr/ext-solr/pull/1730
 
 Removed Code
-============
+------------
 
 Query Refactoring
 -----------------
@@ -285,7 +287,7 @@ Hooks:
 * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] has been marked as deprecated and will be dropped in 8.0 please use a SearchResultSetProcessor registered in $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] as replacement.
 
 Deprecated Code
-===============
+---------------
 
 The following methods have been marked as deprecated and will be removed in EXT:solr 9.0.0
 
@@ -298,6 +300,11 @@ The following methods have been marked as deprecated and will be removed in EXT:
 * ApacheSolrForTypo3\Solr\Search::getSpellcheckingSuggestions - Use SearchResultSet::getSpellcheckingSuggestions
 * ApacheSolrForTypo3\Solr\Query is deprecated, use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query now
 * ApacheSolrForTypo3\Solr\SuggestQuery is deprecated, use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery now
+
+Outlook
+=======
+
+In the next release we want to focus on the move to Solarium and the support of the lastest Apache Solr version.
 
 Contributors
 ============
@@ -368,20 +375,15 @@ Special thanks to our premium EB 2018 partners:
 
 Thanks to everyone who helped in creating this release!
 
-Outlook
-=======
-
-In the next release we want to focus on the move to solarium and the support of the lastest Apache Solr version.
-
 How to Get Involved
 ===================
 
 There are many ways to get involved with Apache Solr for TYPO3:
 
-* Submit bug reports and feature requests on [GitHub](https://github.com/TYPO3-Solr/ext-solr)
-* Ask or help or answer questions in our [Slack channel](https://typo3.slack.com/messages/ext-solr/)
-* Provide patches through Pull Request or review and comment on existing [Pull Requests](https://github.com/TYPO3-Solr/ext-solr/pulls)
-* Go to [www.typo3-solr.com](http://www.typo3-solr.com) or call [dkd](http://www.dkd.de) to sponsor the ongoing development of Apache Solr for TYPO3
+* Submit bug reports and feature requests on `GitHub <https://github.com/TYPO3-Solr/ext-solr>`__
+* Ask or help or answer questions in our `Slack channel <https://typo3.slack.com/messages/ext-solr/>`__
+* Provide patches through Pull Request or review and comment on existing `Pull Requests <https://github.com/TYPO3-Solr/ext-solr/pulls>`__
+* Go to `www.typo3-solr.com <https://www.typo3-solr.com>`__ or call `dkd <http://www.dkd.de>`__ to sponsor the ongoing development of Apache Solr for TYPO3
 
 Support us in 2017 by becoming an EB partner:
 

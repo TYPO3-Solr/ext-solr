@@ -9,7 +9,7 @@ Releases 11.5
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
 Release 11.5.5
---------------
+==============
 
 This is a maintenance release for TYPO3 11.5 and the last release that supports Apache Solr 8.11.
 Next EXT:solr release for TYPO3 11.5 will be 11.6.0, it
@@ -22,7 +22,7 @@ will contain support for Apache Solr 9 and some breaking improvements.
 - !!![BUGFIX:11.5] Exception with tx_solr_statistics after latest TYPO3 security update by @dkd-kaehm in `#3880 <https://github.com/TYPO3-Solr/ext-solr/pull/3880>`__
 
 Release 11.5.4
---------------
+==============
 
 11.5.4 contains the following changes:
 
@@ -50,7 +50,7 @@ Release 11.5.4
 
 
 Release 11.5.3
---------------
+==============
 
 This is a maintenance release for TYPO3 11.5, containing:
 
@@ -60,7 +60,7 @@ This is a maintenance release for TYPO3 11.5, containing:
 
 
 Release 11.5.2
---------------
+==============
 
 This is a maintenance release for TYPO3 11.5, containing:
 
@@ -92,33 +92,33 @@ This is a maintenance release for TYPO3 11.5, containing:
 
 
 Release 11.5.1
---------------
+==============
 
 We are happy to publish EXT:solr 11.5.1 maintenance release
 
 New in this release
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
-- [BUGFIX] Do not include removed strptime() by @dkd-kaehm in https://github.com/TYPO3-Solr/ext-solr/pull/3335
-- [BUGFIX:BP:11.5] Do not handle page updates on new page with uid 0 by @rr-it in https://github.com/TYPO3-Solr/ext-solr/pull/3344
-- [BUGFIX:BP:11.5] Shortcircuit work in SolrRoutingMiddleware by @christophlehmann in https://github.com/TYPO3-Solr/ext-solr/pull/3341
-- !!![TASK] Use preAddModifyDocuments  hook for pages by @christophlehmann in https://github.com/TYPO3-Solr/ext-solr/pull/3076
-- [BUGFIX] Fix array key access in ext_getSetup (Backport 11.5) by @saitho in https://github.com/TYPO3-Solr/ext-solr/pull/3361
-- [TASK:BP:11.5] Indexing configuration icon fallback by @dkd-friedrich in https://github.com/TYPO3-Solr/ext-solr/pull/3371
-- [BUGFIX:BP:11.5] Do not index missing fields by @dkd-friedrich in https://github.com/TYPO3-Solr/ext-solr/pull/3372
-- [TASK:BP:11.5] Introduce index queue type setting by @dkd-friedrich in https://github.com/TYPO3-Solr/ext-solr/pull/3370
-- [TASK:BP:11.5] Do not index language with unconfigured core by @christophlehmann in https://github.com/TYPO3-Solr/ext-solr/pull/3373
-- [BUGFIX] Make API eID script compatible with TYPO3 v11.5 by @peterkraume in https://github.com/TYPO3-Solr/ext-solr/pull/3350
-- [BUGFIX] Type-hinting for SiteUtility::getConnectionProperty() by @dkd-kaehm in https://github.com/TYPO3-Solr/ext-solr/pull/3396
-- [TASK:BP:11.5] Introduce generic EXT:solr exception by @dkd-friedrich in https://github.com/TYPO3-Solr/ext-solr/pull/3422
-- [BUGFIX:BP:11.5] Fix frontend Solr connection initialization by @dkd-friedrich in https://github.com/TYPO3-Solr/ext-solr/pull/3425
-- [ACTIONS:2022.12.22] Use fixed typo3/coding-standards 0.6.x < 0.7.0 for TYPO3 11.5 by @dkd-kaehm in https://github.com/TYPO3-Solr/ext-solr/pull/3429
-- [TASK:Security] Update jQuery and its plugin libs by @dkd-kaehm in https://github.com/TYPO3-Solr/ext-solr/pull/3428
-- [BUGFIX:P:11.5] Proper check for config.index_enable by @georgringer in https://github.com/TYPO3-Solr/ext-solr/pull/3433
-- [BUGFIX:P:11.5] Typecast $timestamp to int in TimestampToUtcIsoDate by @derhansen in https://github.com/TYPO3-Solr/ext-solr/pull/3434
-- [BUGFIX:P:11.5] prevent undefined array key warning if filter is empty by @achimfritz in https://github.com/TYPO3-Solr/ext-solr/pull/3435
-- [FEATURE] Add signal before search in resultsAction by @stat1x in https://github.com/TYPO3-Solr/ext-solr/pull/3392
-- [BUGFIX] Fix php warning undefined array key no_search_sub_entries by @DrWh0286 in https://github.com/TYPO3-Solr/ext-solr/pull/3381
+- [BUGFIX] Do not include removed strptime() by @dkd-kaehm in `#3335 <https://github.com/TYPO3-Solr/ext-solr/pull/3335>`__
+- [BUGFIX:BP:11.5] Do not handle page updates on new page with uid 0 by @rr-it in `#3344 <https://github.com/TYPO3-Solr/ext-solr/pull/3344>`__
+- [BUGFIX:BP:11.5] Shortcircuit work in SolrRoutingMiddleware by @christophlehmann in `#3341 <https://github.com/TYPO3-Solr/ext-solr/pull/3341>`__
+- !!![TASK] Use preAddModifyDocuments  hook for pages by @christophlehmann in `#3076 <https://github.com/TYPO3-Solr/ext-solr/pull/3076>`__
+- [BUGFIX] Fix array key access in ext_getSetup (Backport 11.5) by @saitho in `#3361 <https://github.com/TYPO3-Solr/ext-solr/pull/3361>`__
+- [TASK:BP:11.5] Indexing configuration icon fallback by @dkd-friedrich in `#3371 <https://github.com/TYPO3-Solr/ext-solr/pull/3371>`__
+- [BUGFIX:BP:11.5] Do not index missing fields by @dkd-friedrich in `#3372 <https://github.com/TYPO3-Solr/ext-solr/pull/3372>`__
+- [TASK:BP:11.5] Introduce index queue type setting by @dkd-friedrich in `#3370 <https://github.com/TYPO3-Solr/ext-solr/pull/3370>`__
+- [TASK:BP:11.5] Do not index language with unconfigured core by @christophlehmann in `#3373 <https://github.com/TYPO3-Solr/ext-solr/pull/3373>`__
+- [BUGFIX] Make API eID script compatible with TYPO3 v11.5 by @peterkraume in `#3350 <https://github.com/TYPO3-Solr/ext-solr/pull/3350>`__
+- [BUGFIX] Type-hinting for SiteUtility::getConnectionProperty() by @dkd-kaehm in `#3396 <https://github.com/TYPO3-Solr/ext-solr/pull/3396>`__
+- [TASK:BP:11.5] Introduce generic EXT:solr exception by @dkd-friedrich in `#3422 <https://github.com/TYPO3-Solr/ext-solr/pull/3422>`__
+- [BUGFIX:BP:11.5] Fix frontend Solr connection initialization by @dkd-friedrich in `#3425 <https://github.com/TYPO3-Solr/ext-solr/pull/3425>`__
+- [ACTIONS:2022.12.22] Use fixed typo3/coding-standards 0.6.x < 0.7.0 for TYPO3 11.5 by @dkd-kaehm in `#3429 <https://github.com/TYPO3-Solr/ext-solr/pull/3429>`__
+- [TASK:Security] Update jQuery and its plugin libs by @dkd-kaehm in `#3428 <https://github.com/TYPO3-Solr/ext-solr/pull/3428>`__
+- [BUGFIX:P:11.5] Proper check for config.index_enable by @georgringer in `#3433 <https://github.com/TYPO3-Solr/ext-solr/pull/3433>`__
+- [BUGFIX:P:11.5] Typecast $timestamp to int in TimestampToUtcIsoDate by @derhansen in `#3434 <https://github.com/TYPO3-Solr/ext-solr/pull/3434>`__
+- [BUGFIX:P:11.5] prevent undefined array key warning if filter is empty by @achimfritz in `#3435 <https://github.com/TYPO3-Solr/ext-solr/pull/3435>`__
+- [FEATURE] Add signal before search in resultsAction by @stat1x in `#3392 <https://github.com/TYPO3-Solr/ext-solr/pull/3392>`__
+- [BUGFIX] Fix php warning undefined array key no_search_sub_entries by @DrWh0286 in `#3381 <https://github.com/TYPO3-Solr/ext-solr/pull/3381>`__
 
 Please read the release notes:
 https://github.com/TYPO3-Solr/ext-solr/releases/tag/11.5.1
@@ -126,20 +126,21 @@ https://github.com/TYPO3-Solr/ext-solr/releases/tag/11.5.1
 
 
 Release 11.5.0
---------------
+==============
 
 We are happy to release EXT:solr 11.5.0.
 The focus of this release has been on TYPO3 11 LTS compatibility.
 
 #standwithukraine #nowar
 
-**Important**: This version is installable with TYPO3 11 LTS on v11.5.14+ only and contains some breaking changes, see details below.
+..  attention::
+    This version is installable with TYPO3 11 LTS on v11.5.14+ only and contains some breaking changes, see details below.
 
 New in this release
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 Support of TYPO3 11 LTS
-^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~
 
 With EXT:solr 11.5 we provide the support of TYPO3 11 LTS.
 
@@ -147,7 +148,7 @@ Please note that we require at least TYPO3 11.5.14, as this version contains som
 
 
 Bootstrap 5.1
-^^^^^^^^^^^^^
+~~~~~~~~~~~~~
 
 The default templates provided by EXT:solr were adapted for Bootstrap 5.1.
 
@@ -155,7 +156,7 @@ The templates are also prepared to display some icons with Bootstrap Icons, but 
 
 
 Custom field processors
-^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~
 
 fieldProcessingInstructions can be used for processing values during indexing, e.g. timestampToIsoDate or uppercase. Now you can register and use your own field processors via:
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProcessor'] = ACustomFieldProcessor::class;
@@ -163,7 +164,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProce
 Custom processors have to implement interface ApacheSolrForTypo3\Solr\FieldProcessor\FieldProcessor.
 
 N-Gram Filter for strings
-^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Provides a new field type and dynamic fields for strings
 with enabled Edge-N-Gram filter.
@@ -173,7 +174,7 @@ Now the following fields can be used:
 - \*_stringEdgeNgramM
 
 Improve and Fix TSFE Initialization
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The initialization of TSFE within indexing and Backends modules contexts is refactored.
 
@@ -191,7 +192,7 @@ Note: Since TYPO3 11 LTS does not allow to instantiate TSFE for sys folders and 
       the initialization of TSFE will be done for first and closest page(not spacer or folder) within the site rootline.
 
 Get "free content mode" working
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In previous releases of EXT:solr the language handling for "free-content-mode" inconsistent.
 The behavior of "free-content-mode" related records varied in RecordMonitor, Initializing and Indexing contexts,
@@ -201,13 +202,13 @@ This change brings the RecordMonitor, Initializing and Indexing contexts for "fr
 into the same line, so the "free-content-mode" records are processed the same way.
 
 Make pageRangeFirst and pageRangeLast accessible in fluid
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 With these two additional getters it is possible to access the variables
 in fluid templates. See: `#3254 <https://github.com/TYPO3-Solr/ext-solr/issues/3254>`_
 
 Add custom field processors
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Custom field processors can be registered with
 
@@ -216,12 +217,12 @@ Custom field processors can be registered with
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProcessor'] = ACustomFieldProcessor::class;
 
 And many more
-^^^^^^^^^^^^^
+~~~~~~~~~~~~~
 
 Please see the list of changes below or `the full changelog: <https://github.com/TYPO3-Solr/ext-solr/compare/c0a3e62053e1c929c914d25ced1fef3d9868d4f9...11.5.0>`_.
 
 The list of all changes:
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 - [TASK] Prepare schemas for EXT:solr 11.5.x `c0a3e6205 <https://github.com/TYPO3-Solr/ext-solr/commit/c0a3e6205>`_
 - [TASK] Provide N-Gram Filter for strings `13b90a996 <https://github.com/TYPO3-Solr/ext-solr/commit/13b90a996>`_
@@ -507,10 +508,10 @@ How to Get Involved
 
 There are many ways to get involved with Apache Solr for TYPO3:
 
-* Submit bug reports and feature requests on [GitHub](https://github.com/TYPO3-Solr/ext-solr)
-* Ask or help or answer questions in our [Slack channel](https://typo3.slack.com/messages/ext-solr/)
-* Provide patches through Pull Request or review and comment on existing [Pull Requests](https://github.com/TYPO3-Solr/ext-solr/pulls)
-* Go to [www.typo3-solr.com](http://www.typo3-solr.com) or call [dkd](http://www.dkd.de) to sponsor the ongoing development of Apache Solr for TYPO3
+* Submit bug reports and feature requests on `GitHub <https://github.com/TYPO3-Solr/ext-solr>`__
+* Ask or help or answer questions in our `Slack channel <https://typo3.slack.com/messages/ext-solr/>`__
+* Provide patches through Pull Request or review and comment on existing `Pull Requests <https://github.com/TYPO3-Solr/ext-solr/pulls>`__
+* Go to `www.typo3-solr.com <https://www.typo3-solr.com>`__ or call `dkd <http://www.dkd.de>`__ to sponsor the ongoing development of Apache Solr for TYPO3
 
 Support us by becoming an EB partner:
 

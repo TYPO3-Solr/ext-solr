@@ -1,25 +1,28 @@
 .. include:: /Includes.rst.txt
-..  index:: Archive
-.. _releases-9:
+.. _releases-archive-9:
 
-=============
+============
+Releases 9.0
+============
+
 Release 9.0.0
 =============
 
 We are happy to release EXT:solr 9.0.0. The focus of EXT:solr 9.0.0 was, to support the latest version of Apache Solr (7.6.0) and to drop the usage of the solrphpclient and use the solarium php API instead.
 
-**Important**: This version is installable with TYPO3 9 LTS, but does **not** support all features of TYPO3 9 yet. Especially the site handling needs further development in EXT:solr to fully support it with TYPO3 9 LTS. Beside the open tasks in EXT:solr there are also parts left in the TYPO3 core (e.g. when using language fallbacks). In the next release of EXT:solr we want to improve the integration with the site management in TYPO3. Since the development budget is limited at one side and we have other project requests at the other side we could spend less time on the development of EXT:solr by the end of the year. If you want to support us please consider to sponsor us in 2019.
+..  attention::
+    This version is installable with TYPO3 9 LTS, but does **not** support all features of TYPO3 9 yet. Especially the site handling needs further development in EXT:solr to fully support it with TYPO3 9 LTS. Beside the open tasks in EXT:solr there are also parts left in the TYPO3 core (e.g. when using language fallbacks). In the next release of EXT:solr we want to improve the integration with the site management in TYPO3. Since the development budget is limited at one side and we have other project requests at the other side we could spend less time on the development of EXT:solr by the end of the year. If you want to support us please consider to sponsor us in 2019.
 
 New in this release
-===================
+-------------------
 
 Support of Apache Solr 7.6
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 EXT:solr 9.0.0 ships a ready to use docker container with Apache Solr 7.6. This makes new features of Apache Solr available to EXT:solr.
 
 Replaced solrphpclient with solarium php api
---------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For the communication between EXT:solr we've used the solrphpclient library. This library was not maintained anymore and had several custom modifications. Therefore we made the decision to move to the solarium php api.
 
@@ -50,7 +53,7 @@ By now we use the Queries and Httpclient of solarium, but not the domain classes
 In the future we want to get rid of redundant code and use the API where we can and it makes sence and support solarium with the features that we need for EXT:solr.
 
 TYPO3 9 compatibility
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 The current release is installable and useable with TYPO3 9 LTS **but not all features** are supported.
 
@@ -75,14 +78,14 @@ Nevertheless a lot of work was allready done for the basic support of TYPO3 9 LT
 * https://github.com/TYPO3-Solr/ext-solr/pull/1774
 
 Allow open query in DateRangeFacet
-----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This patch allows to create data range facets with an open beginning or open end.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/2038
 
 Support to differ between read and write connections
-----------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By now each site had one Solr connection for reading and writing. In most of the cases this good enough when you want to index and search in the same core.
 
@@ -98,7 +101,7 @@ With a separation of read and write connections this is now possible. With these
 
 The new setup can be configured like that:
 
-::
+..  code-block:: typoscript
 
     plugin.tx_solr.solr {
             read {
@@ -126,14 +129,15 @@ You could create now a facet item link (add, set, remove) somewhere else in the 
 
 Beside
 
-```
-{s:uri.facet.setFacetItem(facet: facet, facetItem: option)}
-```
+..  code-block:: html
+
+   {s:uri.facet.setFacetItem(facet: facet, facetItem: option)}
+
 you could create a set link now with this vh arguments:
 
-```
-{s:uri.facet.setFacetItem(facetName: 'type', facetItemValue: 'pages', resultSet: resultSet)}
-```
+..  code-block:: html
+
+    {s:uri.facet.setFacetItem(facetName: 'type', facetItemValue: 'pages', resultSet: resultSet)}
 
 Thanks to Marc Bastian Heinrichs for creating a patch for that.
 
@@ -153,7 +157,7 @@ Thanks to Marc Bastian Heinrichs for creating a patch for that and to in2code fo
 
 
 Bugfixes
-========
+--------
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/2048 Fixes a warning in the TranslateViewHelper
 * https://github.com/TYPO3-Solr/ext-solr/pull/2052 Use copy instead of reference in the TypoScript template
@@ -171,7 +175,7 @@ Migration from EXT:solr 8.1.0 to EXT:solr 9.0.0
   Nevertheless you need to re-initialize the Solr connections that the data in the registry is rewritten. If you want to make use of the new configuration
   you can configure the connections like that:
 
-::
+..  code-block:: typoscript
 
     plugin.tx_solr.solr {
         read {
@@ -205,6 +209,15 @@ The following code parts have been removed as announced in previous versions of 
 * Search::getFacetRangeOptions
 * Search::getSpellcheckingSuggestions
 * Util::isLocalizedRecord
+
+
+Outlook
+=======
+
+In the next release we will drop the support of TYPO3 8 and focus on the integration into TYPO39. Depending on the funding we would like to support
+the integration into the TYPO3 site management and want to allow to configure you Solr site with the TYPO3 site management module.
+
+With the move to the solarium php api, we take the first step of the integration. In the next releases we want to use more parts of the solarium API and also contribute to that API to share the improvements with other PHP projects.
 
 Contributors
 ============
@@ -260,24 +273,15 @@ In addition i want to thank Markus Kalkbrenner and the whole solarium team for t
 
 Thanks to everyone who helped in creating this release!
 
-Outlook
-=======
-
-In the next release we will drop the support of TYPO3 8 and focus on the integration into TYPO39. Depending on the funding we would like to support
-the integration into the TYPO3 site management and want to allow to configure you Solr site with the TYPO3 site management module.
-
-With the move to the solarium php api, we take the first step of the integration. In the next releases we want to use more parts of the solarium API and also contribute to that API to share the improvements with other PHP projects.
-
-
 How to Get Involved
 ===================
 
 There are many ways to get involved with Apache Solr for TYPO3:
 
-* Submit bug reports and feature requests on [GitHub](https://github.com/TYPO3-Solr/ext-solr)
-* Ask or help or answer questions in our [Slack channel](https://typo3.slack.com/messages/ext-solr/)
-* Provide patches through Pull Request or review and comment on existing [Pull Requests](https://github.com/TYPO3-Solr/ext-solr/pulls)
-* Go to [www.typo3-solr.com](http://www.typo3-solr.com) or call [dkd](http://www.dkd.de) to sponsor the ongoing development of Apache Solr for TYPO3
+* Submit bug reports and feature requests on `GitHub <https://github.com/TYPO3-Solr/ext-solr>`__
+* Ask or help or answer questions in our `Slack channel <https://typo3.slack.com/messages/ext-solr/>`__
+* Provide patches through Pull Request or review and comment on existing `Pull Requests <https://github.com/TYPO3-Solr/ext-solr/pulls>`__
+* Go to `www.typo3-solr.com <https://www.typo3-solr.com>`__ or call `dkd <http://www.dkd.de>`__ to sponsor the ongoing development of Apache Solr for TYPO3
 
 Support us in 2019 by becoming an EB partner:
 
