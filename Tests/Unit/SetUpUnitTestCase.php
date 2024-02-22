@@ -27,11 +27,23 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 abstract class SetUpUnitTestCase extends UnitTestCase
 {
     protected bool $resetSingletonInstances = true;
+    protected ?string $originalEncryptionKey;
 
     protected function setUp(): void
     {
         date_default_timezone_set('Europe/Berlin');
+        $this->originalEncryptionKey = $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] ?? null;
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = 'solr-tests-secret-encryption-key';
         parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+        if ($this->originalEncryptionKey !== null) {
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = $this->originalEncryptionKey;
+        }
+        parent::tearDown();
     }
 
     /**
