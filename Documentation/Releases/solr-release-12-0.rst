@@ -7,36 +7,64 @@ Releases 12.0
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
-Release 12.0.1
---------------
+Release 12.0.2
+==============
 
 This is a maintenance release for TYPO3 12.4 LTS, containing:
 
-**Note:** This release requires the database schema update, due of database schema change from `pull-request #3881 <https://github.com/TYPO3-Solr/ext-solr/pull/3881>`__
+- [BUGFIX] false as field value is not allowed by @dkd-kaehm in `#3901 <https://github.com/TYPO3-Solr/ext-solr/pull/3901>`_
+- [FEATURE] send an event for suggest queries by @dmitryd in `#3903 <https://github.com/TYPO3-Solr/ext-solr/pull/3903>`_
+- [TASK] Remove unused field 'cookie' in tx_solr_statistics by @derhansen in `#3893 <https://github.com/TYPO3-Solr/ext-solr/pull/3893>`_
+- [BUGFIX] Unit tests missing mock of EventDispatcher for AfterSuggestQueryHasBeenPreparedEvent by @dkd-kaehm in `#3910 <https://github.com/TYPO3-Solr/ext-solr/pull/3910>`_
+- [BUGFIX] Resolve custom partialName in hierarchy facet by @tillhoerner in `#3908 <https://github.com/TYPO3-Solr/ext-solr/pull/3908>`_
+- [BUGFIX] Fix #3896: adjust paths in jquery-ui.custom.css by @dmitryd in `#3906 <https://github.com/TYPO3-Solr/ext-solr/pull/3906>`_
+- [BUGFIX] Broken IndexQueueModule.css asset path in backend by @DanielSiepmann in `#3898 <https://github.com/TYPO3-Solr/ext-solr/pull/3898>`_
+- [FEATURE] Improve BeforeSearchResultIsShownEvent by @georgringer in `#3915 <https://github.com/TYPO3-Solr/ext-solr/pull/3915>`_
+- [BUGFIX] 'AfterFacetIsParsedEvent' was never dispatched by @dkd-kaehm in `#3921 <https://github.com/TYPO3-Solr/ext-solr/pull/3921>`_
+- [BUGFIX] update acces to backend user modules by @mhirdes in `#3924 <https://github.com/TYPO3-Solr/ext-solr/pull/3924>`_
+- [DOC] Add infos about adding own field processors by @kitzberger in `#3930 <https://github.com/TYPO3-Solr/ext-solr/pull/3930>`_
+- [BUGFIX] Ensure method return value of root-page-UID is an integer by @dkd-kaehm in `#3929 <https://github.com/TYPO3-Solr/ext-solr/pull/3929>`_
+- [BUGFIX] Fix #3916: exception in CLI mode when using suggest TS example by @dmitryd in `#3917 <https://github.com/TYPO3-Solr/ext-solr/pull/3917>`_
+- [BUGFIX] Prevent exception in AccessComponent by @dkd-friedrich in `#3945 <https://github.com/TYPO3-Solr/ext-solr/pull/3945>`_
+- [TASK] Describe issues with Colima as Docker provider by @sorenmalling in `#3950 <https://github.com/TYPO3-Solr/ext-solr/pull/3950>`_
+- [TASK] Provide encryptionKey in unit tests by @dkd-friedrich in `#3959 <https://github.com/TYPO3-Solr/ext-solr/pull/3959>`_
+- [DOCS] Make values of faceting.urlParameterStyle more clear by @linawolf in `#3951 <https://github.com/TYPO3-Solr/ext-solr/pull/3951>`_
+- [BUGFIX] Handle if some tags are upper-case and strict-comparison by @thomashohn in `#3941 <https://github.com/TYPO3-Solr/ext-solr/pull/3941>`_
+- [FEATURE] Power up for magic filter __pageSections by @kitzberger in `#3937 <https://github.com/TYPO3-Solr/ext-solr/pull/3937>`_
+- [TASK] Add content stream check by @dkd-friedrich in `#3967 <https://github.com/TYPO3-Solr/ext-solr/pull/3967>`_
+- [TASK] Support several Apache Solr versions by @dkd-friedrich in `#3956 <https://github.com/TYPO3-Solr/ext-solr/pull/3956>`_
+- `[RELEASE] 12.0.2 <https://github.com/TYPO3-Solr/ext-solr/releases/tag/12.0.2>`_
 
-- [BUGFIX] Remove superfluous char in Dockerfile `e49a07e12 on @2023-10-16 <https://github.com/TYPO3-Solr/ext-solrfal/commit/e49a07e12>`_ (thanks to Christoph Lehmann)
-- [TASK] Add response object to return array of SolrWriteService::extractByQuery() `0b1a6a102 on @2023-10-19 <https://github.com/TYPO3-Solr/ext-solrfal/commit/0b1a6a102>`_ (thanks to Rafael Kähm)
-- [TASK] Add replace for EXT:solrfluidgrouping in composer json `601873a61 on @2023-10-19 <https://github.com/TYPO3-Solr/ext-solrfal/commit/601873a61>`_ (thanks to Rafael Kähm)
-- [BUGFIX][DOC] avoid creation of symlink inside the prod docs `8bfcb60d4 on @2023-10-20 <https://github.com/TYPO3-Solr/ext-solrfal/commit/8bfcb60d4>`_ (thanks to Rafael Kähm)
-- [TASK] Log solr response in case of Page indexing issue `8bc498e06 on @2023-10-26 <https://github.com/TYPO3-Solr/ext-solrfal/commit/8bc498e06>`_ (thanks to Daniel Siepmann)
-- [TASK] Use composers "preferred-install" config instead of reinstall `7c9279ff7 on @2023-10-26 <https://github.com/TYPO3-Solr/ext-solrfal/commit/7c9279ff7>`_ (thanks to Rafael Kähm)
-- [BUGFIX] Provide proper Uri Builder Request in VH `4303220b8 on @2023-10-30 <https://github.com/TYPO3-Solr/ext-solrfal/commit/4303220b8>`_ (thanks to Daniel Siepmann)
-- [BUGFIX] prevent empty array key if foreignLabelField is null `ae6381b43 on @2023-11-01 <https://github.com/TYPO3-Solr/ext-solrfal/commit/ae6381b43>`_ (thanks to clickstorm)
-- [FEATURE] Monitor extbase records `ed211e410 on @2023-10-17 <https://github.com/TYPO3-Solr/ext-solrfal/commit/ed211e410>`_ (thanks to Christoph Lehmann)
-- [TASK] Update the version matrix `c83b388fe on @2023-11-06 <https://github.com/TYPO3-Solr/ext-solrfal/commit/c83b388fe>`_ (thanks to Markus Friedrich)
-- [DOC] Fix changelogs and add hints about outdated state on branches `8d200cb2a on @2023-11-03 <https://github.com/TYPO3-Solr/ext-solrfal/commit/8d200cb2a>`_ (thanks to Rafael Kähm)
-- [BUGFIX] TikaStatus can't handle all response types of SolrWriteService->extractByQuery() `65665b09d on @2023-11-02 <https://github.com/TYPO3-Solr/ext-solrfal/commit/65665b09d>`_ (thanks to Rafael Kähm)
-- Add missing groups-key to TS Path `5c61b7543 on @2023-11-08 <https://github.com/TYPO3-Solr/ext-solrfal/commit/5c61b7543>`_ (thanks to Julian Hofmann)
-- Add `grouping.groups.[groupName].sortBy` `ece1b9975 on @2023-11-08 <https://github.com/TYPO3-Solr/ext-solrfal/commit/ece1b9975>`_ (thanks to Julian Hofmann)
-- [TASK] Rename namespace \\Trait\\ to \\Traits\\, due of consistency with 11.6.x `b3d5cb790 on @2023-11-08 <https://github.com/TYPO3-Solr/ext-solrfal/commit/b3d5cb790>`_ (thanks to Rafael Kähm)
-- !!![BUGFIX] Exception with tx_solr_statistics after latest TYPO3 security update `635883f6d on @2023-11-15 <https://github.com/TYPO3-Solr/ext-solrfal/commit/635883f6d>`_ (thanks to Rafael Kähm)
-- [BUGFIX] check if all sorting parts are present before access `e5826f30e on @2023-11-14 <https://github.com/TYPO3-Solr/ext-solrfal/commit/e5826f30e>`_ (thanks to Johannes)
-- [BUGFIX] Indexer does not work for extbase-records with sys_language_uid=-1 `d438c5470 on @2023-11-15 <https://github.com/TYPO3-Solr/ext-solrfal/commit/d438c5470>`_ (thanks to Rafael Kähm)
-- [BUGFIX]  Infinite loop in SolrRoutingMiddleware #3873 `667bbb48b on @2023-11-14 <https://github.com/TYPO3-Solr/ext-solrfal/commit/667bbb48b>`_ (thanks to Jaro von Flocken)
-- `Release 12.0.1 <https://github.com/TYPO3-Solr/ext-solr/releases/tag/12.0.0>`_ (thanks to all `contributors <https://github.com/TYPO3-Solr/ext-solr/graphs/contributors>`_ and `our EB Partners <https://www.typo3-solr.com/sponsors/our-sponsors/>`_)
+Release 12.0.1
+==============
+
+This is a maintenance release for TYPO3 12.4 LTS, containing:
+
+**Note:** This release requires the database schema update, due of database schema change from `pull-request #3881 <https://github.com/TYPO3-Solr/ext-solr/pull/3881>`_
+
+- [BUGFIX] Remove superfluous char in Dockerfile `e49a07e12 on @2023-10-16 <https://github.com/TYPO3-Solr/ext-solr/commit/e49a07e12>`_ (thanks to Christoph Lehmann)
+- [TASK] Add response object to return array of SolrWriteService::extractByQuery() `0b1a6a102 on @2023-10-19 <https://github.com/TYPO3-Solr/ext-solr/commit/0b1a6a102>`_ (thanks to Rafael Kähm)
+- [TASK] Add replace for EXT:solrfluidgrouping in composer json `601873a61 on @2023-10-19 <https://github.com/TYPO3-Solr/ext-solr/commit/601873a61>`_ (thanks to Rafael Kähm)
+- [BUGFIX][DOC] avoid creation of symlink inside the prod docs `8bfcb60d4 on @2023-10-20 <https://github.com/TYPO3-Solr/ext-solr/commit/8bfcb60d4>`_ (thanks to Rafael Kähm)
+- [TASK] Log solr response in case of Page indexing issue `8bc498e06 on @2023-10-26 <https://github.com/TYPO3-Solr/ext-solr/commit/8bc498e06>`_ (thanks to Daniel Siepmann)
+- [TASK] Use composers "preferred-install" config instead of reinstall `7c9279ff7 on @2023-10-26 <https://github.com/TYPO3-Solr/ext-solr/commit/7c9279ff7>`_ (thanks to Rafael Kähm)
+- [BUGFIX] Provide proper Uri Builder Request in VH `4303220b8 on @2023-10-30 <https://github.com/TYPO3-Solr/ext-solr/commit/4303220b8>`_ (thanks to Daniel Siepmann)
+- [BUGFIX] prevent empty array key if foreignLabelField is null `ae6381b43 on @2023-11-01 <https://github.com/TYPO3-Solr/ext-solr/commit/ae6381b43>`_ (thanks to clickstorm)
+- [FEATURE] Monitor extbase records `ed211e410 on @2023-10-17 <https://github.com/TYPO3-Solr/ext-solr/commit/ed211e410>`_ (thanks to Christoph Lehmann)
+- [TASK] Update the version matrix `c83b388fe on @2023-11-06 <https://github.com/TYPO3-Solr/ext-solr/commit/c83b388fe>`_ (thanks to Markus Friedrich)
+- [DOC] Fix changelogs and add hints about outdated state on branches `8d200cb2a on @2023-11-03 <https://github.com/TYPO3-Solr/ext-solr/commit/8d200cb2a>`_ (thanks to Rafael Kähm)
+- [BUGFIX] TikaStatus can't handle all response types of SolrWriteService->extractByQuery() `65665b09d on @2023-11-02 <https://github.com/TYPO3-Solr/ext-solr/commit/65665b09d>`_ (thanks to Rafael Kähm)
+- Add missing groups-key to TS Path `5c61b7543 on @2023-11-08 <https://github.com/TYPO3-Solr/ext-solr/commit/5c61b7543>`_ (thanks to Julian Hofmann)
+- Add `grouping.groups.[groupName].sortBy` `ece1b9975 on @2023-11-08 <https://github.com/TYPO3-Solr/ext-solr/commit/ece1b9975>`_ (thanks to Julian Hofmann)
+- [TASK] Rename namespace \\Trait\\ to \\Traits\\, due of consistency with 11.6.x `b3d5cb790 on @2023-11-08 <https://github.com/TYPO3-Solr/ext-solr/commit/b3d5cb790>`_ (thanks to Rafael Kähm)
+- !!![BUGFIX] Exception with tx_solr_statistics after latest TYPO3 security update `635883f6d on @2023-11-15 <https://github.com/TYPO3-Solr/ext-solr/commit/635883f6d>`_ (thanks to Rafael Kähm)
+- [BUGFIX] check if all sorting parts are present before access `e5826f30e on @2023-11-14 <https://github.com/TYPO3-Solr/ext-solr/commit/e5826f30e>`_ (thanks to Johannes)
+- [BUGFIX] Indexer does not work for extbase-records with sys_language_uid=-1 `d438c5470 on @2023-11-15 <https://github.com/TYPO3-Solr/ext-solr/commit/d438c5470>`_ (thanks to Rafael Kähm)
+- [BUGFIX]  Infinite loop in SolrRoutingMiddleware #3873 `667bbb48b on @2023-11-14 <https://github.com/TYPO3-Solr/ext-solr/commit/667bbb48b>`_ (thanks to Jaro von Flocken)
+- `Release 12.0.1 <https://github.com/TYPO3-Solr/ext-solr/releases/tag/12.0.1>`_ (thanks to all `contributors <https://github.com/TYPO3-Solr/ext-solr/graphs/contributors>`_ and `our EB Partners <https://www.typo3-solr.com/sponsors/our-sponsors/>`_)
 
 Release 12.0.0
---------------
+==============
 
 We are happy to release EXT:solr 12.0.0.
 The focus of this release has been on TYPO3 12 LTS compatibility.
@@ -44,31 +72,34 @@ The focus of this release has been on TYPO3 12 LTS compatibility.
 Please note that we require at least TYPO3 12.4.3, as this version contains some change `concerning to Fluid <https://github.com/TYPO3-Solr/ext-solr/commit/a528113bf>`_.
 
 New in this release
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 Support of TYPO3 12 LTS
-^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~
 
 With EXT:solr 12.0 we provide the support of TYPO3 12 LTS.
 
 !!! Upgrade to Apache Solr 9.3.0
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This release requires Apache Solr v 9.3.0+.
 
-**Note**: On third party installations enabling stream feature via the ENV vars or system properties is required.
+..  note::
+    On third party installations enabling stream feature via the ENV vars or system properties is required.
 
 Following variables must be set in solr.in.sh file or in Solr system props:
+
 * :bash:`SOLR_ENABLE_REMOTE_STREAMING=true`
 * :bash:`SOLR_ENABLE_STREAM_BODY=true`
 
 For more information see:
+
 * https://solr.apache.org/guide/solr/latest/upgrade-notes/major-changes-in-solr-9.html#security
 * https://issues.apache.org/jira/browse/SOLR-14853
 
 
 Reworked Search Query Component System
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Search Component system, which is used to enrich the search query (e.g.
 by faceting, boosting, debug analysis), has been completely reworked by
@@ -93,12 +124,13 @@ which has been removed, but now happens in :file:`Configuration/Services.yaml`
 as documented in TYPO3 Core's PSR-14 Registration API.
 
 Related hooks around this system have been moved to PSR-14 events as well:
+
 * :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['beforeSearch']` has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\AfterInitialSearchResultSetHasBeenCreatedEvent`
 * :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']` has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\AfterSearchHasBeenExecutedEvent`
 
 
 SignalSlots replaced by PSR-14 events
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The previously available Extbase Signals have been removed from EXT:solr in favor of PSR-14 Events.
 
@@ -122,7 +154,7 @@ The previously available Extbase Signals have been removed from EXT:solr in favo
   has been removed (see the new PSR-14 events below)
 
 Hooks replaced by PSR-14 events
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The previously available hooks and their respective interfaces have been removed from EXT:solr.
 
@@ -161,7 +193,7 @@ The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQ
 is now superseded by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\AfterIndexQueueItemHasBeenMarkedForReindexingEvent`
 
 PSR-14 events renamed
-^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~
 
 Previous PSR-14 events have been renamed to be consistent with other PSR-14 Events in EXT:solr.
 
@@ -170,35 +202,37 @@ Previous PSR-14 events have been renamed to be consistent with other PSR-14 Even
 * :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent` is now named :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent`
 
 !!! Shortcut pages not indexed anymore
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Currently there is no important reason to index the shortcut pages,
 because the target pages are indexed as expected and the shortcuts are 307-redirected to their targets.
 So contents can be found in search results as expected.
 
 !!! Deprecated Node class removed
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Former EXT:solr versions used an own node implementation for Solr endpoints, this implementation (\ApacheSolrForTypo3\Solr\System\Solr\Node) is now removed in favor of the Endpoint implementation of Solarium.
 
 If you've used this class or the SolrConnection directly, you have to adapt your PHP code:
-- use \Solarium\Core\Client\Endpoint instead of \ApacheSolrForTypo3\Solr\System\Solr\Node
-- call \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection->getEndpoint() instead of \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection\getNode(), method will return Solarium Endpoint
-- Node could be converted to string to get the core base URI, getCoreBaseUri() can be used instead.
+
+* use \Solarium\Core\Client\Endpoint instead of \ApacheSolrForTypo3\Solr\System\Solr\Node
+* call \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection->getEndpoint() instead of \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection\getNode(), method will return Solarium Endpoint
+* Node could be converted to string to get the core base URI, getCoreBaseUri() can be used instead.
 
 Note: With dropping the Node implementation we also dropped the backwards compatibility that allows to define the Solr path segment "/solr" within "solr_path_read" or "solr_path_write". Be sure your configuration doesn't contain this path segment!
 
 !!! Changed visibility of ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer methods
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For testing purposes some methods of the PageIndexer were defined as public, these methods are now protected. The tests are adapted accordingly, so that there is no need to declare the methods as public.
 If you have used one of this methods, you have to adapt your code. Affected methods:
-- setupConfiguration
-- index
-- indexPage
+
+* setupConfiguration
+* index
+* indexPage
 
 !!! Solr route enhancer disabled by default
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 EXT:solr offers the possibility to create speaking URLs for Solr facets, but as this feature requires additional configuration and costly processing this feature is now disabled by default.
 
@@ -208,7 +242,7 @@ If you've already used the route enhancer you must set option "enableRouteEnhanc
 
 
 Frontend Helper Changes
-^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~
 
 The FrontendHelper logic revolving around PageIndexer has been reduced to
 a minimum by only having two methods available:
@@ -220,7 +254,7 @@ The actual PageIndexerRequest object is now available as a property of TYPO3's
 Request object as attribute named "solr.pageIndexingInstructions".
 
 !!!Complex query in FlexForm filter value
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is now possible to use complex query in FlexForm filter value.
 If the value contains space and no special characters, the value is always automatically escaped.
@@ -238,7 +272,7 @@ Here the wrapping and the escaping of the inner double quote have to be manually
 :php:`"toto AND tata"` or :php:`"music (rock)"` and :php:`"my \"flow\" is"`.
 
 All Changes
-===========
+-----------
 
 - [TASK] TYPO3 dependencies `644ef7ab6 on @2022-10-24 <https://github.com/TYPO3-Solr/ext-solr/commit/644ef7ab6>`_ (thanks to Lars Tode)
 - [TASK] Upgrade Solarium `c9a42e8b6 on @2022-10-24 <https://github.com/TYPO3-Solr/ext-solr/commit/c9a42e8b6>`_ (thanks to Lars Tode)
@@ -474,7 +508,6 @@ awesome community. Here are the contributors to this release.
 
 (patches, comments, bug reports, reviews, ... in alphabetical order)
 
-
 - Achim Fritz
 - Albrecht Köhnlein
 - Alexander Nitsche
@@ -484,6 +517,7 @@ awesome community. Here are the contributors to this release.
 - Benni Mack
 - Benoit Chenu
 - Christoph Lehmann
+- Daniel Siepmann
 - Dmitry Dulepov
 - Elias Häußler
 - Eric Chavaillaz
@@ -497,16 +531,19 @@ awesome community. Here are the contributors to this release.
 - Jennifer Geiß
 - Lars Tode
 - Lukas Niestroj
+- Marc Hirdes
 - Mario Lubenka
 - Markus Friedrich
 - `@n3amil / Cypelt <https://github.com/n3amil>`_
 - Oliver Bartsch
+- Philipp Kitzberger
 - Rafael Kähm
 - René Maas
 - Sascha Nowak
 - Sascha Schieferdecker
 - Sebastian Schreiber
 - Silvia Bigler
+- Søren Malling
 - Stefan Frömken
 - Steve Lenz
 - Stämpfli Kommunikation
@@ -521,45 +558,64 @@ awesome community. Here are the contributors to this release.
 Also a big thank you to our partners who have already concluded one of our new development participation packages such
 as Apache Solr EB for TYPO3 12 LTS (Feature):
 
-
 - .hausformat GmbH
+- 711media websolutions GmbH
+- ACO Ahlmann SE & Co. KG
+- Ampack AG
+- Amt der Oö Landesregierung
+- Autorité des marchés financiers (lautorite.qc.ca)
+- AVM Computersysteme Vertriebs GmbH
 - b13 GmbH
+- CARL von CHIARI GmbH
 - clickstorm GmbH
 - Connecta AG
 - cron IT GmbH
 - CS2 AG
+- cyperfection GmbH
 - digit.ly GmbH
+- DP-Medsystems AG
+- DSCHOY GmbH
+- F7 Media GmbH
 - FTI Touristik GmbH
+- GPM Deutsche Gesellschaft für Projektmanagement e.V.
 - Hochschule Furtwangen
 - in2code GmbH
 - internezzo ag
 - jweiland.net
 - Kassenärztliche Vereinigung Rheinland-Pfalz
+- Kreis Euskirchen
 - KONVERTO AG
 - Leuchtfeuer Digital Marketing GmbH
 - Lingner Consulting New Media GmbH
 - LOUIS INTERNET GmbH
+- Macaw Germany Cologne GmbH
+- Marketing Factory Consulting GmbH
 - mehrwert intermediale kommunikation GmbH
 - plan2net GmbH
 - queo GmbH
 - Québec.ca gouv.qc.ca
+- Red Dot GmbH & Co. KG
 - Snowflake Productions GmbH
 - Stadtverwaltung Villingen-Schwenningen
 - Stämpfli AG
+- THE BRETTINGHAMS GmbH
+- UEBERBIT GmbH
+- Universität Regensburg
 - unternehmen online GmbH & Co. KG
 - VisionConnect GmbH
+- webconsulting business services gmbh
 - WIND INTERNET
-
+- wow! solution
 
 How to Get Involved
 ===================
 
 There are many ways to get involved with Apache Solr for TYPO3:
 
-* Submit bug reports and feature requests on [GitHub](https://github.com/TYPO3-Solr/ext-solr)
-* Ask or help or answer questions in our [Slack channel](https://typo3.slack.com/messages/ext-solr/)
-* Provide patches through Pull Request or review and comment on existing [Pull Requests](https://github.com/TYPO3-Solr/ext-solr/pulls)
-* Go to [www.typo3-solr.com](http://www.typo3-solr.com) or call [dkd](http://www.dkd.de) to sponsor the ongoing development of Apache Solr for TYPO3
+* Submit bug reports and feature requests on `GitHub <https://github.com/TYPO3-Solr/ext-solr>`__
+* Ask or help or answer questions in our `Slack channel <https://typo3.slack.com/messages/ext-solr/>`__
+* Provide patches through Pull Request or review and comment on existing `Pull Requests <https://github.com/TYPO3-Solr/ext-solr/pulls>`__
+* Go to `www.typo3-solr.com <https://www.typo3-solr.com>`__ or call `dkd <http://www.dkd.de>`__ to sponsor the ongoing development of Apache Solr for TYPO3
 
 Support us by becoming an EB partner:
 

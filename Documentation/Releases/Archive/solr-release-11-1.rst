@@ -1,17 +1,20 @@
 .. include:: /Includes.rst.txt
-..  index:: Archive
-.. _releases-11-1:
+.. _releases-archive-11-1:
 
-==============
+=============
+Releases 11.1
+=============
+
+..  include:: ../HintAboutOutdatedChangelog.rst.txt
+
 Release 11.1.0
 ==============
-
-..  include:: HintAboutOutdatedChangelog.rst.txt
 
 We are happy to release EXT:solr 11.1.0.
 The focus of this release has been on URL and SEO optimizations.
 
-**Important**: This version is installable with TYPO3 10 LTS only and contains some breaking changes, see details below.
+..  attention::
+    This version is installable with TYPO3 10 LTS only and contains some breaking changes, see details below.
 
 New in this release
 ===================
@@ -23,6 +26,7 @@ Introduce the TYPO3s route enhancer functionality for facets.
 This feature allows to mask facets inside the query string or as part of the path segment.
 
 See:
+
 * https://github.com/TYPO3-Solr/ext-solr/pull/2755
 * https://docs.typo3.org/m/typo3/reference-coreapi/10.4/en-us/ApiOverview/Routing/AdvancedRoutingConfiguration.html
 * https://docs.typo3.org/p/apache-solr-for-typo3/solr/11.1/en-us/Routing/Index.html
@@ -47,19 +51,19 @@ ASCII and Scandinavian Folding Filter
 To improve the search behaviour we introduce folding filters, e.g. allowing to skip accents in search terms. The following languages are
 now using the ASCII folding filter:
 
-* dutch
-* english
-* finish
-* french
-* german
-* hungarian
-* irish
-* italian
-* polish
-* portuguese
-* serbian (for fields that don't include the Serbian Normalization Filter)
-* spanish
-* turkish
+*    dutch
+*    english
+*    finish
+*    french
+*    german
+*    hungarian
+*    irish
+*    italian
+*    polish
+*    portuguese
+*    serbian (for fields that don't include the Serbian Normalization Filter)
+*    spanish
+*    turkish
 
 For the Scandinavian languages, Norwegian, Swedish and Danish, a similiar approach is used, but we're using the more specialized Scandinavian Normalization
 and Scandinavian Folding Filters.
@@ -81,14 +85,15 @@ TYPO3_CONF_VARS/FE/cacheHash/excludedParameters. This setting makes it impossibl
 Please follow the following migration instructions
 
 Plugin namespaces:
-Needed only if other as default (tx_solr) plugin namespace is used in instance. Add the used namespace[s] to $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr']['pluginNamespaces'] or via backend
+Needed only if other as default (tx_solr) plugin namespace is used in instance. Add the used namespace[s] to :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr']['pluginNamespaces']` or via backend
 "Settings" -> "Extension Configuration" -> "solr" -> "A list of white listed plugin namespaces"
 
 Global q parameter:
-Needed only if global "q" parameter without plugin namespace is used and wants to be included in cache hash calculation. Set the setting $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr']['pluginNamespaces'] = '1'
+Needed only if global "q" parameter without plugin namespace is used and wants to be included in cache hash calculation. Set the setting :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr']['pluginNamespaces'] = '1'`
 or enable it via backend "Settings" -> "Extension Configuration" -> "solr" -> "Include/Exclude global q parameter in/from cacheHash"
 
 See:
+
 * https://github.com/TYPO3-Solr/ext-solr/commit/7b0e77c2680d9dea7861f7bcd33abc1e8664f289
 * https://github.com/TYPO3-Solr/ext-solr/pull/2972
 
@@ -98,6 +103,7 @@ Scheduler task to optimize Solr cores
 This task allows you to optimize the indexes of given cores for a site at a planned time.
 
 See:
+
 * https://github.com/TYPO3-Solr/ext-solr/issues/2649
 * https://github.com/TYPO3-Solr/ext-solr/pull/2666
 * https://docs.typo3.org/p/apache-solr-for-typo3/solr/11.1/en-us/Backend/Scheduler.html#optimizing-cores-of-a-site
@@ -314,10 +320,10 @@ How to Get Involved
 
 There are many ways to get involved with Apache Solr for TYPO3:
 
-* Submit bug reports and feature requests on [GitHub](https://github.com/TYPO3-Solr/ext-solr)
-* Ask or help or answer questions in our [Slack channel](https://typo3.slack.com/messages/ext-solr/)
-* Provide patches through Pull Request or review and comment on existing [Pull Requests](https://github.com/TYPO3-Solr/ext-solr/pulls)
-* Go to [www.typo3-solr.com](http://www.typo3-solr.com) or call [dkd](http://www.dkd.de) to sponsor the ongoing development of Apache Solr for TYPO3
+* Submit bug reports and feature requests on `GitHub <https://github.com/TYPO3-Solr/ext-solr>`__
+* Ask or help or answer questions in our `Slack channel <https://typo3.slack.com/messages/ext-solr/>`__
+* Provide patches through Pull Request or review and comment on existing `Pull Requests <https://github.com/TYPO3-Solr/ext-solr/pulls>`__
+* Go to `www.typo3-solr.com <https://www.typo3-solr.com>`__ or call `dkd <http://www.dkd.de>`__ to sponsor the ongoing development of Apache Solr for TYPO3
 
 Support us by becoming an EB partner:
 
