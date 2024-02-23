@@ -39,6 +39,7 @@ class SolrAdminService extends AbstractSolrService
     const LUKE_SERVLET = 'admin/luke';
     const SYSTEM_SERVLET = 'admin/system';
     const CORES_SERVLET = '../admin/cores';
+    const PROPERTY_SERVLET = '../admin/info/properties';
     const FILE_SERVLET = 'admin/file';
     const SCHEMA_SERVLET = 'schema';
     const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
@@ -127,6 +128,26 @@ class SolrAdminService extends AbstractSolrService
     public function system(): ResponseAdapter
     {
         return $this->_sendRawGet($this->_constructUrl(self::SYSTEM_SERVLET, ['wt' => 'json']));
+    }
+
+    /**
+     * Gets system properties
+     *
+     * @return array|null
+     */
+    public function getSystemProperties(): ?array
+    {
+        $url = $this->_constructUrl(self::PROPERTY_SERVLET, ['wt' => 'json']);
+        $propertyInformation = $this->_sendRawGet($url);
+
+        $parsedPropertyInformation = $propertyInformation->getParsedData();
+        if ($parsedPropertyInformation === null
+            || !property_exists($parsedPropertyInformation, 'system.properties')
+        ) {
+            return null;
+        }
+
+        return (array)$parsedPropertyInformation->{'system.properties'};
     }
 
     /**

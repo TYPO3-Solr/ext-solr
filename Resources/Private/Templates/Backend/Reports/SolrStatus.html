@@ -1,47 +1,62 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	data-namespace-typo3-fluid="true"
+>
+
 <table class="table table-condensed table-hover table-striped">
-    <thead>
-    <tr>
-        <td colspan="2">{header}</td>
-    </tr>
-    </thead>
-    <tr>
-        <th>Site</th>
-        <td>{connection.label}</td>
-    </tr>
-    <tr>
-        <th>Scheme</th>
-        <td>{solr.primaryEndpoint.scheme}</td>
-    </tr>
-    <tr>
-        <th>Host</th>
-        <td>{solr.primaryEndpoint.host}</td>
-    </tr>
-    <tr>
-        <th>Path</th>
-        <td>{solr.corePath}</td>
-    </tr>
-    <tr>
-        <th>Port</th>
-        <td>{solr.primaryEndpoint.port}</td>
-    </tr>
+	<thead>
+	<tr>
+		<td colspan="2">{header}</td>
+	</tr>
+	</thead>
+	<tr>
+		<th>Site</th>
+		<td>{connection.label}</td>
+	</tr>
+	<tr>
+		<th>Scheme</th>
+		<td>{solr.primaryEndpoint.scheme}</td>
+	</tr>
+	<tr>
+		<th>Host</th>
+		<td>{solr.primaryEndpoint.host}</td>
+	</tr>
+	<tr>
+		<th>Path</th>
+		<td>{solr.corePath}</td>
+	</tr>
+	<tr>
+		<th>Port</th>
+		<td>{solr.primaryEndpoint.port}</td>
+	</tr>
 	<tr>
 		<th>Username</th>
 		<td>{connection.solrUsername}</td>
 	</tr>
-    <tr>
-        <th>Apache Solr</th>
-        <td>{solrVersion}</td>
-    </tr>
-    <tr>
-        <th>solrconfig.xml</th>
-        <td>{configName}</td>
-    </tr>
-    <tr>
-        <th>schema.xml</th>
-        <td>{schemaName}</td>
-    </tr>
-    <tr>
-        <th>Access Filter Plugin</th>
-        <td>{accessFilter}</td>
-    </tr>
+	<tr>
+		<th>Apache Solr</th>
+		<td>{solrVersion}</td>
+	</tr>
+	<tr>
+		<th>solrconfig.xml</th>
+		<td>{configName}</td>
+	</tr>
+	<tr>
+		<th>schema.xml</th>
+		<td>{schemaName}</td>
+	</tr>
+	<tr>
+		<th>Access Filter Plugin</th>
+		<td>{accessFilter}</td>
+	</tr>
+	<f:if condition="{streamBodySetting}">
+	<tr>
+		<th>Content Streams<br><small>(SOLR_ENABLE_REMOTE_STREAMING)</small></th>
+		<td class="{f:if(condition:'{streamBodySetting} !== \'true\'', then: 'warning')}">
+			{streamBodySetting}
+		</td>
+	</tr>
+	</f:if>
 </table>
+
+</html>
