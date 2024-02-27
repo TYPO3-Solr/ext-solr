@@ -1,13 +1,14 @@
 .. include:: /Includes.rst.txt
-..  index:: Archive
-.. _releases-10:
+.. _releases-archive-10:
 
 =============
 Releases 10.0
 =============
 
-..  include:: HintAboutOutdatedChangelog.rst.txt
+..  include:: ../HintAboutOutdatedChangelog.rst.txt
 
+Release 10.0.0
+==============
 
 We are happy to release EXT:solr 10.0.0.
 The focus of EXT:solr 10.0.0 was, to support the `site handling <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/SiteHandling/Index.html />`_ that was introduced in TYPO3 9 LTS .
@@ -18,48 +19,48 @@ Since the development budget is limited at one side and we have other project re
 If you want to support us please consider to sponsor us.
 
 New in this release
-===================
+-------------------
 
 TYPO3 9 LTS site handling support
----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The major new feature of EXT:solr 10 is the support of the TYPO3 site handling. You can now configure the Apache Solr connections along with your TYPO3 site.
-To get a typical solr site running you now need only a few settings and can use the site handling user interface for that.
+To get a typical Solr site running you now need only a few settings and can use the site handling user interface for that.
 
 Apache Solr 8.2 support
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 EXT:solr 10 ships Apache Solr 8.2.
 
 Note: The data volume of the Apache Solr Docker container was changed from ```/opt/solr/server/solr/data``` to ```/var/solr/data/data``` this might require changes in your infrastructure configuration.
 
 Extensionscanner cleanup
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Most (not all) of the extension scanner violations have been fixed. We hope to get the extension scanner violations cleaned in the next releases.
 
 Drop TYPO3 8 compatibility
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To simplify the development we've dropped the compatibility for TYPO3 8 LTS. If you need to use TYPO3 8 please use the 9.0.x branch.
 
 
 Add default field for image and price
--------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To allow external applications to index common information for product's we've added a field for price and image. Along with that we've changed the suggest to render the content of the "image" field instead of "previewImage_stringS", this might require changes in  your index configuration.
 
 
 Migration from EXT:solr 9 to EXT:solr 10
-========================================
+----------------------------------------
 
 Important things on sites with activated Site Handling
-------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default EXT:solr 10 expects the configuration of solr connections and cores in the site handling module, along with your TYPO3 site.
-The configuration of the solr connections with your site are available immediatly, so now initialization of connections is required anymore.
+By default EXT:solr 10 expects the configuration of Solr connections and cores in the site handling module, along with your TYPO3 site.
+The configuration of the Solr connections with your site are available immediatly, so now initialization of connections is required anymore.
 
-The old fashioned setup (domain records and solr connections in TypoScript) are now the *legacy mode*. If you want or need to use that still, you can enable the legacy mode,
+The old fashioned setup (domain records and Solr connections in TypoScript) are now the *legacy mode*. If you want or need to use that still, you can enable the legacy mode,
 with your extension configuration by setting ```allowLegacySiteMode = 1```.
 
 The following things will become standard, and should be preferred and activated/configured as close as possible and in some cases immediately,
@@ -77,7 +78,7 @@ All Apache Solr connections must be stored in Site Handling "config.yaml" file f
 config.absRefPrefix
 """""""""""""""""""
 
-The `"config.absRefPrefix" <https://docs.typo3.org/m/typo3/reference-typoscript/master/en-us/Setup/Config/Index.html#absrefprefix />`_ is `obsolete <https://docs.typo3.org/c/typo3/cms-core/9.5/en-us/Changelog/9.4/Feature-86057-ImprovedTypolinkURLLinkGeneration.html />`_ and must be replaced with
+The `"config.absRefPrefix" <https://docs.typo3.org/m/typo3/reference-typoscript/main/en-us/Setup/Config/Index.html#absrefprefix />`_ is `obsolete <https://docs.typo3.org/c/typo3/cms-core/9.5/en-us/Changelog/9.4/Feature-86057-ImprovedTypolinkURLLinkGeneration.html />`_ and must be replaced with
 Site Handlings `"base" <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/SiteHandling/Basics.html#base />`_ or `"baseVariants" <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/SiteHandling/BaseVariants.html />`_ settings.
 
 
@@ -95,7 +96,7 @@ There are the following known and wanted limitations:
    variables. To configure a username the setting ``solr_username_read`` or
    ``solr_password_read`` can be used in the yaml file.
 
-*  It is **not** possible to configure a different solr hostname with the UI.
+*  It is **not** possible to configure a different Solr hostname with the UI.
    If you need that you can still configured that in the yaml file, by using the
    fallback mechanism.
 
@@ -152,12 +153,6 @@ The example above shows that you are able to define the setting
 configuration and the user interface should be kept simple, this can only be
 configured in the yaml.
 
-Removed Code
-============
-
-The following code parts have been removed as announced in previous versions of EXT:solr:
-
-TBD
 
 Contributors
 ============
@@ -280,10 +275,10 @@ How to Get Involved
 
 There are many ways to get involved with Apache Solr for TYPO3:
 
-* Submit bug reports and feature requests on [GitHub](https://github.com/TYPO3-Solr/ext-solr)
-* Ask or help or answer questions in our [Slack channel](https://typo3.slack.com/messages/ext-solr/)
-* Provide patches through Pull Request or review and comment on existing [Pull Requests](https://github.com/TYPO3-Solr/ext-solr/pulls)
-* Go to [www.typo3-solr.com](http://www.typo3-solr.com) or call [dkd](http://www.dkd.de) to sponsor the ongoing development of Apache Solr for TYPO3
+* Submit bug reports and feature requests on `GitHub <https://github.com/TYPO3-Solr/ext-solr>`__
+* Ask or help or answer questions in our `Slack channel <https://typo3.slack.com/messages/ext-solr/>`__
+* Provide patches through Pull Request or review and comment on existing `Pull Requests <https://github.com/TYPO3-Solr/ext-solr/pulls>`__
+* Go to `www.typo3-solr.com <https://www.typo3-solr.com>`__ or call `dkd <http://www.dkd.de>`__ to sponsor the ongoing development of Apache Solr for TYPO3
 
 Support us by becoming an EB partner:
 
