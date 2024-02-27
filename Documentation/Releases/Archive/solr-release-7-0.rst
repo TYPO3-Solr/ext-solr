@@ -1,19 +1,21 @@
 .. include:: /Includes.rst.txt
-..  index:: Archive
-.. _releases-7:
+.. _releases-archive-7:
 
-=============
+============
+Releases 7.0
+============
+
 Release 7.0.0
 =============
 
 We are happy to release EXT:solr 7.0.0. This release brings several smaller and some bigger changes
 
 New in this release
-===================
+-------------------
 
 
 FLUID Templating
-----------------
+~~~~~~~~~~~~~~~~
 
 One and a half years ago we started to implement FLUID templating for EXT:solr. This project was initially started as the addon solrfluid. Solrfuid was only available for our partners.
 
@@ -21,36 +23,49 @@ With EXT:solr 7.0.0 the new templating is the default templating in EXT:solr. A 
 
 Most of the things just work like before but in the following parts we made conceptional changes (for good reasons):
 
-* No css or javascript will be added to the page automatically with the page renderer! Because the integrator wants to have control on that and TYPO3 allows to add this with TypoScript we propose to add these things via typoscript. EXT:solr offers a lot of example typoscript templates e.g. to add the default css or to add the javascript for a range facet.
+* No css or javascript will be added to the page automatically with the page renderer! Because the integrator wants to have control on that and TYPO3 allows to add this with TypoScript we propose to add these things via TypoScript. EXT:solr offers a lot of example TypoScript templates e.g. to add the default css or to add the javascript for a range facet.
 
-The following typoscript settings have been removed because they can be implemented with FLUID:
+The following TypoScript settings have been removed because they can be implemented with FLUID:
 
-**plugin.tx_solr.search.faceting.facetLinkATagParams**
+
+..  code-block:: typoscript
+
+    plugin.tx_solr.search.faceting.facetLinkATagParams
 
 You can add them in your project partials. If you need it just for one facet, please overwrite the render partial with facet.partialName and render the attributes different there
 
-**plugin.tx_solr.search.faceting.[facetName].facetLinkATagParams**
+..  code-block:: typoscript
+
+    plugin.tx_solr.search.faceting.[facetName].facetLinkATagParams
 
 You can add them in your project partials. If you need it just for one facet, please overwrite the render partial with facet.partialName and render the attributes different there
 
-**plugin.tx_solr.search.faceting.facets.[facetName].selectingSelectedFacetOptionRemovesFilter**
+..  code-block:: typoscript
+
+    plugin.tx_solr.search.faceting.facets.[facetName].selectingSelectedFacetOptionRemovesFilter
 
 This can be implemented with FLUID logic. Please check the example "Search - (Example) Options with on/off toggle" that implements that (by using the partial Facets/OptionsToggle.html)
 
-**plugin.tx_solr.search.results.fieldRenderingInstructions**
+..  code-block:: typoscript
+
+    plugin.tx_solr.search.results.fieldRenderingInstructions
 
 Please use custom ViewHelpers or the cObject ViewHelper for that.
 
-**plugin.tx_solr.search.results.fieldProcessingInstructions**
+..  code-block:: typoscript
+
+    plugin.tx_solr.search.results.fieldProcessingInstructions
 
 Please use custom ViewHelpers or the cObject ViewHelper for that.
 
-**Important:** The support of fluid templating would not have been possible without the financial support of all partners! If you want to support us with the implementation of features like this, please think about to join the EB 2017 or 2018. Special thanks also to Frans Saris and beech.it for working on solrfluid together!
+
+..  attention::
+    The support of fluid templating would not have been possible without the financial support of all partners! If you want to support us with the implementation of features like this, please think about to join the EB 2017 or 2018. Special thanks also to Frans Saris and beech.it for working on solrfluid together!
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1308
 
 Backend Modules Restructured
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In EXT:solr 7.0.0 the backend modules are structured into multiple backend modules. This makes the user experience in the TYPO3 backend more consistent and allows you, to give different permissions on each module.
 
@@ -59,13 +74,13 @@ When you login into the backend, you now have the following modules available:
 * Info: Gives information of your Solr system, index fields and search usage.
 * Core Optimization: This module can be used to maintain the synonyms and stopwords in the Apache Solr server.
 * Index Queue: Gives an overview on indexed records and can be used to requeue records for indexing.
-* Index Administration: This module can be used for administrator tasks on your solr system (clear index, index queue or reload a core)
+* Index Administration: This module can be used for administrator tasks on your Solr system (clear index, index queue or reload a core)
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1300
 
 
 Add excludeValues for Facets
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you want to exclude an optionValue from the facets when they get retrieved, you can configure this now:
 
@@ -79,7 +94,7 @@ The example below will exclude the option "red" from the results when it is in t
 * https://github.com/TYPO3-Solr/ext-solr/pull/1364
 
 Allow to configure custom entry Template
-----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In previous EXT:solr versions it was possible to set a custom entry templating using:
 
@@ -129,25 +144,25 @@ With the prevision configuration the editor can switch from "Default Searchresul
 
 
 Refactoring of Query API
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Query class is one of the biggest classes in EXT:solr and grown over time. This class has now been splitted into several classes.
 Along with that a concept of "ParameterBuilder" has been introduced. A ParameterBuilder is responsible to build a parameter part of the query.
-E.g. the Grouping ParameterBuilder is responsible to build all parameters of the solr query for the grouping.
+E.g. the Grouping ParameterBuilder is responsible to build all parameters of the Solr query for the grouping.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1385
 
 Move FilterEncoder and FacetBuilder to Facet Package
-----------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Solrfluid there was one folder for each facet, that contains the facet class and a parser that parsers the solr response into the facet object.
-The opposite part(parse the url, build the solr query) was previously done in EXT:solr, with a FilterEncoder that was registered in the FacetRendererFactory.
+In Solrfluid there was one folder for each facet, that contains the facet class and a parser that parsers the Solr response into the facet object.
+The opposite part(parse the url, build the Solr query) was previously done in EXT:solr, with a FilterEncoder that was registered in the FacetRendererFactory.
 
-Now because solrfluid and solr have been merged, this logic can also be streamlined. Every facet is now structured in a FacetPackage.
+Now because solrfluid and Solr have been merged, this logic can also be streamlined. Every facet is now structured in a FacetPackage.
 
 A FacetPackage describes:
 
-* Which parser should be used to parse the solr response
+* Which parser should be used to parse the Solr response
 * Which url decoder should be used to parse the EXT:solr query data
 * Which query builder should be used to build the faceting query part
 
@@ -161,7 +176,7 @@ If you have used a custom FacetParser without registring a custom facet type in 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1319
 
 Custom plugin namespace - Multiple Instances
---------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Before solrfluid was merged there were several parts in EXT:solr where the data was read using GeneralUtility::_GET. The drawback of this approach is that the structure of the urls is hard to change and it is not possible to have custom namespaces for each instance of a plugin.
 
@@ -170,7 +185,7 @@ With solrfuid a SearchRequest object was introduced. This object holds all data 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1379
 
 Doctrine Migration
-------------------
+~~~~~~~~~~~~~~~~~~
 
 As an ongoing task, we started with the migration of database queries to doctrine. Since the database is used in many parts of the extension there are still many parts open.
 If you want to work on that, your help is very welcome.
@@ -181,28 +196,28 @@ If you want to work on that, your help is very welcome.
 * https://github.com/TYPO3-Solr/ext-solr/pull/1271
 
 Add --rootpageid to CLI command
--------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you want or need to limit the initialization of solr connections to a special rootpage, you can now do this by adding the argument --rootpageid.
+If you want or need to limit the initialization of Solr connections to a special rootpage, you can now do this by adding the argument --rootpageid.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1305
 
 Respect Setting includeInAvailableFacets and includeInUsedFacets
-----------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This setting was not evaluated in EXT:solrfluid before and is now available also with FLUID rendering.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1340
 
 Respect requirements facet setting with fluid
----------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This setting was not evaluated in EXT:solrfluid before and is now available also with the FLUID rendering.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1401
 
-Respect setting searchUsingSpellCheckerSuggestion with fluid
-------------------------------------------------------------
+Respect setting searchUsingSpellCheckerSuggestion with Fluid
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This setting was not evaluated in EXT:solrfluid before and is now available also with the FLUID rendering.
 
@@ -210,18 +225,19 @@ This setting was not evaluated in EXT:solrfluid before and is now available also
 
 
 Get rid of dependency to sys_domain record
-------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By now EXT:solr had the dependency on an existing domain record. This can be a problem, when you domain is dynamic or
 you need to be able to generate it.
 
 Now you can configure a domain by the rootPageId in the TYPO3_CONF_VARS, the domain record is still used, when nothing is configured here.
 
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites'][###rootPageId###]['domains'] = ['mydomain.com'];
+..  code-block:: php
 
-**Note:**
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites'][###rootPageId###]['domains'] = ['mydomain.com'];
 
-There might be an approach to support this in TYPO3 Version 9 by the core and we will adopt this then.
+..  note::
+    There might be an approach to support this in TYPO3 Version 9 by the core and we will adopt this then.
 
 During the implementation of this the logic to retrieve the SiteHash and get the SolrConfiguration was moved to the SiteRepository,
 this requires an update of the scheduler instances because the scheduler saves a serialized task. Please run the shipped migration to
@@ -230,7 +246,7 @@ update scheduler tasks created with 6.1.x.
 * https://github.com/TYPO3-Solr/ext-solr/pull/1512
 
 Preparations for TYPO3 9
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Several things that will be removed with 9 have been changed:
 
@@ -239,7 +255,7 @@ Several things that will be removed with 9 have been changed:
 * https://github.com/TYPO3-Solr/ext-solr/pull/1462
 
 Bugfixes
-========
+--------
 
 * Enable zero-configuration use of Docker image: https://github.com/TYPO3-Solr/ext-solr/issues/1278
 * Remove unused use statement: https://github.com/TYPO3-Solr/ext-solr/pull/1292
@@ -253,7 +269,7 @@ Bugfixes
 
 
 Removed Code
-============
+------------
 
 The following code has been removed since it is not used anymore:
 
@@ -272,7 +288,7 @@ Methods:
 * Util::pageExists
 
 Deprecated Code
-===============
+---------------
 
 Methods:
 
@@ -312,6 +328,18 @@ Hooks:
 
 * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'] has been marked as deprecated and will be dropped in 8.0 please use a SearchResultSetProcessor registered in $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] as replacement.
 * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] has been marked as deprecated and will be dropped in 8.0 please use a SearchResultSetProcessor registered in $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] as replacement.
+
+
+Outlook
+=======
+
+In the next release we want to focus on the user experience in the backend and in the frontend. As preparation we collected several tasks.
+
+The goal of some of them (e.g. bootstrap templating, checkbox facets, filterable options partial) is to make more things possible out of the box and make the extension more user friendly:
+
+https://github.com/TYPO3-Solr/ext-solr/issues?q=is%3Aissue+is%3Aopen+label%3AUX
+
+If you have allready implemented one this (or something else), that you want to share or make available outofthebox feel free to contanct us!
 
 Contributors
 ============
@@ -438,26 +466,15 @@ Also a big thanks to our partners that have joined the EB2017 program:
 
 Thanks to everyone who helped in creating this release!
 
-Outlook
-=======
-
-In the next release we want to focus on the user experience in the backend and in the frontend. As preparation we collected several tasks.
-
-The goal of some of them (e.g. bootstrap templating, checkbox facets, filterable options partial) is to make more things possible out of the box and make the extension more user friendly:
-
-https://github.com/TYPO3-Solr/ext-solr/issues?q=is%3Aissue+is%3Aopen+label%3AUX
-
-If you have allready implemented one this (or something else), that you want to share or make available outofthebox feel free to contanct us!
-
 How to Get Involved
 ===================
 
 There are many ways to get involved with Apache Solr for TYPO3:
 
-* Submit bug reports and feature requests on [GitHub](https://github.com/TYPO3-Solr/ext-solr)
-* Ask or help or answer questions in our [Slack channel](https://typo3.slack.com/messages/ext-solr/)
-* Provide patches through Pull Request or review and comment on existing [Pull Requests](https://github.com/TYPO3-Solr/ext-solr/pulls)
-* Go to [www.typo3-solr.com](http://www.typo3-solr.com) or call [dkd](http://www.dkd.de) to sponsor the ongoing development of Apache Solr for TYPO3
+* Submit bug reports and feature requests on `GitHub <https://github.com/TYPO3-Solr/ext-solr>`__
+* Ask or help or answer questions in our `Slack channel <https://typo3.slack.com/messages/ext-solr/>`__
+* Provide patches through Pull Request or review and comment on existing `Pull Requests <https://github.com/TYPO3-Solr/ext-solr/pulls>`__
+* Go to `www.typo3-solr.com <https://www.typo3-solr.com>`__ or call `dkd <http://www.dkd.de>`__ to sponsor the ongoing development of Apache Solr for TYPO3
 
 Support us in 2017 by becoming an EB partner:
 
