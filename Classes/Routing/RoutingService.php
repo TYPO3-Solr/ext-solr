@@ -630,7 +630,7 @@ class RoutingService implements LoggerAwareInterface
      */
     public function containsFacetAndValueSeparator(string $facetWithValue): bool
     {
-        return !(!str_contains($facetWithValue, ':') && !str_contains($facetWithValue, '%3A'));
+        return str_contains($facetWithValue, ':') || str_contains($facetWithValue, '%3A');
     }
 
     /**
