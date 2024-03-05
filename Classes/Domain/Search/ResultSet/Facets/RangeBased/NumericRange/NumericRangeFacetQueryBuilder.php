@@ -19,6 +19,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderInterface;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface
 {
@@ -36,9 +38,35 @@ class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface
         }
         $facetParameters['facet.range'][] = $tag . $facetConfiguration['field'];
 
-        $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.start'] = $facetConfiguration['numericRange.']['start'];
-        $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.end'] = $facetConfiguration['numericRange.']['end'];
-        $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.gap'] = $facetConfiguration['numericRange.']['gap'];
+        $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+
+        $start = $facetConfiguration['numericRange.']['start'];
+        if ($facetConfiguration['numericRange.']['start.'] ?? false) {
+            $start = $cObj->stdWrap(
+                $facetConfiguration['numericRange.']['start'],
+                $facetConfiguration['numericRange.']['start.']
+            );
+        }
+
+        $end = $facetConfiguration['numericRange.']['end'];
+        if ($facetConfiguration['numericRange.']['end.'] ?? false) {
+            $end = $cObj->stdWrap(
+                $facetConfiguration['numericRange.']['end'],
+                $facetConfiguration['numericRange.']['end.']
+            );
+        }
+
+        $gap = $facetConfiguration['numericRange.']['gap'];
+        if ($facetConfiguration['numericRange.']['gap.'] ?? false) {
+            $gap = $cObj->stdWrap(
+                $facetConfiguration['numericRange.']['gap'],
+                $facetConfiguration['numericRange.']['gap.']
+            );
+        }
+
+        $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.start'] = $start;
+        $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.end'] = $end;
+        $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.gap'] = $gap;
 
         return $facetParameters;
     }
