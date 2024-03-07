@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
+use AllowDynamicProperties;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
@@ -23,7 +24,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-abstract class AbstractFacet
+#[AllowDynamicProperties] abstract class AbstractFacet
 {
     public const TYPE_ABSTRACT = 'abstract';
 
