@@ -24,6 +24,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
@@ -282,12 +283,12 @@ abstract class AbstractIndexer
         switch ($fieldType) {
             case 'int':
             case 'tInt':
-                $value = (int)$value;
+                $value = MathUtility::canBeInterpretedAsInteger($value) ? (int)$value : null;
                 break;
 
             case 'float':
             case 'tFloat':
-                $value = (float)$value;
+                $value = MathUtility::canBeInterpretedAsInteger($value) || MathUtility::canBeInterpretedAsFloat($value) ? (float)$value : null;
                 break;
             case 'long':
                 // long and double do not exist in PHP
@@ -297,7 +298,7 @@ abstract class AbstractIndexer
                 // remove anything that's not a number or negative/minus sign
                 $value = preg_replace('/[^0-9\\-]/', '', $value);
                 if (trim($value) === '') {
-                    $value = 0;
+                    $value = null;
                 }
                 break;
             case 'double':
@@ -305,7 +306,7 @@ abstract class AbstractIndexer
             case 'tDouble4':
                 // as long as it's numeric we'll take it, int or float doesn't matter
                 if (!is_numeric($value)) {
-                    $value = 0;
+                    $value = null;
                 }
                 break;
 
