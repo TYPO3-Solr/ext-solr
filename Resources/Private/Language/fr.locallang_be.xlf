@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" target-language="fr" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_be.xlf" date="2021-12-15T13:10:00Z" product-name="solr">
+		<header/>
+		<body>
+			<trans-unit id="extConf.monitoringType" xml:space="preserve">
+				<source>Monitoring: Define how data updates should be monitored</source>
+				<target>Surveillance: Définir comment les mise à jour des données sont surveillées</target>
+			</trans-unit>
+			<trans-unit id="extConf.monitoringType.I.0" xml:space="preserve">
+				<source>Immediate</source>
+				<target>Immédiatement</target>
+			</trans-unit>
+			<trans-unit id="extConf.monitoringType.I.1" xml:space="preserve">
+				<source>Delayed (Scheduler task)</source>
+				<target>Différée (Tâche planifiée)</target>
+			</trans-unit>
+			<trans-unit id="extConf.monitoringType.I.2" xml:space="preserve">
+				<source>No monitoring at all</source>
+				<target>Pas de Surveillance du tout</target>
+			</trans-unit>
+
+			<trans-unit id="task.eventQueueWorkerTask.title" xml:space="preserve">
+				<source>Event Queue Worker</source>
+				<target>Traitement de la file d&apos;événement</target>
+			</trans-unit>
+			<trans-unit id="task.eventQueueWorkerTask.description" xml:space="preserve">
+				<source>Task handling the queue data update events. Required if monitoringType is set to "Delayed".</source>
+				<target>Tâche gérant les événements de mise à jour de données. Requis si monitoringType est défini à « Différée ».</target>
+			</trans-unit>
+			<trans-unit id="task.eventQueueWorkerTask.limit" xml:space="preserve">
+				<source>Processing limit, the number of events to process</source>
+				<target>Limit de traitement, le nombre d&apos;événements à traiter</target>
+			</trans-unit>
+			<trans-unit id="task.eventQueueWorkerTask.statusMsg" xml:space="preserve">
+				<source>Data update events to process: %1$d, Errors: %2$d. %3$d events will be processed per run.</source>
+				<target>Événements de mise à jour à traiter : %1$d, Erreurs: %2$d. %3$d événements sont traités par exécution.</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
