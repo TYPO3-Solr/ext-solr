@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0" xmlns:t3="http://typo3.org/schemas/xliff">
+	<file t3:id="1415814793" source-language="en" target-language="fr" datatype="plaintext" original="EXT:core/Resources/Private/Language/locallang_csh_pages.xlf" date="2020-12-1T15:22:32Z" product-name="context_help">
+		<header/>
+		<body>
+			<trans-unit id="no_search_sub_entries.description" resname="no_search_sub_entries.description">
+				<source>If enabled, this option includes the sub entries of this page in Solr index. (NOTE: Value=0 means enabled in this view.)</source>
+				<target>Si activée, cette option inclue les sous-entrées de cette page dans l'index Solr. (NOTE : Valeur=0 signifie activé dans cette vue.)</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
