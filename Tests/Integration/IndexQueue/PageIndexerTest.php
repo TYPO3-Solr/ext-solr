@@ -202,6 +202,17 @@ class PageIndexerTest extends IntegrationTestBase
                 'protected ce',
             ],
         ];
+
+        yield 'page protected by extend to subpages' => [
+            'can_index_sub_page_of_protected_page_with_extend_to_subpage',
+            1,
+            [
+                '2:1/c:0',
+            ],
+            [
+                'public content of protected page',
+            ],
+        ];
     }
 
     /**

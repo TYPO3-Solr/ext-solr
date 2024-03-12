@@ -40,15 +40,20 @@ class FrontendGroupsModifier
     public function __invoke(ModifyResolvedFrontendGroupsEvent $event): void
     {
         $pageIndexerRequest = $event->getRequest()->getAttribute('solr.pageIndexingInstructions');
-        if (!$pageIndexerRequest instanceof PageIndexerRequest
-            || (
-                (int)$pageIndexerRequest->getParameter('userGroup') === 0
-                && (
-                    (int)$pageIndexerRequest->getParameter('pageUserGroup') !== -2
-                    &&
-                    (int)$pageIndexerRequest->getParameter('pageUserGroup') < 1
-                )
+        if (!$pageIndexerRequest instanceof PageIndexerRequest) {
+            return;
+        }
+
+        $groups = $this->resolveFrontendUserGroups($pageIndexerRequest);
+
+        $noRelevantFrontendUserGroupResolved = empty($groups) || (count($groups) === 1 && $groups[0] === 0);
+        if ((int)$pageIndexerRequest->getParameter('userGroup') === 0
+            && (
+                (int)$pageIndexerRequest->getParameter('pageUserGroup') !== -2
+                &&
+                (int)$pageIndexerRequest->getParameter('pageUserGroup') < 1
             )
+            && $noRelevantFrontendUserGroupResolved
         ) {
             return;
         }
@@ -76,7 +81,6 @@ class FrontendGroupsModifier
             );
         }
 
-        $groups = $this->resolveFrontendUserGroups($pageIndexerRequest);
         if ((int)$pageIndexerRequest->getParameter('pageUserGroup') > 0) {
             $groups[] = (int)$pageIndexerRequest->getParameter('pageUserGroup');
         }
