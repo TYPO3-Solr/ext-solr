@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="fr" datatype="plaintext" original="messages" date="2014-06-02T11:48:40Z" product-name="solr">
+		<header/>
+		<body>
+			<trans-unit id="mlang_tabs_tab" xml:space="preserve">
+				<source>Index Administration</source>
+				<target>Administration de l&apos;Index</target>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tablabel" xml:space="preserve">
+				<source>Administrate your solr system</source>
+				<target>Administrer votre system solr</target>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tabdescr" xml:space="preserve">
+				<source>This module allows you to do admin operations on the index (e.g. clear the index queue or clean the solr server).</source>
+				<target>Ce module vous permet d&apos;effectuer des opérations d'administration sur l&apos;index (ex. nettoyer la file d&apos;indexation ou nettoyer le serveur solr).</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
