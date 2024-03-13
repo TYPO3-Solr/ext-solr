@@ -2,7 +2,7 @@ includes:
   - %rootDir%/../phpstan-phpunit/extension.neon
 
 parameters:
-  level: 0
+  level: 1
   treatPhpDocTypesAsCertain: false
 
   bootstrapFiles:
@@ -17,4 +17,4 @@ parameters:
     - %currentWorkingDirectory%/Tests
 
   ignoreErrors:
-    - '#^Variable \$_EXTKEY might not be defined\.#'
+    - '#Constructor of class .*\\Sorting has an unused parameter \$resultSet.#'

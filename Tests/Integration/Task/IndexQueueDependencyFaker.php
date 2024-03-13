@@ -37,7 +37,6 @@ class IndexQueueDependencyFaker
      * @param string $url
      * @param bool $flags
      * @param resource $context
-     * @return string
      */
     public static function getHttpContent($url, $flags, $context)
     {

@@ -55,7 +55,7 @@ class SortingExpression
     {
         $isMetricSorting = strpos($sorting, 'metrics_') === 0;
         $expression = $isMetricSorting ? $sorting : $this->getForFacet($sorting);
-        $direction = strtolower($direction ?? '');
+        $direction = strtolower($direction);
         if (!empty($direction) && in_array($direction, ['asc', 'desc'])) {
             $expression .= ' ' . $direction;
         }

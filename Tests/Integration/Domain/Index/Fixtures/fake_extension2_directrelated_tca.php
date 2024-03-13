@@ -2,7 +2,7 @@
 
 return [
     'ctrl' => [
-        'title' => $ll . 'tx_fakeextension_domain_model_directrelated',
+        'title' => 'tx_fakeextension_domain_model_directrelated',
         'descriptionColumn' => 'category',
         'label' => 'category',
         'hideAtCopy' => true,

@@ -84,7 +84,7 @@ class ConnectionManagerTest extends UnitTest
         $GLOBALS['TSFE'] = $TSFE;
 
         /** @var TemplateService $GLOBALS['TSFE']->tmpl */
-        $GLOBALS['TSFE']->tmpl = $this->getDumbMock(TemplateService::class, ['linkData']);
+        $GLOBALS['TSFE']->tmpl = $this->getDumbMock(TemplateService::class);
         $GLOBALS['TSFE']->tmpl->setup['config.']['typolinkEnableLinksAcrossDomains'] = 0;
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.']['host'] = 'localhost';
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.']['port'] = '8999';

@@ -979,6 +979,7 @@ class GarbageCollectorTest extends IntegrationTest
         self::assertEquals(1, $updatedItems);
 
         // run the indexer
+        $result = false;
         $items = $this->indexQueue->getItems($table, $uid);
         foreach ($items as $item) {
             $result = $this->indexer->index($item);

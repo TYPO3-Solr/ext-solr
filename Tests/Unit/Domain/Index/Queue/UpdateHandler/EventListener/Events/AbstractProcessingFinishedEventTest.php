@@ -26,6 +26,8 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 abstract class AbstractProcessingFinishedEventTest extends UnitTest
 {
+    protected const EVENT_CLASS = 'stdClass';
+
     /**
      * @test
      */

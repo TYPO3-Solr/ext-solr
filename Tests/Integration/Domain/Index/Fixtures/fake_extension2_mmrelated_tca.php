@@ -2,7 +2,7 @@
 
 return [
     'ctrl' => [
-        'title' => $ll . 'tx_fakeextension_domain_model_mmrelated',
+        'title' => 'tx_fakeextension_domain_model_mmrelated',
         'descriptionColumn' => 'tag',
         'label' => 'tag',
         'hideAtCopy' => true,

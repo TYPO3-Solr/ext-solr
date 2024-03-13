@@ -117,7 +117,6 @@ class PageModuleSummary
     /**
      * @param string $settingName
      * @param array $values
-     * @return bool
      */
     protected function addSettingFromFlexFormArray($settingName, $values)
     {

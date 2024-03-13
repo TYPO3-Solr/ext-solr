@@ -188,7 +188,7 @@ class SuggestService
         $facetSuggestions = isset($suggestConfig['suggestField']) ? $results->facet_counts->facet_fields->{$suggestConfig['suggestField']} ?? [] : [];
         $facetSuggestions = ParsingUtil::getMapArrayFromFlatArray($facetSuggestions);
 
-        return $facetSuggestions ?? [];
+        return $facetSuggestions;
     }
 
     /**
