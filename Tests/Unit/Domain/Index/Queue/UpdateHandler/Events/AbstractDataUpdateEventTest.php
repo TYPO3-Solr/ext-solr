@@ -27,6 +27,9 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 abstract class AbstractDataUpdateEventTest extends UnitTest
 {
+    protected const EVENT_CLASS = AbstractDataUpdateEvent::class;
+    protected const EVENT_TEST_TABLE = 'tx_foo_bar';
+
     /**
      * @return AbstractDataUpdateEventTest
      *

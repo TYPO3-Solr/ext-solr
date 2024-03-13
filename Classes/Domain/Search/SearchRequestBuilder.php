@@ -76,7 +76,7 @@ class SearchRequestBuilder
         $requestedPerPage = $searchRequest->getResultsPerPage();
 
         $perPageSwitchOptions = $this->typoScriptConfiguration->getSearchResultsPerPageSwitchOptionsAsArray();
-        if (isset($requestedPerPage) && in_array($requestedPerPage, $perPageSwitchOptions)) {
+        if (in_array($requestedPerPage, $perPageSwitchOptions)) {
             $this->session->setPerPage($requestedPerPage);
             $searchRequest->setPage(0);
         }

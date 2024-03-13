@@ -170,7 +170,7 @@ class SiteRepository
         $sites = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
         $this->runtimeCache->set($cacheId, $sites);
 
-        return $sites ?? [];
+        return $sites;
     }
 
     /**

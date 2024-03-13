@@ -428,7 +428,7 @@ class PageIndexerRequest
                 ),
                 [
                     'HTTP headers' => $response->getHeaders(),
-                    'options' => $options,
+                    'options' => $options ?? [],
                 ]
             );
         }

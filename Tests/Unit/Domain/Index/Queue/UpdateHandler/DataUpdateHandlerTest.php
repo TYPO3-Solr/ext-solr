@@ -59,7 +59,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
     /**
      * @var SolrLogManager|MockObject
      */
-    protected $solrLogManagerMock;
+    protected $loggerMock;
 
     protected function setUp(): void
     {

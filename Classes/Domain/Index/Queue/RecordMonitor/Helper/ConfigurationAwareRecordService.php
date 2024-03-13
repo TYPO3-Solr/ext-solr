@@ -147,7 +147,7 @@ class ConfigurationAwareRecordService
         $row = (array)BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
         $cache->set($cacheId, $row);
 
-        return $row ?? [];
+        return $row;
     }
 
     /**

@@ -48,7 +48,7 @@ echo "Run PHPStan analysis"
 if ! composer tests:phpstan
 then
   # disable fail temporary
-  #EXIT_CODE=7
+  EXIT_CODE=7
   echo "Error during running the PHPStan analysis, please check and fix them."
   echo "Tip for working on them: "
   echo "  TYPO3_VERSION=\"${TYPO3_VERSION}\" composer tests:setup && composer tests:phpstan"

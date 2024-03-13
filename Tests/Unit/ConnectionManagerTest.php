@@ -85,7 +85,7 @@ class ConnectionManagerTest extends UnitTest
         $GLOBALS['TSFE'] = $TSFE;
 
         /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */
-        $GLOBALS['TSFE']->tmpl = $this->getDumbMock(TemplateService::class, ['linkData']);
+        $GLOBALS['TSFE']->tmpl = $this->getDumbMock(TemplateService::class);
         $GLOBALS['TSFE']->tmpl->getFileName_backPath = Environment::getPublicPath() . '/';
         $GLOBALS['TSFE']->tmpl->setup['config.']['typolinkEnableLinksAcrossDomains'] = 0;
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.']['host'] = 'localhost';

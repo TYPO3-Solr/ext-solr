@@ -272,7 +272,7 @@ class IndexerTest extends IntegrationTest
         // @extensionScannerIgnoreLine
         $tags = $decodedSolrContent->response->docs[0]->tags_stringM;
 
-        self::assertSame(['the tag', 'another tag'], $tags, $solrContent, 'Did not find MM related tags');
+        self::assertSame(['the tag', 'another tag'], $tags, 'Did not find MM related tags');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
 
