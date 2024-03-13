@@ -113,12 +113,9 @@ class SolrStatus extends AbstractSolrStatus
         $pingTime = $this->checkPingTime($solrAdmin);
         $configName = $this->checkSolrConfigName($solrAdmin);
         $schemaName = $this->checkSolrSchemaName($solrAdmin);
-        if (version_compare($solrVersion, '8.11.3', '>=')) {
-            $streamBodySetting = $this->checkStreamBodySetting($solrAdmin);
-        }
 
         if ($this->responseStatus !== Status::OK) {
-            $header = 'Failed contacting the Solr server or invalid settings found.';
+            $header = 'Failed contacting the Solr server.';
         }
 
         $variables = [
@@ -130,7 +127,6 @@ class SolrStatus extends AbstractSolrStatus
             'configName' => $configName,
             'schemaName' => $schemaName,
             'accessFilter' => $accessFilter,
-            'streamBodySetting' => $streamBodySetting ?? null,
         ];
 
         $report = $this->getRenderedReport('SolrStatus.html', $variables);
@@ -232,23 +228,6 @@ class SolrStatus extends AbstractSolrStatus
         }
 
         return $solrSchemaMessage;
-    }
-
-    protected function checkStreamBodySetting(SolrAdminService $solrAdminService): string
-    {
-        $systemProperties = $solrAdminService->getSystemProperties();
-        if ($systemProperties === null) {
-            $this->responseStatus = Status::ERROR;
-            return 'Error determining system properties';
-        }
-
-        $streamSetting = (bool)($systemProperties['solr.enableStreamBody'] ?? false);
-        if (!$streamSetting) {
-            $this->responseStatus = Status::ERROR;
-            return 'Content Streams not enabled';
-        }
-
-        return 'true';
     }
 
     /**
