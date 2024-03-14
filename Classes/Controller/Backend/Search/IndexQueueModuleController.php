@@ -318,13 +318,14 @@ class IndexQueueModuleController extends AbstractModuleController
     protected function getIndexQueues(): array
     {
         $queues = [];
-        $configuration = $this->selectedSite?->getSolrConfiguration();
-        if ($configuration) {
-            foreach ($configuration->getEnabledIndexQueueConfigurationNames() as $indexingConfiguration) {
-                $indexQueueClass = $configuration->getIndexQueueClassByConfigurationName($indexingConfiguration);
-                if (!isset($queues[$indexQueueClass])) {
-                    $queues[$indexQueueClass] = GeneralUtility::makeInstance($indexQueueClass);
-                }
+        if ($this->selectedSite === null) {
+            return [];
+        }
+        $configuration = $this->selectedSite->getSolrConfiguration();
+        foreach ($configuration->getEnabledIndexQueueConfigurationNames() as $indexingConfiguration) {
+            $indexQueueClass = $configuration->getIndexQueueClassByConfigurationName($indexingConfiguration);
+            if (!isset($queues[$indexQueueClass])) {
+                $queues[$indexQueueClass] = GeneralUtility::makeInstance($indexQueueClass);
             }
         }
 
