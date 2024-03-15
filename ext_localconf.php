@@ -15,6 +15,8 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\Routing\Enhancer\SolrFacetMaskAndCombineEnhancer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use ApacheSolrForTypo3\Solr\Task\CleanupIndexTask;
+use ApacheSolrForTypo3\Solr\Task\CleanupTaskAdditionalFieldProvider;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTaskAdditionalFieldProvider;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
@@ -85,6 +87,13 @@ defined('TYPO3') or die('Access denied.');
         'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:task.eventQueueWorkerTask.title',
         'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:task.eventQueueWorkerTask.description',
         'additionalFields' => EventQueueWorkerTaskAdditionalFieldProvider::class,
+    ];
+
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][CleanupIndexTask::class] = [
+        'extension' => 'solr',
+        'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang_.xlf:task.cleanupIndex.title',
+        'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:task.cleanupIndex.description',
+        'additionalFields' => CleanupTaskAdditionalFieldProvider::class,
     ];
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][TableGarbageCollectionTask::class]['options']['tables']['tx_solr_statistics'])) {
