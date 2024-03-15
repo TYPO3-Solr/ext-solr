@@ -318,6 +318,9 @@ class IndexQueueModuleController extends AbstractModuleController
     protected function getIndexQueues(): array
     {
         $queues = [];
+        if ($this->selectedSite === null) {
+            return [];
+        }
         $configuration = $this->selectedSite->getSolrConfiguration();
         foreach ($configuration->getEnabledIndexQueueConfigurationNames() as $indexingConfiguration) {
             $indexQueueClass = $configuration->getIndexQueueClassByConfigurationName($indexingConfiguration);
