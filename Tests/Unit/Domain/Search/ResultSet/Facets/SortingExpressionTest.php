@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Traversable;
 
 /**
  * Unit test for the SortingExpression
@@ -28,51 +29,49 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class SortingExpressionTest extends SetUpUnitTestCase
 {
-    public function canBuildSortExpressionDataProvider(): array
+    public static function canBuildSortExpressionDataProvider(): Traversable
     {
-        return [
-            'byAlpha' => ['sorting' => 'alpha', 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'],
-            'byLex' => ['sorting' => 'lex', 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'],
-            'byOne' => ['sorting' => 1, 'direction' => '', 'isJson' => false, 'expectedResult' => 'count'],
-            'byZero' => ['sorting' => 0, 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'],
-            'byTrue' => ['sorting' => true, 'direction' => '', 'isJson' => false, 'expectedResult' => 'count'],
-            'byFalse' => ['sorting' => false, 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'],
+        yield 'byAlpha' => ['sorting' => 'alpha', 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'];
+        yield 'byLex' => ['sorting' => 'lex', 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'];
+        yield 'byOne' => ['sorting' => 1, 'direction' => '', 'isJson' => false, 'expectedResult' => 'count'];
+        yield 'byZero' => ['sorting' => 0, 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'];
+        yield 'byTrue' => ['sorting' => true, 'direction' => '', 'isJson' => false, 'expectedResult' => 'count'];
+        yield 'byFalse' => ['sorting' => false, 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'];
 
-            'byIndex' => ['sorting' => 'index', 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'],
-            'byCount' => ['sorting' => 'count', 'direction' => '', 'isJson' => false, 'expectedResult' => 'count'],
+        yield 'byIndex' => ['sorting' => 'index', 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'];
+        yield 'byCount' => ['sorting' => 'count', 'direction' => '', 'isJson' => false, 'expectedResult' => 'count'];
 
-            'byAlphaJson' => ['sorting' => 'alpha', 'direction' => '', 'isJson' => true, 'expectedResult' => 'index'],
-            'byAlphaJsonSortAsc' => ['sorting' => 'alpha', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'index asc'],
-            'byAlphaJsonSortDesc' => ['sorting' => 'alpha', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'index desc'],
-            'byLexJson' => ['sorting' => 'lex', 'direction' => '', 'isJson' => true, 'expectedResult' => 'index'],
-            'byLexJsonSortAsc' => ['sorting' => 'lex', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'index asc'],
-            'byLexJsonSortDesc' => ['sorting' => 'lex', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'index desc'],
+        yield 'byAlphaJson' => ['sorting' => 'alpha', 'direction' => '', 'isJson' => true, 'expectedResult' => 'index'];
+        yield 'byAlphaJsonSortAsc' => ['sorting' => 'alpha', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'index asc'];
+        yield 'byAlphaJsonSortDesc' => ['sorting' => 'alpha', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'index desc'];
+        yield 'byLexJson' => ['sorting' => 'lex', 'direction' => '', 'isJson' => true, 'expectedResult' => 'index'];
+        yield 'byLexJsonSortAsc' => ['sorting' => 'lex', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'index asc'];
+        yield 'byLexJsonSortDesc' => ['sorting' => 'lex', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'index desc'];
 
-            'byOneJson' => ['sorting' => 1, 'direction' => '', 'isJson' => true, 'expectedResult' => 'count'],
-            'byOneJsonSortAsc' => ['sorting' => 1, 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'count asc'],
-            'byOneJsonSortDesc' => ['sorting' => 1, 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'count desc'],
-            'byZeroJson' => ['sorting' => 0, 'direction' => '', 'isJson' => true, 'expectedResult' => 'index'],
-            'byZeroJsonSortAsc' => ['sorting' => 0, 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'index asc'],
-            'byZeroJsonSortDesc' => ['sorting' => 0, 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'index desc'],
+        yield 'byOneJson' => ['sorting' => 1, 'direction' => '', 'isJson' => true, 'expectedResult' => 'count'];
+        yield 'byOneJsonSortAsc' => ['sorting' => 1, 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'count asc'];
+        yield 'byOneJsonSortDesc' => ['sorting' => 1, 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'count desc'];
+        yield 'byZeroJson' => ['sorting' => 0, 'direction' => '', 'isJson' => true, 'expectedResult' => 'index'];
+        yield 'byZeroJsonSortAsc' => ['sorting' => 0, 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'index asc'];
+        yield 'byZeroJsonSortDesc' => ['sorting' => 0, 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'index desc'];
 
-            'byTrueJson' => ['sorting' => true, 'direction' => '', 'isJson' => true, 'expectedResult' => 'count'],
-            'byTrueJsonSortAsc' => ['sorting' => true, 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'count asc'],
-            'byTrueJsonSortDesc' => ['sorting' => true, 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'count desc'],
-            'byFalseJson' => ['sorting' => false, 'direction' => '', 'isJson' => true, 'expectedResult' => 'index'],
-            'byFalseJsonSortAsc' => ['sorting' => false, 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'index asc'],
-            'byFalseJsonSortDesc' => ['sorting' => false, 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'index desc'],
+        yield 'byTrueJson' => ['sorting' => true, 'direction' => '', 'isJson' => true, 'expectedResult' => 'count'];
+        yield 'byTrueJsonSortAsc' => ['sorting' => true, 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'count asc'];
+        yield 'byTrueJsonSortDesc' => ['sorting' => true, 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'count desc'];
+        yield 'byFalseJson' => ['sorting' => false, 'direction' => '', 'isJson' => true, 'expectedResult' => 'index'];
+        yield 'byFalseJsonSortAsc' => ['sorting' => false, 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'index asc'];
+        yield 'byFalseJsonSortDesc' => ['sorting' => false, 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'index desc'];
 
-            'byIndexJson' => ['sorting' => 'index', 'direction' => '', 'isJson' => true, 'expectedResult' => 'index'],
-            'byIndexJsonSortAsc' => ['sorting' => 'index', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'index asc'],
-            'byIndexJsonSortDesc' => ['sorting' => 'index', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'index desc'],
+        yield 'byIndexJson' => ['sorting' => 'index', 'direction' => '', 'isJson' => true, 'expectedResult' => 'index'];
+        yield 'byIndexJsonSortAsc' => ['sorting' => 'index', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'index asc'];
+        yield 'byIndexJsonSortDesc' => ['sorting' => 'index', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'index desc'];
 
-            'byCountJson' => ['sorting' => 'count', 'direction' => '', 'isJson' => true, 'expectedResult' => 'count'],
-            'byCountJsonSortAsc' => ['sorting' => 'count', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'count asc'],
-            'byCountJsonSortDesc' => ['sorting' => 'count', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'count desc'],
+        yield 'byCountJson' => ['sorting' => 'count', 'direction' => '', 'isJson' => true, 'expectedResult' => 'count'];
+        yield 'byCountJsonSortAsc' => ['sorting' => 'count', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'count asc'];
+        yield 'byCountJsonSortDesc' => ['sorting' => 'count', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'count desc'];
 
-            'byMetricJsonSortAsc' => ['sorting' => 'metrics_newest', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'metrics_newest asc'],
-            'byMetricJsonSortDesc' => ['sorting' => 'metrics_newest', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'metrics_newest desc'],
-        ];
+        yield 'byMetricJsonSortAsc' => ['sorting' => 'metrics_newest', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'metrics_newest asc'];
+        yield 'byMetricJsonSortDesc' => ['sorting' => 'metrics_newest', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'metrics_newest desc'];
     }
 
     /**

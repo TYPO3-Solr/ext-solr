@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
@@ -28,7 +28,7 @@ use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
  * @author Timo Schmidt
  * (c) 2015 Timo Schmidt <timo.schmidt@dkd.de>
  */
-class PageIndexerTest extends IntegrationTest
+class PageIndexerTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/solr',

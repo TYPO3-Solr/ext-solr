@@ -17,43 +17,42 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Highlight;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Highlight\SiteHighlighterUrlModifier;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Traversable;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
 class SiteHighlighterUrlModifierTest extends SetUpUnitTestCase
 {
-    public function canModifyDataProvider(): array
+    public static function canModifyDataProvider(): Traversable
     {
-        return [
-            'nothingChangedWhenNoSearchWordPresent' => [
-                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar',
-                '',
-                false,
-                true,
-                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar',
-            ],
-            'cHashIsRemoved' => [
-                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar',
-                'hello world',
-                true,
-                false,
-                'http://mywebsite.de/home/index.html?foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1',
-            ],
-            'cHashIsKept' => [
-                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar',
-                'hello world',
-                true,
-                true,
-                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1',
-            ],
-            'fragmentIsKept' => [
-                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar#test',
-                'hello world',
-                true,
-                true,
-                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1#test',
-            ],
+        yield 'nothingChangedWhenNoSearchWordPresent' => [
+            'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar',
+            '',
+            false,
+            true,
+            'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar',
+        ];
+        yield 'cHashIsRemoved' => [
+            'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar',
+            'hello world',
+            true,
+            false,
+            'http://mywebsite.de/home/index.html?foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1',
+        ];
+        yield 'cHashIsKept' => [
+            'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar',
+            'hello world',
+            true,
+            true,
+            'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1',
+        ];
+        yield 'fragmentIsKept' => [
+            'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar#test',
+            'hello world',
+            true,
+            true,
+            'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1#test',
         ];
     }
 

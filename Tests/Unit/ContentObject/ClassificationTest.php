@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Classification;
+use Traversable;
 
 /**
  * Tests for the SOLR_CLASSIFICATION cObj.
@@ -58,20 +59,15 @@ class ClassificationTest extends SetUpContentObject
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @return array
-     */
-    public function excludePatternDataProvider(): array
+    public static function excludePatternDataProvider(): Traversable
     {
-        return [
-            'excludePatternShouldLeadToUnassignedClass' => [
-                'input' => 'from the beach i can see the waves',
-                'expectedOutput' => [],
-            ],
-            'noMatchingExlucePatternLeadsToExpectedClass' => [
-                'input' => 'i saw a shark between the waves',
-                'expectedOutput' => ['ocean'],
-            ],
+        yield 'excludePatternShouldLeadToUnassignedClass' => [
+            'input' => 'from the beach i can see the waves',
+            'expectedOutput' => [],
+        ];
+        yield 'noMatchingExlucePatternLeadsToExpectedClass' => [
+            'input' => 'i saw a shark between the waves',
+            'expectedOutput' => ['ocean'],
         ];
     }
 

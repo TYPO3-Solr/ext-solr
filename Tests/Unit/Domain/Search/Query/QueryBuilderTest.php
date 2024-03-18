@@ -39,6 +39,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\QueryType\Select\RequestBuilder;
+use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 
@@ -193,8 +194,8 @@ class QueryBuilderTest extends SetUpUnitTestCase
         $rootlineUtilityMock = $this->createMock(RootlineUtility::class);
         $matcher = self::exactly($rootLinesCount);
         $rootlineUtilityMock->method('get')->willReturnCallback(static function () use ($matcher, $rootLines): array {
-            if (isset($rootLines[$matcher->getInvocationCount()])) {
-                return $rootLines[$matcher->getInvocationCount()];
+            if (isset($rootLines[$matcher->numberOfInvocations()])) {
+                return $rootLines[$matcher->numberOfInvocations()];
             }
             self::fail('unexpected invocation count');
         });
@@ -212,7 +213,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertEquals($expectedResult, $filter->getQuery());
     }
 
-    public static function buildSearchIsRespectingPageSectionFiltersDataProvider(): \Traversable
+    public static function buildSearchIsRespectingPageSectionFiltersDataProvider(): Traversable
     {
         yield 'static page section filter' => [
             [

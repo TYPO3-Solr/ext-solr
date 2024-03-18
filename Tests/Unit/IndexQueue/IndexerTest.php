@@ -32,6 +32,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Generator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
 use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
@@ -129,7 +130,7 @@ class IndexerTest extends SetUpUnitTestCase
     /**
      * Data provider for "canTriggerIndexingAndIndicateIndexStatus"
      */
-    public function canTriggerIndexingAndIndicateIndexStatusDataProvider(): \Generator
+    public static function canTriggerIndexingAndIndicateIndexStatusDataProvider(): Generator
     {
         yield 'Item could be indexed' => [
             200,
@@ -203,7 +204,7 @@ class IndexerTest extends SetUpUnitTestCase
     /**
      * Data provider for "canGetAdditionalDocuments"
      */
-    public function canGetAdditionalDocumentsDataProvider(): \Generator
+    public static function canGetAdditionalDocumentsDataProvider(): Generator
     {
         yield 'no listener registered' => [
             null,

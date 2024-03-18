@@ -19,7 +19,8 @@ use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use Traversable;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -28,7 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Schmidt
  */
-class IndexServiceTest extends IntegrationTest
+class IndexServiceTest extends IntegrationTestBase
 {
     /**
      * @inheritdoc
@@ -57,13 +58,11 @@ class IndexServiceTest extends IntegrationTest
         $this->indexQueue->updateItem($table, $uid, time());
     }
 
-    public function canResolveBaseAsPrefixDataProvider(): array
+    public static function canResolveBaseAsPrefixDataProvider(): Traversable
     {
-        return [
-            'absRefPrefixIsFoo' => [
-                'absRefPrefix' => 'foo',
-                'expectedUrl' => '/foo/en/?tx_ttnews%5Btt_news%5D=111&cHash=a14e458509b71459d1edaafd1d5a84a1',
-            ],
+        yield 'absRefPrefixIsFoo' => [
+            'absRefPrefix' => 'foo',
+            'expectedUrl' => '/foo/en/?tx_ttnews%5Btt_news%5D=111&cHash=a14e458509b71459d1edaafd1d5a84a1',
         ];
     }
 

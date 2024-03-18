@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Access;
 
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Traversable;
 
 /**
  * Testcase to verify the functionality of the RootlineElement
@@ -25,82 +26,77 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class RootlineElementTest extends SetUpUnitTestCase
 {
-    /**
-     * @return array
-     */
-    public function validRootLineRePresentations()
+    public static function validRootLineRePresentations(): Traversable
     {
-        return [
-            'empty' => [
-                'stringRepresentation' => '',
-                'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
-                'expectedGroups' => [0],
-                'expectedPageId' => null,
-                'expectedToString' => 'c:0',
-            ],
-            'no_prefix' => [
-                'stringRepresentation' => '0',
-                'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
-                'expectedGroups' => [0],
-                'expectedPageId' => null,
-                'expectedToString' => 'c:0',
-            ],
-            'no_prefix_restricted' => [
-                'stringRepresentation' => '1',
-                'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
-                'expectedGroups' => [1],
-                'expectedPageId' => null,
-                'expectedToString' => 'c:1',
-            ],
-            'no_prefix_multiple' => [
-                'stringRepresentation' => '0,1,2',
-                'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
-                'expectedGroups' => [0, 1, 2],
-                'expectedPageId' => null,
-                'expectedToString' => 'c:0,1,2',
-            ],
-            'simpleContent' => [
-                'stringRepresentation' => 'c:0',
-                'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
-                'expectedGroups' => [0],
-                'expectedPageId' => null,
-                'expectedToString' => 'c:0',
-            ],
-            'contentWithPermissionContent' => [
-                'stringRepresentation' => 'c:1,2',
-                'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
-                'expectedGroups' => [1, 2],
-                'expectedPageId' => null,
-                'expectedToString' => 'c:1,2',
-            ],
-            'record' => [
-                'stringRepresentation' => 'r:1,2',
-                'expectedType' => RootlineElement::ELEMENT_TYPE_RECORD,
-                'expectedGroups' => [1, 2],
-                'expectedPageId' => null,
-                'expectedToString' => 'r:1,2',
-            ],
-            'page' => [
-                'stringRepresentation' => '4711:0',
-                'expectedType' => RootlineElement::ELEMENT_TYPE_PAGE,
-                'expectedGroups' => [0],
-                'expectedPageId' => 4711,
-                'expectedToString' => '4711:0',
-            ],
-            'pageList' => [
-                'stringRepresentation' => '4711:1,2',
-                'expectedType' => RootlineElement::ELEMENT_TYPE_PAGE,
-                'expectedGroups' => [1, 2],
-                'expectedPageId' => 4711,
-                'expectedToString' => '4711:1,2',
-            ],
-            'minusTwo' => [
-                'stringRepresentation' => 'c:-2',
-                'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
-                'expectedGroups' => [-2],
-                'expectedPageId' => null,
-                'expectedToString' => 'c:-2',
-            ],
+        yield 'empty' => [
+            'stringRepresentation' => '',
+            'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
+            'expectedGroups' => [0],
+            'expectedPageId' => null,
+            'expectedToString' => 'c:0',
+        ];
+        yield 'no_prefix' => [
+            'stringRepresentation' => '0',
+            'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
+            'expectedGroups' => [0],
+            'expectedPageId' => null,
+            'expectedToString' => 'c:0',
+        ];
+        yield 'no_prefix_restricted' => [
+            'stringRepresentation' => '1',
+            'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
+            'expectedGroups' => [1],
+            'expectedPageId' => null,
+            'expectedToString' => 'c:1',
+        ];
+        yield 'no_prefix_multiple' => [
+            'stringRepresentation' => '0,1,2',
+            'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
+            'expectedGroups' => [0, 1, 2],
+            'expectedPageId' => null,
+            'expectedToString' => 'c:0,1,2',
+        ];
+        yield 'simpleContent' => [
+            'stringRepresentation' => 'c:0',
+            'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
+            'expectedGroups' => [0],
+            'expectedPageId' => null,
+            'expectedToString' => 'c:0',
+        ];
+        yield 'contentWithPermissionContent' => [
+            'stringRepresentation' => 'c:1,2',
+            'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
+            'expectedGroups' => [1, 2],
+            'expectedPageId' => null,
+            'expectedToString' => 'c:1,2',
+        ];
+        yield 'record' => [
+            'stringRepresentation' => 'r:1,2',
+            'expectedType' => RootlineElement::ELEMENT_TYPE_RECORD,
+            'expectedGroups' => [1, 2],
+            'expectedPageId' => null,
+            'expectedToString' => 'r:1,2',
+        ];
+        yield 'page' => [
+            'stringRepresentation' => '4711:0',
+            'expectedType' => RootlineElement::ELEMENT_TYPE_PAGE,
+            'expectedGroups' => [0],
+            'expectedPageId' => 4711,
+            'expectedToString' => '4711:0',
+        ];
+        yield 'pageList' => [
+            'stringRepresentation' => '4711:1,2',
+            'expectedType' => RootlineElement::ELEMENT_TYPE_PAGE,
+            'expectedGroups' => [1, 2],
+            'expectedPageId' => 4711,
+            'expectedToString' => '4711:1,2',
+        ];
+        yield 'minusTwo' => [
+            'stringRepresentation' => 'c:-2',
+            'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
+            'expectedGroups' => [-2],
+            'expectedPageId' => null,
+            'expectedToString' => 'c:-2',
         ];
     }
 

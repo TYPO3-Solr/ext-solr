@@ -28,8 +28,10 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\SkippedWithMessageException;
 use Psr\Log\LogLevel;
+use Traversable;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -43,11 +45,10 @@ use TYPO3\CMS\Scheduler\Scheduler;
  *
  * @author Timo Schmidt
  */
-class RecordMonitorTest extends IntegrationTest
+class RecordMonitorTest extends IntegrationTestBase
 {
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
-        'scheduler',
+        'typo3/cms-scheduler',
     ];
 
     protected array $testExtensionsToLoad = [
@@ -169,7 +170,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function canUpdateRootPageRecordWithoutSQLErrorFromMountPages(): void
     {
-        $this->markAsRisky();
+        throw new SkippedWithMessageException('Skipping canUpdateRootPageRecordWithoutSQLErrorFromMountPages');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -1510,20 +1511,15 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
-    /**
-     * @return array
-     */
-    public function updateRecordOutsideSiteRootWithAdditionalWhereClauseDataProvider(): array
+    public static function updateRecordOutsideSiteRootWithAdditionalWhereClauseDataProvider(): Traversable
     {
-        return [
-            'record-1' => [
-                'uid' => 1,
-                'root' => 1,
-            ],
-            'record-2' => [
-                'uid' => 2,
-                'root' => 111,
-            ],
+        yield 'record-1' => [
+            'uid' => 1,
+            'root' => 1,
+        ];
+        yield 'record-2' => [
+            'uid' => 2,
+            'root' => 111,
         ];
     }
 

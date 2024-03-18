@@ -16,7 +16,8 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -26,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Hund <timo.hund.de>
  */
-class SiteHashServiceTest extends IntegrationTest
+class SiteHashServiceTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {
@@ -34,16 +35,11 @@ class SiteHashServiceTest extends IntegrationTest
         $this->writeDefaultSolrTestSiteConfiguration();
     }
 
-    /**
-     * @return array
-     */
-    public function canResolveSiteHashAllowedSitesDataProvider(): array
+    public static function canResolveSiteHashAllowedSitesDataProvider(): Traversable
     {
-        return [
-            'siteHashDisabled' => ['*', '*'],
-            'allSitesInSystem' => ['__all', 'testone.site,testtwo.site'],
-            'currentSiteOnly' => ['__current_site', 'testone.site'],
-        ];
+        yield 'siteHashDisabled' => ['*', '*'];
+        yield 'allSitesInSystem' => ['__all', 'testone.site,testtwo.site'];
+        yield 'currentSiteOnly' => ['__current_site', 'testone.site'];
     }
 
     /**
