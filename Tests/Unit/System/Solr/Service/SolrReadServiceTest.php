@@ -94,16 +94,11 @@ class SolrReadServiceTest extends SetUpUnitTestCase
         self::assertTrue($this->service->hasSearched(), 'hasSearch indicates that no search was triggered');
     }
 
-    /**
-     * @return array
-     */
-    public function readServiceExceptionDataProvider()
+    public static function readServiceExceptionDataProvider(): \Traversable
     {
-        return [
-            'Communication error' => ['exceptionClass' => SolrUnavailableException::class, 0],
-            'Internal Server eror' => ['expcetionClass' => SolrInternalServerErrorException::class, 500],
-            'Other unspecific error' => ['expcetionClass' => SolrCommunicationException::class, 555],
-        ];
+        yield 'Communication error' => ['exceptionClass' => SolrUnavailableException::class, 0];
+        yield 'Internal Server eror' => ['expcetionClass' => SolrInternalServerErrorException::class, 500];
+        yield 'Other unspecific error' => ['expcetionClass' => SolrCommunicationException::class, 555];
     }
 
     /**

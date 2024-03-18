@@ -87,13 +87,37 @@ class QueueInitializerServiceTest extends SetUpUnitTestCase
         $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::any())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
 
+        $matcher = self::exactly(2);
         $service
-            ->expects(self::exactly(2))
+            ->expects($matcher)
             ->method('executeInitializer')
-            ->withConsecutive(
-                [$siteMock, 'my_pages', 'MyPagesInitializer', 'pages', $fakeTs['plugin.']['tx_solr.']['index.']['queue.']['my_pages.']],
-                [$siteMock, 'my_news', 'MyNewsInitializer', 'tx_news_domain_model_news', $fakeTs['plugin.']['tx_solr.']['index.']['queue.']['my_news.']]
-            );
+            ->willReturnCallback(static function () use ($siteMock, $fakeTs, $matcher): bool {
+                match ($matcher->numberOfInvocations()) {
+                    1 => self::assertEquals(
+                        func_get_args(),
+                        [
+                            $siteMock,
+                            'my_pages',
+                            'MyPagesInitializer',
+                            'pages',
+                            $fakeTs['plugin.']['tx_solr.']['index.']['queue.']['my_pages.'],
+                        ]
+                    ),
+                    2 => self::assertEquals(
+                        func_get_args(),
+                        [
+                            $siteMock,
+                            'my_news',
+                            'MyNewsInitializer',
+                            'tx_news_domain_model_news',
+                            $fakeTs['plugin.']['tx_solr.']['index.']['queue.']['my_news.'],
+                        ]
+                    ),
+                    default => self::fail('Unexpected number of invocations: ' . $matcher->numberOfInvocations())
+                };
+
+                return true;
+            });
         $service->initializeBySiteAndIndexConfiguration($siteMock, '*');
     }
 }

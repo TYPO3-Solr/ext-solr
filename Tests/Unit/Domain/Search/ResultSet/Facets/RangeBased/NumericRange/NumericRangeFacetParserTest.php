@@ -122,21 +122,19 @@ class NumericRangeFacetParserTest extends SetUpFacetParser
     /**
      * Data provider for testing the parsing of the active range values
      */
-    public function canParseActiveFacetValuesProvider(): array
+    public static function canParseActiveFacetValuesProvider(): \Traversable
     {
-        return [
-            [
-                'startRequested' => 10,
-                'endRequested' => 98,
-            ],
-            [
-                'startRequested' => -10,
-                'endRequested' => 98,
-            ],
-            [
-                'startRequested' => -50,
-                'endRequested' => -1,
-            ],
+        yield '10/98' => [
+            'startRequested' => 10,
+            'endRequested' => 98,
+        ];
+        yield '-10/98' => [
+            'startRequested' => -10,
+            'endRequested' => 98,
+        ];
+        yield '-50/-1' => [
+            'startRequested' => -50,
+            'endRequested' => -1,
         ];
     }
 }

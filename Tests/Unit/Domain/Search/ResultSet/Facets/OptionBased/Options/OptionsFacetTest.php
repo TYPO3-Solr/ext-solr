@@ -97,15 +97,13 @@ class OptionsFacetTest extends SetUpUnitTestCase
         self::assertEquals('options', $myFacet->getType());
     }
 
-    public function getIncludeInAvailableFacetsDataProvider(): array
+    public static function getIncludeInAvailableFacetsDataProvider(): \Traversable
     {
-        return [
-            'default' => [null, true],
-            'zero' => [0, false],
-            'one' => [1, true],
-            '1' => ['1', true],
-            '0' => ['0', false],
-        ];
+        yield 'default' => [null, true];
+        yield 'zero' => [0, false];
+        yield 'one' => [1, true];
+        yield '1' => ['1', true];
+        yield '0' => ['0', false];
     }
 
     /**

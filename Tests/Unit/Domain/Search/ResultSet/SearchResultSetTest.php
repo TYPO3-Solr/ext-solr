@@ -148,7 +148,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
             }
         });
 
-        $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
+        $fakedSolrResponse = self::getFixtureContentByName('fakeResponse.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 4. search', 0, $fakeResponse);
 
@@ -199,7 +199,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
 
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $fakedSolrResponse = $this->getFixtureContentByName('fakeCollapsedResponse.json');
+        $fakedSolrResponse = self::getFixtureContentByName('fakeCollapsedResponse.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('variantsSearch', 0, $fakeResponse);
 

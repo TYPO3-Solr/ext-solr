@@ -31,18 +31,13 @@ use TYPO3\CMS\Core\Site\SiteFinder;
  */
 class SiteHashServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @return array
-     */
-    public function canResolveSiteHashAllowedSitesDataProvider()
+    public static function canResolveSiteHashAllowedSitesDataProvider(): \Traversable
     {
-        return [
-            'siteHashDisabled' => ['*', '*'],
-            'allSitesInSystem' => ['__all', 'solrtesta.local,solrtestb.local'],
-            'currentSiteOnly' => ['__current_site', 'solrtesta.local'],
-            'emptyIsFallingBackToCurrentSiteOnly' => ['', 'solrtesta.local'],
-            'nullIsFallingBackToCurrentSiteOnly' => [null, 'solrtesta.local'],
-        ];
+        yield 'siteHashDisabled' => ['*', '*'];
+        yield 'allSitesInSystem' => ['__all', 'solrtesta.local,solrtestb.local'];
+        yield 'currentSiteOnly' => ['__current_site', 'solrtesta.local'];
+        yield 'emptyIsFallingBackToCurrentSiteOnly' => ['', 'solrtesta.local'];
+        yield 'nullIsFallingBackToCurrentSiteOnly' => [null, 'solrtesta.local'];
     }
 
     /**

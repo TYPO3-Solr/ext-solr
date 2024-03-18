@@ -33,27 +33,22 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class HighlightingResultViewHelperTest extends SetUpUnitTestCase
 {
-    /**
-     * @return array
-     */
-    public function canRenderCreateHighlightSnippedDataProvider(): array
+    public static function canRenderCreateHighlightSnippedDataProvider(): \Traversable
     {
-        return [
-            [
-                ['hello <em>world</em>', 'hi <em>world</em>'],
-                'hello <em>world</em> ### hi <em>world</em>',
-                '<em>|</em>',
-            ],
-            [
-                ['hello <em>world</em>', 'hi <em>world</em> <h1>somethingelse</h1>'],
-                'hello <em>world</em> ### hi <em>world</em> &lt;h1&gt;somethingelse&lt;/h1&gt;',
-                '<em>|</em>',
-            ],
-            [
-                ['hello <em>world</em>', 'hi <em>world</em> <h1>somethingelse</h1>'],
-                'hello &lt;em&gt;world&lt;/em&gt; ### hi &lt;em&gt;world&lt;/em&gt; &lt;h1&gt;somethingelse&lt;/h1&gt;',
-                ' ',
-            ],
+        yield [
+            ['hello <em>world</em>', 'hi <em>world</em>'],
+            'hello <em>world</em> ### hi <em>world</em>',
+            '<em>|</em>',
+        ];
+        yield [
+            ['hello <em>world</em>', 'hi <em>world</em> <h1>somethingelse</h1>'],
+            'hello <em>world</em> ### hi <em>world</em> &lt;h1&gt;somethingelse&lt;/h1&gt;',
+            '<em>|</em>',
+        ];
+        yield [
+            ['hello <em>world</em>', 'hi <em>world</em> <h1>somethingelse</h1>'],
+            'hello &lt;em&gt;world&lt;/em&gt; ### hi &lt;em&gt;world&lt;/em&gt; &lt;h1&gt;somethingelse&lt;/h1&gt;',
+            ' ',
         ];
     }
 
@@ -104,9 +99,9 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
         $viewHelper->setRenderingContext($renderingContextMock);
         $viewHelper->setArguments(
             [
-            'resultSet' => $resultSetMock,
-            'document' => $documentMock,
-            'fieldName' => 'content', ]
+                'resultSet' => $resultSetMock,
+                'document' => $documentMock,
+                'fieldName' => 'content', ]
         );
 
         $output = $viewHelper->render();

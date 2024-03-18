@@ -67,34 +67,29 @@ class SiteUtilityTest extends SetUpUnitTestCase
         self::assertSame('readhost', $property, 'Can not fallback to read property when write property is undefined');
     }
 
-    /**
-     * @return array
-     */
-    public function writeConnectionTestsDataProvider(): array
+    public static function writeConnectionTestsDataProvider(): \Traversable
     {
-        return [
-            [ // enabling solr_use_write_connection, resolves to specified write host
-                'expectedSolrHost' => 'writehost',
-                'expectedSiteMockConfiguration' => [
-                    'solr_host_read' => 'readhost',
-                    'solr_use_write_connection' => true,
-                    'solr_host_write' => 'writehost',
-                ],
+        yield 'enabling solr_use_write_connection, resolves to specified write host' => [
+            'expectedSolrHost' => 'writehost',
+            'expectedSiteMockConfiguration' => [
+                'solr_host_read' => 'readhost',
+                'solr_use_write_connection' => true,
+                'solr_host_write' => 'writehost',
             ],
-            [ // enabling solr_use_write_connection but not specifying write host, falls back to specified read host
-                'expectedSolrHost' => 'readhost',
-                'expectedSiteMockConfiguration' => [
-                    'solr_host_read' => 'readhost',
-                    'solr_use_write_connection' => true,
-                ],
+        ];
+        yield 'enabling solr_use_write_connection but not specifying write host, falls back to specified read host' => [
+            'expectedSolrHost' => 'readhost',
+            'expectedSiteMockConfiguration' => [
+                'solr_host_read' => 'readhost',
+                'solr_use_write_connection' => true,
             ],
-            [ // disabling solr_use_write_connection and specifying write host, falls back to specified read host
-                'expectedSolrHost' => 'readhost',
-                'expectedSiteMockConfiguration' => [
-                    'solr_host_read' => 'readhost',
-                    'solr_use_write_connection' => false,
-                    'solr_host_write' => 'writehost',
-                ],
+        ];
+        yield 'disabling solr_use_write_connection and specifying write host, falls back to specified read host' => [
+            'expectedSolrHost' => 'readhost',
+            'expectedSiteMockConfiguration' => [
+                'solr_host_read' => 'readhost',
+                'solr_use_write_connection' => false,
+                'solr_host_write' => 'writehost',
             ],
         ];
     }
@@ -155,7 +150,7 @@ class SiteUtilityTest extends SetUpUnitTestCase
      *
      * @return array
      */
-    public function siteConfigurationValueHandlingDataProvider(): array
+    public static function siteConfigurationValueHandlingDataProvider(): array
     {
         return [
             [ // directly set boolean value (true) for solr_enabled_read

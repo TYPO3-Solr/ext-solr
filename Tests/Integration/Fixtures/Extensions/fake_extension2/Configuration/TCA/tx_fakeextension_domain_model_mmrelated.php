@@ -41,7 +41,7 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['', 0],
+                    ['label' => '', 'value' => 0],
                 ],
                 'foreign_table' => 'tx_fakeextension_domain_model_foo',
                 'foreign_table_where' => 'AND tx_fakeextension_domain_model_foo.pid=###CURRENT_PID### AND tx_fakeextension_domain_model_foo.sys_language_uid IN (-1,0)',
@@ -59,12 +59,6 @@ return [
             'config' => [
                 'type' => 'check',
                 'default' => 0,
-            ],
-        ],
-        'cruser_id' => [
-            'label' => 'cruser_id',
-            'config' => [
-                'type' => 'passthrough',
             ],
         ],
         'pid' => [
@@ -95,11 +89,8 @@ return [
             'exclude' => 1,
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel',
             'config' => [
-                'type' => 'input',
-                'size' => 8,
-                'eval' => 'datetime',
-                'default' => 0,
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
@@ -107,11 +98,8 @@ return [
             'exclude' => 1,
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
             'config' => [
-                'type' => 'input',
-                'size' => 8,
-                'eval' => 'datetime',
-                'default' => 0,
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],

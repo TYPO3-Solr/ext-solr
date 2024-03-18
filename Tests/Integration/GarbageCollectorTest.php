@@ -37,11 +37,10 @@ use TYPO3\CMS\Scheduler\Scheduler;
  *
  * @author Timo Schmidt
  */
-class GarbageCollectorTest extends IntegrationTest
+class GarbageCollectorTest extends IntegrationTestBase
 {
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
-        'scheduler',
+        'typo3/cms-scheduler',
     ];
 
     protected array $testExtensionsToLoad = [

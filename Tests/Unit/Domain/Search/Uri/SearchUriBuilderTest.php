@@ -200,12 +200,12 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
 
         $previousRequest =  new SearchRequest(
             [
-                    'tx_solr' => [
-                        'filter' => [
-                            'type:pages',
-                        ],
+                'tx_solr' => [
+                    'filter' => [
+                        'type:pages',
                     ],
                 ],
+            ],
             0,
             0,
             $configurationMock
@@ -229,13 +229,13 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
 
         $previousRequest =  new SearchRequest(
             [
-                    'tx_solr' => [
-                        'filter' => [
-                            'type:pages',
-                            'type:tt_news',
-                        ],
+                'tx_solr' => [
+                    'filter' => [
+                        'type:pages',
+                        'type:tt_news',
                     ],
                 ],
+            ],
             0,
             0,
             $configurationMock
@@ -363,7 +363,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
      */
     public function siteConfigurationModifyUriTest(): void
     {
-        $configuration = Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'));
+        $configuration = Yaml::parse(self::getFixtureContentByName('siteConfiguration.yaml'));
         $routingServiceMock = $this->createMock(RoutingService::class);
         $routingServiceMock->expects(self::any())
             ->method('fetchEnhancerByPageUid')
@@ -418,7 +418,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
      */
     public function siteConfigurationModifyUriKeepUnmappedFilterTest(): void
     {
-        $configuration = Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'));
+        $configuration = Yaml::parse(self::getFixtureContentByName('siteConfiguration.yaml'));
         $routingServiceMock = $this->createMock(RoutingService::class);
         $routingServiceMock->expects(self::any())
             ->method('fetchEnhancerByPageUid')
@@ -476,7 +476,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
      */
     public function uriErrorsResultInNonMappedProcessing(): void
     {
-        $configuration = Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'));
+        $configuration = Yaml::parse(self::getFixtureContentByName('siteConfiguration.yaml'));
         $routingServiceMock = $this->createMock(RoutingService::class);
         $routingServiceMock->expects(self::any())
             ->method('fetchEnhancerByPageUid')
@@ -519,10 +519,18 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(42);
 
+        $matcher = self::exactly(2);
         $previousRequest =  new SearchRequest($queryParameters, 42, 0, $configurationMock);
-        $this->extBaseUriBuilderMock->expects(self::any())->method('setArguments')
-            ->withConsecutive([$subsitutedQueryParameters], [$queryParameters])
-            ->willReturn($this->extBaseUriBuilderMock);
+        $this->extBaseUriBuilderMock
+            ->expects($matcher)->method('setArguments')
+            ->willReturnCallback(function (array $arguments) use ($subsitutedQueryParameters, $queryParameters, $matcher) {
+                match ($matcher->numberOfInvocations()) {
+                    1 => self::assertEquals($subsitutedQueryParameters, $arguments),
+                    2 => self::assertEquals($queryParameters, $arguments),
+                    default => self::fail('Unexpected number of invocations: ' . $matcher->numberOfInvocations())
+                };
+                return $this->extBaseUriBuilderMock;
+            });
         $this->extBaseUriBuilderMock->expects(self::once())->method('reset')->with()->willReturn($this->extBaseUriBuilderMock);
         $buildCounter = 0;
         $this->extBaseUriBuilderMock->expects(self::exactly(2))->method('build')

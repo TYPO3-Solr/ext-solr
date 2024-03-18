@@ -129,7 +129,7 @@ class IndexerTest extends SetUpUnitTestCase
     /**
      * Data provider for "canTriggerIndexingAndIndicateIndexStatus"
      */
-    public function canTriggerIndexingAndIndicateIndexStatusDataProvider(): \Generator
+    public static function canTriggerIndexingAndIndicateIndexStatusDataProvider(): \Generator
     {
         yield 'Item could be indexed' => [
             200,
@@ -203,7 +203,7 @@ class IndexerTest extends SetUpUnitTestCase
     /**
      * Data provider for "canGetAdditionalDocuments"
      */
-    public function canGetAdditionalDocumentsDataProvider(): \Generator
+    public static function canGetAdditionalDocumentsDataProvider(): \Generator
     {
         yield 'no listener registered' => [
             null,

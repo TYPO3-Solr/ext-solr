@@ -31,7 +31,7 @@ class StopWordParserTest extends SetUpUnitTestCase
     public function canParseStopWords()
     {
         $parser = new StopWordParser();
-        $stopwords = $parser->parseJson($this->getFixtureContentByName('stopword.json'));
+        $stopwords = $parser->parseJson(self::getFixtureContentByName('stopword.json'));
         self::assertSame(['badword'], $stopwords, 'Could not parser stopwords from stopwords response');
     }
 }

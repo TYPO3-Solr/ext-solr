@@ -18,12 +18,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Extbase;
 use ApacheSolrForTypo3\FakeExtension\Domain\Model\Foo;
 use ApacheSolrForTypo3\FakeExtension\Domain\Repository\FooRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
-class PersistenceEventListenerTest extends IntegrationTest
+class PersistenceEventListenerTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/solr',

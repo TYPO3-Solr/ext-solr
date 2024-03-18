@@ -16,13 +16,13 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\SystemTemplate;
 
 use ApacheSolrForTypo3\Solr\System\Records\SystemTemplate\SystemTemplateRepository;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Integration test for the SystemTemplateRepository
  */
-class SystemTemplateRepositoryTest extends IntegrationTest
+class SystemTemplateRepositoryTest extends IntegrationTestBase
 {
     /**
      * @test

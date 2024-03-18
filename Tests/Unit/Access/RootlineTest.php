@@ -25,16 +25,11 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class RootlineTest extends SetUpUnitTestCase
 {
-    /**
-     * @return array
-     */
-    public function rootLineDataProvider()
+    public static function rootLineDataProvider(): \Traversable
     {
-        return [
-            'simple' => ['string' => 'c:0', 'expectedGroups' => [0]],
-            'simpleOneGroup' => ['string' => 'c:1', 'expectedGroups' => [1]],
-            'mixed' => ['string' => '35:1/c:0', 'expectedGroups' => [0, 1]],
-        ];
+        yield 'simple' => ['string' => 'c:0', 'expectedGroups' => [0]];
+        yield 'simpleOneGroup' => ['string' => 'c:1', 'expectedGroups' => [1]];
+        yield 'mixed' => ['string' => '35:1/c:0', 'expectedGroups' => [0, 1]];
     }
 
     /**

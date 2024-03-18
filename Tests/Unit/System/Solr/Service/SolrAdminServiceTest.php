@@ -107,7 +107,7 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
      */
     public function canGetSolrConfigNameFromFakedXmlResponse(): void
     {
-        $fakeTestSchema = $this->getFixtureContentByName('solrconfig.xml');
+        $fakeTestSchema = self::getFixtureContentByName('solrconfig.xml');
         $fakedSolrConfigResponse = $this->createMock(ResponseAdapter::class);
         $fakedSolrConfigResponse->expects(self::once())->method('getRawResponse')->willReturn($fakeTestSchema);
 

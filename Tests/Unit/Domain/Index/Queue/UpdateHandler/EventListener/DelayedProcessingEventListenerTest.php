@@ -99,7 +99,7 @@ class DelayedProcessingEventListenerTest extends SetUpEventListener
     /**
      * Returns the current monitoring type
      */
-    protected function getMonitoringType(): int
+    protected static function getMonitoringType(): int
     {
         return DelayedProcessingEventListener::MONITORING_TYPE;
     }

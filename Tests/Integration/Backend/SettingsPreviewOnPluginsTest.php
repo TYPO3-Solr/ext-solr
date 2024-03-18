@@ -3,7 +3,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Backend;
 
 use ApacheSolrForTypo3\Solr\Backend\SettingsPreviewOnPlugins;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * configuration.
  * This testcase checks if the SummaryController produces the expected output.
  */
-class SettingsPreviewOnPluginsTest extends IntegrationTest
+class SettingsPreviewOnPluginsTest extends IntegrationTestBase
 {
     protected array $flexFormArray = [
         'search' => [

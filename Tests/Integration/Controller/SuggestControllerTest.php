@@ -16,8 +16,8 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use TYPO3\CMS\Core\Http\Response;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 /**
@@ -26,7 +26,7 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
  * @author Timo Hund
  * @group frontend
  */
-class SuggestControllerTest extends IntegrationTest
+class SuggestControllerTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {
@@ -124,7 +124,7 @@ class SuggestControllerTest extends IntegrationTest
         self::assertStringContainsString($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
     }
 
-    protected function executeFrontendSubRequestForSuggestQueryString(string $queryString, string $callback = null): Response
+    protected function executeFrontendSubRequestForSuggestQueryString(string $queryString, string $callback = null): ResponseInterface
     {
         $request = new InternalRequest('http://testone.site/en/');
         $request = $request
