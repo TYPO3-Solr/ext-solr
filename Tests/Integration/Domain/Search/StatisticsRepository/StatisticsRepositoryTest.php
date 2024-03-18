@@ -16,11 +16,11 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\StatisticsRepository;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class StatisticsRepositoryTest extends IntegrationTest
+class StatisticsRepositoryTest extends IntegrationTestBase
 {
     /**
      * @test

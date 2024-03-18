@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Access;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 
 /**
  * Class RootlineTest
  */
-class RootlineTest extends IntegrationTest
+class RootlineTest extends IntegrationTestBase
 {
     /**
      * @test

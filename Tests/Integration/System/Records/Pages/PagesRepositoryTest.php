@@ -16,13 +16,13 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\Pages;
 
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Integration tests for PagesRepository.
  */
-class PagesRepositoryTest extends IntegrationTest
+class PagesRepositoryTest extends IntegrationTestBase
 {
     /**
      * @var PagesRepository

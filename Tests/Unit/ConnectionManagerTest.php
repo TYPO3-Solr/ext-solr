@@ -75,7 +75,7 @@ class ConnectionManagerTest extends SetUpUnitTestCase
     /**
      * Provides data for the connection test
      */
-    public function connectDataProvider(): Traversable
+    public static function connectDataProvider(): Traversable
     {
         yield 'invalid' => [
             'scheme' => '',

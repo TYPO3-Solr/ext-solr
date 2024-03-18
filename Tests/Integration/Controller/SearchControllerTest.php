@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use DOMDocument;
 use Traversable;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -34,7 +34,7 @@ use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
  * (c) 2010-2015 Timo Hund <timo.hund@dkd.de>
  * @author Timo Hund
  */
-class SearchControllerTest extends IntegrationTest
+class SearchControllerTest extends IntegrationTestBase
 {
     /**
      * @var SearchController
@@ -333,7 +333,7 @@ class SearchControllerTest extends IntegrationTest
     /**
      * Data provider for canRenderSpeakingFacetUrls
      */
-    public function canRenderSpeakingFacetUrlsDataProvider(): Traversable
+    public static function canRenderSpeakingFacetUrlsDataProvider(): Traversable
     {
         yield 'route enhancer inactive' => [
             0,
@@ -1010,15 +1010,10 @@ class SearchControllerTest extends IntegrationTest
         self::assertStringContainsString('Parsed Query:', $resultPage1, 'No parsed query in response');
     }
 
-    /**
-     * @return array
-     */
-    public function frontendWillRenderErrorMessageIfSolrNotAvailableDataProvider(): array
+    public static function frontendWillRenderErrorMessageIfSolrNotAvailableDataProvider(): Traversable
     {
-        return [
-            ['action' => 'results', 'getArguments' => ['q' => '*']],
-            ['action' => 'detail', 'getArguments' => ['id' => 1]],
-        ];
+        yield ['action' => 'results', 'getArguments' => ['q' => '*']];
+        yield ['action' => 'detail', 'getArguments' => ['id' => 1]];
     }
 
     /**

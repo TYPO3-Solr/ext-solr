@@ -16,13 +16,13 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ConfigurationPageResolverTest extends IntegrationTest
+class ConfigurationPageResolverTest extends IntegrationTestBase
 {
     /**
      * @test

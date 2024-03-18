@@ -69,7 +69,7 @@ class NoProcessingEventListenerTest extends SetUpEventListener
     /**
      * Returns the current monitoring type
      */
-    protected function getMonitoringType(): int
+    protected static function getMonitoringType(): int
     {
         return NoProcessingEventListener::MONITORING_TYPE;
     }

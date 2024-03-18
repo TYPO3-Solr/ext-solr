@@ -16,9 +16,10 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr\Service;
 
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Curl;
+use Traversable;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Hund
  */
-class SolrAdminServiceTest extends IntegrationTest
+class SolrAdminServiceTest extends IntegrationTestBase
 {
     /**
      * @var SolrAdminService
@@ -51,22 +52,18 @@ class SolrAdminServiceTest extends IntegrationTest
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
     }
 
-    /**
-     * @return array
-     */
-    public function synonymDataProvider()
+    public static function synonymDataProvider(): Traversable
     {
-        return [
-            'normal' => ['baseword' => 'homepage', 'synonyms' => ['website']],
-            'umlaut' => ['baseword' => 'früher', 'synonyms' => ['vergangenheit']],
-            '"' => ['baseword' => '"', 'synonyms' => ['quote mark']],
-            '%' => ['baseword' => '%', 'synonyms' => ['percent']],
-            '#' => ['baseword' => '#', 'synonyms' => ['hashtag']],
-            ':' => ['baseword' => ':', 'synonyms' => ['colon']],
-            ';' => ['baseword' => ';', 'synonyms' => ['semicolon']],
-            // '/' still persists in https://issues.apache.org/jira/browse/SOLR-6853
-            //'/' => ['baseword' => '/', 'synonyms' => ['slash']]
-        ];
+        yield 'normal' => ['baseword' => 'homepage', 'synonyms' => ['website']];
+        yield 'umlaut' => ['baseword' => 'früher', 'synonyms' => ['vergangenheit']];
+        yield '"' => ['baseword' => '"', 'synonyms' => ['quote mark']];
+        yield '%' => ['baseword' => '%', 'synonyms' => ['percent']];
+        yield '#' => ['baseword' => '#', 'synonyms' => ['hashtag']];
+        yield ':' => ['baseword' => ':', 'synonyms' => ['colon']];
+        yield ';' => ['baseword' => ';', 'synonyms' => ['semicolon']];
+
+        // '/' still persists in https://issues.apache.org/jira/browse/SOLR-6853
+        //yield '/' => ['baseword' => '/', 'synonyms' => ['slash']]
     }
 
     /**
@@ -97,20 +94,15 @@ class SolrAdminServiceTest extends IntegrationTest
         self::assertEquals([], $synonymsAfterRemove, 'Synonym was not removed');
     }
 
-    /**
-     * @return array
-     */
-    public function stopWordDataProvider()
+    public static function stopWordDataProvider(): Traversable
     {
-        return [
-            'normal' => ['stopword' => 'badword'],
-            'umlaut' => ['stopword' => 'frühaufsteher'],
-        ];
+        yield 'normal' => ['stopword' => 'badword'];
+        yield 'umlaut' => ['stopword' => 'frühaufsteher'];
     }
 
     /**
      * @test
-     * @dataProvider stopwordDataProvider
+     * @dataProvider stopWordDataProvider
      */
     public function canAddStopWord($stopWord)
     {

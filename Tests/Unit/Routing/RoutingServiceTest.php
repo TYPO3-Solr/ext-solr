@@ -42,7 +42,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         $this->site = new Site(
             'example',
             1,
-            Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'))
+            Yaml::parse(self::getFixtureContentByName('siteConfiguration.yaml'))
         );
         parent::setUp();
     }
@@ -128,7 +128,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
 
     protected function getRoutingService(string $fixtureName = 'siteConfiguration.yaml'): RoutingService
     {
-        $configuration = Yaml::parse($this->getFixtureContentByName($fixtureName));
+        $configuration = Yaml::parse(self::getFixtureContentByName($fixtureName));
         $routingService = new RoutingService(
             $configuration['routeEnhancers']['example']['solr'],
             (string)$configuration['routeEnhancers']['example']['extensionKey']

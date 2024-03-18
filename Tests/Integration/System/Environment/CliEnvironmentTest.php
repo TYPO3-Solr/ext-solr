@@ -17,7 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Environment;
 
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * the constants stay defined in the unit test.
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class CliEnvironmentTest extends IntegrationTest
+class CliEnvironmentTest extends IntegrationTestBase
 {
     /**
      * @test

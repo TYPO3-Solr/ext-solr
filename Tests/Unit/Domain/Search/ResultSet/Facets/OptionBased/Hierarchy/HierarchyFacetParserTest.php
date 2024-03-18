@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\Node;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\SetUpFacetParser;
+use Traversable;
 
 /**
  * Class HierarchyFacetParserTest
@@ -60,31 +61,29 @@ class HierarchyFacetParserTest extends SetUpFacetParser
         self::assertSame('14', $firstNode->getKey());
     }
 
-    public function dataProviderForDeepMoreThen10DoesNotBreakHierarchyFacet(): array
+    public static function dataProviderForDeepMoreThen10DoesNotBreakHierarchyFacet(): Traversable
     {
-        return [
-            'sortByCount' => [
-                [
-                    'pageHierarchy.' => [
-                        'type' => 'hierarchy',
-                        'label' => 'Rootline',
-                        'field' => 'rootline',
-                        'sortBy' => 'count',
-                    ],
+        yield 'sortByCount' => [
+            [
+                'pageHierarchy.' => [
+                    'type' => 'hierarchy',
+                    'label' => 'Rootline',
+                    'field' => 'rootline',
+                    'sortBy' => 'count',
                 ],
-                'fake_solr_response_with_deep_more_then_10_hierarchy_facet_sorted_by_count.json',
             ],
-            'sortByIndex' => [
-                [
-                    'pageHierarchy.' => [
-                        'type' => 'hierarchy',
-                        'label' => 'Rootline',
-                        'field' => 'rootline',
-                        'sortBy' => 'index',
-                    ],
+            'fake_solr_response_with_deep_more_then_10_hierarchy_facet_sorted_by_count.json',
+        ];
+        yield 'sortByIndex' => [
+            [
+                'pageHierarchy.' => [
+                    'type' => 'hierarchy',
+                    'label' => 'Rootline',
+                    'field' => 'rootline',
+                    'sortBy' => 'index',
                 ],
-                'fake_solr_response_with_deep_more_then_10_hierarchy_facet_sorted_by_index.json',
             ],
+            'fake_solr_response_with_deep_more_then_10_hierarchy_facet_sorted_by_index.json',
         ];
     }
 

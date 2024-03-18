@@ -16,10 +16,10 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\LastSearches;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesRepository;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class LastSearchesRepositoryTest extends IntegrationTest
+class LastSearchesRepositoryTest extends IntegrationTestBase
 {
     protected LastSearchesRepository $lastSearchesRepository;
 

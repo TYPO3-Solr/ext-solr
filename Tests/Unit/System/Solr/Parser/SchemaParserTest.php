@@ -32,7 +32,7 @@ class SchemaParserTest extends SetUpUnitTestCase
     public function canParseLanguage()
     {
         $parser = new SchemaParser();
-        $schema = $parser->parseJson($this->getFixtureContentByName('schema.json'));
+        $schema = $parser->parseJson(self::getFixtureContentByName('schema.json'));
         self::assertSame('core_de', $schema->getManagedResourceId(), 'Could not parse id of managed resources from schema response.');
     }
 
@@ -42,7 +42,7 @@ class SchemaParserTest extends SetUpUnitTestCase
     public function canParseName()
     {
         $parser = new SchemaParser();
-        $schema = $parser->parseJson($this->getFixtureContentByName('schema.json'));
+        $schema = $parser->parseJson(self::getFixtureContentByName('schema.json'));
         self::assertSame('tx_solr-6-0-0--20161122', $schema->getName(), 'Could not parser name from schema response');
     }
 

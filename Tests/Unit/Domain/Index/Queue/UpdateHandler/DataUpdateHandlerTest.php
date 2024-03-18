@@ -381,23 +381,38 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->inject($this->dataUpdateHandler, 'pagesRepository', $this->pagesRepositoryMock);
         $this->initBasicPageUpdateExpectations($dummyPageRecord);
 
+        $matcher = self::exactly(3);
         $this->indexQueueMock
-            ->expects(self::exactly(3))
+            ->expects($matcher)
             ->method('updateItem')
-            ->withConsecutive(
-                [
-                    'pages',
-                    $dummyPageRecord['uid'],
-                ],
-                [
-                    'pages',
-                    100,
-                ],
-                [
-                    'pages',
-                    200,
-                ]
-            );
+            ->willReturnCallback(static function (string $type, int $uid) use ($dummyPageRecord, $matcher): int {
+                match ($matcher->numberOfInvocations()) {
+                    1 => self::assertEquals(
+                        [
+                            'pages',
+                            $dummyPageRecord['uid'],
+                        ],
+                        [$type, $uid]
+                    ),
+                    2 => self::assertEquals(
+                        [
+                            'pages',
+                            100,
+                        ],
+                        [$type, $uid]
+                    ),
+                    3 => self::assertEquals(
+                        [
+                            'pages',
+                            200,
+                        ],
+                        [$type, $uid]
+                    ),
+                    default => self::fail('Unexpected number of invocations: ' . $matcher->numberOfInvocations())
+                };
+
+                return 1;
+            });
 
         $this->dataUpdateHandler->handlePageUpdate($dummyPageRecord['uid'], ['hidden' => 0]);
     }

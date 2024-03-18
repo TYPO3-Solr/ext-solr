@@ -38,7 +38,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         /** @var SearchRequest|MockObject $searchRequestMock */
         $searchRequestMock = $this->createMock(SearchRequest::class);
 
-        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
+        $fakeResponseJson = self::getFixtureContentByName($fixtureFile);
         $fakeResponse = new ResponseAdapter($fakeResponseJson);
 
         $searchResultSet = new SearchResultSet();

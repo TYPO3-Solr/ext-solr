@@ -35,7 +35,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
 {
     protected function initializeSearchResultSetFromFakeResponse(string $fixtureFile, array $facetConfiguration, array $activeFilters = []): SearchResultSet
     {
-        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
+        $fakeResponseJson = self::getFixtureContentByName($fixtureFile);
         $searchRequestMock = $this->createMock(SearchRequest::class);
         $fakeResponse = new ResponseAdapter($fakeResponseJson);
 

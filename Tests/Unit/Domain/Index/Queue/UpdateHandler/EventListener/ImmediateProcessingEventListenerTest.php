@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdate
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use Psr\EventDispatcher\StoppableEventInterface;
+use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -133,18 +134,16 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
     /**
      * Data provider for canDispatchEvents
      */
-    public function canHandleEventsDataProvider(): array
+    public static function canHandleEventsDataProvider(): Traversable
     {
-        return [
-            [ContentElementDeletedEvent::class, DataUpdateHandler::class, [1], true],
-            [VersionSwappedEvent::class, DataUpdateHandler::class, [1, 'pages'], true],
-            [RecordMovedEvent::class, DataUpdateHandler::class, [1, 'pages'], true],
-            [RecordUpdatedEvent::class, DataUpdateHandler::class, [1, 'pages'], true],
-            [RecordDeletedEvent::class, GarbageHandler::class, [1, 'pages'], true],
-            [PageMovedEvent::class, GarbageHandler::class, [1], true],
-            [RecordGarbageCheckEvent::class, GarbageHandler::class, [1, 'pages', ['hidden'], false], true],
-            ['SolrUnitTestsInvalidDataUpdateEvent', DataUpdateHandler::class, [1], false],
-        ];
+        yield [ContentElementDeletedEvent::class, DataUpdateHandler::class, [1], true];
+        yield [VersionSwappedEvent::class, DataUpdateHandler::class, [1, 'pages'], true];
+        yield [RecordMovedEvent::class, DataUpdateHandler::class, [1, 'pages'], true];
+        yield [RecordUpdatedEvent::class, DataUpdateHandler::class, [1, 'pages'], true];
+        yield [RecordDeletedEvent::class, GarbageHandler::class, [1, 'pages'], true];
+        yield [PageMovedEvent::class, GarbageHandler::class, [1], true];
+        yield [RecordGarbageCheckEvent::class, GarbageHandler::class, [1, 'pages', ['hidden'], false], true];
+        yield ['SolrUnitTestsInvalidDataUpdateEvent', DataUpdateHandler::class, [1], false];
     }
 
     protected function initListener(): ImmediateProcessingEventListener
@@ -155,7 +154,7 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
     /**
      * Returns the current monitoring type
      */
-    protected function getMonitoringType(): int
+    protected static function getMonitoringType(): int
     {
         return ImmediateProcessingEventListener::MONITORING_TYPE;
     }

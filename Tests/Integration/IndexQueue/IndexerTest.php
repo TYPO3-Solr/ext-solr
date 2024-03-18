@@ -20,8 +20,9 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use Psr\Http\Server\RequestHandlerInterface;
+use Traversable;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
@@ -33,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Schmidt
  */
-class IndexerTest extends IntegrationTest
+class IndexerTest extends IntegrationTestBase
 {
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
@@ -105,13 +106,11 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
-    public function getTranslatedRecordDataProvider(): array
+    public static function getTranslatedRecordDataProvider(): Traversable
     {
-        return [
-            'with_l_parameter' => ['can_index_custom_translated_record_with_l_param.csv'],
-            'without_l_parameter' => ['can_index_custom_translated_record_without_l_param.csv'],
-            'without_l_parameter_and_content_fallback' => ['can_index_custom_translated_record_without_l_param_and_content_fallback.csv'],
-        ];
+        yield 'with_l_parameter' => ['can_index_custom_translated_record_with_l_param.csv'];
+        yield 'without_l_parameter' => ['can_index_custom_translated_record_without_l_param.csv'];
+        yield 'without_l_parameter_and_content_fallback' => ['can_index_custom_translated_record_without_l_param_and_content_fallback.csv'];
     }
 
     /**

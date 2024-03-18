@@ -1,29 +1,37 @@
 <?xml version="1.0"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
-	backupGlobals="false"
-    bootstrap="UnitTestsBootstrap.php"
-	backupStaticAttributes="false"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
+	backupGlobals="true"
+	beStrictAboutTestsThatDoNotTestAnything="false"
+	bootstrap="../../.Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php"
+	cacheDirectory=".phpunit.cache"
+	cacheResult="false"
 	colors="true"
-	convertErrorsToExceptions="true"
-	convertWarningsToExceptions="true"
-	forceCoversAnnotation="false"
-	processIsolation="false"
-	stopOnError="false"
-	stopOnFailure="false"
-	stopOnIncomplete="false"
-	stopOnSkipped="false"
-	verbose="false">
-	<extensions>
-		<extension class="\ApacheSolrForTypo3\Solr\Tests\PHPUnitExtensions\BypassFinals"/>
-	</extensions>
-	<coverage processUncoveredFiles="false">
+	displayDetailsOnTestsThatTriggerDeprecations="true"
+	displayDetailsOnTestsThatTriggerErrors="true"
+	displayDetailsOnTestsThatTriggerNotices="true"
+	displayDetailsOnTestsThatTriggerWarnings="true"
+	failOnDeprecation="true"
+	failOnNotice="true"
+	failOnRisky="true"
+	failOnWarning="true"
+	requireCoverageMetadata="false"
+>
+	<source>
 		<include>
-			<directory suffix=".php">../../Classes/</directory>
+			<directory>../../Classes</directory>
 		</include>
-	</coverage>
+	</source>
 	<testsuites>
 		<testsuite name="ext-solr-unit-tests">
 			<directory>../../Tests/Unit/</directory>
 		</testsuite>
 	</testsuites>
+	<php>
+		<ini name="display_errors" value="1"/>
+		<env name="TYPO3_CONTEXT" value="Testing"/>
+	</php>
+	<extensions>
+		<bootstrap class="DG\BypassFinals\PHPUnitExtension"/>
+	</extensions>
 </phpunit>

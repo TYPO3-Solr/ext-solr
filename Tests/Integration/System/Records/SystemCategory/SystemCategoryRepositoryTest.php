@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\SystemCategory;
 
 use ApacheSolrForTypo3\Solr\System\Records\SystemCategory\SystemCategoryRepository;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SystemCategoryRepositoryTest extends IntegrationTest
+class SystemCategoryRepositoryTest extends IntegrationTestBase
 {
     /**
      * @test

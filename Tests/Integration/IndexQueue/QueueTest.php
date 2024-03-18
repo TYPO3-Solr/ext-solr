@@ -19,7 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Schmidt
  */
-class QueueTest extends IntegrationTest
+class QueueTest extends IntegrationTestBase
 {
     /**
      * @var Queue
