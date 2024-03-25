@@ -12,4 +12,6 @@
 		<int name="socketTimeout">${socketTimeout:0}</int>
 		<int name="connTimeout">${connTimeout:0}</int>
 	</shardHandlerFactory>
+
+	<str name="modules">scripting</str>
 </solr>

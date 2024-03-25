@@ -39,7 +39,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      *
      * @var string
      */
-    const RECOMMENDED_PLUGIN_VERSION = '3.0.0';
+    const RECOMMENDED_PLUGIN_VERSION = '6.0.0';
 
     /**
      * The plugin's Java class name.
