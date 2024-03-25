@@ -118,7 +118,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         );
     }
 
-    public function indexingDataProvider(): \Generator
+    public static function indexingDataProvider(): \Generator
     {
         yield 'solr field defined as string' => [
             ['solrFieldName_stringS' => 'solrFieldName'],

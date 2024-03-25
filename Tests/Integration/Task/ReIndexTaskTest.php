@@ -19,7 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use Exception;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Schmidt
  */
-class ReIndexTaskTest extends IntegrationTest
+class ReIndexTaskTest extends IntegrationTestBase
 {
     /**
      * @inheritdoc
@@ -42,7 +42,7 @@ class ReIndexTaskTest extends IntegrationTest
     protected Queue $indexQueue;
 
     protected array $coreExtensionsToLoad = [
-        'scheduler',
+        'typo3/cms-scheduler',
     ];
 
     protected function setUp(): void

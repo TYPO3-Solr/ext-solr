@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
@@ -109,7 +110,10 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('pageUid', $pageUid);
         // @extensionScannerIgnoreLine
-        $this->getTemplateVariableContainer()->add('languageUid', ($GLOBALS['TSFE']?->getLanguage()->getLanguageId() ?? 0));
+        $this->getTemplateVariableContainer()->add(
+            'languageUid',
+            ($this->renderingContext->getRequest()->getAttribute('language')?->getLanguageId() ?? 0)
+        );
         // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('existingParameters', $this->getExistingSearchParameters());
         // @extensionScannerIgnoreLine
@@ -139,7 +143,11 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     {
         $searchParameters = [];
         if ($this->getTypoScriptConfiguration()->getSearchKeepExistingParametersForNewSearches()) {
-            $arguments = GeneralUtility::_GPmerged($this->getTypoScriptConfiguration()->getSearchPluginNamespace());
+            $request = $this->renderingContext->getRequest();
+            $pluginNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
+            $arguments = $request->getQueryParams()[$pluginNamespace];
+            ArrayUtility::mergeRecursiveWithOverrule($arguments, $request->getParsedBody()[$pluginNamespace]);
+
             unset($arguments['q'], $arguments['id'], $arguments['L']);
             $searchParameters = $this->translateSearchParametersToInputTagAttributes($arguments);
         }

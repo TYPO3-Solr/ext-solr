@@ -108,7 +108,7 @@ class GroupedResultsParserTest extends SetUpUnitTestCase
     ): SearchResultSet {
         $searchRequestMock = $this->createMock(SearchRequest::class);
         $searchRequestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($configurationMock);
-        $resultSet = $this->getMockBuilder(SearchResultSet::class)->setMethods(['getUsedSearchRequest', 'getResponse'])->getMock();
+        $resultSet = $this->getMockBuilder(SearchResultSet::class)->onlyMethods(['getUsedSearchRequest', 'getResponse'])->getMock();
         $resultSet->expects(self::any())->method('getUsedSearchRequest')->willReturn($searchRequestMock);
         $resultSet->expects(self::any())->method('getResponse')->willReturn($this->getFakeApacheSolrResponse($fixtureName));
 
@@ -117,7 +117,7 @@ class GroupedResultsParserTest extends SetUpUnitTestCase
 
     protected function getFakeApacheSolrResponse(string $fixtureFile): ResponseAdapter
     {
-        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
+        $fakeResponseJson = self::getFixtureContentByName($fixtureFile);
         return new ResponseAdapter($fakeResponseJson);
     }
 }

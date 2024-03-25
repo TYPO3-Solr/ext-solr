@@ -3,12 +3,12 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\FrontendEnvironment;
 
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-class TsfeTest extends IntegrationTest
+class TsfeTest extends IntegrationTestBase
 {
     /**
      * @test

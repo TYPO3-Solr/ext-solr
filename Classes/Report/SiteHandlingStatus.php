@@ -41,10 +41,10 @@ class SiteHandlingStatus extends AbstractSolrStatus
 
     public const
         CSS_STATUS_NOTICE = 'notice',
-    CSS_STATUS_INFO = 'info',
-    CSS_STATUS_OK = 'success',
-    CSS_STATUS_WARNING = 'warning',
-    CSS_STATUS_ERROR = 'danger';
+        CSS_STATUS_INFO = 'info',
+        CSS_STATUS_OK = 'success',
+        CSS_STATUS_WARNING = 'warning',
+        CSS_STATUS_ERROR = 'danger';
 
     protected SiteRepository $siteRepository;
 

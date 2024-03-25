@@ -19,7 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdate
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Scheduler;
@@ -30,11 +30,10 @@ use TYPO3\CMS\Scheduler\Scheduler;
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class EventQueueWorkerTaskTest extends IntegrationTest
+class EventQueueWorkerTaskTest extends IntegrationTestBase
 {
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
-        'scheduler',
+        'typo3/cms-scheduler',
     ];
 
     protected EventQueueItemRepository $eventQueue;

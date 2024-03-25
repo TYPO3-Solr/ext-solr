@@ -37,7 +37,7 @@ use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
  *
  * @author Timo Schmidt
  */
-class SearchTest extends IntegrationTest
+class SearchTest extends IntegrationTestBase
 {
     protected QueryBuilder $queryBuilder;
 

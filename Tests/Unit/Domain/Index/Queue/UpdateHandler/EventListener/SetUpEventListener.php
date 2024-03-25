@@ -77,9 +77,9 @@ abstract class SetUpEventListener extends SetUpUnitTestCase
     public function canIndicateInactiveMonitoring(int $currentType): void
     {
         $this->extensionConfigurationMock
-        ->expects(self::once())
-        ->method('getMonitoringType')
-        ->willReturn($currentType);
+            ->expects(self::once())
+            ->method('getMonitoringType')
+            ->willReturn($currentType);
 
         $status = $this->callInaccessibleMethod($this->listener, 'isProcessingEnabled');
         self::assertFalse($status);
@@ -88,11 +88,11 @@ abstract class SetUpEventListener extends SetUpUnitTestCase
     /**
      * Data provider for canIndicateInactiveMonitoring
      */
-    public function inactiveMonitoringDataProvider(): array
+    public static function inactiveMonitoringDataProvider(): array
     {
         $invalidTypes = array_diff(
             self::MONITORING_TYPES_TO_TEST,
-            [$this->getMonitoringType()]
+            [static::getMonitoringType()]
         );
 
         $testData = [];
@@ -108,5 +108,5 @@ abstract class SetUpEventListener extends SetUpUnitTestCase
      *
      * @return int
      */
-    abstract protected function getMonitoringType(): int;
+    abstract protected static function getMonitoringType(): int;
 }

@@ -35,7 +35,7 @@ abstract class SetUpFacetParser extends SetUpUnitTestCase
 {
     protected function initializeSearchResultSetFromFakeResponse(string $fixtureFile, array $facetConfiguration, array $activeFilters = []): SearchResultSet
     {
-        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
+        $fakeResponseJson = self::getFixtureContentByName($fixtureFile);
 
         $facetingMock = $this->getMockBuilder(Faceting::class)->onlyMethods(['getSorting'])->disableOriginalConstructor()->getMock();
         $facetingMock->expects(self::any())->method('getSorting')->willReturn('');

@@ -44,16 +44,12 @@ class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
 
     /**
      * Provides data for filter decoding tests
-     *
-     * @return array
      */
-    public function rangeQueryParsingDataProvider(): array
+    public static function rangeQueryParsingDataProvider(): \Traversable
     {
-        return [
-            ['firstValue' => '50', 'secondValue' => '100', 'expected' => '[50 TO 100]'],
-            ['firstValue' => '-10', 'secondValue' => '20', 'expected' => '[-10 TO 20]'],
-            ['firstValue' => '-10', 'secondValue' => '-5', 'expected' => '[-10 TO -5]'],
-        ];
+        yield '50/100' => ['firstValue' => '50', 'secondValue' => '100', 'expected' => '[50 TO 100]'];
+        yield '-10/20' => ['firstValue' => '-10', 'secondValue' => '20', 'expected' => '[-10 TO 20]'];
+        yield '-10/-5' => ['firstValue' => '-10', 'secondValue' => '-5', 'expected' => '[-10 TO -5]'];
     }
 
     /**

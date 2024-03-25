@@ -6,7 +6,6 @@ return [
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'versioningWS' => true,
         'origUid' => 't3_origuid',
         'editlock' => 'editlock',
@@ -27,17 +26,7 @@ return [
             'exclude' => 1,
             'label' => 'sys_language_uid',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'special' => 'languages',
-                'items' => [
-                    [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
-                        -1,
-                        'flags-multiple',
-                    ],
-                ],
-                'default' => 0,
+                'type' => 'language',
             ],
         ],
         'l10n_parent' => [
@@ -47,7 +36,7 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['', 0],
+                    ['label' => '', 'value' => 0],
                 ],
                 'foreign_table' => 'tx_fakeextension_domain_model_foo',
                 'foreign_table_where' => 'AND tx_fakeextension_domain_model_foo.pid=###CURRENT_PID### AND tx_fakeextension_domain_model_foo.sys_language_uid IN (-1,0)',
@@ -65,12 +54,6 @@ return [
             'config' => [
                 'type' => 'check',
                 'default' => 0,
-            ],
-        ],
-        'cruser_id' => [
-            'label' => 'cruser_id',
-            'config' => [
-                'type' => 'passthrough',
             ],
         ],
         'pid' => [
@@ -101,11 +84,8 @@ return [
             'exclude' => 1,
             'label' => 'starttime',
             'config' => [
-                'type' => 'input',
-                'size' => 8,
-                'eval' => 'datetime',
-                'default' => 0,
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
@@ -113,11 +93,8 @@ return [
             'exclude' => 1,
             'label' => 'endtime',
             'config' => [
-                'type' => 'input',
-                'size' => 8,
-                'eval' => 'datetime',
-                'default' => 0,
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
@@ -128,7 +105,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 60,
-                'eval' => 'required',
+                'required' => true,
             ],
         ],
         'main_category' => [

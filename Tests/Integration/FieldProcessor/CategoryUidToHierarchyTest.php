@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\FieldProcessor;
 
 use ApacheSolrForTypo3\Solr\FieldProcessor\CategoryUidToHierarchy;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class CategoryUidToHierarchyTest extends IntegrationTest
+class CategoryUidToHierarchyTest extends IntegrationTestBase
 {
     /**
      * @test

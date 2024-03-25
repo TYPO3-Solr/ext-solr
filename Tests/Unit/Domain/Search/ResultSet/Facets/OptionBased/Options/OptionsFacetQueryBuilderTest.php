@@ -179,17 +179,11 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 
-    /**
-     * @return array
-     */
-    public function getGlobalMinimumCountValue()
+    public static function getGlobalMinimumCountValue(): \Traversable
     {
-        return [
-            ['configuredMinimumCount' => 5, 'expectedMinimumCount' => 5],
-            ['configuredMinimumCount' => 0, 'expectedMinimumCount' => 0],
-            ['configuredMinimumCount' => null, 'expectedMinimumCount' => 1],
-
-        ];
+        yield ['configuredMinimumCount' => 5, 'expectedMinimumCount' => 5];
+        yield ['configuredMinimumCount' => 0, 'expectedMinimumCount' => 0];
+        yield ['configuredMinimumCount' => null, 'expectedMinimumCount' => 1];
     }
 
     /**
