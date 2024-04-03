@@ -44,7 +44,7 @@ class LastSearchesServiceTest extends SetUpUnitTestCase
                 $this->configurationMock,
                 $this->sessionMock,
                 $this->lastSearchesRepositoryMock,
-                ])->getMock();
+            ])->getMock();
         parent::setUp();
     }
 

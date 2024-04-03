@@ -200,12 +200,12 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
 
         $previousRequest =  new SearchRequest(
             [
-                    'tx_solr' => [
-                        'filter' => [
-                            'type:pages',
-                        ],
+                'tx_solr' => [
+                    'filter' => [
+                        'type:pages',
                     ],
                 ],
+            ],
             0,
             0,
             $configurationMock
@@ -229,13 +229,13 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
 
         $previousRequest =  new SearchRequest(
             [
-                    'tx_solr' => [
-                        'filter' => [
-                            'type:pages',
-                            'type:tt_news',
-                        ],
+                'tx_solr' => [
+                    'filter' => [
+                        'type:pages',
+                        'type:tt_news',
                     ],
                 ],
+            ],
             0,
             0,
             $configurationMock

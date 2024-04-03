@@ -84,7 +84,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
                     'label' => 'My Type',
                     'field' => 'type',
                 ],
-             ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -507,7 +507,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
                     'label' => 'My Type',
                     'field' => 'type',
                 ],
-                 // category is configured but not available
+                // category is configured but not available
                 'category.' => [
                     'label' => 'My Category',
                     'field' => 'category',
