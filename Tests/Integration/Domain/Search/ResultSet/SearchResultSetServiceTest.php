@@ -82,14 +82,14 @@ class SearchResultSetServiceTest extends IntegrationTest
 
         $typoScriptConfiguration = Util::getSolrConfiguration();
         $typoScriptConfiguration->mergeSolrConfiguration([
-           'search.' => [
-               'variants' => 1,
-               'variants.' => [
-                   'variantField' => 'pid',
-                   'expand' => 1,
-                   'limit' => 11,
-               ],
-           ],
+            'search.' => [
+                'variants' => 1,
+                'variants.' => [
+                    'variantField' => 'pid',
+                    'expand' => 1,
+                    'limit' => 11,
+                ],
+            ],
         ]);
 
         self::assertTrue($typoScriptConfiguration->getSearchVariants(), 'Variants are not enabled');

@@ -32,7 +32,7 @@ class UrlHelperTest extends SetUpUnitTestCase
                 'input' => 'index.php?id=1&cHash=ddd',
                 'queryParameterToRemove' => 'cHash',
                 'expectedUrl' => '/index.php?id=1',
-             ],
+            ],
             'cHash at the beginning' => [
                 'input' => 'index.php?cHash=ddd&id=1',
                 'queryParameterToRemove' => 'cHash',

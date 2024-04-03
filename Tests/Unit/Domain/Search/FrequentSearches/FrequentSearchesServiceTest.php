@@ -99,7 +99,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
 
         $this->statisticsRepositoryMock->expects(self::once())->method('getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration')->willReturn([
             [
-               'search_term' => 'my search',
+                'search_term' => 'my search',
                 'hits' => 22,
             ],
         ]);

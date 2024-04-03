@@ -102,12 +102,11 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
 
         $viewHelper = new HighlightResultViewHelper();
         $viewHelper->setRenderingContext($renderingContextMock);
-        $viewHelper->setArguments(
-            [
+        $viewHelper->setArguments([
             'resultSet' => $resultSetMock,
             'document' => $documentMock,
-            'fieldName' => 'content', ]
-        );
+            'fieldName' => 'content',
+        ]);
 
         $output = $viewHelper->render();
         self::assertSame($expectedOutput, $output);

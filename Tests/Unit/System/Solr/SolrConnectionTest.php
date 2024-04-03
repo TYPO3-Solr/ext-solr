@@ -180,13 +180,13 @@ class SolrConnectionTest extends SetUpUnitTestCase
     public function coreBaseUriContainsAllSegments(): void
     {
         $readEndpoint = new Endpoint([
-                'host' => 'localhost',
-                'port' => 8080,
-                'path' => '/mypath/',
-                'core' => 'core_de',
-                'scheme' => 'http',
-                'username' => '',
-                'password' => '',
+            'host' => 'localhost',
+            'port' => 8080,
+            'path' => '/mypath/',
+            'core' => 'core_de',
+            'scheme' => 'http',
+            'username' => '',
+            'password' => '',
         ]);
         $writeEndpoint = $readEndpoint;
         $solrService = $this->getSolrConnectionWithDummyConstructorArgs($readEndpoint, $writeEndpoint);
