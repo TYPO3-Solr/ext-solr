@@ -160,10 +160,13 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     protected static string $lastSiteCreated = '';
 
+    /**
+     * @internal Don't use that method in tests, except you want to simulate the misconfiguration.
+     */
     protected function writeDefaultSolrTestSiteConfigurationForHostAndPort(
         ?string $scheme = 'http',
         ?string $host = 'localhost',
-        ?int $port = 8999,
+        ?int $port = 8983,
         ?bool $disableDefaultLanguage = false,
     ): void {
         $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage);
@@ -265,7 +268,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         return [
             'scheme' => getenv('TESTING_SOLR_SCHEME') ?: 'http',
             'host' => getenv('TESTING_SOLR_HOST') ?: 'localhost',
-            'port' => getenv('TESTING_SOLR_PORT') ?: 8999,
+            'port' => getenv('TESTING_SOLR_PORT') ?: 8983,
         ];
     }
 

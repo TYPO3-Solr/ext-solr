@@ -36,7 +36,7 @@ class TsfeTest extends IntegrationTest
 
         $scheme = 'http';
         $host = 'localhost';
-        $port = 8999;
+        $port = 8983;
         $globalSolrSettings = [
             'solr_scheme_read' => $scheme,
             'solr_host_read' => $host,

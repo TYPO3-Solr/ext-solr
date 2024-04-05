@@ -510,7 +510,7 @@ class IndexerTest extends IntegrationTest
      */
     public function getSolrConnectionsByItemReturnsNoDefaultConnectionDefaultLanguageIsHiddenInSiteConfig(): void
     {
-        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort('http', 'localhost', 8999, true);
+        $this->writeDefaultSolrTestSiteConfiguration();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_with_rootPage_set_to_hide_default_language.csv');
         $itemMetaData = [
             'uid' => 1,
@@ -536,7 +536,7 @@ class IndexerTest extends IntegrationTest
     public function getSolrConnectionsByItemReturnsProperItemInNestedSite(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort();
+        $this->writeDefaultSolrTestSiteConfiguration();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_with_multiple_sites.csv');
         $result = $this->addToQueueAndIndexRecord('pages', 1);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
