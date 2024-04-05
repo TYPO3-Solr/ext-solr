@@ -17,24 +17,34 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rend
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RenderingInstructions\FormatDate;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Exception;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
 class FormatDateTest extends SetUpUnitTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] = 'Y-m-d';
+    }
+
     /**
      * @test
+     * @throws Exception
      */
     public function canFormatUsingDefaultFormat()
     {
         $processingInstruction = new FormatDate();
         $result = $processingInstruction->format('2015-11-17T17:16:10Z', []);
-        self::assertSame('17-11-15', $result, 'Could not format date with default format');
+        self::assertSame('2015-11-17', $result, 'Could not format date with default format');
     }
 
     /**
      * @test
+     *
+     * @throws Exception
      */
     public function canPassCustomOutputFormat()
     {
@@ -45,6 +55,8 @@ class FormatDateTest extends SetUpUnitTestCase
 
     /**
      * @test
+     *
+     * @throws Exception
      */
     public function canParseTimestampAsInputValue()
     {
