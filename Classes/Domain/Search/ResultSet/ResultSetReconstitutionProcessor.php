@@ -87,7 +87,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             }
 
             $field = $sortingOptions['field'];
-            $label = $sortingOptions['label'];
+            $label = $sortingOptions['label'] ?? '';
 
             $isResetOption = $field === 'relevance';
 
