@@ -11,19 +11,19 @@ function SuggestController() {
                 $formAutoComplete = $('body');
             }
 
-            $form.find('.tx-solr-suggest-focus').focus();
-
             // when no specific container found, use the form as container
             if ($searchBox.length === 0) {
                 $searchBox = $form;
             }
             $searchBox.css('position', 'relative');
 
+            $form.find('.tx-solr-suggest-focus').focus();
+
             // Prevent submit of empty search form
             $form.on('submit', function (e) {
-                if ($form.find('.tx-solr-suggest').val() === '') {
+                if ($form.find('.tx-solr-suggest-focus').val() === '') {
                     e.preventDefault();
-                    $form.find('.tx-solr-suggest').focus();
+                    $form.find('.tx-solr-suggest-focus').focus();
                 }
             });
 
