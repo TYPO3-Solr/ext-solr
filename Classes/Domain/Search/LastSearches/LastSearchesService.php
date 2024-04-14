@@ -83,9 +83,11 @@ class LastSearchesService
             case 'global':
                 $this->lastSearchesRepository->add($keywords, $this->configuration->getSearchLastSearchesLimit());
                 break;
+            case 'disabled':
+                break;
             default:
                 throw new UnexpectedValueException(
-                    'Unknown mode for plugin.tx_solr.search.lastSearches.mode, valid modes are "user" or "global".',
+                    'Unknown mode for plugin.tx_solr.search.lastSearches.mode, valid modes are "user", "global" or "disabled".',
                     1342456570
                 );
         }

@@ -198,7 +198,7 @@ plugin.tx_solr {
     lastSearches = 0
     lastSearches {
       limit = 10
-      // tracking mode "user" or "global"
+      // tracking mode "user", "global" or "disabled"
       mode = user
     }
 
