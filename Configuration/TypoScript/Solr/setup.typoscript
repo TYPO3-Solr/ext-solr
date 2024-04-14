@@ -199,7 +199,7 @@ plugin.tx_solr {
     lastSearches {
       limit = 10
       // tracking mode "user", "global" or "disabled"
-      mode = user
+      mode = disabled
     }
 
     frequentSearches = 0

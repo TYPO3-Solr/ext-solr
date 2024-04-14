@@ -977,7 +977,7 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.search.lastSearches.mode
      */
-    public function getSearchLastSearchesMode(string $defaultIfEmpty = 'user'): string
+    public function getSearchLastSearchesMode(string $defaultIfEmpty = 'disabled'): string
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.lastSearches.mode', $defaultIfEmpty);
         return (string)$result;
