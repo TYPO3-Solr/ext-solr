@@ -46,7 +46,7 @@ class LastSearchesComponent
 
         $query = $resultSet->getUsedSearchRequest()->getRawUserQuery();
 
-        if (!empty($query)) {
+        if (!empty($query) && $event->getTypoScriptConfiguration()->getSearchLastSearchesMode() !== 'disabled') {
             $lastSearchesService = $this->getLastSearchesService($resultSet);
             $lastSearchesService->addToLastSearches($query);
         }

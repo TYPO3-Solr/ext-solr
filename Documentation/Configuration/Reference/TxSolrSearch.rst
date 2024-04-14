@@ -623,9 +623,9 @@ lastSearches.mode
 :TS Path: plugin.tx_solr.search.lastSearches.mode
 :Since: 1.3-dkd
 :Default: user
-:Options: user, global
+:Options: user, global, disabled
 
-If mode is user, keywords will get stored into the session. If mode is global keywords will get stored into the database.
+If mode is user, keywords will get stored into the session. If mode is global keywords will get stored into the database. If mode is disabled, then keywords are not stored in the database.
 
 frequentSearches
 ----------------
