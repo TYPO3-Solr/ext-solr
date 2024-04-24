@@ -29,6 +29,7 @@ use Solarium\Core\Client\Request;
 use Solarium\Core\Client\Response;
 use Solarium\Exception\HttpException;
 use Solarium\QueryType\Ping\Query as PingQuery;
+use Traversable;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SolrService class
@@ -94,26 +95,21 @@ class SolrReadServiceTest extends SetUpUnitTestCase
         self::assertTrue($this->service->hasSearched(), 'hasSearch indicates that no search was triggered');
     }
 
-    /**
-     * @return array
-     */
-    public function readServiceExceptionDataProvider()
+    public static function readServiceExceptionDataProvider(): Traversable
     {
-        return [
-            'Communication error' => ['exceptionClass' => SolrUnavailableException::class, 0],
-            'Internal Server eror' => ['expcetionClass' => SolrInternalServerErrorException::class, 500],
-            'Other unspecific error' => ['expcetionClass' => SolrCommunicationException::class, 555],
-        ];
+        yield 'Communication error' => ['exceptionClass' => SolrUnavailableException::class, 0];
+        yield 'Internal Server error' => ['exceptionClass' => SolrInternalServerErrorException::class, 500];
+        yield 'Other unspecific error' => ['exceptionClass' => SolrCommunicationException::class, 555];
     }
 
     /**
      * @dataProvider readServiceExceptionDataProvider
-     * @param string $exceptionClass
-     * @param int $statusCode
      * @test
      */
-    public function searchThrowsExpectedExceptionForStatusCode($exceptionClass, $statusCode)
-    {
+    public function searchThrowsExpectedExceptionForStatusCode(
+        string $exceptionClass,
+        int $statusCode
+    ) {
         $this->responseMock->expects(self::any())->method('getStatusCode')->willReturn($statusCode);
         $this->clientMock->expects(self::once())->method('createRequest')->willReturn($this->createMock(Request::class));
 

@@ -48,6 +48,11 @@ abstract class AbstractFacetItem
         return $this->label;
     }
 
+    public function setLabel(string $label): void
+    {
+        $this->label = $label;
+    }
+
     public function getSelected(): bool
     {
         return $this->selected;

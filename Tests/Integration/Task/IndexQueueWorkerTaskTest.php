@@ -18,7 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Schmidt
  */
-class IndexQueueWorkerTaskTest extends IntegrationTest
+class IndexQueueWorkerTaskTest extends IntegrationTestBase
 {
     /**
      * @inheritdoc
@@ -37,7 +37,7 @@ class IndexQueueWorkerTaskTest extends IntegrationTest
     protected $indexQueue;
 
     protected array $coreExtensionsToLoad = [
-        'scheduler',
+        'typo3/cms-scheduler',
     ];
 
     protected function setUp(): void

@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -32,11 +33,6 @@ use TYPO3\CMS\Reports\Status;
  */
 class SolrVersionStatus extends AbstractSolrStatus
 {
-    /**
-     * Required Solr version. The version that gets installed when using the provided Docker image.
-     */
-    public const REQUIRED_SOLR_VERSION = '9.3.0';
-
     /**
      * Compiles a version check against each configured Solr server.
      *
@@ -65,9 +61,10 @@ class SolrVersionStatus extends AbstractSolrStatus
             }
 
             $solrVersion = $coreAdmin->getSolrServerVersion();
-            $isOutdatedVersion = version_compare($this->getCleanSolrVersion($solrVersion), self::REQUIRED_SOLR_VERSION, '<');
+            $supportedSolrVersions = $this->getSupportedSolrVersions();
+            $isSupported = in_array($this->getCleanSolrVersion($solrVersion), $supportedSolrVersions);
 
-            if (!$isOutdatedVersion) {
+            if ($isSupported) {
                 $reports[] = GeneralUtility::makeInstance(
                     Status::class,
                     'Apache Solr Version',
@@ -79,12 +76,16 @@ class SolrVersionStatus extends AbstractSolrStatus
             }
 
             $formattedVersion = $this->formatSolrVersion($solrVersion);
-            $variables = ['requiredVersion' => self::REQUIRED_SOLR_VERSION, 'currentVersion' => $formattedVersion, 'solr' => $coreAdmin];
+            $variables = [
+                'supportedSolrVersions' => $supportedSolrVersions,
+                'currentVersion' => $formattedVersion,
+                'solr' => $coreAdmin,
+            ];
             $report = $this->getRenderedReport('SolrVersionStatus.html', $variables);
             $status = GeneralUtility::makeInstance(
                 Status::class,
                 'Apache Solr Version',
-                'Outdated, Unsupported',
+                'Unsupported',
                 $report,
                 ContextualFeedbackSeverity::ERROR
             );
@@ -93,6 +94,13 @@ class SolrVersionStatus extends AbstractSolrStatus
         }
 
         return $reports;
+    }
+
+    protected function getSupportedSolrVersions(): array
+    {
+        $composerContents = file_get_contents(ExtensionManagementUtility::extPath('solr') . 'composer.json');
+        $composerConfiguration = json_decode($composerContents, true, 25, JSON_OBJECT_AS_ARRAY);
+        return $composerConfiguration['extra']['TYPO3-Solr']['version-matrix']['Apache-Solr'] ?? [];
     }
 
     /**

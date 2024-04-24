@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleC
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -33,7 +33,7 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 /**
  * Class IndexAdministrationModuleControllerTest
  */
-class IndexAdministrationModuleControllerTest extends IntegrationTest
+class IndexAdministrationModuleControllerTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {

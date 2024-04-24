@@ -99,10 +99,10 @@ class OptionsFacetParser extends AbstractFacetParser
         $this->applyReverseOrder($facet, $facetConfiguration);
 
         if (isset($this->eventDispatcher)) {
-            /** @var AfterFacetIsParsedEvent $afterFacetParsedEvent */
-            $afterFacetParsedEvent = $this->eventDispatcher
+            /** @var AfterFacetIsParsedEvent $afterFacetIsParsedEvent */
+            $afterFacetIsParsedEvent = $this->eventDispatcher
                 ->dispatch(new AfterFacetIsParsedEvent($facet, $facetConfiguration));
-            $facet = $afterFacetParsedEvent->getFacet();
+            $facet = $afterFacetIsParsedEvent->getFacet();
         }
 
         return $facet;

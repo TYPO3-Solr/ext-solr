@@ -425,7 +425,7 @@ class RelevanceComponentTest extends SetUpUnitTestCase
                 'boostQuery.' => [
                     'type:pages^100',
                     'type:tx_solr_file^400',
-                 ],
+                ],
             ],
         ];
 

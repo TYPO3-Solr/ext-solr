@@ -251,7 +251,7 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
 
     protected function getFakeApacheSolrResponse(string $fixtureFile): ResponseAdapter
     {
-        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
+        $fakeResponseJson = self::getFixtureContentByName($fixtureFile);
         return new ResponseAdapter($fakeResponseJson);
     }
 }

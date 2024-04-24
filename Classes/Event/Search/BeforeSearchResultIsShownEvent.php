@@ -33,6 +33,7 @@ final class BeforeSearchResultIsShownEvent
     private array $arguments;
     protected PaginationInterface $pagination;
     private int $currentPage;
+    protected array $additionalVariables = [];
 
     public function __construct(
         SearchResultSet $resultSet,
@@ -83,5 +84,15 @@ final class BeforeSearchResultIsShownEvent
     public function setPagination(PaginationInterface $pagination): void
     {
         $this->pagination = $pagination;
+    }
+
+    public function getAdditionalVariables(): array
+    {
+        return $this->additionalVariables;
+    }
+
+    public function setAdditionalVariables(array $additionalVariables): void
+    {
+        $this->additionalVariables = $additionalVariables;
     }
 }

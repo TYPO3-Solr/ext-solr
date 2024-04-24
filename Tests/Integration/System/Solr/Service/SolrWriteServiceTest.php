@@ -17,7 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr\Service;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Timo Hund
  * (c) 2010-2015 Timo Schmidt <timo.schmidt@dkd.de>
  */
-class SolrWriteServiceTest extends IntegrationTest
+class SolrWriteServiceTest extends IntegrationTestBase
 {
     protected SolrWriteService|MockObject $solrWriteService;
 

@@ -296,6 +296,17 @@ query.filter.__pageSections
 
 This is a magic/reserved filter (thus the double underscore). It limits the query and the results to certain branches/sections of the page tree. Multiple starting points can be provided as a comma-separated list of page IDs.
 
+Since version 11.5.6 it's possible to apply a stdWrap to it.
+
+Example:
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.query.filter {
+        __pageSections = TEXT
+        __pageSections.data = leveluid:0
+    }
+
 
 query.sortBy
 ~~~~~~~~~~~~
@@ -872,16 +883,31 @@ By setting this option to 1, you will allow rendering of empty facets. Usually, 
 faceting.urlParameterStyle
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:Type: Option/String (index or assoc)
+:Type: Option/String (`index` or `assoc`)
 :TS Path: plugin.tx_solr.search.faceting.urlParameterStyle
 :Since: 11.1
 :Default: index
-:Note: On assoc, the setting faceting.urlParameterSort will be enabled and can not be disabled.
 
-Allows to change the url style of facets. This can be legacy index or more modern associative style.
 
-Index style: tx_solr[filter][0]=type:pages
-Associative style: tx_solr[filter][type:pages]=1
+Allows to change the URL style of facets. 
+
+Possible values:
+
+`index`: Index style (default)
+   `tx_solr[filter][0]=type:pages`, the legacy style URL
+`assoc`: Associative style
+   `tx_solr[filter][type:pages]=1`, the more modern associative style URL.
+
+   Note: The setting `faceting.urlParameterSort` will be enabled and can not be disabled.
+
+Example:
+
+..  code-block:: typoscript
+    :caption: EXT:my_extension/Configuration/TypoScript/setup.typoscript
+
+    plugin.tx_solr.search.faceting {
+      urlParameterStyle = assoc
+    }
 
 faceting.urlParameterSort
 ~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Url;
 
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Traversable;
 
 /**
  * Testcase to check the functionallity of the UrlHelper
@@ -25,34 +26,32 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class UrlHelperTest extends SetUpUnitTestCase
 {
-    public function withoutQueryParameter(): array
+    public static function withoutQueryParameter(): Traversable
     {
-        return [
-            'cHash at the end' => [
-                'input' => 'index.php?id=1&cHash=ddd',
-                'queryParameterToRemove' => 'cHash',
-                'expectedUrl' => '/index.php?id=1',
-             ],
-            'cHash at the beginning' => [
-                'input' => 'index.php?cHash=ddd&id=1',
-                'queryParameterToRemove' => 'cHash',
-                'expectedUrl' => '/index.php?id=1',
-            ],
-            'cHash in the middle' => [
-                'input' => 'index.php?foo=bar&cHash=ddd&id=1',
-                'queryParameterToRemove' => 'cHash',
-                'expectedUrl' => '/index.php?foo=bar&id=1',
-            ],
-            'result is urlencoded' => [
-                'input' => 'index.php?foo[1]=bar&cHash=ddd&id=1',
-                'queryParameterToRemove' => 'cHash',
-                'expectedUrl' => '/index.php?foo%5B1%5D=bar&id=1',
-            ],
-            'result is urlencoded with unexisting remove param' => [
-                'input' => 'index.php?foo[1]=bar&cHash=ddd&id=1',
-                'queryParameterToRemove' => 'notExisting',
-                'expectedUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
-            ],
+        yield 'cHash at the end' => [
+            'input' => 'index.php?id=1&cHash=ddd',
+            'queryParameterToRemove' => 'cHash',
+            'expectedUrl' => '/index.php?id=1',
+        ];
+        yield 'cHash at the beginning' => [
+            'input' => 'index.php?cHash=ddd&id=1',
+            'queryParameterToRemove' => 'cHash',
+            'expectedUrl' => '/index.php?id=1',
+        ];
+        yield 'cHash in the middle' => [
+            'input' => 'index.php?foo=bar&cHash=ddd&id=1',
+            'queryParameterToRemove' => 'cHash',
+            'expectedUrl' => '/index.php?foo=bar&id=1',
+        ];
+        yield 'result is urlencoded' => [
+            'input' => 'index.php?foo[1]=bar&cHash=ddd&id=1',
+            'queryParameterToRemove' => 'cHash',
+            'expectedUrl' => '/index.php?foo%5B1%5D=bar&id=1',
+        ];
+        yield 'result is urlencoded with unexisting remove param' => [
+            'input' => 'index.php?foo[1]=bar&cHash=ddd&id=1',
+            'queryParameterToRemove' => 'notExisting',
+            'expectedUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
         ];
     }
     /**
@@ -66,16 +65,23 @@ class UrlHelperTest extends SetUpUnitTestCase
         self::assertSame($expectedUrl, (string)$urlHelper, 'Can not remove query parameter as expected');
     }
 
-    /**
-     * @return array
-     */
-    public function getUrl()
+    public static function getUrl(): Traversable
     {
-        return [
-            'nothing should be changed' => ['inputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1', 'expectedOutputUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1'],
-            'url should be encoded' => ['inputUrl' => 'index.php?foo[1]=bar&cHash=ddd&id=1', 'expectedOutputUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1'],
-            'url with https protocol' => ['inputUrl' => 'https://www.google.de/index.php', 'expectedOutputUrl' => 'https://www.google.de/index.php'],
-            'url with port' => ['inputUrl' => 'http://www.google.de:8080/index.php', 'expectedOutputUrl' => 'http://www.google.de:8080/index.php'],
+        yield 'nothing should be changed' => [
+            'inputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
+            'expectedOutputUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
+        ];
+        yield 'url should be encoded' => [
+            'inputUrl' => 'index.php?foo[1]=bar&cHash=ddd&id=1',
+            'expectedOutputUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
+        ];
+        yield 'url with https protocol' => [
+            'inputUrl' => 'https://www.google.de/index.php',
+            'expectedOutputUrl' => 'https://www.google.de/index.php',
+        ];
+        yield 'url with port' => [
+            'inputUrl' => 'http://www.google.de:8080/index.php',
+            'expectedOutputUrl' => 'http://www.google.de:8080/index.php',
         ];
     }
 
@@ -91,14 +97,11 @@ class UrlHelperTest extends SetUpUnitTestCase
         self::assertSame($expectedOutputUrl, (string)$urlHelper, 'Can not get expected output url');
     }
 
-    public function unmodifiedUrl()
+    public static function unmodifiedUrl(): Traversable
     {
-        return [
-            'noQuery' => ['http://www.site.de/en/test'],
-            'withQuery' => ['http://www.site.de/en/test?id=1'],
-            'withQueries' => ['http://www.site.de/en/test?id=1&L=2'],
-
-        ];
+        yield 'noQuery' => ['http://www.site.de/en/test'];
+        yield 'withQuery' => ['http://www.site.de/en/test?id=1'];
+        yield 'withQueries' => ['http://www.site.de/en/test?id=1&L=2'];
     }
     /**
      * @dataProvider unmodifiedUrl

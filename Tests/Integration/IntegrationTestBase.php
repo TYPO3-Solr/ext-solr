@@ -39,13 +39,14 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  *
  * @author Timo Schmidt
  */
-abstract class IntegrationTest extends FunctionalTestCase
+abstract class IntegrationTestBase extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
+    private $previousErrorHandler;
 
     protected array $coreExtensionsToLoad = [
-        'scheduler',
-        'fluid_styled_content',
+        'typo3/cms-scheduler',
+        'typo3/cms-fluid-styled-content',
     ];
 
     /**
@@ -68,9 +69,9 @@ abstract class IntegrationTest extends FunctionalTestCase
     ];
 
     protected array $configurationToUseInTestInstance = [
-       'SYS' =>  [
-           'exceptionalErrors' =>  E_WARNING | E_RECOVERABLE_ERROR | E_DEPRECATED | E_USER_DEPRECATED,
-       ],
+        'SYS' =>  [
+            'exceptionalErrors' =>  E_WARNING | E_RECOVERABLE_ERROR | E_DEPRECATED | E_USER_DEPRECATED,
+        ],
     ];
 
     /**
@@ -84,7 +85,13 @@ abstract class IntegrationTest extends FunctionalTestCase
         //this is needed by the TYPO3 core.
         chdir(Environment::getPublicPath() . '/');
         $this->instancePath = $this->getInstancePath();
-        $this->failWhenSolrDeprecationIsCreated();
+        $this->previousErrorHandler = $this->failWhenSolrDeprecationIsCreated();
+    }
+
+    protected function tearDown(): void
+    {
+        set_error_handler($this->previousErrorHandler);
+        parent::tearDown();
     }
 
     /**
@@ -160,10 +167,13 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     protected static string $lastSiteCreated = '';
 
+    /**
+     * @internal Don't use that method in tests, except you want to simulate the misconfiguration.
+     */
     protected function writeDefaultSolrTestSiteConfigurationForHostAndPort(
         ?string $scheme = 'http',
         ?string $host = 'localhost',
-        ?int $port = 8999,
+        ?int $port = 8983,
         ?bool $disableDefaultLanguage = false,
     ): void {
         $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage);
@@ -249,10 +259,10 @@ abstract class IntegrationTest extends FunctionalTestCase
      * This method registers an error handler that fails the testcase when an E_USER_DEPRECATED error
      * is thrown with the prefix solr:deprecation
      */
-    protected function failWhenSolrDeprecationIsCreated(): void
+    protected function failWhenSolrDeprecationIsCreated(): ?callable
     {
         error_reporting(error_reporting() & ~E_USER_DEPRECATED);
-        set_error_handler(function (int $id, string $msg, string $file, int $line): bool {
+        return set_error_handler(function (int $id, string $msg, string $file, int $line): bool {
             if ($id === E_USER_DEPRECATED && str_starts_with($msg, 'solr:deprecation: ')) {
                 $this->fail('Executed deprecated EXT:solr code: ' . $msg);
             }
@@ -265,7 +275,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         return [
             'scheme' => getenv('TESTING_SOLR_SCHEME') ?: 'http',
             'host' => getenv('TESTING_SOLR_HOST') ?: 'localhost',
-            'port' => getenv('TESTING_SOLR_PORT') ?: 8999,
+            'port' => getenv('TESTING_SOLR_PORT') ?: 8983,
         ];
     }
 

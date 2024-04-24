@@ -28,6 +28,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Solarium\Client;
 use Solarium\Core\Client\Endpoint;
+use Traversable;
 
 /**
  * Class SolrConnectionTest
@@ -123,15 +124,10 @@ class SolrConnectionTest extends SetUpUnitTestCase
         $connection->getAdminService();
     }
 
-    /**
-     * @return array
-     */
-    public function coreNameDataProvider(): array
+    public static function coreNameDataProvider(): Traversable
     {
-        return [
-            ['path' => '/solr/', 'core' => 'bla', 'expectedName' => 'bla'],
-            ['path' => '/somewherelese/solr/', 'core' => 'corename', 'expectedName' => 'corename'],
-        ];
+        yield ['path' => '/solr/', 'core' => 'bla', 'expectedName' => 'bla'];
+        yield ['path' => '/somewherelese/solr/', 'core' => 'corename', 'expectedName' => 'corename'];
     }
 
     /**
@@ -149,15 +145,10 @@ class SolrConnectionTest extends SetUpUnitTestCase
         self::assertSame($expectedCoreName, $solrService->getReadService()->getPrimaryEndpoint()->getCore());
     }
 
-    /**
-     * @return array
-     */
-    public function coreBasePathDataProvider(): array
+    public static function coreBasePathDataProvider(): Traversable
     {
-        return [
-            ['path' => '/', '' => 'bla', 'expectedPath' => ''],
-            ['path' => '/somewherelese/', 'core' => 'corename', 'expectedCoreBasePath' => '/somewherelese'],
-        ];
+        yield ['path' => '/', '' => 'bla', 'expectedPath' => ''];
+        yield ['path' => '/somewherelese/', 'core' => 'corename', 'expectedCoreBasePath' => '/somewherelese'];
     }
 
     /**
@@ -180,13 +171,13 @@ class SolrConnectionTest extends SetUpUnitTestCase
     public function coreBaseUriContainsAllSegments(): void
     {
         $readEndpoint = new Endpoint([
-                'host' => 'localhost',
-                'port' => 8080,
-                'path' => '/mypath/',
-                'core' => 'core_de',
-                'scheme' => 'http',
-                'username' => '',
-                'password' => '',
+            'host' => 'localhost',
+            'port' => 8080,
+            'path' => '/mypath/',
+            'core' => 'core_de',
+            'scheme' => 'http',
+            'username' => '',
+            'password' => '',
         ]);
         $writeEndpoint = $readEndpoint;
         $solrService = $this->getSolrConnectionWithDummyConstructorArgs($readEndpoint, $writeEndpoint);

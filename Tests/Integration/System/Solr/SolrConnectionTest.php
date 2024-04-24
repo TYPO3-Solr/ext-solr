@@ -18,13 +18,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class SolrConnectionTest
  */
-class SolrConnectionTest extends IntegrationTest
+class SolrConnectionTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {

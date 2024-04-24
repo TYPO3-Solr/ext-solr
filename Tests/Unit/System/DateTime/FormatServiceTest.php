@@ -34,6 +34,7 @@ class FormatServiceTest extends SetUpUnitTestCase
     {
         $this->formatService = new FormatService();
         parent::setUp();
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] = 'Y-m-d';
     }
 
     /**
@@ -57,7 +58,7 @@ class FormatServiceTest extends SetUpUnitTestCase
      */
     public function canFormatLegalDateOtherInputFormat()
     {
-        self::assertSame('16-02-17', $this->formatService->format('02-16-2017', 'm-d-Y'));
+        self::assertSame('2017-02-16', $this->formatService->format('02-16-2017', 'm-d-Y'));
     }
 
     /**

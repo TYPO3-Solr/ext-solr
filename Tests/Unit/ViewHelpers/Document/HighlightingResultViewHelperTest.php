@@ -26,6 +26,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use stdClass;
+use Traversable;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -33,27 +34,22 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class HighlightingResultViewHelperTest extends SetUpUnitTestCase
 {
-    /**
-     * @return array
-     */
-    public function canRenderCreateHighlightSnippedDataProvider(): array
+    public static function canRenderCreateHighlightSnippedDataProvider(): Traversable
     {
-        return [
-            [
-                ['hello <em>world</em>', 'hi <em>world</em>'],
-                'hello <em>world</em> ### hi <em>world</em>',
-                '<em>|</em>',
-            ],
-            [
-                ['hello <em>world</em>', 'hi <em>world</em> <h1>somethingelse</h1>'],
-                'hello <em>world</em> ### hi <em>world</em> &lt;h1&gt;somethingelse&lt;/h1&gt;',
-                '<em>|</em>',
-            ],
-            [
-                ['hello <em>world</em>', 'hi <em>world</em> <h1>somethingelse</h1>'],
-                'hello &lt;em&gt;world&lt;/em&gt; ### hi &lt;em&gt;world&lt;/em&gt; &lt;h1&gt;somethingelse&lt;/h1&gt;',
-                ' ',
-            ],
+        yield [
+            ['hello <em>world</em>', 'hi <em>world</em>'],
+            'hello <em>world</em> ### hi <em>world</em>',
+            '<em>|</em>',
+        ];
+        yield [
+            ['hello <em>world</em>', 'hi <em>world</em> <h1>somethingelse</h1>'],
+            'hello <em>world</em> ### hi <em>world</em> &lt;h1&gt;somethingelse&lt;/h1&gt;',
+            '<em>|</em>',
+        ];
+        yield [
+            ['hello <em>world</em>', 'hi <em>world</em> <h1>somethingelse</h1>'],
+            'hello &lt;em&gt;world&lt;/em&gt; ### hi &lt;em&gt;world&lt;/em&gt; &lt;h1&gt;somethingelse&lt;/h1&gt;',
+            ' ',
         ];
     }
 
@@ -102,12 +98,11 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
 
         $viewHelper = new HighlightResultViewHelper();
         $viewHelper->setRenderingContext($renderingContextMock);
-        $viewHelper->setArguments(
-            [
+        $viewHelper->setArguments([
             'resultSet' => $resultSetMock,
             'document' => $documentMock,
-            'fieldName' => 'content', ]
-        );
+            'fieldName' => 'content',
+        ]);
 
         $output = $viewHelper->render();
         self::assertSame($expectedOutput, $output);

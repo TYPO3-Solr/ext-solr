@@ -84,7 +84,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     {
         $testParameters = json_encode(['requestId' => '581f76be71f60']);
 
-        $fakeResponse = $this->getFixtureContentByName('fakeResponse.json');
+        $fakeResponse = self::getFixtureContentByName('fakeResponse.json');
         $requestMock = $this->getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse);
 
         /** @var MockObject|Item $queueItemMock */
@@ -105,7 +105,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     public function sendThrowsExceptionOnIsMismatch()
     {
         $testParameters = json_encode(['requestId' => 'wrongId']);
-        $fakeResponse = $this->getFixtureContentByName('fakeResponse.json');
+        $fakeResponse = self::getFixtureContentByName('fakeResponse.json');
 
         $requestMock = $this->getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse);
         /** @var MockObject|Item $queueItemMock */
@@ -155,7 +155,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     public function canSendRequestToSslSite()
     {
         $testParameters = json_encode(['requestId' => '581f76be71f60']);
-        $fakeResponse = $this->getFixtureContentByName('fakeResponse.json');
+        $fakeResponse = self::getFixtureContentByName('fakeResponse.json');
 
         $requestMock = $this->getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse);
         /** @var MockObject|Item $queueItemMock */
@@ -176,7 +176,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
             $this->assertSame(['bob', 'topsecret'], $options['auth'], 'Authentication options have not been set');
             $this->assertSame('GET', $method, 'Unexpected http method');
 
-            return $this->getFakedGuzzleResponse($this->getFixtureContentByName('fakeResponse.json'));
+            return $this->getFakedGuzzleResponse(self::getFixtureContentByName('fakeResponse.json'));
         });
 
         /** @var MockObject|SolrLogManager $solrLogManagerMock */

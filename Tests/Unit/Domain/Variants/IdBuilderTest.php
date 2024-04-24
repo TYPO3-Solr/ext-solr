@@ -32,21 +32,6 @@ use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
  */
 class IdBuilderTest extends SetUpUnitTestCase
 {
-    protected string $oldEncryptionKey;
-
-    protected function setUp(): void
-    {
-        $this->oldEncryptionKey = $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = 'testkey';
-        parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = $this->oldEncryptionKey;
-        parent::tearDown();
-    }
-
     /**
      * @test
      */
@@ -54,7 +39,7 @@ class IdBuilderTest extends SetUpUnitTestCase
     {
         $build = new IdBuilder(new NoopEventDispatcher());
         $variantId = $build->buildFromTypeAndUid('pages', 4711, [], $this->createMock(Site::class), new Document());
-        self::assertSame('e99b3552a0451f1a2e7aca4ac06ccaba063393de/pages/4711', $variantId);
+        self::assertSame('c523304ea47711019595d2bb352b623d1db40427/pages/4711', $variantId);
     }
 
     /**

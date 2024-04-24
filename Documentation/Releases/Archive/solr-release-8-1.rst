@@ -1,18 +1,20 @@
 .. include:: /Includes.rst.txt
-..  index:: Archive
-.. _releases-8.1:
+.. _releases-archive-8.1:
 
-=============
+============
+Releases 8.1
+============
+
 Release 8.1.0
 =============
 
 We are happy to release EXT:solr 8.1.0. The focus of EXT:solr 8.1.0 was, to improve the API for the new EB addon's "solrconsole" and "solrdebugtools".
 
 New in this release
-===================
+-------------------
 
 Groups should be respected in suggest as well
----------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When solrfluidgrouping is installed the groups are also respected for the top results in the suggest.
 
@@ -20,7 +22,7 @@ When solrfluidgrouping is installed the groups are also respected for the top re
 
 
 Display plugin name in page module
-----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This patch extends the hook PageModuleSummary displaying information about the plugins flexform settings in the page module. Now the plugin name will be displayed and linked to the edit form, similar to the default behavior.
 
@@ -28,7 +30,7 @@ This patch extends the hook PageModuleSummary displaying information about the p
 
 
 TypoScriptService moved from Extbase to Core
---------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The TypoScriptService was moved from extbase to the core and we now use the service in the TYPO3 core.
 
@@ -36,7 +38,7 @@ The TypoScriptService was moved from extbase to the core and we now use the serv
 
 
 Improvements for solrconsole
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The implementation of solrconsole required several API changes for the implementation of the commands. These changes have been added with the following pull requests:
 
@@ -45,14 +47,14 @@ The implementation of solrconsole required several API changes for the implement
 * https://github.com/TYPO3-Solr/ext-solr/pull/1936
 
 Use Apache Solr 6.6.3
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 We've updated shipped Apache Solr version to 6.6.3
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1938
 
 Documentation improvements
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Several issues have been fixed in the documentation to keep it up-to-date.
 
@@ -62,7 +64,7 @@ Several issues have been fixed in the documentation to keep it up-to-date.
 * https://github.com/TYPO3-Solr/ext-solr/pull/2014
 
 Add datetime fields for new configuration
------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For the example index configuration for EXT:news, the datetime fields have been added.
 
@@ -70,14 +72,14 @@ For the example index configuration for EXT:news, the datetime fields have been 
 
 
 Anonymize ip addresses by default
----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Since several versions it is possible to anonymize the ip-address in the statistics. This is now enabled by default.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1962
 
 Remove setting search.spellchecking.wrap
-----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This setting is not used anymore. It was replaced by a label in fluid in version 7.
 
@@ -85,7 +87,7 @@ This setting is not used anymore. It was replaced by a label in fluid in version
 
 
 Allow configuring additional persistent arguments in the search
----------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now you can configure custom url arguments in the search that are transported from page to page.
 
@@ -99,7 +101,7 @@ Use the following setting to configure them:
 * https://github.com/TYPO3-Solr/ext-solr/pull/1985
 
 Set mm.autoRelax to true by default
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When terms get removed because they are stopwords this might have an unwanted impact when the mm condition is evaluated. Setting mm.autoRelax to true fixes this.
 
@@ -110,14 +112,14 @@ See also:
 * https://issues.apache.org/jira/browse/SOLR-3085
 
 Dispatch signals in search controller actions
----------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This patch add's signals to the SearchController that allow passing custom arguments to the search view's.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1908
 
 Optimizations on suggest
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 With the suggest there where several issues:
 
@@ -130,7 +132,7 @@ With the suggest there where several issues:
 
 
 TYPO3 9 compatibility
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 With 8.1.0 we do **not** officially support TYPO3 9. You can install it on TYPO3 9.3.99 for development and we tried to fix the most important issues during the development but there are already
 a few known issues:
@@ -144,7 +146,7 @@ The following pull requests have already been merged in order to optimize the TY
 * https://github.com/TYPO3-Solr/ext-solr/pull/2020
 
 Bugfixes
-========
+--------
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1876 sortBy is not applied
 * https://github.com/TYPO3-Solr/ext-solr/pull/1875 Ensure AjaxController returns a response
@@ -164,7 +166,7 @@ Bugfixes
 * https://github.com/TYPO3-Solr/ext-solr/pull/2024 Download of stopwords and synonyms not working
 
 Deprecated Code
-===============
+---------------
 
 The following methods have been marked as deprecated and will be removed in EXT:solr 9.0.0:
 
@@ -175,6 +177,12 @@ The following methods have been marked as deprecated and will be removed in EXT:
 * Queue::initializeIndexingConfigurations() please use Queue::initializeBySiteAndIndexConfiguration instead
 * SortingHelper::getSortFields() please use the SearchResultSet to get the parsed sorting
 * SortingHelper::getSortOptions() please use the SearchResultSet to get the parsed sorting
+
+
+Outlook
+=======
+
+In the next release, we want to focus on the move to solarium and the support of the latest Apache Solr version.
 
 Contributors
 ============
@@ -276,20 +284,16 @@ Special thanks to our premium EB 2018 partners:
 
 Thanks to everyone who helped in creating this release!
 
-Outlook
-=======
-
-In the next release, we want to focus on the move to solarium and the support of the latest Apache Solr version.
 
 How to Get Involved
 ===================
 
 There are many ways to get involved with Apache Solr for TYPO3:
 
-* Submit bug reports and feature requests on [GitHub](https://github.com/TYPO3-Solr/ext-solr)
-* Ask or help or answer questions in our [Slack channel](https://typo3.slack.com/messages/ext-solr/)
-* Provide patches through Pull Request or review and comment on existing [Pull Requests](https://github.com/TYPO3-Solr/ext-solr/pulls)
-* Go to [www.typo3-solr.com](http://www.typo3-solr.com) or call [dkd](http://www.dkd.de) to sponsor the ongoing development of Apache Solr for TYPO3
+* Submit bug reports and feature requests on `GitHub <https://github.com/TYPO3-Solr/ext-solr>`__
+* Ask or help or answer questions in our `Slack channel <https://typo3.slack.com/messages/ext-solr/>`__
+* Provide patches through Pull Request or review and comment on existing `Pull Requests <https://github.com/TYPO3-Solr/ext-solr/pulls>`__
+* Go to `www.typo3-solr.com <https://www.typo3-solr.com>`__ or call `dkd <http://www.dkd.de>`__ to sponsor the ongoing development of Apache Solr for TYPO3
 
 Support us in 2018 by becoming an EB partner:
 

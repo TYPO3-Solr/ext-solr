@@ -8,10 +8,50 @@ Releases 11.0
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
-Release 11.0.8
---------------
+Release 11.0.9 ELTS
+===================
+
+We are happy to release EXT:solr 11.0.9 maintenance release, this release is a non-public ELTS release.
+
+..  note::
+    Non public ELTS release, you can find more details on `typo3-solr.com <https://www.typo3-solr.com/solr-for-typo3/add-ons/typo3-10-elts-extended/>`__
+
+Support of Apache Solr 9.5.0
+----------------------------
+
+Compatibility with Apache Solr 9.5.0 is checked and EXT:solr now accepts the following Apache Solr versions:
+
+- 9.2.0
+- 9.2.1
+- 9.3.0
+- 9.4.0
+- 9.4.1
+- 9.5.0
+
+To avoid breaking changes EXT:solr 11.0.9 doesn't require Solr 9.5.0, but it's strongly recommended to use the latest supported version.
+
+Note that due to CVE-2023-50290 you should at least check your configuration or update to at least Apache Solr 9.3.0.
+
+Small improvements and bugfixes
+-------------------------------
+
+- [TASK:BP:11.0] Prepend wrong fe language on empty cache by @goldi42
+- [BUGFIX:BP:11.0] Fix connection initialization by @dkd-friedrich in #10
+- [BUGFIX] Handle float values in options facet parser by @dkd-kaehm in #12
+- [BUGFIX:11.0] Exception with tx_solr_statistics after latest TYPO3 security update by @dkd-kaehm in #13
+- [TASK] Remove unused field `cookie` in tx_solr_statistics by @dkd-kaehm in #22
+- [TASK] Allow Apache Solr 9.4 by @dkd-friedrich in #25
+- [BUGFIX] Fix result highlighting fragment size by @dkd-friedrich in #26
+- [TASK] Allow Apache Solr 9.5 by @dkd-friedrich in #27
+
+
+Release 11.0.8 ELTS
+===================
 
 We are happy to release EXT:solr 11.0.8 maintenance release, this release is a non-public ELTS release.
+
+..  note::
+    Non public ELTS release, you can find more details on `typo3-solr.com <https://www.typo3-solr.com/solr-for-typo3/add-ons/typo3-10-elts-extended/>`__
 
 Support of Apache Solr 9.2.0
 ----------------------------
@@ -45,8 +85,8 @@ Small improvements and bugfixes
 
 
 
-Release 11.0.7
---------------
+Release 11.0.7 - Last non ELTS release
+======================================
 
 TYPO3 9 LTS reached the ELTS stage: free community support for TYPO3 9 LTS ended on 30 sept. 2021.
 We'll join the TYPO3s ELTS regiment and provide EXT:solr support for TYPO3 9 ELTS upwardly via our EB program.
@@ -55,7 +95,7 @@ The new EXT:solr 11.0.8+ for TYPO3 9 ELTS versions will be provided via dkds EB 
 
 
 Release 11.0.6
---------------
+==============
 
 This is a bugfix-only release that contains only bugfixes
 
@@ -70,7 +110,7 @@ This is a bugfix-only release that contains:
 
 
 Release 11.0.5
---------------
+==============
 
 This is a bugfix-only release that contains only bugfixes
 
@@ -129,7 +169,7 @@ This is a bugfix-only release that contains
 
 
 Release 11.0.3
---------------
+==============
 
 This is a bugfix-only release that contains only a few bugfixes
 
@@ -150,7 +190,7 @@ This is a bugfix-only release that contains only a few bugfixes
 
 
 Release 11.0.2
---------------
+==============
 
 This is a bugfix-only release that contains only a few bugfixes
 
@@ -169,7 +209,7 @@ This is a bugfix-only release that contains only a few bugfixes
 
 
 Release 11.0.1
---------------
+==============
 
 This is a bugfix-only release that contains only a few bugfixes
 
@@ -178,7 +218,7 @@ This is a bugfix-only release that contains only a few bugfixes
 
 
 Release 11.0.0
---------------
+==============
 
 We are happy to release EXT:solr 11.0.0.
 The focus of this release was the support of TYPO3 10 LTS.
@@ -190,14 +230,14 @@ The ```legacyMode``` that allows the usage of domain records and configuration o
 
 
 New in this release
-===================
+-------------------
 
 With EXT:solr 11 we provide the support of TYPO3 10 LTS. If you update to EXT:solr 11, make sure, that you are using the TYPO3 site management to manage your Apache Solr endpoints.
 Thanks to: Achim Fritz & b13 for the support on that topic
 
 
 Support of Apache Solr 8.5.1
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 With EXT:solr 11 we support Apache Solr 8.5.1, the latest release of Apache Solr.
 
@@ -205,7 +245,7 @@ To see what was changed in Apache Solr 8.5.x please read the `release notes of A
 
 
 Small improvements and bugfixes
--------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Beside the major changes we did several small improvements and bugfixes:
 
@@ -320,10 +360,10 @@ How to Get Involved
 
 There are many ways to get involved with Apache Solr for TYPO3:
 
-* Submit bug reports and feature requests on [GitHub](https://github.com/TYPO3-Solr/ext-solr)
-* Ask or help or answer questions in our [Slack channel](https://typo3.slack.com/messages/ext-solr/)
-* Provide patches through Pull Request or review and comment on existing [Pull Requests](https://github.com/TYPO3-Solr/ext-solr/pulls)
-* Go to [www.typo3-solr.com](http://www.typo3-solr.com) or call [dkd](http://www.dkd.de) to sponsor the ongoing development of Apache Solr for TYPO3
+* Submit bug reports and feature requests on `GitHub <https://github.com/TYPO3-Solr/ext-solr>`__
+* Ask or help or answer questions in our `Slack channel <https://typo3.slack.com/messages/ext-solr/>`__
+* Provide patches through Pull Request or review and comment on existing `Pull Requests <https://github.com/TYPO3-Solr/ext-solr/pulls>`__
+* Go to `www.typo3-solr.com <https://www.typo3-solr.com>`__ or call `dkd <http://www.dkd.de>`__ to sponsor the ongoing development of Apache Solr for TYPO3
 
 Support us by becoming an EB partner:
 

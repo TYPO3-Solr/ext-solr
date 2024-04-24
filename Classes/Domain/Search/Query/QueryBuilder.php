@@ -368,6 +368,13 @@ class QueryBuilder extends AbstractQueryBuilder
 
         // special filter to limit search to specific page tree branches
         if (array_key_exists('__pageSections', $searchQueryFilters)) {
+            if ($searchQueryFilters['__pageSections.'] ?? false) {
+                $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+                $searchQueryFilters['__pageSections'] = $cObj->stdWrap(
+                    $searchQueryFilters['__pageSections'],
+                    $searchQueryFilters['__pageSections.']
+                );
+            }
             $pageIds = GeneralUtility::trimExplode(',', $searchQueryFilters['__pageSections']);
             $this->usePageSectionsFromPageIds($pageIds);
             $this->typoScriptConfiguration->removeSearchQueryFilterForPageSections();

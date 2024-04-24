@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Service;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Traversable;
 use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -29,40 +30,38 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ConfigurationServiceTest extends SetUpUnitTestCase
 {
-    public function escapeFilterDataProvider(): array
+    public static function escapeFilterDataProvider(): Traversable
     {
-        return [
-            ['id', 10, '10'],
-            ['id', '10', '10'],
-            ['price', '10.5', '10.5'],
-            ['title', 'test', 'test'],
-            ['title', '"test"', '"test"'],
-            ['title', '"Do it right" AND right', '"Do it right" AND right'],
-            ['title', 'Do it right', '"Do it right"'],
-            ['title', 'Do "it" right', 'Do "it" right'],
-            ['title', 'te?t', 'te?t'],
-            ['title', 'test*', 'test*'],
-            ['title', 'te*t', 'te*t'],
-            ['title', 'te"st', 'te"st'],
-            ['title', 'roam~', 'roam~'],
-            ['title', 'roam~0.8', 'roam~0.8'],
-            ['title', '"jakarta apache"~10', '"jakarta apache"~10'],
-            ['mod_date', '[20020101 TO 20030101]', '[20020101 TO 20030101]'],
-            ['title', '{Aida TO Carmen}', '{Aida TO Carmen}'],
-            ['title', 'jakarta apache', '"jakarta apache"'],
-            ['title', 'jakarta^4 apache', 'jakarta^4 apache'],
-            ['title', '"jakarta apache"^4 "Apache Lucene"', '"jakarta apache"^4 "Apache Lucene"'],
-            ['title', '"jakarta apache" jakarta', '"jakarta apache" jakarta'],
-            ['title', '"jakarta apache" OR jakarta', '"jakarta apache" OR jakarta'],
-            ['title', '"jakarta apache" AND "Apache Lucene"', '"jakarta apache" AND "Apache Lucene"'],
-            ['title', '+jakarta lucene', '+jakarta lucene'],
-            ['title', '"jakarta apache" NOT "Apache Lucene"', '"jakarta apache" NOT "Apache Lucene"'],
-            ['title', 'NOT "jakarta apache"', 'NOT "jakarta apache"'],
-            ['title', '"jakarta apache" -"Apache Lucene"', '"jakarta apache" -"Apache Lucene"'],
-            ['title', '(jakarta OR apache) AND website', '(jakarta OR apache) AND website'],
-            ['title', '(+return +"pink panther")', '(+return +"pink panther")'],
-            ['title', '\(1\+1\)\:2', '\(1\+1\)\:2'],
-        ];
+        yield ['id', 10, '10'];
+        yield ['id', '10', '10'];
+        yield ['price', '10.5', '10.5'];
+        yield ['title', 'test', 'test'];
+        yield ['title', '"test"', '"test"'];
+        yield ['title', '"Do it right" AND right', '"Do it right" AND right'];
+        yield ['title', 'Do it right', '"Do it right"'];
+        yield ['title', 'Do "it" right', 'Do "it" right'];
+        yield ['title', 'te?t', 'te?t'];
+        yield ['title', 'test*', 'test*'];
+        yield ['title', 'te*t', 'te*t'];
+        yield ['title', 'te"st', 'te"st'];
+        yield ['title', 'roam~', 'roam~'];
+        yield ['title', 'roam~0.8', 'roam~0.8'];
+        yield ['title', '"jakarta apache"~10', '"jakarta apache"~10'];
+        yield ['mod_date', '[20020101 TO 20030101]', '[20020101 TO 20030101]'];
+        yield ['title', '{Aida TO Carmen}', '{Aida TO Carmen}'];
+        yield ['title', 'jakarta apache', '"jakarta apache"'];
+        yield ['title', 'jakarta^4 apache', 'jakarta^4 apache'];
+        yield ['title', '"jakarta apache"^4 "Apache Lucene"', '"jakarta apache"^4 "Apache Lucene"'];
+        yield ['title', '"jakarta apache" jakarta', '"jakarta apache" jakarta'];
+        yield ['title', '"jakarta apache" OR jakarta', '"jakarta apache" OR jakarta'];
+        yield ['title', '"jakarta apache" AND "Apache Lucene"', '"jakarta apache" AND "Apache Lucene"'];
+        yield ['title', '+jakarta lucene', '+jakarta lucene'];
+        yield ['title', '"jakarta apache" NOT "Apache Lucene"', '"jakarta apache" NOT "Apache Lucene"'];
+        yield ['title', 'NOT "jakarta apache"', 'NOT "jakarta apache"'];
+        yield ['title', '"jakarta apache" -"Apache Lucene"', '"jakarta apache" -"Apache Lucene"'];
+        yield ['title', '(jakarta OR apache) AND website', '(jakarta OR apache) AND website'];
+        yield ['title', '(+return +"pink panther")', '(+return +"pink panther")'];
+        yield ['title', '\(1\+1\)\:2', '\(1\+1\)\:2'];
     }
 
     /**
@@ -95,13 +94,11 @@ class ConfigurationServiceTest extends SetUpUnitTestCase
         self::assertEquals([$filterField . ':' . $expectedFilterString], $filters);
     }
 
-    public function overrideFilterDataProvider(): array
+    public static function overrideFilterDataProvider(): Traversable
     {
-        return [
-            ['id', 4711, 'id:4711'],
-            ['title', 'Do it right', 'title:"Do it right"'],
-            ['title', 'test', 'title:test'],
-        ];
+        yield ['id', 4711, 'id:4711'];
+        yield ['title', 'Do it right', 'title:"Do it right"'];
+        yield ['title', 'test', 'title:test'];
     }
 
     /**

@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Traversable;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -50,16 +51,11 @@ class ItemTest extends SetUpUnitTestCase
         self::assertSame('pages', $type, 'Can not get type from queue item');
     }
 
-    /**
-     * @return array
-     */
-    public function getStateDataProvider(): array
+    public static function getStateDataProvider(): Traversable
     {
-        return [
-            'pending item' => [['item_type' => 'pages', 'indexed' => 3, 'changed' => 4], Item::STATE_PENDING],
-            'indexed item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => 4], Item::STATE_INDEXED],
-            'blocked item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => 4, 'errors' => 'Something bad happened'], Item::STATE_BLOCKED],
-        ];
+        yield 'pending item' => [['item_type' => 'pages', 'indexed' => 3, 'changed' => 4], Item::STATE_PENDING];
+        yield 'indexed item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => 4], Item::STATE_INDEXED];
+        yield 'blocked item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => 4, 'errors' => 'Something bad happened'], Item::STATE_BLOCKED];
     }
 
     /**

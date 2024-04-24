@@ -96,7 +96,7 @@ class HierarchyFacet extends AbstractFacet
      */
     public function getPartialName(): string
     {
-        return !empty($this->configuration['partialName']) ? $this->configuration['partialName'] : 'Hierarchy';
+        return !empty($this->facetConfiguration['partialName']) ? $this->facetConfiguration['partialName'] : 'Hierarchy';
     }
 
     /**

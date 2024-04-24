@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Traversable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -30,7 +30,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 /**
  * Class RelationTest
  */
-class RelationTest extends IntegrationTest
+class RelationTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/solr',
@@ -53,7 +53,7 @@ class RelationTest extends IntegrationTest
     /**
      * Data provider for "canFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn"
      */
-    public function fixturesProviderForFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn(): Traversable
+    public static function fixturesProviderForFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn(): Traversable
     {
         yield 'Can fallback to pages if no TCA for local field'
             => ['solr_relation_can_fallback_to_pages_table_if_no_tca_for_local_field.csv'];
@@ -76,7 +76,7 @@ class RelationTest extends IntegrationTest
     /**
      * Data provider for "canResolveOneToOneRelation"
      */
-    public function canResolveOneToOneRelationDataProvider(): Traversable
+    public static function canResolveOneToOneRelationDataProvider(): Traversable
     {
         yield 'Can resolve title of 1:1 relation' => [
             'Second category',
@@ -125,7 +125,7 @@ class RelationTest extends IntegrationTest
     /**
      * Data provider for "canResolveMToNRelation"
      */
-    public function canResolveMToNRelationDataProvider(): Traversable
+    public static function canResolveMToNRelationDataProvider(): Traversable
     {
         yield 'Can resolve title of m:n relation and apply stdWrap' => [
             'pre:First bar record:post',
@@ -235,7 +235,7 @@ class RelationTest extends IntegrationTest
     /**
      * Data provider for "canResolveOneToNRelation"
      */
-    public function canResolveOneToNRelationDataProvider(): Traversable
+    public static function canResolveOneToNRelationDataProvider(): Traversable
     {
         yield 'Can resolve title of single 1:n relation' => [
             'First bar record',

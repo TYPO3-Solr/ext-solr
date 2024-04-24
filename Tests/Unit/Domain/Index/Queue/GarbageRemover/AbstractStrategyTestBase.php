@@ -21,13 +21,14 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Generator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\AccessibleObjectInterface;
 
 /**
  * Abstract strategy tests
  */
-abstract class AbstractStrategyTest extends SetUpUnitTestCase
+abstract class AbstractStrategyTestBase extends SetUpUnitTestCase
 {
     protected AbstractStrategy|AccessibleObjectInterface $subject;
 
@@ -106,7 +107,7 @@ abstract class AbstractStrategyTest extends SetUpUnitTestCase
     /**
      * Data provider for canDeleteRecordInAllSolrConnectionsDataProvider
      */
-    public function canDeleteRecordInAllSolrConnectionsDataProvider(): \Generator
+    public static function canDeleteRecordInAllSolrConnectionsDataProvider(): Generator
     {
         yield 'can delete and commit' => [
             'status' => 200,

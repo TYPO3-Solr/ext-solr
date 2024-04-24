@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\PageStrategy;
 /**
  * PageStrategy tests
  */
-class PageStrategyTest extends AbstractStrategyTest
+class PageStrategyTest extends AbstractStrategyTestBase
 {
     protected function setUp(): void
     {

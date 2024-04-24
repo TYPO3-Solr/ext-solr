@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Generator;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
@@ -118,7 +119,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         );
     }
 
-    public function indexingDataProvider(): \Generator
+    public static function indexingDataProvider(): Generator
     {
         yield 'solr field defined as string' => [
             ['solrFieldName_stringS' => 'solrFieldName'],

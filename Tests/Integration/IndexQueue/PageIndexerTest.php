@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -28,7 +28,7 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 /**
  * Testcase to check if we can index page documents using the PageIndexer
  */
-class PageIndexerTest extends IntegrationTest
+class PageIndexerTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/solr',
@@ -126,7 +126,7 @@ class PageIndexerTest extends IntegrationTest
     /**
      * Data provider for canIndexPageWithAccessProtectedContentIntoSolr
      */
-    public function canIndexPageWithAccessProtectedContentIntoSolrDataProvider(): Traversable
+    public static function canIndexPageWithAccessProtectedContentIntoSolrDataProvider(): Traversable
     {
         yield 'protected page' => [
             'can_index_access_protected_page',

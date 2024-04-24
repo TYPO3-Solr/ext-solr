@@ -31,7 +31,7 @@ class SynonymParserTest extends SetUpUnitTestCase
     public function canParseSynonyms()
     {
         $parser = new SynonymParser();
-        $synonyms = $parser->parseJson('foo', $this->getFixtureContentByName('synonym.json'));
+        $synonyms = $parser->parseJson('foo', self::getFixtureContentByName('synonym.json'));
         self::assertSame(['bar'], $synonyms, 'Could not parser synonyms from synonyms response');
     }
 }

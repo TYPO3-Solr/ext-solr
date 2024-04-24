@@ -49,7 +49,7 @@ class DefaultParserTest extends SetUpUnitTestCase
     {
         $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->onlyMethods(['getResponse'])->getMock();
 
-        $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
+        $fakedSolrResponse = self::getFixtureContentByName('fakeResponse.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
 
         $fakeResultSet->expects(self::once())->method('getResponse')->willReturn($fakeResponse);
@@ -64,7 +64,7 @@ class DefaultParserTest extends SetUpUnitTestCase
     {
         $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->onlyMethods(['getResponse'])->getMock();
 
-        $fakedSolrResponse = $this->getFixtureContentByName('fake_solr_response_with_query_fields_facets.json');
+        $fakedSolrResponse = self::getFixtureContentByName('fake_solr_response_with_query_fields_facets.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
 
         $fakeResultSet->expects(self::once())->method('getResponse')->willReturn($fakeResponse);
@@ -79,7 +79,7 @@ class DefaultParserTest extends SetUpUnitTestCase
     {
         $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->onlyMethods(['getResponse'])->getMock();
 
-        $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
+        $fakedSolrResponse = self::getFixtureContentByName('fakeResponse.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
 
         $fakeResultSet->expects(self::once())->method('getResponse')->willReturn($fakeResponse);

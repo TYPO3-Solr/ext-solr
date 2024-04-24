@@ -33,6 +33,9 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -113,6 +116,8 @@ class SuggestServiceTest extends SetUpUnitTestCase
         $connectionManagerMock = $this->getAccessibleMock(ConnectionManager::class, ['getConnectionByPageId'], [], '', false);
         $connectionManagerMock->expects(self::any())->method('getConnectionByPageId')->willReturn($solrConnectionMock);
         GeneralUtility::setSingletonInstance(ConnectionManager::class, $connectionManagerMock);
+
+        GeneralUtility::setSingletonInstance(EventDispatcherInterface::class, new EventDispatcher($this->createMock(ListenerProviderInterface::class)));
 
         $searchStub = new class ($this->createMock(SolrConnection::class)) extends Search implements SingletonInterface {
             public static SuggestServiceTest $suggestServiceTest;

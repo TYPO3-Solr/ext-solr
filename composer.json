@@ -38,11 +38,11 @@
     "typo3/cms-tstemplate": "*"
   },
   "require-dev": {
-    "dg/bypass-finals": "^1.4",
-    "phpunit/phpunit": "^9.5",
+    "dg/bypass-finals": "^1.6",
+    "phpunit/phpunit": "^10.1",
     "typo3/cms-fluid-styled-content": "*",
     "typo3/coding-standards": "~0.7.1",
-    "typo3/testing-framework": "^7.0.2",
+    "typo3/testing-framework": "^8.0",
     "phpstan/phpstan": "^1.10",
     "phpstan/phpstan-phpunit": "^1.3"
   },
@@ -80,6 +80,12 @@
     }
   },
   "scripts": {
+    "info:solr-versions": [
+      "@composer config extra.TYPO3-Solr.version-matrix.Apache-Solr"
+    ],
+    "info:recommended-solr-version": [
+      "@composer config extra.TYPO3-Solr.version-matrix.Apache-Solr.0"
+    ],
     "post-autoload-dump": [
       "mkdir -p .Build/vendor/apache-solr-for-typo3",
       "[ -L .Build/vendor/apache-solr-for-typo3/solr ] || ln -snvf ../../../. .Build/vendor/apache-solr-for-typo3/solr"
@@ -143,7 +149,12 @@
         "ext-solrconsole": "^12.0",
         "ext-solrdebugtools": "^12.0",
         "ext-solrmlt": "^12.0",
-        "Apache-Solr": "9.3.0",
+        "Apache-Solr": [
+          "9.5.0",
+          "9.4.1",
+          "9.4.0",
+          "9.3.0"
+        ],
         "configset": "ext_solr_12_0_0"
       },
       "ext-solrfal": {

@@ -17,7 +17,7 @@ return [
     ],
     'searchbackend_info' => [
         'parent' => 'searchbackend',
-        'access' => 'user,group',
+        'access' => 'user',
         'path' => '/module/searchbackend/info',
         'iconIdentifier' => 'extensions-solr-module-info',
         'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_info.xlf',
@@ -30,7 +30,7 @@ return [
     ],
     'searchbackend_coreoptimization' => [
         'parent' => 'searchbackend',
-        'access' => 'user,group',
+        'access' => 'user',
         'path' => '/module/searchbackend/core-optimization',
         'iconIdentifier' => 'extensions-solr-module-solr-core-optimization',
         'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_coreoptimize.xlf',
@@ -46,7 +46,7 @@ return [
     ],
     'searchbackend_indexqueue' => [
         'parent' => 'searchbackend',
-        'access' => 'user,group',
+        'access' => 'user',
         'path' => '/module/searchbackend/index-queue',
         'iconIdentifier' => 'extensions-solr-module-index-queue',
         'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_indexqueue.xlf',
@@ -60,7 +60,7 @@ return [
     ],
     'searchbackend_indexadministration' => [
         'parent' => 'searchbackend',
-        'access' => 'user,group',
+        'access' => 'user',
         'path' => '/module/searchbackend/index-administration',
         'iconIdentifier' => 'extensions-solr-module-index-administration',
         'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_indexadmin.xlf',

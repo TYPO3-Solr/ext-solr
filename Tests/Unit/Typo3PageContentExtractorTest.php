@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
+use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -101,41 +102,39 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
         self::assertStringNotContainsString('Remove me', $actualResult);
     }
 
-    public function canGetIndexableContentDataProvider()
+    public static function canGetIndexableContentDataProvider(): Traversable
     {
-        return [
-            'can extract simple text' => [
-                'content' => '<p>Hello solr for TYPO3</p>',
-                'expectedResult' => 'Hello solr for TYPO3',
-            ],
-            'can extract umlauts' => [
-                'content' => '<p>Heute ist ein sch&ouml;ner tag</p>',
-                'expectedResult' => 'Heute ist ein schöner tag',
-            ],
-            'can extract subtag content' => [
-                'content' => '<p>Heute ist ein <strong>sch&ouml;ner</strong> tag</p>',
-                'expectedResult' => 'Heute ist ein schöner tag',
-            ],
-            'removes inline styles' => [
-                'content' => '<style> body { background-color: linen; }</style><p>Heute ist ein <strong>sch&ouml;ner</strong> tag</p>',
-                'expectedResult' => 'Heute ist ein schöner tag',
-            ],
-            'removes a line break' => [
-                'content' => '<p>If <b>the value</b> is <br/> please contact me</p>',
-                'expectedResult' => 'If the value is please contact me',
-            ],
-            'keep less then character' => [
-                'content' => '<p>If <b>the value</b> is &lt;50 please contact me</p>',
-                'expectedResult' => 'If the value is <50 please contact me',
-            ],
-            'keep escaped html' => [
-                'content' => '<em>this</em> is how to make &lt;b&gt;fat&lt;/b&gt;',
-                'expectedResult' => 'this is how to make <b>fat</b>',
-            ],
-            'support chinese characters' => [
-                'content' => '媒体和投资者 新闻 财务报告 公司股票信息 概览',
-                'expectedResult' => '媒体和投资者 新闻 财务报告 公司股票信息 概览',
-            ],
+        yield 'can extract simple text' => [
+            'content' => '<p>Hello solr for TYPO3</p>',
+            'expectedResult' => 'Hello solr for TYPO3',
+        ];
+        yield 'can extract umlauts' => [
+            'content' => '<p>Heute ist ein sch&ouml;ner tag</p>',
+            'expectedResult' => 'Heute ist ein schöner tag',
+        ];
+        yield 'can extract subtag content' => [
+            'content' => '<p>Heute ist ein <strong>sch&ouml;ner</strong> tag</p>',
+            'expectedResult' => 'Heute ist ein schöner tag',
+        ];
+        yield 'removes inline styles' => [
+            'content' => '<style> body { background-color: linen; }</style><p>Heute ist ein <strong>sch&ouml;ner</strong> tag</p>',
+            'expectedResult' => 'Heute ist ein schöner tag',
+        ];
+        yield 'removes a line break' => [
+            'content' => '<p>If <b>the value</b> is <br/> please contact me</p>',
+            'expectedResult' => 'If the value is please contact me',
+        ];
+        yield 'keep less then character' => [
+            'content' => '<p>If <b>the value</b> is &lt;50 please contact me</p>',
+            'expectedResult' => 'If the value is <50 please contact me',
+        ];
+        yield 'keep escaped html' => [
+            'content' => '<em>this</em> is how to make &lt;b&gt;fat&lt;/b&gt;',
+            'expectedResult' => 'this is how to make <b>fat</b>',
+        ];
+        yield 'support chinese characters' => [
+            'content' => '媒体和投资者 新闻 财务报告 公司股票信息 概览',
+            'expectedResult' => '媒体和投资者 新闻 财务报告 公司股票信息 概览',
         ];
     }
 
@@ -143,7 +142,7 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
      * @dataProvider canGetIndexableContentDataProvider
      * @test
      */
-    public function canGetIndexableContent($content, $expectedResult)
+    public function canGetIndexableContent($content, $expectedResult): void
     {
         $content = '<!-- TYPO3SEARCH_begin -->' . $content . '<!-- TYPO3SEARCH_end -->';
 

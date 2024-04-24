@@ -220,11 +220,11 @@ class FlexFormUserFunctionsTest extends SetUpUnitTestCase
         $userFunc->expects(self::once())->method('getAvailableTemplateFromTypoScriptConfiguration')
             ->with(4711, 'results')
             ->willReturn([
-            'myTemplate.' => [
-                'label' => 'MyCustomTemplate',
-                'file' => 'Results',
-            ],
-        ]);
+                'myTemplate.' => [
+                    'label' => 'MyCustomTemplate',
+                    'file' => 'Results',
+                ],
+            ]);
 
         $parentInformation = [
             'flexParentDatabaseRow' => [

@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Traversable;
 
 /**
  * Testcase for the dateRange queryBuilder
@@ -179,17 +180,11 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 
-    /**
-     * @return array
-     */
-    public function getGlobalMinimumCountValue()
+    public static function getGlobalMinimumCountValue(): Traversable
     {
-        return [
-            ['configuredMinimumCount' => 5, 'expectedMinimumCount' => 5],
-            ['configuredMinimumCount' => 0, 'expectedMinimumCount' => 0],
-            ['configuredMinimumCount' => null, 'expectedMinimumCount' => 1],
-
-        ];
+        yield ['configuredMinimumCount' => 5, 'expectedMinimumCount' => 5];
+        yield ['configuredMinimumCount' => 0, 'expectedMinimumCount' => 0];
+        yield ['configuredMinimumCount' => null, 'expectedMinimumCount' => 1];
     }
 
     /**
