@@ -167,7 +167,8 @@ class PageIndexerRequest
         $headers = $this->getHeaders();
         $rawResponse = $this->getUrl($url, $headers, $this->timeout);
         // convert JSON response to response object properties
-        $decodedResponse = $response->getResultsFromJson($rawResponse->getBody()->getContents());
+        $responseString = $rawResponse->getBody()->getContents();
+        $decodedResponse = $response->getResultsFromJson($responseString);
 
         if ($decodedResponse === null) {
             $this->logger->error(
@@ -177,7 +178,7 @@ class PageIndexerRequest
                     'request url' => $url,
                     'request headers' => $headers,
                     'response headers' => $rawResponse->getHeaders(),
-                    'raw response body' => $rawResponse->getBody()->getContents(),
+                    'raw response body' => $responseString,
                 ]
             );
 
