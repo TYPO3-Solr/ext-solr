@@ -43,18 +43,11 @@ else
 fi
 echo -e "\n\n"
 
-echo "Run XML Lint"
-if ! xmllint --version > /dev/null 2>&1; then
-  echo "XML Lint not found, skipping XML linting."
-else
-  echo -e "\n\n"
-  echo "Check syntax of XML files"
-  if ! composer lint:xlf
-  then
-    echo "Some XML files are not valid"
-    echo "Please fix the files listed above"
-    exit 1
-  fi
+if ! composer tests:lint-xml
+then
+  echo "Some XML files are not valid"
+  echo "Please fix the files listed above"
+  exit 1
 fi
 
 

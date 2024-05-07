@@ -178,8 +178,8 @@ jobs:
       -
         name: Upload code coverage to Scrutinizer
         run: |
-          .Build/bin/ocular code-coverage:upload --format=php-clover coverage.unit.clover
-          .Build/bin/ocular code-coverage:upload --format=php-clover coverage.integration.clover
+          composer global exec ocular -- code-coverage:upload --format=php-clover coverage.unit.clover
+          composer global exec ocular -- code-coverage:upload --format=php-clover coverage.integration.clover
       -
         name: Clean up
         run: |
