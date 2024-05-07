@@ -30,24 +30,16 @@ else
   echo "No syntax errors! Great job!"
 fi
 
-echo "Check compliance against TYPO3 Coding Standards"
-if ! .Build/bin/php-cs-fixer --version > /dev/null 2>&1
+echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
+if ! composer t3:standards:check && rm .php-cs-fixer.cache
 then
-  echo "TYPO3 https://github.com/TYPO3/coding-standards is not set properly."
-  echo "Please fix that asap to avoid unwanted changes in the future."
+  echo "Some files are not compliant to TYPO3 Coding Standards"
+  echo "Please fix the files listed above."
+  echo "Tip for auto fix: "
+  echo "  composer tests:setup && composer t3:standards:fix"
   exit 1
 else
-  echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
-  if ! composer t3:standards:fix -- --diff --verbose --dry-run && rm .php-cs-fixer.cache
-  then
-    echo "Some files are not compliant to TYPO3 Coding Standards"
-    echo "Please fix the files listed above."
-    echo "Tip for auto fix: "
-    echo "  composer tests:setup && composer t3:standards:fix"
-    exit 1
-  else
-    echo "The code is TYPO3 Coding Standards compliant! Great job!"
-  fi
+  echo "The code is TYPO3 Coding Standards compliant! Great job!"
 fi
 echo -e "\n\n"
 
