@@ -65,12 +65,17 @@
   "config": {
     "allow-plugins": true,
     "vendor-dir": ".Build/vendor",
-    "bin-dir": ".Build/bin"
+    "bin-dir": ".Build/bin",
+    "preferred-install": {
+      "typo3/cms-core": "source",
+      "*": "dist"
+    }
   },
   "scripts-descriptions": {
     "t3:docs:build": "Renders the docs. Note: Can not run inside docker container, because uses TYPO3 dockrun_t3rd",
     "t3:docs:build:prod": "Same as t3:docs:build, but places the rendered docs in Resources/Public/Documentation and symlinks them to EXT:tika/Documentation.HTML",
     "t3:docs:clean": "Deletes all rendered docs created by t3:docs:build or t3:docs:build:prod.",
+    "t3:standards:check": "Check TYPO3 coding standards compliance.",
     "t3:standards:fix": "Fixes a possible TYPO3 coding standards errors.",
 
     "tests:env":  "Checks the requierements in environment for tests.",
@@ -113,7 +118,7 @@
     ],
     "tests:setup": [
       "@tests:env",
-      "@composer req --prefer-source --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
+      "@composer req --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
       "@tests:restore-git"
     ],
     "tests:unit": [
@@ -121,6 +126,9 @@
     ],
     "tests:integration": [
       "phpunit --colors --config=Build/Test/IntegrationTests.xml --bootstrap=.Build/Web/typo3conf/ext/solr/Build/Test/IntegrationTestsBootstrap.php"
+    ],
+    "t3:standards:check": [
+      "php-cs-fixer check --diff"
     ],
     "t3:standards:fix": [
       "php-cs-fixer fix"
