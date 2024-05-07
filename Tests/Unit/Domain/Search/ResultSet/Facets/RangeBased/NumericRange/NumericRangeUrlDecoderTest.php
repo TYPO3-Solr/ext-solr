@@ -48,9 +48,9 @@ class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
      */
     public static function rangeQueryParsingDataProvider(): Traversable
     {
-        yield '50/100' => ['firstValue' => '50', 'secondValue' => '100', 'expected' => '[50 TO 100]'];
-        yield '-10/20' => ['firstValue' => '-10', 'secondValue' => '20', 'expected' => '[-10 TO 20]'];
-        yield '-10/-5' => ['firstValue' => '-10', 'secondValue' => '-5', 'expected' => '[-10 TO -5]'];
+        yield '50/100' => ['firstValue' => '50', 'secondValue' => '100', 'expectedResult' => '[50 TO 100]'];
+        yield '-10/20' => ['firstValue' => '-10', 'secondValue' => '20', 'expectedResult' => '[-10 TO 20]'];
+        yield '-10/-5' => ['firstValue' => '-10', 'secondValue' => '-5', 'expectedResult' => '[-10 TO -5]'];
     }
 
     /**

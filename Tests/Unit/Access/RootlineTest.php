@@ -28,16 +28,16 @@ class RootlineTest extends SetUpUnitTestCase
 {
     public static function rootLineDataProvider(): Traversable
     {
-        yield 'simple' => ['string' => 'c:0', 'expectedGroups' => [0]];
-        yield 'simpleOneGroup' => ['string' => 'c:1', 'expectedGroups' => [1]];
-        yield 'mixed' => ['string' => '35:1/c:0', 'expectedGroups' => [0, 1]];
+        yield 'simple' => ['rootLineString' => 'c:0', 'expectedGroups' => [0]];
+        yield 'simpleOneGroup' => ['rootLineString' => 'c:1', 'expectedGroups' => [1]];
+        yield 'mixed' => ['rootLineString' => '35:1/c:0', 'expectedGroups' => [0, 1]];
     }
 
     /**
      * @test
      * @dataProvider rootLineDataProvider
      */
-    public function canParser($rootLineString, $expectedGroups)
+    public function canParse(string $rootLineString, $expectedGroups)
     {
         $rootline = new Rootline($rootLineString);
         $groups = $rootline->getGroups();

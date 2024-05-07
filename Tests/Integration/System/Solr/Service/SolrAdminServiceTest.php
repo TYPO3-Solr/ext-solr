@@ -15,8 +15,11 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr\Service;
 
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\PingFailedException;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\MockObject\Exception as MockObjectException;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Curl;
 use Traversable;
@@ -30,11 +33,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrAdminServiceTest extends IntegrationTestBase
 {
-    /**
-     * @var SolrAdminService
-     */
-    protected $solrAdminService;
+    protected SolrAdminService $solrAdminService;
 
+    /**
+     * @throws MockObjectException
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -54,25 +57,23 @@ class SolrAdminServiceTest extends IntegrationTestBase
 
     public static function synonymDataProvider(): Traversable
     {
-        yield 'normal' => ['baseword' => 'homepage', 'synonyms' => ['website']];
-        yield 'umlaut' => ['baseword' => 'früher', 'synonyms' => ['vergangenheit']];
-        yield '"' => ['baseword' => '"', 'synonyms' => ['quote mark']];
-        yield '%' => ['baseword' => '%', 'synonyms' => ['percent']];
-        yield '#' => ['baseword' => '#', 'synonyms' => ['hashtag']];
-        yield ':' => ['baseword' => ':', 'synonyms' => ['colon']];
-        yield ';' => ['baseword' => ';', 'synonyms' => ['semicolon']];
+        yield 'normal' => ['baseWord' => 'homepage', 'synonyms' => ['website']];
+        yield 'umlaut' => ['baseWord' => 'früher', 'synonyms' => ['vergangenheit']];
+        yield '"' => ['baseWord' => '"', 'synonyms' => ['quote mark']];
+        yield '%' => ['baseWord' => '%', 'synonyms' => ['percent']];
+        yield '#' => ['baseWord' => '#', 'synonyms' => ['hashtag']];
+        yield ':' => ['baseWord' => ':', 'synonyms' => ['colon']];
+        yield ';' => ['baseWord' => ';', 'synonyms' => ['semicolon']];
 
         // '/' still persists in https://issues.apache.org/jira/browse/SOLR-6853
-        //yield '/' => ['baseword' => '/', 'synonyms' => ['slash']]
+        //yield '/' => ['baseWord' => '/', 'synonyms' => ['slash']]
     }
 
     /**
-     * @param string $baseWord
-     * @param array $synonyms
      * @dataProvider synonymDataProvider
      * @test
      */
-    public function canAddAndDeleteSynonym($baseWord, $synonyms = [])
+    public function canAddAndDeleteSynonym(string $baseWord, array $synonyms = [])
     {
         $this->solrAdminService->deleteSynonym($baseWord);
         $this->solrAdminService->reloadCore();
@@ -96,15 +97,17 @@ class SolrAdminServiceTest extends IntegrationTestBase
 
     public static function stopWordDataProvider(): Traversable
     {
-        yield 'normal' => ['stopword' => 'badword'];
-        yield 'umlaut' => ['stopword' => 'frühaufsteher'];
+        yield 'normal' => ['stopWord' => 'badword'];
+        yield 'umlaut' => ['stopWord' => 'frühaufsteher'];
     }
 
     /**
      * @test
      * @dataProvider stopWordDataProvider
+     *
+     * @throws InvalidArgumentException
      */
-    public function canAddStopWord($stopWord)
+    public function canAddStopWord(string $stopWord): void
     {
         $stopWords = $this->solrAdminService->getStopWords();
 
@@ -146,6 +149,8 @@ class SolrAdminServiceTest extends IntegrationTestBase
 
     /**
      * @test
+     *
+     * @throws PingFailedException
      */
     public function canGetPingRoundtrimRunTime()
     {
@@ -185,6 +190,8 @@ class SolrAdminServiceTest extends IntegrationTestBase
 
     /**
      * @test
+     *
+     * @throws MockObjectException
      */
     public function canParseLanguageFromSchema()
     {

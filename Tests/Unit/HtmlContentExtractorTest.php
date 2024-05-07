@@ -45,27 +45,27 @@ class HtmlContentExtractorTest extends SetUpUnitTestCase
     {
         yield 'unifyWhitespaces' => [
             'websiteContent' => static::getFixtureContentByName('fixture2.html'),
-            'exptectedIndexableContent' => 'Title Level 1 headline Hello World Level 2 headline Level 3 headline',
+            'expectedIndexableContent' => 'Title Level 1 headline Hello World Level 2 headline Level 3 headline',
         ];
         yield 'unifyTabs' => [
             'websiteContent' => "Test\t\tTest",
-            'exptectedIndexableContent' => 'Test Test',
+            'expectedIndexableContent' => 'Test Test',
         ];
         yield 'removeScriptTags' => [
             'websiteContent' => '<script>foo</script>Test',
-            'exptectedIndexableContent' => 'Test',
+            'expectedIndexableContent' => 'Test',
         ];
         yield 'decodeEntities' => [
             'websiteContent' => 'B&auml;hm',
-            'exptectedIndexableContent' => 'Bähm',
+            'expectedIndexableContent' => 'Bähm',
         ];
         yield 'decodeSpaceEntities' => [
             'websiteContent' => 'B&auml;hm&nbsp; Bum',
-            'exptectedIndexableContent' => 'Bähm Bum',
+            'expectedIndexableContent' => 'Bähm Bum',
         ];
         yield 'decodeSpaceUtf8Nbsp' => [
             'websiteContent' => 'test <br/>afterNBSP',
-            'exptectedIndexableContent' => 'test afterNBSP',
+            'expectedIndexableContent' => 'test afterNBSP',
         ];
     }
 
