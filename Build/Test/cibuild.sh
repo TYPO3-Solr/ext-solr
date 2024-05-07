@@ -54,7 +54,7 @@ fi
 echo -e "\n\n"
 echo "Run unit tests"
 UNIT_BOOTSTRAP="Build/Test/UnitTestsBootstrap.php"
-if ! .Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --bootstrap=$UNIT_BOOTSTRAP --coverage-clover=coverage.unit.clover
+if ! .Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --bootstrap=$UNIT_BOOTSTRAP --colors --coverage-text
 then
   echo "Error during running the unit tests please check and fix them"
   exit 1
@@ -95,7 +95,7 @@ fi
 echo -e "\n\n"
 echo "Run integration tests"
 INTEGRATION_BOOTSTRAP="Build/Test/IntegrationTestsBootstrap.php"
-if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.clover
+if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --colors --coverage-text
 then
   echo "Error during running the integration tests please check and fix them"
   exit 1

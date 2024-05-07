@@ -116,7 +116,7 @@
     ],
     "tests:setup:global-require": [
       "echo \"Install global composer dependencies.\"",
-      "@composer global require sclable/xml-lint scrutinizer/ocular --ignore-platform-reqs"
+      "@composer global require sclable/xml-lint --ignore-platform-reqs"
     ],
     "tests:setup": [
       "@tests:env",
