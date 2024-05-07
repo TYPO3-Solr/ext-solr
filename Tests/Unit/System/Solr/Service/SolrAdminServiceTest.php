@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Service;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\Client;
 use Solarium\Core\Client\Endpoint;
 
@@ -75,6 +76,7 @@ class SolrAdminServiceTest extends UnitTest
      */
     public function getPluginsInformation()
     {
+        /** @var ResponseAdapter|MockObject $fakePluginsResponse */
         $fakePluginsResponse = $this->getDumbMock(ResponseAdapter::class);
         $fakePluginsResponse->responseHeader = null;
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/plugins?wt=json', $fakePluginsResponse);

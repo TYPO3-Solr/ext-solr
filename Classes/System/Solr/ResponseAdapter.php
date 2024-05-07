@@ -49,7 +49,7 @@ use stdClass;
  * @property stdClass fields
  * @property stdClass $plugins
  */
-class ResponseAdapter implements Countable
+class ResponseAdapter extends stdClass implements Countable
 {
     /**
      * @var ?string
