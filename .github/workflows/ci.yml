@@ -30,13 +30,13 @@ jobs:
       -
         name: Checkout current state of Pull Request
         if: github.event_name == 'pull_request'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
         if: github.event_name == 'push'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # End: Workaround for issue with actions/checkout...
       -
         name: "Resolve target branch of pull request."
@@ -72,10 +72,10 @@ jobs:
           echo "matrix=$(echo $matrix)" >> $GITHUB_OUTPUT
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       -
         name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Docker/SolrServer/Dockerfile
@@ -91,7 +91,7 @@ jobs:
           ./Build/Test/cibuild_docker.sh
       -
         name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: solrci-image
           path: /tmp/solrci-image.tar
@@ -115,14 +115,14 @@ jobs:
       -
         name: Checkout current state of Pull Request
         if: github.event_name == 'pull_request'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
         if: github.event_name == 'push'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
       # End: Workaround for issue with actions/checkout...
@@ -136,10 +136,10 @@ jobs:
             && sudo chown 8983:8983 ${{ env.CI_BUILD_DIRECTORY }}/data-solr
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       -
         name: Download solrci-image from "ci_bootstrapping" job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: solrci-image
           path: /tmp
@@ -200,7 +200,7 @@ jobs:
     steps:
       -
         name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       -
