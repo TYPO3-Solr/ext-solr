@@ -7,6 +7,28 @@ Releases 12.0
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 12.0.3
+==============
+
+This is a maintenance release for TYPO3 12.4 LTS, containing:
+
+- [BUGFIX] PHPStan 1.11+ by @dkd-kaehm in `#4030 <https://github.com/TYPO3-Solr/ext-solr/pull/4030>`__
+- [BUGFIX] Allow fe_group modification when indexing subpage of restricted page by @deschilter in `#3982 <https://github.com/TYPO3-Solr/ext-solr/pull/3982>`__
+- [TASK:P:main] Full fixed french translation by @megamisan in `#3996 <https://github.com/TYPO3-Solr/ext-solr/pull/3996>`__
+- [TASK] Update all GitHub-Actions on main branch by @dkd-kaehm in `#4028 <https://github.com/TYPO3-Solr/ext-solr/pull/4028>`__
+- [TASK] Remove deprecations for CI-Build by @dkd-kaehm in `#4028 <https://github.com/TYPO3-Solr/ext-solr/pull/4028>`__
+- [BUGFIX] Debug output if response body is read once stream by @Kanti in `#4009 <https://github.com/TYPO3-Solr/ext-solr/pull/4009>`__
+- [BUGFIX] Use tx-solr-suggest-focus for autofocus on form-submit by @felixranesberger in `#4005 <https://github.com/TYPO3-Solr/ext-solr/pull/4005>`__
+- [FEATURE] Support stdWrap to resolve relation label field by @DanielSiepmann in `#4021 <https://github.com/TYPO3-Solr/ext-solr/pull/4021>`__
+- [BUGFIX] Remove superfluous quotation marks in Partials/Result/FacetsActive.html by @julianhofmann in `#4021 <https://github.com/TYPO3-Solr/ext-solr/pull/4021>`__
+- [TASK] Remove switchableControllerActions from TypoScript by @derhansen in `#4015 <https://github.com/TYPO3-Solr/ext-solr/pull/4015>`__
+- [Internal] Collection of fixes recognized by SDS task by @dkd-kaehm in `#3974 <https://github.com/TYPO3-Solr/ext-solr/pull/3974>`__
+- [BUGFIX] Prevent exception in queue module when no site can be determined by @pschriner in `#3988 <https://github.com/TYPO3-Solr/ext-solr/pull/3988>`__
+- [FIX] Actions errors 2024.04.05 by @dkd-kaehm in `#3994 <https://github.com/TYPO3-Solr/ext-solr/pull/3994>`__
+- [BUGFIX] column `changed` out of range by @ferfrost in `#3980 <https://github.com/TYPO3-Solr/ext-solr/pull/3980>`__
+- [TASK] Update testing framework by @dkd-friedrich in `#3992 <https://github.com/TYPO3-Solr/ext-solr/pull/3992>`__
+- [BUGFIX] Solves PHP Warning: Undefined array key "label". by @serens `#3998 <https://github.com/TYPO3-Solr/ext-solr/pull/3998>`__
+
 Release 12.0.2
 ==============
 
@@ -523,22 +545,29 @@ awesome community. Here are the contributors to this release.
 - Eric Chavaillaz
 - Ernesto Baschny
 - Fabio Norbutat
+- Felix Ranesberger
+- ferfrost
 - Florian Rival
 - Georg Ringer
 - Harald Witt
 - Henrik Elsner
 - Ingo Fabbri
 - Jennifer Geiß
+- Julian Hofmann
 - Lars Tode
 - Lukas Niestroj
 - Marc Hirdes
 - Mario Lubenka
 - Markus Friedrich
+- Matthias Vogel
 - `@n3amil / Cypelt <https://github.com/n3amil>`_
 - Oliver Bartsch
+- Patrick Schriner
 - Philipp Kitzberger
+- Pierrick Caillon
 - Rafael Kähm
 - René Maas
+- Roman Schilter
 - Sascha Nowak
 - Sascha Schieferdecker
 - Sebastian Schreiber
@@ -547,6 +576,7 @@ awesome community. Here are the contributors to this release.
 - Stefan Frömken
 - Steve Lenz
 - Stämpfli Kommunikation
+- Sven Erens
 - Sven Teuber
 - Till Hörner
 - Tim Dreier
@@ -558,53 +588,69 @@ awesome community. Here are the contributors to this release.
 Also a big thank you to our partners who have already concluded one of our new development participation packages such
 as Apache Solr EB for TYPO3 12 LTS (Feature):
 
-- .hausformat GmbH
+- .hausformat
 - 711media websolutions GmbH
 - ACO Ahlmann SE & Co. KG
+- AVM Computersysteme Vertriebs GmbH
 - Ampack AG
 - Amt der Oö Landesregierung
-- Autorité des marchés financiers (lautorite.qc.ca)
-- AVM Computersysteme Vertriebs GmbH
+- Autorité des Marchés Financiers (Québec)
 - b13 GmbH
+- Beech IT
 - CARL von CHIARI GmbH
-- clickstorm GmbH
+- clickstorm GmbH Apache Solr EB für TYPO3 12 LTS (Feature)
 - Connecta AG
+- cosmoblonde GmbH
 - cron IT GmbH
 - CS2 AG
 - cyperfection GmbH
-- digit.ly GmbH
+- digit.ly
+- DMK E-BUSINESS GmbH
 - DP-Medsystems AG
 - DSCHOY GmbH
+- Deutsches Literaturarchiv Marbach
+- EB-12LTS-FEATURE
 - F7 Media GmbH
 - FTI Touristik GmbH
-- GPM Deutsche Gesellschaft für Projektmanagement e.V.
-- Hochschule Furtwangen
+- gedacht
+- GPM Deutsche Gesellschaft für Projektmanagement e. V.
+- HEAD acoustics GmbH
 - in2code GmbH
-- internezzo ag
+- Internezzo
 - jweiland.net
+- keeen GmbH
+- KONVERTO AG
 - Kassenärztliche Vereinigung Rheinland-Pfalz
 - Kreis Euskirchen
-- KONVERTO AG
+- L.N. Schaffrath DigitalMedien GmbH
+- LOUIS INTERNET GmbH
 - Leuchtfeuer Digital Marketing GmbH
 - Lingner Consulting New Media GmbH
-- LOUIS INTERNET GmbH
 - Macaw Germany Cologne GmbH
 - Marketing Factory Consulting GmbH
 - mehrwert intermediale kommunikation GmbH
+- morbihan.fr - Commande  BDC_99143_202404081250
+- ochschule Furtwangen
+- pietzpluswild GmbH
 - plan2net GmbH
-- queo GmbH
-- Québec.ca gouv.qc.ca
+- ProPotsdam GmbH
+- Québec.ca gouv.qc.ca Apache Solr EB für TYPO3 12 LTS (Feature)
 - Red Dot GmbH & Co. KG
-- Snowflake Productions GmbH
+- Schoene neue kinder GmbH
+- Snowflake Productions GmbH Apache Solr EB für TYPO3 12 LTS (Feature)
 - Stadtverwaltung Villingen-Schwenningen
 - Stämpfli AG
+- studio ahoi - Weitenauer Schwardt GbR
 - THE BRETTINGHAMS GmbH
+- Typoheads GmbH
 - UEBERBIT GmbH
 - Universität Regensburg
-- unternehmen online GmbH & Co. KG
-- VisionConnect GmbH
+- VisionConnect.de
+- WACON Internet GmbH
 - webconsulting business services gmbh
-- WIND INTERNET
+- werkraum Digitalmanufaktur GmbH
+- WIND Internet BV
+- XIMA MEDIA GmbH
 - wow! solution
 
 How to Get Involved
