@@ -110,7 +110,7 @@ class Page extends AbstractInitializer
         );
 
         foreach ($mountPoints as $mountPoint) {
-            if (!$this->isMountPointValid($mountPoint)) {
+            if (!empty($mountPoint['mountPageOverlayed']) && !$this->isMountPointValid($mountPoint)) {
                 continue;
             }
 
@@ -122,6 +122,7 @@ class Page extends AbstractInitializer
                 // The page itself has its own content, which is handled like standard page.
                 $indexQueue = GeneralUtility::makeInstance(Queue::class);
                 $indexQueue->updateItem($this->type, $mountPoint['uid']);
+                $mountPointsInitialized = true;
             }
 
             // This can happen when the mount point does not show the content of the
