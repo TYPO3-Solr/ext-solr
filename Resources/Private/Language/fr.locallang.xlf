@@ -292,7 +292,7 @@
 			<!-- From locallang.xlf -->
 			<trans-unit id="solr.backend.index_queue_module.description" xml:space="preserve">
 				<source>The Index Queue manages content indexing. Content enters the Index Queue by initialization below or when new content is created based on configuration. Items in the Index Queue are indexed newest changes first until all items in the queue have been indexed.</source>
-				<target>La file l&apos;indexation gère l&apos;indexation du contenu. Le contenu entre dans la file d&apos;indexation par l&apos;initialisation ci-dessous ou lors de la création d&apos;un nouveau contenu selon la configuration. Les éléments de la file d&apos;indexation sont indexés en commençant par les changements les plus récents jusqu&apos;à ce que tous les éléments de la file d&apos;indexation aient été indexés.</target>
+				<target>La file d&apos;indexation gère l&apos;indexation du contenu. Le contenu entre dans la file d&apos;indexation par l&apos;initialisation ci-dessous ou lors de la création d&apos;un nouveau contenu selon la configuration. Les éléments de la file d&apos;indexation sont indexés en commençant par les changements les plus récents jusqu&apos;à ce que tous les éléments de la file d&apos;indexation aient été indexés.</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.errors.reset_button" xml:space="preserve">
 				<source>Reset errors</source>
@@ -361,7 +361,7 @@
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.title" xml:space="preserve">
 				<source>Index Queue</source>
-				<target>File d&apos;&apos;indexation</target>
+				<target>File d&apos;indexation</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.index_manual" xml:space="preserve">
 				<source>Manual Indexing</source>
