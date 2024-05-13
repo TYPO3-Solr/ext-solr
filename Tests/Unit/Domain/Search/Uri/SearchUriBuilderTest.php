@@ -523,7 +523,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
         $previousRequest =  new SearchRequest($queryParameters, 42, 0, $configurationMock);
         $this->extBaseUriBuilderMock
             ->expects($matcher)->method('setArguments')
-            ->willReturnCallback(function (array $arguments) use ($subsitutedQueryParameters, $queryParameters, $matcher) {
+            ->willReturnCallback(function(array $arguments) use ($subsitutedQueryParameters, $queryParameters, $matcher) {
                 match ($matcher->numberOfInvocations()) {
                     1 => self::assertEquals($subsitutedQueryParameters, $arguments),
                     2 => self::assertEquals($queryParameters, $arguments),
@@ -534,7 +534,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
         $this->extBaseUriBuilderMock->expects(self::once())->method('reset')->with()->willReturn($this->extBaseUriBuilderMock);
         $buildCounter = 0;
         $this->extBaseUriBuilderMock->expects(self::exactly(2))->method('build')
-            ->willReturnCallback(function () use ($linkBuilderResult, &$buildCounter) {
+            ->willReturnCallback(function() use ($linkBuilderResult, &$buildCounter) {
                 if (++$buildCounter === 1) {
                     throw new InvalidParameterException('First call fails, should reprocess with regular arguments');
                 }

@@ -87,7 +87,7 @@ abstract class AbstractSolrService
             return $endpoint->getCoreBaseUri();
         } catch (Throwable) {
         }
-        return  $endpoint->getScheme() . '://' . $endpoint->getHost() . ':' . $endpoint->getPort() . $endpoint->getPath() . '/' . $endpoint->getCore() . '/';
+        return $endpoint->getScheme() . '://' . $endpoint->getHost() . ':' . $endpoint->getPort() . $endpoint->getPath() . '/' . $endpoint->getCore() . '/';
     }
 
     public function getPrimaryEndpoint(): Endpoint
@@ -119,7 +119,7 @@ abstract class AbstractSolrService
         string $rawPost,
         string $contentType = 'text/xml; charset=UTF-8'
     ): ResponseAdapter {
-        $initializeRequest = function (Request $request) use ($rawPost, $contentType) {
+        $initializeRequest = function(Request $request) use ($rawPost, $contentType) {
             $request->setRawData($rawPost);
             $request->addHeader('Content-Type: ' . $contentType);
             return $request;

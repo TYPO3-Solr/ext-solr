@@ -213,14 +213,14 @@ class IndexerTest extends SetUpUnitTestCase
         ];
 
         yield 'valid listener, no additional documents' => [
-            function (BeforeDocumentIsProcessedForIndexingEvent $event) {
+            function(BeforeDocumentIsProcessedForIndexingEvent $event) {
                 // Does nothing
             },
             null,
             1,
         ];
         yield 'valid listener, adds an additional document' => [
-            function (BeforeDocumentIsProcessedForIndexingEvent $event) {
+            function(BeforeDocumentIsProcessedForIndexingEvent $event) {
                 $event->addDocuments([new Document()]);
             },
             null,

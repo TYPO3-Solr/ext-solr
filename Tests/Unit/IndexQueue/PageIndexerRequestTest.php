@@ -172,7 +172,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     {
         /** @var MockObject|RequestFactory $requestFactoryMock */
         $requestFactoryMock = $this->createMock(RequestFactory::class);
-        $requestFactoryMock->expects(self::once())->method('request')->willReturnCallback(function ($url, $method, $options) {
+        $requestFactoryMock->expects(self::once())->method('request')->willReturnCallback(function($url, $method, $options) {
             $this->assertSame(['bob', 'topsecret'], $options['auth'], 'Authentication options have not been set');
             $this->assertSame('GET', $method, 'Unexpected http method');
 

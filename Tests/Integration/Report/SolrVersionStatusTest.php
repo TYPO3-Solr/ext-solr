@@ -48,7 +48,7 @@ class SolrVersionStatusTest extends IntegrationTestBase
         self::assertEmpty(
             array_filter(
                 $results,
-                static fn(Status $status): bool => $status->getSeverity() !== ContextualFeedbackSeverity::OK
+                static fn (Status $status): bool => $status->getSeverity() !== ContextualFeedbackSeverity::OK
             ),
             'We expect to get no violations against the test Solr server '
         );

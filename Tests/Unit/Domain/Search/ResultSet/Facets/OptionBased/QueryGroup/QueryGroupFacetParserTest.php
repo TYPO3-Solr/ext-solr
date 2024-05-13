@@ -56,13 +56,13 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
 
         $searchRequestMock->expects(self::any())
             ->method('getActiveFacetNames')
-            ->willReturnCallback(function () use ($activeUrlFacets) {
+            ->willReturnCallback(function() use ($activeUrlFacets) {
                 return $activeUrlFacets->getActiveFacetNames();
             });
 
         $searchRequestMock->expects(self::any())
             ->method('getHasFacetValue')
-            ->willReturnCallback(function (string $facetName, $facetValue) use ($activeUrlFacets) {
+            ->willReturnCallback(function(string $facetName, $facetValue) use ($activeUrlFacets) {
                 return $activeUrlFacets->hasFacetValue($facetName, $facetValue);
             });
 

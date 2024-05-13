@@ -141,7 +141,7 @@ class Slops implements ParameterBuilderInterface
     {
         $phraseEnabled = !(empty($searchConfiguration['query.']['phrase']) || $searchConfiguration['query.']['phrase'] !== 1);
         $phraseSlopConfigured = !empty($searchConfiguration['query.']['phrase.']['slop']);
-        return  ($phraseEnabled && $phraseSlopConfigured) ? $searchConfiguration['query.']['phrase.']['slop'] : self::NO_SLOP;
+        return ($phraseEnabled && $phraseSlopConfigured) ? $searchConfiguration['query.']['phrase.']['slop'] : self::NO_SLOP;
     }
 
     protected static function getQuerySlopFromConfiguration(array $searchConfiguration): ?int

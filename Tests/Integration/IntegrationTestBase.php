@@ -262,7 +262,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     protected function failWhenSolrDeprecationIsCreated(): ?callable
     {
         error_reporting(error_reporting() & ~E_USER_DEPRECATED);
-        return set_error_handler(function (int $id, string $msg, string $file, int $line): bool {
+        return set_error_handler(function(int $id, string $msg, string $file, int $line): bool {
             if ($id === E_USER_DEPRECATED && str_starts_with($msg, 'solr:deprecation: ')) {
                 $this->fail('Executed deprecated EXT:solr code: ' . $msg);
             }
