@@ -1,9 +1,9 @@
 [![Latest Stable Version](https://poser.pugx.org/apache-solr-for-typo3/solr/v/stable)](https://extensions.typo3.org/extension/solr)
 [![Latest Unstable Version](https://poser.pugx.org/apache-solr-for-typo3/solr/v/unstable)](https://extensions.typo3.org/extension/solr)
-[![TYPO3 12](https://img.shields.io/badge/TYPO3-12-orange.svg?style=flat-square)](https://get.typo3.org/version/12)
+[![TYPO3 13](https://img.shields.io/badge/TYPO3-13-orange.svg?style=flat-square)](https://get.typo3.org/version/13)
 [![Total Downloads](http://poser.pugx.org/apache-solr-for-typo3/solr/downloads)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 [![Monthly Downloads](https://poser.pugx.org/apache-solr-for-typo3/solr/d/monthly)](https://packagist.org/packages/apache-solr-for-typo3/solr)
-[![Build Status](https://github.com/TYPO3-Solr/ext-solr/actions/workflows/ci.yml/badge.svg?branch=release-12.0.x)](https://github.com/TYPO3-Solr/ext-solr/actions?query=branch:release-12.0.x)
+[![Build Status](https://github.com/TYPO3-Solr/ext-solr/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/TYPO3-Solr/ext-solr/actions?query=branch:main)
 
 # Apache Solr for TYPO3 CMS
 
