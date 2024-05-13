@@ -382,7 +382,7 @@
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.title" xml:space="preserve">
 				<source>Index Queue</source>
-				<target>File d&apos;&apos;indexation</target>
+				<target>File d&apos;indexation</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.index_manual" xml:space="preserve">
 				<source>Manual Indexing</source>
