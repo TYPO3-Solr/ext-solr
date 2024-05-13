@@ -352,7 +352,7 @@ class Indexer extends AbstractIndexer
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $buildRootlineWithPid);
         $rootline = $rootlineUtility->get();
 
-        $pageInRootline = array_filter($rootline, static function ($page) use ($rootPageId) {
+        $pageInRootline = array_filter($rootline, static function($page) use ($rootPageId) {
             return (int)$page['uid'] === $rootPageId;
         });
         return !empty($pageInRootline);

@@ -118,7 +118,7 @@ class IndexServiceTest extends SetUpUnitTestCase
             ->disableOriginalConstructor()
             ->onlyMethods(['index'])
             ->getMock();
-        $indexerMock->expects(self::exactly(2))->method('index')->willReturnCallback(function () {
+        $indexerMock->expects(self::exactly(2))->method('index')->willReturnCallback(function() {
             throw new Exception('unknown error occurred');
         });
         $indexService->expects(self::exactly(2))->method('getIndexerByItem')->willReturn($indexerMock);

@@ -79,7 +79,7 @@ class EventQueueWorkerTaskTest extends SetUpUnitTestCase
         $eventDispatcherMock
             ->expects(self::exactly(2))
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvents) {
+            ->willReturnCallback(function() use (&$dispatchedEvents) {
                 $dispatchedEvents[] = func_get_arg(0);
             });
 

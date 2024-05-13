@@ -37,7 +37,7 @@ defined('TYPO3') or die('Access denied.');
 
 // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-(static function () {
+(static function() {
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
     // Registering RecordMonitor and GarbageCollector hooks.
 
@@ -221,7 +221,7 @@ defined('TYPO3') or die('Access denied.');
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers']['SolrFacetMaskAndCombineEnhancer'] = SolrFacetMaskAndCombineEnhancer::class;
 
     // add solr field to rootline fields
-    if ($GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] === '') {
+    if (($GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] ?? '') === '') {
         $GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] = 'no_search_sub_entries';
     } else {
         $GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] .= ',no_search_sub_entries';
