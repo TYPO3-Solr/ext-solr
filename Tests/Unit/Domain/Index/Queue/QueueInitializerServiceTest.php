@@ -89,7 +89,7 @@ class QueueInitializerServiceTest extends SetUpUnitTestCase
         $service
             ->expects($matcher)
             ->method('executeInitializer')
-            ->willReturnCallback(static function () use ($siteMock, $fakeTs, $matcher): bool {
+            ->willReturnCallback(static function() use ($siteMock, $fakeTs, $matcher): bool {
                 match ($matcher->numberOfInvocations()) {
                     1 => self::assertEquals(
                         func_get_args(),

@@ -278,7 +278,7 @@ abstract class AbstractQueryBuilder
     public function removeFilterByFieldName(string $fieldName): self
     {
         return $this->removeFilterByFunction(
-            function ($key, $query) use ($fieldName) {
+            function($key, $query) use ($fieldName) {
                 $queryString = $query->getQuery();
                 $storedFieldName = substr($queryString, 0, strpos($queryString, ':'));
                 return $storedFieldName == $fieldName;
@@ -292,7 +292,7 @@ abstract class AbstractQueryBuilder
     public function removeFilterByName(string $name): self
     {
         return $this->removeFilterByFunction(
-            function ($key, $query) use ($name) {
+            function($key, $query) use ($name) {
                 return $query->getKey() === $name;
             }
         );
@@ -304,7 +304,7 @@ abstract class AbstractQueryBuilder
     public function removeFilterByValue(string $value): self
     {
         return $this->removeFilterByFunction(
-            function ($key, $query) use ($value) {
+            function($key, $query) use ($value) {
                 $query = $query->getQuery();
                 return $query == $value;
             }

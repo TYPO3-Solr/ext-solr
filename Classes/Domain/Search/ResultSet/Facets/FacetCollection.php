@@ -32,7 +32,7 @@ class FacetCollection extends AbstractCollection
     public function getUsed(): AbstractCollection
     {
         return $this->getFilteredCopy(
-            function (AbstractFacet $facet) {
+            function(AbstractFacet $facet) {
                 return $facet->getIsUsed() && $facet->getIncludeInUsedFacets();
             }
         );
@@ -41,7 +41,7 @@ class FacetCollection extends AbstractCollection
     public function getAvailable(): AbstractCollection
     {
         return $this->getFilteredCopy(
-            function (AbstractFacet $facet) {
+            function(AbstractFacet $facet) {
                 return $facet->getIsAvailable() && $facet->getIncludeInAvailableFacets() && $facet->getAllRequirementsMet();
             }
         );
@@ -50,7 +50,7 @@ class FacetCollection extends AbstractCollection
     public function getByGroupName(string $requiredGroup = 'all'): AbstractCollection
     {
         return $this->getFilteredCopy(
-            function (AbstractFacet $facet) use ($requiredGroup) {
+            function(AbstractFacet $facet) use ($requiredGroup) {
                 return $facet->getGroupName() == $requiredGroup;
             }
         );
@@ -59,7 +59,7 @@ class FacetCollection extends AbstractCollection
     public function getByName(string $requiredName): AbstractCollection
     {
         return $this->getFilteredCopy(
-            function (AbstractFacet $facet) use ($requiredName) {
+            function(AbstractFacet $facet) use ($requiredName) {
                 return $facet->getName() == $requiredName;
             }
         );

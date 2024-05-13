@@ -218,7 +218,7 @@ class UserGroupDetector implements
         $frontendGroups = array_unique($frontendGroups);
         $frontendGroups = array_filter(
             array_values($frontendGroups),
-            static fn(int $val): bool => ($val !== -1)
+            static fn (int $val): bool => ($val !== -1)
         );
 
         if (empty($frontendGroups)) {

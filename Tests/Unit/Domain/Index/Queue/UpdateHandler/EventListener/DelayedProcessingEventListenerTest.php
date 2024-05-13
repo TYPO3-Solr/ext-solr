@@ -56,7 +56,7 @@ class DelayedProcessingEventListenerTest extends SetUpEventListener
         $this->eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvent) {
+            ->willReturnCallback(function() use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
 

@@ -174,7 +174,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         $rootLinesCount = count($rootLines);
         $rootlineUtilityMock = $this->createMock(RootlineUtility::class);
         $matcher = self::exactly($rootLinesCount);
-        $rootlineUtilityMock->method('get')->willReturnCallback(static function () use ($matcher, $rootLines): array {
+        $rootlineUtilityMock->method('get')->willReturnCallback(static function() use ($matcher, $rootLines): array {
             if (isset($rootLines[$matcher->numberOfInvocations()])) {
                 return $rootLines[$matcher->numberOfInvocations()];
             }

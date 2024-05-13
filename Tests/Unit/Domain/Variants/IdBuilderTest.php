@@ -45,7 +45,7 @@ class IdBuilderTest extends SetUpUnitTestCase
     public function canUseCustomEventListener(): void
     {
         $eventDispatcher = new MockEventDispatcher();
-        $eventDispatcher->addListener(function (AfterVariantIdWasBuiltEvent $event) {
+        $eventDispatcher->addListener(function(AfterVariantIdWasBuiltEvent $event) {
             $event->setVariantId('mycustomid');
         });
         $build = new IdBuilder($eventDispatcher);

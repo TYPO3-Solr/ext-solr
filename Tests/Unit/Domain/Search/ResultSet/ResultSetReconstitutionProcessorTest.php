@@ -235,7 +235,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         /** @var MockObject|SearchRequest $usedSearchRequest */
         $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
         $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
-            function ($name) {
+            function($name) {
                 return $name == 'myType' ? ['pages'] : [];
             }
         );
@@ -416,7 +416,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         /** @var MockObject|SearchRequest $usedSearchRequest */
         $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
         $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
-            function ($name) {
+            function($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
             }
         );
@@ -466,7 +466,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         /** @var MockObject|SearchRequest $usedSearchRequest */
         $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
         $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
-            function ($name) {
+            function($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
             }
         );
@@ -508,7 +508,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         /** @var MockObject|SearchRequest $usedSearchRequest */
         $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
         $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
-            function ($name) {
+            function($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
             }
         );
@@ -545,7 +545,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         /** @var MockObject|SearchRequest $usedSearchRequest */
         $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
         $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
-            function ($name) {
+            function($name) {
                 return $name == 'type' ? ['pages'] : [];
             }
         );
@@ -587,7 +587,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         /** @var MockObject|SearchRequest $usedSearchRequest */
         $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
         $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
-            function ($name) {
+            function($name) {
                 if ($name == 'mytitle') {
                     return ['jpeg', 'kasper"s'];
                 }

@@ -125,7 +125,7 @@ class FlexFormUserFunctionsTest extends SetUpUnitTestCase
             ]);
 
         $flexFormUserFunctionsMock->expects(self::any())->method('getTranslation')->willReturnCallback(
-            function () {
+            function() {
                 $args = func_get_args();
                 if ($args[0] === 'LLL:EXT:some_ext/locallang.xlf:existing_label') {
                     return 'Translated Facet';

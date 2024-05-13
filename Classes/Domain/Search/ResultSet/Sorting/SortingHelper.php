@@ -52,7 +52,7 @@ class SortingHelper
         $sortFields = [];
         $sortParameters = GeneralUtility::trimExplode(',', $urlParameters);
 
-        $removeTsKeyDot = static function ($sortingKey) { return trim($sortingKey, '.'); };
+        $removeTsKeyDot = static function($sortingKey) { return trim($sortingKey, '.'); };
         $configuredSortingName = array_map($removeTsKeyDot, array_keys($this->configuration));
 
         foreach ($sortParameters as $sortParameter) {

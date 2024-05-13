@@ -82,7 +82,7 @@ class RecordMonitorTest extends SetUpUnitTestCase
         $this->eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvent) {
+            ->willReturnCallback(function() use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
         $this->recordMonitor->processCmdmap_preProcess('delete', 'tt_content', 123);
@@ -111,7 +111,7 @@ class RecordMonitorTest extends SetUpUnitTestCase
         $this->eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvent) {
+            ->willReturnCallback(function() use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
         $this->recordMonitor->processCmdmap_postProcess('version', 'pages', 4711, ['action' => 'swap']);
@@ -128,7 +128,7 @@ class RecordMonitorTest extends SetUpUnitTestCase
         $this->eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvent) {
+            ->willReturnCallback(function() use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
         $this->recordMonitor->processCmdmap_postProcess('version', 'tx_foo_bar', 888, ['action' => 'swap']);
@@ -145,7 +145,7 @@ class RecordMonitorTest extends SetUpUnitTestCase
         $this->eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvent) {
+            ->willReturnCallback(function() use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
         $this->recordMonitor->processCmdmap_postProcess('move', 'pages', 4711, []);
@@ -173,7 +173,7 @@ class RecordMonitorTest extends SetUpUnitTestCase
         $this->eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvent) {
+            ->willReturnCallback(function() use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
         $this->recordMonitor->processCmdmap_postProcess('move', 'tx_foo_bar', 888, []);
@@ -192,7 +192,7 @@ class RecordMonitorTest extends SetUpUnitTestCase
         $this->eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvent) {
+            ->willReturnCallback(function() use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
         $this->recordMonitor->processDatamap_afterDatabaseOperations('new', 'tt_content', 4711, ['pid' => 1], $dataHandlerMock);
@@ -213,7 +213,7 @@ class RecordMonitorTest extends SetUpUnitTestCase
         $this->eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvent) {
+            ->willReturnCallback(function() use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
 
