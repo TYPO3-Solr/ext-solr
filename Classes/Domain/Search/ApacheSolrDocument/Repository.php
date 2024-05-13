@@ -132,6 +132,6 @@ class Repository implements SingletonInterface
      */
     protected function getSearch(SolrConnection $solrConnection): Search
     {
-        return  GeneralUtility::makeInstance(Search::class, $solrConnection);
+        return GeneralUtility::makeInstance(Search::class, $solrConnection);
     }
 }
