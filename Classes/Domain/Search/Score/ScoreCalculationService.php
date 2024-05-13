@@ -86,7 +86,7 @@ class ScoreCalculationService
             // split field from search term
             [$field, $searchTerm] = explode(':', $scoreMatches[2][$key]);
 
-            $currentScoreValue = $scoreMatches[1][$key];
+            $currentScoreValue = (float)$scoreMatches[1][$key];
 
             $scoreWasSetForFieldBefore = isset($highScores[$field]);
             $scoreIsHigher = false;
@@ -101,7 +101,7 @@ class ScoreCalculationService
                 $pattern = '/' . preg_quote($field, '/') . '\^([\d.]*)/';
                 $boostMatches = [];
                 preg_match_all($pattern, $queryFields, $boostMatches);
-                $boost = $boostMatches[1][0];
+                $boost = (float)$boostMatches[1][0];
                 $highScores[$field] = new Score($boost, $field, $currentScoreValue, $searchTerm);
             }
         }
