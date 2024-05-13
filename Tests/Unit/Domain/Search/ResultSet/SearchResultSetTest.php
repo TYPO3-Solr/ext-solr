@@ -110,7 +110,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
         $this->configurationMock->expects(self::once())->method('getSearchConfiguration')->willReturn([]);
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $this->eventDispatcher->addListener(function (object $event) {
+        $this->eventDispatcher->addListener(function(object $event) {
             if ($event instanceof AfterSearchQueryHasBeenPreparedEvent) {
                 $event->getTypoScriptConfiguration()->getSearchConfiguration();
             }
@@ -130,7 +130,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
     {
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $this->eventDispatcher->addListener(function (object $event) {
+        $this->eventDispatcher->addListener(function(object $event) {
             if ($event instanceof AfterSearchHasBeenExecutedEvent) {
                 foreach ($event->getSearchResultSet()->getSearchResults() as $result) {
                     $result->type = strtoupper($result->type);
@@ -202,7 +202,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
     public function assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse(string $expextedQueryString, int $expectedOffset, ResponseAdapter $fakeResponse): void
     {
         $this->searchMock->expects(self::once())->method('search')->willReturnCallback(
-            function (Query $query, $offset) use ($expextedQueryString, $expectedOffset, $fakeResponse) {
+            function(Query $query, $offset) use ($expextedQueryString, $expectedOffset, $fakeResponse) {
                 $this->assertSame($expextedQueryString, $query->getQuery(), 'Search was not triggered with an expected queryString');
                 $this->assertSame($expectedOffset, $offset);
                 return $fakeResponse;

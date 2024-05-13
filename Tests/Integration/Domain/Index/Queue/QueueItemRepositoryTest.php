@@ -117,7 +117,7 @@ class QueueItemRepositoryTest extends IntegrationTestBase
         self::assertSame(2, count($items));
         self::assertSame('pages', $firstItem->getType(), 'First item has unexpected type');
 
-        $eventDispatcher->addListener(function (AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event): void {
+        $eventDispatcher->addListener(function(AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event): void {
             if ($event->getTable() === 'pages') {
                 $event->setRecords([]);
             }

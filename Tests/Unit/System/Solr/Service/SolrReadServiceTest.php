@@ -105,7 +105,7 @@ class SolrReadServiceTest extends SetUpUnitTestCase
         $this->responseMock->expects(self::any())->method('getStatusCode')->willReturn($statusCode);
         $this->clientMock->expects(self::once())->method('createRequest')->willReturn($this->createMock(Request::class));
 
-        $this->clientMock->expects(self::once())->method('executeRequest')->willReturnCallback(function () use ($statusCode) {
+        $this->clientMock->expects(self::once())->method('executeRequest')->willReturnCallback(function() use ($statusCode) {
             throw new HttpException('Solr error', $statusCode);
         });
         $searchQuery = new SearchQuery();

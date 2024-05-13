@@ -23,7 +23,7 @@ class HierarchyTool
      */
     public static function substituteSlashes(string $pathWithContentSlashes): string
     {
-        return  (string)str_replace('\/', '@@@slash@@@', $pathWithContentSlashes);
+        return (string)str_replace('\/', '@@@slash@@@', $pathWithContentSlashes);
     }
 
     /**

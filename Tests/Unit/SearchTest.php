@@ -62,7 +62,7 @@ class SearchTest extends SetUpUnitTestCase
         $query = new SearchQuery();
         $limit = 99;
         $this->solrReadServiceMock->expects(self::once())->method('search')->willReturnCallback(
-            function ($query) use ($limit) {
+            function($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
                 return $this->createMock(ResponseAdapter::class);
             }
@@ -79,7 +79,7 @@ class SearchTest extends SetUpUnitTestCase
         $query->setRows($limit);
 
         $this->solrReadServiceMock->expects(self::once())->method('search')->willReturnCallback(
-            function ($query) use ($limit) {
+            function($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
                 return $this->createMock(ResponseAdapter::class);
             }

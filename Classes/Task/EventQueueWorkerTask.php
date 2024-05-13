@@ -153,7 +153,7 @@ final class EventQueueWorkerTask extends AbstractTask
      */
     protected function getSolrLogManager(): SolrLogManager
     {
-        return  GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        return GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**
