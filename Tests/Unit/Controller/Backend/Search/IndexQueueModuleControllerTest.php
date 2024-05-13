@@ -83,7 +83,7 @@ class IndexQueueModuleControllerTest extends AbstractModuleController
      */
     public function hookIsTriggeredWhenRegistered(): void
     {
-        $this->eventDispatcher->addListener(function (AfterIndexQueueItemHasBeenMarkedForReindexingEvent $event) {
+        $this->eventDispatcher->addListener(function(AfterIndexQueueItemHasBeenMarkedForReindexingEvent $event) {
             $event->setUpdateCount(5);
         });
 

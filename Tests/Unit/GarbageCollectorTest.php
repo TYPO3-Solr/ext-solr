@@ -87,7 +87,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
         $this->eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvent) {
+            ->willReturnCallback(function() use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
         $this->garbageCollector->processCmdmap_preProcess('delete', 'pages', 123, '', $dataHandlerMock);
@@ -122,7 +122,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
         $this->eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvent) {
+            ->willReturnCallback(function() use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
 
@@ -232,7 +232,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
         $this->eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function () use (&$dispatchedEvent) {
+            ->willReturnCallback(function() use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
 

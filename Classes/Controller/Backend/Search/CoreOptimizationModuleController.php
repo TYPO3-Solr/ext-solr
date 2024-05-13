@@ -273,7 +273,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
     protected function exportFile(string $content, string $type = 'synonyms', string $fileExtension = 'txt'): ResponseInterface
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
-        return  $this->responseFactory->createResponse()
+        return $this->responseFactory->createResponse()
             ->withHeader('Content-Type', 'text/plain; charset=utf-8')
             ->withHeader('Cache-control', 'public')
             ->withHeader('Content-Description', 'File transfer')

@@ -41,7 +41,7 @@ class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
 
         $testArguments['options'] = $optionCollection;
         $testArguments['length'] = 1;
-        LabelPrefixesViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
+        LabelPrefixesViewHelper::renderStatic($testArguments, function() {}, $renderingContextMock);
         self::assertTrue($variableContainer->exists('prefixes'), 'Expected that prefixes has been set');
         $prefixes = $variableContainer->get('prefixes');
         self::assertSame(['r', 'p', 'l'], $prefixes, 'ViewHelper registers unexpected prefixes from passed options');
@@ -61,7 +61,7 @@ class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
         $testArguments['options'] = $optionCollection;
         $testArguments['length'] = 1;
         $testArguments['sortBy'] = 'alpha';
-        LabelPrefixesViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
+        LabelPrefixesViewHelper::renderStatic($testArguments, function() {}, $renderingContextMock);
         $prefixes = $variableContainer->get('prefixes');
         self::assertSame(['l', 'p', 'r'], $prefixes, 'ViewHelper registers unexpected prefixes from passed options');
     }

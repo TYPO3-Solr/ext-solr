@@ -415,7 +415,7 @@ class RoutingService implements LoggerAwareInterface
         $self = $this;
         return array_filter(
             $this->settings['query']['map'],
-            static function ($value) use ($self) {
+            static function($value) use ($self) {
                 return !$self->isCoreParameter($value);
             }
         );
