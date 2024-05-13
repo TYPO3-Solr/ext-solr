@@ -30,12 +30,12 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
     {
         $arguments = [
             'value' => 'givenString',
-            '__then' => function () { return 'thenResult'; },
-            '__else' => function () { return 'elseResult'; },
+            '__then' => function() { return 'thenResult'; },
+            '__else' => function() { return 'elseResult'; },
         ];
 
         $renderingContextMock = $this->createMock(RenderingContextInterface::class);
-        $result = IsStringViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
+        $result = IsStringViewHelper::renderStatic($arguments, function() {}, $renderingContextMock);
         self::assertSame('thenResult', $result, 'thenClosure was not rendered');
     }
 
@@ -44,12 +44,12 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
     {
         $arguments = [
             'value' => ['givenStringInArray'],
-            '__then' => function () { return 'thenResult'; },
-            '__else' => function () { return 'elseResult'; },
+            '__then' => function() { return 'thenResult'; },
+            '__else' => function() { return 'elseResult'; },
         ];
 
         $renderingContextMock = $this->createMock(RenderingContextInterface::class);
-        $result = IsStringViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
+        $result = IsStringViewHelper::renderStatic($arguments, function() {}, $renderingContextMock);
         self::assertSame('elseResult', $result, 'elseResult was not rendered');
     }
 }
