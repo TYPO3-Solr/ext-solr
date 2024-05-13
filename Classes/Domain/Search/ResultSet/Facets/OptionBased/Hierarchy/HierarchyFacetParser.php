@@ -129,7 +129,7 @@ class HierarchyFacetParser extends AbstractFacetParser
         $path = str_replace('\/', '@@@', $path);
         $path = rtrim($path, '/');
         $segments = explode('/', $path);
-        return array_map(static function ($item) {
+        return array_map(static function($item) {
             return str_replace('@@@', '/', $item);
         }, $segments);
     }
