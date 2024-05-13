@@ -21,7 +21,7 @@
     "docs": "https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/"
   },
   "require": {
-    "php": "^8.1",
+    "php": "^8.2",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
@@ -29,7 +29,7 @@
     "ext-simplexml": "*",
     "solarium/solarium": "6.3.2",
     "typo3/cms-backend": "*",
-    "typo3/cms-core": "^v12.4.3",
+    "typo3/cms-core": "^v13.1",
     "typo3/cms-extbase": "*",
     "typo3/cms-fluid": "*",
     "typo3/cms-frontend": "*",
@@ -136,7 +136,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-main": "12.0.x-dev"
+      "dev-main": "13.0.x-dev"
     },
     "typo3/cms": {
       "extension-key": "solr",
@@ -144,18 +144,18 @@
     },
     "TYPO3-Solr": {
       "version-matrix": {
-        "ext-tika": "^12.0",
-        "ext-solrfal": "^12.0",
-        "ext-solrconsole": "^12.0",
-        "ext-solrdebugtools": "^12.0",
-        "ext-solrmlt": "^12.0",
+        "ext-tika": "^13.0",
+        "ext-solrfal": "^13.0",
+        "ext-solrconsole": "^13.0",
+        "ext-solrdebugtools": "^13.0",
+        "ext-solrmlt": "^13.0",
         "Apache-Solr": [
           "9.5.0",
           "9.4.1",
           "9.4.0",
           "9.3.0"
         ],
-        "configset": "ext_solr_12_0_0"
+        "configset": "ext_solr_13_0_0"
       },
       "ext-solrfal": {
       },

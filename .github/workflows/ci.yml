@@ -2,11 +2,11 @@ name: build
 
 on:
   push:
-    branches: [ main, release-12.0.x, release-11.6.x, release-11.5.x, task/*_compatibility ]
+    branches: [ main, release-13.0.x, release-12.0.x, release-11.6.x, release-11.5.x, task/*_compatibility ]
     tags:
       - "**"
   pull_request:
-    branches: [ main, release-12.0.x, release-11.6.x, release-11.5.x, task/*_compatibility ]
+    branches: [ main, release-13.0.x, release-12.0.x, release-11.6.x, release-11.5.x, task/*_compatibility ]
 
 env:
   CI_BUILD_DIRECTORY: '/home/runner/work/ext-solr/ext-solr/.Build'

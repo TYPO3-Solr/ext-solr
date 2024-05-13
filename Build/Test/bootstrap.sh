@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DEFAULT_TYPO3_VERSION="12"
+DEFAULT_TYPO3_VERSION="13"
 DEFAULT_TYPO3_DATABASE_HOST="localhost"
 DEFAULT_TYPO3_DATABASE_NAME="test"
 DEFAULT_TYPO3_DATABASE_USERNAME="root"
@@ -42,7 +42,7 @@ if [[ $* == *--local* ]]; then
 fi
 
 if [ -z $TYPO3_VERSION ]; then
-  echo "Must set env var TYPO3_VERSION (e.g. dev-main or ^12.4)"
+  echo "Must set env var TYPO3_VERSION (e.g. dev-main or ^13)"
   exit 1
 fi
 
