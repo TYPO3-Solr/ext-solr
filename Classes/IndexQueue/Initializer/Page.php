@@ -20,7 +20,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
-use PDO;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
@@ -236,7 +235,7 @@ class Page extends AbstractInitializer
 
         $mountIdentifier = $this->getMountPointIdentifier($mountProperties);
         $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier, errors) '
-            . $this->buildSelectStatement() . ', 1, ' . $connection->quote($mountIdentifier, PDO::PARAM_STR) . ',""'
+            . $this->buildSelectStatement() . ', 1, ' . $connection->quote($mountIdentifier) . ',""'
             . 'FROM pages '
             . 'WHERE '
             . 'uid IN(' . implode(',', $mountedPagesThatNeedToBeAdded) . ') '
