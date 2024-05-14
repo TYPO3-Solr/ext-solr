@@ -242,7 +242,7 @@ class GarbageHandler extends AbstractUpdateHandler
             $row = $queryBuilder
                 ->select(...GeneralUtility::trimExplode(',', $garbageCollectionRelevantFields, true))
                 ->from($table)
-                ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, PDO::PARAM_INT)))
+                ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \Doctrine\DBAL\ParameterType::INTEGER)))
                 ->executeQuery()
                 ->fetchAssociative();
         } catch (Throwable) {
