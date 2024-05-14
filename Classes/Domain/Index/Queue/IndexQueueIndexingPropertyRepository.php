@@ -19,7 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use Doctrine\DBAL\Exception as DBALException;
-use PDO;
+use Doctrine\DBAL\ParameterType;
 
 /**
  * Class IndexQueueIndexingPropertyRepository
@@ -40,11 +40,11 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'root',
-                    $queryBuilder->createNamedParameter($rootPid, PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($rootPid, ParameterType::INTEGER)
                 ),
                 $queryBuilder->expr()->eq(
                     'item_id',
-                    $queryBuilder->createNamedParameter($indexQueueUid, PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($indexQueueUid, ParameterType::INTEGER)
                 )
             )->executeStatement();
     }
@@ -71,7 +71,7 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'item_id',
-                    $queryBuilder->createNamedParameter($indexQueueUid, PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($indexQueueUid, ParameterType::INTEGER)
                 )
             )->executeQuery()
             ->fetchAllAssociative();

@@ -56,10 +56,11 @@ class StatisticsRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder
             ->select('keywords')
-            ->add('select', $queryBuilder->expr()->count('keywords', 'count'), true)
-            ->add('select', $queryBuilder->expr()->avg('num_found', 'hits'), true)
-            ->add('select', '(' . $queryBuilder->expr()->count('keywords') . ' * 100 / ' . $countRows . ') AS percent', true)
-            ->from($this->table)
+            ->select(
+                $queryBuilder->expr()->count('keywords', 'count'),
+                $queryBuilder->expr()->avg('num_found', 'hits'),
+                '(' . $queryBuilder->expr()->count('keywords') . ' * 100 / ' . $countRows . ') AS percent'
+            )->from($this->table)
             ->andWhere(
                 $queryBuilder->expr()->gt('tstamp', $timeStart),
                 $queryBuilder->expr()->eq('root_pid', $rootPageId)
@@ -156,9 +157,9 @@ class StatisticsRepository extends AbstractRepository
                 $frequentSearchConfiguration['select.']['SELECT']
             )
             ->from($frequentSearchConfiguration['select.']['FROM'])
-            ->add('where', $frequentSearchConfiguration['select.']['ADD_WHERE'], true)
-            ->add('groupBy', $frequentSearchConfiguration['select.']['GROUP_BY'], true)
-            ->add('orderBy', $frequentSearchConfiguration['select.']['ORDER_BY'])
+            ->where($frequentSearchConfiguration['select.']['ADD_WHERE'], true)
+            ->groupBy($frequentSearchConfiguration['select.']['GROUP_BY'], true)
+            ->orderBy($frequentSearchConfiguration['select.']['ORDER_BY'])
             ->setMaxResults((int)$frequentSearchConfiguration['limit'])
             ->executeQuery()
             ->fetchAllAssociative();
