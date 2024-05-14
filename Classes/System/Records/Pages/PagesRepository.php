@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\ParameterType;
 use PDO;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -197,7 +198,7 @@ class PagesRepository extends AbstractRepository
                 ->select('uid')
                 ->from($this->table)
                 ->where(
-                    $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, PDO::PARAM_INT))
+                    $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, \Doctrine\DBAL\ParameterType::INTEGER))
                 )->executeQuery();
             while (($pageRow = $noSearchSubEntriesEnabledPagesStatement->fetchAssociative()) !== false) {
                 $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage((int)$pageRow['uid']));
@@ -222,9 +223,8 @@ class PagesRepository extends AbstractRepository
         return $queryBuilder
             ->select('pid', 'l10n_parent', 'sys_language_uid')
             ->from('pages')
-            ->add(
-                'where',
-                $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, PDO::PARAM_INT))
+            ->where(
+                $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, ParameterType::INTEGER))
                 . BackendUtility::BEenableFields('pages')
             )->executeQuery()
             ->fetchAllAssociative();
@@ -247,9 +247,8 @@ class PagesRepository extends AbstractRepository
         $queryBuilder
             ->select('uid')
             ->from($this->table)
-            ->add(
-                'where',
-                $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, PDO::PARAM_INT))
+            ->where(
+                $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, ParameterType::INTEGER))
             );
 
         $this->addDefaultLanguageUidConstraint($queryBuilder);
@@ -340,7 +339,7 @@ class PagesRepository extends AbstractRepository
             $queryBuilder->select('uid')
                 ->from('pages')
                 ->where(
-                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($id, PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($id, ParameterType::INTEGER)),
                     $queryBuilder->expr()->eq('sys_language_uid', 0)
                 )
                 ->orderBy('uid');
