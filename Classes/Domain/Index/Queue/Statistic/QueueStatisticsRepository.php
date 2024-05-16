@@ -19,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use Doctrine\DBAL\Exception as DBALException;
-use PDO;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
 
