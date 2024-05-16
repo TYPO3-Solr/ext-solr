@@ -12,7 +12,7 @@ return [
     'searchbackend' => [
         'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod.xlf',
         'iconIdentifier' => 'extensions-solr-module-main',
-        'navigationComponent' => '@typo3/backend/page-tree/page-tree-element',
+        'navigationComponent' => '@typo3/backend/tree/page-tree-element',
         'extensionName' => 'Solr',
     ],
     'searchbackend_info' => [
