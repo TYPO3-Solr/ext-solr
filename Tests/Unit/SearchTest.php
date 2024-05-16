@@ -57,7 +57,7 @@ class SearchTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canPassLimit()
+    public function canPassLimit(): void
     {
         $query = new SearchQuery();
         $limit = 99;
@@ -72,7 +72,7 @@ class SearchTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canKeepLimitWhenNullWasPassedAsLimit()
+    public function canKeepLimitWhenNullWasPassedAsLimit(): void
     {
         $query = new SearchQuery();
         $limit = 99;

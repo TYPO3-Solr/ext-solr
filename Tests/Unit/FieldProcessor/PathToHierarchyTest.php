@@ -38,7 +38,7 @@ class PathToHierarchyTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canBuildSolrHierarchyString()
+    public function canBuildSolrHierarchyString(): void
     {
         self::assertEquals(
             $this->processor->process(['sport/cricket']),

@@ -38,7 +38,7 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
     /**
      * Initializes the arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('resultSet', SearchResultSet::class, 'resultSet', true);
@@ -47,7 +47,7 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
         $this->registerArgument('configuration', 'array', 'configuration', false, ['insertAbove' => true, 'insertBelow' => true, 'maximumNumberOfLinks' => 10]);
     }
 
-    public function render()
+    public function render(): string
     {
         $itemsPerPage = $this->getItemsPerPage();
         $configuration = $this->arguments['configuration'];

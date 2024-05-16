@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\Test;
 class SortingHelperTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGetSortFieldFromUrlParameter()
+    public function canGetSortFieldFromUrlParameter(): void
     {
         $sortConfiguration = [
             'relevance.' => ['field' => 'relevance', 'label' => 'Title'],
@@ -45,7 +45,7 @@ class SortingHelperTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canThrowExceptionForUnconfiguredSorting()
+    public function canThrowExceptionForUnconfiguredSorting(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('No sorting configuration found for option name unconfigured');

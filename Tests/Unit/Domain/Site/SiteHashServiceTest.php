@@ -45,7 +45,7 @@ class SiteHashServiceTest extends SetUpUnitTestCase
 
     #[DataProvider('canResolveSiteHashAllowedSitesDataProvider')]
     #[Test]
-    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites)
+    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites): void
     {
         $siteLanguageMock = $this->createMock(SiteLanguage::class);
         $siteLanguageMock->method('getLanguageId')->willReturn(0);
@@ -79,7 +79,7 @@ class SiteHashServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getSiteHashForDomain()
+    public function getSiteHashForDomain(): void
     {
         $oldKey = $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = 'testKey';

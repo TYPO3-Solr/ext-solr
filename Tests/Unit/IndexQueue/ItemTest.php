@@ -28,7 +28,7 @@ use Traversable;
 class ItemTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGetErrors()
+    public function canGetErrors(): void
     {
         $metaData = ['errors' => 'error during index'];
         $record = [];
@@ -39,7 +39,7 @@ class ItemTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetType()
+    public function canGetType(): void
     {
         $metaData = ['item_type' => 'pages'];
         $record = [];
@@ -58,14 +58,14 @@ class ItemTest extends SetUpUnitTestCase
 
     #[DataProvider('getStateDataProvider')]
     #[Test]
-    public function canGetState($metaData, $expectedState)
+    public function canGetState($metaData, $expectedState): void
     {
         $item = new Item($metaData, [], null, $this->createMock(QueueItemRepository::class));
         self::assertSame($expectedState, $item->getState(), 'Can not get state from item as expected');
     }
 
     #[Test]
-    public function testHasErrors()
+    public function testHasErrors(): void
     {
         $item = new Item([], [], null, $this->createMock(QueueItemRepository::class));
         self::assertFalse($item->getHasErrors(), 'Expected that item without any data has no errors');
@@ -75,7 +75,7 @@ class ItemTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function testHasIndexingProperties()
+    public function testHasIndexingProperties(): void
     {
         $item = new Item([], [], null, $this->createMock(QueueItemRepository::class));
         self::assertFalse($item->hasIndexingProperties(), 'Expected that empty item should not have any indexing properties');

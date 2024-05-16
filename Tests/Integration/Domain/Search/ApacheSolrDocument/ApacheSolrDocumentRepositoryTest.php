@@ -51,7 +51,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canFindByPageIdAndByLanguageId()
+    public function canFindByPageIdAndByLanguageId(): void
     {
         $apacheSolrDocumentsCollection = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId(3, 0);
 
@@ -61,7 +61,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canReturnEmptyCollectionIfNoConnectionToSolrServerIsEstablished()
+    public function canReturnEmptyCollectionIfNoConnectionToSolrServerIsEstablished(): void
     {
         $apacheSolrDocumentsCollection = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId(3, 777);
         self::assertEmpty($apacheSolrDocumentsCollection, 'ApacheSolrDocumentRepository does not return empty collection if no connection to core can be established.');

@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Test;
 class SchemaParserTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canParseLanguage()
+    public function canParseLanguage(): void
     {
         $parser = new SchemaParser();
         $schema = $parser->parseJson(self::getFixtureContentByName('schema.json'));
@@ -36,7 +36,7 @@ class SchemaParserTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canParseName()
+    public function canParseName(): void
     {
         $parser = new SchemaParser();
         $schema = $parser->parseJson(self::getFixtureContentByName('schema.json'));
@@ -44,7 +44,7 @@ class SchemaParserTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canReturnEmptySchemaWhenNoSchemaPropertyInResponse()
+    public function canReturnEmptySchemaWhenNoSchemaPropertyInResponse(): void
     {
         $parser = new SchemaParser();
         $schema = $parser->parseJson('{}');

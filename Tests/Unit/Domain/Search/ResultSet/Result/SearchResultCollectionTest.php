@@ -40,13 +40,13 @@ class SearchResultCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getHasGroupsReturnsFalseByDefault()
+    public function getHasGroupsReturnsFalseByDefault(): void
     {
         self::assertFalse($this->searchResultCollection->getHasGroups());
     }
 
     #[Test]
-    public function getHasGroupsReturnsTrueWhenGroupsExist()
+    public function getHasGroupsReturnsTrueWhenGroupsExist(): void
     {
         $groupA = new Group('foo');
         $this->searchResultCollection->getGroups()->add($groupA);
@@ -54,7 +54,7 @@ class SearchResultCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetAndGetGroupCollection()
+    public function canSetAndGetGroupCollection(): void
     {
         $groupCollection = new GroupCollection();
         $this->searchResultCollection->setGroups($groupCollection);

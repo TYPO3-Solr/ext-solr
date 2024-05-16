@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\Test;
 class ArrayAccessorTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGet()
+    public function canGet(): void
     {
         $data = ['foo' => ['bla' => 1]];
         $arrayAccessor = new ArrayAccessor($data);
@@ -44,7 +44,7 @@ class ArrayAccessorTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetAndGet()
+    public function canSetAndGet(): void
     {
         // can set and get a simple value
         $arrayAccessor = new ArrayAccessor();
@@ -59,7 +59,7 @@ class ArrayAccessorTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canReset()
+    public function canReset(): void
     {
         $data = ['one' => ['two' => ['a' => 111, 'b' => 222]]];
         // can set and get a simple value
@@ -74,7 +74,7 @@ class ArrayAccessorTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function resetIsRemovingEmptyNodes()
+    public function resetIsRemovingEmptyNodes(): void
     {
         $data = ['one' => ['two' => ['a' => 111, 'b' => 222]]];
         // can set and get a simple value
@@ -90,7 +90,7 @@ class ArrayAccessorTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function resetIsRemovingSubNodesAndEmptyNodes()
+    public function resetIsRemovingSubNodesAndEmptyNodes(): void
     {
         $data = [
             'one' => [

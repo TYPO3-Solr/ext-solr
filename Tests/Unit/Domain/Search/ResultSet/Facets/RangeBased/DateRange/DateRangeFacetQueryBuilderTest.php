@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Test;
 class DateRangeFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canBuild()
+    public function canBuild(): void
     {
         $fakeFacetConfiguration = [
             'field' => 'created',

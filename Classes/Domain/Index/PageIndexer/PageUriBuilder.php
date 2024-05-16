@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\UriInterface;
+use RuntimeException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -123,7 +124,7 @@ class PageUriBuilder
                 ]
             );
 
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Could not create a valid URL to get frontend data while trying to index a page. Created URL: ' . (string)$pageIndexUri,
                 1311080805
             );

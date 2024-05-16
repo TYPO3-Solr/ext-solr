@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ConfigurationPageResolverTest extends IntegrationTestBase
 {
     #[Test]
-    public function canGetClosestPageIdWithActiveTemplate()
+    public function canGetClosestPageIdWithActiveTemplate(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_closest_template_page_id.csv');
 

@@ -1008,7 +1008,7 @@ Notes:
      */
     #[Group('frontend')]
     #[Test]
-    public function canShowLastSearchesFromSessionInResponse()
+    public function canShowLastSearchesFromSessionInResponse(): void
     {
         self::markTestIncomplete(
             'Last searches component seems to be fine, but the test does not fit that case currently.

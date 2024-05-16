@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Test;
 class NodeTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGetHasParentNode()
+    public function canGetHasParentNode(): void
     {
         $facetMock = $this->createMock(HierarchyFacet::class);
         $node = new Node($facetMock);
@@ -42,7 +42,7 @@ class NodeTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetHasChildNodeSelectedReturnFalseWhenNoChildNodeWasAssigned()
+    public function canGetHasChildNodeSelectedReturnFalseWhenNoChildNodeWasAssigned(): void
     {
         $facetMock = $this->createMock(HierarchyFacet::class);
         $node = new Node($facetMock);
@@ -51,7 +51,7 @@ class NodeTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetHasChildNodeSelectedReturnFalseWhenNoSelectedChildNodeWasAssigned()
+    public function canGetHasChildNodeSelectedReturnFalseWhenNoSelectedChildNodeWasAssigned(): void
     {
         $facetMock = $this->createMock(HierarchyFacet::class);
         $node = new Node($facetMock);
@@ -63,7 +63,7 @@ class NodeTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetHasChildNodeSelectedReturnTrueWhenSelectedChildNodeWasAssigned()
+    public function canGetHasChildNodeSelectedReturnTrueWhenSelectedChildNodeWasAssigned(): void
     {
         $facetMock = $this->createMock(HierarchyFacet::class);
         $node = new Node($facetMock);

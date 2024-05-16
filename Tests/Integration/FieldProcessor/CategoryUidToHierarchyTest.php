@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class CategoryUidToHierarchyTest extends IntegrationTestBase
 {
     #[Test]
-    public function canConvertToCategoryIdToHierarchy()
+    public function canConvertToCategoryIdToHierarchy(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_category.csv');
         $processor = GeneralUtility::makeInstance(CategoryUidToHierarchy::class);

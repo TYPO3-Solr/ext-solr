@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\Test;
 class RootlineTest extends IntegrationTestBase
 {
     #[Test]
-    public function canGetAccessRootlineByPageId()
+    public function canGetAccessRootlineByPageId(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/user_protected_page.csv');
         $accessRootline = Rootline::getAccessRootlineByPageId(10);

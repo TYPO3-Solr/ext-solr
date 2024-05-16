@@ -159,7 +159,7 @@ class ConnectionManagerTest extends IntegrationTestBase
      *  ——[ 3] Detached and non Root Page-Tree
      */
     #[Test]
-    public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConnectionByRootPageId()
+    public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConnectionByRootPageId(): void
     {
         $this->setupNotFullyConfiguredSite();
 
@@ -184,7 +184,7 @@ class ConnectionManagerTest extends IntegrationTestBase
      *       —— [32] Subpage 2 of Detached
      */
     #[Test]
-    public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConnectionByPageId()
+    public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConnectionByPageId(): void
     {
         $this->setupNotFullyConfiguredSite();
 
@@ -212,7 +212,7 @@ class ConnectionManagerTest extends IntegrationTestBase
      *         ——[14] Mount Point 1 (to [24] to show contents from)
      */
     #[Test]
-    public function canFindSolrConnectionForMountedPageIfMountPointIsGiven()
+    public function canFindSolrConnectionForMountedPageIfMountPointIsGiven(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/connection_for_mounted_page.csv');
 

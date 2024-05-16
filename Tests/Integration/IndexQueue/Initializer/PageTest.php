@@ -101,7 +101,7 @@ class PageTest extends IntegrationTestBase
      *                         ------------ 20 (Childpage of mountpoint)
      */
     #[Test]
-    public function initializerIsFillingQueueWithMountPages()
+    public function initializerIsFillingQueueWithMountPages(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_add_mount_pages.csv');
 
@@ -134,7 +134,7 @@ class PageTest extends IntegrationTestBase
      *          ——[14] Mounted Page (to [24] to show contents from)
      */
     #[Test]
-    public function initializerIsFillingQueueWithMountedNonRootPages()
+    public function initializerIsFillingQueueWithMountedNonRootPages(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/mounted_shared_non_root_page_from_different_tree_can_be_indexed.csv');
         $this->assertEmptyQueue();
@@ -165,7 +165,7 @@ class PageTest extends IntegrationTestBase
      *          ——[14] Mount Point (to [24] to show contents from)
      */
     #[Test]
-    public function initializerIsFillingQueueWithMountedRootPages()
+    public function initializerIsFillingQueueWithMountedRootPages(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/mounted_shared_root_page_from_different_tree_can_be_indexed.csv');
         $this->assertEmptyQueue();
@@ -203,7 +203,7 @@ class PageTest extends IntegrationTestBase
      *          ——[34] Mount Point 2 (to [24] to show contents from)
      */
     #[Test]
-    public function initializerIsFillingQueuesWithMultipleSitesMounted()
+    public function initializerIsFillingQueuesWithMultipleSitesMounted(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/mounted_shared_page_from_multiple_trees_can_be_queued.csv');
         $this->assertEmptyQueue();
@@ -235,7 +235,7 @@ class PageTest extends IntegrationTestBase
      * message queue
      */
     #[Test]
-    public function initializerAddsInfoMessagesAboutInvalidMountPages()
+    public function initializerAddsInfoMessagesAboutInvalidMountPages(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_add_mount_pages.csv');
 
@@ -266,7 +266,7 @@ class PageTest extends IntegrationTestBase
      *      ——[ 111] Root of Testpage testtwo.site aka integration_tree_two    (included in index)
      */
     #[Test]
-    public function initializerDoesNotIgnoreSubPagesOfRestrictedByAdditionalWhereClauseParents()
+    public function initializerDoesNotIgnoreSubPagesOfRestrictedByAdditionalWhereClauseParents(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/initializer_does_not_ignore_sub_pages_of_restricted_by_additionalWhereClause_parents.csv');
         $this->assertEmptyQueue();

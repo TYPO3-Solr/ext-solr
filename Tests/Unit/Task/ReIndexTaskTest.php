@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\Test;
 class ReIndexTaskTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
+    public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable(): void
     {
         $indexQueuerWorker = $this->getMockBuilder(ReIndexTask::class)
             ->disableOriginalConstructor()

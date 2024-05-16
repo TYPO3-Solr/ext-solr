@@ -25,7 +25,7 @@ use PHPUnit\Framework\Attributes\Test;
 class QueryFieldsTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canBuildFromString()
+    public function canBuildFromString(): void
     {
         $input = 'one^10.0,two^20.0,three^5.0';
         $queryFields = QueryFields::fromString($input, ',');

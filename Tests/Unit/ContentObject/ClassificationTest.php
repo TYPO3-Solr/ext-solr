@@ -35,7 +35,7 @@ class ClassificationTest extends SetUpContentObject
     }
 
     #[Test]
-    public function canClassifyContent()
+    public function canClassifyContent(): void
     {
         $content = 'i like TYPO3 more then joomla';
         $this->contentObjectRenderer->start(['content' => $content]);
@@ -73,7 +73,7 @@ class ClassificationTest extends SetUpContentObject
 
     #[DataProvider('excludePatternDataProvider')]
     #[Test]
-    public function canExcludePatterns($input, $expectedOutput)
+    public function canExcludePatterns($input, $expectedOutput): void
     {
         $this->contentObjectRenderer->start(['content' => $input]);
 

@@ -12,7 +12,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class TsfeTest extends IntegrationTestBase
 {
     #[Test]
-    public function initializeTsfeWithNoDefaultPageAndPageErrorHandlerDoNotThrowAnError()
+    public function initializeTsfeWithNoDefaultPageAndPageErrorHandlerDoNotThrowAnError(): void
     {
         self::markTestSkipped('Since TSFE is isolated/capsuled, no exceptions are thrown or delegated to else where.
         Other scenario is wanted for:
@@ -55,7 +55,7 @@ class TsfeTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canInitializeTsfeForPageWithDifferentFeGroupsSettings()
+    public function canInitializeTsfeForPageWithDifferentFeGroupsSettings(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_initialize_tsfe_for_page_with_different_fe_groups_settings.csv');

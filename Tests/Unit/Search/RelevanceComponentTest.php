@@ -154,7 +154,7 @@ class RelevanceComponentTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function slopIsNullWhenPhraseIsDisabled()
+    public function slopIsNullWhenPhraseIsDisabled(): void
     {
         $searchConfiguration = [
             'query.' => [

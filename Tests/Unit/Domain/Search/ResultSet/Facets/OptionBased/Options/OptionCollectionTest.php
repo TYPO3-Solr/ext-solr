@@ -36,7 +36,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetManualSortedCopy()
+    public function canGetManualSortedCopy(): void
     {
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
@@ -58,7 +58,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetLabelPrefixes()
+    public function canGetLabelPrefixes(): void
     {
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
@@ -81,7 +81,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetByLowercaseLabelPrefix()
+    public function canGetByLowercaseLabelPrefix(): void
     {
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
@@ -108,7 +108,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetByLowercaseLabelPrefixWithMultiByteCharacter()
+    public function canGetByLowercaseLabelPrefixWithMultiByteCharacter(): void
     {
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'authors', 'authors_s');
@@ -125,7 +125,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetByValueAfterManualSorting()
+    public function canGetByValueAfterManualSorting(): void
     {
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');

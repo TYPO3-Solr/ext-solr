@@ -38,7 +38,7 @@ class HierarchyUrlDecoderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canParseHierarchy3LevelQuery()
+    public function canParseHierarchy3LevelQuery(): void
     {
         $expected = '"2-sport/skateboarding/street/"';
         $actual = $this->parser->decode('/sport/skateboarding/street/');
@@ -47,7 +47,7 @@ class HierarchyUrlDecoderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canParseHierarchy3LevelQueryAndEscapedSlashes()
+    public function canParseHierarchy3LevelQueryAndEscapedSlashes(): void
     {
         $expected = '"2-sport/skateboarding\\\\/snowboarding/street/"';
         $actual = $this->parser->decode('/sport/skateboarding\/snowboarding/street/');
@@ -56,7 +56,7 @@ class HierarchyUrlDecoderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canParseHierarchy2LevelQuery()
+    public function canParseHierarchy2LevelQuery(): void
     {
         $expected = '"1-sport/skateboarding/"';
         $actual = $this->parser->decode('/sport/skateboarding/');
@@ -65,7 +65,7 @@ class HierarchyUrlDecoderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canParseHierarchy1LevelQuery()
+    public function canParseHierarchy1LevelQuery(): void
     {
         $expected = '"0-sport/"';
         $actual = $this->parser->decode('/sport/');

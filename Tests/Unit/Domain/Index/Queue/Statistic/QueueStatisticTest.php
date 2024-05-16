@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class QueueStatisticTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGetFailedPercentage()
+    public function canGetFailedPercentage(): void
     {
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
         $statistic->setFailedCount(2);
@@ -39,7 +39,7 @@ class QueueStatisticTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetZeroPercentagesWhenEmpty()
+    public function canGetZeroPercentagesWhenEmpty(): void
     {
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
         self::assertSame(0.0, $statistic->getFailedPercentage(), 'Can not zero percent for empty');

@@ -70,7 +70,7 @@ class IndexServiceTest extends IntegrationTestBase
 
     #[DataProvider('canResolveBaseAsPrefixDataProvider')]
     #[Test]
-    public function canResolveBaseAsPrefix(string $absRefPrefix, string $expectedUrl)
+    public function canResolveBaseAsPrefix(string $absRefPrefix, string $expectedUrl): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
 

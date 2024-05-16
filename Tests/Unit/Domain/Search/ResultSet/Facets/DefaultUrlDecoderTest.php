@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\Test;
 class DefaultUrlDecoderTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canDecode()
+    public function canDecode(): void
     {
         $value = 'a + b';
         $encoder = new DefaultUrlDecoder();

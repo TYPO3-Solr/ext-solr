@@ -33,7 +33,7 @@ class MultivalueTest extends SetUpContentObject
     }
 
     #[Test]
-    public function convertsCommaSeparatedListFromRecordToSerializedArrayOfTrimmedValues()
+    public function convertsCommaSeparatedListFromRecordToSerializedArrayOfTrimmedValues(): void
     {
         $list = 'abc, def, ghi, jkl, mno, pqr, stu, vwx, yz';
         $expected = 'a:9:{i:0;s:3:"abc";i:1;s:3:"def";i:2;s:3:"ghi";i:3;s:3:"jkl";i:4;s:3:"mno";i:5;s:3:"pqr";i:6;s:3:"stu";i:7;s:3:"vwx";i:8;s:2:"yz";}';
@@ -52,7 +52,7 @@ class MultivalueTest extends SetUpContentObject
     }
 
     #[Test]
-    public function convertsCommaSeparatedListFromValueToSerializedArrayOfTrimmedValues()
+    public function convertsCommaSeparatedListFromValueToSerializedArrayOfTrimmedValues(): void
     {
         $list = 'abc, def, ghi, jkl, mno, pqr, stu, vwx, yz';
         $expected = 'a:9:{i:0;s:3:"abc";i:1;s:3:"def";i:2;s:3:"ghi";i:3;s:3:"jkl";i:4;s:3:"mno";i:5;s:3:"pqr";i:6;s:3:"stu";i:7;s:3:"vwx";i:8;s:2:"yz";}';

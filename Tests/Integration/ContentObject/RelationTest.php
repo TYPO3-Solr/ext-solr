@@ -290,10 +290,10 @@ class RelationTest extends IntegrationTestBase
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfeMock);
         /** @var MockObject|ServerRequest $requestMock */
         $requestMock = $this->createMock(ServerRequest::class);
+        $contentObjectRenderer->setRequest($requestMock);
         $contentObjectRenderer->start(
             BackendUtility::getRecord($table, $uid),
-            $table,
-            $requestMock
+            $table
         );
         /** @var Relation $relation */
         $relation = $contentObjectRenderer->getContentObject(Relation::CONTENT_OBJECT_NAME);

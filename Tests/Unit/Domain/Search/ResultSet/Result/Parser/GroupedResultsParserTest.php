@@ -32,7 +32,7 @@ use PHPUnit\Framework\Attributes\Test;
 class GroupedResultsParserTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canParsedQueryGroupResult()
+    public function canParsedQueryGroupResult(): void
     {
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchGroupingGroupsConfiguration')->willReturn([
@@ -61,7 +61,7 @@ class GroupedResultsParserTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canParsedQueryFieldResult()
+    public function canParsedQueryFieldResult(): void
     {
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchGroupingGroupsConfiguration')->willReturn([

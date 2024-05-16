@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\Test;
 class AbstractIndexerTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function testTypeIsNotAllowedOverride()
+    public function testTypeIsNotAllowedOverride(): void
     {
         self::assertFalse(AbstractIndexer::isAllowedToOverrideField('type'), 'Type is allowed to override');
         self::assertTrue(AbstractIndexer::isAllowedToOverrideField('test_stringS'), 'New dynamic fields was not indicated to be overrideable');

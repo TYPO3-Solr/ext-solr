@@ -55,7 +55,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     ];
 
     #[Test]
-    public function canFilterIndexFacetsParameterByName()
+    public function canFilterIndexFacetsParameterByName(): void
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         $urlFacetBack->enableSort();
@@ -63,7 +63,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canFilterAssocFacetsParameterByName()
+    public function canFilterAssocFacetsParameterByName(): void
     {
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
@@ -74,7 +74,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRemoveAllIndexFacetsParameter()
+    public function canRemoveAllIndexFacetsParameter(): void
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         self::assertEquals(4, $urlFacetBack->count());
@@ -83,7 +83,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRemoveAllAssocFacetsParameter()
+    public function canRemoveAllAssocFacetsParameter(): void
     {
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
@@ -96,7 +96,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRemoveAllFacetsParameterByName()
+    public function canRemoveAllFacetsParameterByName(): void
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         self::assertEquals(4, $urlFacetBack->count());
@@ -105,7 +105,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRemoveAllAssocFacetsParameterByName()
+    public function canRemoveAllAssocFacetsParameterByName(): void
     {
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
@@ -118,7 +118,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRemoveASingleFacetParameterByName()
+    public function canRemoveASingleFacetParameterByName(): void
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         self::assertEquals(4, $urlFacetBack->count());
@@ -127,7 +127,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRemoveASingleAssocFacetParameterByName()
+    public function canRemoveASingleAssocFacetParameterByName(): void
     {
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
@@ -139,14 +139,14 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function keepOrderingOfIndexParameters()
+    public function keepOrderingOfIndexParameters(): void
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         self::assertEquals(['pages', 'example', 'news'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
 
     #[Test]
-    public function canSortIndexParameters()
+    public function canSortIndexParameters(): void
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         $urlFacetBack->enableSort();
@@ -154,7 +154,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function didNotKeepOrderingOfAssocParameters()
+    public function didNotKeepOrderingOfAssocParameters(): void
     {
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
@@ -168,7 +168,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function assocParametersSortedByDefault()
+    public function assocParametersSortedByDefault(): void
     {
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),

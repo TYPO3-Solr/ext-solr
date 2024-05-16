@@ -39,7 +39,7 @@ class DateRangeUrlDecoderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canParseDateRangeQuery()
+    public function canParseDateRangeQuery(): void
     {
         $expected = '[2010-01-01T00:00:00Z TO 2010-01-31T23:59:59Z]';
         $actual = $this->rangeParser->decode('201001010000-201001312359');
@@ -47,7 +47,7 @@ class DateRangeUrlDecoderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canParseMinOpenDateRangeQuery()
+    public function canParseMinOpenDateRangeQuery(): void
     {
         $expected = '[* TO 2010-01-31T23:59:59Z]';
         $actual = $this->rangeParser->decode('-201001312359');
@@ -55,7 +55,7 @@ class DateRangeUrlDecoderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canParseMaxOpenDateRangeQuery()
+    public function canParseMaxOpenDateRangeQuery(): void
     {
         $expected = '[2010-01-01T00:00:00Z TO *]';
         $actual = $this->rangeParser->decode('201001010000-');

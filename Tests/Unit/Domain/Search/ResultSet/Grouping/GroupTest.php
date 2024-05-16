@@ -30,7 +30,7 @@ use PHPUnit\Framework\Attributes\Test;
 class GroupTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function testCanGroupName()
+    public function testCanGroupName(): void
     {
         $group = new Group('typeGroup');
         self::assertSame('typeGroup', $group->getGroupName(), 'Can not getGroupName from group');
@@ -40,14 +40,14 @@ class GroupTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetGroupItemsReturnEmptyCollection()
+    public function canGetGroupItemsReturnEmptyCollection(): void
     {
         $group = new Group('typeGroup');
         self::assertSame(0, $group->getGroupItems()->getCount(), 'Can not get empty groupItem collection');
     }
 
     #[Test]
-    public function canGetResultsPerPage()
+    public function canGetResultsPerPage(): void
     {
         $group = new Group('typeGroup', 22);
         self::assertSame(22, $group->getResultsPerPage(), 'Can not get results per page');
@@ -57,7 +57,7 @@ class GroupTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetGroupItems()
+    public function canSetGroupItems(): void
     {
         $group = new Group('typeGroup', 10);
         $groupItems = new GroupItemCollection();
@@ -77,7 +77,7 @@ class GroupTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canAddGroupItem()
+    public function canAddGroupItem(): void
     {
         $group = new Group('typeGroup', 10);
 

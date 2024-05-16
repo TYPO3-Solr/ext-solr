@@ -47,7 +47,7 @@ class ServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function transformsStringToUppercaseOnSingleValuedField()
+    public function transformsStringToUppercaseOnSingleValuedField(): void
     {
         $this->documentMock->setField('stringField', 'stringvalue');
         $configuration = ['stringField' => 'uppercase'];
@@ -61,7 +61,7 @@ class ServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function transformsStringToUppercaseOnMultiValuedField()
+    public function transformsStringToUppercaseOnMultiValuedField(): void
     {
         $this->documentMock->addField('stringField', 'stringvalue_1');
         $this->documentMock->addField('stringField', 'stringvalue_2');
@@ -76,7 +76,7 @@ class ServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function transformsUnixTimestampToIsoDateOnSingleValuedField()
+    public function transformsUnixTimestampToIsoDateOnSingleValuedField(): void
     {
         $this->documentMock->setField(
             'dateField',
@@ -93,7 +93,7 @@ class ServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function transformsUnixTimestampToIsoDateOnMultiValuedField()
+    public function transformsUnixTimestampToIsoDateOnMultiValuedField(): void
     {
         $this->documentMock->addField(
             'dateField',
@@ -114,7 +114,7 @@ class ServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function customFieldProcessorTurnsFooIntoBar()
+    public function customFieldProcessorTurnsFooIntoBar(): void
     {
         $this->documentMock->setField('stringField', 'foo');
         $configuration = ['stringField' => 'turnFooIntoBar'];

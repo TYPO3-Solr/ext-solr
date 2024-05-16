@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class PathTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canIsValidSolrPathisValidPath()
+    public function canIsValidSolrPathisValidPath(): void
     {
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('/sorl/core_da');
@@ -37,7 +37,7 @@ class PathTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canIsValidSolrPathEmptyString()
+    public function canIsValidSolrPathEmptyString(): void
     {
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('');
@@ -46,7 +46,7 @@ class PathTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canIsValidSolrPathisInvalidPathButAppears()
+    public function canIsValidSolrPathisInvalidPathButAppears(): void
     {
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('/sorl/#/core_da');
@@ -55,7 +55,7 @@ class PathTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canIsValidSolrPathisInvalidPath()
+    public function canIsValidSolrPathisInvalidPath(): void
     {
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('/sorl/core_da?bogus');

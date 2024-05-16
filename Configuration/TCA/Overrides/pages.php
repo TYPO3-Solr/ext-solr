@@ -1,11 +1,14 @@
 <?php
 
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 defined('TYPO3') or die('Access denied.');
 
 /**
  * No Search for sub entries of page tree.
  */
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+ExtensionManagementUtility::addTCAcolumns(
     'pages',
     [
         'no_search_sub_entries' => [
@@ -29,7 +32,7 @@ defined('TYPO3') or die('Access denied.');
     ]
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
+ExtensionManagementUtility::addFieldsToPalette(
     'pages',
     'miscellaneous',
     'no_search_sub_entries',
@@ -42,9 +45,9 @@ $GLOBALS['TCA']['pages']['palettes']['slimmed_miscellaneous'] = [
     'showitem' => 'no_search_sub_entries;LLL:EXT:solr/Resources/Private/Language/locallang_tca.xlf:pages.no_search_sub_entries',
 ];
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+ExtensionManagementUtility::addToAllTCAtypes(
     'pages',
     '--palette--;;slimmed_miscellaneous',
-    (string)\TYPO3\CMS\Core\Domain\Repository\PageRepository::DOKTYPE_SYSFOLDER,
+    (string)PageRepository::DOKTYPE_SYSFOLDER,
     'after:module'
 );

@@ -37,7 +37,7 @@ class PagesRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canFindAllRootPages()
+    public function canFindAllRootPages(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
 
@@ -56,7 +56,7 @@ class PagesRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canfindMountPointPagesByRootLineParentPageIdsIfMountedPagesIsOutsideOfTheSite()
+    public function canfindMountPointPagesByRootLineParentPageIdsIfMountedPagesIsOutsideOfTheSite(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_find_mount_pages_in_rootline.csv');
 

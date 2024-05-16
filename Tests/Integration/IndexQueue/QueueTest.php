@@ -67,7 +67,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function preFilledQueueContainsRootPageAfterInitialize()
+    public function preFilledQueueContainsRootPageAfterInitialize(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_one_item.csv');
         $this->assertItemsInQueue(1);
@@ -84,7 +84,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function addingTheSameItemTwiceWillOnlyProduceOneQueueItem()
+    public function addingTheSameItemTwiceWillOnlyProduceOneQueueItem(): void
     {
         $this->assertEmptyQueue();
 
@@ -98,7 +98,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canDeleteItemsByType()
+    public function canDeleteItemsByType(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_with_multiple_types.csv');
         $this->assertItemsInQueue(2);
@@ -111,7 +111,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function unExistingRecordIsNotAddedToTheQueue()
+    public function unExistingRecordIsNotAddedToTheQueue(): void
     {
         $this->assertEmptyQueue();
 
@@ -123,7 +123,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canNotAddUnAllowedPageType()
+    public function canNotAddUnAllowedPageType(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_not_add_unallowed_pagetype.csv');
         $this->assertEmptyQueue();
@@ -137,7 +137,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function mountPagesAreOnlyAddedOnceAfterInitialize()
+    public function mountPagesAreOnlyAddedOnceAfterInitialize(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/queue_initialization_with_mount_pages.csv');
         $this->assertEmptyQueue();
@@ -151,7 +151,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canAddCustomPageTypeToTheQueue()
+    public function canAddCustomPageTypeToTheQueue(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/custom_page_doktype.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -190,7 +190,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetStatisticsWithTotalItemCount()
+    public function canGetStatisticsWithTotalItemCount(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_in_multiple_sites.csv');
         $site = $this->siteRepository->getFirstAvailableSite();
@@ -201,7 +201,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetStatisticsBySiteWithPendingItems()
+    public function canGetStatisticsBySiteWithPendingItems(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_in_multiple_sites.csv');
         $site = $this->siteRepository->getFirstAvailableSite();
@@ -216,7 +216,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canInitializeMultipleSites()
+    public function canInitializeMultipleSites(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_in_multiple_sites.csv');
         $this->assertEmptyQueue();
@@ -248,7 +248,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetStatistics()
+    public function canGetStatistics(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/subpages_with_filled_indexqueue.csv');
         $this->assertItemsInQueue(4);
@@ -261,7 +261,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetStatisticsByCustomIndexingConfigurationName()
+    public function canGetStatisticsByCustomIndexingConfigurationName(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/subpages_with_filled_indexqueue_multiple_indexing_configurations.csv');
         $this->assertItemsInQueue(4);
@@ -280,7 +280,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetLastIndexNonExistingRoot()
+    public function canGetLastIndexNonExistingRoot(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
@@ -289,7 +289,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetLastIndexRootExists()
+    public function canGetLastIndexRootExists(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
@@ -298,7 +298,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetLastIndexedItemIdNonExistingRoot()
+    public function canGetLastIndexedItemIdNonExistingRoot(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
@@ -307,7 +307,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetLastIndexedItemIdRootExists()
+    public function canGetLastIndexedItemIdRootExists(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
@@ -316,7 +316,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canMarkItemAsFailedWithItemAndEmptyMessage()
+    public function canMarkItemAsFailedWithItemAndEmptyMessage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_with_one_error.csv');
         $this->assertItemsInQueue(3);
@@ -327,7 +327,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canMarkItemAsFailedWithItemAndMessage()
+    public function canMarkItemAsFailedWithItemAndMessage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_with_one_error.csv');
         $this->assertItemsInQueue(3);
@@ -338,7 +338,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canMarkItemAsFailedWithUidAndEmptyMessage()
+    public function canMarkItemAsFailedWithUidAndEmptyMessage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items_with_one_error.csv');
         $this->assertItemsInQueue(3);
@@ -348,7 +348,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canMarkItemAsFailedWithUidAndMessage()
+    public function canMarkItemAsFailedWithUidAndMessage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
@@ -358,7 +358,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canMarkItemAsFailedNonexistingUid()
+    public function canMarkItemAsFailedNonexistingUid(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
@@ -368,7 +368,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canMarkItemAsFailedNonExistingItem()
+    public function canMarkItemAsFailedNonExistingItem(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
@@ -379,7 +379,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canUpdateIndexTimeByItemNonExistingItem()
+    public function canUpdateIndexTimeByItemNonExistingItem(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
@@ -388,7 +388,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canUpdateIndexTimeByItemExistingItem()
+    public function canUpdateIndexTimeByItemExistingItem(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexqueue_items.csv');
         $this->assertItemsInQueue(3);
@@ -400,7 +400,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canFlushAllErrors()
+    public function canFlushAllErrors(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_flush_errors.csv');
         $this->assertItemsInQueue(4);
@@ -423,7 +423,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canFlushErrorsBySite()
+    public function canFlushErrorsBySite(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_flush_errors.csv');
         $this->assertItemsInQueue(4);
@@ -446,7 +446,7 @@ class QueueTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canFlushErrorByItem()
+    public function canFlushErrorByItem(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_flush_errors.csv');
         $this->assertItemsInQueue(4);

@@ -30,7 +30,7 @@ use PHPUnit\Framework\Attributes\Test;
 class OptionCollectionTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGetManualSortedCopy()
+    public function canGetManualSortedCopy(): void
     {
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new QueryGroupFacet($searchResultSetMock, 'age', 'created');

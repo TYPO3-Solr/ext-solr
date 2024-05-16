@@ -95,7 +95,7 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetTargetPageUidFromConfigurationWhenNullWasPassed()
+    public function canSetTargetPageUidFromConfigurationWhenNullWasPassed(): void
     {
         $this->typoScriptConfigurationMock->expects(self::any())->method('getSearchTargetPage')->willReturn(888);
         $this->viewHelper->expects(self::once())->method('getSearchResultSet')->willReturn(null);
@@ -106,7 +106,7 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canUsePassedPageUidWhenNoTargetPageIsConfigured()
+    public function canUsePassedPageUidWhenNoTargetPageIsConfigured(): void
     {
         $this->typoScriptConfigurationMock->expects(self::any())->method('getSearchTargetPage')->willReturn(0);
         $this->viewHelper->expects(self::once())->method('getSearchResultSet')->willReturn(null);
@@ -117,7 +117,7 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function passedPageUidHasPriorityOverConfiguredTargetPageUid()
+    public function passedPageUidHasPriorityOverConfiguredTargetPageUid(): void
     {
         $this->typoScriptConfigurationMock->expects(self::any())->method('getSearchTargetPage')->willReturn(888);
         $this->viewHelper->expects(self::once())->method('getSearchResultSet')->willReturn(null);

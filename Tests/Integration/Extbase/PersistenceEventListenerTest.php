@@ -49,7 +49,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function newEntityIsAddedToIndexQueue()
+    public function newEntityIsAddedToIndexQueue(): void
     {
         $object = new Foo();
         $object->setTitle('Added');
@@ -61,7 +61,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function newHiddenEntityIsNotAddedToIndexQueue()
+    public function newHiddenEntityIsNotAddedToIndexQueue(): void
     {
         $object = new Foo();
         $object->setTitle('Added');
@@ -74,7 +74,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function updatedEntityIsUpdatedInIndexQueue()
+    public function updatedEntityIsUpdatedInIndexQueue(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/update_items.csv');
         /** @var Foo $object */
@@ -95,7 +95,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function softDeletedEntityIsRemovedFromIndexQueue()
+    public function softDeletedEntityIsRemovedFromIndexQueue(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/delete_items.csv');
         /** @var Foo $object */
@@ -107,7 +107,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function deletedEntityIsRemovedFromIndexQueue()
+    public function deletedEntityIsRemovedFromIndexQueue(): void
     {
         unset($GLOBALS['TCA']['tx_fakeextension_domain_model_foo']['ctrl']['delete']);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/delete_items.csv');
@@ -120,7 +120,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function updatedEntityTurnedHiddenIsRemovedFromIndexQueue()
+    public function updatedEntityTurnedHiddenIsRemovedFromIndexQueue(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/hidden_items.csv');
         /** @var Foo $object */

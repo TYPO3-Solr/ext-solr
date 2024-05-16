@@ -34,7 +34,7 @@ class TCAServiceTest extends SetUpUnitTestCase
      * When a deleted record is passed (has 1 in the TCA deleted field, this should be detected).
      */
     #[Test]
-    public function getIsEnabledRecordDetectDeletedRecord()
+    public function getIsEnabledRecordDetectDeletedRecord(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -58,7 +58,7 @@ class TCAServiceTest extends SetUpUnitTestCase
      * When a record is passed that is not deleted we should detect that.
      */
     #[Test]
-    public function getIsEnabledRecordDetectNonDeletedRecord()
+    public function getIsEnabledRecordDetectNonDeletedRecord(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -82,7 +82,7 @@ class TCAServiceTest extends SetUpUnitTestCase
      * When a page record is passed with the field no_search = 1 it should be detected is invisible
      */
     #[Test]
-    public function getIsEnabledRecordDetectsPageConfiguredWithNoSearch()
+    public function getIsEnabledRecordDetectsPageConfiguredWithNoSearch(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -106,7 +106,7 @@ class TCAServiceTest extends SetUpUnitTestCase
      * When a page record is passed with the field no_search = 1 it should be detected is invisible
      */
     #[Test]
-    public function getIsEnabledRecordEmptyRecord()
+    public function getIsEnabledRecordEmptyRecord(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -125,7 +125,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function isEndTimeInPastCanDetectedEndtimeThatIsInPast()
+    public function isEndTimeInPastCanDetectedEndtimeThatIsInPast(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -149,7 +149,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function isEndTimeInPastCanDetectedEndtimeThatIsNotInPast()
+    public function isEndTimeInPastCanDetectedEndtimeThatIsNotInPast(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -173,7 +173,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function isEndTimeInPastCanDetectedEndtimeIsEmpty()
+    public function isEndTimeInPastCanDetectedEndtimeIsEmpty(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -198,7 +198,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function isStartTimeInFutureCanDetectedStartTimeInFuture()
+    public function isStartTimeInFutureCanDetectedStartTimeInFuture(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -222,7 +222,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function isStartTimeInFutureCanDetectedStartTimeNotInFuture()
+    public function isStartTimeInFutureCanDetectedStartTimeNotInFuture(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -246,7 +246,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function isHiddenCanDetectHiddenRecord()
+    public function isHiddenCanDetectHiddenRecord(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -268,7 +268,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function isHiddenCanDetectNonHiddenRecord()
+    public function isHiddenCanDetectNonHiddenRecord(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -290,7 +290,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canNormalizeFrontendGroupField()
+    public function canNormalizeFrontendGroupField(): void
     {
         $fakeTCA = [
             'pages' => [
@@ -310,7 +310,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getVisibilityAffectingFieldsByTableCanReturnDefaultFieldsWhenNoTCAIsConfigured()
+    public function getVisibilityAffectingFieldsByTableCanReturnDefaultFieldsWhenNoTCAIsConfigured(): void
     {
         $tcaService = new TCAService([]);
         $visibilityFields = $tcaService->getVisibilityAffectingFieldsByTable('pages');
@@ -320,7 +320,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getVisibilityAffectingFieldsByTableCanReturnUidAndPidForNormalRecordTable()
+    public function getVisibilityAffectingFieldsByTableCanReturnUidAndPidForNormalRecordTable(): void
     {
         $tcaService = new TCAService([]);
         $visibilityFields = $tcaService->getVisibilityAffectingFieldsByTable('tx_domain_model_faketable');
@@ -328,7 +328,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getVisibilityAffectingFieldsByTableCanReturnConfiguredDeleteField()
+    public function getVisibilityAffectingFieldsByTableCanReturnConfiguredDeleteField(): void
     {
         $fakeTCA = [
             'tx_domain_model_faketable' => [
@@ -344,7 +344,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getVisibilityAffectingFieldsByTableCanReturnConfiguredEnableConfiguredEnabledColumnFields()
+    public function getVisibilityAffectingFieldsByTableCanReturnConfiguredEnableConfiguredEnabledColumnFields(): void
     {
         $fakeTCA = [
             'tx_domain_model_faketable' => [
@@ -362,7 +362,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getTranslationOriginalUid()
+    public function getTranslationOriginalUid(): void
     {
         $fakeTCA = [
             'tx_domain_model_faketable' => [
@@ -380,7 +380,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getTranslationOriginalUidReturnsNullWhenFieldIsEmpty()
+    public function getTranslationOriginalUidReturnsNullWhenFieldIsEmpty(): void
     {
         $fakeTCA = [
             'tx_domain_model_faketable' => [
@@ -398,7 +398,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getTranslationOriginalUidReturnsNullWhenPointerFieldIsNotConfigured()
+    public function getTranslationOriginalUidReturnsNullWhenPointerFieldIsNotConfigured(): void
     {
         $tcaService = new TCAService([]);
         $fakeRecord = [];
@@ -407,7 +407,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function isLocalizedRecord()
+    public function isLocalizedRecord(): void
     {
         $fakeTCA = [
             'tx_domain_model_faketable' => [
@@ -425,7 +425,7 @@ class TCAServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getTranslationOriginalUidIfTranslated()
+    public function getTranslationOriginalUidIfTranslated(): void
     {
         $fakeTCA = [
             'tx_domain_model_faketable' => [

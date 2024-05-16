@@ -58,7 +58,7 @@ class SearchController extends AbstractBaseController
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view
+     * @param ViewInterface $view
      */
     public function initializeView($view): void
     {

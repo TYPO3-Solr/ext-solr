@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\Test;
 class ClassificationServiceTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGetMatchingClassifications()
+    public function canGetMatchingClassifications(): void
     {
         $matchPatterns = ['smartphones', 'handy', 'smartphone', 'mobile', 'mobilephone'];
         $unMatchPatterns = [];
@@ -52,7 +52,7 @@ class ClassificationServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canMatchWildCards()
+    public function canMatchWildCards(): void
     {
         $matchPatterns = ['\ssmart[a-z]*\s'];
         $unMatchPatterns = ['home'];

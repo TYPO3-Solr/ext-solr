@@ -43,14 +43,14 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetValueByPath()
+    public function canGetValueByPath(): void
     {
         $testPath = 'plugin.tx_solr.index.queue.tt_news.fields.content';
         self::assertSame('SOLR_CONTENT', $this->configuration->getValueByPath($testPath), 'Could not get configuration value by path');
     }
 
     #[Test]
-    public function canGetObjectByPath()
+    public function canGetObjectByPath(): void
     {
         $testPath = 'plugin.tx_solr.index.queue.tt_news.fields.content';
         $expectedResult = [
@@ -62,7 +62,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canShowEvenIfEmptyFallBackToGlobalSetting()
+    public function canShowEvenIfEmptyFallBackToGlobalSetting(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -112,7 +112,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
      *             test must be removed too. For now this test ensures that 'table' and 'type' are supported.
      */
     #[Test]
-    public function canGetIndexQueueTableOrFallbackToConfigurationName()
+    public function canGetIndexQueueTableOrFallbackToConfigurationName(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -136,7 +136,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueTypeOrFallbackToConfigurationName()
+    public function canGetIndexQueueTypeOrFallbackToConfigurationName(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -160,7 +160,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueConfigurationNames()
+    public function canGetIndexQueueConfigurationNames(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -190,7 +190,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueConfigurationRecursiveUpdateFields()
+    public function canGetIndexQueueConfigurationRecursiveUpdateFields(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -243,7 +243,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetInitialPagesAdditionalWhereClause()
+    public function canGetInitialPagesAdditionalWhereClause(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -266,7 +266,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetAdditionalWhereClause()
+    public function canGetAdditionalWhereClause(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -289,7 +289,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueConfigurationNamesByTableName()
+    public function canGetIndexQueueConfigurationNamesByTableName(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -314,7 +314,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueInitializerClassByConfigurationName()
+    public function canGetIndexQueueInitializerClassByConfigurationName(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -336,7 +336,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueClassByConfigurationName()
+    public function canGetIndexQueueClassByConfigurationName(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -358,7 +358,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueMonitoredTables()
+    public function canGetIndexQueueMonitoredTables(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -387,7 +387,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueIsMonitoredTable()
+    public function canGetIndexQueueIsMonitoredTable(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -420,7 +420,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetLoggingEnableStateForIndexQueueByConfigurationName()
+    public function canGetLoggingEnableStateForIndexQueueByConfigurationName(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'logging.' => [
@@ -444,7 +444,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetLoggingEnableStateForIndexQueueByConfigurationNameByFallingBack()
+    public function canGetLoggingEnableStateForIndexQueueByConfigurationNameByFallingBack(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'logging.' => [
@@ -469,7 +469,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexFieldsConfigurationByConfigurationName()
+    public function canGetIndexFieldsConfigurationByConfigurationName(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -490,7 +490,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueMappedFieldNamesByConfigurationName()
+    public function canGetIndexQueueMappedFieldNamesByConfigurationName(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -513,7 +513,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexAdditionalFieldsConfiguration()
+    public function canGetIndexAdditionalFieldsConfiguration(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -530,7 +530,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexMappedAdditionalFieldNames()
+    public function canGetIndexMappedAdditionalFieldNames(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -547,7 +547,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueIndexerByConfigurationName()
+    public function canGetIndexQueueIndexerByConfigurationName(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -564,7 +564,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueIndexerConfigurationByConfigurationName()
+    public function canGetIndexQueueIndexerConfigurationByConfigurationName(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -582,7 +582,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueuePagesExcludeContentByClassArray()
+    public function canGetIndexQueuePagesExcludeContentByClassArray(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -599,7 +599,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetSearchQueryFilterConfiguration()
+    public function canSetSearchQueryFilterConfiguration(): void
     {
         $configuration = new TypoScriptConfiguration([]);
         self::assertEquals([], $configuration->getSearchQueryFilterConfiguration());
@@ -608,7 +608,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRemovePageSectionFilter()
+    public function canRemovePageSectionFilter(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -628,7 +628,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function removePageSectionFilterIsKeepingOtherFilters()
+    public function removePageSectionFilterIsKeepingOtherFilters(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -648,7 +648,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetSearchQueryReturnFieldsAsArrayNoConfig()
+    public function canGetSearchQueryReturnFieldsAsArrayNoConfig(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -662,7 +662,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetSearchQueryReturnFieldsAsArrayWithConfig()
+    public function canGetSearchQueryReturnFieldsAsArrayWithConfig(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -677,7 +677,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetSearchSortingDefaultOrderBySortOptionNameIsFallingBackToDefaultSortOrder()
+    public function canGetSearchSortingDefaultOrderBySortOptionNameIsFallingBackToDefaultSortOrder(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -700,7 +700,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetSearchSortingDefaultOrderBySortOptionName()
+    public function canGetSearchSortingDefaultOrderBySortOptionName(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -724,7 +724,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetSearchSortingDefaultOrderBySortOptionNameInLowerCase()
+    public function canGetSearchSortingDefaultOrderBySortOptionNameInLowerCase(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -747,7 +747,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetSearchGroupingHighestGroupResultsLimit()
+    public function canGetSearchGroupingHighestGroupResultsLimit(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -774,7 +774,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetSearchGroupingHighestGroupResultsLimitAsGlobalFallback()
+    public function canGetSearchGroupingHighestGroupResultsLimitAsGlobalFallback(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -801,7 +801,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetSearchGroupingWhenDisabled()
+    public function canGetSearchGroupingWhenDisabled(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -824,7 +824,7 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetGroupingAllowGetParameterSwitch()
+    public function canGetGroupingAllowGetParameterSwitch(): void
     {
         $fakeConfigurationArray = [
             'plugin.' => [
@@ -848,14 +848,14 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getSearchAdditionalPersistentArgumentNamesReturnsEmptyArrayWhenNothingIsConfigured()
+    public function getSearchAdditionalPersistentArgumentNamesReturnsEmptyArrayWhenNothingIsConfigured(): void
     {
         $configuration = new TypoScriptConfiguration([]);
         self::assertSame([], $configuration->getSearchAdditionalPersistentArgumentNames(), 'Expected to get an empty array, when nothing configured');
     }
 
     #[Test]
-    public function canGetAdditionalPersistentArgumentNames()
+    public function canGetAdditionalPersistentArgumentNames(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [

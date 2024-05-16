@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\Test;
 class RootlineTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function getRootPageIdReturnUidOfRootPage()
+    public function getRootPageIdReturnUidOfRootPage(): void
     {
         $testRootLineArray = [
             ['uid' => 100, 'pid' => 10, 'title' => 'level 2'],
@@ -40,21 +40,21 @@ class RootlineTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getRootPageIdReturnsZeroWhenNoSiteRootIsPresent()
+    public function getRootPageIdReturnsZeroWhenNoSiteRootIsPresent(): void
     {
         $rootline = new Rootline([]);
         self::assertSame(0, $rootline->getRootPageId(), 'Expecting null when no rootline given');
     }
 
     #[Test]
-    public function getHasRootPageReturnsFalseOnEmptyRootLine()
+    public function getHasRootPageReturnsFalseOnEmptyRootLine(): void
     {
         $rootline = new Rootline([]);
         self::assertFalse($rootline->getHasRootPage(), 'Expecting false when no rootline given');
     }
 
     #[Test]
-    public function getHasRootPageRturnsTrueWithGivenRootLine()
+    public function getHasRootPageRturnsTrueWithGivenRootLine(): void
     {
         $testRootLineArray = [
             ['uid' => 100, 'pid' => 10, 'title' => 'level 2'],
@@ -67,7 +67,7 @@ class RootlineTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetParentPageIds()
+    public function canGetParentPageIds(): void
     {
         $testRootLineArray = [
             ['uid' => 100, 'pid' => 10, 'title' => 'level 2'],

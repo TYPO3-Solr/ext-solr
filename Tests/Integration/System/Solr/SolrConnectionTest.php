@@ -75,7 +75,7 @@ class SolrConnectionTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function typo3sHttpSettingsAreRecognizedByClient()
+    public function typo3sHttpSettingsAreRecognizedByClient(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['HTTP']['connect_timeout'] = 0.0001;
         $GLOBALS['TYPO3_CONF_VARS']['HTTP']['timeout'] = 0.0001;

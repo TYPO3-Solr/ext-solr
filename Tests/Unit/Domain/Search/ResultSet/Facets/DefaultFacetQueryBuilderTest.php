@@ -42,7 +42,7 @@ class DefaultFacetQueryBuilderTest extends SetUpUnitTestCase
      * }
      */
     #[Test]
-    public function testWhenKeepAllOptionsOnSelectionIsNotConfiguredNoExcludeTagIsAdded()
+    public function testWhenKeepAllOptionsOnSelectionIsNotConfiguredNoExcludeTagIsAdded(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;

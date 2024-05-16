@@ -90,7 +90,7 @@ class ReIndexTaskTest extends IntegrationTestBase
      * @throws Exception
      */
     #[Test]
-    public function testIfTheQueueIsFilledAfterTaskWasRunning()
+    public function testIfTheQueueIsFilledAfterTaskWasRunning(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
         $this->assertEmptyIndexQueue();
@@ -108,7 +108,7 @@ class ReIndexTaskTest extends IntegrationTestBase
      * @throws Exception
      */
     #[Test]
-    public function testCanGetAdditionalInformationFromTask()
+    public function testCanGetAdditionalInformationFromTask(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
         $this->assertEmptyIndexQueue();
@@ -127,7 +127,7 @@ class ReIndexTaskTest extends IntegrationTestBase
      * @throws Exception
      */
     #[Test]
-    public function solrIsEmptyAfterCleanup()
+    public function solrIsEmptyAfterCleanup(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
 

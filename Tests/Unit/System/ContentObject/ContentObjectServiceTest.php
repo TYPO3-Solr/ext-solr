@@ -50,7 +50,7 @@ class ContentObjectServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRenderSingleContentObjectByArrayAndKey()
+    public function canRenderSingleContentObjectByArrayAndKey(): void
     {
         $fakeStdWrapConfiguration = [
             'field' => 'TEXT',
@@ -66,7 +66,7 @@ class ContentObjectServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function renderSingleContentObjectByArrayAndKeyWillReturnNameWhenConfigIsNotAnArray()
+    public function renderSingleContentObjectByArrayAndKeyWillReturnNameWhenConfigIsNotAnArray(): void
     {
         $fakeStdWrapConfiguration = [
             'field' => 'fooo',

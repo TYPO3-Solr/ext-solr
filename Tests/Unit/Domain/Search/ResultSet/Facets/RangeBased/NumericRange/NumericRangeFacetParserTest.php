@@ -73,7 +73,7 @@ class NumericRangeFacetParserTest extends SetUpFacetParser
     }
 
     #[Test]
-    public function facetIsCreated()
+    public function facetIsCreated(): void
     {
         $facetConfiguration = $this->getPageIdFacetConfiguration();
         $facet = $this->getNumericRangeFacet($facetConfiguration, ['myPids:10-98'], 'myPids');

@@ -60,7 +60,7 @@ class SiteHighlighterUrlModifierTest extends SetUpUnitTestCase
 
     #[DataProvider('canModifyDataProvider')]
     #[Test]
-    public function canModify($inputUrl, $keywords, $no_cache, $keepCHash, $expectedResult)
+    public function canModify($inputUrl, $keywords, $no_cache, $keepCHash, $expectedResult): void
     {
         $siteHighlightingModifier = new SiteHighlighterUrlModifier();
         $result = $siteHighlightingModifier->modify($inputUrl, $keywords, $no_cache, $keepCHash);

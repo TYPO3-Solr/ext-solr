@@ -54,37 +54,37 @@ class GroupItemTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetMaximumScore()
+    public function canGetMaximumScore(): void
     {
         self::assertSame(99.0, $this->groupItem->getMaximumScore(), 'Unexpected maximumScore');
     }
 
     #[Test]
-    public function canGetStart()
+    public function canGetStart(): void
     {
         self::assertSame(1, $this->groupItem->getStart(), 'Unexpected start');
     }
 
     #[Test]
-    public function canGetNumFound()
+    public function canGetNumFound(): void
     {
         self::assertSame(12, $this->groupItem->getAllResultCount(), 'Unexpected numFound');
     }
 
     #[Test]
-    public function canGetGroupValue()
+    public function canGetGroupValue(): void
     {
         self::assertSame('pages', $this->groupItem->getGroupValue(), 'Unexpected groupValue');
     }
 
     #[Test]
-    public function canGetGroup()
+    public function canGetGroup(): void
     {
         self::assertSame($this->parentGroup, $this->groupItem->getGroup(), 'Unexpected parentGroup');
     }
 
     #[Test]
-    public function canGetSearchResults()
+    public function canGetSearchResults(): void
     {
         self::assertSame(0, $this->groupItem->getSearchResults()->getCount());
 

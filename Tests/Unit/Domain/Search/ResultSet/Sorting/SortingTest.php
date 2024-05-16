@@ -53,38 +53,38 @@ class SortingTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canNotCreateWhenInvalidDirectionIsPassed()
+    public function canNotCreateWhenInvalidDirectionIsPassed(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Sorting($this->resultSetMock, 'Color', 'color_s', 'invalid direction', 'the color', false, false);
     }
 
     #[Test]
-    public function canGetName()
+    public function canGetName(): void
     {
         self::assertSame('Price', $this->sorting->getName(), 'Could not get name from sorting');
     }
 
     #[Test]
-    public function canGetLabel()
+    public function canGetLabel(): void
     {
         self::assertSame('the príce', $this->sorting->getLabel(), 'Could not get label from sorting');
     }
 
     #[Test]
-    public function canGetField()
+    public function canGetField(): void
     {
         self::assertSame('price_f', $this->sorting->getField(), 'Could not get field from sorting');
     }
 
     #[Test]
-    public function canGetDirection()
+    public function canGetDirection(): void
     {
         self::assertSame('asc', $this->sorting->getDirection(), 'Could not get direction');
     }
 
     #[Test]
-    public function canGetOppositeDirection()
+    public function canGetOppositeDirection(): void
     {
         self::assertSame('desc', $this->sorting->getOppositeDirection(), 'Could not get opposite direction');
 
@@ -93,19 +93,19 @@ class SortingTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getGetIsAsDirection()
+    public function getGetIsAsDirection(): void
     {
         self::assertTrue($this->sorting->getIsAscDirection(), 'Sorting direction was not handled as ascending');
     }
 
     #[Test]
-    public function getGetIsDescDirection()
+    public function getGetIsDescDirection(): void
     {
         self::assertFalse($this->sorting->getIsDescDirection(), 'Sorting should be indicated to not be descending');
     }
 
     #[Test]
-    public function canGetIsResetOption()
+    public function canGetIsResetOption(): void
     {
         self::assertFalse($this->sorting->getIsResetOption(), 'Sorting options should not be a reset option');
     }

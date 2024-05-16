@@ -10,7 +10,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_company' => '',
     'constraints' => [
         'depends' => [
-            'typo3' => '*',
+            'typo3' => '12.4.3-12.4.99',
         ],
         'conflicts' => [],
         'suggests' => [],

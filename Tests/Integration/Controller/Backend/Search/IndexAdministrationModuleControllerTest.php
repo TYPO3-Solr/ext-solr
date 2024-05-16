@@ -70,7 +70,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function testReloadIndexConfigurationAction()
+    public function testReloadIndexConfigurationAction(): void
     {
         /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
@@ -84,7 +84,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function testEmptyIndexAction()
+    public function testEmptyIndexAction(): void
     {
         /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);

@@ -30,7 +30,7 @@ use Traversable;
 class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canBuildSortParameter()
+    public function canBuildSortParameter(): void
     {
         /**
          * sortBy = index
@@ -70,7 +70,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canBuildLimitParameter()
+    public function canBuildLimitParameter(): void
     {
         /**
          * limit 20
@@ -104,7 +104,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canBuildLimitParameterFromGlobalSetting()
+    public function canBuildLimitParameterFromGlobalSetting(): void
     {
         /**
          * limit
@@ -141,7 +141,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canBuildMincountParameter()
+    public function canBuildMincountParameter(): void
     {
         /**
          * mincount = 2
@@ -183,7 +183,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
 
     #[DataProvider('getGlobalMinimumCountValue')]
     #[Test]
-    public function canBuildMincountParameterFromGlobalSetting($configuredMinimumCount, $expectedMinimumCount)
+    public function canBuildMincountParameterFromGlobalSetting($configuredMinimumCount, $expectedMinimumCount): void
     {
         /**
          * mincount = 2
@@ -220,7 +220,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canBuildMetricsParameter()
+    public function canBuildMetricsParameter(): void
     {
         /**
          * metrics {

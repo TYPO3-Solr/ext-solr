@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\Test;
 class OptimizeIndexTaskTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
+    public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable(): void
     {
         /** @var OptimizeIndexTask $indexQueuerWorker */
         $indexQueuerWorker = $this->getMockBuilder(OptimizeIndexTask::class)

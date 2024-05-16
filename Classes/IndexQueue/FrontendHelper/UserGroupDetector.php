@@ -140,14 +140,12 @@ class UserGroupDetector implements
      * @param array $pageInput Page record
      * @param int $lUid Overlay language ID
      * @param PageRepository $parent Parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
-     *
-     * @noinspection PhpMissingReturnTypeInspection
      */
     public function getPageOverlay_preProcess(
         &$pageInput,
         &$lUid,
         PageRepository $parent
-    ) {
+    ): void {
         if (!is_array($pageInput)) {
             return;
         }
@@ -163,7 +161,7 @@ class UserGroupDetector implements
      * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
      *               PhpMissingReturnTypeInspection
      */
-    public function postProcessContentObjectInitialization(ContentObjectRenderer &$parentObject)
+    public function postProcessContentObjectInitialization(ContentObjectRenderer &$parentObject): void
     {
         $this->request = $parentObject->getRequest()->getAttribute('solr.pageIndexingInstructions');
         if (!empty($parentObject->currentRecord)) {

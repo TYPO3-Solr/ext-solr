@@ -89,7 +89,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
 
     #[DataProvider('dataProviderForDeepMoreThen10DoesNotBreakHierarchyFacet')]
     #[Test]
-    public function deepMoreThen10DoesNotBreakHierarchyFacet(array $facetConfiguration, string $fixtureFile)
+    public function deepMoreThen10DoesNotBreakHierarchyFacet(array $facetConfiguration, string $fixtureFile): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             $fixtureFile,
@@ -121,7 +121,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
     }
 
     #[Test]
-    public function selectedOptionWithSlashInTitleOnHierarchicalFacetDoesNotBreakTheFacet()
+    public function selectedOptionWithSlashInTitleOnHierarchicalFacetDoesNotBreakTheFacet(): void
     {
         $facetConfiguration = [
             'type' => 'hierarchy',

@@ -26,7 +26,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class IsStringViewHelperTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function viewHelperRendersThenChildIfStringIsGiven()
+    public function viewHelperRendersThenChildIfStringIsGiven(): void
     {
         $arguments = [
             'value' => 'givenString',
@@ -40,7 +40,7 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function viewHelperRendersElseChildIfNotStringTypeIsGiven()
+    public function viewHelperRendersElseChildIfNotStringTypeIsGiven(): void
     {
         $arguments = [
             'value' => ['givenStringInArray'],

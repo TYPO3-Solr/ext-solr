@@ -37,7 +37,7 @@ class RootlineTest extends SetUpUnitTestCase
 
     #[DataProvider('rootLineDataProvider')]
     #[Test]
-    public function canParse(string $rootLineString, $expectedGroups)
+    public function canParse(string $rootLineString, $expectedGroups): void
     {
         $rootline = new Rootline($rootLineString);
         $groups = $rootline->getGroups();

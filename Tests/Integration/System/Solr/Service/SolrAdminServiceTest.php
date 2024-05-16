@@ -73,7 +73,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
 
     #[DataProvider('synonymDataProvider')]
     #[Test]
-    public function canAddAndDeleteSynonym(string $baseWord, array $synonyms = [])
+    public function canAddAndDeleteSynonym(string $baseWord, array $synonyms = []): void
     {
         $this->solrAdminService->deleteSynonym($baseWord);
         $this->solrAdminService->reloadCore();
@@ -130,14 +130,14 @@ class SolrAdminServiceTest extends IntegrationTestBase
      * Check if the default stopswords are stored in the solr server.
      */
     #[Test]
-    public function containsDefaultStopWord()
+    public function containsDefaultStopWord(): void
     {
         $stopWordsInSolr = $this->solrAdminService->getStopWords();
         self::assertContains('and', $stopWordsInSolr, 'Default stopword and was not present');
     }
 
     #[Test]
-    public function canGetSystemInformation()
+    public function canGetSystemInformation(): void
     {
         $informationResponse = $this->solrAdminService->getSystemInformation();
         self::assertSame(200, $informationResponse->getHttpStatus(), 'Could not get information response from solr server');
@@ -147,7 +147,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
      * @throws PingFailedException
      */
     #[Test]
-    public function canGetPingRoundtrimRunTime()
+    public function canGetPingRoundtrimRunTime(): void
     {
         $pingRuntime = $this->solrAdminService->getPingRoundTripRuntime();
         self::assertGreaterThan(0, $pingRuntime, 'Ping runtime should be larger then 0');
@@ -155,7 +155,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetSolrServiceVersion()
+    public function canGetSolrServiceVersion(): void
     {
         $solrServerVersion = $this->solrAdminService->getSolrServerVersion();
         $isVersionHigherSix = version_compare('6.0.0', $solrServerVersion, '<');
@@ -163,14 +163,14 @@ class SolrAdminServiceTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canReloadCore()
+    public function canReloadCore(): void
     {
         $result = $this->solrAdminService->reloadCore();
         self::assertSame(200, $result->getHttpStatus(), 'Reload core did not responde with a 200 ok status');
     }
 
     #[Test]
-    public function canGetPluginsInformation()
+    public function canGetPluginsInformation(): void
     {
         $result = $this->solrAdminService->getPluginsInformation();
         self::assertSame(0, $result->responseHeader->status);
@@ -181,7 +181,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
      * @throws MockObjectException
      */
     #[Test]
-    public function canParseLanguageFromSchema()
+    public function canParseLanguageFromSchema(): void
     {
         /** @var EventDispatcher $eventDispatcher */
         $eventDispatcher = $this->createMock(EventDispatcher::class);

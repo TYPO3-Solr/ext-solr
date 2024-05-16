@@ -35,6 +35,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
+use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -350,7 +351,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
                 $response = $this->solrConnection->getWriteService()->addDocuments($documentChunk);
                 if ($response->getHttpStatus() != 200) {
                     $this->logger->error('Solr could not index page.', [$response->getRawResponse()]);
-                    throw new \RuntimeException('Solr Request failed.', 1331834983);
+                    throw new RuntimeException('Solr Request failed.', 1331834983);
                 }
             }
 
