@@ -18,7 +18,9 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\Container;
+use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
@@ -62,6 +64,7 @@ abstract class SetUpContentObject extends SetUpUnitTestCase
 
         $container = new Container();
         $container->set(ContentObjectFactory::class, $cObjectFactoryMock);
+        $container->set(EventDispatcherInterface::class, new NoopEventDispatcher());
         GeneralUtility::setContainer($container);
     }
 
