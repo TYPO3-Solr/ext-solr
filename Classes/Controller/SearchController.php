@@ -57,7 +57,10 @@ class SearchController extends AbstractBaseController
         }
     }
 
-    public function initializeView(ViewInterface $view): void
+    /**
+     * @param \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view
+     */
+    public function initializeView($view): void
     {
         if ($view instanceof TemplateView) {
             $variableProvider = GeneralUtility::makeInstance(SolrVariableProvider::class);
