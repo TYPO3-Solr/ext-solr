@@ -147,6 +147,7 @@ class SearchController extends AbstractBaseController
                 'pagination' => $afterSearchEvent->getPagination(),
                 'currentPage' => $afterSearchEvent->getCurrentPage(),
                 'additionalVariables' => $afterSearchEvent->getAdditionalVariables(),
+                'contentObjectData' => $this->request->getAttribute('currentContentObject')?->data,
             ];
 
             $this->view->assignMultiple($values);
@@ -179,6 +180,7 @@ class SearchController extends AbstractBaseController
             'search' => $formEvent->getSearch(),
             'additionalFilters' => $formEvent->getAdditionalFilters(),
             'pluginNamespace' => $formEvent->getPluginNamespace(),
+            'contentObjectData' => $this->request->getAttribute('currentContentObject')?->data,
         ];
 
         $this->view->assignMultiple($values);
@@ -212,6 +214,7 @@ class SearchController extends AbstractBaseController
         $values = [
             'additionalFilters' => $afterFrequentlySearchedEvent->getAdditionalFilters(),
             'resultSet' => $afterFrequentlySearchedEvent->getResultSet(),
+            'contentObjectData' => $this->request->getAttribute('currentContentObject')?->data,
         ];
         $this->view->assignMultiple($values);
         return $this->htmlResponse();
@@ -230,7 +233,11 @@ class SearchController extends AbstractBaseController
 
         try {
             $document = $this->searchService->getDocumentById($documentId);
-            $this->view->assign('document', $document);
+            $values = [
+                'document' => $document,
+                'contentObjectData' => $this->request->getAttribute('currentContentObject')?->data,
+            ];
+            $this->view->assignMultiple($values);
         } catch (SolrUnavailableException) {
             return $this->handleSolrUnavailable();
         }
