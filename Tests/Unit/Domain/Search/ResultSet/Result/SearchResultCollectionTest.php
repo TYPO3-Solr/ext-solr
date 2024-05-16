@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit test case for the SearchResultCollection.
@@ -38,17 +39,13 @@ class SearchResultCollectionTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getHasGroupsReturnsFalseByDefault()
     {
         self::assertFalse($this->searchResultCollection->getHasGroups());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getHasGroupsReturnsTrueWhenGroupsExist()
     {
         $groupA = new Group('foo');
@@ -56,9 +53,7 @@ class SearchResultCollectionTest extends SetUpUnitTestCase
         self::assertTrue($this->searchResultCollection->getHasGroups());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetAndGetGroupCollection()
     {
         $groupCollection = new GroupCollection();

@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -75,9 +76,7 @@ class PageIndexerTest extends SetUpUnitTestCase
         return $pageIndexer;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testIndexPageItemIsSendingFrontendRequestsToExpectedUrls(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];

@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\FakeExtension\Domain\Model\Foo;
 use ApacheSolrForTypo3\FakeExtension\Domain\Repository\FooRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -47,9 +48,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newEntityIsAddedToIndexQueue()
     {
         $object = new Foo();
@@ -61,9 +60,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         self::assertTrue($this->indexQueue->containsItem('tx_fakeextension_domain_model_foo', 1));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newHiddenEntityIsNotAddedToIndexQueue()
     {
         $object = new Foo();
@@ -76,9 +73,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         self::assertFalse($this->indexQueue->containsItem('tx_fakeextension_domain_model_foo', 1));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updatedEntityIsUpdatedInIndexQueue()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/update_items.csv');
@@ -99,9 +94,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         self::assertSame($currentTimestamp, $item->getChanged());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function softDeletedEntityIsRemovedFromIndexQueue()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/delete_items.csv');
@@ -113,9 +106,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         self::assertFalse($this->indexQueue->containsItem('tx_fakeextension_domain_model_foo', 3));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deletedEntityIsRemovedFromIndexQueue()
     {
         unset($GLOBALS['TCA']['tx_fakeextension_domain_model_foo']['ctrl']['delete']);
@@ -128,9 +119,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         self::assertFalse($this->indexQueue->containsItem('tx_fakeextension_domain_model_foo', 3));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updatedEntityTurnedHiddenIsRemovedFromIndexQueue()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/hidden_items.csv');

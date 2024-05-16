@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcases for the url data bag
@@ -53,9 +54,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         ],
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFilterIndexFacetsParameterByName()
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
@@ -63,9 +62,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         self::assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFilterAssocFacetsParameterByName()
     {
         $urlFacetBack = new UrlFacetContainer(
@@ -76,9 +73,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         self::assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRemoveAllIndexFacetsParameter()
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
@@ -87,9 +82,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         self::assertEquals(0, $urlFacetBack->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRemoveAllAssocFacetsParameter()
     {
         $urlFacetBack = new UrlFacetContainer(
@@ -102,9 +95,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         self::assertEquals(0, $urlFacetBack->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRemoveAllFacetsParameterByName()
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
@@ -113,9 +104,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         self::assertEquals(1, $urlFacetBack->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRemoveAllAssocFacetsParameterByName()
     {
         $urlFacetBack = new UrlFacetContainer(
@@ -128,9 +117,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         self::assertEquals(1, $urlFacetBack->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRemoveASingleFacetParameterByName()
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
@@ -139,9 +126,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         self::assertEquals(3, $urlFacetBack->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRemoveASingleAssocFacetParameterByName()
     {
         $urlFacetBack = new UrlFacetContainer(
@@ -153,18 +138,14 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         self::assertEquals(3, $urlFacetBack->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function keepOrderingOfIndexParameters()
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         self::assertEquals(['pages', 'example', 'news'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSortIndexParameters()
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
@@ -172,9 +153,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         self::assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function didNotKeepOrderingOfAssocParameters()
     {
         $urlFacetBack = new UrlFacetContainer(
@@ -188,9 +167,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function assocParametersSortedByDefault()
     {
         $urlFacetBack = new UrlFacetContainer(

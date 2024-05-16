@@ -32,6 +32,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
@@ -74,9 +75,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
         $this->suggestQueryMock->expects(self::any())->method('getQuery')->willReturn($queryString);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSuggestionsWithoutTopResults(): void
     {
         // the query string is used as prefix but no real query string is passed.
@@ -104,9 +103,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
         self::assertSame($expectedSuggestions, $suggestions, 'Suggest response did not contain expected content');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canHandleInvalidSyntaxInAdditionalFilters(): void
     {
         $this->assertNoSearchWillBeTriggered();
@@ -144,9 +141,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
         self::assertSame($expectedSuggestions, $suggestions, 'Suggest did not return status false');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function emptyJsonIsReturnedWhenSolrHasNoSuggestions(): void
     {
         $this->configurationMock->expects(self::never())->method('getSuggestShowTopResults');
@@ -161,9 +156,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
         self::assertSame($expectedSuggestions, $suggestions, 'Suggest did not return status false');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSuggestionsWithTopResults(): void
     {
         $this->configurationMock->expects(self::once())->method('getSuggestShowTopResults')->willReturn(true);

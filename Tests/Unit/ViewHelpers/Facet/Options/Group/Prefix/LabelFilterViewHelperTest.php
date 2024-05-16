@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix\LabelFilterViewHelper;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
@@ -28,9 +29,7 @@ use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
  */
 class LabelFilterViewHelperTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canMakeOnlyExpectedFacetsAvailableInStaticContext(): void
     {
         $facet = $this->createMock(OptionsFacet::class);
@@ -64,9 +63,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
         self::assertSame('Polar Blue', $optionCollection->getByPosition(0)->getLabel(), 'Filtered option has unexpected label');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canMakeOnlyExpectedFacetsAvailableInStaticContextWithMultiByteCharacters(): void
     {
         $facet = $this->createMock(OptionsFacet::class);

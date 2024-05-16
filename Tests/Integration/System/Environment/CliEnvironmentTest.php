@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Environment;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,9 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CliEnvironmentTest extends IntegrationTestBase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canInitialize()
     {
         self::assertFalse(defined('TYPO3_PATH_WEB'));
@@ -43,9 +42,7 @@ class CliEnvironmentTest extends IntegrationTestBase
         $cliEnvironment->restore();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canNotInitializeTwiceWithTwoInstances()
     {
         $this->expectException(WebRootAllReadyDefinedException::class);
@@ -58,9 +55,7 @@ class CliEnvironmentTest extends IntegrationTestBase
         $cliEnvironment2->initialize('/var/otherwww');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canInitializeTwiceWhenUsedAsSingleton()
     {
         $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);

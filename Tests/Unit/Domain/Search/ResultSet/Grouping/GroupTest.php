@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItemCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit test case for the Group class
@@ -28,9 +29,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class GroupTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanGroupName()
     {
         $group = new Group('typeGroup');
@@ -40,18 +39,14 @@ class GroupTest extends SetUpUnitTestCase
         self::assertSame('changedTypeGroup', $group->getGroupName(), 'Can not getGroupName from group');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetGroupItemsReturnEmptyCollection()
     {
         $group = new Group('typeGroup');
         self::assertSame(0, $group->getGroupItems()->getCount(), 'Can not get empty groupItem collection');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetResultsPerPage()
     {
         $group = new Group('typeGroup', 22);
@@ -61,9 +56,7 @@ class GroupTest extends SetUpUnitTestCase
         self::assertSame(11, $group->getResultsPerPage(), 'Can not get results per page');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetGroupItems()
     {
         $group = new Group('typeGroup', 10);
@@ -83,9 +76,7 @@ class GroupTest extends SetUpUnitTestCase
         self::assertSame($groupItems, $group->getGroupItems(), 'Can not get group items from group');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddGroupItem()
     {
         $group = new Group('typeGroup', 10);

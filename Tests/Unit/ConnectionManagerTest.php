@@ -21,6 +21,8 @@ use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
@@ -120,10 +122,9 @@ class ConnectionManagerTest extends SetUpUnitTestCase
 
     /**
      * Tests the connect
-     *
-     * @dataProvider connectDataProvider
-     * @test
      */
+    #[DataProvider('connectDataProvider')]
+    #[Test]
     public function canConnect(
         string $scheme,
         string $host,

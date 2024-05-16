@@ -45,9 +45,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class QueueInitializerServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function allIndexConfigurationsAreUsedWhenWildcardIsPassed(): void
     {
         $queueMock = $this->createMock(Queue::class);

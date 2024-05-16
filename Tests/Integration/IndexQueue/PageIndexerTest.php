@@ -21,6 +21,8 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -64,10 +66,9 @@ class PageIndexerTest extends IntegrationTestBase
      * @param int $expectedNumFound
      * @param array $expectedAccessFieldValues
      * @param array $expectedContents
-     *
-     * @test
-     * @dataProvider canIndexPageWithAccessProtectedContentIntoSolrDataProvider
      */
+    #[DataProvider('canIndexPageWithAccessProtectedContentIntoSolrDataProvider')]
+    #[Test]
     public function canIndexPageWithAccessProtectedContentIntoSolr(
         string $fixture,
         int $expectedNumFound,

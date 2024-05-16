@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result\Pars
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit test case for the ResultParserRegistryTest.
@@ -37,9 +38,7 @@ class ResultParserRegistryTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRegisterAndRetrieveParserWithAHigherPriority()
     {
         $fakeResultSet = $this->createMock(SearchResultSet::class);
@@ -48,9 +47,7 @@ class ResultParserRegistryTest extends SetUpUnitTestCase
         self::assertInstanceOf(TestResultParser::class, $retrievedParser, 'Did not retrieve register custom parser with higher priority');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hasParser()
     {
         $this->registry->registerParser(TestResultParser::class, 200);

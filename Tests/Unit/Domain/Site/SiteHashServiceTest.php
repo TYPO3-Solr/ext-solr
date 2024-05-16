@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\UriInterface;
 use Traversable;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -41,10 +43,8 @@ class SiteHashServiceTest extends SetUpUnitTestCase
         yield 'nullIsFallingBackToCurrentSiteOnly' => [null, 'solrtesta.local'];
     }
 
-    /**
-     * @dataProvider canResolveSiteHashAllowedSitesDataProvider
-     * @test
-     */
+    #[DataProvider('canResolveSiteHashAllowedSitesDataProvider')]
+    #[Test]
     public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites)
     {
         $siteLanguageMock = $this->createMock(SiteLanguage::class);
@@ -78,9 +78,7 @@ class SiteHashServiceTest extends SetUpUnitTestCase
         self::assertSame($expectedAllowedSites, $allowedSites, 'resolveSiteHashAllowedSites did not return expected allowed sites');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSiteHashForDomain()
     {
         $oldKey = $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];

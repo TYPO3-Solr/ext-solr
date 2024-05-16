@@ -25,6 +25,7 @@ use ApacheSolrForTypo3\Solr\Search\SortingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
@@ -57,9 +58,7 @@ class SortingComponentTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sortingFromUrlIsNotAppliedWhenSortingIsDisabled(): void
     {
         $event = new AfterSearchQueryHasBeenPreparedEvent($this->query, $this->searchRequestMock, $this->createMock(Search::class), $this->createMock(TypoScriptConfiguration::class));
@@ -68,9 +67,7 @@ class SortingComponentTest extends SetUpUnitTestCase
         self::assertSame([], $event->getQuery()->getSorts(), 'No sorting should be present in query');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validSortingFromUrlIsApplied(): void
     {
         $configuration = $this->createMock(TypoScriptConfiguration::class);
@@ -90,9 +87,7 @@ class SortingComponentTest extends SetUpUnitTestCase
         self::assertSame(['sortTitle' => 'asc'], $this->query->getSorts(), 'Sorting was not applied in the query as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function invalidSortingFromUrlIsNotApplied(): void
     {
         $configuration = $this->createMock(TypoScriptConfiguration::class);
@@ -112,9 +107,7 @@ class SortingComponentTest extends SetUpUnitTestCase
         self::assertSame([], $this->query->getSorts(), 'No sorting should be present in query');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sortByIsApplied(): void
     {
         $configuration = $this->createMock(TypoScriptConfiguration::class);
@@ -129,9 +122,7 @@ class SortingComponentTest extends SetUpUnitTestCase
         self::assertSame(['price' => 'desc'], $this->query->getSorts(), 'No sorting should be present in query');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function urlSortingHasPrioriy(): void
     {
         $configuration = $this->createMock(TypoScriptConfiguration::class);
@@ -154,9 +145,7 @@ class SortingComponentTest extends SetUpUnitTestCase
         self::assertSame(['sortTitle' =>  'asc'], $this->query->getSorts(), 'No sorting should be present in query');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function querySortingHasPriorityWhenSortingIsDisabled(): void
     {
         $configuration = $this->createMock(TypoScriptConfiguration::class);

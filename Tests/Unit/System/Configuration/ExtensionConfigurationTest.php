@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 
@@ -36,11 +37,10 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
-     *
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
+    #[Test]
     public function testGetIsUseConfigurationFromClosestTemplateEnabled(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();
@@ -52,11 +52,10 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
-     *
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
+    #[Test]
     public function testIsGetUseConfigurationTrackRecordsOutsideSiterootEnabled(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();
@@ -68,11 +67,10 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
-     *
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
+    #[Test]
     public function testIsGetIsUseConfigurationMonitorTablesConfiguredKnownTable(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();
@@ -86,11 +84,10 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
-     *
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
+    #[Test]
     public function testIsGetIsUseConfigurationMonitorTablesConfiguredUnknownTable(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();
@@ -104,11 +101,10 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
-     *
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
+    #[Test]
     public function testIsGetIsUseConfigurationMonitorTablesConfiguredEmptyList(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();
@@ -121,11 +117,10 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
-     *
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
+    #[Test]
     public function testIsGetIsSelfSignedCertificatesEnabled(): void
     {
         $defaultConfiguration = new ExtensionConfiguration();

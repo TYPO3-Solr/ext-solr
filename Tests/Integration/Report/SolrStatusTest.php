@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SolrStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -29,9 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrStatusTest extends IntegrationTestBase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function allStatusChecksShouldBeOkForValidSolrConnection(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -44,9 +43,7 @@ class SolrStatusTest extends IntegrationTestBase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function allStatusChecksShouldFailForInvalidSolrConnection(): void
     {
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort(null, 'invalid', 4711);

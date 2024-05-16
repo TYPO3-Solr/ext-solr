@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\Configuratio
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
@@ -45,9 +46,7 @@ class RootPageResolverTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResponsibleRootPageIdsMergesRootLineAndTypoScriptReferences(): void
     {
         $this->rootPageResolver->expects(self::once())->method('getRootPageIdByTableAndUid')->willReturn(222);
@@ -62,9 +61,7 @@ class RootPageResolverTest extends SetUpUnitTestCase
         self::assertEquals([222, 333, 444], $resolvedRootPages, $message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResponsibleRootPageIdsIgnoresPageFromRootLineThatIsNoSiteRoot(): void
     {
         $this->rootPageResolver->expects(self::once())->method('getRootPageIdByTableAndUid')->willReturn(222);
@@ -79,9 +76,7 @@ class RootPageResolverTest extends SetUpUnitTestCase
         self::assertEquals([333, 444], $resolvedRootPages, $message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIsRootPageIdWithPageIdZero(): void
     {
         $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
@@ -92,9 +87,7 @@ class RootPageResolverTest extends SetUpUnitTestCase
         self::assertFalse($rootPage);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIsRootPageWithPageIdMinusOne(): void
     {
         $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
@@ -105,9 +98,7 @@ class RootPageResolverTest extends SetUpUnitTestCase
         self::assertFalse($rootPage);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIsRootPageIdWithUnknownPageId(): void
     {
         $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)

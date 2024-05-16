@@ -20,6 +20,8 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -66,10 +68,8 @@ class IndexServiceTest extends IntegrationTestBase
         ];
     }
 
-    /**
-     * @dataProvider canResolveBaseAsPrefixDataProvider
-     * @test
-     */
+    #[DataProvider('canResolveBaseAsPrefixDataProvider')]
+    #[Test]
     public function canResolveBaseAsPrefix(string $absRefPrefix, string $expectedUrl)
     {
         $this->cleanUpSolrServerAndAssertEmpty();

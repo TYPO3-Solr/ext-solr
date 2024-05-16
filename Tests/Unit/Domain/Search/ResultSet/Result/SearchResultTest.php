@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit test case for the SearchResult.
@@ -44,9 +45,7 @@ class SearchResultTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetId(): void
     {
         self::assertSame(
@@ -56,9 +55,7 @@ class SearchResultTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetScore(): void
     {
         self::assertSame(
@@ -68,9 +65,7 @@ class SearchResultTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetContent(): void
     {
         self::assertSame(
@@ -80,9 +75,7 @@ class SearchResultTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetType(): void
     {
         self::assertSame(
@@ -92,9 +85,7 @@ class SearchResultTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetTitle(): void
     {
         self::assertSame(
@@ -104,9 +95,7 @@ class SearchResultTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetUrl(): void
     {
         self::assertSame(
@@ -116,9 +105,7 @@ class SearchResultTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetIsElevated(): void
     {
         self::assertTrue(
@@ -127,9 +114,7 @@ class SearchResultTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getOnUnexistingFieldReturnsNull(): void
     {
         self::assertNull(

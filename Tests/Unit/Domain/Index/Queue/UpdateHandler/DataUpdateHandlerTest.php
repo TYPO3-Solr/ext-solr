@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -96,9 +97,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->willReturn([self::DUMMY_PAGE_ID]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleContentElementUpdateTriggersSinglePageProcessing(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -178,9 +177,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handleContentElementUpdate(123);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleContentElementUpdateTriggersInvalidPageProcessing(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -235,9 +232,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handleContentElementUpdate(123);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleContentElementDeletionTriggersPageUpdate(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -258,9 +253,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handleContentElementDeletion(123);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handlePageUpdateTriggersSinglePageProcessing(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -350,9 +343,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->willReturn(true);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handlePageUpdateTriggersRecursivePageProcessing(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -420,9 +411,8 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
     /**
      * Tests if the processing of a page with no connection to a valid root page
      * triggers just the mount page updater
-     *
-     * @test
      */
+    #[Test]
     public function handlePageUpdateTriggersUnconnectedPageProcessing(): void
     {
         $dummyPageRecord = [
@@ -453,9 +443,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handlePageUpdate($dummyPageRecord['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleRecordUpdateTriggersRecordProcessing(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -527,9 +515,8 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
     /**
      * Tests if the processing of a record that couldn't be found in database
      * triggers the removal from index and queue
-     *
-     * @test
      */
+    #[Test]
     public function handleRecordUpdateTriggersInvalidRecordProcessing(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -577,9 +564,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handleRecordUpdate($dummyRecord['uid'], 'tx_foo_bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleRecordUpdateTriggersMultipleRootPagesRecordProcessing(): void
     {
         $dummyRecord = [
@@ -634,9 +619,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handleRecordUpdate($dummyRecord['uid'], 'tx_foo_bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleVersionSwapAppliesPageChangesToQueue(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -678,9 +661,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handleVersionSwap($dummyPageRecord['uid'], 'pages');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleVersionSwapAppliesContentElementChangesToQueue(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -723,9 +704,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handleVersionSwap($dummyRecordId, 'tt_content');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleVersionSwapAppliesInvalidPageChangesToQueue(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -767,9 +746,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handleVersionSwap($dummyPageRecord['uid'], 'pages');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleVersionSwapAppliesRecordChangesToQueue(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -821,9 +798,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handleVersionSwap($dummyRecord['uid'], 'tx_foo_bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleVersionSwapAppliesInvalidRecordChangesToQueue(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -870,9 +845,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handleVersionSwap($dummyRecord['uid'], 'tx_foo_bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleMovedPageAppliesPageChangesToQueue(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();
@@ -914,9 +887,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataUpdateHandler->handleMovedPage($dummyPageRecord['uid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handleMovedRecordAppliesRecordChangesToQueue(): void
     {
         $this->initRootPageResolverForValidDummyRootPage();

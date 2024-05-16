@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Area\GroupViewHelper;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
@@ -28,9 +29,7 @@ use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
  */
 class GroupViewHelperTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canMakeOnlyExpectedFacetsAvailableInStaticContext()
     {
         $facetCollection = $this->getTestFacetCollection();
@@ -53,9 +52,7 @@ class GroupViewHelperTest extends SetUpUnitTestCase
         self::assertEquals(['color', 'brand'], $facetKeys);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canMakeOnlyExpectedFacetsAvailableInstanceContext()
     {
         $facetCollection = $this->getTestFacetCollection();

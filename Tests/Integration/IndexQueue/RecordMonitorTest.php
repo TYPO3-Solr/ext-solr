@@ -29,6 +29,8 @@ use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\SkippedWithMessageException;
 use Psr\Log\LogLevel;
 use Traversable;
@@ -166,8 +168,8 @@ class RecordMonitorTest extends IntegrationTestBase
      * AND mount_pid_ol=1)) AND doktype = 7 AND no_search = 0 AND pages' at line 1" (228 chars)
      *
      * @see https://github.com/TYPO3-Solr/ext-solr/issues/155
-     * @test
      */
+    #[Test]
     public function canUpdateRootPageRecordWithoutSQLErrorFromMountPages(): void
     {
         throw new SkippedWithMessageException('Skipping canUpdateRootPageRecordWithoutSQLErrorFromMountPages');
@@ -201,8 +203,8 @@ class RecordMonitorTest extends IntegrationTestBase
      * Regression test for issue #48. Indexing of new records will crash if the name of the Indexing
      * Queue Configuration is different from tablename
      * @see https://github.com/TYPO3-Solr/ext-solr/issues/48
-     * @test
      */
+    #[Test]
     public function canUseCorrectIndexingConfigurationForANewNonPagesRecord(): void
     {
         $this->prepareCanUseCorrectIndexingConfigurationForANewNonPagesRecord();
@@ -220,9 +222,7 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUseCorrectIndexingConfigurationForANewNonPagesRecordInDelayedProcessingMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -246,9 +246,7 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canIgnoreCorrectIndexingConfigurationForANewNonPagesRecordInNoProcessingMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 2]);
@@ -308,9 +306,7 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canQueueSubPagesWhenExtendToSubPagesWasSetAndHiddenFlagWasRemoved(): void
     {
         $this->prepareCanQueueSubPagesWhenExtendToSubPagesWasSetAndHiddenFlagWasRemoved();
@@ -320,9 +316,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(3);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canQueueSubPagesWhenExtendToSubPagesWasSetAndHiddenFlagWasRemovedInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -359,9 +353,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 17, $changeSet, $dataHandler);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canQueueSubPagesWhenHiddenFlagIsSetAndExtendToSubPagesFlagWasRemoved(): void
     {
         $this->prepareCanQueueSubPagesWhenHiddenFlagIsSetAndExtendToSubPagesFlagWasRemoved();
@@ -371,9 +363,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canQueueSubPagesWhenHiddenFlagIsSetAndExtendToSubPagesFlagWasRemovedInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -409,9 +399,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 17, $changeSet, $this->dataHandler);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canQueueSubPagesWhenHiddenAndExtendToSubPagesFlagsWereRemoved(): void
     {
         $this->prepareCanQueueSubPagesWhenHiddenAndExtendToSubPagesFlagsWereRemoved();
@@ -421,9 +409,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(3);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canQueueSubPagesWhenHiddenAndExtendToSubPagesFlagsWereRemovedInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -459,9 +445,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 17, $changeSet, $this->dataHandler);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function queueIsNotFilledWhenItemIsSetToHidden(): void
     {
         $this->prepareQueueIsNotFilledWhenItemIsSetToHidden();
@@ -469,9 +453,7 @@ class RecordMonitorTest extends IntegrationTestBase
         // we assert that the index queue is still empty because the page was only set to hidden
         $this->assertEmptyIndexQueue();
     }
-    /**
-     * @test
-     */
+    #[Test]
     public function queueIsNotFilledWhenItemIsSetToHiddenInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -507,9 +489,8 @@ class RecordMonitorTest extends IntegrationTestBase
 
     /**
      * When a record without pid is processed a warning should be logged
-     *
-     * @test
      */
+    #[Test]
     public function logMessageIsCreatedWhenRecordWithoutPidIsCreated(): void
     {
         $loggerMock = $this->getMockBuilder(SolrLogManager::class)
@@ -582,9 +563,8 @@ class RecordMonitorTest extends IntegrationTestBase
 
     /**
      * This testcase checks, that a queue item will be removed when an unexisting record was updated
-     *
-     * @test
      */
+    #[Test]
     public function queueEntryIsRemovedWhenUnExistingRecordWasUpdated(): void
     {
         $this->prepareQueueEntryIsRemovedWhenUnExistingRecordWasUpdated();
@@ -592,9 +572,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertEmptyIndexQueue();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function queueEntryIsRemovedWhenUnExistingRecordWasUpdatedInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -643,8 +621,8 @@ class RecordMonitorTest extends IntegrationTestBase
 
     /**
      * @see https://github.com/TYPO3-Solr/ext-solr/issues/639
-     * @test
      */
+    #[Test]
     public function canUseCorrectIndexingConfigurationForANewCustomPageTypeRecord(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/custom_page_doktype.csv');
@@ -714,9 +692,7 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canQueueUpdatePagesWithCustomPageType(): void
     {
         $this->prepareCanQueueUpdatePagesWithCustomPageType();
@@ -734,9 +710,7 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canQueueUpdatePagesWithCustomPageTypeInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -803,9 +777,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 8, $changeSet, $dataHandler);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canHandePageTreeMovement(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_handle_page_tree_movement.csv');
@@ -820,9 +792,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(4);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canHandePageTreeMovementIfPageTreeIsMovedToSysfolderWithDisabledOptionIncludeSubEntriesInSearch(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_handle_page_tree_movement.csv');
@@ -837,9 +807,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertEmptyIndexQueue();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canHandePageTreeMovementIfPageTreeIsMounted(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_handle_mounted_page_tree_movement.csv');
@@ -854,9 +822,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(3);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function mountPointIsOnlyAddedOnceForEachTree(): void
     {
         $data = $this->prepareMountPointIsOnlyAddedOnceForEachTree();
@@ -876,9 +842,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function mountPointIsOnlyAddedOnceForEachTreeInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -939,9 +903,7 @@ class RecordMonitorTest extends IntegrationTestBase
         return $data;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizedPageIsAddedToTheQueue(): void
     {
         $this->prepareLocalizedPageIsAddedToTheQueue();
@@ -957,9 +919,7 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizedPageIsAddedToTheQueueInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -1009,9 +969,7 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function queueItemStaysWhenOverlayIsSetToHidden(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/queue_entry_stays_when_overlay_set_to_hidden.csv');
@@ -1042,9 +1000,7 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function localizedPageIsNotAddedToTheQueueWhenL10ParentIsHidden(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/localized_page_with_hidden_parent.csv');
@@ -1065,9 +1021,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertEmptyIndexQueue();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function pageIsQueuedWhenContentElementIsChanged(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/change_content_element.csv');
@@ -1093,9 +1047,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertSame('pages', $firstQueueItem->getType(), 'First queue item has unexpected type');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function pageIsQueuedWhenTranslatedContentElementIsChanged(): void
     {
         $this->preparePageIsQueuedWhenTranslatedContentElementIsChanged();
@@ -1103,9 +1055,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertSame('pages', $firstQueueItem->getType(), 'First queue item has unexpected type');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function pageIsQueuedWhenTranslatedContentElementIsChangedInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -1147,18 +1097,14 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRootPageWithRecursiveUpdateFieldsConfiguredForTitle(): void
     {
         $this->prepareUpdateRootPageWithRecursiveUpdateFieldsConfiguredForTitle();
         $this->assertIndexQueueContainsItemAmount(5);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRootPageWithRecursiveUpdateFieldsConfiguredForTitleInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -1203,9 +1149,7 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateSubChildPageWithRecursiveUpdateFieldsConfiguredForTitle(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
@@ -1234,18 +1178,14 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForTitle(): void
     {
         $this->prepareUpdateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForTitle();
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForTitleInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -1290,18 +1230,14 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRootPageWithRecursiveUpdateFieldsConfiguredForDokType(): void
     {
         $this->prepareUpdateRootPageWithRecursiveUpdateFieldsConfiguredForDokType();
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRootPageWithRecursiveUpdateFieldsConfiguredForDokTypeInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -1346,9 +1282,7 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateSubChildPageWithRecursiveUpdateFieldsConfiguredForDokType(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
@@ -1377,9 +1311,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForDokType(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
@@ -1408,9 +1340,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRootPageWithoutRecursiveUpdateFieldsConfigured(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
@@ -1434,18 +1364,14 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateSubChildPageWithoutRecursiveUpdateFieldsConfigured(): void
     {
         $this->prepareUpdateSubChildPageWithoutRecursiveUpdateFieldsConfigured();
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateSubChildPageWithoutRecursiveUpdateFieldsConfiguredInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -1485,9 +1411,7 @@ class RecordMonitorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateSubSubChildPageWithoutRecursiveUpdateFieldsConfigured(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
@@ -1524,12 +1448,11 @@ class RecordMonitorTest extends IntegrationTestBase
     }
 
     /**
-     * @dataProvider updateRecordOutsideSiteRootWithAdditionalWhereClauseDataProvider
-     * @test
-     *
      * @param int $uid
      * @param int $root
      */
+    #[DataProvider('updateRecordOutsideSiteRootWithAdditionalWhereClauseDataProvider')]
+    #[Test]
     public function updateRecordOutsideSiteRootWithAdditionalWhereClause(int $uid, int $root): void
     {
         $this->prepareUpdateRecordOutsideSiteRootWithAdditionalWhereClause($uid);
@@ -1540,12 +1463,11 @@ class RecordMonitorTest extends IntegrationTestBase
     }
 
     /**
-     * @dataProvider updateRecordOutsideSiteRootWithAdditionalWhereClauseDataProvider
-     * @test
-     *
      * @param int $uid
      * @param int $root
      */
+    #[DataProvider('updateRecordOutsideSiteRootWithAdditionalWhereClauseDataProvider')]
+    #[Test]
     public function updateRecordOutsideSiteRootWithAdditionalWhereClauseInDelayedMode(int $uid, int $root): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -1613,9 +1535,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRecordOutsideSiteRoot(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/update_record_outside_siteroot.csv');
@@ -1653,18 +1573,14 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRecordOutsideSiteRootReferencedInTwoSites(): void
     {
         $this->prepareUpdateRecordOutsideSiteRootReferencedInTwoSites();
         $this->assertIndexQueueContainsItemAmount(2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRecordOutsideSiteRootReferencedInTwoSitesInDelayedMode(): void
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
@@ -1732,9 +1648,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRecordOutsideSiteRootLocatedInOtherSite(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/update_record_outside_siteroot_from_other_siteroot.csv');
@@ -1783,9 +1697,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRecordMonitoringTablesConfiguredDefault(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
@@ -1809,18 +1721,14 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRecordMonitoringTablesConfiguredNotForTableBeingUpdated(): void
     {
         $this->prepareUpdateRecordMonitoringTablesTests(0, 'tt_content');
         $this->assertEmptyIndexQueue();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRecordMonitoringTablesConfiguredNotForTableBeingUpdatedInDelayedMode(): void
     {
         $this->prepareUpdateRecordMonitoringTablesTests(1, 'tt_content');
@@ -1829,18 +1737,14 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->assertEmptyEventQueue();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRecordMonitoringTablesConfiguredForTableBeingUpdated(): void
     {
         $this->prepareUpdateRecordMonitoringTablesTests(0, 'pages, tt_content');
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updateRecordMonitoringTablesConfiguredForTableBeingUpdatedInDelayedMode(): void
     {
         $this->assertEmptyIndexQueue();
@@ -1892,9 +1796,8 @@ class RecordMonitorTest extends IntegrationTestBase
 
     /**
      * This testcase checks if we can create a new testpage on the root level without any errors.
-     *
-     * @test
      */
+    #[Test]
     public function canCreateSiteOneRootLevel(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_can_create_new_page.csv');
@@ -1910,9 +1813,8 @@ class RecordMonitorTest extends IntegrationTestBase
 
     /**
      * This testcase checks if we can create a new testpage on the root level without any errors.
-     *
-     * @test
      */
+    #[Test]
     public function canCreateSubPageBelowSiteRoot(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_can_create_new_page.csv');
@@ -1930,8 +1832,8 @@ class RecordMonitorTest extends IntegrationTestBase
      * Tests if updates on access restricted pages lead to index queue updates
      *
      * https://github.com/TYPO3-Solr/ext-solr/issues/3225
-     * @test
      */
+    #[Test]
     public function canQueueAccessRestrictedPageOnPageUpdate(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/update_access_restricted_page.csv');

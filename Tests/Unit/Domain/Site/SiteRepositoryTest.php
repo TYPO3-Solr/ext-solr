@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -55,9 +56,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSiteByRootPageId(): void
     {
         $this->fakeEmptyCache();
@@ -69,9 +68,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
         self::assertInstanceOf(Site::class, $site);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSiteByPageId(): void
     {
         $this->fakeEmptyCache();
@@ -84,9 +81,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
         self::assertInstanceOf(Site::class, $site);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetFirstAvailableSite(): void
     {
         $this->fakeEmptyCache();
@@ -103,9 +98,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
         self::assertInstanceOf(Site::class, $site);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetAvailableSites(): void
     {
         $this->fakeEmptyCache();
@@ -120,9 +113,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
         self::assertCount(2, $sites, 'We expect to have two sites with two languages');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetAllLanguages(): void
     {
         $this->fakeEmptyCache();

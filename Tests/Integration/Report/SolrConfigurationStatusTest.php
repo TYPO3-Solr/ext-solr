@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -41,9 +42,7 @@ class SolrConfigurationStatusTest extends IntegrationTestBase
         $this->writeDefaultSolrTestSiteConfiguration();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetGreenReportAgainstTestServer(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_green_solr_configuration_status_report.csv');
@@ -64,9 +63,7 @@ class SolrConfigurationStatusTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canDetectMissingRootPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_detect_missing_rootpage.csv');
@@ -81,9 +78,7 @@ class SolrConfigurationStatusTest extends IntegrationTestBase
         self::assertStringContainsString('No sites', $firstViolation->getValue(), 'Did not get a no sites found violation');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canDetectIndexingDisabled(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_detect_indexing_disabled.csv');

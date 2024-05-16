@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index\PageIndexer;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\PageUriBuilder;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -38,9 +39,7 @@ class PageUriBuilderTest extends IntegrationTestBase
         $this->writeDefaultSolrTestSiteConfiguration();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function pageIndexingUriCanBeModifiedViaEventListener(): void
     {
         $subject = GeneralUtility::makeInstance(PageUriBuilder::class);

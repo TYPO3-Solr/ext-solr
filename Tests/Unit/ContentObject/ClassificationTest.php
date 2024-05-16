@@ -18,6 +18,8 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Classification;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
 /**
@@ -32,9 +34,7 @@ class ClassificationTest extends SetUpContentObject
         return Classification::class;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canClassifyContent()
     {
         $content = 'i like TYPO3 more then joomla';
@@ -71,10 +71,8 @@ class ClassificationTest extends SetUpContentObject
         ];
     }
 
-    /**
-     * @dataProvider excludePatternDataProvider
-     * @test
-     */
+    #[DataProvider('excludePatternDataProvider')]
+    #[Test]
     public function canExcludePatterns($input, $expectedOutput)
     {
         $this->contentObjectRenderer->start(['content' => $input]);

@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Delay
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingQueuingFinishedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,9 +35,7 @@ class DelayedProcessingEventListenerTest extends SetUpEventListener
      */
     protected AbstractBaseEventListener $listener;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canHandleEvents(): void
     {
         $this->extensionConfigurationMock
@@ -66,9 +65,7 @@ class DelayedProcessingEventListenerTest extends SetUpEventListener
         self::assertEquals($event, $dispatchedEvent->getDataUpdateEvent());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSkipEventHandlingIfDisabled(): void
     {
         $this->extensionConfigurationMock

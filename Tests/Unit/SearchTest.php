@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrReadService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class SearchTest extends SetUpUnitTestCase
@@ -55,9 +56,7 @@ class SearchTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canPassLimit()
     {
         $query = new SearchQuery();
@@ -72,9 +71,7 @@ class SearchTest extends SetUpUnitTestCase
         $this->search->search($query, 0, $limit);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canKeepLimitWhenNullWasPassedAsLimit()
     {
         $query = new SearchQuery();

@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Page;
 
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the ArrayAccessor helper class.
@@ -25,9 +26,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class RootlineTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getRootPageIdReturnUidOfRootPage()
     {
         $testRootLineArray = [
@@ -40,27 +39,21 @@ class RootlineTest extends SetUpUnitTestCase
         self::assertSame(1, $rootline->getRootPageId(), 'GetRootPageId does not return expected root page id');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRootPageIdReturnsZeroWhenNoSiteRootIsPresent()
     {
         $rootline = new Rootline([]);
         self::assertSame(0, $rootline->getRootPageId(), 'Expecting null when no rootline given');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getHasRootPageReturnsFalseOnEmptyRootLine()
     {
         $rootline = new Rootline([]);
         self::assertFalse($rootline->getHasRootPage(), 'Expecting false when no rootline given');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getHasRootPageRturnsTrueWithGivenRootLine()
     {
         $testRootLineArray = [
@@ -73,9 +66,7 @@ class RootlineTest extends SetUpUnitTestCase
         self::assertTrue($rootline->getHasRootPage(), 'Expecting true when rootline with rootpage given');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetParentPageIds()
     {
         $testRootLineArray = [

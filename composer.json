@@ -39,7 +39,7 @@
   },
   "require-dev": {
     "dg/bypass-finals": "^1.6",
-    "phpunit/phpunit": "^10.1",
+    "phpunit/phpunit": "^10.5",
     "typo3/cms-fluid-styled-content": "*",
     "typo3/coding-standards": "~0.7.1",
     "typo3/testing-framework": "^8.0",

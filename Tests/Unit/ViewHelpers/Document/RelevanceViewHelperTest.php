@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\RelevanceViewHelper;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -26,9 +27,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class RelevanceViewHelperTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canCalculateRelevance()
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -47,9 +46,7 @@ class RelevanceViewHelperTest extends SetUpUnitTestCase
         self::assertEquals(10.0, $score, 'Unexpected score');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canCalculateRelevanceFromPassedMaximumScore()
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);

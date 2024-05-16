@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\Node;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase to test the Node class
@@ -26,9 +27,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class NodeTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetHasParentNode()
     {
         $facetMock = $this->createMock(HierarchyFacet::class);
@@ -42,9 +41,7 @@ class NodeTest extends SetUpUnitTestCase
         self::assertSame($parentNode, $node->getParentNode(), 'Node did not return assigend parent node');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetHasChildNodeSelectedReturnFalseWhenNoChildNodeWasAssigned()
     {
         $facetMock = $this->createMock(HierarchyFacet::class);
@@ -53,9 +50,7 @@ class NodeTest extends SetUpUnitTestCase
         self::assertFalse($node->getHasChildNodeSelected(), 'Node without childnodes should not indicate that it as a selected child node');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetHasChildNodeSelectedReturnFalseWhenNoSelectedChildNodeWasAssigned()
     {
         $facetMock = $this->createMock(HierarchyFacet::class);
@@ -67,9 +62,7 @@ class NodeTest extends SetUpUnitTestCase
         self::assertFalse($node->getHasChildNodeSelected(), 'Node with only unselected childnodes should not indicate that it has a selected child node');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetHasChildNodeSelectedReturnTrueWhenSelectedChildNodeWasAssigned()
     {
         $facetMock = $this->createMock(HierarchyFacet::class);

@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 
@@ -75,9 +76,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testSearchIfFiredWithInitializedQuery(): void
     {
         // we expect the ->search method on the Search object will be called once
@@ -94,9 +93,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
         self::assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
     }
 
-    /**
-    * @test
-    */
+    #[Test]
     public function testOffsetIsPassedAsExpectedWhenSearchWasPaginated(): void
     {
         $fakeResponse = $this->createMock(ResponseAdapter::class);
@@ -110,9 +107,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
         self::assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testComponentAsEventListenerGetsInitialized(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchConfiguration')->willReturn([]);
@@ -133,9 +128,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
         self::assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRegisterSearchResultSetProcessor(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
@@ -163,9 +156,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
         self::assertSame('PAGES', $firstResult->getType(), 'Could not get modified type from result');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testAdditionalFiltersGetPassedToTheQuery(): void
     {
         $fakeResponse = $this->createMock(ResponseAdapter::class);
@@ -186,9 +177,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
         self::assertSame(count($resultSet->getUsedQuery()->getFilterQueries()), 1, 'There should be one registered filter in the query');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testExpandedDocumentsGetAddedWhenVariantsAreConfigured(): void
     {
         // we fake that collapsing is enabled

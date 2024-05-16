@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use Exception;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -86,9 +87,9 @@ class ReIndexTaskTest extends IntegrationTestBase
     }
 
     /**
-     * @test
      * @throws Exception
      */
+    #[Test]
     public function testIfTheQueueIsFilledAfterTaskWasRunning()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
@@ -104,9 +105,9 @@ class ReIndexTaskTest extends IntegrationTestBase
     }
 
     /**
-     * @test
      * @throws Exception
      */
+    #[Test]
     public function testCanGetAdditionalInformationFromTask()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
@@ -123,9 +124,9 @@ class ReIndexTaskTest extends IntegrationTestBase
     }
 
     /**
-     * @test
      * @throws Exception
      */
+    #[Test]
     public function solrIsEmptyAfterCleanup()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');

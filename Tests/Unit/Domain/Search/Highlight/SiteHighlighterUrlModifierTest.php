@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Highlight;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Highlight\SiteHighlighterUrlModifier;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
 /**
@@ -56,10 +58,8 @@ class SiteHighlighterUrlModifierTest extends SetUpUnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider canModifyDataProvider
-     * @test
-     */
+    #[DataProvider('canModifyDataProvider')]
+    #[Test]
     public function canModify($inputUrl, $keywords, $no_cache, $keepCHash, $expectedResult)
     {
         $siteHighlightingModifier = new SiteHighlighterUrlModifier();

@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr\Service;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
@@ -60,9 +61,7 @@ class SolrWriteServiceTest extends IntegrationTestBase
         $this->solrWriteService = GeneralUtility::makeInstance(SolrWriteService::class, $client);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canExtractByQuery(): void
     {
         $testFilePath = __DIR__ . '/Fixtures/testpdf.pdf';

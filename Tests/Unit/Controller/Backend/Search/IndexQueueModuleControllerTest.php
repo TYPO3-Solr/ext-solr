@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatisticsReposito
 use ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterIndexQueueItemHasBeenMarkedForReindexingEvent;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 
@@ -69,18 +70,14 @@ class IndexQueueModuleControllerTest extends AbstractModuleController
         $this->indexQueueMock->expects(self::once())->method('updateOrAddItemForAllRelatedRootPages')->with($type, $uid)->willReturn(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function requeueDocumentActionIsTriggeringReIndexOnIndexQueue(): void
     {
         $this->assertQueueUpdateIsTriggeredFor('pages', 4711);
         $this->controller->requeueDocumentAction('pages', 4711);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hookIsTriggeredWhenRegistered(): void
     {
         $this->eventDispatcher->addListener(function (AfterIndexQueueItemHasBeenMarkedForReindexingEvent $event) {

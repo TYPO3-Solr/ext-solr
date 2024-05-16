@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests for the SOLR_MULTIVALUE cObj.
@@ -31,9 +32,7 @@ class MultivalueTest extends SetUpContentObject
         return Multivalue::class;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function convertsCommaSeparatedListFromRecordToSerializedArrayOfTrimmedValues()
     {
         $list = 'abc, def, ghi, jkl, mno, pqr, stu, vwx, yz';
@@ -52,9 +51,7 @@ class MultivalueTest extends SetUpContentObject
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function convertsCommaSeparatedListFromValueToSerializedArrayOfTrimmedValues()
     {
         $list = 'abc, def, ghi, jkl, mno, pqr, stu, vwx, yz';

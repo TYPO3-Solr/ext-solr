@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\FieldProcessor;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * tests the processing Service class
@@ -45,9 +46,7 @@ class ServiceTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformsStringToUppercaseOnSingleValuedField()
     {
         $this->documentMock->setField('stringField', 'stringvalue');
@@ -61,9 +60,7 @@ class ServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformsStringToUppercaseOnMultiValuedField()
     {
         $this->documentMock->addField('stringField', 'stringvalue_1');
@@ -78,9 +75,7 @@ class ServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformsUnixTimestampToIsoDateOnSingleValuedField()
     {
         $this->documentMock->setField(
@@ -97,9 +92,7 @@ class ServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformsUnixTimestampToIsoDateOnMultiValuedField()
     {
         $this->documentMock->addField(
@@ -120,9 +113,7 @@ class ServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function customFieldProcessorTurnsFooIntoBar()
     {
         $this->documentMock->setField('stringField', 'foo');

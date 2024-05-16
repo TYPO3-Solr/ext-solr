@@ -19,6 +19,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\Node;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\SetUpFacetParser;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
 /**
@@ -29,9 +31,7 @@ use Traversable;
  */
 class HierarchyFacetParserTest extends SetUpFacetParser
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function facetIsCreated(): void
     {
         $facetConfiguration = [
@@ -87,10 +87,8 @@ class HierarchyFacetParserTest extends SetUpFacetParser
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider dataProviderForDeepMoreThen10DoesNotBreakHierarchyFacet
-     */
+    #[DataProvider('dataProviderForDeepMoreThen10DoesNotBreakHierarchyFacet')]
+    #[Test]
     public function deepMoreThen10DoesNotBreakHierarchyFacet(array $facetConfiguration, string $fixtureFile)
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
@@ -122,9 +120,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
         $this->assertNoNodeHasMoreThanOneChildInTheHierarchy($node->getChildNodes()->getByPosition(0));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function selectedOptionWithSlashInTitleOnHierarchicalFacetDoesNotBreakTheFacet()
     {
         $facetConfiguration = [
@@ -164,9 +160,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
         self::assertSame(1, $facetOption->getChildNodes()->count(), 'Selected facet-option with slash in title/name breaks the Hierarchical facets.');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function facetIsNotActive(): void
     {
         $facetConfiguration = [
@@ -187,9 +181,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
         self::assertFalse($facet->getIsUsed());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function facetIsActive(): void
     {
         $facetConfiguration = [

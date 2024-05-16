@@ -4,15 +4,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\FrontendEnvironment;
 
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class TsfeTest extends IntegrationTestBase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeTsfeWithNoDefaultPageAndPageErrorHandlerDoNotThrowAnError()
     {
         self::markTestSkipped('Since TSFE is isolated/capsuled, no exceptions are thrown or delegated to else where.
@@ -55,9 +54,7 @@ class TsfeTest extends IntegrationTestBase
         $tsfeManager->getTsfeByPageIdAndLanguageId(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canInitializeTsfeForPageWithDifferentFeGroupsSettings()
     {
         $this->writeDefaultSolrTestSiteConfiguration();

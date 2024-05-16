@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for AbstractIndexer
@@ -24,9 +25,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
  */
 class AbstractIndexerTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function testTypeIsNotAllowedOverride()
     {
         self::assertFalse(AbstractIndexer::isAllowedToOverrideField('type'), 'Type is allowed to override');

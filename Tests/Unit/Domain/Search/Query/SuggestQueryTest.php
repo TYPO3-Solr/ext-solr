@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SuggestQuery class
@@ -28,9 +29,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class SuggestQueryTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function testSuggestQueryDoesNotUseFieldCollapsing()
     {
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants'] = 1;
@@ -45,9 +44,7 @@ class SuggestQueryTest extends SetUpUnitTestCase
         self::assertNull($suggestQuery->getFilterQuery('fieldCollapsing'), 'Collapsing should never be active for a suggest query, even when active');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testSuggestQueryUsesFilterList()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
@@ -59,9 +56,7 @@ class SuggestQueryTest extends SetUpUnitTestCase
         self::assertSame('+type:pages', $queryParameters['fq'], 'Filter was not added to the suggest query parameters');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testSuggestQueryDoesNotErrorOnEmptyKeywords()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);

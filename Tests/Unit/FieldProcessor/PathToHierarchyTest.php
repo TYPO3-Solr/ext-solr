@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\FieldProcessor;
 
 use ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * tests the path to hierarchy processing
@@ -36,9 +37,7 @@ class PathToHierarchyTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canBuildSolrHierarchyString()
     {
         self::assertEquals(

@@ -22,6 +22,8 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\AccessibleObjectInterface;
 
@@ -38,10 +40,8 @@ abstract class AbstractStrategyTestBase extends SetUpUnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     * @dataProvider canDeleteRecordInAllSolrConnectionsDataProvider
-     */
+    #[DataProvider('canDeleteRecordInAllSolrConnectionsDataProvider')]
+    #[Test]
     public function canDeleteRecordInAllSolrConnections(int $status, bool $commit): void
     {
         $query = 'type:tx_fakeextension_foo AND uid:123 AND siteHash:#siteHash#';

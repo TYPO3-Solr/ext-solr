@@ -23,14 +23,13 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Http\ServerRequest;
 
 class ResultSetReconstitutionProcessorTest extends IntegrationTestBase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canApplyRenderingInstructionsOnOptions()
     {
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -78,9 +77,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTestBase
         self::assertSame('Pages', $option1->getLabel(), 'Rendering instructions have not been applied on the facet options');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function labelCanBeUsedAsCObject()
     {
         $this->writeDefaultSolrTestSiteConfiguration();

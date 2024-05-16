@@ -22,6 +22,8 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception as MockObjectException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
@@ -87,10 +89,9 @@ class SolrConnectionTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
-     *
      * @throws MockObjectException
      */
+    #[Test]
     public function authenticationIsNotTriggeredWithoutUsername(): void
     {
         $endpointMock = $this->createMock(Endpoint::class);
@@ -109,10 +110,9 @@ class SolrConnectionTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
-     *
      * @throws MockObjectException
      */
+    #[Test]
     public function authenticationIsTriggeredWhenUsernameIsPassed(): void
     {
         $endpointMock = $this->createMock(Endpoint::class);
@@ -137,11 +137,10 @@ class SolrConnectionTest extends SetUpUnitTestCase
     }
 
     /**
-     * @dataProvider coreNameDataProvider
-     * @test
-     *
      * @throws MockObjectException
      */
+    #[DataProvider('coreNameDataProvider')]
+    #[Test]
     public function canGetCoreName(string $path, string $core, string $expectedCoreName): void
     {
         $fakeConfiguration = $this->createMock(TypoScriptConfiguration::class);
@@ -159,10 +158,8 @@ class SolrConnectionTest extends SetUpUnitTestCase
         yield ['path' => '/somewherelese/', 'core' => 'corename', 'expectedCoreBasePath' => '/somewherelese'];
     }
 
-    /**
-     * @dataProvider coreBasePathDataProvider
-     * @test
-     */
+    #[DataProvider('coreBasePathDataProvider')]
+    #[Test]
     public function canGetCoreBasePath(string $path, string $core, string $expectedCoreBasePath): void
     {
         $readEndpoint = new Endpoint(
@@ -173,9 +170,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
         self::assertSame($expectedCoreBasePath, $solrService->getReadService()->getPrimaryEndpoint()->getPath());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function coreBaseUriContainsAllSegments(): void
     {
         $readEndpoint = new Endpoint([

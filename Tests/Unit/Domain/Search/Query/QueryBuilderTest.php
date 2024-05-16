@@ -37,6 +37,9 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\QueryType\Select\RequestBuilder;
 use Traversable;
@@ -79,36 +82,28 @@ class QueryBuilderTest extends SetUpUnitTestCase
         return $query;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function buildSearchQueryPassesQueryString(): void
     {
         $query = $this->builder->buildSearchQuery('one');
         self::assertSame('one', (string)$query->getQuery(), 'Query has unexpected value, when casted to string');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function buildSearchQueryPassesDefaultPerPage(): void
     {
         $query = $this->builder->buildSearchQuery('one');
         self::assertSame(10, $query->getRows(), 'Query was not created with default perPage value');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function buildSearchQueryPassesCustomPerPage(): void
     {
         $query = $this->builder->buildSearchQuery('one', 22);
         self::assertSame(22, $query->getRows(), 'Query was not created with default perPage value');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function buildSearchQueryInitializesQueryFieldsFromConfiguration(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchQueryQueryFields')->willReturn('title^10, content^123');
@@ -116,9 +111,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('title^10.0 content^123.0', $this->getAllQueryParameters($query)['qf'], 'The queryFields have not been initialized as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function buildSearchQueryInitializesTrigramPhraseFields(): void
     {
         $this->configurationMock->expects(self::once())->method('getTrigramPhraseSearchIsEnabled')->willReturn(true);
@@ -128,9 +121,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content^10.0 title^10.0', $this->getAllQueryParameters($query)['pf3'], 'The trigramPhraseFields have not been initialized as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function buildSearchIsSettingWildCardQueryOnInitializeWithEmptyQuery(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchInitializeWithEmptyQuery')->willReturn(true);
@@ -138,9 +129,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('*:*', $this->getAllQueryParameters($query)['q.alt'], 'The alterativeQuery has not been initialized as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function buildSearchIsSettingWildCardQueryOnInitializeWithAllowEmptyQuery(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchQueryAllowEmptyQuery')->willReturn(true);
@@ -148,9 +137,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('*:*', $this->getAllQueryParameters($query)['q.alt'], 'The alterativeQuery has not been initialized as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function buildSearchIsSettingQuerystringForConfiguredInitialQuery(): void
     {
         $this->configurationMock->expects(self::exactly(2))->method('getSearchInitializeWithQuery')->willReturn('myinitialsearch');
@@ -158,9 +145,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('myinitialsearch', $this->getAllQueryParameters($query)['q.alt'], 'The alterativeQuery has not been initialized from a configured initial query');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function buildSearchIsSettingConfiguredAdditionalFilters(): void
     {
         $this->configurationMock->expects(self::any())->method('getSearchQueryFilterConfiguration')->willReturn(['noPage' => '-type:pages']);
@@ -172,19 +157,15 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('-type:pages', $filterValue, 'First filter has unexpected value');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function buildSearchIsSettingNoAlternativeQueryByDefault(): void
     {
         $query = $this->builder->buildSearchQuery('initializeWithEmpty');
         self::assertArrayNotHasKey('q.alt', $this->getAllQueryParameters($query), 'The alterativeQuery is not null when nothing was set');
     }
 
-    /**
-     * @test
-     * @dataProvider buildSearchIsRespectingPageSectionFiltersDataProvider
-     */
+    #[DataProvider('buildSearchIsRespectingPageSectionFiltersDataProvider')]
+    #[Test]
     public function buildSearchIsRespectingPageSectionFilters(
         array $rootLines,
         array $filterConfiguration,
@@ -267,9 +248,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canEnableHighlighting(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -282,9 +261,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame(200, $queryParameters['hl.fragsize'], 'hl.fragsize was not set to the default value of 200');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canDisableHighlighting(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -302,9 +279,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('hl', $queryParameters, 'Could not disable highlighting');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetHighlightingFieldList(): void
     {
         $fakeConfigurationArray = [];
@@ -323,9 +298,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('title', $queryParameters['hl.fl'], 'Can set highlighting field list');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canPassCustomWrapForHighlighting(): void
     {
         $fakeConfigurationArray = [];
@@ -344,9 +317,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting hl.tag.post');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function simplePreAndPostIsUsedWhenFastVectorHighlighterCouldNotBeUsed(): void
     {
         $fakeConfigurationArray = [];
@@ -369,9 +340,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertEmpty($queryParameters['hl.tag.post'], 'When the highlighting fragment size is to small hl.tag.post should not be used because FastVectoreHighlighter will not be used');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUseFastVectorHighlighting(): void
     {
         $fakeConfigurationArray = [];
@@ -389,9 +358,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('true', $queryParameters['hl.useFastVectorHighlighter'], 'Enable highlighting did not set the "hl.useFastVectorHighlighter" query parameter');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fastVectorHighlighterIsDisabledWhenFragSizeIsLessThen18(): void
     {
         $fakeConfigurationArray = [];
@@ -409,18 +376,14 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('false', $queryParameters['hl.useFastVectorHighlighter'], 'FastVectorHighlighter was disabled but still requested');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetQueryString(): void
     {
         $query = $this->getInitializedTestSearchQuery('i like solr');
         self::assertSame('i like solr', $query->getQuery(), 'Can not set and get query string');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetPage(): void
     {
         $query = $this->getInitializedTestSearchQuery('i like solr');
@@ -429,9 +392,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame(10, $query->getStart(), 'Can not set and get page');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function noFiltersAreSetAfterInitialization(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -439,9 +400,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('fq', $queryParameters, 'Query already contains filters after intialization.');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addsCorrectAccessFilterForAnonymousUser(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -451,9 +410,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('{!typo3access}-1,0', $queryParameters['fq'], 'Accessfilter was not applied');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function grantsAccessToGroupZeroIfNoGroupsProvided(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -463,9 +420,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('{!typo3access}0', $queryParameters['fq'], 'Changed accessfilter was not applied');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function grantsAccessToGroupZeroIfZeroNotProvided(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -475,9 +430,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('{!typo3access}0,5', $queryParameters['fq'], 'Access filter was not applied as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function filtersDuplicateAccessGroups(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -487,9 +440,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('{!typo3access}0,1', $queryParameters['fq'], 'Access filter was not applied as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function allowsOnlyOneAccessFilter(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -501,12 +452,8 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     // TODO if user is in group -2 (logged in), disallow access to group -1
-
     // grouping
-
-    /**
-     * @test
-     */
+    #[Test]
     public function groupingIsNotActiveAfterInitialization(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -520,9 +467,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function settingGroupingTrueActivatesGrouping()
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -543,10 +488,8 @@ class QueryBuilderTest extends SetUpUnitTestCase
         return $query;
     }
 
-    /**
-     * @test
-     * @depends settingGroupingTrueActivatesGrouping
-     */
+    #[Depends('settingGroupingTrueActivatesGrouping')]
+    #[Test]
     public function settingGroupingFalseDeactivatesGrouping(SearchQuery $query): void
     {
         $grouping = new Grouping(false);
@@ -560,9 +503,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetNumberOfGroups(): void
     {
         $query = $this->getInitializedTestSearchQuery('test');
@@ -570,9 +511,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertTrue($query->getGrouping()->getNumberOfGroups(), 'Could not set and get number of groups');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddGroupField(): void
     {
         $query = $this->getInitializedTestSearchQuery('test');
@@ -581,9 +520,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame(['category_s'], $query->getGrouping()->getFields(), 'groupFields has unexpected state after adding a group field');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetGroupSorting(): void
     {
         $query = $this->getInitializedTestSearchQuery('test');
@@ -596,9 +533,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('price_f author_s', $queryParameters['group.sort'], 'Can not get groupSortings after adding');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetNumberOfResultsByGroup(): void
     {
         $query = $this->getInitializedTestSearchQuery('group test');
@@ -612,9 +547,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame(22, $queryParameters['group.limit'], 'Can not set number of results per group');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddGroupQuery(): void
     {
         $query = $this->getInitializedTestSearchQuery('group test');
@@ -624,9 +557,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame(['price:[* TO 500]'], $query->getGrouping()->getQueries(), 'Could not retrieve group queries after adding one');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetQueryFieldsAsStringWhenPassedFromConfiguration(): void
     {
         $input = 'content^10, title^5';
@@ -640,9 +571,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame($output, $expectedOutput, 'Passed and retrieved query fields are not the same');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canReturnEmptyStringAsQueryFieldStringWhenNothingWasPassed(): void
     {
         $fakeConfigurationArray = [];
@@ -655,9 +584,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame($output, $expectedOutput, 'Unexpected output from getQueryFieldsAsString when no configuration was passed');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetMinimumMatch(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -674,9 +601,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertEmpty($queryParameters['mm']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetBoostFunction(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -695,9 +620,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertEmpty($queryParameters['bf'], 'bf parameter should be null after reset');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetBoostQuery(): void
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -712,9 +635,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('bq', $queryParameters, 'bq parameter should be null after reset');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canReturnFieldListWhenConfigurationWithReturnFieldsWasPassed(): void
     {
         $input = 'abstract, price';
@@ -726,9 +647,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('abstract,price', $queryParameters['fl'], 'Did not parse returnsFields as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canReturnDefaultFieldListWhenNoConfigurationWasPassed(): void
     {
         $fakeConfigurationArray = [];
@@ -738,9 +657,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('*,score', $queryParameters['fl'], 'Did not parse returnsFields as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddReturnField(): void
     {
         $fakeConfigurationArray = [];
@@ -753,9 +670,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('url,title', $queryParameters['fl'], 'Added return field was not in the list of valid fields');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRemoveReturnField(): void
     {
         $fakeConfigurationArray = [];
@@ -769,12 +684,10 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('title,url', $queryParameters['fl'], 'content was not remove from the fieldList');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canEnableFaceting(): void
     {
-        /** @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
+        /** @var SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();
         $faceting = new Faceting(true);
         $this->builder->startFrom($query)->useFaceting($faceting);
@@ -782,9 +695,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('true', $queryParameters['facet'], 'Enable faceting did not set the "facet" query parameter');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canDisableFaceting()
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -807,9 +718,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('f.title.facet.sort', $queryParameters, 'Facet sorting parameter should also be removed after reset');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddFacetField()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
@@ -829,9 +738,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame(['color_s', 'price_f'], $queryParameters['facet.field'], 'facet.field should not be empty after adding a few fields.');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetFacetFields()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
@@ -849,9 +756,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame(['lastname_s', 'role_s'], $queryParameters['facet.field'], 'Could not use setFields to pass facet fields');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUseFacetMinCountFromConfiguration()
     {
         $input = 10;
@@ -868,9 +773,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame(10, $queryParameters['facet.mincount'], 'Can not use facet.minimumCount from configuration');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUseFacetSortByFromConfiguration()
     {
         $input = 'alpha';
@@ -887,12 +790,10 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('index', $queryParameters['facet.sort'], 'Can not use facet.sort from configuration');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetSpellChecking()
     {
-        /** @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
+        /** @var SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();
 
         $spellchecking = Spellchecking::getEmpty();
@@ -911,9 +812,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('spellcheck.maxCollationTries', $queryParameters, 'spellcheck.maxCollationTries was not unsetted');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function noSiteHashFilterIsSetWhenWildcardIsPassed()
     {
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
@@ -929,9 +828,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('fq', $queryParameters, 'The filters should be empty when a wildcard sitehash was passed');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function filterIsAddedWhenAllowedSiteIsPassed()
     {
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
@@ -949,9 +846,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertEquals('siteHash:"dsada43242342342"', $queryParameters['fq'], 'Unexpected siteHashFilter was added to the query');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canTestNumberOfSuggestionsToTryFromConfiguration()
     {
         $input = 9;
@@ -969,9 +864,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame($input, $queryParameters['spellcheck.maxCollationTries'], 'Could not set spellcheck.maxCollationTries as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUseConfiguredVariantsFieldWhenVariantsAreActive()
     {
         $fakeConfigurationArray = ['plugin.' => ['tx_solr.' => ['search.' => ['variants' => 1]]]];
@@ -985,9 +878,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('{!collapse field=myField}', $queryParameters['fq'], 'Collapse filter query was not created');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUseConfiguredVariantsExpandAndRowCount()
     {
         $fakeConfigurationArray = ['plugin.' => ['tx_solr.' => ['search.' => ['variants' => 1]]]];
@@ -1004,9 +895,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame(10, $queryParameters['expand.rows'], 'Expand.rows argument of query was not set to true with configured expand.rows');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function expandRowsIsNotSetWhenExpandIsInactive()
     {
         $fakeConfigurationArray = ['plugin.' => ['tx_solr.' => ['search.' => ['variants' => 1]]]];
@@ -1021,9 +910,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('expand.rows', $queryParameters, 'Expand.rows should not be set when expand is set to false');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function variantsAreDisabledWhenNothingWasConfigured()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
@@ -1032,9 +919,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('fq', $queryParameters, 'No filter query should be generated when field collapsing is disbled');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canConvertQueryToString()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
@@ -1045,9 +930,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('test', $queryToString, 'Could not convert query to string');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddAndRemoveFilters()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
@@ -1080,9 +963,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('fq', $parameters, 'Could not remove filters from query object by filter key');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRemoveFilterByValue()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
@@ -1098,9 +979,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('fq', $parameters, 'Filters are not empty after removing the last one');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUseFilterIgnoreSecondePassedFilterWithSameKey()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
@@ -1112,9 +991,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('foo:bar', $parameters['fq'], 'Unexpected filter query was added');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetAndUnSetQueryType()
     {
         $query = $this->getInitializedTestSearchQuery('test');
@@ -1132,9 +1009,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('qt', $queryParameters, 'The qt parameter was expected to be null after reset');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetOperator()
     {
         $query = $this->getInitializedTestSearchQuery('test');
@@ -1155,9 +1030,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertEmpty($queryParameters['q.op'], 'The queryParameter q.op should be null because operator was resetted');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetAlternativeQuery()
     {
         // check initial value
@@ -1177,9 +1050,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('q.alt', $queryParameters, 'We expect alternative query is null after reset');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetOmitHeaders()
     {
         // check initial value
@@ -1198,9 +1069,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('false', $queryParameters['omitHeader'], 'The queryParameter omitHeader should be null because it was resetted');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetReturnFields()
     {
         // check initial value
@@ -1219,9 +1088,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content,title', $queryParameters['fl'], 'Can not set fieldList from array');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetSorting()
     {
         // check initial value
@@ -1246,9 +1113,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('sort', $queryParameters, 'Sorting should be null after reset');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetQueryElevation()
     {
         $query = $this->getInitializedTestSearchQuery('test');
@@ -1277,9 +1142,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('*,score', $queryParameters['fl']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function forceElevationIsFalseWhenForcingToFalse()
     {
         $query = $this->getInitializedTestSearchQuery('test');
@@ -1306,9 +1169,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('forceElevation', $queryParameters);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canBuildExpectedQueryUrlFromCombinedQuery()
     {
         $faceting = new Faceting(true);
@@ -1346,9 +1207,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('qf', $parameters, 'No query fields have been set');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetQueryFieldsFromString()
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
@@ -1360,9 +1219,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content^100.0 title^10.0', $parameters['qf'], 'Can not set and get query fields');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetQueryFields()
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
@@ -1385,9 +1242,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content^10.0 title^9.0', $parameters['qf'], 'qf parameter not set in QueryParameters');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetPhraseFieldsFromString()
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
@@ -1397,9 +1252,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content^100.0 title^10.0', $parameters['pf'], 'Can not set and get phrase fields');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetPhraseFields()
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
@@ -1423,9 +1276,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content^10.0 title^9.0', $parameters['pf']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function phraseFieldsAreNotSetInUrlQueryIfPhraseSearchIsDisabled()
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
@@ -1438,9 +1289,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('pf', $parameters, 'pf parameter must be empty(not set) if phrase search is disabled');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function phraseFieldsAreSetInUrlQueryIfPhraseSearchIsEnabled()
     {
         $fakeConfigurationArray = [];
@@ -1456,9 +1305,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content^10.0 title^11.0', $parameters['pf'], 'pf parameters must be set if phrase search is enabled');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddPhraseFieldsFromConfiguration()
     {
         $fakeConfigurationArray = [];
@@ -1472,9 +1319,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content^22.0 title^11.0', $parameters['pf'], 'pf parameters must be set if phrase search is enabled');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function bigramPhraseFieldsAreNotSetInUrlQueryIfBigramPhraseSearchIsDisabled()
     {
         $query = $this->getInitializedTestSearchQuery('foo bar baz');
@@ -1486,9 +1331,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('pf2', $parameters, 'pf2 parameter must be empty(not set) if phrase search is disabled');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddBigramFieldsWhenBigramPhraseIsEnabled()
     {
         $fakeConfigurationArray = [];
@@ -1504,9 +1347,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content^10.0 title^11.0', $parameters['pf2'], 'pf2 parameters must be set if bigram phrase search is enabled');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddBigramFieldsFromConfiguration()
     {
         $fakeConfigurationArray = [];
@@ -1520,9 +1361,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content^12.0 title^14.0', $parameters['pf2'], 'pf2 parameters must be set if bigram phrase search is enabled');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trigramPhraseFieldsAreNotSetInUrlQueryIfTrigramPhraseSearchIsDisabled()
     {
         $query = $this->getInitializedTestSearchQuery('foo bar baz foobar barbaz');
@@ -1534,9 +1373,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('pf3', $parameters, 'pf3 parameter must be empty(not set) if phrase search is disabled');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trigramPhraseFieldsAreSetInUrlQueryIfTrigramPhraseSearchIsEnabled()
     {
         $fakeConfigurationArray = [];
@@ -1551,9 +1388,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content^10.0 title^11.0', $parameters['pf3'], 'pf3 parameters must be set if trigram phrase search is enabled');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddTrigramFieldsFromConfiguration()
     {
         $fakeConfigurationArray = [];
@@ -1565,9 +1400,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('content^12.0 title^14.0', $parameters['pf3'], 'pf3 parameters must be set if trigram phrase search is enabled');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setDebugMode()
     {
         $query = $this->getInitializedTestSearchQuery();
@@ -1588,9 +1421,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('echoParams', $parameter, 'Can not unset debug mode');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addingQueriesToGroupingAddsToRightGroupingParameter()
     {
         $query = $this->getInitializedTestSearchQuery('group test');
@@ -1603,9 +1434,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame(['price:[* TO 500]', 'someField:someValue'], $parameters['group.query'], 'Could not add group queries properly');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addingSortingsToGroupingAddsToRightGroupingParameter()
     {
         $query = $this->getInitializedTestSearchQuery('group test');
@@ -1617,9 +1446,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('price_f title desc', $parameters['group.sort'], 'Could not add group sortings properly');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addingFieldsToGroupingAddsToRightGroupingParameter()
     {
         $query = $this->getInitializedTestSearchQuery('group test');
@@ -1631,9 +1458,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame(['price_f', 'category_s'], $parameters['group.field'], 'Could not add group fields properly');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canDisablingGroupingRemoveTheGroupSorting()
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
@@ -1664,9 +1489,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertArrayNotHasKey('group.ngroups', $parameters, 'Grouping parameters should be removed');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canBuildSuggestQuery()
     {
         $this->configurationMock
@@ -1686,9 +1509,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         self::assertSame('foo', $queryParameters['facet.prefix'], 'Passed query string is not used as facet.prefix argument');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function alternativeQueryIsWildCardQueryForSuggestQuery()
     {
         $this->configurationMock

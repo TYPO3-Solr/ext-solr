@@ -21,6 +21,8 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Server\RequestHandlerInterface;
 use Traversable;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -84,9 +86,8 @@ class IndexerTest extends IntegrationTestBase
 
     /**
      * This testcase should check if we can queue a custom record with MM relations.
-     *
-     * @test
      */
+    #[Test]
     public function canIndexItemWithMMRelation(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -113,10 +114,8 @@ class IndexerTest extends IntegrationTestBase
         yield 'without_l_parameter_and_content_fallback' => ['can_index_custom_translated_record_without_l_param_and_content_fallback.csv'];
     }
 
-    /**
-     * @dataProvider getTranslatedRecordDataProvider
-     * @test
-     */
+    #[DataProvider('getTranslatedRecordDataProvider')]
+    #[Test]
     public function testCanIndexTranslatedCustomRecord(string $fixture): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -158,9 +157,8 @@ class IndexerTest extends IntegrationTestBase
 
     /**
      * This testcase should check if we can queue a custom record with ordered MM relations.
-     *
-     * @test
      */
+    #[Test]
     public function canIndexItemWithMMRelationsInTheExpectedOrder(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -193,9 +191,9 @@ class IndexerTest extends IntegrationTestBase
     /**
      * This testcase should check if we can queue a custom record with MM relations.
      *
-     * @test
      * @todo: this test might not be working as it does not check for L parameters. Should be revised
      */
+    #[Test]
     public function canIndexTranslatedItemWithMMRelation(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -219,9 +217,8 @@ class IndexerTest extends IntegrationTestBase
 
     /**
      * This testcase should check if we can queue a custom record with multiple MM relations.
-     *
-     * @test
      */
+    #[Test]
     public function canIndexMultipleMMRelatedItems(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -246,9 +243,8 @@ class IndexerTest extends IntegrationTestBase
 
     /**
      * This testcase should check if we can queue a custom record with MM relations and respect the additionalWhere clause.
-     *
-     * @test
      */
+    #[Test]
     public function canIndexItemWithMMRelationAndAdditionalWhere(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -269,9 +265,8 @@ class IndexerTest extends IntegrationTestBase
 
     /**
      * This testcase should check if we can queue a custom record with MM relations and respect the additionalWhere clause.
-     *
-     * @test
      */
+    #[Test]
     public function canIndexItemWithMMRelationToATranslatedPage(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -297,9 +292,8 @@ class IndexerTest extends IntegrationTestBase
 
     /**
      * This testcase is used to check if direct relations can be resolved with the RELATION configuration
-     *
-     * @test
      */
+    #[Test]
     public function canIndexItemWithDirectRelation(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -323,9 +317,8 @@ class IndexerTest extends IntegrationTestBase
 
     /**
      * This testcase is used to check if multiple direct relations can be resolved with the RELATION configuration
-     *
-     * @test
      */
+    #[Test]
     public function canIndexItemWithMultipleDirectRelation(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -361,9 +354,8 @@ class IndexerTest extends IntegrationTestBase
     /**
      * This testcase is used to check if direct relations can be resolved with the RELATION configuration
      * and could be limited with an additionalWhere clause at the same time
-     *
-     * @test
      */
+    #[Test]
     public function canIndexItemWithDirectRelationAndAdditionalWhere(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -382,9 +374,7 @@ class IndexerTest extends IntegrationTestBase
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUseConfigurationFromTemplateInRootLine(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -403,9 +393,7 @@ class IndexerTest extends IntegrationTestBase
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetAdditionalDocumentsViaPsr14EventListener(): void
     {
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/01_integration_tree_one.csv');
@@ -422,9 +410,7 @@ class IndexerTest extends IntegrationTestBase
         self::assertEquals(['can-be-an-alternative-record' => 'additional-test-document'], $result[1]->getFields());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanIndexCustomRecordOutsideOfSiteRoot(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -443,9 +429,7 @@ class IndexerTest extends IntegrationTestBase
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanIndexCustomRecordOutsideOfSiteRootWithTemplate(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -481,9 +465,7 @@ class IndexerTest extends IntegrationTestBase
         return $result;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSolrConnectionsByItemReturnsNoDefaultConnectionIfRootPageIsHideDefaultLanguage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_with_rootPage_set_to_hide_default_language.csv');
@@ -504,9 +486,7 @@ class IndexerTest extends IntegrationTestBase
         self::assertArrayNotHasKey(0, $result, 'Expect, that there is no solr connection returned for default language,');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSolrConnectionsByItemReturnsNoDefaultConnectionDefaultLanguageIsHiddenInSiteConfig(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -529,9 +509,7 @@ class IndexerTest extends IntegrationTestBase
         self::assertArrayNotHasKey(0, $result, 'Expect, that there is no solr connection returned for default language,');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSolrConnectionsByItemReturnsProperItemInNestedSite(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();

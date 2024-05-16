@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Configuration\SiteConfiguration;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -29,9 +30,7 @@ use TYPO3\CMS\Reports\Status;
  */
 class SiteHandlingStatusTest extends IntegrationTestBase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function allStatusChecksShouldBeOkForFirstTestSite(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -46,9 +45,7 @@ class SiteHandlingStatusTest extends IntegrationTestBase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function statusCheckShouldFailIfSchemeIsNotDefined(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -70,9 +67,7 @@ class SiteHandlingStatusTest extends IntegrationTestBase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function statusCheckShouldFailIfAuthorityIsNotDefined(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -94,9 +89,7 @@ class SiteHandlingStatusTest extends IntegrationTestBase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function statusCheckShouldFailIfBaseIsSetWrongInLanguages(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();

@@ -24,6 +24,8 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use stdClass;
 use Traversable;
@@ -53,10 +55,8 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider canRenderCreateHighlightSnippedDataProvider
-     * @test
-     */
+    #[DataProvider('canRenderCreateHighlightSnippedDataProvider')]
+    #[Test]
     public function canRenderCreateHighlightSnipped(array $input, $expectedOutput, $configuredWrap)
     {
         /** @var RenderingContextInterface|MockObject $renderingContextMock */

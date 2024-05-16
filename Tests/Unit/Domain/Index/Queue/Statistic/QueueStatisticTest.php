@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\Statistic;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -24,9 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class QueueStatisticTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetFailedPercentage()
     {
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
@@ -39,9 +38,7 @@ class QueueStatisticTest extends SetUpUnitTestCase
         self::assertSame(25.0, $statistic->getPendingPercentage(), 'Can not calculate pending percentage');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetZeroPercentagesWhenEmpty()
     {
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);

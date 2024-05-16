@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rang
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeUrlDecoder;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,9 +38,7 @@ class DateRangeUrlDecoderTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canParseDateRangeQuery()
     {
         $expected = '[2010-01-01T00:00:00Z TO 2010-01-31T23:59:59Z]';
@@ -47,9 +46,7 @@ class DateRangeUrlDecoderTest extends SetUpUnitTestCase
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canParseMinOpenDateRangeQuery()
     {
         $expected = '[* TO 2010-01-31T23:59:59Z]';
@@ -57,9 +54,7 @@ class DateRangeUrlDecoderTest extends SetUpUnitTestCase
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canParseMaxOpenDateRangeQuery()
     {
         $expected = '[2010-01-01T00:00:00Z TO *]';

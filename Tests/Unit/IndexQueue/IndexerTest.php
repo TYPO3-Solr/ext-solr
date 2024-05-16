@@ -32,7 +32,10 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Closure;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
 use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
@@ -54,10 +57,9 @@ class IndexerTest extends SetUpUnitTestCase
     /**
      * @param int $httpStatus
      * @param bool $itemIndexed
-     *
-     * @test
-     * @dataProvider canTriggerIndexingAndIndicateIndexStatusDataProvider
      */
+    #[DataProvider('canTriggerIndexingAndIndicateIndexStatusDataProvider')]
+    #[Test]
     public function canTriggerIndexingAndIndicateIndexStatus(int $httpStatus, bool $itemIndexed): void
     {
         $writeServiceMock = $this->createMock(SolrWriteService::class);
@@ -142,11 +144,9 @@ class IndexerTest extends SetUpUnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider canGetAdditionalDocumentsDataProvider
-     */
-    public function canGetAdditionalDocuments(\Closure|null $listener, ?string $expectedException, int $expectedResultCount): void
+    #[DataProvider('canGetAdditionalDocumentsDataProvider')]
+    #[Test]
+    public function canGetAdditionalDocuments(Closure|null $listener, ?string $expectedException, int $expectedResultCount): void
     {
         $indexer = $this->getAccessibleMock(
             Indexer::class,
@@ -229,9 +229,9 @@ class IndexerTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
      * @skip
      */
+    #[Test]
     public function indexerAlwaysInitializesTSFE(): void
     {
         self::markTestIncomplete('API has been changed, the test case must be moved, since it is still relevant.');

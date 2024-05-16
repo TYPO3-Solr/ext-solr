@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Scheduler;
@@ -50,9 +51,7 @@ class EventQueueWorkerTaskTest extends IntegrationTestBase
         $extConf->set('solr', ['monitoringType' => 1]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canProcessEventQueueItems(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_process_event_queue.csv');
@@ -69,9 +68,7 @@ class EventQueueWorkerTaskTest extends IntegrationTestBase
         self::assertEmpty($this->eventQueue->getEventQueueItems(null, false));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canHandleErroneousEventQueueItems(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_handle_erroneous_event_queue_items.csv');

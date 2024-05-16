@@ -18,6 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
 /**
@@ -25,9 +27,7 @@ use Traversable;
  */
 class ItemTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetErrors()
     {
         $metaData = ['errors' => 'error during index'];
@@ -38,9 +38,7 @@ class ItemTest extends SetUpUnitTestCase
         self::assertSame('error during index', $errors, 'Can not get errors from queue item');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetType()
     {
         $metaData = ['item_type' => 'pages'];
@@ -58,19 +56,15 @@ class ItemTest extends SetUpUnitTestCase
         yield 'blocked item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => 4, 'errors' => 'Something bad happened'], Item::STATE_BLOCKED];
     }
 
-    /**
-     * @dataProvider getStateDataProvider
-     * @test
-     */
+    #[DataProvider('getStateDataProvider')]
+    #[Test]
     public function canGetState($metaData, $expectedState)
     {
         $item = new Item($metaData, [], null, $this->createMock(QueueItemRepository::class));
         self::assertSame($expectedState, $item->getState(), 'Can not get state from item as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testHasErrors()
     {
         $item = new Item([], [], null, $this->createMock(QueueItemRepository::class));
@@ -80,9 +74,7 @@ class ItemTest extends SetUpUnitTestCase
         self::assertTrue($item->getHasErrors(), 'Item with errors was not indicated to have errors');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testHasIndexingProperties()
     {
         $item = new Item([], [], null, $this->createMock(QueueItemRepository::class));

@@ -8,6 +8,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\PageUriBuilder;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Routing\RouterInterface;
@@ -17,9 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PageUriBuilderTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function testPageIndexingUriFromPageItemAndLanguageId(): void
     {
         $pageRecord = ['uid' => 55];
@@ -34,9 +33,7 @@ class PageUriBuilderTest extends SetUpUnitTestCase
         $uriBuilder->getPageIndexingUriFromPageItemAndLanguageId($itemMock, 2, 'foo');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canOverrideHost(): void
     {
         $pageRecord = ['uid' => 55];
@@ -52,9 +49,7 @@ class PageUriBuilderTest extends SetUpUnitTestCase
         self::assertSame('http://www.secondsite.de/en/test', $uri, 'Solr site strategy generated unexpected uri');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canOverrideScheme(): void
     {
         $pageRecord = ['uid' => 55];

@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -42,10 +44,8 @@ class SiteHashServiceTest extends IntegrationTestBase
         yield 'currentSiteOnly' => ['__current_site', 'testone.site'];
     }
 
-    /**
-     * @dataProvider canResolveSiteHashAllowedSitesDataProvider
-     * @test
-     */
+    #[DataProvider('canResolveSiteHashAllowedSitesDataProvider')]
+    #[Test]
     public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites)
     {
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);

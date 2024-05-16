@@ -16,6 +16,8 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
 /**
@@ -25,9 +27,7 @@ use Traversable;
  */
 class HtmlContentExtractorTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetTagContent(): void
     {
         $extractor = new HtmlContentExtractor(self::getFixtureContentByName('fixture2.html'));
@@ -69,10 +69,8 @@ class HtmlContentExtractorTest extends SetUpUnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider getIndexableContentDataProvider
-     * @test
-     */
+    #[DataProvider('getIndexableContentDataProvider')]
+    #[Test]
     public function canUnifyWhitespacesInIndexableContent($websiteContent, $expectedIndexableContent): void
     {
         $extractor = new HtmlContentExtractor($websiteContent);

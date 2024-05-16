@@ -19,6 +19,7 @@ namespace  ApacheSolrForTypo3\Solr\Tests\Unit\System\ContentObject;
 
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -48,9 +49,7 @@ class ContentObjectServiceTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRenderSingleContentObjectByArrayAndKey()
     {
         $fakeStdWrapConfiguration = [
@@ -66,9 +65,7 @@ class ContentObjectServiceTest extends SetUpUnitTestCase
         $this->contentObjectService->renderSingleContentObjectByArrayAndKey($fakeStdWrapConfiguration, 'field');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function renderSingleContentObjectByArrayAndKeyWillReturnNameWhenConfigIsNotAnArray()
     {
         $fakeStdWrapConfiguration = [

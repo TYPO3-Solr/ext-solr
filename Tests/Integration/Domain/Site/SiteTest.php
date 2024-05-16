@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,9 +35,7 @@ class SiteTest extends IntegrationTestBase
         $this->writeDefaultSolrTestSiteConfiguration();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetDefaultLanguage()
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
@@ -45,9 +44,7 @@ class SiteTest extends IntegrationTestBase
         self::assertEquals(0, $site->getDefaultLanguageId(), 'Could not get default language from site');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canCreateInstanceWithRootSiteUidOK()
     {
         /** @var SiteRepository $siteRepository */
@@ -56,9 +53,7 @@ class SiteTest extends IntegrationTestBase
         self::assertEquals(1, $site->getRootPageId());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canCreateInstanceWithRootSiteUidNOK()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -67,9 +62,7 @@ class SiteTest extends IntegrationTestBase
         $site = $siteRepository->getSiteByRootPageId(2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canCreateInstanceWithNonRootSiteUidOK()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_create_instance_with_non_root_site.csv');
@@ -80,9 +73,7 @@ class SiteTest extends IntegrationTestBase
         $siteRepository->getSiteByRootPageId(151);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canCreateInstanceWithNonRootSiteUidNOK()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_create_instance_with_non_root_site.csv');
@@ -93,9 +84,7 @@ class SiteTest extends IntegrationTestBase
         $siteRepository->getSiteByRootPageId(152);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetAvailableLanguageIds()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_translations_for_root_site.csv');

@@ -22,15 +22,14 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use DateTime;
 use Error;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class DateRangeTest
  */
 class DateRangeTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canHandleHalfOpenDateRanges()
     {
         $dateTime = new DateTime('2021-07-20 16:04:21.000000');
