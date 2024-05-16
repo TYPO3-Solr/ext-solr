@@ -150,8 +150,8 @@ abstract class AbstractModuleController extends ActionController
         $sites = $this->siteRepository->getAvailableSites();
 
         $selectOtherPage = count($sites) > 0 || $this->selectedPageUID < 1;
-        $this->view->assign('showSelectOtherPage', $selectOtherPage);
-        $this->view->assign('pageUID', $this->selectedPageUID);
+        $this->moduleTemplate->assign('showSelectOtherPage', $selectOtherPage);
+        $this->moduleTemplate->assign('pageUID', $this->selectedPageUID);
         if ($this->selectedPageUID < 1) {
             return;
         }
@@ -255,15 +255,6 @@ abstract class AbstractModuleController extends ActionController
         $message = LocalizationUtility::translate('coreselector_switched_successfully', 'solr', [$corePath]);
         $this->addFlashMessage($message);
         return new RedirectResponse($uriToRedirectTo, 303);
-    }
-
-    /**
-     * Returns the Response for be module action.
-     */
-    protected function getModuleTemplateResponse(): ResponseInterface
-    {
-        $this->moduleTemplate->setContent($this->view->render());
-        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
