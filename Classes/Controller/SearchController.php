@@ -49,7 +49,7 @@ class SearchController extends AbstractBaseController
 
     protected function mapGlobalQueryStringWhenEnabled(): void
     {
-        $query = GeneralUtility::_GET('q');
+        $query = $this->request->getQueryParams()['q'] ?? null;
 
         $useGlobalQueryString = $query !== null && !$this->typoScriptConfiguration->getSearchIgnoreGlobalQParameter();
         if ($useGlobalQueryString) {
