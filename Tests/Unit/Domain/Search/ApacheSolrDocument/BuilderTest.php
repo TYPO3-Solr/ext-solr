@@ -26,7 +26,11 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Routing\PageArguments;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
  * Testcase for the Builder of ApacheSolrDocument
@@ -70,16 +74,19 @@ class BuilderTest extends SetUpUnitTestCase
     #[Test]
     public function canBuildApacheSolrDocumentFromEmptyPage(): void
     {
-        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $tsfe = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent([]);
 
-        $fakePage->page = self::FAKE_PAGE_RECORD;
-        $fakePage->id = 4711;
-        $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
+        $pageInformation = new PageInformation();
+        $pageInformation->setId(4711);
+        $pageInformation->setPageRecord(self::FAKE_PAGE_RECORD);
+        $pageArguments = new PageArguments(4711, '0', []);
+        $siteLanguage = new SiteLanguage(1, 'en_US', new Uri('http://www.typo3-solr.com'), []);
+        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $tsfe, 'http://www.typo3-solr.com', $fakeRootLine);
 
         self::assertInstanceOf(Document::class, $document, 'Expect to get an ' . Document::class . ' back');
         self::assertSame('siteHash/pages/4711', $document['id'], 'Builder did not use documentId from mock');
@@ -88,16 +95,19 @@ class BuilderTest extends SetUpUnitTestCase
     #[Test]
     public function canSetKeywordsForApacheSolrDocument(): void
     {
-        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $tsfe = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent([]);
 
-        $fakePage->page = array_merge(self::FAKE_PAGE_RECORD, ['keywords' => 'foo,bar']);
-        $fakePage->id = 4711;
-        $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
+        $pageInformation = new PageInformation();
+        $pageInformation->setId(4711);
+        $pageInformation->setPageRecord(array_merge(self::FAKE_PAGE_RECORD, ['keywords' => 'foo,bar']));
+        $pageArguments = new PageArguments(4711, '0', []);
+        $siteLanguage = new SiteLanguage(1, 'en_US', new Uri('http://www.typo3-solr.com'), []);
+        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $tsfe, 'http://www.typo3-solr.com', $fakeRootLine);
 
         self::assertSame($document['keywords'], ['foo', 'bar'], 'Could not set keywords from page document');
     }
@@ -105,16 +115,19 @@ class BuilderTest extends SetUpUnitTestCase
     #[Test]
     public function canSetEndtimeForApacheSolrDocument(): void
     {
-        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $tsfe = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent([]);
 
-        $fakePage->page = array_merge(self::FAKE_PAGE_RECORD, ['endtime' => 1234]);
-        $fakePage->id = 4711;
-        $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
+        $pageInformation = new PageInformation();
+        $pageInformation->setId(4711);
+        $pageInformation->setPageRecord(array_merge(self::FAKE_PAGE_RECORD, ['endtime' => 1234]));
+        $pageArguments = new PageArguments(4711, '0', []);
+        $siteLanguage = new SiteLanguage(1, 'en_US', new Uri('http://www.typo3-solr.com'), []);
+        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $tsfe, 'http://www.typo3-solr.com', $fakeRootLine);
 
         self::assertSame($document['endtime'], 1234, 'Could not set endtime from page document');
     }
@@ -122,16 +135,19 @@ class BuilderTest extends SetUpUnitTestCase
     #[Test]
     public function canSetTagFieldsForApacheSolrDocument(): void
     {
-        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $tsfe = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent(['tagsH1' => 'Fake H1 content']);
 
-        $fakePage->page = self::FAKE_PAGE_RECORD;
-        $fakePage->id = 4711;
-        $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
+        $pageInformation = new PageInformation();
+        $pageInformation->setId(4711);
+        $pageInformation->setPageRecord(self::FAKE_PAGE_RECORD);
+        $pageArguments = new PageArguments(4711, '0', []);
+        $siteLanguage = new SiteLanguage(1, 'en_US', new Uri('http://www.typo3-solr.com'), []);
+        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $tsfe, 'http://www.typo3-solr.com', $fakeRootLine);
 
         self::assertSame($document['tagsH1'], 'Fake H1 content', 'Could not assign extracted h1 heading to solr document');
     }

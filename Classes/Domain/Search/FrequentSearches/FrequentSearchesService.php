@@ -20,11 +20,11 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * The FrequentSearchesService is used to retrieve the frequent searches from the database or cache.
@@ -40,8 +40,6 @@ class FrequentSearchesService
      */
     protected ?AbstractFrontend $cache;
 
-    protected ?TypoScriptFrontendController $tsfe;
-
     protected ?StatisticsRepository $statisticsRepository;
 
     protected TypoScriptConfiguration $configuration;
@@ -49,12 +47,10 @@ class FrequentSearchesService
     public function __construct(
         TypoScriptConfiguration $typoscriptConfiguration,
         AbstractFrontend $cache = null,
-        TypoScriptFrontendController $tsfe = null,
         StatisticsRepository $statisticsRepository = null
     ) {
         $this->configuration = $typoscriptConfiguration;
         $this->cache = $cache;
-        $this->tsfe = $tsfe;
         $this->statisticsRepository = $statisticsRepository ?? GeneralUtility::makeInstance(StatisticsRepository::class);
     }
 
@@ -64,16 +60,16 @@ class FrequentSearchesService
      * @throws AspectNotFoundException
      * @throws DBALException
      */
-    public function getFrequentSearchTerms(): array
+    public function getFrequentSearchTerms(ServerRequestInterface $typo3Request): array
     {
         $frequentSearchConfiguration = $this->configuration->getSearchFrequentSearchesConfiguration();
 
-        $identifier = $this->getCacheIdentifier($frequentSearchConfiguration);
+        $identifier = $this->getCacheIdentifier($typo3Request, $frequentSearchConfiguration);
 
         if ($this->hasValidCache() && $this->cache->has($identifier)) {
             $terms = $this->cache->get($identifier);
         } else {
-            $terms = $this->getFrequentSearchTermsFromStatistics($frequentSearchConfiguration);
+            $terms = $this->getFrequentSearchTermsFromStatistics($typo3Request, $frequentSearchConfiguration);
 
             if (isset($frequentSearchConfiguration['sortBy']) && $frequentSearchConfiguration['sortBy'] === 'hits') {
                 arsort($terms);
@@ -99,17 +95,17 @@ class FrequentSearchesService
      *
      * @throws DBALException
      */
-    protected function getFrequentSearchTermsFromStatistics(array $frequentSearchConfiguration = []): array
+    protected function getFrequentSearchTermsFromStatistics(ServerRequestInterface $serverRequest, array $frequentSearchConfiguration): array
     {
         $terms = [];
 
         if ($frequentSearchConfiguration['select.']['checkRootPageId']) {
-            $checkRootPidWhere = 'root_pid = ' . $this->tsfe->tmpl->rootLine[0]['uid'];
+            $checkRootPidWhere = 'root_pid = ' . $serverRequest->getAttribute('frontend.page.information')?->getLocalRootLine()[0]['uid'];
         } else {
             $checkRootPidWhere = '1';
         }
         if ($frequentSearchConfiguration['select.']['checkLanguage']) {
-            $checkLanguageWhere = ' AND language =' . $this->tsfe->getLanguage()->getLanguageId();
+            $checkLanguageWhere = ' AND language =' . $serverRequest->getAttribute('language')?->getLanguageId();
         } else {
             $checkLanguageWhere = '';
         }
@@ -132,16 +128,16 @@ class FrequentSearchesService
     /**
      * Returns cache identifier for given $frequentSearchConfiguration
      */
-    protected function getCacheIdentifier(array $frequentSearchConfiguration): string
+    protected function getCacheIdentifier(ServerRequestInterface $serverRequest, array $frequentSearchConfiguration): string
     {
         // Use configuration as cache identifier
         $identifier = 'frequentSearchesTags';
 
         if (isset($frequentSearchConfiguration['select.']['checkRootPageId']) && $frequentSearchConfiguration['select.']['checkRootPageId']) {
-            $identifier .= '_RP' . (int)$this->tsfe->tmpl->rootLine[0]['uid'];
+            $identifier .= '_RP' . (int)$serverRequest->getAttribute('frontend.page.information')?->getLocalRootLine()[0]['uid'];
         }
         if (isset($frequentSearchConfiguration['select.']['checkLanguage']) && $frequentSearchConfiguration['select.']['checkLanguage']) {
-            $identifier .= '_L' . $this->tsfe->getLanguage()->getLanguageId();
+            $identifier .= '_L' . $serverRequest->getAttribute('language')?->getLanguageId();
         }
 
         $identifier .= '_' . md5(serialize($frequentSearchConfiguration));

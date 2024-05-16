@@ -36,10 +36,14 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -47,7 +51,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class SuggestServiceTest extends SetUpUnitTestCase
 {
     protected SuggestService|MockObject $suggestService;
-    protected TypoScriptFrontendController|MockObject $tsfeMock;
     protected SearchResultSetService|MockObject $searchResultSetServiceMock;
     protected TypoScriptConfiguration|MockObject $configurationMock;
     protected QueryBuilder|MockObject $queryBuilderMock;
@@ -55,7 +58,6 @@ class SuggestServiceTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->tsfeMock = $this->createMock(TypoScriptFrontendController::class);
         $this->searchResultSetServiceMock = $this->createMock(SearchResultSetService::class);
         $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $this->queryBuilderMock = $this->createMock(QueryBuilder::class);
@@ -65,7 +67,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
 
         $this->suggestService = $this->getMockBuilder(SuggestService::class)
             ->onlyMethods(['getSolrSuggestions'])
-            ->setConstructorArgs([$this->tsfeMock, $this->searchResultSetServiceMock, $this->configurationMock, $this->queryBuilderMock])
+            ->setConstructorArgs([$this->searchResultSetServiceMock, $this->configurationMock, $this->queryBuilderMock])
             ->getMock();
         parent::setUp();
     }
@@ -91,7 +93,8 @@ class SuggestServiceTest extends SetUpUnitTestCase
             'typo',
         ]);
 
-        $suggestions = $this->suggestService->getSuggestions($fakeRequest, []);
+        $typo3Request = $this->getDefaultTypo3FrontendRequest();
+        $suggestions = $this->suggestService->getSuggestions($typo3Request, $fakeRequest);
 
         $expectedSuggestions = [
             'suggestions' => ['type', 'typo'],
@@ -127,15 +130,14 @@ class SuggestServiceTest extends SetUpUnitTestCase
         $searchStub::$suggestServiceTest = $this;
         GeneralUtility::setSingletonInstance(Search::class, $searchStub);
 
-        $this->tsfeMock->expects(self::any())->method('getRequestedId')->willReturn(7411);
         $suggestService = new SuggestService(
-            $this->tsfeMock,
             $this->searchResultSetServiceMock,
             $this->configurationMock,
             $this->queryBuilderMock
         );
 
-        $suggestions = $suggestService->getSuggestions($fakeRequest);
+        $typo3Request = $this->getDefaultTypo3FrontendRequest();
+        $suggestions = $suggestService->getSuggestions($typo3Request, $fakeRequest);
 
         $expectedSuggestions = ['status' => false];
         self::assertSame($expectedSuggestions, $suggestions, 'Suggest did not return status false');
@@ -150,7 +152,8 @@ class SuggestServiceTest extends SetUpUnitTestCase
         $fakeRequest = $this->getFakedSearchRequest('ty');
 
         $this->suggestService->expects(self::once())->method('getSolrSuggestions')->willReturn([]);
-        $suggestions = $this->suggestService->getSuggestions($fakeRequest, []);
+        $typo3Request = $this->getDefaultTypo3FrontendRequest();
+        $suggestions = $this->suggestService->getSuggestions($typo3Request, $fakeRequest);
 
         $expectedSuggestions = ['status' => false];
         self::assertSame($expectedSuggestions, $suggestions, 'Suggest did not return status false');
@@ -183,7 +186,8 @@ class SuggestServiceTest extends SetUpUnitTestCase
         $fakeTopResults->expects(self::once())->method('getSearchResults')->willReturn($fakeResultDocuments);
         $this->searchResultSetServiceMock->expects(self::once())->method('search')->willReturn($fakeTopResults);
 
-        $suggestions = $this->suggestService->getSuggestions($fakeRequest, []);
+        $typo3Request = $this->getDefaultTypo3FrontendRequest();
+        $suggestions = $this->suggestService->getSuggestions($typo3Request, $fakeRequest);
 
         self::assertCount(2, $suggestions['documents'], 'Expected to have two top results');
         self::assertSame('pages', $suggestions['documents'][0]['type'], 'The first top result has an unexpected type');
@@ -214,5 +218,12 @@ class SuggestServiceTest extends SetUpUnitTestCase
         $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::atLeastOnce())->method('getRawUserQuery')->willReturn($queryString);
         return $fakeRequest;
+    }
+
+    protected function getDefaultTypo3FrontendRequest(): ServerRequestInterface
+    {
+        return (new ServerRequest('https://typo3-solr.com/', 'GET'))
+            ->withAttribute('routing', new PageArguments(7411, '0', []))
+            ->withAttribute('language', new SiteLanguage(0, 'en-US', new Uri('https://typo3-solr.com/'), []));
     }
 }

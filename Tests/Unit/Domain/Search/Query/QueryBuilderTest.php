@@ -41,8 +41,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Solarium\QueryType\Select\RequestBuilder;
+use Symfony\Component\DependencyInjection\Container;
 use Traversable;
+use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 
@@ -64,6 +67,10 @@ class QueryBuilderTest extends SetUpUnitTestCase
         $this->loggerMock = $this->createMock(SolrLogManager::class);
         $this->siteHashServiceMock = $this->createMock(SiteHashService::class);
         $this->builder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
+        $container = new Container();
+        $container->set(EventDispatcherInterface::class, new NoopEventDispatcher());
+        GeneralUtility::setContainer($container);
+
         parent::setUp();
     }
 
