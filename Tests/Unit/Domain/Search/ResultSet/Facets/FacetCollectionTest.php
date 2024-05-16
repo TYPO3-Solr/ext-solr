@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class FacetCollectionTest
@@ -27,9 +28,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class FacetCollectionTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddAndRetrieveFacetByKey()
     {
         $facetCollection = new FacetCollection();
@@ -44,9 +43,7 @@ class FacetCollectionTest extends SetUpUnitTestCase
         self::assertEquals($brandFacet, $facetCollection['brand']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddAndRetrieveFacetByPosition()
     {
         $facetCollection = new FacetCollection();
@@ -61,9 +58,7 @@ class FacetCollectionTest extends SetUpUnitTestCase
         self::assertEquals($brandFacet, $facetCollection->getByPosition(1));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRetrieveFacetOfCollectionCopyByKey()
     {
         $facetCollection = new FacetCollection();
@@ -79,9 +74,7 @@ class FacetCollectionTest extends SetUpUnitTestCase
         self::assertEquals($brandFacet, $leftFacetCollection['brand']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRetrieveFacetOfCollectionCopyByPosition()
     {
         $facetCollection = new FacetCollection();

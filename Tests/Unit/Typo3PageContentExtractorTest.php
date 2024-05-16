@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -41,9 +43,7 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function changesNbspToSpace()
     {
         $content = '<!-- TYPO3SEARCH_begin -->In Olten&nbsp;ist<!-- TYPO3SEARCH_end -->';
@@ -55,9 +55,7 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
         self::assertEquals($expectedResult, $actualResult);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canExcludeContentByClass()
     {
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Exclude content</div><p>Expected content</p><!-- TYPO3SEARCH_end -->';
@@ -70,9 +68,7 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
         self::assertEquals($expectedResult, $actualResult);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function excludeContentKeepsEncodingForUmlaut()
     {
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Remove me</div><p>Was ein schöner Tag</p><!-- TYPO3SEARCH_end -->';
@@ -86,9 +82,7 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
         self::assertStringNotContainsString('Remove me', $actualResult);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function excludeContentKeepsEncodingForEuroSign()
     {
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Remove me</div><p>100€</p><!-- TYPO3SEARCH_end -->';
@@ -138,10 +132,8 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider canGetIndexableContentDataProvider
-     * @test
-     */
+    #[DataProvider('canGetIndexableContentDataProvider')]
+    #[Test]
     public function canGetIndexableContent($content, $expectedResult): void
     {
         $content = '<!-- TYPO3SEARCH_begin -->' . $content . '<!-- TYPO3SEARCH_end -->';

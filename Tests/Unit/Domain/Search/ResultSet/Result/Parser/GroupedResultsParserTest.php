@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase to test the GroupedResultsParser.
@@ -30,9 +31,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class GroupedResultsParserTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canParsedQueryGroupResult()
     {
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
@@ -61,9 +60,7 @@ class GroupedResultsParserTest extends SetUpUnitTestCase
         self::assertSame(3, $queryGroup->getCount(), 'Unexpected amount of groups in parsing result');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canParsedQueryFieldResult()
     {
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);

@@ -19,6 +19,8 @@ use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\PingFailedException;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception as MockObjectException;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Curl;
@@ -69,10 +71,8 @@ class SolrAdminServiceTest extends IntegrationTestBase
         //yield '/' => ['baseWord' => '/', 'synonyms' => ['slash']]
     }
 
-    /**
-     * @dataProvider synonymDataProvider
-     * @test
-     */
+    #[DataProvider('synonymDataProvider')]
+    #[Test]
     public function canAddAndDeleteSynonym(string $baseWord, array $synonyms = [])
     {
         $this->solrAdminService->deleteSynonym($baseWord);
@@ -102,11 +102,10 @@ class SolrAdminServiceTest extends IntegrationTestBase
     }
 
     /**
-     * @test
-     * @dataProvider stopWordDataProvider
-     *
      * @throws InvalidArgumentException
      */
+    #[DataProvider('stopWordDataProvider')]
+    #[Test]
     public function canAddStopWord(string $stopWord): void
     {
         $stopWords = $this->solrAdminService->getStopWords();
@@ -129,18 +128,15 @@ class SolrAdminServiceTest extends IntegrationTestBase
 
     /**
      * Check if the default stopswords are stored in the solr server.
-     *
-     * @test
      */
+    #[Test]
     public function containsDefaultStopWord()
     {
         $stopWordsInSolr = $this->solrAdminService->getStopWords();
         self::assertContains('and', $stopWordsInSolr, 'Default stopword and was not present');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSystemInformation()
     {
         $informationResponse = $this->solrAdminService->getSystemInformation();
@@ -148,10 +144,9 @@ class SolrAdminServiceTest extends IntegrationTestBase
     }
 
     /**
-     * @test
-     *
      * @throws PingFailedException
      */
+    #[Test]
     public function canGetPingRoundtrimRunTime()
     {
         $pingRuntime = $this->solrAdminService->getPingRoundTripRuntime();
@@ -159,9 +154,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
         self::assertTrue(is_float($pingRuntime), 'Ping runtime should be an integer');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSolrServiceVersion()
     {
         $solrServerVersion = $this->solrAdminService->getSolrServerVersion();
@@ -169,18 +162,14 @@ class SolrAdminServiceTest extends IntegrationTestBase
         self::assertTrue($isVersionHigherSix, 'Expecting to run on version larger then 6.0.0');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canReloadCore()
     {
         $result = $this->solrAdminService->reloadCore();
         self::assertSame(200, $result->getHttpStatus(), 'Reload core did not responde with a 200 ok status');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetPluginsInformation()
     {
         $result = $this->solrAdminService->getPluginsInformation();
@@ -189,10 +178,9 @@ class SolrAdminServiceTest extends IntegrationTestBase
     }
 
     /**
-     * @test
-     *
      * @throws MockObjectException
      */
+    #[Test]
     public function canParseLanguageFromSchema()
     {
         /** @var EventDispatcher $eventDispatcher */

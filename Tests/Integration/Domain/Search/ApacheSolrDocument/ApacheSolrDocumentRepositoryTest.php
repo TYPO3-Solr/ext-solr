@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ApacheSolrDocu
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ApacheSolrDocumentRepositoryTest extends IntegrationTestBase
@@ -49,9 +50,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTestBase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFindByPageIdAndByLanguageId()
     {
         $apacheSolrDocumentsCollection = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId(3, 0);
@@ -61,9 +60,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTestBase
         self::assertInstanceOf(Document::class, $apacheSolrDocumentsCollection[0], 'ApacheSolrDocumentRepository returned not an array of type Document.');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canReturnEmptyCollectionIfNoConnectionToSolrServerIsEstablished()
     {
         $apacheSolrDocumentsCollection = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId(3, 777);

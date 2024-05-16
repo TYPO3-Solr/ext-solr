@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -98,9 +99,8 @@ class PageTest extends IntegrationTestBase
      *      ------- 10 (Mounted)
      *                        |
      *                         ------------ 20 (Childpage of mountpoint)
-     *
-     * @test
      */
+    #[Test]
     public function initializerIsFillingQueueWithMountPages()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_add_mount_pages.csv');
@@ -132,9 +132,8 @@ class PageTest extends IntegrationTestBase
      *      ——[ 1] Page (Root)
      *          |
      *          ——[14] Mounted Page (to [24] to show contents from)
-     *
-     * @test
      */
+    #[Test]
     public function initializerIsFillingQueueWithMountedNonRootPages()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/mounted_shared_non_root_page_from_different_tree_can_be_indexed.csv');
@@ -164,9 +163,8 @@ class PageTest extends IntegrationTestBase
      *      ——[ 1] Page (Root)
      *          |
      *          ——[14] Mount Point (to [24] to show contents from)
-     *
-     * @test
      */
+    #[Test]
     public function initializerIsFillingQueueWithMountedRootPages()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/mounted_shared_root_page_from_different_tree_can_be_indexed.csv');
@@ -203,9 +201,8 @@ class PageTest extends IntegrationTestBase
      *      ——[ 111] Page2 (Root)
      *          |
      *          ——[34] Mount Point 2 (to [24] to show contents from)
-     *
-     * @test
      */
+    #[Test]
     public function initializerIsFillingQueuesWithMultipleSitesMounted()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/mounted_shared_page_from_multiple_trees_can_be_queued.csv');
@@ -236,9 +233,8 @@ class PageTest extends IntegrationTestBase
     /**
      * Check if invalid mount page is ignored and messages were added to the flash
      * message queue
-     *
-     * @test
      */
+    #[Test]
     public function initializerAddsInfoMessagesAboutInvalidMountPages()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_add_mount_pages.csv');
@@ -268,8 +264,8 @@ class PageTest extends IntegrationTestBase
      *      |       ——[3] 2-nd level Subpage                                   (included in index)
      *      |
      *      ——[ 111] Root of Testpage testtwo.site aka integration_tree_two    (included in index)
-     * @test
      */
+    #[Test]
     public function initializerDoesNotIgnoreSubPagesOfRestrictedByAdditionalWhereClauseParents()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/initializer_does_not_ignore_sub_pages_of_restricted_by_additionalWhereClause_parents.csv');

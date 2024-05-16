@@ -4,6 +4,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Backend;
 
 use ApacheSolrForTypo3\Solr\Backend\SettingsPreviewOnPlugins;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
@@ -62,9 +63,7 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
         $GLOBALS['LANG'] = $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function printsPreviewOnExtSolrPluginsCorrectly()
     {
         $settingsPreviewOnPlugins = new SettingsPreviewOnPlugins(

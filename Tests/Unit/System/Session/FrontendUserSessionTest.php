@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Session;
 
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
@@ -41,18 +42,14 @@ class FrontendUserSessionTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEmptyArrayWhenNoLastSearchesInSession(): void
     {
         $lastSearches = $this->session->getLastSearches();
         self::assertSame([], $lastSearches, 'Expected to get an empty lastSearches array');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sessionDataWillBeRetrievedFromSessionForLastSearches(): void
     {
         $fakeSessionData = ['foo', 'bar'];
@@ -60,9 +57,7 @@ class FrontendUserSessionTest extends SetUpUnitTestCase
         self::assertSame($fakeSessionData, $this->session->getLastSearches(), 'Session data from fe_user was not returned from session');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetLastSearchesInSession(): void
     {
         $lastSearches = ['TYPO3', 'solr'];
@@ -70,25 +65,19 @@ class FrontendUserSessionTest extends SetUpUnitTestCase
         $this->session->setLastSearches($lastSearches);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getHasPerPageReturnsFalseWhenNothingIsSet(): void
     {
         self::assertFalse($this->session->getHasPerPage(), 'Has per page should be false');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPerPageReturnsZeroWhenNothingIsSet(): void
     {
         self::assertSame(0, $this->session->getPerPage(), 'Expected to get 0 when nothing was set');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPerPageFromSessionData(): void
     {
         $fakeSessionData = 12;
@@ -96,9 +85,7 @@ class FrontendUserSessionTest extends SetUpUnitTestCase
         self::assertSame(12, $this->session->getPerPage(), 'Could not get per page from session data');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetPerPageInSessionData(): void
     {
         $lastSearches = 45;

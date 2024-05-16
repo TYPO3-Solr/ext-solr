@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -40,18 +41,14 @@ class SiteRepositoryTest extends IntegrationTestBase
         $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetAllSites()
     {
         $sites = $this->siteRepository->getAvailableSites();
         self::assertSame(2, count($sites), 'Expected to retrieve two sites from default tests setup. Note: The third site is not enabled for EXT:solr.');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetAllPagesFromSite()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_all_pages_from_sites.csv');
@@ -59,18 +56,14 @@ class SiteRepositoryTest extends IntegrationTestBase
         self::assertSame([1, 2, 21, 22, 3, 30], $site->getPages(), 'Can not get all pages from site');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSiteByRootPageIdExistingRoot()
     {
         $site = $this->siteRepository->getSiteByRootPageId(1);
         self::assertContainsOnlyInstancesOf(Site::class, [$site], 'Could not retrieve site from root page');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSiteByRootPageIdNonExistingRoot()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -78,9 +71,7 @@ class SiteRepositoryTest extends IntegrationTestBase
         $siteRepository->getSiteByRootPageId(42);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSiteByPageIdExistingPage()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_site_by_page_id.csv');
@@ -88,9 +79,7 @@ class SiteRepositoryTest extends IntegrationTestBase
         self::assertContainsOnlyInstancesOf(Site::class, [$site], 'Could not retrieve site from page');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSiteByPageIdNonExistingPage()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -98,9 +87,7 @@ class SiteRepositoryTest extends IntegrationTestBase
         $this->siteRepository->getSiteByPageId(42);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSiteWithDomainFromSiteConfiguration()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_site_by_page_id.csv');

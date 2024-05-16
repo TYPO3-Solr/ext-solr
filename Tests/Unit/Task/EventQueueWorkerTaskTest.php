@@ -21,6 +21,8 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Execution;
@@ -51,9 +53,7 @@ class EventQueueWorkerTaskTest extends SetUpUnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canProcessEventQueue(): void
     {
         $eventQueueItemRepositoryMock = $this->createMock(EventQueueItemRepository::class);
@@ -102,9 +102,7 @@ class EventQueueWorkerTaskTest extends SetUpUnitTestCase
         self::assertTrue($dispatchedEvents[1] instanceof DelayedProcessingFinishedEvent);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canHandleErrors(): void
     {
         $eventQueueItemRepositoryMock = $this->createMock(EventQueueItemRepository::class);
@@ -132,7 +130,7 @@ class EventQueueWorkerTaskTest extends SetUpUnitTestCase
         $eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
-            ->willThrowException(new \Exception('', 1641889238));
+            ->willThrowException(new Exception('', 1641889238));
 
         $solrLogManagerMock
             ->expects(self::once())

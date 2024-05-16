@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\LastSearches;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LastSearchesRepositoryTest extends IntegrationTestBase
@@ -30,18 +31,14 @@ class LastSearchesRepositoryTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/last_searches.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFindAllKeywords(): void
     {
         $actual = $this->lastSearchesRepository->findAllKeywords();
         self::assertSame(['4', '3', '2', '1', '0'], $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addWillInsertNewRowIfLastSearchesLimitIsNotExceeded(): void
     {
         $this->lastSearchesRepository->add('5', 6);
@@ -50,9 +47,7 @@ class LastSearchesRepositoryTest extends IntegrationTestBase
         self::assertSame(['5', '4', '3', '2', '1', '0'], $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addWillUpdateOldestRowIfLastSearchesLimitIsExceeded(): void
     {
         $this->lastSearchesRepository->add('5', 5);
@@ -61,9 +56,7 @@ class LastSearchesRepositoryTest extends IntegrationTestBase
         self::assertSame(['5', '4', '3', '2', '1'], $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function lastUpdatedRowIsOnFirstPosition(): void
     {
         $this->lastSearchesRepository->add('1', 5);

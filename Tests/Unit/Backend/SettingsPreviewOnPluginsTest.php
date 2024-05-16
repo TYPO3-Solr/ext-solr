@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Backend;
 
 use ApacheSolrForTypo3\Solr\Backend\SettingsPreviewOnPlugins;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
@@ -38,9 +39,7 @@ class SettingsPreviewOnPluginsTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function doesNotPrintPreviewOnNonExtSolrPlugins()
     {
         $settingPreviewMock = $this->getMockOfSettingsPreviewOnPlugins(['getPreviewContent']);

@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rend
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RenderingInstructions\FormatDate;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -31,9 +32,9 @@ class FormatDateTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
      * @throws Exception
      */
+    #[Test]
     public function canFormatUsingDefaultFormat()
     {
         $processingInstruction = new FormatDate();
@@ -42,10 +43,9 @@ class FormatDateTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
-     *
      * @throws Exception
      */
+    #[Test]
     public function canPassCustomOutputFormat()
     {
         $processingInstruction = new FormatDate();
@@ -54,10 +54,9 @@ class FormatDateTest extends SetUpUnitTestCase
     }
 
     /**
-     * @test
-     *
      * @throws Exception
      */
+    #[Test]
     public function canParseTimestampAsInputValue()
     {
         $processingInstruction = new FormatDate();

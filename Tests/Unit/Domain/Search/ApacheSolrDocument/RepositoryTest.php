@@ -26,6 +26,8 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
+use stdClass;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -48,9 +50,7 @@ class RepositoryTest extends SetUpUnitTestCase
      */
     protected $mockedAsSingletonSite;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findOneByPageIdAndByLanguageIdReturnsFirstFoundDocument()
     {
         $apacheSolrDocumentCollection = [new Document(), new Document()];
@@ -71,9 +71,7 @@ class RepositoryTest extends SetUpUnitTestCase
         self::assertSame($apacheSolrDocumentCollection[0], $apacheSolrDocumentRepository->findOneByPageIdAndByLanguageId(0, 0));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findByPageIdAndByLanguageIdReturnsEmptyCollectionIfConnectionToSolrServerCanNotBeEstablished()
     {
         $apacheSolrDocumentRepository = $this->getAccessibleMock(
@@ -92,9 +90,7 @@ class RepositoryTest extends SetUpUnitTestCase
         self::assertEmpty($apacheSolrDocumentCollection);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findByPageIdAndByLanguageIdReturnsResultFromSearch()
     {
         $solrConnectionMock = $this->createMock(SolrConnection::class);
@@ -108,9 +104,9 @@ class RepositoryTest extends SetUpUnitTestCase
 
         $testDocuments = [new Document(), new Document()];
 
-        $parsedData = new \stdClass();
+        $parsedData = new stdClass();
         // @extensionScannerIgnoreLine
-        $parsedData->response = new \stdClass();
+        $parsedData->response = new stdClass();
         // @extensionScannerIgnoreLine
         $parsedData->response->docs = $testDocuments;
         $fakeResponse = $this->createMock(ResponseAdapter::class);

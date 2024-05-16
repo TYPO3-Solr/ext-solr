@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit test case for the Group class
@@ -52,49 +53,37 @@ class GroupItemTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetMaximumScore()
     {
         self::assertSame(99.0, $this->groupItem->getMaximumScore(), 'Unexpected maximumScore');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetStart()
     {
         self::assertSame(1, $this->groupItem->getStart(), 'Unexpected start');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetNumFound()
     {
         self::assertSame(12, $this->groupItem->getAllResultCount(), 'Unexpected numFound');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetGroupValue()
     {
         self::assertSame('pages', $this->groupItem->getGroupValue(), 'Unexpected groupValue');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetGroup()
     {
         self::assertSame($this->parentGroup, $this->groupItem->getGroup(), 'Unexpected parentGroup');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSearchResults()
     {
         self::assertSame(0, $this->groupItem->getSearchResults()->getCount());

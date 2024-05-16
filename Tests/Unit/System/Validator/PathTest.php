@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Validator;
 
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -26,9 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PathTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canIsValidSolrPathisValidPath()
     {
         $path = GeneralUtility::makeInstance(Path::class);
@@ -37,9 +36,7 @@ class PathTest extends SetUpUnitTestCase
         self::assertTrue($isValidPath);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canIsValidSolrPathEmptyString()
     {
         $path = GeneralUtility::makeInstance(Path::class);
@@ -48,9 +45,7 @@ class PathTest extends SetUpUnitTestCase
         self::assertFalse($isValidPath);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canIsValidSolrPathisInvalidPathButAppears()
     {
         $path = GeneralUtility::makeInstance(Path::class);
@@ -59,9 +54,7 @@ class PathTest extends SetUpUnitTestCase
         self::assertFalse($isValidPath);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canIsValidSolrPathisInvalidPath()
     {
         $path = GeneralUtility::makeInstance(Path::class);

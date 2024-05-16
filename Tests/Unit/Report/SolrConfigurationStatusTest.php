@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Reports\Status;
@@ -46,9 +47,7 @@ class SolrConfigurationStatusTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetEmptyResultWhenEverythingIsOK(): void
     {
         $fakedRootPages =  [1 => ['uid' => 1, 'title' => 'My Siteroot']];
@@ -64,9 +63,7 @@ class SolrConfigurationStatusTest extends SetUpUnitTestCase
         $this->report->getStatus();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetViolationWhenSolrIsEnabledButIndexingNot(): void
     {
         $fakedRootPages =  [1 => ['uid' => 1, 'title' => 'My Siteroot']];

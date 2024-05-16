@@ -20,6 +20,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use DOMDocument;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\Response;
@@ -83,10 +86,8 @@ class SearchControllerTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canShowSearchFormViaPlugin(): void
     {
         $response = $this->executeFrontendSubRequest($this->getPreparedRequest(2022));
@@ -94,10 +95,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('id="tx-solr-search-form-pi-results"', $content, 'Response did not contain search css selector');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canShowSearchForm(): void
     {
         $response = $this->executeFrontendSubRequest($this->getPreparedRequest());
@@ -105,10 +104,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('id="tx-solr-search-form-pi-results"', $content, 'Response did not contain search css selector');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canSearchForPrices(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -123,10 +120,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('pages/2/0/0/0', $result, 'Could not find page 2 in result set');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canDoAPaginatedSearch(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -175,10 +170,8 @@ class SearchControllerTest extends IntegrationTestBase
         $this->assertContainerByIdContains('<option selected="selected" value="10">10</option>', $resultPage, 'results-per-page');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canGetADidYouMeanProposalForATypo(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -202,10 +195,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('shoes', $resultPage1, 'Could not find shoes in response');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canAutoCorrectATypo(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -233,10 +224,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('Showing results for &quot;shoes&quot;', $resultPage1, 'Could not find correction message');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canRenderAFacetWithFluid(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -268,12 +257,9 @@ class SearchControllerTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     *
-     * @dataProvider canRenderSpeakingFacetUrlsDataProvider
-     */
+    #[DataProvider('canRenderSpeakingFacetUrlsDataProvider')]
+    #[Group('frontend')]
+    #[Test]
     public function canRenderSpeakingFacetUrls(int $enableRouteEnhancer, int $expectedMatchesDefaultUrl, int $expectedMatchesSpeakingUrl): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -348,10 +334,8 @@ class SearchControllerTest extends IntegrationTestBase
         ];
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canDoAnInitialEmptySearchWithoutResults(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -379,10 +363,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringNotContainsString('results-entry', $resultPage1, 'No results should be visible since showResultsOfInitialEmptyQuery was set to false');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canDoAnInitialEmptySearchWithResults(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -410,10 +392,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('results-entry', $resultPage1, 'Results should be visible since showResultsOfInitialEmptyQuery was set to true');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canDoAnInitialSearchWithoutResults(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -441,10 +421,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringNotContainsString('results-entry', $resultPage1, 'No results should be visible since showResultsOfInitialQuery was set to false');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canDoAnInitialSearchWithResults(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -472,10 +450,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('results-entry', $resultPage1, 'Results should be visible since showResultsOfInitialQuery was set to true');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function removeOptionLinkWillBeShownWhenFacetWasSelected(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -505,10 +481,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('remove-facet-option', $resultPage1, 'No link to remove facet option found');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function removeOptionLinkWillBeShownWhenAFacetOptionLeadsToAZeroResults(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -537,10 +511,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('remove-facet-option', $resultPage1, 'No link to remove facet option found');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canFilterOnPageSections(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -563,10 +535,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('Found 2 results', $resultPage1, 'No link to remove facet option found');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function exceptionWillBeThrownWhenAWrongTemplateIsConfiguredForTheFacet(): void
     {
         // we expected that an exception will be thrown when a facet is rendered
@@ -598,10 +568,8 @@ class SearchControllerTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canRenderAScoreAnalysisWhenBackendUserIsLoggedIn(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -620,10 +588,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('document-score-analysis', $resultPage1, 'No score analysis in response');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canSortFacetsByLex(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -677,10 +643,8 @@ class SearchControllerTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canSortFacetsByOptionCountWhenNothingIsConfigured(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -733,10 +697,8 @@ class SearchControllerTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canRenderQueryGroupFacet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -832,10 +794,8 @@ class SearchControllerTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canRenderHierarchicalFacet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -854,10 +814,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%3A%2F1%2F2%2F&amp;tx_solr%5Bq%5D=%2A', $resultPage1, 'Result page did not contain hierarchical facet link');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canFacetOnHierarchicalFacetItem(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -876,10 +834,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%3A%2F1%2F2%2F&amp;tx_solr%5Bq%5D=%2A', $resultPage1, 'Result page did not contain hierarchical facet link');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canFacetOnHierarchicalTextCategory(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_render_path_facet_with_search_controller.csv');
@@ -928,10 +884,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('Found 1 result', $resultPage1, 'Assert to only find one result after faceting');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canDefineAManualSortOrder(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -983,10 +937,8 @@ class SearchControllerTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canSeeTheParsedQueryWhenABackendUserIsLoggedIn(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -1019,16 +971,15 @@ class SearchControllerTest extends IntegrationTestBase
     /**
      * @param string $action
      * @param array $getArguments
-     * @dataProvider frontendWillRenderErrorMessageIfSolrNotAvailableDataProvider
-     * @test
-     * @group frontend
-     *
-     * Notes:
-     *   Fits removed frontendWillRenderErrorMessageForSolrNotAvailableAction() test case as well.
-     *   Removed code: https://github.com/TYPO3-Solr/ext-solr/blob/03080d4d55eeb9d50b15348f445d23e57e34e461/Tests/Integration/Controller/SearchControllerTest.php#L729-L747
      *
      * @todo: See: https://github.com/TYPO3/testing-framework/issues/324
      */
+    #[DataProvider('frontendWillRenderErrorMessageIfSolrNotAvailableDataProvider')]
+    #[Group('frontend
+Notes:
+  Fits removed frontendWillRenderErrorMessageForSolrNotAvailableAction() test case as well.
+  Removed code: https://github.com/TYPO3-Solr/ext-solr/blob/03080d4d55eeb9d50b15348f445d23e57e34e461/Tests/Integration/Controller/SearchControllerTest.php#L729-L747')]
+    #[Test]
     public function frontendWillRenderErrorMessageIfSolrNotAvailable(string $action, array $getArguments): void
     {
         $this->mergeSiteConfiguration(
@@ -1052,11 +1003,11 @@ class SearchControllerTest extends IntegrationTestBase
     }
 
     /**
-     * @test
-     * @group frontend
      * @todo: https://github.com/TYPO3-Solr/ext-solr/issues/3160
      *       The session must be shared between both requests.
      */
+    #[Group('frontend')]
+    #[Test]
     public function canShowLastSearchesFromSessionInResponse()
     {
         self::markTestIncomplete(
@@ -1090,10 +1041,8 @@ class SearchControllerTest extends IntegrationTestBase
         $this->assertContainerByIdContains('>shoe</a>', $resultSearch2, 'tx-solr-lastsearches');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canShowLastSearchesFromDatabaseInResponse(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -1122,10 +1071,8 @@ class SearchControllerTest extends IntegrationTestBase
         $this->assertContainerByIdContains('>shoe</a>', $resultSearch2, 'tx-solr-lastsearches');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canNotStoreQueyStringInLastSearchesWhenQueryDoesNotReturnAResult(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -1155,10 +1102,8 @@ class SearchControllerTest extends IntegrationTestBase
         $this->assertContainerByIdNotContains('>nothingwillbefound</a>', $resultSearch2, 'tx-solr-lastsearches');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canOverwriteAFilterWithTheFlexformSettings(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -1179,10 +1124,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('Displaying results 1 to 4 of 4', $resultSearch);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canRenderDateRangeFacet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -1209,10 +1152,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('facet-type-dateRange', $resultSearch);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canRenderASecondFacetOnTheTypeField(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -1245,10 +1186,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('id="facettype"', $resultSearch);
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canSortByMetric(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -1290,13 +1229,11 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertTrue($isPid2OptionBefore1Option);
     }
 
-    /**
-     * @test
-     * @group frontend
-     * Notes:
-     *   Fits removed canRenderSearchFormOnly() test case as well.
-     *     Removed code: https://github.com/TYPO3-Solr/ext-solr/blob/03080d4d55eeb9d50b15348f445d23e57e34e461/Tests/Integration/Controller/SearchControllerTest.php#L1053-L1062
-     */
+    #[Group('frontend
+Notes:
+  Fits removed canRenderSearchFormOnly() test case as well.
+    Removed code: https://github.com/TYPO3-Solr/ext-solr/blob/03080d4d55eeb9d50b15348f445d23e57e34e461/Tests/Integration/Controller/SearchControllerTest.php#L1053-L1062')]
+    #[Test]
     public function formActionIsRenderingTheForm(): void
     {
         $connection = $this->getConnectionPool()->getConnectionForTable('tt_content');
@@ -1315,10 +1252,10 @@ class SearchControllerTest extends IntegrationTestBase
     }
 
     /**
-     * @test
-     * @group frontend
      * @todo : https://github.com/TYPO3-Solr/ext-solr/issues/3166
      */
+    #[Group('frontend')]
+    #[Test]
     public function searchingAndRenderingFrequentSearchesIsShowingTheTermAsFrequentSearch(): void
     {
         self::markTestIncomplete('See: https://github.com/TYPO3-Solr/ext-solr/issues/3166');
@@ -1340,10 +1277,8 @@ class SearchControllerTest extends IntegrationTestBase
         $this->assertContainerByIdContains('>shoes</a>', $resultPage, 'tx-solr-frequent-searches');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canRenderDetailAction(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -1362,10 +1297,9 @@ class SearchControllerTest extends IntegrationTestBase
 
     /**
      * The template root path is configured in the typoscript template to point to another folder-
-     *
-     * @test
-     * @group frontend
      */
+    #[Group('frontend')]
+    #[Test]
     public function canOverrideTemplatesAndPartialsViaTypoScriptSetup(): void
     {
         $this->addTypoScriptToTemplateRecord(
@@ -1389,10 +1323,9 @@ class SearchControllerTest extends IntegrationTestBase
 
     /**
      * The template root path is configured in the typoscript template to point to another folder
-     *
-     * @test
-     * @group frontend
      */
+    #[Group('frontend')]
+    #[Test]
     public function canOverrideTemplatesAndPartialsViaTypoScriptConstants(): void
     {
         $this->addTypoScriptConstantsToTemplateRecord(
@@ -1414,10 +1347,8 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertStringContainsString('<h1>From custom "RelevanceBar" partial</h1>', $result, 'Can not overwrite partial path');
     }
 
-    /**
-     * @test
-     * @group frontend
-     */
+    #[Group('frontend')]
+    #[Test]
     public function canPassCustomSettingsToView(): void
     {
         $this->addTypoScriptToTemplateRecord(
@@ -1443,10 +1374,9 @@ class SearchControllerTest extends IntegrationTestBase
 
     /**
      * Only the entry template points to a different file.
-     *
-     * @test
-     * @group frontend
      */
+    #[Group('frontend')]
+    #[Test]
     public function canRenderAsUserObjectWithCustomEntryTemplateInTypoScript(): void
     {
         $this->addTypoScriptToTemplateRecord(

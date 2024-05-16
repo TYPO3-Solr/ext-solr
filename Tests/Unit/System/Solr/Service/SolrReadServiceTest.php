@@ -23,6 +23,8 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrInternalServerErrorException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\Client;
 use Solarium\Core\Client\Request;
@@ -55,9 +57,7 @@ class SolrReadServiceTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function pingIsOnlyDoingOnePingCallWhenCacheIsEnabled()
     {
         // we fake a 200 OK response and expect that
@@ -67,9 +67,7 @@ class SolrReadServiceTest extends SetUpUnitTestCase
         $this->service->ping();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function pingIsOnlyDoingManyPingCallsWhenCacheIsDisabled()
     {
         // we fake a 200 OK response and expect that
@@ -79,9 +77,7 @@ class SolrReadServiceTest extends SetUpUnitTestCase
         $this->service->ping(false);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searchMethodIsTriggeringGetRequest()
     {
         $this->responseMock->expects(self::once())->method('getStatusCode')->willReturn(200);
@@ -102,10 +98,8 @@ class SolrReadServiceTest extends SetUpUnitTestCase
         yield 'Other unspecific error' => ['exceptionClass' => SolrCommunicationException::class, 555];
     }
 
-    /**
-     * @dataProvider readServiceExceptionDataProvider
-     * @test
-     */
+    #[DataProvider('readServiceExceptionDataProvider')]
+    #[Test]
     public function searchThrowsExpectedExceptionForStatusCode(
         string $exceptionClass,
         int $statusCode

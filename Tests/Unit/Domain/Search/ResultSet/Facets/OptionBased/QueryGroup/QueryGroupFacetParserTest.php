@@ -24,6 +24,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\SetUpFacetParser;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class QueryGroupFacetParserTest
@@ -69,9 +70,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
         return $searchResultSet;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function facetIsCreated()
     {
         $facetConfiguration = [
@@ -99,9 +98,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
         self::assertInstanceOf(QueryGroupFacet::class, $facet);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function facetIsNotActive()
     {
         $facetConfiguration = [
@@ -130,9 +127,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
         self::assertFalse($facet->getIsUsed());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function facetIsActive()
     {
         $facetConfiguration = [
@@ -161,9 +156,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
         self::assertTrue($facet->getIsUsed());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function optionIsActive()
     {
         $facetConfiguration = [

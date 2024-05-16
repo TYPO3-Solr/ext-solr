@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Backend;
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\IsStringViewHelper;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -24,9 +25,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class IsStringViewHelperTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function viewHelperRendersThenChildIfStringIsGiven()
     {
         $arguments = [
@@ -40,9 +39,7 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
         self::assertSame('thenResult', $result, 'thenClosure was not rendered');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function viewHelperRendersElseChildIfNotStringTypeIsGiven()
     {
         $arguments = [

@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Grouping;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupCollection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit test case for the GroupCollection class
@@ -26,9 +27,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class GroupCollectionTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetByGroupName()
     {
         $groupA = new Group('type');
@@ -44,9 +43,7 @@ class GroupCollectionTest extends SetUpUnitTestCase
         self::assertNull($groupCollection->getByName('unexisting'), 'Could not get groupByName');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetGroupNames()
     {
         $groupA = new Group('type');
@@ -61,9 +58,7 @@ class GroupCollectionTest extends SetUpUnitTestCase
         self::assertSame(['type', 'color', 'price'], $groupCollection->getGroupNames(), 'Could not get groupNames');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetHasWithName()
     {
         $groupA = new Group('price');

@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\LastSearches;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesRepository;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class LastSearchesRepositoryTest extends SetUpUnitTestCase
@@ -31,9 +32,7 @@ class LastSearchesRepositoryTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findAllKeywordsWillDecoteKeywordsAsHTMLEntities(): void
     {
         $givenKeywords = [

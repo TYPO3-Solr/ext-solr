@@ -24,6 +24,8 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use ApacheSolrForTypo3\Solr\Util;
+use PHPUnit\Framework\Attributes\Test;
+use stdClass;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -46,9 +48,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetDocumentById(): void
     {
         // trigger a search
@@ -70,9 +70,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         self::assertSame($document->getTitle(), 'Root of Testpage testone.site aka integration_tree_one', 'Could not get document from solr by id');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetVariants(): void
     {
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
@@ -118,9 +116,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetCaseSensitiveVariants(): void
     {
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
@@ -186,9 +182,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetZeroResultsWithVariantsOnEmptyIndex(): void
     {
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
@@ -210,9 +204,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         self::assertSame(0, count($searchResults), 'There should zero results when the index is empty');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cantGetHiddenElementWithoutPermissions(): void
     {
         $this->importFrontendRestrictedPageScenario();
@@ -226,9 +218,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         self::assertSame(2, count($searchResults), 'We should only see two documents because the restricted element should be filtered out');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetHiddenElementWithPermissions(): void
     {
         $this->importFrontendRestrictedPageScenario();
@@ -271,7 +261,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         $searchRequest->setPage(1);
 
         // Simulate something as we still have some $GLOBALS[TSFE] dependency
-        $GLOBALS['TSFE'] = new \stdClass();
+        $GLOBALS['TSFE'] = new stdClass();
         $GLOBALS['TSFE']->id = 1;
         $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
         $GLOBALS['TSFE']->fe_user->initializeUserSessionManager();

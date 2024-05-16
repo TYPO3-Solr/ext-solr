@@ -17,14 +17,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\StatisticsRepo
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class StatisticsRepositoryTest extends IntegrationTestBase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetTopKeywordsWithHits()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
@@ -42,9 +41,7 @@ class StatisticsRepositoryTest extends IntegrationTestBase
         self::assertSame($expectedResult, $topHits);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetTopKeywordsWithoutHits()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
@@ -62,9 +59,7 @@ class StatisticsRepositoryTest extends IntegrationTestBase
         self::assertSame($expectedResult, $topHits);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetTopKeywordsWithoutHitsNoResult()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
@@ -80,9 +75,7 @@ class StatisticsRepositoryTest extends IntegrationTestBase
         self::assertSame($expectedResult, $topHits);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetSearchStatisticsNoResult()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
@@ -98,9 +91,7 @@ class StatisticsRepositoryTest extends IntegrationTestBase
         self::assertSame($expectedResult, $topHits);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSaveStatisticsRecord()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');

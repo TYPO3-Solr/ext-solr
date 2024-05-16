@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Url;
 
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
 /**
@@ -54,10 +56,8 @@ class UrlHelperTest extends SetUpUnitTestCase
             'expectedUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
         ];
     }
-    /**
-     * @dataProvider withoutQueryParameter
-     * @test
-     */
+    #[DataProvider('withoutQueryParameter')]
+    #[Test]
     public function testCanRemoveQueryParameter($input, $queryParameterToRemove, $expectedUrl)
     {
         $urlHelper = new UrlHelper($input);
@@ -86,11 +86,11 @@ class UrlHelperTest extends SetUpUnitTestCase
     }
 
     /**
-     * @dataProvider getUrl
-     * @test
      * @param string $inputUrl
      * @param string $expectedOutputUrl
      */
+    #[DataProvider('getUrl')]
+    #[Test]
     public function testGetUrl($inputUrl, $expectedOutputUrl)
     {
         $urlHelper = new UrlHelper($inputUrl);
@@ -103,45 +103,35 @@ class UrlHelperTest extends SetUpUnitTestCase
         yield 'withQuery' => ['http://www.site.de/en/test?id=1'];
         yield 'withQueries' => ['http://www.site.de/en/test?id=1&L=2'];
     }
-    /**
-     * @dataProvider unmodifiedUrl
-     */
+    #[DataProvider('unmodifiedUrl')]
     public function testGetUnmodifiedUrl($uri)
     {
         $urlHelper = new UrlHelper($uri);
         self::assertSame($uri, (string)$urlHelper, 'Could not get unmodified url');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ifNoSchemeIsGivenGetSchemeReturnsAnEmptyString(): void
     {
         $urlHelper = new UrlHelper('www.google.de');
         self::assertSame('', $urlHelper->getScheme());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ifNoPathIsGivenGetPathReturnsAnEmptyString(): void
     {
         $urlHelper = new UrlHelper('https://www.google.de');
         self::assertSame('', $urlHelper->getPath());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ifNoPortIsGivenGetPortReturnsAnEmptyString(): void
     {
         $urlHelper = new UrlHelper('https://www.google.de');
         self::assertNull($urlHelper->getPort());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ifNoHostIsGivenGetHostReturnsAnEmptyString(): void
     {
         $urlHelper = new UrlHelper('/my/path/to/a/site');

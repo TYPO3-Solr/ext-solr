@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\DateTime;
 
 use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for FormatService
@@ -37,129 +38,97 @@ class FormatServiceTest extends SetUpUnitTestCase
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] = 'Y-m-d';
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFormatLegalDate()
     {
         self::assertSame('2017-02-16', $this->formatService->format('2017-02-16'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFormatIllegalDate()
     {
         self::assertSame('20170216', $this->formatService->format('20170216'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFormatLegalDateOtherInputFormat()
     {
         self::assertSame('2017-02-16', $this->formatService->format('02-16-2017', 'm-d-Y'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFormatIllegalDateOtherInputFormat()
     {
         self::assertSame('02162017', $this->formatService->format('02162017', 'm-d-Y'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canTimestampToIsoLegalDate()
     {
         self::assertSame('2017-02-16T20:13:57Z', $this->formatService->TimestampToIso(1487272437));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canTimestampToIsoIllegalDate()
     {
         self::assertEquals('1970-01-01T00:59:59Z', $this->formatService->TimestampToIso(-1));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canTimestampToIsoNull()
     {
         self::assertEquals('1970-01-01T01:00:00Z', $this->formatService->TimestampToIso(null));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canIsoToTimestampLegalDate()
     {
         self::assertEquals(1487272437, $this->formatService->IsoToTimestamp('2017-02-16T20:13:57Z'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canIsoToTimestampIllegalDate()
     {
         self::assertEquals(0, $this->formatService->IsoToTimestamp('02-16-2017T20:13:57Z'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canIsoToTimestampEpoch()
     {
         self::assertEquals(0, $this->formatService->IsoToTimestamp('1970-01-01T00:00:00'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canTimestampToUtcIsoLegalDate()
     {
         self::assertEquals('2017-02-16T19:13:57Z', $this->formatService->timestampToUtcIso(1487272437));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canTimestampToUtcIsoIllegalDate()
     {
         self::assertEquals('1969-12-31T23:59:59Z', $this->formatService->timestampToUtcIso(-1));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canTimestampToUtcIsoNull()
     {
         self::assertEquals('1970-01-01T00:00:00Z', $this->formatService->timestampToUtcIso(null));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUtcIsoToTimestampLegalDate()
     {
         self::assertEquals(1487276037, $this->formatService->utcIsoToTimestamp('2017-02-16T20:13:57Z'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUtcIsoToTimestampIllegalDate()
     {
         self::assertEquals(0, $this->formatService->utcIsoToTimestamp('02-16-2017T20:13:57Z'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUtcIsoToTimestampEpoch()
     {
         self::assertEquals(0, $this->formatService->utcIsoToTimestamp('1970-01-01T00:00:00'));

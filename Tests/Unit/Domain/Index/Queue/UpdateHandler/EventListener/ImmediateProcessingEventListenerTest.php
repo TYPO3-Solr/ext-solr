@@ -28,6 +28,8 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedE
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\EventDispatcher\StoppableEventInterface;
 use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -55,10 +57,8 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
         parent::setUp();
     }
 
-    /**
-     * @test
-     * @dataProvider canHandleEventsDataProvider
-     */
+    #[DataProvider('canHandleEventsDataProvider')]
+    #[Test]
     public function canHandleEvents(
         string $eventClass,
         string $handlerClass,
@@ -75,10 +75,8 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
         $this->checkEventHandling($event, $handlerClass, $eventHandled);
     }
 
-    /**
-     * @test
-     * @dataProvider canHandleEventsDataProvider
-     */
+    #[DataProvider('canHandleEventsDataProvider')]
+    #[Test]
     public function canHandleEventsIfHandlingInactiveButForced(
         string $eventClass,
         string $handlerClass,

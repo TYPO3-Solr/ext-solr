@@ -19,6 +19,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Routing;
 
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\NullLogger;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -30,6 +32,7 @@ use TYPO3\CMS\Core\Site\Entity\Site;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
+#[CoversClass(\ApacheSolrForTypo3\Solr\Routing\RoutingService::class)]
 class RoutingServiceTest extends SetUpUnitTestCase
 {
     /**
@@ -47,10 +50,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::getDefaultMultiValueSeparator
-     */
+    #[Test]
     public function defaultValueSeparatorIsAvailableTest()
     {
         $routingService = new RoutingService([]);
@@ -61,10 +61,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::getDefaultMultiValueSeparator
-     */
+    #[Test]
     public function canOverrideValueSeparatorTest()
     {
         $routingService = new RoutingService(
@@ -79,10 +76,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::facetsToString
-     */
+    #[Test]
     public function combinedFacetsAreInAlphabeticOrderTest()
     {
         $routingService = new RoutingService([]);
@@ -93,10 +87,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::facetsToString
-     */
+    #[Test]
     public function combiningFacetsUsingCustomSeparatorTest()
     {
         $routingService = new RoutingService(
@@ -111,10 +102,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::convertStringIntoUri
-     */
+    #[Test]
     public function canConvertStringToUriTest()
     {
         $routingService = new RoutingService();
@@ -137,10 +125,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         return $routingService;
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::concatQueryParameter
-     */
+    #[Test]
     public function testDeflateFilterQueryParameterTest()
     {
         $routingService = $this->getRoutingService();
@@ -180,10 +165,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::inflateQueryParameter
-     */
+    #[Test]
     public function testInflateFilterQueryParameterTest()
     {
         $routingService = $this->getRoutingService();
@@ -223,10 +205,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::maskQueryParameters
-     */
+    #[Test]
     public function testIfFilterParametersCanBeMaskedTest()
     {
         $routingService = $this->getRoutingService();
@@ -262,10 +241,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::maskQueryParameters
-     */
+    #[Test]
     public function testIfFilterParametersCanBeUnmaskedTest()
     {
         $routingService = $this->getRoutingService();
@@ -301,10 +277,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::addPathArgumentsToQuery
-     */
+    #[Test]
     public function testIfPathParametersMovedInfoQueryParameters()
     {
         $uri = new Uri('http://domain.example/');
@@ -332,10 +305,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::addPathArgumentsToQuery
-     */
+    #[Test]
     public function testIfMultiplePathParametersMovedInfoQueryParameters()
     {
         $uri = new Uri('http://domain.example/');
@@ -363,10 +333,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::addPathArgumentsToQuery
-     */
+    #[Test]
     public function testIfMultiplePathParametersAndMaskedParametersMovedInfoQueryParameters()
     {
         $uri = new Uri('http://domain.example/candy?taste=sweet,sour');

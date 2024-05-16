@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGrou
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -40,9 +41,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetTitleFromOptionsFacet()
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -50,9 +49,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
         self::assertSame('myTitle', $optionsFacet->getLabel(), 'Could not get title from queryGroup facet');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddOptionsToFacet()
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -69,9 +66,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
         self::assertEquals(1, $queryGroupFacet->getOptions()->getCount());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDefaultPartialName()
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -80,9 +75,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
         self::assertEquals('Options', $queryGroupFacet->getPartialName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCustomPartialName()
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);

@@ -24,6 +24,7 @@ use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -66,9 +67,7 @@ class BuilderTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canBuildApacheSolrDocumentFromEmptyPage(): void
     {
         $fakePage = $this->createMock(TypoScriptFrontendController::class);
@@ -86,9 +85,7 @@ class BuilderTest extends SetUpUnitTestCase
         self::assertSame('siteHash/pages/4711', $document['id'], 'Builder did not use documentId from mock');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetKeywordsForApacheSolrDocument(): void
     {
         $fakePage = $this->createMock(TypoScriptFrontendController::class);
@@ -105,9 +102,7 @@ class BuilderTest extends SetUpUnitTestCase
         self::assertSame($document['keywords'], ['foo', 'bar'], 'Could not set keywords from page document');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetEndtimeForApacheSolrDocument(): void
     {
         $fakePage = $this->createMock(TypoScriptFrontendController::class);
@@ -124,9 +119,7 @@ class BuilderTest extends SetUpUnitTestCase
         self::assertSame($document['endtime'], 1234, 'Could not set endtime from page document');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetTagFieldsForApacheSolrDocument(): void
     {
         $fakePage = $this->createMock(TypoScriptFrontendController::class);
@@ -143,9 +136,7 @@ class BuilderTest extends SetUpUnitTestCase
         self::assertSame($document['tagsH1'], 'Fake H1 content', 'Could not assign extracted h1 heading to solr document');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canBuildFromRecord(): void
     {
         $fakeRecord = ['uid' => 4711, 'pid' => 88, 'type' => 'news'];

@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesServi
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -62,9 +63,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cachedResultIsUsedWhenIdentifierIsPresent(): void
     {
         $fakeConfiguration = [];
@@ -77,9 +76,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
         self::assertSame('term a', $frequentTerms[0], 'Could not get frequent terms from service');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function databaseResultIsUsedWhenNoCachedResultIsPresent(): void
     {
         $fakeConfiguration = [

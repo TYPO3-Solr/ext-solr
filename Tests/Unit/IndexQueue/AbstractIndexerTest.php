@@ -18,6 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
@@ -32,9 +34,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isSerializedValueCanHandleCustomContentElements(): void
     {
         $indexingConfiguration = [
@@ -55,9 +55,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         self::assertFalse(AbstractIndexer::isSerializedValue($indexingConfiguration, 'notConfigured_stringM'), 'Non configured fields should allways be unserialized');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isSerializedValueCanHandleCustomInvalidSerializedValueDetector(): void
     {
         // register invalid detector
@@ -73,9 +71,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         AbstractIndexer::isSerializedValue($indexingConfiguration, 'topic_stringM');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isSerializedValueCanHandleCustomValidSerializedValueDetector(): void
     {
         // register invalid detector
@@ -99,9 +95,9 @@ class AbstractIndexerTest extends SetUpUnitTestCase
 
     /**
      * Test that field values can be resolved
-     * @test
-     * @dataProvider indexingDataProvider
      */
+    #[DataProvider('indexingDataProvider')]
+    #[Test]
     public function resolveFieldValue(array $indexingConfiguration, string $solrFieldName, array $data, $expectedValue): void
     {
         $subject = new class () extends AbstractIndexer {};

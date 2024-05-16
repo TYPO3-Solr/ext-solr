@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyUrlDecoder;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -36,9 +37,7 @@ class HierarchyUrlDecoderTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canParseHierarchy3LevelQuery()
     {
         $expected = '"2-sport/skateboarding/street/"';
@@ -47,9 +46,7 @@ class HierarchyUrlDecoderTest extends SetUpUnitTestCase
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canParseHierarchy3LevelQueryAndEscapedSlashes()
     {
         $expected = '"2-sport/skateboarding\\\\/snowboarding/street/"';
@@ -58,9 +55,7 @@ class HierarchyUrlDecoderTest extends SetUpUnitTestCase
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canParseHierarchy2LevelQuery()
     {
         $expected = '"1-sport/skateboarding/"';
@@ -69,9 +64,7 @@ class HierarchyUrlDecoderTest extends SetUpUnitTestCase
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canParseHierarchy1LevelQuery()
     {
         $expected = '"0-sport/"';

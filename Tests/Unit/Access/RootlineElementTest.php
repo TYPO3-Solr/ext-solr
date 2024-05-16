@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Access;
 
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
 /**
@@ -106,10 +108,9 @@ class RootlineElementTest extends SetUpUnitTestCase
      * @param array $expectedGroups
      * @param int|null $expectedPageId
      * @param string $expectedToString
-     * @dataProvider validRootLineRePresentations
-     *
-     * @test
      */
+    #[DataProvider('validRootLineRePresentations')]
+    #[Test]
     public function canParse($stringRepresentation, $expectedType, $expectedGroups, $expectedPageId, $expectedToString)
     {
         $rootLine = new RootlineElement($stringRepresentation);

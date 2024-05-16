@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -37,9 +38,7 @@ class TypoScriptConfigurationTest extends IntegrationTestBase
         parent::setUp();
     }
 
-    /**
-    * @test
-    */
+    #[Test]
     public function testCanUsePlainValuesFromConfiguration()
     {
         $configuration = [

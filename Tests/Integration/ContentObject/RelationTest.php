@@ -19,6 +19,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Traversable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -37,10 +39,8 @@ class RelationTest extends IntegrationTestBase
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
     ];
 
-    /**
-     * @test
-     * @dataProvider fixturesProviderForFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn
-     */
+    #[DataProvider('fixturesProviderForFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn')]
+    #[Test]
     public function canFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn(string $fixtureName): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixtureName);
@@ -61,10 +61,8 @@ class RelationTest extends IntegrationTestBase
             => ['solr_relation_can_get_related_items_using_original_uid_if_sys_lang_overlay_has_no_tca.csv'];
     }
 
-    /**
-     * @test
-     * @dataProvider canResolveOneToOneRelationDataProvider
-     */
+    #[DataProvider('canResolveOneToOneRelationDataProvider')]
+    #[Test]
     public function canResolveOneToOneRelation(string $expected, array $config): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/solr_relation_can_resolve_one_to_one_relations.csv');
@@ -109,10 +107,8 @@ class RelationTest extends IntegrationTestBase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider canResolveMToNRelationDataProvider
-     */
+    #[DataProvider('canResolveMToNRelationDataProvider')]
+    #[Test]
     public function canResolveMToNRelation(string $expected, string $table, int $recordUid, array $config): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/solr_relation_can_resolve_m_to_n_relations.csv');
@@ -219,10 +215,8 @@ class RelationTest extends IntegrationTestBase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider canResolveOneToNRelationDataProvider
-     */
+    #[DataProvider('canResolveOneToNRelationDataProvider')]
+    #[Test]
     public function canResolveOneToNRelation(string $expected, string $table, int $recordUid, array $config): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/solr_relation_can_resolve_one_to_n_relations.csv');

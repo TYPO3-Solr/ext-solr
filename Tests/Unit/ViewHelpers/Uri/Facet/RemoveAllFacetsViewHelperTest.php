@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveAllFacetsViewHelper;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\RequestBuilder;
@@ -30,9 +31,7 @@ use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
  */
 class RemoveAllFacetsViewHelperTest extends SetUpFacetItemViewHelper
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function setFacetItemWillUseUriBuilderAsExpected(): void
     {
         $mockedPreviousFakedRequest = $this->createMock(SearchRequest::class);

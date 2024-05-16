@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Access;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
 /**
@@ -33,10 +35,8 @@ class RootlineTest extends SetUpUnitTestCase
         yield 'mixed' => ['rootLineString' => '35:1/c:0', 'expectedGroups' => [0, 1]];
     }
 
-    /**
-     * @test
-     * @dataProvider rootLineDataProvider
-     */
+    #[DataProvider('rootLineDataProvider')]
+    #[Test]
     public function canParse(string $rootLineString, $expectedGroups)
     {
         $rootline = new Rootline($rootLineString);

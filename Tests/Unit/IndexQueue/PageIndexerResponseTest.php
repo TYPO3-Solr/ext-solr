@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,9 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageIndexerResponseTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getResultReturnsSingleResult()
     {
         $action = 'testAction';
@@ -42,9 +41,7 @@ class PageIndexerResponseTest extends SetUpUnitTestCase
         self::assertEquals($result, $request->getActionResult($action));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResultReturnsAllResults()
     {
         $request = GeneralUtility::makeInstance(PageIndexerResponse::class);

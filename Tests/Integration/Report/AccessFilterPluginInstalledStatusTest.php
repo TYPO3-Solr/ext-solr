@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -35,9 +36,7 @@ class AccessFilterPluginInstalledStatusTest extends IntegrationTestBase
         $this->writeDefaultSolrTestSiteConfiguration();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetGreenAccessFilterStatus(): void
     {
         /** @var AccessFilterPluginInstalledStatus $accessFilterStatus */

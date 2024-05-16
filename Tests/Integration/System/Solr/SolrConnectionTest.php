@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -73,9 +74,7 @@ class SolrConnectionTest extends IntegrationTestBase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function typo3sHttpSettingsAreRecognizedByClient()
     {
         $GLOBALS['TYPO3_CONF_VARS']['HTTP']['connect_timeout'] = 0.0001;

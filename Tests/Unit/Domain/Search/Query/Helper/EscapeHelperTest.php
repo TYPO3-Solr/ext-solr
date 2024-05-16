@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\Helper;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
 /**
@@ -47,10 +49,8 @@ class EscapeHelperTest extends SetUpUnitTestCase
         yield 'combined quoted phrase mixed with escape character' => ['input' => '"hello world" or (planet)', 'expectedOutput' => '"hello world" or \(planet\)'];
     }
 
-    /**
-     * @dataProvider escapeQueryDataProvider
-     * @test
-     */
+    #[DataProvider('escapeQueryDataProvider')]
+    #[Test]
     public function canEscapeAsExpected($input, $expectedOutput)
     {
         $escapeHelper = new EscapeService();

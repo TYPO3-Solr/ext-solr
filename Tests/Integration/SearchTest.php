@@ -27,6 +27,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -54,9 +55,7 @@ class SearchTest extends IntegrationTestBase
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSearchForADocument(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -77,9 +76,7 @@ class SearchTest extends IntegrationTestBase
         self::assertStringContainsString('"title":"Hello Search Test"', $rawResponse, 'Could not index document into solr');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canHighlightTerms(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
@@ -144,9 +141,7 @@ class SearchTest extends IntegrationTestBase
         self::assertTrue((strlen($highlightString2) > strlen($highlightString3)));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function implicitPhraseSearchingBoostsDocsWithOccurringPhrase(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
@@ -178,9 +173,7 @@ class SearchTest extends IntegrationTestBase
         self::assertSame('Hello World for phrase searching', $parsedData->response->docs[0]->getTitle(), 'Unexpected score calculation. Document');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByPhraseSlop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
@@ -248,11 +241,7 @@ class SearchTest extends IntegrationTestBase
         self::assertSame(3, $parsedDatasByPhraseSlop[2]->response->docs[7]->getUid(), 'Phrase slop setting does not work as expected.');
     }
 
-    /**
-     * @test
-     *
-     * Bigram Phrase
-     */
+    #[Test]
     public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByBigramPhraseSlop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search_bigram.csv');
@@ -334,11 +323,7 @@ class SearchTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * Trigram Phrase
-     */
+    #[Test]
     public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByTrigramPhraseSlop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search_trigram.csv');
@@ -417,16 +402,14 @@ class SearchTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function explicitPhraseSearchMatchesMorePrecise(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $this->fillIndexForPhraseSearchTests();
 
-        /** @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
+        /** @var Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->getSearchQueryForSolr();
@@ -441,9 +424,7 @@ class SearchTest extends IntegrationTestBase
         self::assertSame('Hello World for phrase searching', $parsedData->response->docs[0]->getTitle(), 'Document containing "Hello World for phrase searching" should be found on explicit(surrounded with double quotes) phrase searching.');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function explicitPhraseSearchPrecisionCanBeAdjustedByQuerySlop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');

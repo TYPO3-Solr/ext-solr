@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler\Events;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the PageMovedEvent
@@ -27,36 +28,28 @@ class PageMovedEventTest extends SetUpDataUpdateEvent
     protected const EVENT_CLASS = PageMovedEvent::class;
     protected const EVENT_TEST_TABLE = 'pages';
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canInitAndReturnFields(): void
     {
         $event = new PageMovedEvent(123);
         self::assertEmpty($event->getFields());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canForceTable(): void
     {
         $event = new PageMovedEvent(123);
         self::assertEquals('pages', $event->getTable());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canIndicatePageUpdate(): void
     {
         $event = new PageMovedEvent(123);
         self::assertTrue($event->isPageUpdate());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canIndicateContentElementUpdate(): void
     {
         $event = new PageMovedEvent(123);

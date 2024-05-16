@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleC
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\Core\Client\Endpoint;
 
@@ -40,9 +41,7 @@ class IndexAdministrationModuleControllerTest extends AbstractModuleController
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testReloadIndexConfigurationAction(): void
     {
         $responseMock = $this->createMock(ResponseAdapter::class);

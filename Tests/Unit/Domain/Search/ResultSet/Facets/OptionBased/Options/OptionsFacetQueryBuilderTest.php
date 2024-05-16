@@ -18,6 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
 /**
@@ -27,9 +29,7 @@ use Traversable;
  */
 class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canBuildSortParameter()
     {
         /**
@@ -69,9 +69,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canBuildLimitParameter()
     {
         /**
@@ -105,9 +103,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canBuildLimitParameterFromGlobalSetting()
     {
         /**
@@ -144,9 +140,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canBuildMincountParameter()
     {
         /**
@@ -187,10 +181,8 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         yield ['configuredMinimumCount' => null, 'expectedMinimumCount' => 1];
     }
 
-    /**
-     * @dataProvider getGlobalMinimumCountValue
-     * @test
-     */
+    #[DataProvider('getGlobalMinimumCountValue')]
+    #[Test]
     public function canBuildMincountParameterFromGlobalSetting($configuredMinimumCount, $expectedMinimumCount)
     {
         /**
@@ -227,9 +219,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canBuildMetricsParameter()
     {
         /**

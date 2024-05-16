@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix\LabelPrefixesViewHelper;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
@@ -28,9 +29,7 @@ use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
  */
 class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetPrefixesSortedByOrderInCollection()
     {
         $optionCollection = $this->getTestFacetOptionCollection();
@@ -47,9 +46,7 @@ class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
         self::assertSame(['r', 'p', 'l'], $prefixes, 'ViewHelper registers unexpected prefixes from passed options');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetPrefixesSortedAlphabeticalByLabel()
     {
         $optionCollection = $this->getTestFacetOptionCollection();

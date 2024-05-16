@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
@@ -24,8 +26,8 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
  * Integration testcase to test for {@link SuggestController}
  *
  * @author Timo Hund
- * @group frontend
  */
+#[Group('frontend')]
 class SuggestControllerTest extends IntegrationTestBase
 {
     protected function setUp(): void
@@ -54,9 +56,7 @@ class SuggestControllerTest extends IntegrationTestBase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canDoABasicSuggest()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -68,9 +68,7 @@ class SuggestControllerTest extends IntegrationTestBase
         self::assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canDoABasicSuggestWithoutCallback()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
@@ -82,9 +80,7 @@ class SuggestControllerTest extends IntegrationTestBase
         self::assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSuggestWithUriSpecialChars()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/suggest_with_uri_special_chars.csv');

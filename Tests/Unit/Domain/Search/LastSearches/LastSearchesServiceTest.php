@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class LastSearchesServiceTest extends SetUpUnitTestCase
@@ -48,9 +49,7 @@ class LastSearchesServiceTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetLastSearchesFromSessionInUserMode(): void
     {
         $fakedLastSearchesInSession = ['first search', 'second search'];
@@ -67,9 +66,7 @@ class LastSearchesServiceTest extends SetUpUnitTestCase
         self::assertSame($fakedLastSearchesInSession, array_reverse($lastSearches), 'Did not get last searches from session in user mode');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetLastSearchesFromDatabaseInGlobalMode(): void
     {
         $fakedLastSearchesFromRepository = [

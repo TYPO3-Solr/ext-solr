@@ -18,15 +18,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Classification;
 use ApacheSolrForTypo3\Solr\Domain\Index\Classification\Classification;
 use ApacheSolrForTypo3\Solr\Domain\Index\Classification\ClassificationService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
 class ClassificationServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetMatchingClassifications()
     {
         $matchPatterns = ['smartphones', 'handy', 'smartphone', 'mobile', 'mobilephone'];
@@ -52,9 +51,7 @@ class ClassificationServiceTest extends SetUpUnitTestCase
         self::assertSame(['mobilephone'], $matches, 'Unexpected matched classification');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canMatchWildCards()
     {
         $matchPatterns = ['\ssmart[a-z]*\s'];

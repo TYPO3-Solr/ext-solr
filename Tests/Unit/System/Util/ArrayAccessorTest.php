@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Util;
 
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the ArrayAccessor helper class.
@@ -25,9 +26,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class ArrayAccessorTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canGet()
     {
         $data = ['foo' => ['bla' => 1]];
@@ -44,9 +43,7 @@ class ArrayAccessorTest extends SetUpUnitTestCase
         self::assertNull($arrayAccessor->get('one:two:three:four'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetAndGet()
     {
         // can set and get a simple value
@@ -61,9 +58,7 @@ class ArrayAccessorTest extends SetUpUnitTestCase
         self::assertSame('test2', $arrayAccessor->get('one:two:three:four'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canReset()
     {
         $data = ['one' => ['two' => ['a' => 111, 'b' => 222]]];
@@ -78,9 +73,7 @@ class ArrayAccessorTest extends SetUpUnitTestCase
         self::assertSame(222, $arrayAccessor->get('one:two:b'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resetIsRemovingEmptyNodes()
     {
         $data = ['one' => ['two' => ['a' => 111, 'b' => 222]]];
@@ -96,9 +89,7 @@ class ArrayAccessorTest extends SetUpUnitTestCase
         self::assertSame(['b' => 222], $arrayAccessor->get('one:two'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resetIsRemovingSubNodesAndEmptyNodes()
     {
         $data = [

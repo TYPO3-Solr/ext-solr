@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Solarium\Component\Grouping;
@@ -60,9 +61,7 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searchIsNotTriggeredWhenEmptySearchDisabledAndEmptyQueryWasPassed(): void
     {
         $searchRequest = new SearchRequest();
@@ -72,9 +71,7 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
         self::assertFalse($resultSet->getHasSearched(), 'Search should not be executed when empty query string was passed');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searchIsNotTriggeredWhenEmptyQueryWasPassedAndEmptySearchWasDisabled(): void
     {
         $searchRequest = new SearchRequest();
@@ -84,9 +81,7 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
         self::assertFalse($resultSet->getHasSearched(), 'Search should not be executed when empty query string was passed');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canCreateGroups(): void
     {
         // source: http://solr-ddev-site.ddev.site:8983/solr/core_en/select

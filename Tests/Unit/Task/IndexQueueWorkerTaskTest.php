@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\Environment;
 
 /**
@@ -26,9 +27,7 @@ use TYPO3\CMS\Core\Core\Environment;
  */
 class IndexQueueWorkerTaskTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetWebRoot()
     {
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
@@ -48,9 +47,7 @@ class IndexQueueWorkerTaskTest extends SetUpUnitTestCase
         self::assertSame(Environment::getPublicPath() . '/../test/', $indexQueuerWorker->getWebRoot(), 'Could not use a marker in forced webroot');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
     {
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)

@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\PageStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\RecordStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use Doctrine\DBAL\Result;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionContainerInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -46,18 +47,14 @@ class GarbageHandlerTest extends SetUpUpdateHandler
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collectGarbageTriggersGarbageCollectionForPages(): void
     {
         $this->initGarbageCollectionExpectations(PageStrategy::class, 'pages', 123);
         $this->garbageHandler->collectGarbage('pages', 123);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collectGarbageTriggersGarbageCollectionForRecords(): void
     {
         $this->initGarbageCollectionExpectations(RecordStrategy::class, 'tx_foo_bar', 789);
@@ -85,18 +82,14 @@ class GarbageHandlerTest extends SetUpUpdateHandler
             );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handlePageMovementTriggersGarbageCollectionAndReindexing(): void
     {
         $this->initGarbageCollectionExpectations(PageStrategy::class, 'pages', 123);
         $this->garbageHandler->handlePageMovement(123);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function performRecordGarbageCheckTriggersRecordGarbageCollection(): void
     {
         $dummyRecord = [
@@ -140,9 +133,7 @@ class GarbageHandlerTest extends SetUpUpdateHandler
         $this->garbageHandler->performRecordGarbageCheck($dummyRecord['uid'], 'tx_foo_bar', [], true);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function performRecordGarbageCheckTriggersPageGarbageCollection(): void
     {
         $dummyPageRecord = [
@@ -194,9 +185,7 @@ class GarbageHandlerTest extends SetUpUpdateHandler
         $this->garbageHandler->performRecordGarbageCheck($dummyPageRecord['uid'], 'pages', ['hidden' => 1], true);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRecordWithFieldRelevantForGarbageCollectionDeterminesFields(): void
     {
         $GLOBALS['TCA']['tx_foo_bar'] = ['columns' => []];

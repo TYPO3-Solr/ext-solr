@@ -20,6 +20,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -58,10 +60,9 @@ class ConnectionManagerTest extends IntegrationTestBase
      *  ——[ 1] First site
      *  |
      *  ——[111] Second site
-     *
-     * @test
-     * @dataProvider canFindSolrConnectionsByRootPageIdDataProvider
      */
+    #[DataProvider('canFindSolrConnectionsByRootPageIdDataProvider')]
+    #[Test]
     public function canFindSolrConnectionsByRootPageId(int $rootPageId, string $siteName, string $expectedSolrHost): void
     {
         $this->mergeSiteConfiguration($siteName, ['solr_host_read' => $expectedSolrHost]);
@@ -103,10 +104,9 @@ class ConnectionManagerTest extends IntegrationTestBase
      *      —— [31] Subpage 1 of Detached
      *      |
      *      —— [32] Subpage 2 of Detached
-     *
-     * @test
-     * @dataProvider canFindSolrConnectionsByPageIdDataProvider
      */
+    #[DataProvider('canFindSolrConnectionsByPageIdDataProvider')]
+    #[Test]
     public function canFindSolrConnectionsByPageId(int $pageId, string $siteName, string $expectedSolrHost): void
     {
         $this->mergeSiteConfiguration($siteName, ['solr_host_read' => $expectedSolrHost]);
@@ -157,9 +157,8 @@ class ConnectionManagerTest extends IntegrationTestBase
      * [0]
      *  |
      *  ——[ 3] Detached and non Root Page-Tree
-     *
-     * @test
      */
+    #[Test]
     public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConnectionByRootPageId()
     {
         $this->setupNotFullyConfiguredSite();
@@ -183,9 +182,8 @@ class ConnectionManagerTest extends IntegrationTestBase
      *       —— [31] Subpage 1 of Detached
      *       |
      *       —— [32] Subpage 2 of Detached
-     *
-     * @test
      */
+    #[Test]
     public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConnectionByPageId()
     {
         $this->setupNotFullyConfiguredSite();
@@ -212,9 +210,8 @@ class ConnectionManagerTest extends IntegrationTestBase
      *     ——[ 1] Page (Root)
      *         |
      *         ——[14] Mount Point 1 (to [24] to show contents from)
-     *
-     * @test
      */
+    #[Test]
     public function canFindSolrConnectionForMountedPageIfMountPointIsGiven()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/connection_for_mounted_page.csv');

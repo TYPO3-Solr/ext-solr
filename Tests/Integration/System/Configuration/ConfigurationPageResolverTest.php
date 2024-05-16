@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -24,9 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ConfigurationPageResolverTest extends IntegrationTestBase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetClosestPageIdWithActiveTemplate()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_closest_template_page_id.csv');

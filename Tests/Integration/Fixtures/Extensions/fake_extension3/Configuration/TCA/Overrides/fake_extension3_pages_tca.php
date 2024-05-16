@@ -1,5 +1,7 @@
 <?php
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 $additionalColumns = [
     'page_relations' => [
         'exclude' => 1,
@@ -37,4 +39,4 @@ $additionalColumns = [
     ],
 ];
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('pages', $additionalColumns);
+ExtensionManagementUtility::addTCAcolumns('pages', $additionalColumns);

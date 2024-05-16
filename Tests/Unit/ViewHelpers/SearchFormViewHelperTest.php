@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\SearchFormViewHelper;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
@@ -93,9 +94,7 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
         $this->uriBuilderMock->expects(self::once())->method('build')->willReturn('index.php?id=' . $pageUid);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSetTargetPageUidFromConfigurationWhenNullWasPassed()
     {
         $this->typoScriptConfigurationMock->expects(self::any())->method('getSearchTargetPage')->willReturn(888);
@@ -106,9 +105,7 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
         $this->viewHelper->render();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canUsePassedPageUidWhenNoTargetPageIsConfigured()
     {
         $this->typoScriptConfigurationMock->expects(self::any())->method('getSearchTargetPage')->willReturn(0);
@@ -119,9 +116,7 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
         $this->viewHelper->render();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function passedPageUidHasPriorityOverConfiguredTargetPageUid()
     {
         $this->typoScriptConfigurationMock->expects(self::any())->method('getSearchTargetPage')->willReturn(888);

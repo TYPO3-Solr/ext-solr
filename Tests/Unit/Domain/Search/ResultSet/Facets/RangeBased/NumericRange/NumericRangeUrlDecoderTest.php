@@ -18,6 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rang
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeUrlDecoder;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -56,13 +58,13 @@ class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
     /**
      * Test the filter decoding
      *
-     * @dataProvider rangeQueryParsingDataProvider
-     * @test
      *
      * @param string $firstValue
      * @param string $secondValue
      * @param string $expectedResult
      */
+    #[DataProvider('rangeQueryParsingDataProvider')]
+    #[Test]
     public function canParseRangeQuery(string $firstValue, string $secondValue, string $expectedResult)
     {
         $actual = $this->rangeParser->decode($firstValue . '-' . $secondValue);
@@ -71,9 +73,8 @@ class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
 
     /**
      * Test the handling of invalid parameters
-     *
-     * @test
      */
+    #[Test]
     public function canHandleInvalidParameters()
     {
         $this->expectException(InvalidArgumentException::class);

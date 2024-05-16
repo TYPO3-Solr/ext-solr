@@ -17,27 +17,25 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Data;
 
 use ApacheSolrForTypo3\Solr\System\Data\DateTime;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use DateTimeZone;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
 class DateTimeTest extends SetUpUnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanWrapDateTimeAndConvertToString()
     {
-        $proxy = new DateTime('2003-12-13T18:30:02Z', new \DateTimeZone('UTC'));
+        $proxy = new DateTime('2003-12-13T18:30:02Z', new DateTimeZone('UTC'));
         self::assertSame('2003-12-13T18:30:02+0000', (string)$proxy);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanDispatchCallToUnderlyingDateTime()
     {
-        $proxy = new DateTime('2003-12-13T18:30:02Z', new \DateTimeZone('UTC'));
+        $proxy = new DateTime('2003-12-13T18:30:02Z', new DateTimeZone('UTC'));
         self::assertSame('2003-12-13T18:30:02+0000', $proxy->format(\DateTime::ISO8601));
     }
 }

@@ -19,6 +19,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -36,9 +38,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetTitleFromOptionsFacet()
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -46,9 +46,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
         self::assertSame('myTitle', $optionsFacet->getLabel(), 'Could not get title from options facet');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAddOptionsToFacet()
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -65,9 +63,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
         self::assertEquals(1, $optionsFacet->getOptions()->getCount());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDefaultPartialName()
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -76,9 +72,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
         self::assertEquals('Options', $queryGroupFacet->getPartialName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCustomPartialName()
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -87,9 +81,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
         self::assertEquals('MyPartial', $queryGroupFacet->getPartialName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getType()
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -107,10 +99,8 @@ class OptionsFacetTest extends SetUpUnitTestCase
         yield '0' => ['0', false];
     }
 
-    /**
-     * @dataProvider getIncludeInAvailableFacetsDataProvider
-     * @test
-     */
+    #[DataProvider('getIncludeInAvailableFacetsDataProvider')]
+    #[Test]
     public function getIncludeInAvailableFacetsCastsSettingsToBoolProperly(
         null|int|string $includeInAvailableFacetsConfiguration,
         bool $expectedResult,

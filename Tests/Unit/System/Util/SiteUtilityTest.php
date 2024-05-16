@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Util;
 
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -34,9 +36,7 @@ class SiteUtilityTest extends SetUpUnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFallbackToLanguageSpecificReadProperty()
     {
         $languageConfiguration = ['solr_core_read' => 'readcore'];
@@ -50,9 +50,7 @@ class SiteUtilityTest extends SetUpUnitTestCase
         self::assertSame('readcore', $property, 'Can not fallback to read property when write property is undefined');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFallbackToGlobalPropertyWhenLanguageSpecificPropertyIsNotSet()
     {
         $languageConfiguration = ['solr_core_read' => 'readcore'];
@@ -97,10 +95,9 @@ class SiteUtilityTest extends SetUpUnitTestCase
 
     /**
      * solr_use_write_connection is functional
-     *
-     * @dataProvider writeConnectionTestsDataProvider
-     * @test
      */
+    #[DataProvider('writeConnectionTestsDataProvider')]
+    #[Test]
     public function solr_use_write_connectionSiteSettingInfluencesTheWriteConnection(string $expectedSolrHost, array $expectedSiteMockConfiguration)
     {
         $siteMock = $this->createMock(Site::class);
@@ -115,9 +112,7 @@ class SiteUtilityTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canLanguageSpecificConfigurationOverwriteGlobalConfiguration()
     {
         $languageConfiguration = ['solr_host_read' => 'readhost.local.de'];
@@ -133,9 +128,7 @@ class SiteUtilityTest extends SetUpUnitTestCase
         self::assertSame('readhost.local.de', $property, 'Can not fallback to read property when write property is undefined');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function specifiedDefaultValueIsReturnedByGetConnectionPropertyIfPropertyIsNotDefinedInConfiguration()
     {
         $languageMock = $this->createMock(SiteLanguage::class);
@@ -266,10 +259,9 @@ class SiteUtilityTest extends SetUpUnitTestCase
      * @param string $property
      * @param string $scope
      * @param mixed $expectedConfigurationValue
-     *
-     * @test
-     * @dataProvider siteConfigurationValueHandlingDataProvider
      */
+    #[DataProvider('siteConfigurationValueHandlingDataProvider')]
+    #[Test]
     public function canHandleSiteConfigurationValues(
         array $fakeConfiguration,
         string $property,

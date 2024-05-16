@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,9 +35,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetManualSortedCopy()
     {
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
@@ -58,9 +57,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
         self::assertSame($red, $sortedOptions->getByPosition(2), 'First sorted item was not blue');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetLabelPrefixes()
     {
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
@@ -83,9 +80,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
         self::assertSame(['r', 'p', 'l'], $labelPrefixes, 'Can not get expected label prefixes');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetByLowercaseLabelPrefix()
     {
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
@@ -112,9 +107,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
         self::assertCount(3, $optionsStartingWithR, 'Unexpected amount of options starting with r');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetByLowercaseLabelPrefixWithMultiByteCharacter()
     {
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
@@ -131,9 +124,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
         self::assertCount(1, $optionsStartingWithO, 'Unexpected amount of options starting with ø');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetByValueAfterManualSorting()
     {
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
