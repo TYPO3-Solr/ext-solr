@@ -145,8 +145,8 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         if ($this->getTypoScriptConfiguration()->getSearchKeepExistingParametersForNewSearches()) {
             $request = $this->renderingContext->getRequest();
             $pluginNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
-            $arguments = $request->getQueryParams()[$pluginNamespace];
-            ArrayUtility::mergeRecursiveWithOverrule($arguments, $request->getParsedBody()[$pluginNamespace]);
+            $arguments = $request->getQueryParams()[$pluginNamespace] ?? [];
+            ArrayUtility::mergeRecursiveWithOverrule($arguments, $request->getParsedBody()[$pluginNamespace] ?? []);
 
             unset($arguments['q'], $arguments['id'], $arguments['L']);
             $searchParameters = $this->translateSearchParametersToInputTagAttributes($arguments);
