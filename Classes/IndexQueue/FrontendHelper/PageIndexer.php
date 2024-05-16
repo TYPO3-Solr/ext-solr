@@ -34,15 +34,18 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use Throwable;
+use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 use UnexpectedValueException;
 
 /**
@@ -120,14 +123,14 @@ class PageIndexer implements FrontendHelper, SingletonInterface
      * Generates the current page's URL as string.
      * Uses the provided parameters from TSFE, page id and language id.
      */
-    protected function generatePageUrl(TypoScriptFrontendController $controller): string
+    protected function generatePageUrl(PageArguments $pageArguments, PageInformation $pageInformation, TypoScriptFrontendController $controller): string
     {
         if ($this->request?->getParameter('overridePageUrl')) {
             return $this->request->getParameter('overridePageUrl');
         }
 
-        $parameter = $controller->page['uid'];
-        $type = $controller->getPageArguments()->getPageType();
+        $parameter = $pageInformation->getPageRecord()['uid'];
+        $type = $pageArguments->getPageType();
         if ($type && MathUtility::canBeInterpretedAsInteger($type)) {
             $parameter .= ',' . $type;
         }
@@ -148,6 +151,8 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             return;
         }
         $this->setupConfiguration();
+
+        $typo3Request = $event->getRequest();
         $tsfe = $event->getController();
 
         $logPageIndexed = $this->configuration->getLoggingIndexingPageIndexed();
@@ -165,7 +170,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             if ($indexQueueItem === null) {
                 throw new UnexpectedValueException('Can not get index queue item', 1482162337);
             }
-            $this->index($indexQueueItem, $tsfe);
+            $this->index($indexQueueItem, $typo3Request);
         } catch (Throwable $e) {
             $this->responseData['pageIndexed'] = false;
             if ($this->configuration->getLoggingExceptions()) {
@@ -193,18 +198,30 @@ class PageIndexer implements FrontendHelper, SingletonInterface
     /**
      * Index item
      */
-    protected function index(Item $indexQueueItem, TypoScriptFrontendController $tsfe): void
+    protected function index(Item $indexQueueItem, ServerRequestInterface $request, TypoScriptFrontendController $tsfe): void
     {
-        $this->solrConnection = $this->getSolrConnection($indexQueueItem, $tsfe->getLanguage(), $this->configuration->getLoggingExceptions());
+        /** @var PageArguments $pageArguments */
+        $pageArguments = $request->getAttribute('routing');
+        $pageInformation = $request->getAttribute('frontend.page.information');
+        $siteLanguage = $request->getAttribute('language');
+        $this->solrConnection = $this->getSolrConnection($indexQueueItem, $siteLanguage, $this->configuration->getLoggingExceptions());
 
-        $document = $this->getPageDocument($tsfe, $this->generatePageUrl($tsfe), $this->getAccessRootline(), $tsfe->MP);
-        $document = $this->substitutePageDocument($document, $tsfe->page, $indexQueueItem, $tsfe);
+        $document = $this->getPageDocument(
+            $tsfe,
+            $pageInformation,
+            $pageArguments,
+            $tsfe,
+            $this->generatePageUrl($pageArguments, $pageInformation, $tsfe),
+            $this->getAccessRootline(),
+            $pageInformation->getMountPoint()
+        );
+        $document = $this->substitutePageDocument($document, $pageInformation->getPageRecord(), $indexQueueItem, $tsfe);
 
         $this->responseData['pageIndexed'] = (int)$this->indexPage($document, $indexQueueItem, $tsfe);
         $this->responseData['originalPageDocument'] = (array)$document;
         $this->responseData['solrConnection'] = [
             'rootPage' => $indexQueueItem->getRootPageUid(),
-            'sys_language_uid' => $tsfe->getLanguage()->getLanguageId(),
+            'sys_language_uid' => $siteLanguage->getLanguageId(),
             'solr' => $this->solrConnection->getEndpoint('write')->getCoreBaseUri(),
         ];
 
@@ -279,10 +296,10 @@ class PageIndexer implements FrontendHelper, SingletonInterface
      *
      * @return Document A document representing the page
      */
-    protected function getPageDocument(TypoScriptFrontendController $tsfe, string $url, Rootline $pageAccessRootline, string $mountPointParameter): Document
+    protected function getPageDocument(TypoScriptFrontendController $tsfe, PageInformation $pageInformation, PageArguments $pageArguments, SiteLanguage $siteLanguage, string $url, Rootline $pageAccessRootline, string $mountPointParameter): Document
     {
         $documentBuilder = GeneralUtility::makeInstance(Builder::class);
-        return $documentBuilder->fromPage($tsfe, $url, $pageAccessRootline, $mountPointParameter);
+        return $documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $tsfe, $url, $pageAccessRootline, $mountPointParameter);
     }
 
     /**

@@ -21,45 +21,33 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Routing\PageArguments;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 
 class FrequentSearchesServiceTest extends SetUpUnitTestCase
 {
     protected FrequentSearchesService|MockObject $frequentSearchesService;
-    protected TypoScriptFrontendController|MockObject $tsfeMock;
     protected AbstractFrontend|MockObject $cacheMock;
     protected TypoScriptConfiguration|MockObject $configurationMock;
     protected StatisticsRepository|MockObject $statisticsRepositoryMock;
 
     protected function setUp(): void
     {
-        $this->tsfeMock = $this->createMock(TypoScriptFrontendController::class);
-        $this->tsfeMock->tmpl = $this->createMock(TemplateService::class);
-        $this->tsfeMock->tmpl->rootLine = [
-            0 => [
-                'uid' => 4711,
-            ],
-        ];
         $this->statisticsRepositoryMock = $this->createMock(StatisticsRepository::class);
         $this->cacheMock = $this->createMock(AbstractFrontend::class);
         $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
 
-        $this->frequentSearchesService = new class ($this->configurationMock, $this->cacheMock, $this->tsfeMock, $this->statisticsRepositoryMock) extends FrequentSearchesService {
-            //            protected function getCacheIdentifier(array $frequentSearchConfiguration) : string {
-            //                $identifier = 'frequentSearchesTags';
-            //                if (isset($frequentSearchConfiguration['select.']['checkRootPageId']) && $frequentSearchConfiguration['select.']['checkRootPageId']) {
-            //                    $identifier .= '_RP' . 4710;
-            //                }
-            //                if (isset($frequentSearchConfiguration['select.']['checkLanguage']) && $frequentSearchConfiguration['select.']['checkLanguage']) {
-            //                    $identifier .= '_L' . 0;
-            //                }
-            //
-            //                $identifier .= '_' . md5(serialize($frequentSearchConfiguration));
-            //                return $identifier;
-            //            }
-        };
+        $this->frequentSearchesService = new FrequentSearchesService(
+            $this->configurationMock,
+            $this->cacheMock,
+            $this->statisticsRepositoryMock
+        );
         parent::setUp();
     }
 
@@ -72,7 +60,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
 
         $this->fakeCacheResult($expectedCacheIdentifier, ['term a']);
 
-        $frequentTerms = $this->frequentSearchesService->getFrequentSearchTerms();
+        $frequentTerms = $this->frequentSearchesService->getFrequentSearchTerms($this->createServerRequest());
         self::assertSame('term a', $frequentTerms[0], 'Could not get frequent terms from service');
     }
 
@@ -103,7 +91,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
 
         //we fake that we have no frequent searches in the cache and therefore expect that the database will be queried
         $this->fakeIdentifierNotInCache();
-        $frequentTerms = $this->frequentSearchesService->getFrequentSearchTerms();
+        $frequentTerms = $this->frequentSearchesService->getFrequentSearchTerms($this->createServerRequest());
 
         self::assertSame($frequentTerms, ['my search' => 22], 'Could not retrieve frequent search terms');
     }
@@ -117,5 +105,17 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
     public function fakeIdentifierNotInCache(): void
     {
         $this->cacheMock->expects(self::once())->method('has')->willReturn(false);
+    }
+
+    protected function createServerRequest(): ServerRequestInterface
+    {
+        $pageInformation = new PageInformation();
+        $pageInformation->setId(888);
+        $pageInformation->setLocalRootLine([['uid' => 4710]]);
+        return (new ServerRequest('https://typo3-solr.com/', 'GET'))
+            ->withAttribute('frontend.user', $this->createMock(FrontendUserAuthentication::class))
+            ->withAttribute('routing', new PageArguments(888, '0', []))
+            ->withAttribute('frontend.page.information', $pageInformation)
+            ->withAttribute('language', new SiteLanguage(0, 'en-US', new Uri('https://typo3-solr.com/'), []));
     }
 }

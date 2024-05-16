@@ -373,7 +373,7 @@ class QueryBuilder extends AbstractQueryBuilder
                     $searchQueryFilters['__pageSections.']
                 );
             }
-            $pageIds = GeneralUtility::trimExplode(',', $searchQueryFilters['__pageSections']);
+            $pageIds = GeneralUtility::trimExplode(',', (string)$searchQueryFilters['__pageSections']);
             $this->usePageSectionsFromPageIds($pageIds);
             $this->typoScriptConfiguration->removeSearchQueryFilterForPageSections();
         }

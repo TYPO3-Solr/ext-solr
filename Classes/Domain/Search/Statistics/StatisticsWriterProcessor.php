@@ -20,11 +20,11 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\IpAnonymizationUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Writes statistics after searches have been conducted.
@@ -66,13 +66,16 @@ class StatisticsWriterProcessor
         $page = (int)$searchRequest->getPage();
         $ipMaskLength = $configuration->getStatisticsAnonymizeIP();
 
-        $TSFE = $this->getTSFE();
-        $root_pid = $this->siteRepository->getSiteByPageId($TSFE->id)->getRootPageId();
+        $serverRequest = $this->getServerRequest();
+        $pageId = $serverRequest->getAttribute('routing')->getPageId();
+        $siteLanguage = $serverRequest->getAttribute('language');
+        $frontendUser = $serverRequest->getAttribute('frontend.user');
+        $root_pid = $this->siteRepository->getSiteByPageId($pageId)->getRootPageId();
         $statisticData = [
-            'pid' => $TSFE->id,
+            'pid' => $pageId,
             'root_pid' => $root_pid,
             'tstamp' => $this->getTime(),
-            'language' => $TSFE->getLanguage()->getLanguageId(),
+            'language' => $siteLanguage->getLanguageId(),
             // @extensionScannerIgnoreLine
             'num_found' => $resultSet->getAllResultCount(),
             'suggestions_shown' => is_object($response->spellcheck->suggestions ?? null) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,
@@ -83,7 +86,7 @@ class StatisticsWriterProcessor
             // @extensionScannerIgnoreLine
             'time_processing' => $response->debug->timing->process->time ?? 0,
             /** @phpstan-ignore-next-line */
-            'feuser_id' => isset($TSFE->fe_user->user) ? (int)$TSFE->fe_user->user['uid'] ?? 0 : 0,
+            'feuser_id' => isset($frontendUser?->user) ? (int)$frontendUser->user['uid'] ?? 0 : 0,
             'ip' => IpAnonymizationUtility::anonymizeIp($this->getUserIp(), $ipMaskLength),
             'page' => $page,
             'keywords' => $keywords,
@@ -123,9 +126,9 @@ class StatisticsWriterProcessor
         return trim($string);
     }
 
-    protected function getTSFE(): ?TypoScriptFrontendController
+    protected function getServerRequest(): ?ServerRequestInterface
     {
-        return $GLOBALS['TSFE'];
+        return $GLOBALS['TYPO3_REQUEST'] ?? null;
     }
 
     protected function getUserIp(): string
