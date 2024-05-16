@@ -35,7 +35,7 @@ class FormatDateTest extends SetUpUnitTestCase
      * @throws Exception
      */
     #[Test]
-    public function canFormatUsingDefaultFormat()
+    public function canFormatUsingDefaultFormat(): void
     {
         $processingInstruction = new FormatDate();
         $result = $processingInstruction->format('2015-11-17T17:16:10Z', []);
@@ -46,7 +46,7 @@ class FormatDateTest extends SetUpUnitTestCase
      * @throws Exception
      */
     #[Test]
-    public function canPassCustomOutputFormat()
+    public function canPassCustomOutputFormat(): void
     {
         $processingInstruction = new FormatDate();
         $result = $processingInstruction->format('2015-11-17T17:16:10Z', ['outputFormat' => 'd.m.Y']);
@@ -57,7 +57,7 @@ class FormatDateTest extends SetUpUnitTestCase
      * @throws Exception
      */
     #[Test]
-    public function canParseTimestampAsInputValue()
+    public function canParseTimestampAsInputValue(): void
     {
         $processingInstruction = new FormatDate();
         $fiveDays = (60 * 60 * 24 * 5) - 1;

@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\Test;
 class GroupingTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canBuildSortingFromConfiguration()
+    public function canBuildSortingFromConfiguration(): void
     {
         $typoScriptConfiguration = new TypoScriptConfiguration(
             [

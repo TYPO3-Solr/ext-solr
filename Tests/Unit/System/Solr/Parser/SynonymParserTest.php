@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\Test;
 class SynonymParserTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canParseSynonyms()
+    public function canParseSynonyms(): void
     {
         $parser = new SynonymParser();
         $synonyms = $parser->parseJson('foo', self::getFixtureContentByName('synonym.json'));

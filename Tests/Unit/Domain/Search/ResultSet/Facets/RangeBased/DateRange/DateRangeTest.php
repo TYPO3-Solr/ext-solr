@@ -30,7 +30,7 @@ use PHPUnit\Framework\Attributes\Test;
 class DateRangeTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canHandleHalfOpenDateRanges()
+    public function canHandleHalfOpenDateRanges(): void
     {
         $dateTime = new DateTime('2021-07-20 16:04:21.000000');
         $dateRangeOpenStart = new DateRange(

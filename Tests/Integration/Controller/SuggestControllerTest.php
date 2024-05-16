@@ -57,7 +57,7 @@ class SuggestControllerTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canDoABasicSuggest()
+    public function canDoABasicSuggest(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -69,7 +69,7 @@ class SuggestControllerTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canDoABasicSuggestWithoutCallback()
+    public function canDoABasicSuggestWithoutCallback(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -81,7 +81,7 @@ class SuggestControllerTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canSuggestWithUriSpecialChars()
+    public function canSuggestWithUriSpecialChars(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/suggest_with_uri_special_chars.csv');
 

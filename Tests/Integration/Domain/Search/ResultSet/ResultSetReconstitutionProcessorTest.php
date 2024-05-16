@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 class ResultSetReconstitutionProcessorTest extends IntegrationTestBase
 {
     #[Test]
-    public function canApplyRenderingInstructionsOnOptions()
+    public function canApplyRenderingInstructionsOnOptions(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
         $GLOBALS['TYPO3_REQUEST'] = new ServerRequest('https://example.com');
@@ -78,7 +78,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function labelCanBeUsedAsCObject()
+    public function labelCanBeUsedAsCObject(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
         $GLOBALS['TYPO3_REQUEST'] = new ServerRequest('https://example.com');

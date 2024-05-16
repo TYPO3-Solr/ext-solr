@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Test;
 class GroupCollectionTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGetByGroupName()
+    public function canGetByGroupName(): void
     {
         $groupA = new Group('type');
         $groupB = new Group('color');
@@ -44,7 +44,7 @@ class GroupCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetGroupNames()
+    public function canGetGroupNames(): void
     {
         $groupA = new Group('type');
         $groupB = new Group('color');
@@ -59,7 +59,7 @@ class GroupCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetHasWithName()
+    public function canGetHasWithName(): void
     {
         $groupA = new Group('price');
         $groupCollection = new GroupCollection();

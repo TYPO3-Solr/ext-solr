@@ -42,7 +42,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetTitleFromOptionsFacet()
+    public function canGetTitleFromOptionsFacet(): void
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
         $optionsFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
@@ -50,7 +50,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canAddOptionsToFacet()
+    public function canAddOptionsToFacet(): void
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
         $queryGroupFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
@@ -67,7 +67,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getDefaultPartialName()
+    public function getDefaultPartialName(): void
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
         $queryGroupFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
@@ -76,7 +76,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getCustomPartialName()
+    public function getCustomPartialName(): void
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
         $queryGroupFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle', ['partialName' => 'MyPartial']);

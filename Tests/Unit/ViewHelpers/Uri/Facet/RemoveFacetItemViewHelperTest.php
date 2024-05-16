@@ -26,7 +26,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class RemoveFacetItemViewHelperTest extends SetUpFacetItemViewHelper
 {
     #[Test]
-    public function removeFacetItemWillUseUriBuilderAsExpected()
+    public function removeFacetItemWillUseUriBuilderAsExpected(): void
     {
         $facet = $this->getTestColorFacet();
 

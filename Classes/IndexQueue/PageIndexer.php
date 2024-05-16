@@ -26,6 +26,7 @@ use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Exception as DBALException;
 use Exception;
 use Psr\Log\LogLevel;
+use RuntimeException;
 use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -328,7 +329,7 @@ class PageIndexer extends Indexer
 
         if (empty($indexActionResult['pageIndexed'])) {
             $message = 'Failed indexing page Index Queue item: ' . $item->getIndexQueueUid() . ' url: ' . $indexRequestUrl;
-            throw new \RuntimeException($message, 1331837081);
+            throw new RuntimeException($message, 1331837081);
         }
 
         return $response;

@@ -41,7 +41,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-#[CoversClass(\ApacheSolrForTypo3\Solr\Middleware\SolrRoutingMiddleware::class)]
+#[CoversClass(SolrRoutingMiddleware::class)]
 class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
 {
     protected RoutingService|MockObject $routingServiceMock;

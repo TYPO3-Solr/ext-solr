@@ -30,7 +30,7 @@ use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGetPrefixesSortedByOrderInCollection()
+    public function canGetPrefixesSortedByOrderInCollection(): void
     {
         $optionCollection = $this->getTestFacetOptionCollection();
 
@@ -47,7 +47,7 @@ class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetPrefixesSortedAlphabeticalByLabel()
+    public function canGetPrefixesSortedAlphabeticalByLabel(): void
     {
         $optionCollection = $this->getTestFacetOptionCollection();
 

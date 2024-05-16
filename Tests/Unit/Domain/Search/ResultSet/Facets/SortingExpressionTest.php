@@ -84,7 +84,7 @@ class SortingExpressionTest extends SetUpUnitTestCase
      */
     #[DataProvider('canBuildSortExpressionDataProvider')]
     #[Test]
-    public function canBuildSortExpression($sorting, string $direction, bool $isJson, string $expectedResult)
+    public function canBuildSortExpression($sorting, string $direction, bool $isJson, string $expectedResult): void
     {
         $expression = new SortingExpression();
         if ($isJson) {

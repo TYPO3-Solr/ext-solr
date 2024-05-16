@@ -696,7 +696,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canDisableFaceting()
+    public function canDisableFaceting(): void
     {
         $query = $this->getInitializedTestSearchQuery();
 
@@ -719,7 +719,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canAddFacetField()
+    public function canAddFacetField(): void
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
 
@@ -739,7 +739,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetFacetFields()
+    public function canSetFacetFields(): void
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
@@ -757,7 +757,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canUseFacetMinCountFromConfiguration()
+    public function canUseFacetMinCountFromConfiguration(): void
     {
         $input = 10;
         $fakeConfigurationArray = [];
@@ -774,7 +774,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canUseFacetSortByFromConfiguration()
+    public function canUseFacetSortByFromConfiguration(): void
     {
         $input = 'alpha';
         $fakeConfigurationArray = [];
@@ -791,7 +791,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetSpellChecking()
+    public function canSetSpellChecking(): void
     {
         /** @var SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();
@@ -813,7 +813,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function noSiteHashFilterIsSetWhenWildcardIsPassed()
+    public function noSiteHashFilterIsSetWhenWildcardIsPassed(): void
     {
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => '*']);
@@ -829,7 +829,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function filterIsAddedWhenAllowedSiteIsPassed()
+    public function filterIsAddedWhenAllowedSiteIsPassed(): void
     {
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => 'site1.local']);
@@ -847,7 +847,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canTestNumberOfSuggestionsToTryFromConfiguration()
+    public function canTestNumberOfSuggestionsToTryFromConfiguration(): void
     {
         $input = 9;
         $fakeConfigurationArray = [];
@@ -865,7 +865,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canUseConfiguredVariantsFieldWhenVariantsAreActive()
+    public function canUseConfiguredVariantsFieldWhenVariantsAreActive(): void
     {
         $fakeConfigurationArray = ['plugin.' => ['tx_solr.' => ['search.' => ['variants' => 1]]]];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
@@ -879,7 +879,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canUseConfiguredVariantsExpandAndRowCount()
+    public function canUseConfiguredVariantsExpandAndRowCount(): void
     {
         $fakeConfigurationArray = ['plugin.' => ['tx_solr.' => ['search.' => ['variants' => 1]]]];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
@@ -896,7 +896,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function expandRowsIsNotSetWhenExpandIsInactive()
+    public function expandRowsIsNotSetWhenExpandIsInactive(): void
     {
         $fakeConfigurationArray = ['plugin.' => ['tx_solr.' => ['search.' => ['variants' => 1]]]];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
@@ -911,7 +911,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function variantsAreDisabledWhenNothingWasConfigured()
+    public function variantsAreDisabledWhenNothingWasConfigured(): void
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
@@ -920,7 +920,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canConvertQueryToString()
+    public function canConvertQueryToString(): void
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
@@ -931,7 +931,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canAddAndRemoveFilters()
+    public function canAddAndRemoveFilters(): void
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
@@ -964,7 +964,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRemoveFilterByValue()
+    public function canRemoveFilterByValue(): void
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
@@ -980,7 +980,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canUseFilterIgnoreSecondePassedFilterWithSameKey()
+    public function canUseFilterIgnoreSecondePassedFilterWithSameKey(): void
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
@@ -992,7 +992,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetAndUnSetQueryType()
+    public function canSetAndUnSetQueryType(): void
     {
         $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $this->getAllQueryParameters($query);
@@ -1010,7 +1010,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetOperator()
+    public function canSetOperator(): void
     {
         $query = $this->getInitializedTestSearchQuery('test');
 
@@ -1031,7 +1031,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetAlternativeQuery()
+    public function canSetAlternativeQuery(): void
     {
         // check initial value
         $query = $this->getInitializedTestSearchQuery('test');
@@ -1051,7 +1051,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetOmitHeaders()
+    public function canSetOmitHeaders(): void
     {
         // check initial value
         $query = $this->getInitializedTestSearchQuery('test');
@@ -1070,7 +1070,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetReturnFields()
+    public function canSetReturnFields(): void
     {
         // check initial value
         $query = $this->getInitializedTestSearchQuery('test');
@@ -1089,7 +1089,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetSorting()
+    public function canSetSorting(): void
     {
         // check initial value
         $query = $this->getInitializedTestSearchQuery('test');
@@ -1114,7 +1114,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetQueryElevation()
+    public function canSetQueryElevation(): void
     {
         $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $this->getAllQueryParameters($query);
@@ -1143,7 +1143,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function forceElevationIsFalseWhenForcingToFalse()
+    public function forceElevationIsFalseWhenForcingToFalse(): void
     {
         $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $this->getAllQueryParameters($query);
@@ -1170,7 +1170,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canBuildExpectedQueryUrlFromCombinedQuery()
+    public function canBuildExpectedQueryUrlFromCombinedQuery(): void
     {
         $faceting = new Faceting(true);
         $faceting->addField('content');
@@ -1208,7 +1208,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetQueryFieldsFromString()
+    public function canSetQueryFieldsFromString(): void
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
 
@@ -1220,7 +1220,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetQueryFields()
+    public function canSetQueryFields(): void
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
         $parameters = $this->getAllQueryParameters($query);
@@ -1243,7 +1243,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetPhraseFieldsFromString()
+    public function canSetPhraseFieldsFromString(): void
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
         $this->builder->startFrom($query)->usePhraseFields(PhraseFields::fromString('content^100.0, title^10.0'));
@@ -1253,7 +1253,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetPhraseFields()
+    public function canSetPhraseFields(): void
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
         $parameters = $this->getAllQueryParameters($query);
@@ -1277,7 +1277,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function phraseFieldsAreNotSetInUrlQueryIfPhraseSearchIsDisabled()
+    public function phraseFieldsAreNotSetInUrlQueryIfPhraseSearchIsDisabled(): void
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
 
@@ -1290,7 +1290,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function phraseFieldsAreSetInUrlQueryIfPhraseSearchIsEnabled()
+    public function phraseFieldsAreSetInUrlQueryIfPhraseSearchIsEnabled(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['phrase'] = 1;
@@ -1306,7 +1306,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canAddPhraseFieldsFromConfiguration()
+    public function canAddPhraseFieldsFromConfiguration(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['phrase'] = 1;
@@ -1320,7 +1320,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function bigramPhraseFieldsAreNotSetInUrlQueryIfBigramPhraseSearchIsDisabled()
+    public function bigramPhraseFieldsAreNotSetInUrlQueryIfBigramPhraseSearchIsDisabled(): void
     {
         $query = $this->getInitializedTestSearchQuery('foo bar baz');
         $phraseFields = new BigramPhraseFields(false);
@@ -1332,7 +1332,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canAddBigramFieldsWhenBigramPhraseIsEnabled()
+    public function canAddBigramFieldsWhenBigramPhraseIsEnabled(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['bigramPhrase'] = 1;
@@ -1348,7 +1348,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canAddBigramFieldsFromConfiguration()
+    public function canAddBigramFieldsFromConfiguration(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['bigramPhrase'] = 1;
@@ -1362,7 +1362,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function trigramPhraseFieldsAreNotSetInUrlQueryIfTrigramPhraseSearchIsDisabled()
+    public function trigramPhraseFieldsAreNotSetInUrlQueryIfTrigramPhraseSearchIsDisabled(): void
     {
         $query = $this->getInitializedTestSearchQuery('foo bar baz foobar barbaz');
         $phraseFields = new TrigramPhraseFields(false);
@@ -1374,7 +1374,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function trigramPhraseFieldsAreSetInUrlQueryIfTrigramPhraseSearchIsEnabled()
+    public function trigramPhraseFieldsAreSetInUrlQueryIfTrigramPhraseSearchIsEnabled(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['trigramPhrase'] = 1;
@@ -1389,7 +1389,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canAddTrigramFieldsFromConfiguration()
+    public function canAddTrigramFieldsFromConfiguration(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['trigramPhrase'] = 1;
@@ -1401,7 +1401,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function setDebugMode()
+    public function setDebugMode(): void
     {
         $query = $this->getInitializedTestSearchQuery();
 
@@ -1422,7 +1422,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function addingQueriesToGroupingAddsToRightGroupingParameter()
+    public function addingQueriesToGroupingAddsToRightGroupingParameter(): void
     {
         $query = $this->getInitializedTestSearchQuery('group test');
 
@@ -1435,7 +1435,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function addingSortingsToGroupingAddsToRightGroupingParameter()
+    public function addingSortingsToGroupingAddsToRightGroupingParameter(): void
     {
         $query = $this->getInitializedTestSearchQuery('group test');
         $grouping = new Grouping(true);
@@ -1447,7 +1447,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function addingFieldsToGroupingAddsToRightGroupingParameter()
+    public function addingFieldsToGroupingAddsToRightGroupingParameter(): void
     {
         $query = $this->getInitializedTestSearchQuery('group test');
         $grouping = new Grouping(true);
@@ -1459,7 +1459,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canDisablingGroupingRemoveTheGroupSorting()
+    public function canDisablingGroupingRemoveTheGroupSorting(): void
     {
         $query = $this->getInitializedTestSearchQuery('foo bar');
 
@@ -1490,7 +1490,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canBuildSuggestQuery()
+    public function canBuildSuggestQuery(): void
     {
         $this->configurationMock
             ->expects(self::once())
@@ -1510,7 +1510,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function alternativeQueryIsWildCardQueryForSuggestQuery()
+    public function alternativeQueryIsWildCardQueryForSuggestQuery(): void
     {
         $this->configurationMock
             ->expects(self::once())

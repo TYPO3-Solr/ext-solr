@@ -44,7 +44,7 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function changesNbspToSpace()
+    public function changesNbspToSpace(): void
     {
         $content = '<!-- TYPO3SEARCH_begin -->In Olten&nbsp;ist<!-- TYPO3SEARCH_end -->';
         $expectedResult = 'In Olten ist';
@@ -56,7 +56,7 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canExcludeContentByClass()
+    public function canExcludeContentByClass(): void
     {
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Exclude content</div><p>Expected content</p><!-- TYPO3SEARCH_end -->';
         $expectedResult = '<!-- TYPO3SEARCH_begin --><p>Expected content</p><!-- TYPO3SEARCH_end -->';
@@ -69,7 +69,7 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function excludeContentKeepsEncodingForUmlaut()
+    public function excludeContentKeepsEncodingForUmlaut(): void
     {
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Remove me</div><p>Was ein schöner Tag</p><!-- TYPO3SEARCH_end -->';
 
@@ -83,7 +83,7 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function excludeContentKeepsEncodingForEuroSign()
+    public function excludeContentKeepsEncodingForEuroSign(): void
     {
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Remove me</div><p>100€</p><!-- TYPO3SEARCH_end -->';
 

@@ -65,7 +65,7 @@ class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
      */
     #[DataProvider('rangeQueryParsingDataProvider')]
     #[Test]
-    public function canParseRangeQuery(string $firstValue, string $secondValue, string $expectedResult)
+    public function canParseRangeQuery(string $firstValue, string $secondValue, string $expectedResult): void
     {
         $actual = $this->rangeParser->decode($firstValue . '-' . $secondValue);
         self::assertEquals($expectedResult, $actual);
@@ -75,7 +75,7 @@ class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
      * Test the handling of invalid parameters
      */
     #[Test]
-    public function canHandleInvalidParameters()
+    public function canHandleInvalidParameters(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->rangeParser->decode('invalid-value');

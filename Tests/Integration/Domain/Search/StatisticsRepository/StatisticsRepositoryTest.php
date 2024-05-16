@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class StatisticsRepositoryTest extends IntegrationTestBase
 {
     #[Test]
-    public function canGetTopKeywordsWithHits()
+    public function canGetTopKeywordsWithHits(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1471203378;
@@ -42,7 +42,7 @@ class StatisticsRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetTopKeywordsWithoutHits()
+    public function canGetTopKeywordsWithoutHits(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1471203378;
@@ -60,7 +60,7 @@ class StatisticsRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetTopKeywordsWithoutHitsNoResult()
+    public function canGetTopKeywordsWithoutHitsNoResult(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1480000000;
@@ -76,7 +76,7 @@ class StatisticsRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetSearchStatisticsNoResult()
+    public function canGetSearchStatisticsNoResult(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1480000000;
@@ -92,7 +92,7 @@ class StatisticsRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canSaveStatisticsRecord()
+    public function canSaveStatisticsRecord(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         /** @var StatisticsRepository $repository */

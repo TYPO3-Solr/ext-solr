@@ -33,12 +33,14 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * Set up the doc header properly here
      *
      * @throws UnexpectedTYPO3SiteInitializationException
+     * @param ViewInterface $view
      *
      * @noinspection PhpUnused
      */
-    protected function initializeView(ViewInterface $view): void
+    protected function initializeView($view): void
     {
         parent::initializeView($view);
+
         $this->generateCoreSelectorMenuUsingPageTree();
         $coreOptimizationTabs = $this->moduleTemplate->getDynamicTabMenu([], 'coreOptimization');
         $this->view->assign('tabs', $coreOptimizationTabs);

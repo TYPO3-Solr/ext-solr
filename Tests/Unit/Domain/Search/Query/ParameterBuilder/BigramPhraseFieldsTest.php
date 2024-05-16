@@ -25,7 +25,7 @@ use PHPUnit\Framework\Attributes\Test;
 class BigramPhraseFieldsTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function buildFromEmptyStringCreatesEmptyArrayOnBuild()
+    public function buildFromEmptyStringCreatesEmptyArrayOnBuild(): void
     {
         $bigramPhraseFields = BigramPhraseFields::fromString('');
         self::assertSame('', $bigramPhraseFields->toString());

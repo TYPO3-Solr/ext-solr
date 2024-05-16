@@ -51,7 +51,7 @@ class RepositoryTest extends SetUpUnitTestCase
     protected $mockedAsSingletonSite;
 
     #[Test]
-    public function findOneByPageIdAndByLanguageIdReturnsFirstFoundDocument()
+    public function findOneByPageIdAndByLanguageIdReturnsFirstFoundDocument(): void
     {
         $apacheSolrDocumentCollection = [new Document(), new Document()];
         $apacheSolrDocumentRepository = $this->getAccessibleMock(
@@ -72,7 +72,7 @@ class RepositoryTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function findByPageIdAndByLanguageIdReturnsEmptyCollectionIfConnectionToSolrServerCanNotBeEstablished()
+    public function findByPageIdAndByLanguageIdReturnsEmptyCollectionIfConnectionToSolrServerCanNotBeEstablished(): void
     {
         $apacheSolrDocumentRepository = $this->getAccessibleMock(
             Repository::class,
@@ -91,7 +91,7 @@ class RepositoryTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function findByPageIdAndByLanguageIdReturnsResultFromSearch()
+    public function findByPageIdAndByLanguageIdReturnsResultFromSearch(): void
     {
         $solrConnectionMock = $this->createMock(SolrConnection::class);
         $solrConnectionManager = $this->getAccessibleMock(ConnectionManager::class, ['getConnectionByPageId'], [], '', false);

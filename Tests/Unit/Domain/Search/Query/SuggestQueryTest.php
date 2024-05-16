@@ -30,7 +30,7 @@ use PHPUnit\Framework\Attributes\Test;
 class SuggestQueryTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function testSuggestQueryDoesNotUseFieldCollapsing()
+    public function testSuggestQueryDoesNotUseFieldCollapsing(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
@@ -45,7 +45,7 @@ class SuggestQueryTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function testSuggestQueryUsesFilterList()
+    public function testSuggestQueryUsesFilterList(): void
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $suggestQuery = new SuggestQuery('typ', $fakeConfiguration);
@@ -57,7 +57,7 @@ class SuggestQueryTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function testSuggestQueryDoesNotErrorOnEmptyKeywords()
+    public function testSuggestQueryDoesNotErrorOnEmptyKeywords(): void
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $suggestQuery = new SuggestQuery(' ', $fakeConfiguration);

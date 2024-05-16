@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SystemTemplateRepositoryTest extends IntegrationTestBase
 {
     #[Test]
-    public function canFindOneClosestPageIdWithActiveTemplateByRootLine()
+    public function canFindOneClosestPageIdWithActiveTemplateByRootLine(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_template.csv');
 

@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Test;
 class QueryGroupFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canBuildQueryGroupFacetWithKeepAllOptionsOnSelection()
+    public function canBuildQueryGroupFacetWithKeepAllOptionsOnSelection(): void
     {
         /**
          * queryGroup {
@@ -68,7 +68,7 @@ class QueryGroupFacetQueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canBuildQueryGroupFacetWithKeepAllFacetsOnSelection()
+    public function canBuildQueryGroupFacetWithKeepAllFacetsOnSelection(): void
     {
         /**
          * faceting {
@@ -118,7 +118,7 @@ class QueryGroupFacetQueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canBuild()
+    public function canBuild(): void
     {
         /**
          * queryGroup {

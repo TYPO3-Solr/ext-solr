@@ -64,7 +64,7 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function printsPreviewOnExtSolrPluginsCorrectly()
+    public function printsPreviewOnExtSolrPluginsCorrectly(): void
     {
         $settingsPreviewOnPlugins = new SettingsPreviewOnPlugins(
             $this->getMockOfFlexFormService($this->flexFormArray)

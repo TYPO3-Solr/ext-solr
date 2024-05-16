@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Http\RequestFactory;
 class PageIndexerRequestTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function authenticatesValidRequest()
+    public function authenticatesValidRequest(): void
     {
         $jsonEncodedParameters = json_encode([
             'item' => 1,
@@ -48,7 +48,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function doesNotAuthenticateInvalidRequest()
+    public function doesNotAuthenticateInvalidRequest(): void
     {
         $jsonEncodedParameters = json_encode([
             'item' => 1,
@@ -61,7 +61,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function usesUniqueIdFromHeader()
+    public function usesUniqueIdFromHeader(): void
     {
         $id = uniqid();
         $jsonEncodedParameters = json_encode([
@@ -73,7 +73,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function sendCreatesExpectedResponse()
+    public function sendCreatesExpectedResponse(): void
     {
         $testParameters = json_encode(['requestId' => '581f76be71f60']);
 
@@ -93,7 +93,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function sendThrowsExceptionOnIsMismatch()
+    public function sendThrowsExceptionOnIsMismatch(): void
     {
         $testParameters = json_encode(['requestId' => 'wrongId']);
         $fakeResponse = self::getFixtureContentByName('fakeResponse.json');
@@ -110,7 +110,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function sendThrowsExceptionWhenInvalidJsonIsReturned()
+    public function sendThrowsExceptionWhenInvalidJsonIsReturned(): void
     {
         $testParameters = json_encode(['requestId' => 'wrongId']);
         $fakeResponse = 'invalidJsonString!!';
@@ -126,7 +126,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetTimeOutFromPHPConfiguration()
+    public function canSetTimeOutFromPHPConfiguration(): void
     {
         $initialTimeout = ini_get('default_socket_timeout');
         ini_set('default_socket_timeout', 122);
@@ -137,7 +137,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSendRequestToSslSite()
+    public function canSendRequestToSslSite(): void
     {
         $testParameters = json_encode(['requestId' => '581f76be71f60']);
         $fakeResponse = self::getFixtureContentByName('fakeResponse.json');
@@ -151,7 +151,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function authenticationHeaderIsSetWhenUsernameAndPasswordHaveBeenPassed()
+    public function authenticationHeaderIsSetWhenUsernameAndPasswordHaveBeenPassed(): void
     {
         /** @var MockObject|RequestFactory $requestFactoryMock */
         $requestFactoryMock = $this->createMock(RequestFactory::class);
@@ -179,7 +179,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetParameter()
+    public function canSetParameter(): void
     {
         $pageIndexerRequest = $this->getPageIndexerRequest();
         self::assertNull($pageIndexerRequest->getParameter('foo'), 'Parameter foo should be null when nothing was set');
@@ -192,7 +192,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canSetUserAgent()
+    public function canSetUserAgent(): void
     {
         $pageIndexerRequest = $this->getPageIndexerRequest();
 

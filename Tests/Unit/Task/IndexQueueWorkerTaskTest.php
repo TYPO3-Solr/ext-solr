@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Core\Environment;
 class IndexQueueWorkerTaskTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canGetWebRoot()
+    public function canGetWebRoot(): void
     {
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
             ->disableOriginalConstructor()
@@ -48,7 +48,7 @@ class IndexQueueWorkerTaskTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
+    public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable(): void
     {
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
             ->disableOriginalConstructor()

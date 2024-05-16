@@ -1,20 +1,25 @@
 <?php
 
+use ApacheSolrForTypo3\Solr\Middleware\PageIndexerInitialization;
+use ApacheSolrForTypo3\Solr\Middleware\SolrRoutingMiddleware;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 $requestMiddlewares = [
     'apache-solr-for-typo3/page-indexer-initialization' => [
-        'target' => \ApacheSolrForTypo3\Solr\Middleware\PageIndexerInitialization::class,
+        'target' => PageIndexerInitialization::class,
         'before' => ['typo3/cms-frontend/tsfe', 'typo3/cms-frontend/authentication'],
         'after' => ['typo3/cms-core/normalized-params-attribute'],
     ],
 ];
 
-$extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-    \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration::class
+$extensionConfiguration = GeneralUtility::makeInstance(
+    ExtensionConfiguration::class
 );
 if ($extensionConfiguration->getIsRouteEnhancerEnabled()) {
     $requestMiddlewares['apache-solr-for-typo3/solr-route-enhancer'] = [
-        'target' => \ApacheSolrForTypo3\Solr\Middleware\SolrRoutingMiddleware::class,
+        'target' => SolrRoutingMiddleware::class,
         'before' => [
             'typo3/cms-frontend/site',
         ],

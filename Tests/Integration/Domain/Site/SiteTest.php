@@ -36,7 +36,7 @@ class SiteTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetDefaultLanguage()
+    public function canGetDefaultLanguage(): void
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         /** @var Site $site */
@@ -45,7 +45,7 @@ class SiteTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canCreateInstanceWithRootSiteUidOK()
+    public function canCreateInstanceWithRootSiteUidOK(): void
     {
         /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
@@ -54,7 +54,7 @@ class SiteTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canCreateInstanceWithRootSiteUidNOK()
+    public function canCreateInstanceWithRootSiteUidNOK(): void
     {
         $this->expectException(InvalidArgumentException::class);
         /** @var SiteRepository $siteRepository */
@@ -63,7 +63,7 @@ class SiteTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canCreateInstanceWithNonRootSiteUidOK()
+    public function canCreateInstanceWithNonRootSiteUidOK(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_create_instance_with_non_root_site.csv');
         $this->expectException(InvalidArgumentException::class);
@@ -74,7 +74,7 @@ class SiteTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canCreateInstanceWithNonRootSiteUidNOK()
+    public function canCreateInstanceWithNonRootSiteUidNOK(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_create_instance_with_non_root_site.csv');
         $this->expectException(InvalidArgumentException::class);
@@ -85,7 +85,7 @@ class SiteTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetAvailableLanguageIds()
+    public function canGetAvailableLanguageIds(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_translations_for_root_site.csv');
 

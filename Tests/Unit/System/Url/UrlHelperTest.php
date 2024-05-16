@@ -58,7 +58,7 @@ class UrlHelperTest extends SetUpUnitTestCase
     }
     #[DataProvider('withoutQueryParameter')]
     #[Test]
-    public function testCanRemoveQueryParameter($input, $queryParameterToRemove, $expectedUrl)
+    public function testCanRemoveQueryParameter($input, $queryParameterToRemove, $expectedUrl): void
     {
         $urlHelper = new UrlHelper($input);
         $urlHelper = $urlHelper->withoutQueryParameter($queryParameterToRemove);
@@ -91,7 +91,7 @@ class UrlHelperTest extends SetUpUnitTestCase
      */
     #[DataProvider('getUrl')]
     #[Test]
-    public function testGetUrl($inputUrl, $expectedOutputUrl)
+    public function testGetUrl($inputUrl, $expectedOutputUrl): void
     {
         $urlHelper = new UrlHelper($inputUrl);
         self::assertSame($expectedOutputUrl, (string)$urlHelper, 'Can not get expected output url');
@@ -104,7 +104,7 @@ class UrlHelperTest extends SetUpUnitTestCase
         yield 'withQueries' => ['http://www.site.de/en/test?id=1&L=2'];
     }
     #[DataProvider('unmodifiedUrl')]
-    public function testGetUnmodifiedUrl($uri)
+    public function testGetUnmodifiedUrl($uri): void
     {
         $urlHelper = new UrlHelper($uri);
         self::assertSame($uri, (string)$urlHelper, 'Could not get unmodified url');

@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\Test;
 class StopWordParserTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canParseStopWords()
+    public function canParseStopWords(): void
     {
         $parser = new StopWordParser();
         $stopwords = $parser->parseJson(self::getFixtureContentByName('stopword.json'));

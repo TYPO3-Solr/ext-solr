@@ -34,7 +34,7 @@ abstract class AbstractRecordMovedEvent extends AbstractDataUpdateEvent
      *
      * @param int $pid
      */
-    public function setPreviousParentId(int $pid)
+    public function setPreviousParentId(int $pid): void
     {
         $this->previousParentId = $pid;
     }

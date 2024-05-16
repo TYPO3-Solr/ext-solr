@@ -40,7 +40,7 @@ class QueueItemRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canUpdateHasIndexingPropertiesFlagByItemUid()
+    public function canUpdateHasIndexingPropertiesFlagByItemUid(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/update_has_indexing_properties_flag.csv');
 
@@ -61,7 +61,7 @@ class QueueItemRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function deleteItemDeletesItemForEverySite()
+    public function deleteItemDeletesItemForEverySite(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_and_news_queueitems.csv');
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
@@ -72,7 +72,7 @@ class QueueItemRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canDeleteItemByPassingTypeOnly()
+    public function canDeleteItemByPassingTypeOnly(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_and_news_queueitems.csv');
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
@@ -83,7 +83,7 @@ class QueueItemRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canCountItems()
+    public function canCountItems(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_and_news_queueitems.csv');
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
@@ -94,7 +94,7 @@ class QueueItemRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canFindItems()
+    public function canFindItems(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_and_news_queueitems.csv');
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
@@ -130,7 +130,7 @@ class QueueItemRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function indexingPropertyIsKeptWhenItIsReferencedToAnotherQueueItem()
+    public function indexingPropertyIsKeptWhenItIsReferencedToAnotherQueueItem(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_keep_indexing_properties.csv');
 
@@ -168,7 +168,7 @@ class QueueItemRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canFlushErrorByItem()
+    public function canFlushErrorByItem(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_flush_error_by_item.csv');
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);

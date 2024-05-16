@@ -46,7 +46,7 @@ class SiteHashServiceTest extends IntegrationTestBase
 
     #[DataProvider('canResolveSiteHashAllowedSitesDataProvider')]
     #[Test]
-    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites)
+    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites): void
     {
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
         $allowedSites = $siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration(1, $allowedSitesConfiguration);

@@ -51,7 +51,7 @@ class EscapeHelperTest extends SetUpUnitTestCase
 
     #[DataProvider('escapeQueryDataProvider')]
     #[Test]
-    public function canEscapeAsExpected($input, $expectedOutput)
+    public function canEscapeAsExpected($input, $expectedOutput): void
     {
         $escapeHelper = new EscapeService();
         $output = $escapeHelper::escape($input);

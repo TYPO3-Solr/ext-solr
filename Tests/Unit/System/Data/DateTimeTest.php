@@ -26,14 +26,14 @@ use PHPUnit\Framework\Attributes\Test;
 class DateTimeTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function testCanWrapDateTimeAndConvertToString()
+    public function testCanWrapDateTimeAndConvertToString(): void
     {
         $proxy = new DateTime('2003-12-13T18:30:02Z', new DateTimeZone('UTC'));
         self::assertSame('2003-12-13T18:30:02+0000', (string)$proxy);
     }
 
     #[Test]
-    public function testCanDispatchCallToUnderlyingDateTime()
+    public function testCanDispatchCallToUnderlyingDateTime(): void
     {
         $proxy = new DateTime('2003-12-13T18:30:02Z', new DateTimeZone('UTC'));
         self::assertSame('2003-12-13T18:30:02+0000', $proxy->format(\DateTime::ISO8601));

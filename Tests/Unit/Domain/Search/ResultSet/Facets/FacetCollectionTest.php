@@ -29,7 +29,7 @@ use PHPUnit\Framework\Attributes\Test;
 class FacetCollectionTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canAddAndRetrieveFacetByKey()
+    public function canAddAndRetrieveFacetByKey(): void
     {
         $facetCollection = new FacetCollection();
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -44,7 +44,7 @@ class FacetCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canAddAndRetrieveFacetByPosition()
+    public function canAddAndRetrieveFacetByPosition(): void
     {
         $facetCollection = new FacetCollection();
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -59,7 +59,7 @@ class FacetCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRetrieveFacetOfCollectionCopyByKey()
+    public function canRetrieveFacetOfCollectionCopyByKey(): void
     {
         $facetCollection = new FacetCollection();
         $resultSetMock = $this->createMock(SearchResultSet::class);
@@ -75,7 +75,7 @@ class FacetCollectionTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRetrieveFacetOfCollectionCopyByPosition()
+    public function canRetrieveFacetOfCollectionCopyByPosition(): void
     {
         $facetCollection = new FacetCollection();
         $resultSetMock = $this->createMock(SearchResultSet::class);

@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Test;
 class DateRangeFacetParserTest extends SetUpFacetParser
 {
     #[Test]
-    public function facetIsCreated()
+    public function facetIsCreated(): void
     {
         $facetConfiguration = [
             'myCreated.' => [

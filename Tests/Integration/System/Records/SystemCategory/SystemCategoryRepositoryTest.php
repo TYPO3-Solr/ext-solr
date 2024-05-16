@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SystemCategoryRepositoryTest extends IntegrationTestBase
 {
     #[Test]
-    public function canFindOneByParentCategory()
+    public function canFindOneByParentCategory(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_category.csv');
 

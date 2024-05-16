@@ -39,7 +39,7 @@ class TypoScriptConfigurationTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function testCanUsePlainValuesFromConfiguration()
+    public function testCanUsePlainValuesFromConfiguration(): void
     {
         $configuration = [
             'plugin.' => [

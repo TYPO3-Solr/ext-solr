@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\System\Logging;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
+use Stringable;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -57,10 +58,10 @@ class SolrLogManager implements LoggerInterface
      * Logs with an arbitrary level.
      *
      * @param mixed $level
-     * @param string|\Stringable $message
+     * @param string|Stringable $message
      * @param array $context
      */
-    public function log($level, string|\Stringable $message, array $context = []): void
+    public function log($level, string|Stringable $message, array $context = []): void
     {
         $this->getLogger()->log($level, $message, $context);
         $this->debugWriter->write($level, $message, $context);

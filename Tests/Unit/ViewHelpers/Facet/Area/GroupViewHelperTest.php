@@ -30,7 +30,7 @@ use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 class GroupViewHelperTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canMakeOnlyExpectedFacetsAvailableInStaticContext()
+    public function canMakeOnlyExpectedFacetsAvailableInStaticContext(): void
     {
         $facetCollection = $this->getTestFacetCollection();
 
@@ -53,7 +53,7 @@ class GroupViewHelperTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canMakeOnlyExpectedFacetsAvailableInstanceContext()
+    public function canMakeOnlyExpectedFacetsAvailableInstanceContext(): void
     {
         $facetCollection = $this->getTestFacetCollection();
 

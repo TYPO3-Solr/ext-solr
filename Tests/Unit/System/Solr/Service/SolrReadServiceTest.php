@@ -58,7 +58,7 @@ class SolrReadServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function pingIsOnlyDoingOnePingCallWhenCacheIsEnabled()
+    public function pingIsOnlyDoingOnePingCallWhenCacheIsEnabled(): void
     {
         // we fake a 200 OK response and expect that
         $this->responseMock->expects(self::once())->method('getStatusCode')->willReturn(200);
@@ -68,7 +68,7 @@ class SolrReadServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function pingIsOnlyDoingManyPingCallsWhenCacheIsDisabled()
+    public function pingIsOnlyDoingManyPingCallsWhenCacheIsDisabled(): void
     {
         // we fake a 200 OK response and expect that
         $this->responseMock->expects(self::exactly(2))->method('getStatusCode')->willReturn(200);
@@ -78,7 +78,7 @@ class SolrReadServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function searchMethodIsTriggeringGetRequest()
+    public function searchMethodIsTriggeringGetRequest(): void
     {
         $this->responseMock->expects(self::once())->method('getStatusCode')->willReturn(200);
         $this->clientMock->expects(self::once())->method('createRequest')->willReturn($this->createMock(Request::class));
@@ -103,7 +103,7 @@ class SolrReadServiceTest extends SetUpUnitTestCase
     public function searchThrowsExpectedExceptionForStatusCode(
         string $exceptionClass,
         int $statusCode
-    ) {
+    ): void {
         $this->responseMock->expects(self::any())->method('getStatusCode')->willReturn($statusCode);
         $this->clientMock->expects(self::once())->method('createRequest')->willReturn($this->createMock(Request::class));
 

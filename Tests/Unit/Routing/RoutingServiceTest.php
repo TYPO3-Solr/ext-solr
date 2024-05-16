@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\Site\Entity\Site;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-#[CoversClass(\ApacheSolrForTypo3\Solr\Routing\RoutingService::class)]
+#[CoversClass(RoutingService::class)]
 class RoutingServiceTest extends SetUpUnitTestCase
 {
     /**
@@ -51,7 +51,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function defaultValueSeparatorIsAvailableTest()
+    public function defaultValueSeparatorIsAvailableTest(): void
     {
         $routingService = new RoutingService([]);
 
@@ -62,7 +62,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canOverrideValueSeparatorTest()
+    public function canOverrideValueSeparatorTest(): void
     {
         $routingService = new RoutingService(
             [
@@ -77,7 +77,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function combinedFacetsAreInAlphabeticOrderTest()
+    public function combinedFacetsAreInAlphabeticOrderTest(): void
     {
         $routingService = new RoutingService([]);
 
@@ -88,7 +88,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function combiningFacetsUsingCustomSeparatorTest()
+    public function combiningFacetsUsingCustomSeparatorTest(): void
     {
         $routingService = new RoutingService(
             [
@@ -103,7 +103,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canConvertStringToUriTest()
+    public function canConvertStringToUriTest(): void
     {
         $routingService = new RoutingService();
         self::assertNotNull(
@@ -126,7 +126,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function testDeflateFilterQueryParameterTest()
+    public function testDeflateFilterQueryParameterTest(): void
     {
         $routingService = $this->getRoutingService();
 
@@ -166,7 +166,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function testInflateFilterQueryParameterTest()
+    public function testInflateFilterQueryParameterTest(): void
     {
         $routingService = $this->getRoutingService();
 
@@ -206,7 +206,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function testIfFilterParametersCanBeMaskedTest()
+    public function testIfFilterParametersCanBeMaskedTest(): void
     {
         $routingService = $this->getRoutingService();
         $queryParameters = [
@@ -242,7 +242,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function testIfFilterParametersCanBeUnmaskedTest()
+    public function testIfFilterParametersCanBeUnmaskedTest(): void
     {
         $routingService = $this->getRoutingService();
         $queryParameters = [
@@ -278,7 +278,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function testIfPathParametersMovedInfoQueryParameters()
+    public function testIfPathParametersMovedInfoQueryParameters(): void
     {
         $uri = new Uri('http://domain.example/');
         $request = new ServerRequest(
@@ -306,7 +306,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function testIfMultiplePathParametersMovedInfoQueryParameters()
+    public function testIfMultiplePathParametersMovedInfoQueryParameters(): void
     {
         $uri = new Uri('http://domain.example/');
         $request = new ServerRequest(
@@ -334,7 +334,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function testIfMultiplePathParametersAndMaskedParametersMovedInfoQueryParameters()
+    public function testIfMultiplePathParametersAndMaskedParametersMovedInfoQueryParameters(): void
     {
         $uri = new Uri('http://domain.example/candy?taste=sweet,sour');
         $request = new ServerRequest(

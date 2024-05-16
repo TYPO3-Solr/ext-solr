@@ -57,7 +57,7 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
 
     #[DataProvider('canRenderCreateHighlightSnippedDataProvider')]
     #[Test]
-    public function canRenderCreateHighlightSnipped(array $input, $expectedOutput, $configuredWrap)
+    public function canRenderCreateHighlightSnipped(array $input, $expectedOutput, $configuredWrap): void
     {
         /** @var RenderingContextInterface|MockObject $renderingContextMock */
         $renderingContextMock = $this->createMock(RenderingContextInterface::class);

@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class PageIndexerResponseTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function getResultReturnsSingleResult()
+    public function getResultReturnsSingleResult(): void
     {
         $action = 'testAction';
         $result = 'testResult';
@@ -42,7 +42,7 @@ class PageIndexerResponseTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getResultReturnsAllResults()
+    public function getResultReturnsAllResults(): void
     {
         $request = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $request->addActionResult('action1', 'result1');

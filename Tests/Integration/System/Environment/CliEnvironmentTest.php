@@ -29,7 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class CliEnvironmentTest extends IntegrationTestBase
 {
     #[Test]
-    public function canInitialize()
+    public function canInitialize(): void
     {
         self::assertFalse(defined('TYPO3_PATH_WEB'));
 
@@ -43,7 +43,7 @@ class CliEnvironmentTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canNotInitializeTwiceWithTwoInstances()
+    public function canNotInitializeTwiceWithTwoInstances(): void
     {
         $this->expectException(WebRootAllReadyDefinedException::class);
         self::assertFalse(defined('TYPO3_PATH_WEB'));
@@ -56,7 +56,7 @@ class CliEnvironmentTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canInitializeTwiceWhenUsedAsSingleton()
+    public function canInitializeTwiceWhenUsedAsSingleton(): void
     {
         $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
 

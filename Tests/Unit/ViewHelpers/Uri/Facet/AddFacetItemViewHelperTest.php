@@ -27,7 +27,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class AddFacetItemViewHelperTest extends SetUpFacetItemViewHelper
 {
     #[Test]
-    public function addFacetItemWillUseUriBuilderAsExpected()
+    public function addFacetItemWillUseUriBuilderAsExpected(): void
     {
         $facet = $this->getTestColorFacet();
 

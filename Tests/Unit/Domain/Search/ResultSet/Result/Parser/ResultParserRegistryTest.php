@@ -39,7 +39,7 @@ class ResultParserRegistryTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canRegisterAndRetrieveParserWithAHigherPriority()
+    public function canRegisterAndRetrieveParserWithAHigherPriority(): void
     {
         $fakeResultSet = $this->createMock(SearchResultSet::class);
         $this->registry->registerParser(TestResultParser::class, 200);
@@ -48,7 +48,7 @@ class ResultParserRegistryTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function hasParser()
+    public function hasParser(): void
     {
         $this->registry->registerParser(TestResultParser::class, 200);
         self::assertTrue($this->registry->hasParser(TestResultParser::class, 200), 'hasParser returned unexpected result for a parser that should exist');

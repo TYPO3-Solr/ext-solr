@@ -71,7 +71,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
     }
 
     #[Test]
-    public function facetIsCreated()
+    public function facetIsCreated(): void
     {
         $facetConfiguration = [
             'age.' => [
@@ -99,7 +99,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
     }
 
     #[Test]
-    public function facetIsNotActive()
+    public function facetIsNotActive(): void
     {
         $facetConfiguration = [
             'age.' => [
@@ -128,7 +128,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
     }
 
     #[Test]
-    public function facetIsActive()
+    public function facetIsActive(): void
     {
         $facetConfiguration = [
             'age.' => [
@@ -157,7 +157,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
     }
 
     #[Test]
-    public function optionIsActive()
+    public function optionIsActive(): void
     {
         $facetConfiguration = [
             'age.' => [

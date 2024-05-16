@@ -37,7 +37,7 @@ class RequirementsServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getRequirementsMetReturnTrueWhenNothingConfigured()
+    public function getRequirementsMetReturnTrueWhenNothingConfigured(): void
     {
         $facet = $this->createMock(OptionsFacet::class);
         $service = new RequirementsService();
@@ -45,7 +45,7 @@ class RequirementsServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getAllRequirementsMetIsReturnsFalseWhenARequirementIsNotMet()
+    public function getAllRequirementsMetIsReturnsFalseWhenARequirementIsNotMet(): void
     {
         $resultSet = new SearchResultSet();
         $colorConfig = [];
@@ -67,7 +67,7 @@ class RequirementsServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getAllRequirementsMetIsReturnsTrueWhenRequirementIsMet()
+    public function getAllRequirementsMetIsReturnsTrueWhenRequirementIsMet(): void
     {
         $resultSet = new SearchResultSet();
         $colorConfig = [];
@@ -94,7 +94,7 @@ class RequirementsServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getAllRequirementsMetIsReturnsTrueWhenRequirementIsMetForMultipleFacets()
+    public function getAllRequirementsMetIsReturnsTrueWhenRequirementIsMetForMultipleFacets(): void
     {
         $resultSet = new SearchResultSet();
         $colorFacet = new OptionsFacet($resultSet, 'mycolor', 'colors_stringM', 'Colors', []);
@@ -129,7 +129,7 @@ class RequirementsServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getAllRequirementsMetIsReturnsFalseWhenOnlyOneConfiguredRequirementIsMet()
+    public function getAllRequirementsMetIsReturnsFalseWhenOnlyOneConfiguredRequirementIsMet(): void
     {
         $resultSet = new SearchResultSet();
         $colorFacet = new OptionsFacet($resultSet, 'mycolor', 'colors_stringM', 'Colors', []);
@@ -161,7 +161,7 @@ class RequirementsServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getAllRequirementsMetIsReturnsFalseWhenRequiredFacetHasADifferentValue()
+    public function getAllRequirementsMetIsReturnsFalseWhenRequiredFacetHasADifferentValue(): void
     {
         $resultSet = new SearchResultSet();
         $colorConfig = [];
@@ -187,7 +187,7 @@ class RequirementsServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getAllRequirementsMetIsReturnsFalseIfRequiredFacetValueIsNotSelected()
+    public function getAllRequirementsMetIsReturnsFalseIfRequiredFacetValueIsNotSelected(): void
     {
         $resultSet = new SearchResultSet();
         $colorConfig = [];
@@ -213,7 +213,7 @@ class RequirementsServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function exceptionIsThrownForRequirementWithNotExistingFacet()
+    public function exceptionIsThrownForRequirementWithNotExistingFacet(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Requirement for unexisting facet configured');
@@ -234,7 +234,7 @@ class RequirementsServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canNegateRequirementsResult()
+    public function canNegateRequirementsResult(): void
     {
         $resultSet = new SearchResultSet();
         $colorConfig = [];

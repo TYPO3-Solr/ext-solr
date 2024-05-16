@@ -28,7 +28,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class RelevanceViewHelperTest extends SetUpUnitTestCase
 {
     #[Test]
-    public function canCalculateRelevance()
+    public function canCalculateRelevance(): void
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
         $resultSetMock->expects(self::any())->method('getMaximumScore')->willReturn(5.5);
@@ -47,7 +47,7 @@ class RelevanceViewHelperTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canCalculateRelevanceFromPassedMaximumScore()
+    public function canCalculateRelevanceFromPassedMaximumScore(): void
     {
         $resultSetMock = $this->createMock(SearchResultSet::class);
         $resultSetMock->expects(self::never())->method('getMaximumScore');

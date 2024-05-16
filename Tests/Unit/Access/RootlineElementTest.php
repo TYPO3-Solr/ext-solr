@@ -111,7 +111,7 @@ class RootlineElementTest extends SetUpUnitTestCase
      */
     #[DataProvider('validRootLineRePresentations')]
     #[Test]
-    public function canParse($stringRepresentation, $expectedType, $expectedGroups, $expectedPageId, $expectedToString)
+    public function canParse($stringRepresentation, $expectedType, $expectedGroups, $expectedPageId, $expectedToString): void
     {
         $rootLine = new RootlineElement($stringRepresentation);
 

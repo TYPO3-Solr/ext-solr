@@ -42,14 +42,14 @@ class SiteRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetAllSites()
+    public function canGetAllSites(): void
     {
         $sites = $this->siteRepository->getAvailableSites();
         self::assertSame(2, count($sites), 'Expected to retrieve two sites from default tests setup. Note: The third site is not enabled for EXT:solr.');
     }
 
     #[Test]
-    public function canGetAllPagesFromSite()
+    public function canGetAllPagesFromSite(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_all_pages_from_sites.csv');
         $site = $this->siteRepository->getFirstAvailableSite();
@@ -57,14 +57,14 @@ class SiteRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetSiteByRootPageIdExistingRoot()
+    public function canGetSiteByRootPageIdExistingRoot(): void
     {
         $site = $this->siteRepository->getSiteByRootPageId(1);
         self::assertContainsOnlyInstancesOf(Site::class, [$site], 'Could not retrieve site from root page');
     }
 
     #[Test]
-    public function canGetSiteByRootPageIdNonExistingRoot()
+    public function canGetSiteByRootPageIdNonExistingRoot(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
@@ -72,7 +72,7 @@ class SiteRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetSiteByPageIdExistingPage()
+    public function canGetSiteByPageIdExistingPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_site_by_page_id.csv');
         $site = $this->siteRepository->getSiteByPageId(2);
@@ -80,7 +80,7 @@ class SiteRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetSiteByPageIdNonExistingPage()
+    public function canGetSiteByPageIdNonExistingPage(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_site_by_page_id.csv');
@@ -88,7 +88,7 @@ class SiteRepositoryTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetSiteWithDomainFromSiteConfiguration()
+    public function canGetSiteWithDomainFromSiteConfiguration(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_site_by_page_id.csv');
         $site = $this->siteRepository->getSiteByPageId(1);

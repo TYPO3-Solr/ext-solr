@@ -37,14 +37,14 @@ class ManagerTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function resolveActionReturnsNullWhenNoHandlerIsRegistered()
+    public function resolveActionReturnsNullWhenNoHandlerIsRegistered(): void
     {
         $handler = $this->manager->resolveAction('foo');
         self::assertNull($handler, 'Unregistered action should return null when it will be resolved');
     }
 
     #[Test]
-    public function exceptionIsThrownWhenInvalidActionHandlerIsRetrieved()
+    public function exceptionIsThrownWhenInvalidActionHandlerIsRetrieved(): void
     {
         Manager::registerFrontendHelper('test', InvalidFakeHelper::class);
         $this->expectException(RuntimeException::class);

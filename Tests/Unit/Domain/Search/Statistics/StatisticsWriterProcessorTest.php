@@ -79,7 +79,7 @@ class StatisticsWriterProcessorTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canWriteExpectedStatisticsData()
+    public function canWriteExpectedStatisticsData(): void
     {
         $fakeTSFE = $this->createMock(TypoScriptFrontendController::class);
         $fakeTSFE->fe_user = $this->createMock(FrontendUserAuthentication::class);

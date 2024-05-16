@@ -143,8 +143,9 @@ abstract class AbstractModuleController extends ActionController
      * Set up the doc header properly here
      *
      * @throws UnexpectedTYPO3SiteInitializationException
+     * @param ViewInterface $view
      */
-    protected function initializeView(ViewInterface $view): void
+    protected function initializeView($view): void
     {
         $sites = $this->siteRepository->getAvailableSites();
 
