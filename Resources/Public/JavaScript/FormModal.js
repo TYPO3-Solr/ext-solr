@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Modal from 'TYPO3/CMS/Backend/Modal';
+import Modal from '@typo3/backend/modal.js';
 
 $(document).ready(() => {
   $('.t3js-modal-formsubmit-trigger').click(function(){
