@@ -210,7 +210,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             $tsfe,
             $pageInformation,
             $pageArguments,
-            $tsfe,
+            $siteLanguage,
             $this->generatePageUrl($pageArguments, $pageInformation, $tsfe),
             $this->getAccessRootline(),
             $pageInformation->getMountPoint()
