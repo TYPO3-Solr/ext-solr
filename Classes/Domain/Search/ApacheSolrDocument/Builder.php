@@ -25,8 +25,11 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Core\Routing\PageArguments;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
  * Builder class to build an ApacheSolrDocument
@@ -43,19 +46,22 @@ class Builder
      * This method can be used to build a Document from a TYPO3 page.
      */
     public function fromPage(
-        TypoScriptFrontendController $page,
+        PageInformation $pageInformation,
+        PageArguments $pageArguments,
+        SiteLanguage $siteLanguage,
+        TypoScriptFrontendController $tsfe,
         string $url,
         Rootline $pageAccessRootline,
         string $mountPointParameter = '',
     ): Document {
-        $pageId = $page->id;
-        $pageRecord = $page->page;
+        $pageId = $pageInformation->getId();
+        $pageRecord = $pageInformation->getPageRecord();
 
         $document = GeneralUtility::makeInstance(Document::class);
         $site = $this->getSiteByPageId($pageId);
 
         $accessGroups = $this->getDocumentIdGroups($pageAccessRootline);
-        $documentId = $this->getPageDocumentId($page, $accessGroups, $mountPointParameter);
+        $documentId = $this->getPageDocumentId($pageInformation, $pageArguments, $siteLanguage, $accessGroups, $mountPointParameter);
 
         $document->setField('id', $documentId);
         $document->setField('site', $site->getDomain());
@@ -71,7 +77,7 @@ class Builder
         $variantId = $this->variantIdBuilder->buildFromTypeAndUid('pages', $pageId, $pageRecord, $site, $document);
         $document->setField('variantId', $variantId);
 
-        $document->setField('typeNum', (int)$page->getPageArguments()->getPageType());
+        $document->setField('typeNum', (int)$pageArguments->getPageType());
         $document->setField('created', $pageRecord['crdate']);
         $document->setField('changed', $pageRecord['SYS_LASTCHANGED']);
 
@@ -84,7 +90,7 @@ class Builder
 
         // content
         // @extensionScannerIgnoreLine
-        $contentExtractor = $this->getExtractorForPageContent($page->content);
+        $contentExtractor = $this->getExtractorForPageContent($tsfe->content);
         $document->setField('title', $contentExtractor->getPageTitle());
         $document->setField('subTitle', $pageRecord['subtitle']);
         $document->setField('navTitle', $pageRecord['nav_title']);
@@ -153,9 +159,9 @@ class Builder
     /**
      * @throws DBALException
      */
-    protected function getPageDocumentId(TypoScriptFrontendController $frontendController, string $accessGroups, string $mountPointParameter): string
+    protected function getPageDocumentId(PageInformation $pageInformation, PageArguments $pageArguments, SiteLanguage $siteLanguage, string $accessGroups, string $mountPointParameter): string
     {
-        return Util::getPageDocumentId($frontendController->id, (int)$frontendController->getPageArguments()->getPageType(), $frontendController->getLanguage()->getLanguageId(), $accessGroups, $mountPointParameter);
+        return Util::getPageDocumentId($pageInformation->getId(), (int)$pageArguments->getPageType(), $siteLanguage->getLanguageId(), $accessGroups, $mountPointParameter);
     }
 
     /**
