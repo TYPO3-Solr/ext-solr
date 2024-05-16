@@ -38,7 +38,7 @@ class IdBuilderTest extends SetUpUnitTestCase
     {
         $build = new IdBuilder(new NoopEventDispatcher());
         $variantId = $build->buildFromTypeAndUid('pages', 4711, [], $this->createMock(Site::class), new Document());
-        self::assertSame('c523304ea47711019595d2bb352b623d1db40427/pages/4711', $variantId);
+        self::assertSame('6b00c7b4c2763ee0fb96be298ae3b00d80fcd013/pages/4711', $variantId);
     }
 
     #[Test]

@@ -34,6 +34,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -55,12 +56,10 @@ class SuggestService
     protected QueryBuilder $queryBuilder;
 
     public function __construct(
-        TypoScriptFrontendController $tsfe,
         SearchResultSetService $searchResultSetService,
         TypoScriptConfiguration $typoScriptConfiguration,
         QueryBuilder $queryBuilder = null
     ) {
-        $this->tsfe = $tsfe;
         $this->searchService = $searchResultSetService;
         $this->typoScriptConfiguration = $typoScriptConfiguration;
         $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(
@@ -77,13 +76,13 @@ class SuggestService
      * @throws NoSolrConnectionFoundException
      * @throws DBALException
      */
-    public function getSuggestions(SearchRequest $searchRequest, array $additionalFilters = []): array
+    public function getSuggestions(ServerRequestInterface $serverRequest, SearchRequest $searchRequest, array $additionalFilters = []): array
     {
-        $requestId = $this->tsfe->getRequestedId();
+        $requestId = (int)$serverRequest->getAttribute('routing')?->getPageId();
         $frontendUserGroupIds = Util::getFrontendUserGroups();
 
         $suggestQuery = $this->queryBuilder->buildSuggestQuery($searchRequest->getRawUserQuery(), $additionalFilters, $requestId, $frontendUserGroupIds);
-        $solrSuggestions = $this->getSolrSuggestions($suggestQuery, $searchRequest);
+        $solrSuggestions = $this->getSolrSuggestions($serverRequest, $suggestQuery, $searchRequest);
 
         if ($solrSuggestions === []) {
             return ['status' => false];
@@ -148,10 +147,10 @@ class SuggestService
      * @throws NoSolrConnectionFoundException
      * @throws DBALException
      */
-    protected function getSolrSuggestions(SuggestQuery $suggestQuery, SearchRequest $searchRequest): array
+    protected function getSolrSuggestions(ServerRequestInterface $request, SuggestQuery $suggestQuery, SearchRequest $searchRequest): array
     {
-        $pageId = $this->tsfe->getRequestedId();
-        $languageId = $this->tsfe->getLanguage()->getLanguageId();
+        $pageId = (int)$request->getAttribute('routing')?->getPageId();
+        $languageId = (int)$request->getAttribute('language')->getLanguageId();
         $solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($pageId, $languageId);
         $search = GeneralUtility::makeInstance(Search::class, $solr);
 
