@@ -274,7 +274,9 @@ class PagesRepository extends AbstractRepository
                 'mount_pid_ol AS mountPageOverlayed'
             )
             ->from($this->table)
-            ->add('where', $whereClause);
+            ->where(
+                QueryHelper::stripLogicalOperatorPrefix($whereClause)
+            );
 
         $this->addDefaultLanguageUidConstraint($queryBuilder);
 

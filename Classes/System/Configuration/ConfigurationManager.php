@@ -15,7 +15,11 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,6 +38,26 @@ class ConfigurationManager implements SingletonInterface
         $this->typoScriptConfigurations = [];
     }
 
+    public function getTypoScriptFromRequest(ServerRequestInterface $request): TypoScriptConfiguration
+    {
+        /** @var FrontendTypoScript $configurationArray */
+        $frontendTypoScript = $request->getAttribute('frontend.typoscript');
+        if ($frontendTypoScript) {
+            return $this->getTypoScriptConfigurationInstance($configurationArray->getSetupArray());
+        }
+        $extbaseManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::class);
+        $extbaseManager->setRequest($request);
+        $fullConfig = $extbaseManager->getConfiguration(
+            \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
+        );
+        return $this->getTypoScriptConfigurationInstance($fullConfig);
+    }
+
+    public function createConfiguration(): TypoScriptConfiguration
+    {
+        return $this->getTypoScriptFromRequest($GLOBALS['TYPO3_REQUEST']);
+    }
+
     /**
      * Retrieves the TypoScriptConfiguration object from configuration array, pageId, languageId and TypoScript
      * path that is used in the current context.
@@ -44,6 +68,16 @@ class ConfigurationManager implements SingletonInterface
         int $contextLanguageId = 0,
         string $contextTypoScriptPath = '',
     ): TypoScriptConfiguration {
+        if ($contextPageId !== null) {
+            $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($contextPageId);
+            $language = $site->getLanguageById($contextLanguageId);
+            $uri = $site->getRouter()->generateUri($contextPageId, ['_language' => $language]);
+            $request = (new ServerRequest($uri, 'GET'))
+                ->withAttribute('site', $site)
+                ->withQueryParams(['id' => $contextPageId])
+                ->withAttribute('language', $language);
+            return $this->getTypoScriptFromRequest($request);
+        }
         if ($configurationArray == null) {
             if (isset($this->typoScriptConfigurations['default'])) {
                 $configurationArray = $this->typoScriptConfigurations['default'];
