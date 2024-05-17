@@ -7,9 +7,9 @@
   "homepage": "https://www.typo3-solr.com",
   "authors": [
     {
-      "name": "Ingo Renner",
-      "email": "ingo@typo3.org",
-      "role": "Lead Developer"
+      "name": "dkd Internet Services GmbH",
+      "email": "solr-eb-support@dkd.de",
+      "homepage": "https://www.dkd.de"
     }
   ],
   "support": {
