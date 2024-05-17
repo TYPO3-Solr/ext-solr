@@ -74,6 +74,9 @@ class PageIndexerTest extends IntegrationTestBase
         int $expectedNumFound,
         array $expectedAccessFieldValues,
         array $expectedContents,
+        int $expectedNumFoundAnonymousUser,
+        string $userGroupToCheckAccessFilter,
+        int $expectedNumFoundLoggedInUser,
         string $core = 'core_en'
     ): void {
         $this->cleanUpSolrServerAndAssertEmpty($core);
@@ -122,6 +125,18 @@ class PageIndexerTest extends IntegrationTestBase
                 'Wrong content in document ' . ($index + 1)
             );
         }
+
+        $solrContent = json_decode(
+            file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $core . '/select?q=*:*&fl=uid&sort=access%20asc&fq={!typo3access}0'),
+            true
+        );
+        self::assertEquals($expectedNumFoundAnonymousUser, $solrContent['response']['numFound'], 'Protected contents not filtered correctly');
+
+        $solrContent = json_decode(
+            file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $core . '/select?q=*:*&fl=uid&sort=access%20asc&fq={!typo3access}' . $userGroupToCheckAccessFilter),
+            true
+        );
+        self::assertEquals($expectedNumFoundLoggedInUser, $solrContent['response']['numFound'], 'Protected contents not returned correctly');
     }
 
     /**
@@ -130,89 +145,110 @@ class PageIndexerTest extends IntegrationTestBase
     public static function canIndexPageWithAccessProtectedContentIntoSolrDataProvider(): Traversable
     {
         yield 'protected page' => [
-            'can_index_access_protected_page',
-            1,
-            [
+            'fixture' => 'can_index_access_protected_page',
+            'expectedNumFound' => 1,
+            'expectedAccessFieldValues' => [
                 '2:1/c:0',
             ],
-            [
+            'expectedContents' => [
                 'public content of protected page',
             ],
+            'expectedNumFoundAnonymousUser' => 0,
+            'userGroupToCheckAccessFilter' => '0,1',
+            'expectedNumFoundLoggedInUser' => 1,
         ];
 
         yield 'page for any login(-2)' => [
-            'can_index_access_protected_page_show_at_any_login',
-            1,
-            [
+            'fixture' => 'can_index_access_protected_page_show_at_any_login',
+            'expectedNumFound' => 1,
+            'expectedAccessFieldValues' => [
                 '2:-2/c:0',
             ],
-            [
+            'expectedContents' => [
                 'access restricted content for any login',
             ],
+            'expectedNumFoundAnonymousUser' => 0,
+            'userGroupToCheckAccessFilter' => '-2,0,33',
+            'expectedNumFoundLoggedInUser' => 1,
         ];
 
         yield 'protected page with protected content' => [
-            'can_index_access_protected_page_with_protected_contents',
-            2,
-            [
+            'fixture' => 'can_index_access_protected_page_with_protected_contents',
+            'expectedNumFound' => 2,
+            'expectedAccessFieldValues' => [
                 '2:1/c:0',
                 '2:1/c:2',
             ],
-            [
+            'expectedContents' => [
                 'public content of protected page',
                 'public content of protected pageprotected content of protected page',
             ],
+            'expectedNumFoundAnonymousUser' => 0,
+            'userGroupToCheckAccessFilter' => '0,1,2',
+            'expectedNumFoundLoggedInUser' => 2,
         ];
 
         yield 'translation of protected page with protected content' => [
-            'can_index_access_protected_page_with_protected_contents',
-            2,
-            [
+            'fixture' => 'can_index_access_protected_page_with_protected_contents',
+            'expectedNumFound' => 2,
+            'expectedAccessFieldValues' => [
                 '2:1/c:0',
                 '2:1/c:2',
             ],
-            [
+            'expectedContents' => [
                 'public content of protected page de',
                 'public content of protected page deprotected content of protected page de',
             ],
+            'expectedNumFoundAnonymousUser' => 0,
+            'userGroupToCheckAccessFilter' => '0,1,2',
+            'expectedNumFoundLoggedInUser' => 2,
             'core_de',
         ];
 
         yield 'public page with protected content and global content' => [
-            'can_index_page_with_protected_content',
-            2,
-            [
+            'fixture' => 'can_index_page_with_protected_content',
+            'expectedNumFound' => 2,
+            'expectedAccessFieldValues' => [
                 'c:0',
                 'c:1',
             ],
-            [
+            'expectedContents' => [
                 'public ce',
                 'protected cepublic ce',
             ],
+            'expectedNumFoundAnonymousUser' => 1,
+            'userGroupToCheckAccessFilter' => '0,1',
+            'expectedNumFoundLoggedInUser' => 2,
         ];
 
         yield 'public page with protected and hide at login content' => [
-            'can_index_page_with_protected_and_hideatlogin_content',
-            2,
-            [
+            'fixture' => 'can_index_page_with_protected_and_hideatlogin_content',
+            'expectedNumFound' => 2,
+            'expectedAccessFieldValues' => [
                 'c:0',
                 'c:1',
             ],
-            [
+            'expectedContents' => [
                 'hide at login content',
                 'protected ce',
             ],
+            'expectedNumFoundAnonymousUser' => 1,
+            'userGroupToCheckAccessFilter' => '0,1',
+            'expectedNumFoundLoggedInUser' => 2,
         ];
 
         yield 'page protected by extend to subpages' => [
-            'can_index_sub_page_of_protected_page_with_extend_to_subpage',
-            1,
-            [
+            'fixture' => 'can_index_sub_page_of_protected_page_with_extend_to_subpage',
+            'expectedNumFound' => 1,
+            'expectedAccessFieldValues' => [
                 '2:1/c:0',
             ],
-            [
+            'expectedContents' => [
                 'public content of protected page',
             ],
+            'expectedNumFoundAnonymousUser' => 0,
+            'userGroupToCheckAccessFilter' => '0,1',
+            'expectedNumFoundLoggedInUser' => 1,
         ];
     }
 
