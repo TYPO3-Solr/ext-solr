@@ -19,12 +19,13 @@ namespace ApacheSolrForTypo3\Solr\System\Language;
 
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class FrontendOverlayService
@@ -36,23 +37,15 @@ class FrontendOverlayService
      */
     public function __construct(
         protected readonly TCAService $tcaService,
-        protected readonly TypoScriptFrontendController $tsfe
+        protected readonly Context $context
     ) {}
 
     /**
      * Return the translated record
-     *
-     * @throws AspectNotFoundException
      */
     public function getOverlay(string $tableName, array $record): ?array
     {
-        /** @var LanguageAspect $currentLanguageAspect */
-        $currentLanguageAspect = $this->tsfe->getContext()->getAspect('language');
-        //        if ($tableName === 'pages') {
-        //            return $this->tsfe->sys_page->getPageOverlay($record, $currentLanguageAspect);
-        //        }
-
-        return $this->tsfe->sys_page->getLanguageOverlay($tableName, $record, $currentLanguageAspect);
+        return GeneralUtility::makeInstance(PageRepository::class, $this->context)->getLanguageOverlay($tableName, $record);
     }
 
     /**
@@ -67,13 +60,13 @@ class FrontendOverlayService
         string $field,
         int $uid
     ): int {
-        $contextsLanguageId = $this->tsfe->getContext()->getPropertyFromAspect('language', 'id');
+        $contextsLanguageId = $this->context->getPropertyFromAspect('language', 'id');
         // when no language is set at all we do not need to overlay
         if ($contextsLanguageId === null) {
             return $uid;
         }
         // when no language is set we can return the passed recordUid
-        if (!($contextsLanguageId > 0)) {
+        if ($contextsLanguageId <= 0) {
             return $uid;
         }
 
@@ -89,22 +82,14 @@ class FrontendOverlayService
     }
 
     /**
-     * This method retrieves the _PAGES_OVERLAY_UID or _LOCALIZED_UID from the localized record.
-     *
-     * @throws AspectNotFoundException
+     * This method retrieves the _LOCALIZED_UID from the localized record.
      */
     protected function getLocalRecordUidFromOverlay(string $localTableName, array $originalRecord): int
     {
         $overlayRecord = $this->getOverlay($localTableName, $originalRecord);
-
-        // when there is a _PAGES_OVERLAY_UID | _LOCALIZED_UID in the overlay, we return it
-        if ($localTableName === 'pages' && isset($overlayRecord['_PAGES_OVERLAY_UID'])) {
-            return (int)$overlayRecord['_PAGES_OVERLAY_UID'];
-        }
         if (isset($overlayRecord['_LOCALIZED_UID'])) {
             return (int)$overlayRecord['_LOCALIZED_UID'];
         }
-
         return 0;
     }
 

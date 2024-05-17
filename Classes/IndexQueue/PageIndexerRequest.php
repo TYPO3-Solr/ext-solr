@@ -25,7 +25,13 @@ use GuzzleHttp\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LogLevel;
 use RuntimeException;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\MiddlewareDispatcher;
 use TYPO3\CMS\Core\Http\RequestFactory;
+use TYPO3\CMS\Core\Http\RequestHandler;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -344,6 +350,7 @@ class PageIndexerRequest
         $options = [];
         try {
             $options = $this->buildGuzzleOptions($headers, $timeout);
+
             $response = $this->requestFactory->request($url, 'GET', $options);
         } catch (ClientException|ServerException $e) {
             $response = $e->getResponse();
@@ -365,7 +372,12 @@ class PageIndexerRequest
                     'options' => $options,
                 ]
             );
+        } finally {
+            if (isset($originalBackendUser)) {
+                $GLOBALS['BE_USER'] = $originalBackendUser;
+            }
         }
+        $response->getBody()->rewind();
         return $response;
     }
 

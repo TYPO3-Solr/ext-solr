@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use DOMDocument;
 use DOMXPath;
+use TYPO3\CMS\Core\PageTitle\PageTitleProviderManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 use function libxml_use_internal_errors;
@@ -135,17 +136,8 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
      */
     public function getPageTitle(): string
     {
-        $page = $GLOBALS['TSFE'];
-
-        if ($page->indexedDocTitle) {
-            $pageTitle = $page->indexedDocTitle;
-        } elseif ($page->altPageTitle) {
-            $pageTitle = $page->altPageTitle;
-        } else {
-            $pageTitle = $page->page['title'];
-        }
-
-        return $pageTitle ?? '';
+        $providerManager = GeneralUtility::makeInstance(PageTitleProviderManager::class);
+        return $providerManager->getTitle($GLOBALS['TYPO3_REQUEST']);
     }
 
     /**

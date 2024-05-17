@@ -204,7 +204,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     protected function getIsIndexingEnabled(int $pageUid): bool
     {
         return (bool)$this->frontendEnvironment
-            ->getConfigurationFromPageId($pageUid)
+            ->getSolrConfigurationFromPageId($pageUid)
             ->getValueByPathOrDefaultValue('config.index_enable', false);
     }
 }

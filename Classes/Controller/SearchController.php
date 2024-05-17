@@ -105,8 +105,9 @@ class SearchController extends AbstractBaseController
 
         try {
             $arguments = $this->request->getArguments();
-            $pageId = $this->typoScriptFrontendController->getRequestedId();
-            $languageId = $this->typoScriptFrontendController->getLanguage()->getLanguageId();
+
+            $pageId = $this->request->getAttribute('routing')->getPageId();
+            $languageId = $this->request->getAttribute('language')->getLanguageId();
             $searchRequest = $this->getSearchRequestBuilder()->buildForSearch($arguments, $pageId, $languageId);
 
             $searchResultSet = $this->searchService->search($searchRequest);
@@ -197,8 +198,8 @@ class SearchController extends AbstractBaseController
         /** @var SearchResultSet $searchResultSet */
         $searchResultSet = GeneralUtility::makeInstance(SearchResultSet::class);
 
-        $pageId = $this->typoScriptFrontendController->getRequestedId();
-        $languageId = $this->typoScriptFrontendController->getLanguage()->getLanguageId();
+        $pageId = $this->request->getAttribute('routing')->getPageId();
+        $languageId = $this->request->getAttribute('language')->getLanguageId();
         $searchRequest = $this->getSearchRequestBuilder()->buildForFrequentSearches($pageId, $languageId);
         $searchResultSet->setUsedSearchRequest($searchRequest);
 

@@ -37,15 +37,12 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class SuggestService
  */
 class SuggestService
 {
-    protected TypoScriptFrontendController $tsfe;
-
     protected SearchResultSetService $searchService;
 
     protected TypoScriptConfiguration $typoScriptConfiguration;

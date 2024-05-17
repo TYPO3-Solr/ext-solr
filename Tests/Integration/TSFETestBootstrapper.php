@@ -9,6 +9,7 @@ use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
  * Helper class to set up a TSFE object
@@ -17,27 +18,29 @@ class TSFETestBootstrapper
 {
     public function bootstrap(int $pageId): TypoScriptFrontendController
     {
-        $context = GeneralUtility::makeInstance(Context::class);
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
 
         $pageArguments = new PageArguments($pageId, '0', []);
         $site = $siteFinder->getSiteByPageId($pageId);
         $siteLanguage = $site->getLanguageById(0);
+        $pageInformation = new PageInformation();
+        $pageInformation->setId($pageId);
+        $pageInformation->setPageRecord(['uid' => $pageId]);
 
         $request = new ServerRequest($site->getRouter()->generateUri($site->getRootPageId()));
         $request = $request->withAttribute('site', $site);
         $request = $request->withAttribute('language', $siteLanguage);
         $request = $request->withAttribute('routing', $pageArguments);
+        $request = $request->withAttribute('frontend.user', GeneralUtility::makeInstance(FrontendUserAuthentication::class));
+        $request = $request->withAttribute('frontend.page.information', $pageInformation);
+        $GLOBALS['TYPO3_REQUEST'] = $request;
 
-        $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-
-        $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, $pageArguments, $feUser);
-        $TSFE->set_no_cache('', true);
+        /** @var TypoScriptFrontendController $TSFE */
+        $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class);
+        $TSFE->set_no_cache();
+        $TSFE->id = $pageId;
         $GLOBALS['TSFE'] = $TSFE;
-        $TSFE->determineId($request);
-        $GLOBALS['TYPO3_REQUEST'] = $TSFE->getFromCache($request);
-        $TSFE->releaseLocks();
-        $TSFE->newCObj($GLOBALS['TYPO3_REQUEST']);
+        $TSFE->newCObj($request);
         return $TSFE;
     }
 }

@@ -20,11 +20,13 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use ApacheSolrForTypo3\Solr\ContentObject\Classification;
 use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
@@ -128,8 +130,11 @@ abstract class AbstractIndexer
             $backupWorkingDirectory = getcwd();
             chdir(Environment::getPublicPath() . '/');
 
-            $tsfe->cObj->start($data, $this->type);
-            $fieldValue = $tsfe->cObj->cObjGetSingle(
+            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
+            $request = $GLOBALS['TYPO3_REQUEST'] ?? GeneralUtility::makeInstance(Tsfe::class)->getServerRequestForTsfeByPageIdAndLanguageId($tsfe->id);
+            $cObject->setRequest($request);
+            $cObject->start($data, $this->type);
+            $fieldValue = $cObject->cObjGetSingle(
                 $indexingConfiguration[$solrFieldName],
                 $indexingConfiguration[$solrFieldName . '.']
             );
@@ -150,6 +155,8 @@ abstract class AbstractIndexer
                 $indexingConfiguration[$solrFieldName],
                 1
             ));
+
+            // @todo: this must be solved differently
             $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
             // $name and $conf is loaded with the referenced values.
             [$name, $conf] = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')?->getSetupArray());
@@ -159,8 +166,11 @@ abstract class AbstractIndexer
             $backupWorkingDirectory = getcwd();
             chdir(Environment::getPublicPath() . '/');
 
-            $tsfe->cObj->start($data, $this->type);
-            $fieldValue = $tsfe->cObj->cObjGetSingle($name, $conf);
+            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
+            $request = $GLOBALS['TYPO3_REQUEST'] ?? GeneralUtility::makeInstance(Tsfe::class)->getServerRequestForTsfeByPageIdAndLanguageId($tsfe->id);
+            $cObject->setRequest($request);
+            $cObject->start($data, $this->type);
+            $fieldValue = $cObject->cObjGetSingle($name, $conf);
 
             chdir($backupWorkingDirectory);
 
