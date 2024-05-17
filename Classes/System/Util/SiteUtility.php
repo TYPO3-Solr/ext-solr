@@ -40,20 +40,6 @@ class SiteUtility
     }
 
     /**
-     * Determines if the site where the page belongs to is managed with the TYPO3 site management.
-     */
-    public static function getIsSiteManagedSite(int $pageId): bool
-    {
-        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-        try {
-            /** @var SiteFinder $siteFinder */
-            return $siteFinder->getSiteByPageId($pageId) instanceof CoreSite;
-        } catch (SiteNotFoundException) {
-        }
-        return false;
-    }
-
-    /**
      * This method is used to retrieve the connection configuration from the TYPO3 site configuration.
      *
      * Note: Language context properties have precedence over global settings.

@@ -228,8 +228,7 @@ class PageIndexer extends Indexer
      */
     protected function getDataUrl(Item $item, int $language = 0): string
     {
-        $pageId = $item->getRecordUid();
-        $uriBuilder = $this->getUriBuilder($pageId);
+        $uriBuilder = $this->getUriBuilder();
         $mountPointParameter = $this->getMountPageDataUrlParameter($item);
         return $uriBuilder->getPageIndexingUriFromPageItemAndLanguageId($item, $language, $mountPointParameter, $this->options);
     }
@@ -239,12 +238,8 @@ class PageIndexer extends Indexer
      *
      * @throws \Exception
      */
-    protected function getUriBuilder(int $pageId): PageUriBuilder
+    protected function getUriBuilder(): PageUriBuilder
     {
-        if (!SiteUtility::getIsSiteManagedSite($pageId)) {
-            throw new \Exception('Site of page with uid ' . $pageId . ' is not a TYPO3 managed site');
-        }
-
         return GeneralUtility::makeInstance(PageUriBuilder::class);
     }
 

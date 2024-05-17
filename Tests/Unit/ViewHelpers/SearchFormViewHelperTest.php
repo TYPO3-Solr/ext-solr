@@ -53,7 +53,6 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
                 'getTemplateVariableContainer',
                 'getSearchResultSet',
                 'renderChildren',
-                'getIsSiteManagedSite',
             ])
             ->getMock();
         $renderingContext = new RenderingContext(
@@ -69,7 +68,6 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
         $this->viewHelper->expects(self::any())->method('getTypoScriptConfiguration')->willReturn($this->typoScriptConfigurationMock);
         $this->viewHelper->expects(self::any())->method('getTemplateVariableContainer')->willReturn($this->createMock(VariableProviderInterface::class));
         $this->viewHelper->expects(self::once())->method('renderChildren')->willReturn('');
-        $this->viewHelper->expects(self::once())->method('getIsSiteManagedSite')->willReturn(false);
         parent::setUp();
     }
 
