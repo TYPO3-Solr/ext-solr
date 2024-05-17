@@ -26,9 +26,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class RelevanceViewHelper
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
 {

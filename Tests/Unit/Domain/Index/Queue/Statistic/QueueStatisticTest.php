@@ -20,9 +20,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class QueueStatisticTest extends SetUpUnitTestCase
 {
     #[Test]

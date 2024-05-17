@@ -22,8 +22,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the NoProcessingEventListener
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class NoProcessingEventListenerTest extends SetUpEventListener
 {

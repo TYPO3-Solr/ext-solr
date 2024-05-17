@@ -22,8 +22,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 /**
  * This event is dispatched after the frequently searched was executed.
  * It contains the result of that search request.
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 final class AfterFrequentlySearchHasBeenExecutedEvent
 {

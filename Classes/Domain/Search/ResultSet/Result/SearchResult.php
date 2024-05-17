@@ -22,8 +22,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 
 /**
  * Solr document class that should be used in the frontend in the search context.
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class SearchResult extends Document
 {

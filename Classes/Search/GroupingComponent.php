@@ -25,8 +25,6 @@ use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 
 /**
  * GroupingComponent
- *
- * @author Frans Saris <frans@beech.it>
  */
 class GroupingComponent
 {

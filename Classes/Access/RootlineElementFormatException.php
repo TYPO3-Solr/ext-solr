@@ -19,7 +19,5 @@ use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 
 /**
  * Signals a wrong format for the access definition of a page or the content.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class RootlineElementFormatException extends InvalidArgumentException {}

@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to test the TCAService.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class TCAServiceTest extends SetUpUnitTestCase
 {

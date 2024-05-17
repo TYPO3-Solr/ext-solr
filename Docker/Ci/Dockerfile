@@ -1,6 +1,6 @@
 ARG PHP_VERSION
 FROM php:$PHP_VERSION-cli
-LABEL maintainer="team-solr@dkd.de"
+LABEL maintainer="info@dkd.de"
 ENV TERM linux
 
 # create man directory to fix jre dependencies issue

@@ -41,8 +41,6 @@ use TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException;
  * enableRecursiveValueResolution: if the specified remote table's label field is a relation to another table, the value will be resolved by following the relation recursively.
  * removeEmptyValues: Removes empty values when resolving relations, defaults to TRUE
  * removeDuplicateValues: Removes duplicate values
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Relation extends AbstractContentObject
 {

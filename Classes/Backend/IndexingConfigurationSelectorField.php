@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Index Queue indexing configuration selector form field.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class IndexingConfigurationSelectorField
 {

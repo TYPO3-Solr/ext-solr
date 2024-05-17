@@ -25,8 +25,6 @@ use Solarium\Core\Client\Endpoint;
 
 /**
  * Testcase for IndexQueueModuleController
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class IndexAdministrationModuleControllerTest extends AbstractModuleController
 {

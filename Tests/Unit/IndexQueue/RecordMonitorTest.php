@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 /**
  * Testcase for the RecordMonitor class.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class RecordMonitorTest extends SetUpUnitTestCase
 {

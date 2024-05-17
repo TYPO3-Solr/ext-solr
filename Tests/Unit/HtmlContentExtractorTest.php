@@ -22,8 +22,6 @@ use Traversable;
 
 /**
  * Tests the HtmlContentExtractor
- *
- * Timo Hund <timo.hund@dkd.de>
  */
 class HtmlContentExtractorTest extends SetUpUnitTestCase
 {

@@ -32,8 +32,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 /**
  * The SearchResultSet is used to provide access to the Apache Solr Response and
  * other relevant information, like the used Query and Request objects.
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class SearchResultSet
 {

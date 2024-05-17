@@ -23,8 +23,6 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
 /**
  * Calculates the SearchQueryStatistics
- *
- * @author Thomas Hohn <tho@systime.dk>
  */
 class StatisticsRepository extends AbstractRepository
 {

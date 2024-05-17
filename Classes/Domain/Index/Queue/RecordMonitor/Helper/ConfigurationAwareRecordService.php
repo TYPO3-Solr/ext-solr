@@ -23,8 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Extracted logic from the AbstractDataHandlerListener in order to
  * handle ConfigurationAwareRecords
- *
- * @author Thomas Hohn Hund <tho@systime.dk>
  */
 class ConfigurationAwareRecordService
 {

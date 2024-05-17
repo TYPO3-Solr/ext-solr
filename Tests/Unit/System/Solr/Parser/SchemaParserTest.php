@@ -22,8 +22,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the SchemaParser class.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SchemaParserTest extends SetUpUnitTestCase
 {

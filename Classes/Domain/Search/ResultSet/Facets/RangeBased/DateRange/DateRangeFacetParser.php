@@ -26,9 +26,6 @@ use Exception;
 
 /**
  * Class DateRangeFacetParser
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class DateRangeFacetParser extends AbstractRangeFacetParser
 {

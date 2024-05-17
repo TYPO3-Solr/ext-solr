@@ -22,8 +22,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * tests the processing Service class
- *
- * @author Daniel Poetzinger <poetzinger@aoemedia.de>
  */
 class ServiceTest extends SetUpUnitTestCase
 {

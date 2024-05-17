@@ -29,9 +29,6 @@ use UnexpectedValueException;
 /**
  * This processor is used to transform the solr response into a
  * domain object hierarchy that can be used in the application (controller and view).
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
 {

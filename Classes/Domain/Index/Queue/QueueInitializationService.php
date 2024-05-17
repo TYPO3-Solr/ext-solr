@@ -30,9 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * The queue initialization service is responsible to run the initialization of the index queue for a combination of sites
  * and index queue configurations.
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * @author Ingo Renner <ingo.renner@dkd.de>
  */
 class QueueInitializationService
 {

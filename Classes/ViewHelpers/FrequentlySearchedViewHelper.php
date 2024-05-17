@@ -32,7 +32,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 /**
  * Class LastSearchesViewHelper
  *
- * @author Rudy Gnodde <rudy.gnodde@beech.it>
  *
  * @noinspection PhpUnused
  */

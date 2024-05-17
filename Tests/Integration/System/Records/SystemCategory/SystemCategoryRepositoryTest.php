@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Integration test for the SystemCategoryRepository
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SystemCategoryRepositoryTest extends IntegrationTestBase
 {

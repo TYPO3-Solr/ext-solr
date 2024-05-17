@@ -23,9 +23,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class GroupViewHelper
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de> *
  */
 class GroupViewHelper extends AbstractSolrFrontendViewHelper
 {

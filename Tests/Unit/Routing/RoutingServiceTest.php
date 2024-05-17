@@ -29,8 +29,6 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 
 /**
  * Unit test to cover functions inside the routing service
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 #[CoversClass(RoutingService::class)]
 class RoutingServiceTest extends SetUpUnitTestCase

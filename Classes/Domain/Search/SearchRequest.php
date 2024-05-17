@@ -26,8 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * The searchRequest is used to act as an api to the arguments that have been passed
  * with GET and POST.
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class SearchRequest
 {

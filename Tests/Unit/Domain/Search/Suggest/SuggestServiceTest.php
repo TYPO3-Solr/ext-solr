@@ -41,9 +41,6 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class SuggestServiceTest extends SetUpUnitTestCase
 {
     protected SuggestService|MockObject $suggestService;

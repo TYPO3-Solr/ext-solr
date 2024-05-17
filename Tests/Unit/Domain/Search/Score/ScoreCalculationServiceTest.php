@@ -19,9 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @author Timo Schmidt <timo.schmidt@dkd.de>
- */
 class ScoreCalculationServiceTest extends SetUpUnitTestCase
 {
     /**

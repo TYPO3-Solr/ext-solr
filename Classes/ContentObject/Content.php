@@ -23,8 +23,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 /**
  * A content object (cObj) to clean a database field in a way so that it can be
  * used to fill a Solr document's content field.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Content extends AbstractContentObject
 {

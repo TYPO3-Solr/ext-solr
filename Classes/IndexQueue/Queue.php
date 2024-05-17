@@ -38,8 +38,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The Queue makes it possible to decouple the direct indexing of changed records and index them time-delayed in standalone process.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
 {

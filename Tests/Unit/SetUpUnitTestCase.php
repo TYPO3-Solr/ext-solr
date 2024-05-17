@@ -24,8 +24,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Base class for all unit tests in the solr project
- *
- * @author Timo Hund
  */
 abstract class SetUpUnitTestCase extends UnitTestCase
 {

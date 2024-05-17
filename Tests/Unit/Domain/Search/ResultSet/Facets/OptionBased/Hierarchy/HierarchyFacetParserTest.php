@@ -25,9 +25,6 @@ use Traversable;
 
 /**
  * Class HierarchyFacetParserTest
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * @author Frans Saris <frans@beech.it>
  */
 class HierarchyFacetParserTest extends SetUpFacetParser
 {

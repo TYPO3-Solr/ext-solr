@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Scheduler task to empty the indexes of a site and re-initialize the
  * Solr Index Queue thus making the indexer re-index the site.
- *
- * @author Jens Jacobsen <typo3@jens-jacobsen.de>
  */
 class OptimizeIndexTask extends AbstractSolrTask
 {

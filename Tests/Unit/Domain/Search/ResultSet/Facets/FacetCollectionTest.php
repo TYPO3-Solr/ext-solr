@@ -23,8 +23,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class FacetCollectionTest
- *
- * @author Frans Saris <frans@beech.it>
  */
 class FacetCollectionTest extends SetUpUnitTestCase
 {

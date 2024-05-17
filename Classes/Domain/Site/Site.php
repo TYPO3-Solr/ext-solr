@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Represents all information for EXT:solr of a given TYPO3 Site to retrieve
  * configuration and setup from a page.
- *
- * (c) 2011-2015 Ingo Renner <ingo@typo3.org>
  */
 class Site
 {

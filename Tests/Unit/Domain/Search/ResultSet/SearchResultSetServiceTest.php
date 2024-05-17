@@ -36,9 +36,6 @@ use Solarium\Component\Grouping;
 use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class SearchResultSetServiceTest extends SetUpUnitTestCase
 {
     protected SearchResultSetService $searchResultSetService;

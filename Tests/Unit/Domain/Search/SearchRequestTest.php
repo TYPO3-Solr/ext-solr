@@ -20,9 +20,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @author Timo Schmidt <timo.schmidt@dkd.de>
- */
 class SearchRequestTest extends SetUpUnitTestCase
 {
     /**

@@ -31,8 +31,6 @@ use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
  *   removeEmptyValues = 1 # a flag to remove empty strings from the list, on by default.
  *   removeDuplicateValues = 1 # a flag to remove duplicate strings from the list, off by default.
  * }
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Multivalue extends AbstractContentObject
 {

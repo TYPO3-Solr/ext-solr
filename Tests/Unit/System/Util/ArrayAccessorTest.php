@@ -21,8 +21,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the ArrayAccessor helper class.
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class ArrayAccessorTest extends SetUpUnitTestCase
 {

@@ -21,8 +21,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper;
  * The EscapeService is responsible to escape the querystring as expected for Apache Solr.
  *
  * This class should have no dependencies since it only contains static functions
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class EscapeService
 {

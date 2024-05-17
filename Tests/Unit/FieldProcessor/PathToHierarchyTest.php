@@ -21,8 +21,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * tests the path to hierarchy processing
- *
- * @author    Daniel Pötzinger <poetzinger@aoemedia.de>
  */
 class PathToHierarchyTest extends SetUpUnitTestCase
 {

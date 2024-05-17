@@ -25,9 +25,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Testcases for the Facet parser registry
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class FacetRegistryTest extends SetUpUnitTestCase
 {

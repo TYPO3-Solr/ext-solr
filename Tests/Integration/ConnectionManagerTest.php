@@ -28,8 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * This testcase can be used to check if the ConnectionManager can be used
  * as expected.
- *
- * @author Timo Hund
  */
 class ConnectionManagerTest extends IntegrationTestBase
 {

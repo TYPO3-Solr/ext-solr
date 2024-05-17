@@ -26,8 +26,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase to test the GroupedResultsParser.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class GroupedResultsParserTest extends SetUpUnitTestCase
 {

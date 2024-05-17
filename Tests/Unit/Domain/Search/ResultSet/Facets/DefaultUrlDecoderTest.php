@@ -21,8 +21,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class DefaultUrlEncoderTest
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class DefaultUrlDecoderTest extends SetUpUnitTestCase
 {

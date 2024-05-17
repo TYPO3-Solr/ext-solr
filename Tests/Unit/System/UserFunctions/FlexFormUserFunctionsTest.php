@@ -19,9 +19,6 @@ use ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class FlexFormUserFunctionsTest extends SetUpUnitTestCase
 {
     #[Test]

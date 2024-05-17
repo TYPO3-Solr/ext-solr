@@ -19,9 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /**
  * The facet url encode is responsible to encode and decode values for EXT:solr urls.
- *
- * @author Ingo Renner <ingo@typo3.org>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 interface FacetUrlDecoderInterface
 {

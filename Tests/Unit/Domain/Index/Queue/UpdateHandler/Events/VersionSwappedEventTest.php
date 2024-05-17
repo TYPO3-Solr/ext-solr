@@ -19,8 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwapp
 
 /**
  * Testcase for the VersionSwappedEvent
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class VersionSwappedEventTest extends SetUpDataUpdateEvent
 {

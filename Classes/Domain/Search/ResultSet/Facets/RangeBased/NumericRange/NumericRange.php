@@ -24,9 +24,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRa
  *
  * @property NumericRangeFacet $facet
  * @method NumericRangeFacet getFacet()
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class NumericRange extends AbstractRangeFacetItem
 {

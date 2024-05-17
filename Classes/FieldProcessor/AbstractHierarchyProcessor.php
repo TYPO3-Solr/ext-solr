@@ -17,8 +17,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 /**
  * Provides common methods for field processors creating a hierarchy.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 abstract class AbstractHierarchyProcessor
 {

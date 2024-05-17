@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to test the Queue
- *
- * @author Timo Schmidt
  */
 class QueueTest extends IntegrationTestBase
 {

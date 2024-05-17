@@ -28,8 +28,6 @@ use Solarium\Component\Grouping;
 
 /**
  * Unit test case for the SearchResult.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class DefaultParserTest extends SetUpUnitTestCase
 {

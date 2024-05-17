@@ -29,8 +29,6 @@ use TYPO3\CMS\Core\Http\RequestFactory;
 
 /**
  * Index Queue Page Indexer request test.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class PageIndexerRequestTest extends SetUpUnitTestCase
 {

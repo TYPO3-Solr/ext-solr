@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Integration test for the Solr Access Filter status report
- *
- * @author Timo Hund
  */
 class AccessFilterPluginInstalledStatusTest extends IntegrationTestBase
 {

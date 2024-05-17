@@ -20,9 +20,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
  * Value object that represent the options facet.
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 #[AllowDynamicProperties] abstract class AbstractFacet
 {

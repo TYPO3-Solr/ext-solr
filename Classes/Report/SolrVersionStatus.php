@@ -28,8 +28,6 @@ use TYPO3\CMS\Reports\Status;
 /**
  * Provides a status report about whether the installed Solr version matches
  * the required version.
- *
- * @author Stefan Sprenger <stefan.sprenger@dkd.de>
  */
 class SolrVersionStatus extends AbstractSolrStatus
 {

@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Unit test for the OptionsFacet
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class OptionCollectionTest extends SetUpUnitTestCase
 {

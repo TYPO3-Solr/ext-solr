@@ -22,8 +22,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the numericRange queryBuilder
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class NumericRangeFacetQueryBuilderTest extends SetUpUnitTestCase
 {

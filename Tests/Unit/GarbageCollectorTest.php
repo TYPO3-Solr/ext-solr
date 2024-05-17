@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the GarbageCollector class.
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class GarbageCollectorTest extends SetUpUnitTestCase
 {

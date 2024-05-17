@@ -36,8 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the ImmediateProcessingEventListener
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class ImmediateProcessingEventListenerTest extends SetUpEventListener
 {

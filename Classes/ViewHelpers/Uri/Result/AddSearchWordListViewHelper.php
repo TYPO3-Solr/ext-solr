@@ -26,8 +26,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class AddSearchWordListViewHelper
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
 {

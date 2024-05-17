@@ -36,8 +36,6 @@ use function json_encode;
 
 /**
  * ConnectionManager is responsible to create SolrConnection objects.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class ConnectionManager implements SingletonInterface
 {
