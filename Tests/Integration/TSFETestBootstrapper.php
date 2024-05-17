@@ -2,7 +2,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\SiteFinder;

@@ -7,7 +7,6 @@ return [
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'versioningWS' => true,
-        'origUid' => 't3_origuid',
         'editlock' => 'editlock',
         'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l10n_parent',
