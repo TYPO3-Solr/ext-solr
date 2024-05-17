@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializat
 use ApacheSolrForTypo3\Solr\Utility\ManagedResourcesUtility;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Http\RedirectResponse;
+use TYPO3\CMS\Core\Http\UploadedFile;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\View\ViewInterface;
@@ -136,10 +137,19 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @noinspection PhpUnused
      */
     public function importSynonymListAction(
-        array $synonymFileUpload,
         bool $overrideExisting = false,
         bool $deleteSynonymsBefore = false
     ): ResponseInterface {
+        $synonymFileUpload = $this->request->getUploadedFiles()['synonymFileUpload'] ?? null;
+        if (!$synonymFileUpload instanceof UploadedFile) {
+            $this->addFlashMessage(
+                'Synonyms upload not found.',
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
+        }
+
         if ($deleteSynonymsBefore) {
             $this->deleteAllSynonyms();
         }
@@ -167,8 +177,18 @@ class CoreOptimizationModuleController extends AbstractModuleController
     /**
      * @noinspection PhpUnused
      */
-    public function importStopWordListAction(array $stopwordsFileUpload, bool $replaceStopwords): ResponseInterface
+    public function importStopWordListAction(bool $replaceStopwords): ResponseInterface
     {
+        $stopwordsFileUpload = $this->request->getUploadedFiles()['stopwordsFileUpload'] ?? null;
+        if (!$stopwordsFileUpload instanceof UploadedFile) {
+            $this->addFlashMessage(
+                'Stop Word upload not found.',
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
+        }
+
         $this->saveStopWordsAction(
             ManagedResourcesUtility::importStopwordsFromPlainTextContents($stopwordsFileUpload),
             $replaceStopwords

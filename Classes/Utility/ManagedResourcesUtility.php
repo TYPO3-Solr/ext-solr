@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Utility;
 
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
-use TYPO3\CMS\Core\Http\Stream;
+use TYPO3\CMS\Core\Http\UploadedFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -45,10 +45,9 @@ class ManagedResourcesUtility
     /**
      * Read plain text synonym file and import these synonyms
      */
-    public static function importSynonymsFromPlainTextContents(array $synonymFileUpload): array
+    public static function importSynonymsFromPlainTextContents(UploadedFile $synonymFileUpload): array
     {
-        $fileStream = new Stream($synonymFileUpload['tmp_name']);
-
+        $fileStream = $synonymFileUpload->getStream();
         $fileLines = GeneralUtility::trimExplode(PHP_EOL, $fileStream->getContents(), true);
 
         $synonymList = [];
@@ -62,10 +61,9 @@ class ManagedResourcesUtility
     /**
      * Read plain text stopword file
      */
-    public static function importStopwordsFromPlainTextContents(array $stopwordsFileUpload): string
+    public static function importStopwordsFromPlainTextContents(UploadedFile $stopwordsFileUpload): string
     {
-        $fileStream = new Stream($stopwordsFileUpload['tmp_name']);
-
+        $fileStream = $stopwordsFileUpload->getStream();
         return $fileStream->getContents();
     }
 
