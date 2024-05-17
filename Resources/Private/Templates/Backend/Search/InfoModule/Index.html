@@ -118,14 +118,9 @@
 
     <div class="row">
         <div class="col-md-12">
-            <script type="application/javascript">
-                var queryLabels = <f:format.raw>{queriesChartLabels}</f:format.raw>;
-                var queryData = {queriesChartData};
-            </script>
-            <canvas id="queriesOverTime"></canvas>
+            <canvas id="queriesOverTime" data-query-labels="{queriesChartLabels}" data-query-data="{queriesChartData}"></canvas>
         </div>
     </div>
-
 
     <f:if condition="{top_search_phrases}">
         <div class="row">
