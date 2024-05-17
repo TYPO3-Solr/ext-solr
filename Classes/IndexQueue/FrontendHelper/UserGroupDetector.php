@@ -32,7 +32,8 @@ use TYPO3\CMS\Frontend\Event\ModifyTypoScriptConfigEvent;
 /**
  * The UserGroupDetector is responsible to identify the fe_group references on records that are visible on the page (not the page itself).
  */
-class UserGroupDetector implements FrontendHelper, SingletonInterface {
+class UserGroupDetector implements FrontendHelper, SingletonInterface
+{
     /**
      * Index Queue page indexer request.
      */
@@ -89,7 +90,8 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface {
      * restrictions apply during page rendering.
      */
     #[AsEventListener]
-    public function deactivateTcaFrontendGroupEnableFields(ModifyTypoScriptConfigEvent $event): void {
+    public function deactivateTcaFrontendGroupEnableFields(ModifyTypoScriptConfigEvent $event): void
+    {
         if (!$this->activated) {
             return;
         }
@@ -112,7 +114,8 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface {
      * are not performed any longer.
      */
     #[AsEventListener]
-    public function getPage_preProcess(BeforePageIsRetrievedEvent $event): void {
+    public function getPage_preProcess(BeforePageIsRetrievedEvent $event): void
+    {
         if ($this->activated) {
             //$event->skipGroupAccessCheck();
             $disableGroupAccessCheck = true;
@@ -124,7 +127,8 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface {
      * no groups or extendToSubpages flag is found and thus access is granted.
      */
     #[AsEventListener]
-    public function getPageOverlay_preProcess(BeforeRecordLanguageOverlayEvent $event): void {
+    public function getPageOverlay_preProcess(BeforeRecordLanguageOverlayEvent $event): void
+    {
         if (!$this->activated) {
             return;
         }
