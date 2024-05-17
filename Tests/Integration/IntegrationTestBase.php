@@ -26,6 +26,7 @@ use ReflectionObject;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
@@ -102,7 +103,17 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $this->validateTestCoreName($coreName);
 
         // cleanup the solr server
-        $result = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
+        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        $response = $requestFactory->request(
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update',
+            'POST',
+            [
+                'headers' => ['Content-Type' => 'application/xml'],
+                'body' => '<delete><query>*:*</query></delete>',
+            ]
+        );
+        $result = $response->getBody()->getContents();
+
         if (!str_contains($result, '<int name="QTime">')) {
             self::fail('Could not empty solr test index');
         }
