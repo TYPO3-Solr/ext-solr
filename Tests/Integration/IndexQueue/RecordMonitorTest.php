@@ -56,31 +56,11 @@ class RecordMonitorTest extends IntegrationTestBase
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
     ];
 
-    /**
-     * @var RecordMonitor
-     */
-    protected $recordMonitor;
-
-    /**
-     * @var DataHandler
-     */
-    protected $dataHandler;
-
-    /**
-     * @var Queue
-     */
-    protected $indexQueue;
-
-    /**
-     * @var ExtensionConfiguration
-     */
-    protected $extensionConfiguration;
-
-    /**
-     * @var EventQueueItemRepository
-     */
-    protected $eventQueue;
-
+    protected RecordMonitor $recordMonitor;
+    protected DataHandler $dataHandler;
+    protected Queue $indexQueue;
+    protected ExtensionConfiguration $extensionConfiguration;
+    protected EventQueueItemRepository $eventQueue;
     protected BackendUserAuthentication $backendUser;
 
     protected function setUp(): void
