@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
-use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
