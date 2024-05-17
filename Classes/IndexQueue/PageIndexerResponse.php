@@ -76,7 +76,7 @@ class PageIndexerResponse
         if (empty($action)) {
             return $this->results;
         }
-        return $this->results[$action];
+        return $this->results[$action] ?? null;
     }
 
     /**

@@ -31,7 +31,7 @@ class FrontendUserSession
      */
     public function __construct(FrontendUserAuthentication $feUser = null)
     {
-        $this->feUser = $feUser ?? $GLOBALS['TSFE']->fe_user;
+        $this->feUser = $feUser ?? $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.user');
     }
 
     public function setPerPage(int $requestedPerPage): void
