@@ -89,6 +89,8 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $pageUid = $this->arguments['pageUid'] ?? null;
         if ($pageUid === null && !empty($this->getTypoScriptConfiguration()->getSearchTargetPage())) {
             $pageUid = $this->getTypoScriptConfiguration()->getSearchTargetPage();
+        } elseif ($pageUid === null) {
+            $pageUid = $this->renderingContext->getRequest()->getAttribute('routing')?->getPageId();
         }
         $pageUid = (int)$pageUid;
 

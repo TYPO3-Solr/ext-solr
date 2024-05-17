@@ -246,6 +246,7 @@ class SearchTest extends IntegrationTestBase
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $this->fillIndexForPhraseSearchTests();
 
+        $tsfe = $this->getConfiguredTSFE(1);
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $this->switchPhraseSearchFeature('bigramPhrase', 1);
@@ -429,6 +430,7 @@ class SearchTest extends IntegrationTestBase
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $this->fillIndexForPhraseSearchTests();
 
+        $tsfe = $this->getConfiguredTSFE(1);
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->getSearchQueryForSolr();
@@ -467,7 +469,7 @@ class SearchTest extends IntegrationTestBase
         for ($i = $startUid; $i <= $endUid; $i++) {
             $tsfe = $this->getConfiguredTSFE($i);
 
-            $serverRequest = new ServerRequest();
+            $serverRequest = $GLOBALS['TYPO3_REQUEST'] ?? new ServerRequest();
             $pageIndexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class);
             $pageIndexerRequest->setParameter('item', $i);
             $serverRequest = $serverRequest->withAttribute('solr.pageIndexingInstructions', $pageIndexerRequest);

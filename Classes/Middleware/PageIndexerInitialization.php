@@ -28,6 +28,7 @@ use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Http\Stream;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Cache\CacheInstruction;
 
 /**
  * Class PageIndexerInitialization
@@ -39,8 +40,10 @@ class PageIndexerInitialization implements MiddlewareInterface
         $pageIndexerRequestHandler = null;
         $pageIndexerRequest = null;
         if ($request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
-            // disable TSFE cache for TYPO3 v10
-            $request = $request->withAttribute('noCache', true);
+            // disable Frontend Cache
+            $frontendCacheAttribute = new CacheInstruction();
+            $frontendCacheAttribute->disableCache('Apache Solr for TYPO3');
+            $request = $request->withAttribute('frontend.cache.instruction', $frontendCacheAttribute);
             $jsonEncodedParameters = $request->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0];
             $pageIndexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class, $jsonEncodedParameters);
             if (!$pageIndexerRequest->isAuthenticated()) {

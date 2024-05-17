@@ -20,25 +20,19 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use TYPO3\CMS\Core\Domain\Repository\PageRepository;
-use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface;
-use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageOverlayHookInterface;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
+use TYPO3\CMS\Core\Domain\Access\RecordAccessGrantedEvent;
+use TYPO3\CMS\Core\Domain\Event\BeforePageIsRetrievedEvent;
+use TYPO3\CMS\Core\Domain\Event\BeforeRecordLanguageOverlayEvent;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\ContentObject\Event\AfterContentObjectRendererInitializedEvent;
+use TYPO3\CMS\Frontend\Event\ModifyTypoScriptConfigEvent;
 
 /**
  * The UserGroupDetector is responsible to identify the fe_group references on records that are visible on the page (not the page itself).
  */
-class UserGroupDetector implements
-    FrontendHelper,
-    SingletonInterface,
-    ContentObjectPostInitHookInterface,
-    PageRepositoryGetPageHookInterface,
-    PageRepositoryGetPageOverlayHookInterface
-{
+class UserGroupDetector implements FrontendHelper, SingletonInterface {
     /**
      * Index Queue page indexer request.
      */
@@ -52,7 +46,7 @@ class UserGroupDetector implements
     /**
      * Holds the original, unmodified TCA during user group detection
      */
-    protected array $originalTca;
+    protected array $originalTca = [];
 
     /**
      * Collects the usergroups used on a page.
@@ -63,47 +57,45 @@ class UserGroupDetector implements
     // activation
 
     /**
+     * All event listeners are only triggered if this flag is enabled.
+     */
+    protected bool $activated = false;
+
+    /**
      * Activates a frontend helper by registering for hooks and other
      * resources required by the frontend helper to work.
      */
     public function activate(): void
     {
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = UserGroupDetector::class . '->deactivateTcaFrontendGroupEnableFields';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = UserGroupDetector::class . '->checkEnableFields';
-
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__] = UserGroupDetector::class;
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__] = UserGroupDetector::class;
-
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__] = UserGroupDetector::class;
+        $this->activated = true;
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**
      * Disables the group access check by resetting the fe_group field in the given page table row.
-     * Will be called by the hook in the TypoScriptFrontendController in the checkEnableFields() method.
-     * @see TypoScriptFrontendController::checkEnableFields
-     *
-     * @noinspection PhpUnusedParameterInspection
-     *               PhpUnused used in {@link self::activate()} "hook_checkEnableFields"
      */
-    public function checkEnableFields(
-        array &$parameters,
-        TypoScriptFrontendController $tsfe
-    ): void {
-        $parameters['row']['fe_group'] = '';
+    #[AsEventListener]
+    public function checkEnableFields(RecordAccessGrantedEvent $event): void
+    {
+        if ($this->activated) {
+            $record = $event->getRecord();
+            $record['fe_group'] = '';
+            $event->updateRecord($record);
+        }
     }
 
     /**
      * Deactivates the frontend user group fields in TCA so that no access
      * restrictions apply during page rendering.
-     *
-     * @noinspection PhpUnusedParameterInspection
-     *               PhpUnused used in {@link self::activate()} "configArrayPostProc"
      */
-    public function deactivateTcaFrontendGroupEnableFields(
-        array &$parameters,
-        TypoScriptFrontendController $parentObject
-    ): void {
+    #[AsEventListener]
+    public function deactivateTcaFrontendGroupEnableFields(ModifyTypoScriptConfigEvent $event): void {
+        if (!$this->activated) {
+            return;
+        }
+        if (empty($this->originalTca)) {
+            return;
+        }
         $this->originalTca = $GLOBALS['TCA'];
 
         foreach ($GLOBALS['TCA'] as $tableName => $tableConfiguration) {
@@ -118,55 +110,51 @@ class UserGroupDetector implements
     /**
      * Modifies the database query parameters so that access checks for pages
      * are not performed any longer.
-     *
-     * @param int $uid The page ID
-     * @param bool $disableGroupAccessCheck If set, the check for group access is disabled. VERY rarely used
-     * @param PageRepository $parentObject parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
      */
-    public function getPage_preProcess(
-        &$uid,
-        &$disableGroupAccessCheck,
-        PageRepository $parentObject
-    ): void {
-        $disableGroupAccessCheck = true;
+    #[AsEventListener]
+    public function getPage_preProcess(BeforePageIsRetrievedEvent $event): void {
+        if ($this->activated) {
+            //$event->skipGroupAccessCheck();
+            $disableGroupAccessCheck = true;
+        }
     }
 
     /**
      * Modifies page records so that when checking for access through fe groups
      * no groups or extendToSubpages flag is found and thus access is granted.
-     *
-     * @param array $pageInput Page record
-     * @param int $lUid Overlay language ID
-     * @param PageRepository $parent Parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
      */
-    public function getPageOverlay_preProcess(
-        &$pageInput,
-        &$lUid,
-        PageRepository $parent
-    ): void {
-        if (!is_array($pageInput)) {
+    #[AsEventListener]
+    public function getPageOverlay_preProcess(BeforeRecordLanguageOverlayEvent $event): void {
+        if (!$this->activated) {
             return;
         }
+        if ($event->getTable() !== 'pages') {
+            return;
+        }
+        $pageInput = $event->getRecord();
         $pageInput['fe_group'] = '';
         $pageInput['extendToSubpages'] = '0';
+        $event->setRecord($pageInput);
     }
 
     // execution
 
     /**
      * Hook for post-processing the initialization of ContentObjectRenderer
-     *
-     * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
-     *               PhpMissingReturnTypeInspection
      */
-    public function postProcessContentObjectInitialization(ContentObjectRenderer &$parentObject): void
+    #[AsEventListener]
+    public function postProcessContentObjectInitialization(AfterContentObjectRendererInitializedEvent $event): void
     {
-        $this->request = $parentObject->getRequest()->getAttribute('solr.pageIndexingInstructions');
-        if (!empty($parentObject->currentRecord)) {
-            [$table] = explode(':', $parentObject->currentRecord);
+        if (!$this->activated) {
+            return;
+        }
+        $cObject = $event->getContentObjectRenderer();
+        $this->request = $cObject->getRequest()->getAttribute('solr.pageIndexingInstructions');
+        if (!empty($cObject->currentRecord)) {
+            [$table] = explode(':', $cObject->currentRecord);
 
             if (!empty($table) && $table != 'pages') {
-                $this->findFrontendGroups($parentObject->data, $table);
+                $this->findFrontendGroups($cObject->data, $table);
             }
         }
     }
@@ -234,6 +222,7 @@ class UserGroupDetector implements
      */
     public function deactivate(PageIndexerResponse $response): void
     {
+        $this->activated = false;
         $response->addActionResult($this->action, $this->getFrontendGroups());
     }
 }

@@ -52,14 +52,19 @@ class StatisticsRepository extends AbstractRepository
     {
         $countRows = $this->countByRootPageId($rootPageId);
         $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder
-            ->select('keywords')
-            ->select(
+        $queryBuilder
+            ->select('keywords');
+
+        $queryBuilder->getConcreteQueryBuilder()
+            ->addSelect(
                 $queryBuilder->expr()->count('keywords', 'count'),
                 $queryBuilder->expr()->avg('num_found', 'hits'),
                 '(' . $queryBuilder->expr()->count('keywords') . ' * 100 / ' . $countRows . ') AS percent'
-            )->from($this->table)
-            ->andWhere(
+            );
+
+        $queryBuilder
+            ->from($this->table)
+            ->where(
                 $queryBuilder->expr()->gt('tstamp', $timeStart),
                 $queryBuilder->expr()->eq('root_pid', $rootPageId)
             )
@@ -68,6 +73,7 @@ class StatisticsRepository extends AbstractRepository
             ->addOrderBy('hits', 'DESC')
             ->addOrderBy('keywords', 'ASC')
             ->setMaxResults($limit);
+        return $queryBuilder;
     }
 
     /**
@@ -150,15 +156,21 @@ class StatisticsRepository extends AbstractRepository
     public function getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration(array $frequentSearchConfiguration): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder
+        $queryBuilder
             ->addSelectLiteral(
                 $frequentSearchConfiguration['select.']['SELECT']
             )
-            ->from($frequentSearchConfiguration['select.']['FROM'])
-            ->where($frequentSearchConfiguration['select.']['ADD_WHERE'], true)
-            ->groupBy($frequentSearchConfiguration['select.']['GROUP_BY'], true)
+            ->from($frequentSearchConfiguration['select.']['FROM']);
+
+
+        $queryBuilder
+            ->getConcreteQueryBuilder()
+            ->where($frequentSearchConfiguration['select.']['ADD_WHERE'])
+            ->groupBy($frequentSearchConfiguration['select.']['GROUP_BY'])
             ->orderBy($frequentSearchConfiguration['select.']['ORDER_BY'])
-            ->setMaxResults((int)$frequentSearchConfiguration['limit'])
+            ->setMaxResults((int)$frequentSearchConfiguration['limit']);
+
+        return $queryBuilder
             ->executeQuery()
             ->fetchAllAssociative();
     }

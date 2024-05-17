@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\System\Language\FrontendOverlayService;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Result;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\RelationHandler;
@@ -394,19 +395,15 @@ class Relation extends AbstractContentObject
     }
 
     /**
-     * Returns current language id fetched from the SiteLanguage
-     *
-     * @throws ContentRenderingException
+     * Returns current language id fetched from the Context
      */
     protected function getLanguageUid(): int
     {
-        return $this->getTypoScriptFrontendController()->getLanguage()->getLanguageId();
+        return GeneralUtility::makeInstance(Context::class)->getAspect('language')->get('id');
     }
 
     /**
      * Returns and sets FrontendOverlayService instance to this object.
-     *
-     * @throws ContentRenderingException
      */
     protected function getFrontendOverlayService(): FrontendOverlayService
     {
@@ -417,7 +414,7 @@ class Relation extends AbstractContentObject
         return $this->frontendOverlayService = GeneralUtility::makeInstance(
             FrontendOverlayService::class,
             $this->tcaService,
-            $this->getTypoScriptFrontendController()
+            GeneralUtility::makeInstance(Context::class)
         );
     }
 }
