@@ -65,7 +65,6 @@ When you want to install Solr on your system in another way the following steps 
 * Install the Solr server
 * Copy the configsets into the configset folder (by default $SOLR_HOME/server/solr/configsets)
 * Make sure that the solr.xml file ($SOLR_HOME/server/solr/solr.xml) is in place and fits to your Solr version
-* Enable Content Streams. EXT:solr uses content streams and requires environment variables SOLR_ENABLE_REMOTE_STREAMING and SOLR_ENABLE_STREAM_BODY to be set, see section `Content Streams in the Reference Guide <https://solr.apache.org/guide/solr/latest/indexing-guide/content-streams.html>`__
 
 * Create an init script that starts Solr on boottime.
 * Secure your Solr port from outside.
