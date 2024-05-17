@@ -1,14 +1,15 @@
 import { Chart, registerables } from './Chart/chart.esm.js'
 Chart.register(...registerables);
 
-var ctx = document.getElementById('queriesOverTime');
-var queryChart = new Chart(ctx, {
+const queriesOverTimeChartElement = document.getElementById('queriesOverTime');
+
+new Chart(queriesOverTimeChartElement, {
   type: 'line',
   data: {
-    labels: queryLabels,
+    labels: JSON.parse(queriesOverTimeChartElement.dataset.queryLabels),
     datasets: [
       {
-        data: queryData,
+        data: JSON.parse(queriesOverTimeChartElement.dataset.queryData),
         label: "# of Queries",
 
         lineTension: 0.1,
