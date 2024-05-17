@@ -236,24 +236,22 @@ class SiteRepository
         // which are required for BE-Modules/CLI-Commands or RecordMonitor within BE/TCE-commands.
         // If TSFE for none of languages can be initialized, then the \ApacheSolrForTypo3\Solr\Domain\Site\Site object unusable at all,
         // so the rest of the steps in this method are not necessary, and therefore the null will be returned.
-        $tsfeFactory = GeneralUtility::makeInstance(Tsfe::class);
-        $tsfeToUseForTypoScriptConfiguration = $tsfeFactory->getTsfeByPageIdAndLanguageFallbackChain($typo3Site->getRootPageId(), ...$availableLanguageIds);
-        if (!$tsfeToUseForTypoScriptConfiguration instanceof TypoScriptFrontendController) {
-            return null;
-        }
-
         $solrConnectionConfigurations = [];
 
+        $firstLanguage = null;
         foreach ($availableLanguageIds as $languageUid) {
             $solrConnection = SiteUtility::getSolrConnectionConfiguration($typo3Site, $languageUid);
             if ($solrConnection !== null) {
                 $solrConnectionConfigurations[$languageUid] = $solrConnection;
             }
+            if ($firstLanguage === null) {
+                $firstLanguage = $typo3Site->getLanguageById($languageUid);
+            }
         }
 
         $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId(
             $rootPageRecord['uid'],
-            $tsfeToUseForTypoScriptConfiguration->getLanguage()->getLanguageId()
+            $firstLanguage->getLanguageId(),
         );
 
         return GeneralUtility::makeInstance(

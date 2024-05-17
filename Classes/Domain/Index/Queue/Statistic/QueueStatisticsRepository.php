@@ -46,6 +46,7 @@ class QueueStatisticsRepository extends AbstractRepository
     ): QueueStatistic {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
+            ->getConcreteQueryBuilder()
             ->select(
                 vsprintf('(%s < %s) AS %s', [
                     $queryBuilder->quoteIdentifier($this->columnIndexed),
