@@ -72,6 +72,7 @@ class TypoScript implements SingletonInterface
         /** @var TwoLevelCache $cache */
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'tx_solr_configuration');
         $configurationArray = $cache->get($cacheId);
+        $configurationArray = [];
 
         if (!empty($configurationArray)) {
             // we have a cache hit and can return it.
@@ -79,7 +80,7 @@ class TypoScript implements SingletonInterface
         }
 
         // we have nothing in the cache. We need to build the configurationToUse
-        $configurationArray = $this->buildConfigurationArray($pageId, $path, $language);
+        #$configurationArray = $this->buildConfigurationArray($pageId, $path, $language);
 
         $cache->set($cacheId, $configurationArray);
 
