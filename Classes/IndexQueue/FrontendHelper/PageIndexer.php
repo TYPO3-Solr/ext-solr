@@ -38,6 +38,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use Throwable;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -143,6 +144,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
     /**
      * Handles the indexing of the page content during AfterCacheableContentIsGeneratedEvent of a generated page.
      */
+    #[AsEventListener]
     public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
     {
         $this->request = $event->getRequest()->getAttribute('solr.pageIndexingInstructions');
@@ -153,6 +155,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         $this->setupConfiguration();
 
         $typo3Request = $event->getRequest();
+        $GLOBALS['TYPO3_REQUEST'] = $typo3Request;
         $tsfe = $event->getController();
 
         $logPageIndexed = $this->configuration->getLoggingIndexingPageIndexed();
@@ -170,7 +173,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             if ($indexQueueItem === null) {
                 throw new UnexpectedValueException('Can not get index queue item', 1482162337);
             }
-            $this->index($indexQueueItem, $typo3Request);
+            $this->index($indexQueueItem, $typo3Request, $tsfe);
         } catch (Throwable $e) {
             $this->responseData['pageIndexed'] = false;
             if ($this->configuration->getLoggingExceptions()) {

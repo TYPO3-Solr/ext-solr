@@ -241,7 +241,7 @@ class QueueItemRepository extends AbstractRepository
             ->getQueryBuilderForTable('tt_content');
         $queryBuilder->getRestrictions()->removeAll();
         $pageContentLastChangedTime = $queryBuilder
-            ->select($queryBuilder->expr()->max('tstamp', 'changed_time'))
+            ->selectLiteral($queryBuilder->expr()->max('tstamp', 'changed_time'))
             ->from('tt_content')
             ->where(
                 $queryBuilder->expr()->eq('pid', $pageUid)
@@ -269,7 +269,7 @@ class QueueItemRepository extends AbstractRepository
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($itemType);
             $queryBuilder->getRestrictions()->removeAll();
             $localizedChangedTime = $queryBuilder
-                ->select($queryBuilder->expr()->max($timeStampField, 'changed_time'))
+                ->selectLiteral($queryBuilder->expr()->max($timeStampField, 'changed_time'))
                 ->from($itemType)
                 ->orWhere(
                     $queryBuilder->expr()->eq('uid', $itemUid),
@@ -615,7 +615,7 @@ class QueueItemRepository extends AbstractRepository
         $indexQueueItemRecords = $queryBuilder
             ->select('*')
             ->from($this->table)
-            ->andWhere(
+            ->where(
                 $queryBuilder->expr()->eq('root', $site->getRootPageId()),
                 $queryBuilder->expr()->gt('changed', 'indexed'),
                 $queryBuilder->expr()->lte('changed', time()),
@@ -814,7 +814,7 @@ class QueueItemRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         $resultSet = $queryBuilder
             ->select('item_uid')
-            ->select($queryBuilder->expr()->count('*', 'queueItemCount'), true)
+            ->addSelectLiteral($queryBuilder->expr()->count('*', 'queueItemCount'))
             ->from($this->table)
             ->where(
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter('pages')),

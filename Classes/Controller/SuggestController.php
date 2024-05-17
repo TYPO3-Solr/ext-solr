@@ -50,18 +50,17 @@ class SuggestController extends AbstractBaseController
             /** @var SuggestService $suggestService */
             $suggestService = GeneralUtility::makeInstance(
                 SuggestService::class,
-                $this->typoScriptFrontendController,
                 $this->searchService,
                 $this->typoScriptConfiguration
             );
 
             $additionalFilters = is_array($additionalFilters) ? array_map('htmlspecialchars', $additionalFilters) : [];
-            $pageId = $this->typoScriptFrontendController->getRequestedId();
-            $languageId = $this->typoScriptFrontendController->getLanguage()->getLanguageId();
+            $pageId = $this->request->getAttribute('routing')->getPageId();
+            $languageId = $this->request->getAttribute('language')?->getLanguageId();
             $arguments = $this->request->getArguments();
 
             $searchRequest = $this->getSearchRequestBuilder()->buildForSuggest($arguments, $rawQuery, $pageId, $languageId);
-            $result = $suggestService->getSuggestions($searchRequest, $additionalFilters);
+            $result = $suggestService->getSuggestions($this->request, $searchRequest, $additionalFilters);
         } catch (SolrUnavailableException) {
             return $this->handleSolrUnavailable();
         }

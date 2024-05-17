@@ -26,7 +26,6 @@ use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException as AspectNotFoundExceptionAlias;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -55,8 +54,6 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
      */
     public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-        /** @var TypoScriptFrontendController $tsfe */
-        $tsfe = $GLOBALS['TSFE'];
         $cache = self::getInitializedCache();
         /** @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
@@ -66,10 +63,9 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
             FrequentSearchesService::class,
             $typoScriptConfiguration,
             $cache,
-            $tsfe
         );
 
-        $frequentSearches = $frequentSearchesService->getFrequentSearchTerms();
+        $frequentSearches = $frequentSearchesService->getFrequentSearchTerms($renderingContext->getRequest());
         $minimumSize = $typoScriptConfiguration->getSearchFrequentSearchesMinSize();
         $maximumSize = $typoScriptConfiguration->getSearchFrequentSearchesMaxSize();
 

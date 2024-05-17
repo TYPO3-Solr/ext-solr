@@ -17,9 +17,11 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScriptFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,46 +30,33 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ConfigurationManager implements SingletonInterface
 {
-    protected array $typoScriptConfigurations = [];
-
-    /**
-     * Resets the state of the configuration manager.
-     */
-    public function reset(): void
-    {
-        $this->typoScriptConfigurations = [];
-    }
-
     public function getTypoScriptFromRequest(ServerRequestInterface $request): TypoScriptConfiguration
     {
-        /** @var FrontendTypoScript $configurationArray */
-        $frontendTypoScript = $request->getAttribute('frontend.typoscript');
-        if ($frontendTypoScript) {
-            return $this->getTypoScriptConfigurationInstance($configurationArray->getSetupArray());
+        $fullConfig = $this->getTypoScriptFrontendFromCore($request);
+        $pageId = $request->getParsedBody()['id'] ?? $request->getQueryParams()['id'] ?? null;
+        if ($pageId !== null) {
+            $pageId = (int)$pageId;
+        } else {
+            $routingAttribute = $request->getAttribute('routing');
+            if ($routingAttribute instanceof PageArguments) {
+                $pageId = $routingAttribute->getPageId();
+            } else {
+                // Fallback to root page
+                $site = $request->getAttribute('site');
+                if ($site instanceof Site) {
+                    $pageId = $site->getRootPageId();
+                }
+            }
         }
-        $extbaseManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::class);
-        $extbaseManager->setRequest($request);
-        $fullConfig = $extbaseManager->getConfiguration(
-            \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
-        );
-        return $this->getTypoScriptConfigurationInstance($fullConfig);
-    }
-
-    public function createConfiguration(): TypoScriptConfiguration
-    {
-        return $this->getTypoScriptFromRequest($GLOBALS['TYPO3_REQUEST']);
+        return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $fullConfig, $pageId);
     }
 
     /**
      * Retrieves the TypoScriptConfiguration object from configuration array, pageId, languageId and TypoScript
      * path that is used in the current context.
      */
-    public function getTypoScriptConfiguration(
-        array $configurationArray = null,
-        int $contextPageId = null,
-        int $contextLanguageId = 0,
-        string $contextTypoScriptPath = '',
-    ): TypoScriptConfiguration {
+    public function getTypoScriptConfiguration(int $contextPageId = null, int $contextLanguageId = 0): TypoScriptConfiguration
+    {
         if ($contextPageId !== null) {
             $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($contextPageId);
             $language = $site->getLanguageById($contextLanguageId);
@@ -78,47 +67,60 @@ class ConfigurationManager implements SingletonInterface
                 ->withAttribute('language', $language);
             return $this->getTypoScriptFromRequest($request);
         }
-        if ($configurationArray == null) {
-            if (isset($this->typoScriptConfigurations['default'])) {
-                $configurationArray = $this->typoScriptConfigurations['default'];
-            } elseif (!empty($GLOBALS['TSFE']->tmpl->setup) && is_array($GLOBALS['TSFE']->tmpl->setup)) {
-                $configurationArray = $GLOBALS['TSFE']->tmpl->setup;
-                $this->typoScriptConfigurations['default'] = $configurationArray;
-            }
+        if (isset($GLOBALS['TYPO3_REQUEST'])) {
+            return $this->getTypoScriptFromRequest($GLOBALS['TYPO3_REQUEST']);
         }
-
-        if (!is_array($configurationArray)) {
-            $configurationArray = [];
+        // fallback: find the first site, use the first language, that's it
+        $allSites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites(false);
+        // No site found, lets return an empty configuration object
+        if ($allSites === []) {
+            return new TypoScriptConfiguration([]);
         }
-
-        if (!isset($configurationArray['plugin.']['tx_solr.'])) {
-            $configurationArray['plugin.']['tx_solr.'] = [];
-        }
-
-        if ($contextPageId === null && !empty($GLOBALS['TSFE']->id)) {
-            $contextPageId = $GLOBALS['TSFE']->id;
-        }
-
-        $hash = md5(serialize($configurationArray)) . '-' . $contextPageId . '-' . $contextLanguageId . '-' . $contextTypoScriptPath;
-        if (isset($this->typoScriptConfigurations[$hash])) {
-            return $this->typoScriptConfigurations[$hash];
-        }
-
-        $this->typoScriptConfigurations[$hash] = $this->getTypoScriptConfigurationInstance($configurationArray, $contextPageId);
-        return $this->typoScriptConfigurations[$hash];
+        $site = reset($allSites);
+        $language = $site->getDefaultLanguage();
+        $uri = $site->getRouter()->generateUri($site->getRootPageId(), ['_language' => $language]);
+        $request = (new ServerRequest($uri, 'GET'))
+            ->withAttribute('site', $site)
+            ->withQueryParams(['id' => $site->getRootPageId()])
+            ->withAttribute('language', $language);
+        return $this->getTypoScriptFromRequest($request);
     }
 
-    /**
-     * This method is used to build the TypoScriptConfiguration.
-     */
-    protected function getTypoScriptConfigurationInstance(
-        array $configurationArray = null,
-        int $contextPageId = null,
-    ): TypoScriptConfiguration {
-        return GeneralUtility::makeInstance(
-            TypoScriptConfiguration::class,
-            $configurationArray,
-            $contextPageId
+    protected function getTypoScriptFrontendFromCore(ServerRequestInterface $request): array
+    {
+        $typo3Site = $request->getAttribute('site');
+        $sysTemplateRows = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+            ->getConnectionForTable('sys_template')
+            ->select(['*'], 'sys_template', ['pid' => $typo3Site->getRootPageId()])
+            ->fetchAllAssociative();
+
+        $frontendTypoScriptFactory = GeneralUtility::makeInstance(
+            FrontendTypoScriptFactory::class,
+            GeneralUtility::makeInstance(\Psr\Container\ContainerInterface::class),
+            GeneralUtility::makeInstance(\Psr\EventDispatcher\EventDispatcherInterface::class),
+            GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\IncludeTree\SysTemplateTreeBuilder::class),
+            GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Tokenizer\LossyTokenizer::class),
+            GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\IncludeTree\Traverser\IncludeTreeTraverser::class),
+            GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\IncludeTree\Traverser\ConditionVerdictAwareIncludeTreeTraverser::class),
         );
+        $frontendTypoScript = $frontendTypoScriptFactory->createSettingsAndSetupConditions(
+            $typo3Site,
+            $sysTemplateRows,
+            [],
+            null,
+        );
+        $frontendTypoScript = $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
+            true,
+            $frontendTypoScript,
+            $typo3Site,
+            $sysTemplateRows,
+            [],
+            '0',
+            null,
+            null,
+        );
+
+        $configurationArray = $frontendTypoScript->getSetupArray();
+        return $configurationArray;
     }
 }

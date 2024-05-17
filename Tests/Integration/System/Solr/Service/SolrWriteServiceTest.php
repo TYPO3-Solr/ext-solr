@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr\Service;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
@@ -55,7 +56,7 @@ class SolrWriteServiceTest extends IntegrationTestBase
         $solrConnectionInfo = $this->getSolrConnectionInfo();
         $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'], true);
 
-        $this->solrWriteService = GeneralUtility::makeInstance(SolrWriteService::class, $client);
+        $this->solrWriteService = GeneralUtility::makeInstance(SolrWriteService::class, $client, new TypoScriptConfiguration([]));
     }
 
     #[Test]

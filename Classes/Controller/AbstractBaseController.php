@@ -30,7 +30,6 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class AbstractBaseController
@@ -43,8 +42,6 @@ abstract class AbstractBaseController extends ActionController
     protected const STATUS_503_MESSAGE = 'Apache Solr Server is not available.';
 
     private ?ContentObjectRenderer $contentObjectRenderer = null;
-
-    protected ?TypoScriptFrontendController $typoScriptFrontendController = null;
 
     private ?SolrConfigurationManager $solrConfigurationManager = null;
 
@@ -62,7 +59,6 @@ abstract class AbstractBaseController extends ActionController
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
     {
         $this->configurationManager = $configurationManager;
-        $this->contentObjectRenderer = $this->configurationManager->getContentObject();
         $this->arguments = GeneralUtility::makeInstance(Arguments::class);
     }
 
@@ -91,10 +87,7 @@ abstract class AbstractBaseController extends ActionController
      */
     protected function initializeAction(): void
     {
-        // Reset configuration (to reset flexform overrides) if resetting is enabled
-        if ($this->resetConfigurationBeforeInitialize) {
-            $this->solrConfigurationManager->reset();
-        }
+        $this->contentObjectRenderer = $this->request->getAttribute('currentContentObject', $this->contentObjectRenderer);
         /** @var TypoScriptService $typoScriptService */
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
 
@@ -125,7 +118,6 @@ abstract class AbstractBaseController extends ActionController
         }
 
         parent::initializeAction();
-        $this->typoScriptFrontendController = $GLOBALS['TSFE'];
         $this->initializeSettings();
 
         if ($this->actionMethodName !== 'solrNotAvailableAction') {
@@ -154,8 +146,8 @@ abstract class AbstractBaseController extends ActionController
     {
         try {
             $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByTypo3Site(
-                $this->typoScriptFrontendController->getSite(),
-                $this->typoScriptFrontendController->getLanguage()->getLanguageId()
+                $this->request->getAttribute('site'),
+                (int)$this->request->getAttribute('language')?->getLanguageId(),
             );
 
             $search = GeneralUtility::makeInstance(Search::class, $solrConnection);

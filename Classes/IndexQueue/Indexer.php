@@ -41,6 +41,7 @@ use Psr\Log\LogLevel;
 use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -254,16 +255,12 @@ class Indexer extends AbstractIndexer
             return null;
         }
 
-        $pidToUse = $this->getPageIdOfItem($item);
+        $typo3site = $item->getSite()->getTypo3SiteObject();
+        $typo3siteLanguage = $typo3site->getLanguageById($language);
 
-        $globalTsfe = GeneralUtility::makeInstance(Tsfe::class);
-        $specializedTsfe = $globalTsfe->getTsfeByPageIdAndLanguageId($pidToUse, $language, $item->getRootPageUid());
-
-        if ($specializedTsfe === null) {
-            return null;
-        }
-
-        return $specializedTsfe->sys_page->getLanguageOverlay($item->getType(), $itemRecord);
+        /** @var PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+        return $pageRepository->getLanguageOverlay('pages', $itemRecord, LanguageAspectFactory::createFromSiteLanguage($typo3siteLanguage));
     }
 
     protected function isAFreeContentModeItemRecord(Item $item): bool

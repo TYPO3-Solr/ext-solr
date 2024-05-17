@@ -1,9 +1,5 @@
 <?php
 
-// @todo: self::getAbsRefPrefixFromTSFE() returns false instead of string.
-//        Solve that issue and activate strict types.
-//declare(strict_types=1);
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,7 +22,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
-use TYPO3\CMS\Core\Context\TypoScriptAspect;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
@@ -37,10 +32,10 @@ use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
  * Class Tsfe is a factory class for TSFE(TypoScriptFrontendController) objects.
@@ -110,12 +105,18 @@ class Tsfe implements SingletonInterface
         $languageAspect = LanguageAspectFactory::createFromSiteLanguage($siteLanguage);
         $context->setAspect('language', $languageAspect);
 
+        $pageInformation = new PageInformation();
+        $pageInformation->setId($pageId);
+        $pageInformation->setPageRecord(BackendUtility::getRecord('pages', $pageId));
         $serverRequest = $this->serverRequestCache[$cacheIdentifier] ?? null;
+        $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, '0', []);
         if (!isset($this->serverRequestCache[$cacheIdentifier])) {
             $serverRequest = GeneralUtility::makeInstance(ServerRequest::class);
             $this->serverRequestCache[$cacheIdentifier] = $serverRequest =
                 $serverRequest->withAttribute('site', $site)
                 ->withAttribute('language', $siteLanguage)
+                ->withAttribute('routing', $pageArguments)
+                ->withAttribute('frontend.page.information', $pageInformation)
                 ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
                 ->withUri($site->getBase());
         }
@@ -150,49 +151,10 @@ class Tsfe implements SingletonInterface
             $feUser->fetchGroupData($serverRequest);
             $context->setAspect('frontend.user', GeneralUtility::makeInstance(UserAspect::class, $feUser, $userGroups));
 
-            /** @var PageArguments $pageArguments */
-            $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, '0', []);
-
+            $serverRequest = $serverRequest->withAttribute('frontend.user', $feUser);
             /** @var TypoScriptFrontendController $tsfe */
-            $tsfe = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, $pageArguments, $feUser);
-
-            // @extensionScannerIgnoreLine
-            /** Done in {@link TypoScriptFrontendController::settingLanguage} */
-            //$tsfe->sys_page = GeneralUtility::makeInstance(PageRepository::class);
-
-            $template = GeneralUtility::makeInstance(TemplateService::class, $context, null, $tsfe);
-            $template->tt_track = false;
-            $tsfe->tmpl = $template;
-            $context->setAspect('typoscript', GeneralUtility::makeInstance(TypoScriptAspect::class, true));
-            $tsfe->no_cache = true;
-
-            $backedUpBackendUser = $GLOBALS['BE_USER'] ?? null;
-            try {
-                $serverRequest = $serverRequest->withAttribute('frontend.controller', $tsfe);
-                $tsfe->determineId($serverRequest);
-                $tsfe->no_cache = false;
-                /** @var ServerRequest $serverRequest */
-                $serverRequest = $tsfe->getFromCache($serverRequest);
-                // The manual releasing of locks is low level api and should be avoided in EXT:solr.
-                $tsfe->releaseLocks();
-
-                $tsfe->newCObj($serverRequest);
-                $tsfe->absRefPrefix = self::getAbsRefPrefixFromTSFE($tsfe);
-                $tsfe->calculateLinkVars([]);
-            } catch (Throwable $exception) {
-                // @todo: logging
-                $this->serverRequestCache[$cacheIdentifier] = null;
-                $this->tsfeCache[$cacheIdentifier] = null;
-                // Restore backend user, happens when initializeTsfe() is called from Backend context
-                if ($backedUpBackendUser) {
-                    $GLOBALS['BE_USER'] = $backedUpBackendUser;
-                }
-                return;
-            }
-            // Restore backend user, happens when initializeTsfe() is called from Backend context
-            if ($backedUpBackendUser) {
-                $GLOBALS['BE_USER'] = $backedUpBackendUser;
-            }
+            $tsfe = GeneralUtility::makeInstance(TypoScriptFrontendController::class);
+            $tsfe->id = $pageId;
 
             $this->serverRequestCache[$cacheIdentifier] = $serverRequest;
             $this->tsfeCache[$cacheIdentifier] = $tsfe;
@@ -386,24 +348,5 @@ class Tsfe implements SingletonInterface
             return false;
         }
         return $rootPageId === $site->getRootPageId();
-    }
-
-    /**
-     * Resolves the configured absRefPrefix to a valid value and resolved if absRefPrefix
-     * is set to "auto".
-     */
-    private function getAbsRefPrefixFromTSFE(TypoScriptFrontendController $TSFE): string
-    {
-        $absRefPrefix = '';
-        if (empty($TSFE->config['config']['absRefPrefix'])) {
-            return $absRefPrefix;
-        }
-
-        $absRefPrefix = trim($TSFE->config['config']['absRefPrefix']);
-        if ($absRefPrefix === 'auto') {
-            $absRefPrefix = GeneralUtility::getIndpEnv('TYPO3_SITE_PATH');
-        }
-
-        return $absRefPrefix;
     }
 }
