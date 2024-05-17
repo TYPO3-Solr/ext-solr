@@ -43,8 +43,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
         parent::initializeView($view);
 
         $this->generateCoreSelectorMenuUsingPageTree();
-        $coreOptimizationTabs = $this->moduleTemplate->getDynamicTabMenu([], 'coreOptimization');
-        $this->moduleTemplate->assign('tabs', $coreOptimizationTabs);
     }
 
     /**
