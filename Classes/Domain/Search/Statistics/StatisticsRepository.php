@@ -162,7 +162,6 @@ class StatisticsRepository extends AbstractRepository
             )
             ->from($frequentSearchConfiguration['select.']['FROM']);
 
-
         $queryBuilder
             ->getConcreteQueryBuilder()
             ->where($frequentSearchConfiguration['select.']['ADD_WHERE'])

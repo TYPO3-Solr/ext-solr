@@ -385,6 +385,12 @@ class DataUpdateHandler extends AbstractUpdateHandler
         $this->updateCanonicalPages($uid);
         $this->mountPageUpdater->update($uid);
 
+        // We need to get the full record to find out if this is a page translation
+        $fullRecord = BackendUtility::getRecord('pages', $uid);
+        if ($fullRecord['sys_language_uid'] > 0) {
+            $uid = (int)$fullRecord['l10n_parent'];
+        }
+
         $recursiveUpdateRequired = $this->isRecursivePageUpdateRequired($uid, $updatedFields);
         if ($recursiveUpdateRequired) {
             $treePageIds = $this->getSubPageIds($uid);
