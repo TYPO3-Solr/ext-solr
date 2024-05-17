@@ -36,8 +36,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * Base class for all integration tests in the EXT:solr project
- *
- * @author Timo Schmidt
  */
 abstract class IntegrationTestBase extends FunctionalTestCase
 {

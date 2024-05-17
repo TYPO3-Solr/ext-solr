@@ -24,8 +24,6 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Additional field provider for the index queue worker task
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class EventQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {

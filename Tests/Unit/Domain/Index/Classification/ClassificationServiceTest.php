@@ -20,9 +20,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Classification\ClassificationService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class ClassificationServiceTest extends SetUpUnitTestCase
 {
     #[Test]

@@ -19,8 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDelete
 
 /**
  * Testcase for the RecordDeletedEvent
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class RecordDeletedEventTest extends SetUpDataUpdateEvent
 {

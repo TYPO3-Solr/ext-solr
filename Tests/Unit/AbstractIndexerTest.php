@@ -20,8 +20,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for AbstractIndexer
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class AbstractIndexerTest extends SetUpUnitTestCase
 {

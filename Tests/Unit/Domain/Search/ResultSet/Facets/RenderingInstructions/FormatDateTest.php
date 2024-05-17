@@ -20,9 +20,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Exception;
 use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class FormatDateTest extends SetUpUnitTestCase
 {
     public function setUp(): void

@@ -30,8 +30,6 @@ use Solarium\QueryType\Select\RequestBuilder;
 
 /**
  * Testcase for RelevanceComponent
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class RelevanceComponentTest extends SetUpUnitTestCase
 {

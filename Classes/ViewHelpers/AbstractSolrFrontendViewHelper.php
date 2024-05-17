@@ -24,9 +24,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Class AbstractSolrFrontendViewHelper
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 abstract class AbstractSolrFrontendViewHelper extends AbstractSolrViewHelper
 {

@@ -19,7 +19,5 @@ use ApacheSolrForTypo3\Solr\Exception;
 
 /**
  * This Exception is thrown when the RecordMonitor handles a record without a valid pid.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class NoPidException extends Exception {}

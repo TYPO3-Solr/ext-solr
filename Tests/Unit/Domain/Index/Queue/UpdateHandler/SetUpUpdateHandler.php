@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract testcase for the update handlers
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 abstract class SetUpUpdateHandler extends SetUpUnitTestCase
 {

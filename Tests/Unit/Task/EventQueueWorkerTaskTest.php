@@ -30,8 +30,6 @@ use TYPO3\CMS\Scheduler\Scheduler;
 
 /**
  * Testcase for EventQueueWorkerTask
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class EventQueueWorkerTaskTest extends SetUpUnitTestCase
 {

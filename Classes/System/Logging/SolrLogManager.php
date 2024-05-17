@@ -26,8 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Wrapper to for the TYPO3 Logging Framework
- *
- * @author Thomas Hohn <tho@systime.dk>
  */
 class SolrLogManager implements LoggerInterface
 {

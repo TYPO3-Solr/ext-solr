@@ -26,7 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to test the RequirementsService
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class RequirementsServiceTest extends SetUpUnitTestCase
 {

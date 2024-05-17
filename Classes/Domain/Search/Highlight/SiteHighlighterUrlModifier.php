@@ -23,9 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * adding parameters to a document's URL property.
  *
  * Initial code from ApacheSolrForTypo3\Solr\ResultDocumentModifier\SiteHighlighter
- *
- * @author Stefan Sprenger <stefan.sprenger@dkd.de>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SiteHighlighterUrlModifier
 {

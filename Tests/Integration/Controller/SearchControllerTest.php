@@ -33,9 +33,6 @@ use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
 
 /**
  * Integration testcase to test for the SearchController
- *
- * (c) 2010-2015 Timo Hund <timo.hund@dkd.de>
- * @author Timo Hund
  */
 class SearchControllerTest extends IntegrationTestBase
 {

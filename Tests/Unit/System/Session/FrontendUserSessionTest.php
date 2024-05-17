@@ -23,8 +23,6 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * Testcase for the SchemaParser class.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class FrontendUserSessionTest extends SetUpUnitTestCase
 {

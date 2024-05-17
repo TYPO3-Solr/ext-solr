@@ -23,8 +23,6 @@ use Traversable;
 
 /**
  * Testcase to verify the functionality of the Rootline
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class RootlineTest extends SetUpUnitTestCase
 {

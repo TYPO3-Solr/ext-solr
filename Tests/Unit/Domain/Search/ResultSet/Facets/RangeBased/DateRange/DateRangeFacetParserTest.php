@@ -22,8 +22,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class DateRangeFacetParserTest
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class DateRangeFacetParserTest extends SetUpFacetParser
 {

@@ -22,9 +22,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class TypoScriptConfigurationTest extends IntegrationTestBase
 {
     protected function setUp(): void

@@ -18,8 +18,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 /**
  * Simple Index Queue initializer for records as found in tables configured
  * through TCA.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Record extends AbstractInitializer
 {

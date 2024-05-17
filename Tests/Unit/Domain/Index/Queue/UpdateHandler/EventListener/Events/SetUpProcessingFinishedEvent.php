@@ -21,8 +21,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Abstract testcase for the processing finished events
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 abstract class SetUpProcessingFinishedEvent extends SetUpUnitTestCase
 {

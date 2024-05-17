@@ -35,8 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Faceting class
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class FacetingComponentTest extends SetUpUnitTestCase
 {

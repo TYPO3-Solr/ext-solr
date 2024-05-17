@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExis
  * Testcase to test the functionality of the extension configuration that comes from
  *
  * ext_conf_template.txt
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ExtensionConfigurationTest extends SetUpUnitTestCase
 {

@@ -27,8 +27,6 @@ use TYPO3\CMS\Reports\Status;
 /**
  * Provides a status report about whether the Access Filter Query Parser Plugin
  * is installed on the Solr server.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
 {

@@ -28,8 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the record indexer
- *
- * @author Timo Schmidt
  */
 class IndexServiceTest extends IntegrationTestBase
 {

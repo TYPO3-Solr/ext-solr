@@ -19,9 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractO
 
 /**
  * Class QueryGroupFacet
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class QueryGroupFacet extends AbstractOptionsFacet
 {

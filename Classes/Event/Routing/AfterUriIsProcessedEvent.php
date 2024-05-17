@@ -21,8 +21,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * This event is invoked after an uri was processed.
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 class AfterUriIsProcessedEvent
 {

@@ -20,9 +20,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use DateTimeZone;
 use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class DateTimeTest extends SetUpUnitTestCase
 {
     #[Test]

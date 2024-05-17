@@ -22,9 +22,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\LogLevel;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class DebugWriterTest extends SetUpUnitTestCase
 {
     #[Test]

@@ -19,8 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Event
 
 /**
  * Testcase for the DelayedProcessingFinishedEvent
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class DelayedProcessingFinishedEventTest extends SetUpProcessingFinishedEvent
 {

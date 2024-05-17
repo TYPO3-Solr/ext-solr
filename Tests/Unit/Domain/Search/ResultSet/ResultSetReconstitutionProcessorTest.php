@@ -28,9 +28,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
  */
 class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
 {

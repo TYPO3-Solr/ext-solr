@@ -30,8 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the DataUpdateHandler class.
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class DataUpdateHandlerTest extends SetUpUpdateHandler
 {

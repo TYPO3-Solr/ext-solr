@@ -21,9 +21,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class SiteHighlighterUrlModifierTest extends SetUpUnitTestCase
 {
     public static function canModifyDataProvider(): Traversable

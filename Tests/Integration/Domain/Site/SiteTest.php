@@ -24,8 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Site class tests
- *
- * @author Timo Schmidt
  */
 class SiteTest extends IntegrationTestBase
 {

@@ -23,8 +23,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit test case for the SearchResult.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SearchResultTest extends SetUpUnitTestCase
 {

@@ -36,8 +36,6 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Adds additional field to specify the Solr server to initialize the index queue for
- *
- * @author Jens Jacobsen <typo3@jens-jacobsen.de>
  */
 class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {

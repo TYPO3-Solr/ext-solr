@@ -17,7 +17,5 @@ namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
 
 /**
  * This interface uses to determine if an enhancer handle Solr specific requests
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 interface SolrRouteEnhancerInterface {}

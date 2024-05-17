@@ -22,8 +22,6 @@ use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 
 /**
  * This event is dispatched before the indexing of an item starts
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 final class BeforeItemIsIndexedEvent
 {

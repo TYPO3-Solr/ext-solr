@@ -25,9 +25,6 @@ use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
 /**
  * Testcase to check if we can index page documents using the PageIndexer
- *
- * @author Timo Schmidt
- * (c) 2015 Timo Schmidt <timo.schmidt@dkd.de>
  */
 class PageIndexerTest extends IntegrationTestBase
 {

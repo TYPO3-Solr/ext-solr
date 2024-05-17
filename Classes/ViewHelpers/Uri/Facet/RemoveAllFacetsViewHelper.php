@@ -21,9 +21,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Class RemoveAllFacetsViewHelper
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class RemoveAllFacetsViewHelper extends AbstractUriViewHelper
 {

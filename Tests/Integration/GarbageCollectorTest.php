@@ -35,8 +35,6 @@ use TYPO3\CMS\Scheduler\Scheduler;
 /**
  * This testcase is used to check if the GarbageCollector can delete garbage from the
  * solr server as expected
- *
- * @author Timo Schmidt
  */
 class GarbageCollectorTest extends IntegrationTestBase
 {

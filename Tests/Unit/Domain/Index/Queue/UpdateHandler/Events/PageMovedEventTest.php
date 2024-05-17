@@ -20,8 +20,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the PageMovedEvent
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class PageMovedEventTest extends SetUpDataUpdateEvent
 {

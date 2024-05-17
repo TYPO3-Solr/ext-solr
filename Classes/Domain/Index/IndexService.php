@@ -37,8 +37,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Service to perform indexing operations
- *
- * @author Timo Hund <timo.schmidt@dkd.de>
  */
 class IndexService
 {

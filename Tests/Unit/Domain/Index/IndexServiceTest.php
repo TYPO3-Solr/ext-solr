@@ -29,9 +29,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class IndexServiceTest extends SetUpUnitTestCase
 {
     protected Site|MockObject $siteMock;

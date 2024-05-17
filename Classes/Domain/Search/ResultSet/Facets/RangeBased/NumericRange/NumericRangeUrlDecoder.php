@@ -22,10 +22,6 @@ use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 
 /**
  * Parser to build Solr range queries from tx_solr[filter]
- *
- * @author Markus Goldbach <markus.goldbach@dkd.de>
- * @author Ingo Renner <ingo@typo3.org>
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class NumericRangeUrlDecoder implements FacetUrlDecoderInterface
 {

@@ -22,8 +22,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Unit test case for the GroupCollection class
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class GroupCollectionTest extends SetUpUnitTestCase
 {

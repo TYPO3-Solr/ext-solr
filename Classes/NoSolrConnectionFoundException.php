@@ -19,8 +19,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 /**
  * Exception that is thrown when no Solr connection could be found.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class NoSolrConnectionFoundException extends Exception
 {

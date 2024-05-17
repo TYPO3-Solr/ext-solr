@@ -17,8 +17,6 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Schema;
 
 /**
  * Object representation of the solr schema.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class Schema
 {

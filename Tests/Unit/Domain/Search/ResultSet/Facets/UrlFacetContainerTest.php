@@ -22,8 +22,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcases for the url data bag
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 class UrlFacetContainerTest extends SetUpUnitTestCase
 {

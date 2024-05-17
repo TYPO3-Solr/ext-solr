@@ -25,10 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for query parser range
- *
- * @author Markus Goldbach <markus.goldbach@dkd.de>
- * @author Ingo Renner <ingo@typo3.org>
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
 {

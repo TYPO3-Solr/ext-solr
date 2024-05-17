@@ -44,8 +44,6 @@ use TYPO3\CMS\Scheduler\Scheduler;
 
 /**
  * Testcase for the record monitor
- *
- * @author Timo Schmidt
  */
 class RecordMonitorTest extends IntegrationTestBase
 {

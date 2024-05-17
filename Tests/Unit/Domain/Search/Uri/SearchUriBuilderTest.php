@@ -31,8 +31,6 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SearchUriBuilderTest extends SetUpUnitTestCase
 {

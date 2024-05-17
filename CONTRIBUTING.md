@@ -136,19 +136,19 @@ git commit -m "do some cleanup"
 # Check the log and rebase
 git log
 commit 0ee764f44de07ea97b19ad8272f60f3011bbf52b
-Author: Timo Schmidt <timo.schmidt@dkd.de>
+Author: Some Vendor <some.vendor@example.com>
 Date:   Thu Jan 14 10:17:04 2016 +0100
 
     Fixed wording
 
 commit 1b8ba76ac15263876d71088ffc05983b40919919
-Author: Timo Schmidt <timo.schmidt@dkd.de>
+Author: Some Vendor <some.vendor@example.com>
 Date:   Thu Jan 14 10:16:20 2016 +0100
 
     First implementation
 
 commit 1ea657dfed4d41a4e457a15520d4e95efba4a4c3
-Author: Ingo Renner <ingo@typo3.org>
+Author: Some Vendor <some.vendor@example.com>
 Date:   Thu Jan 7 22:12:37 2016 -0800
 
     Last commit from main

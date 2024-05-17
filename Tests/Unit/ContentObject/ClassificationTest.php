@@ -24,8 +24,6 @@ use Traversable;
 
 /**
  * Tests for the SOLR_CLASSIFICATION cObj.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ClassificationTest extends SetUpContentObject
 {

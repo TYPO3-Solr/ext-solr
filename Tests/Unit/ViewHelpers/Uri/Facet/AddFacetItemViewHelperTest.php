@@ -21,9 +21,6 @@ use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Extbase\Mvc\Web\RequestBuilder;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class AddFacetItemViewHelperTest extends SetUpFacetItemViewHelper
 {
     #[Test]

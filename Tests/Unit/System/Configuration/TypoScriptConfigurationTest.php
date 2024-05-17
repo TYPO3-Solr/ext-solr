@@ -23,8 +23,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase to check if the configuration object can be used as expected
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class TypoScriptConfigurationTest extends SetUpUnitTestCase
 {

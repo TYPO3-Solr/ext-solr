@@ -23,8 +23,6 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
  * Provides shared functionality for all Solr reports.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 abstract class AbstractSolrStatus implements StatusProviderInterface
 {

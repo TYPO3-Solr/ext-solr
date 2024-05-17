@@ -25,9 +25,6 @@ use Traversable;
 
 /**
  * Unit test for the SortingExpression
- *
- * @author Timo Hund <timo.hund@dkd.de>
- * @author Jens Jacobsen <jens.jacobsen@ueberbit.de>
  */
 class SortingExpressionTest extends SetUpUnitTestCase
 {

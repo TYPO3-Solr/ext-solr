@@ -44,8 +44,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  * 3-1/10/100/11/
  *
  * which is finally saved in a multi-value field.
- *
- * @author Michael Knoll <knoll@punkt.de>
  */
 class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor
 {

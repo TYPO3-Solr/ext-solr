@@ -21,8 +21,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for StopWordParser
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class StopWordParserTest extends SetUpUnitTestCase
 {

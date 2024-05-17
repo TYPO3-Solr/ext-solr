@@ -24,8 +24,6 @@ use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 
 /**
  * Statistics search component
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class StatisticsComponent
 {

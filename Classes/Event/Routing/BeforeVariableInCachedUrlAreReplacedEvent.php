@@ -21,8 +21,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * This event will be triggered before start to replace placeholder inside cached URLs
- *
- * @author Lars Tode <lars.tode@dkd.de>
  */
 class BeforeVariableInCachedUrlAreReplacedEvent
 {

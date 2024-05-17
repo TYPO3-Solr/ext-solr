@@ -31,9 +31,6 @@ use stdClass;
 use Traversable;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class HighlightingResultViewHelperTest extends SetUpUnitTestCase
 {
     public static function canRenderCreateHighlightSnippedDataProvider(): Traversable

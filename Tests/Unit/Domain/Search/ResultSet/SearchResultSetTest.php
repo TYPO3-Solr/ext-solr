@@ -35,9 +35,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 
-/**
- * @author Timo Schmidt <timo.schmidt@dkd.de>
- */
 class SearchResultSetTest extends SetUpUnitTestCase
 {
     protected TypoScriptConfiguration|MockObject $configurationMock;

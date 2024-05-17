@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the Path helper class.
- *
- * @author Thomas Hohn <tho@systime.dk>
  */
 class PathTest extends SetUpUnitTestCase
 {

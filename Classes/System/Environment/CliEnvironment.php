@@ -23,8 +23,6 @@ use TYPO3\CMS\Core\SingletonInterface;
 /**
  * Helper class for the cli environment helps to define the variables and constants
  * that are required in the cli context to allow frontend related operations in the cli context.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class CliEnvironment implements SingletonInterface
 {

@@ -22,8 +22,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
  * Fake test parser
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class TestResultParser extends AbstractResultParser
 {

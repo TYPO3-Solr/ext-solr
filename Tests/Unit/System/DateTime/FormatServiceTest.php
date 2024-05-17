@@ -21,8 +21,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for FormatService
- *
- * @author Thomas Hohn <tho@systime.dk>
  */
 class FormatServiceTest extends SetUpUnitTestCase
 {

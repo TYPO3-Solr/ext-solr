@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderInterf
 
 /**
  * Filter encoder to build Solr hierarchy queries from tx_solr[filter]
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class HierarchyUrlDecoder implements FacetUrlDecoderInterface
 {

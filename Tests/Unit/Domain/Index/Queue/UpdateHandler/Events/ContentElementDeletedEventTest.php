@@ -20,8 +20,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the ContentElementDeletedEvent
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class ContentElementDeletedEventTest extends SetUpDataUpdateEvent
 {

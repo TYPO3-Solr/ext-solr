@@ -23,8 +23,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Abstract testcase for the data update events
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
 {

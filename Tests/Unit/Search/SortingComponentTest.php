@@ -30,8 +30,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Testcase for SortingComponent
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SortingComponentTest extends SetUpUnitTestCase
 {

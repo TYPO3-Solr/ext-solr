@@ -30,9 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to check if the solr write service is working as expected.
- *
- * @author Timo Hund
- * (c) 2010-2015 Timo Schmidt <timo.schmidt@dkd.de>
  */
 class SolrWriteServiceTest extends IntegrationTestBase
 {

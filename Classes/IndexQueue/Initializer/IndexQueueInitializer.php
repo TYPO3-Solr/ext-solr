@@ -19,8 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 
 /**
  * Interface to initialize items in the Index Queue.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 interface IndexQueueInitializer
 {

@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Sorting search component
  *
  * TODO maybe merge ApacheSolrForTypo3\Solr\Sorting into ApacheSolrForTypo3\Solr\Search\SortingComponent
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class SortingComponent
 {

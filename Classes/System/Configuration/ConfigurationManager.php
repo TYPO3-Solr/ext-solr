@@ -21,8 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Configuration manager old the configuration instance.
  * Singleton
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class ConfigurationManager implements SingletonInterface
 {

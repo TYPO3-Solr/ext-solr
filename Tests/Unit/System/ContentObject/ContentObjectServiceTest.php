@@ -25,8 +25,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Testcase for ContentObjectService
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ContentObjectServiceTest extends SetUpUnitTestCase
 {

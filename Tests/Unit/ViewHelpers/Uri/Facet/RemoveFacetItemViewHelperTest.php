@@ -20,9 +20,6 @@ use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveFacetItemViewHelper;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class RemoveFacetItemViewHelperTest extends SetUpFacetItemViewHelper
 {
     #[Test]

@@ -25,9 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Service class that modifies fields in an Apache Solr Document, used for
  * common field processing during indexing or resolving
- *
- * @author Daniel Poetzinger <poetzinger@aoemedia.de>
- * @copyright (c) 2009-2015 Daniel Poetzinger <poetzinger@aoemedia.de>
  */
 class Service
 {

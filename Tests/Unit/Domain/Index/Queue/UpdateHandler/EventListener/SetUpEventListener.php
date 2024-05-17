@@ -26,8 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract testcase for the event listeners
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 abstract class SetUpEventListener extends SetUpUnitTestCase
 {

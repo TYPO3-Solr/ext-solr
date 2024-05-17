@@ -24,8 +24,6 @@ use Traversable;
 
 /**
  * Testcase for the dateRange queryBuilder
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
 {

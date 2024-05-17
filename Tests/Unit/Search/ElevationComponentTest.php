@@ -28,8 +28,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Elevation class
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class ElevationComponentTest extends SetUpUnitTestCase
 {

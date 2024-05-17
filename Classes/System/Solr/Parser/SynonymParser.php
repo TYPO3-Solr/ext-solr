@@ -17,8 +17,6 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Parser;
 
 /**
  * Class to parse the synonyms from a solr response.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SynonymParser
 {

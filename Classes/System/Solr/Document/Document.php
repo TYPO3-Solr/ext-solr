@@ -22,8 +22,6 @@ use Solarium\QueryType\Update\Query\Document as SolariumDocument;
 
 /**
  * Document representing the update query document
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class Document extends SolariumDocument
 {

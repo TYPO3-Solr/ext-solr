@@ -21,8 +21,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for OptimizeIndexTask
- *
- * @author Jens Jacobsen <typo3@jens-jacobsen.de>
  */
 class OptimizeIndexTaskTest extends SetUpUnitTestCase
 {

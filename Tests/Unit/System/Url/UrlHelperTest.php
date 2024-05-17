@@ -23,8 +23,6 @@ use Traversable;
 
 /**
  * Testcase to check the functionallity of the UrlHelper
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class UrlHelperTest extends SetUpUnitTestCase
 {

@@ -19,7 +19,5 @@ namespace ApacheSolrForTypo3\Solr;
 
 /**
  * Exception that is thrown when a ping fails
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class PingFailedException extends Exception {}

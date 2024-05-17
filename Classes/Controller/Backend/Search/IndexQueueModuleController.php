@@ -36,8 +36,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *
  * @todo: Support all index queues in actions beside "initializeIndexQueueAction" and
  *        "resetLogErrorsAction"
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class IndexQueueModuleController extends AbstractModuleController
 {

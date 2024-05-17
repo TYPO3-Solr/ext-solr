@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Integration test for the schema status report
- *
- * @author Timo Hund
  */
 class SchemaStatusTest extends IntegrationTestBase
 {

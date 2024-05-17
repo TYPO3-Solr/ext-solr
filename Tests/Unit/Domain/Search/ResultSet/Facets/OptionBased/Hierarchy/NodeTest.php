@@ -22,8 +22,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase to test the Node class
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class NodeTest extends SetUpUnitTestCase
 {

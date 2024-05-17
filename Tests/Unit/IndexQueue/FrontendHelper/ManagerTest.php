@@ -20,9 +20,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class ManagerTest extends SetUpUnitTestCase
 {
     /**

@@ -22,8 +22,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class DefaultFacetQueryBuilderTest
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class DefaultFacetQueryBuilderTest extends SetUpUnitTestCase
 {

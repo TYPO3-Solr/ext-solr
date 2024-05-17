@@ -23,7 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The SearchRequestBuilder is responsible to build a valid SearchRequest.
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SearchRequestBuilder
 {

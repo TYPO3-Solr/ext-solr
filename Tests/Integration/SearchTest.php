@@ -35,8 +35,6 @@ use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 
 /**
  * Test class to perform a search on a real solr server
- *
- * @author Timo Schmidt
  */
 class SearchTest extends IntegrationTestBase
 {

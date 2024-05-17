@@ -24,8 +24,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SuggestQuery class
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SuggestQueryTest extends SetUpUnitTestCase
 {

@@ -7,13 +7,13 @@
   "homepage": "https://www.typo3-solr.com",
   "authors": [
     {
-      "name": "dkd Internet Services GmbH",
-      "email": "solr-eb-support@dkd.de",
+      "name": "dkd Internet Service GmbH",
+      "email": "info@dkd.de",
       "homepage": "https://www.dkd.de"
     }
   ],
   "support": {
-    "email": "solr-eb-support@dkd.de",
+    "email": "info@dkd.de",
     "issues": "https://github.com/TYPO3-Solr/ext-solr/issues",
     "forum": "https://talk.typo3.org",
     "slack": "https://typo3.slack.com/archives/C02FF05Q4",

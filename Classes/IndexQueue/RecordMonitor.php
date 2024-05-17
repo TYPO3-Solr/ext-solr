@@ -34,8 +34,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
 /**
  * A class that monitors changes to the records so that the changed record get
  * passed to the index queue to update the according index document.
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class RecordMonitor
 {

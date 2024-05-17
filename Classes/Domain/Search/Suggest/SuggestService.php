@@ -40,9 +40,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class SuggestService
- *
- * @author Frans Saris <frans.saris@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SuggestService
 {

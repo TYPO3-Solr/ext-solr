@@ -52,9 +52,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * records like news records, tt_address, and so on.
  * Specialized indexers can extend this class to handle advanced stuff like
  * category resolution in news records or file indexing.
- *
- * @author Ingo Renner <ingo@typo3.org>
- * @copyright  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
  */
 class Indexer extends AbstractIndexer
 {

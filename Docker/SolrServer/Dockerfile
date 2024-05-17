@@ -1,5 +1,5 @@
 FROM solr:9.6.0
-MAINTAINER dkd Internet Service GmbH <solr-eb-support@dkd.de>
+MAINTAINER dkd Internet Service GmbH <info@dkd.de>
 ENV TERM linux
 
 ARG SOLR_UNIX_UID="8983"

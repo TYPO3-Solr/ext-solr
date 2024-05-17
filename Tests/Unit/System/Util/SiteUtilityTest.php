@@ -25,8 +25,6 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 /**
  * Testcase for the SiteUtilityTest helper class.
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SiteUtilityTest extends SetUpUnitTestCase
 {

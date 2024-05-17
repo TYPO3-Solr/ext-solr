@@ -21,9 +21,6 @@ use DateTime;
 
 /**
  * Value object that represent a date range count. The count has a date and the count of documents
- *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class DateRangeCount
 {

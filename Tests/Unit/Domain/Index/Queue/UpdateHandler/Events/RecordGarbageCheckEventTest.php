@@ -21,8 +21,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the RecordGarbageCheckEvent
- *
- * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class RecordGarbageCheckEventTest extends SetUpDataUpdateEvent
 {

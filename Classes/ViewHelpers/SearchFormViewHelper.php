@@ -29,8 +29,6 @@ use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 /**
  * Class SearchFormViewHelper
  *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
  *
  * @property RenderingContext $renderingContext
  */

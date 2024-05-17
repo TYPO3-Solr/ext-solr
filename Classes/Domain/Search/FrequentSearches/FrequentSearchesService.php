@@ -28,10 +28,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * The FrequentSearchesService is used to retrieve the frequent searches from the database or cache.
- *
- * @author Dimitri Ebert <dimitri.ebert@dkd.de>
- * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @copyright (c) 2015-2021 dkd Internet Service GmbH <info@dkd.de>
  */
 class FrequentSearchesService
 {

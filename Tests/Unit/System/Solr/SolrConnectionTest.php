@@ -36,8 +36,6 @@ use Traversable;
 
 /**
  * Class SolrConnectionTest
- *
- * @author Timo Hund <timo.hund@dkd.de>
  */
 class SolrConnectionTest extends SetUpUnitTestCase
 {

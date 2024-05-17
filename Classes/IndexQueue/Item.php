@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * indexed.
  *
  * @todo: Loose coupling from Repos
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
 class Item implements ItemInterface, MountPointAwareItemInterface
 {
