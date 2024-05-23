@@ -110,7 +110,7 @@ class Page extends AbstractInitializer
         );
 
         foreach ($mountPoints as $mountPoint) {
-            if (!empty($mountPoint['mountPageOverlayed']) && !$this->isMountPointValid($mountPoint)) {
+            if (!$this->isMountPointValid($mountPoint)) {
                 continue;
             }
 
@@ -161,7 +161,7 @@ class Page extends AbstractInitializer
     {
         $isValidMountPage = true;
 
-        if (empty($mountPoint['mountPageSource'])) {
+        if (!empty($mountPoint['mountPageOverlayed']) && empty($mountPoint['mountPageSource'])) {
             $isValidMountPage = false;
 
             $flashMessage = GeneralUtility::makeInstance(
@@ -174,7 +174,7 @@ class Page extends AbstractInitializer
             $this->flashMessageQueue->addMessage($flashMessage);
         }
 
-        if (!$this->mountedPageExists($mountPoint['mountPageSource'])) {
+        if (!empty($mountPoint['mountPageOverlayed']) && !$this->mountedPageExists($mountPoint['mountPageSource'])) {
             $isValidMountPage = false;
 
             $flashMessage = GeneralUtility::makeInstance(
