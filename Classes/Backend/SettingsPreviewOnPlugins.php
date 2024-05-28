@@ -149,7 +149,13 @@ class SettingsPreviewOnPlugins
      */
     protected function getPluginLabel(): string
     {
-        $label = BackendUtility::getLabelFromItemListMerged($this->pluginsTtContentRecord['pid'], 'tt_content', 'list_type', $this->pluginsTtContentRecord['list_type']);
+        $label = BackendUtility::getLabelFromItemListMerged(
+            $this->pluginsTtContentRecord['pid'],
+            'tt_content',
+            'list_type',
+            $this->pluginsTtContentRecord['list_type'],
+            $this->pluginsTtContentRecord
+        );
         if (!empty($label)) {
             $label = $this->getLanguageService()->sL($label);
         } else {
