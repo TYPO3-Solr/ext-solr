@@ -62,7 +62,7 @@ class PageIndexer extends Indexer
         foreach ($systemLanguageUids as $systemLanguageUid) {
             $contentAccessGroups = $this->getAccessGroupsFromContent($item, $systemLanguageUid);
             foreach ($contentAccessGroups as $userGroup) {
-                $this->indexPage($item, $systemLanguageUid, $userGroup);
+                $this->indexPage($item, $systemLanguageUid, (int)$userGroup);
             }
         }
 
