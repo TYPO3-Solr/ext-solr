@@ -33,10 +33,17 @@ function NumericRangeFacetController() {
                     if (isNaN(min)) { min = 0; }
                     if (isNaN(max)) { max = 0; }
 
+                    jQuery("#facet-" + facetName + "-value").html(min.toString() + "-" + max.toString());
+                },
+                stop: function (event, ui) {
+                    min = ui.values[0];
+                    max = ui.values[1];
+                    if (isNaN(min)) { min = 0; }
+                    if (isNaN(max)) { max = 0; }
+
                     url = urlTemplate.replace('___FROM___', min.toString());
                     url = url.replace('___TO___', max.toString());
                     _this.load(url);
-                    jQuery("#facet-" + facetName + "-value").html(min.toString() + "-" + max.toString());
                 }
             });
         });
