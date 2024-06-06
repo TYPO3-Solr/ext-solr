@@ -16,10 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\System\Util;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site as ExtSolrSite;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
-use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class contains related functions for the new site management that was introduced with TYPO3 9.
@@ -37,20 +34,6 @@ class SiteUtility
     public static function reset(): void
     {
         self::$languages = [];
-    }
-
-    /**
-     * Determines if the site where the page belongs to is managed with the TYPO3 site management.
-     */
-    public static function getIsSiteManagedSite(int $pageId): bool
-    {
-        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-        try {
-            /** @var SiteFinder $siteFinder */
-            return $siteFinder->getSiteByPageId($pageId) instanceof CoreSite;
-        } catch (SiteNotFoundException) {
-        }
-        return false;
     }
 
     /**
