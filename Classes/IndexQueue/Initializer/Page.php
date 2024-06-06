@@ -122,6 +122,7 @@ class Page extends AbstractInitializer
                 // The page itself has its own content, which is handled like standard page.
                 $indexQueue = GeneralUtility::makeInstance(Queue::class);
                 $indexQueue->updateItem($this->type, $mountPoint['uid']);
+                $mountPointsInitialized = true;
             }
 
             // This can happen when the mount point does not show the content of the
@@ -160,7 +161,7 @@ class Page extends AbstractInitializer
     {
         $isValidMountPage = true;
 
-        if (empty($mountPoint['mountPageSource'])) {
+        if (!empty($mountPoint['mountPageOverlayed']) && empty($mountPoint['mountPageSource'])) {
             $isValidMountPage = false;
 
             $flashMessage = GeneralUtility::makeInstance(
@@ -173,7 +174,7 @@ class Page extends AbstractInitializer
             $this->flashMessageQueue->addMessage($flashMessage);
         }
 
-        if (!$this->mountedPageExists($mountPoint['mountPageSource'])) {
+        if (!empty($mountPoint['mountPageOverlayed']) && !$this->mountedPageExists($mountPoint['mountPageSource'])) {
             $isValidMountPage = false;
 
             $flashMessage = GeneralUtility::makeInstance(
