@@ -106,7 +106,7 @@ class PageTest extends IntegrationTestBase
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
 
-        $this->assertItemsInQueue(5);
+        $this->assertItemsInQueue(4);
 
         // @todo: verify, is this really as expected? since mount_pid_ol is not set
         // in the case when mount_pid_ol is set 4 pages get added
@@ -240,7 +240,7 @@ class PageTest extends IntegrationTestBase
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
 
-        $this->assertItemsInQueue(5); // The root page of "testtwo.site aka integration_tree_two" is included.
+        $this->assertItemsInQueue(4); // The root page of "testtwo.site aka integration_tree_two" is included.
 
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
