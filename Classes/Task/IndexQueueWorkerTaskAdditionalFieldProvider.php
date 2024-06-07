@@ -20,13 +20,14 @@ namespace ApacheSolrForTypo3\Solr\Task;
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Exception as DBALException;
 use LogicException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\SchedulerManagementAction;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Additional field provider for the index queue worker task
@@ -49,6 +50,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
      *                    For each field it provides an associative sub-array with the following:
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
      * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function getAdditionalFields(
@@ -63,14 +65,13 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
             return $additionalFields;
         }
 
-        $currentAction = $schedulerModule->getCurrentAction();
-        if ($currentAction->equals(Action::ADD)) {
+        if ($schedulerModule->getCurrentAction() === SchedulerManagementAction::ADD) {
             $taskInfo['site'] = null;
             $taskInfo['documentsToIndexLimit'] = 50;
             $taskInfo['forcedWebRoot'] = '';
         }
 
-        if ($currentAction->equals(Action::EDIT)) {
+        if ($schedulerModule->getCurrentAction() === SchedulerManagementAction::EDIT) {
             $taskInfo['site'] = $this->siteRepository->getSiteByRootPageId((int)$task->getRootPageId());
             $taskInfo['documentsToIndexLimit'] = $task->getDocumentsToIndexLimit();
             $taskInfo['forcedWebRoot'] = $task->getForcedWebRoot();

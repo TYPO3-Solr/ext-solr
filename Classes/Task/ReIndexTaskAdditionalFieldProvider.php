@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Exception as DBALException;
 use LogicException;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
@@ -29,8 +30,8 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\SchedulerManagementAction;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Adds additional field to specify the Solr server to initialize the index queue for
@@ -64,6 +65,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * Initialize object
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
      */
     protected function initialize(
         array $taskInfo,
@@ -75,9 +77,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $this->task = $task;
         $this->schedulerModule = $schedulerModule;
 
-        $currentAction = $schedulerModule->getCurrentAction();
-
-        if ($currentAction->equals(Action::EDIT)) {
+        if ($schedulerModule->getCurrentAction() === SchedulerManagementAction::EDIT) {
             $this->site = $this->siteRepository->getSiteByRootPageId((int)$task->getRootPageId());
         }
     }
@@ -97,9 +97,10 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * @throws BackendFormException
      * @throws UnexpectedTYPO3SiteInitializationException
      * @throws DBALException
+     * @throws InvalidArgumentException
      *
-     * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
      * @noinspection PhpMissingReturnTypeInspection
+     * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
      */
     public function getAdditionalFields(
         array &$taskInfo,
@@ -185,13 +186,13 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * class matches.
      *
      * @param array $submittedData array containing the data submitted by the user
-     * @param ReIndexTask $task reference to the current task object
+     * @param AbstractTask|AbstractSolrTask|ReIndexTask $task reference to the current task object
      */
     public function saveAdditionalFields(
         array $submittedData,
-        ReIndexTask|AbstractTask $task
+        AbstractTask|AbstractSolrTask|ReIndexTask $task
     ): void {
-        if (!$this->isTaskInstanceofReIndexTask($task)) {
+        if (!$this->isTaskInstanceofReIndexTask($task) || !$task instanceof AbstractSolrTask) {
             return;
         }
 
@@ -200,6 +201,10 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $indexingConfigurations = [];
         if (!empty($submittedData['indexingConfigurations'])) {
             $indexingConfigurations = $submittedData['indexingConfigurations'];
+        }
+
+        if (!$task instanceof ReIndexTask) {
+            return;
         }
         $task->setIndexingConfigurationsToReIndex($indexingConfigurations);
     }

@@ -301,7 +301,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                     sprintf(
                         $message,
                         $path,
-                        $this->language->getTwoLetterIsoCode(),
+                        $this->language->getLocale()->getLanguageCode(),
                         $uri->getPath()
                     )
                 );
