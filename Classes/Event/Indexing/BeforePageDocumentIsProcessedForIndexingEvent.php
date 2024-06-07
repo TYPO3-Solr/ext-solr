@@ -19,8 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Event\Indexing;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -29,59 +28,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * Previously used with
  * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments']
  */
-class BeforePageDocumentIsProcessedForIndexingEvent
+class BeforePageDocumentIsProcessedForIndexingEvent extends BeforeDocumentIsProcessedForIndexingEvent
 {
-    /**
-     * @var Document[]
-     */
-    private array $documents = [];
-
-    public function __construct(
-        private readonly Document $document,
-        private readonly Item $indexQueueItem,
-        private readonly TypoScriptFrontendController $tsfe,
-    ) {
-        $this->documents[] = $this->document;
-    }
-
-    public function getSite(): Site
-    {
-        return $this->tsfe->getSite();
-    }
-
-    public function getSiteLanguage(): SiteLanguage
-    {
-        return $this->tsfe->getLanguage();
-    }
-
-    public function getIndexQueueItem(): Item
-    {
-        return $this->indexQueueItem;
-    }
-
-    public function getDocument(): Document
-    {
-        return $this->document;
-    }
-
-    /**
-     * @param Document[] $documents
-     */
-    public function addDocuments(array $documents): void
-    {
-        $this->documents = array_merge($this->documents, $documents);
-    }
-
-    /**
-     * @return Document[]
-     */
-    public function getDocuments(): array
-    {
-        return $this->documents;
-    }
-
-    public function getTsfe(): TypoScriptFrontendController
-    {
-        return clone $this->tsfe;
-    }
 }

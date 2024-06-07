@@ -22,7 +22,9 @@ use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -120,7 +122,7 @@ abstract class AbstractIndexer
         array $indexingConfiguration,
         string $solrFieldName,
         array $data,
-        TypoScriptFrontendController $tsfe
+        TypoScriptFrontendController $tsfe,
     ): mixed {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
@@ -156,10 +158,12 @@ abstract class AbstractIndexer
                 1
             ));
 
-            // @todo: this must be solved differently
-            $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
+            /** @var ?FrontendTypoScript $frontendTypoScript */
+            $frontendTypoScript = $tsfe->cObj->getRequest()->getAttribute('frontend.typoscript');
+            $configurationAccess = new ArrayAccessor($frontendTypoScript?->getSetupArray(), '.', true);
             // $name and $conf is loaded with the referenced values.
-            [$name, $conf] = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')?->getSetupArray());
+            $name = $configurationAccess->get($referencedTsPath);
+            $conf = $configurationAccess->get($referencedTsPath . '.');
 
             // need to change directory to make IMAGE content objects work in BE context
             // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend

@@ -19,8 +19,8 @@ namespace ApacheSolrForTypo3\Solr\Task;
 
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\SchedulerManagementAction;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Additional field provider for the index queue worker task
@@ -49,11 +49,11 @@ class EventQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
         if ($task !== null && !($task instanceof EventQueueWorkerTask)) {
             return $additionalFields;
         }
-        if ($schedulerModule->getCurrentAction()->equals(Action::ADD)) {
+        if ($schedulerModule->getCurrentAction() === SchedulerManagementAction::ADD) {
             $taskInfo['solr_eventqueueworkertask_limit'] = EventQueueWorkerTask::DEFAULT_PROCESSING_LIMIT;
         }
 
-        if ($schedulerModule->getCurrentAction()->equals(Action::EDIT)) {
+        if ($schedulerModule->getCurrentAction() === SchedulerManagementAction::EDIT) {
             $taskInfo['solr_eventqueueworkertask_limit'] = $task->getLimit();
         }
 

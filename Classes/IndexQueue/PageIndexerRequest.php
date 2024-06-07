@@ -366,11 +366,11 @@ class PageIndexerRequest
                     'options' => $options,
                 ]
             );
-        } finally {
+        } /* @todo: fix that properly or remove */ /*finally {
             if (isset($originalBackendUser)) {
                 $GLOBALS['BE_USER'] = $originalBackendUser;
             }
-        }
+        }*/
         $response->getBody()->rewind();
         return $response;
     }
