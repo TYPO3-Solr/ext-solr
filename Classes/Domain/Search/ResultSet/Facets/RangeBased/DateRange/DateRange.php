@@ -91,7 +91,7 @@ class DateRange extends AbstractRangeFacetItem
     protected function getRangeString(): string
     {
         $from = $this->startRequested === null ? '' : $this->startRequested->format('Ymd') . '0000';
-        $till = $this->endRequested === null ? '' : $this->endRequested->format('Ymd') . '0000';
+        $till = $this->endRequested === null ? '' : $this->endRequested->format('Ymd') . '2359';
         return $from . '-' . $till;
     }
 
