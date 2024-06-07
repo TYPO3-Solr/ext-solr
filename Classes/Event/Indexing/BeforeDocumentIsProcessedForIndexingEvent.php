@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -45,14 +46,20 @@ class BeforeDocumentIsProcessedForIndexingEvent
         $this->documents[] = $this->document;
     }
 
+    /**
+     * @throws ContentRenderingException
+     */
     public function getSite(): Site
     {
-        return $this->tsfe->getSite();
+        return clone $this->tsfe->cObj->getRequest()->getAttribute('site');
     }
 
+    /**
+     * @throws ContentRenderingException
+     */
     public function getSiteLanguage(): SiteLanguage
     {
-        return $this->tsfe->getLanguage();
+        return clone $this->getSite()->getAttribute('language');
     }
 
     public function getIndexQueueItem(): Item

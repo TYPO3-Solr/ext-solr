@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Backend\CoreSelectorField;
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Exception as DBALException;
 use LogicException;
 use Throwable;
@@ -31,8 +32,8 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\SchedulerManagementAction;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Adds additional field to specify the Solr server to initialize the index queue for
@@ -83,6 +84,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * Initializes this instance and the necessary objects.
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
      */
     protected function initialize(
         SchedulerModuleController $schedulerModule,
@@ -93,9 +95,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         $this->schedulerModule = $schedulerModule;
         $this->taskInformation = $taskInfo;
 
-        $currentAction = $schedulerModule->getCurrentAction();
-
-        if ($currentAction->equals(Action::EDIT)) {
+        if ($schedulerModule->getCurrentAction() === SchedulerManagementAction::EDIT) {
             $this->site = $this->siteRepository->getSiteByRootPageId((int)$task->getRootPageId());
         }
     }
@@ -204,13 +204,13 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * class matches.
      *
      * @param array $submittedData array containing the data submitted by the user
-     * @param OptimizeIndexTask $task reference to the current task object
+     * @param OptimizeIndexTask|AbstractTask|AbstractSolrTask $task reference to the current task object
      */
     public function saveAdditionalFields(
         array $submittedData,
-        OptimizeIndexTask|AbstractTask $task
+        AbstractTask|OptimizeIndexTask|AbstractSolrTask $task
     ): void {
-        if (!$this->isTaskInstanceofOptimizeIndexTask($task)) {
+        if (!$this->isTaskInstanceofOptimizeIndexTask($task) || !$task instanceof AbstractSolrTask) {
             return;
         }
 
@@ -219,6 +219,10 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         $cores = [];
         if (!empty($submittedData['cores'])) {
             $cores = $submittedData['cores'];
+        }
+
+        if (!$task instanceof OptimizeIndexTask) {
+            return;
         }
         $task->setCoresToOptimizeIndex($cores);
     }
