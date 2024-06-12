@@ -1,78 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file source-language="en" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_be.xlf" date="2021-12-15T13:10:00Z" product-name="solr">
-		<header/>
-		<body>
-			<trans-unit id="extConf.category.monitoring" resname="extConf.category.monitoring">
-				<source>Monitoring</source>
-				<target>Surveillance</target>
-			</trans-unit>
-			<trans-unit id="extConf.category.routeEnhancer" resname="extConf.category.routeEnhancer">
-				<source>Route Enhancer</source>
-				<target>Amélioration des routes</target>
-			</trans-unit>
-			<trans-unit id="extConf.allowSelfSignedCertificates" resname="extConf.allowSelfSignedCertificates">
-				<source>Allow self signed certificates</source>
-				<target>Permettre les certificats autosignés</target>
-			</trans-unit>
-			<trans-unit id="extConf.enableRouteEnhancer" resname="extConf.enableRouteEnhancer">
-				<source>Enable route enhancer: If you want to use speaking URLs for Solr facets, you have to enable this option, otherwise the required Middleware is not active and the route enhancer has no effect.</source>
-				<target>Activer l&apos;amélioration des routes: Si vous souhaitez utiliser les URLs parlantes pour les facettes Solr, vous devez activer cette option, sinon le Middleware requis n&apos;est pas activé et l&apos;amélioreur de route n&apos; pas d&apos;effet.</target>
-			</trans-unit>
-			<trans-unit id="extConf.includeGlobalQParameterInCacheHash" resname="extConf.includeGlobalQParameterInCacheHash">
-				<source>Include/Exclude global q parameter in/from cacheHash.</source>
-				<target>Inclure/Exclure le paramètre global q dans/depuis le cacheHash.</target>
-			</trans-unit>
-			<trans-unit id="extConf.monitoringType" resname="extConf.monitoringType">
-				<source>Monitoring type: Define how data updates should be monitored.</source>
-				<target>Surveillance: Définir comment les mise à jour des données sont surveillées</target>
-			</trans-unit>
-			<trans-unit id="extConf.monitoringType.I.0" resname="extConf.monitoringType.I.0">
-				<source>Immediate</source>
-				<target>Immédiatement</target>
-			</trans-unit>
-			<trans-unit id="extConf.monitoringType.I.1" resname="extConf.monitoringType.I.1">
-				<source>Delayed (Scheduler task)</source>
-				<target>Différée (Tâche planifiée)</target>
-			</trans-unit>
-			<trans-unit id="extConf.monitoringType.I.2" resname="extConf.monitoringType.I.2">
-				<source>No monitoring at all</source>
-				<target>Pas de Surveillance du tout</target>
-			</trans-unit>
-			<trans-unit id="extConf.pluginNamespaces" resname="extConf.pluginNamespaces">
-				<source>A list of white listed plugin namespaces: Required by cacheHash/excludedParameters and plugin flex form. Note: This list only is available in Plugin -> Options -> Plugin Namespace</source>
-				<target>Liste d&apos;espace de nom de plugin autorisées: Requîs par cacheHash/excludedParameters et le flex form du plugin. Note : Disponible uniquement dans Plugin -> Options -> Plugin Namespace</target>
-			</trans-unit>
-			<trans-unit id="extConf.useConfigurationFromClosestTemplate" resname="extConf.useConfigurationFromClosestTemplate">
-				<source>Use closest rootpage for configuration: Performance improvement</source>
-				<target>Utiliser la page racine la plus proche pour la configuration: Améliore les performances</target>
-			</trans-unit>
-			<trans-unit id="extConf.useConfigurationTrackRecordsOutsideSiteroot" resname="extConf.useConfigurationTrackRecordsOutsideSiteroot">
-				<source>Enable/Disable record tracking outside siteroot</source>
-				<target>Activer/Désactiver le suivi des enregistrements en-dehors des racines de site</target>
-			</trans-unit>
-			<trans-unit id="extConf.useConfigurationMonitorTables" resname="extConf.useConfigurationMonitorTables">
-				<source>Monitor tables - explicitly monitor these: Still requires TypoScript configuration!</source>
-				<target>Surveiller les tables - explicitement surveiller celles-ci: La configuration TypoScript reste requise !</target>
-			</trans-unit>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_be.xlf" date="2021-12-15T13:10:00Z" product-name="solr" target-language="fr">
+    <header/>
+    <body>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 
 
-			<trans-unit id="task.eventQueueWorkerTask.title" resname="task.eventQueueWorkerTask.title">
-				<source>Event Queue Worker</source>
-				<target>Traitement de la file d&apos;événement</target>
-			</trans-unit>
-			<trans-unit id="task.eventQueueWorkerTask.description" resname="task.eventQueueWorkerTask.description">
-				<source>Task handling the queue data update events. Required if monitoringType is set to "Delayed".</source>
-				<target>Tâche gérant les événements de mise à jour de données. Requis si monitoringType est défini à « Différée ».</target>
-			</trans-unit>
-			<trans-unit id="task.eventQueueWorkerTask.limit" resname="task.eventQueueWorkerTask.limit">
-				<source>Processing limit, the number of events to process</source>
-				<target>Limit de traitement, le nombre d&apos;événements à traiter</target>
-			</trans-unit>
-			<trans-unit id="task.eventQueueWorkerTask.statusMsg" resname="task.eventQueueWorkerTask.statusMsg">
-				<source>Data update events to process: %1$d, Errors: %2$d. %3$d events will be processed per run.</source>
-				<target>Événements de mise à jour à traiter : %1$d, Erreurs: %2$d. %3$d événements sont traités par exécution.</target>
-			</trans-unit>
+			
+			
+			
+			
 		</body>
-	</file>
+  </file>
 </xliff>
