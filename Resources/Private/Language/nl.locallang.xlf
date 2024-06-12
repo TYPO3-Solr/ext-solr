@@ -1,195 +1,131 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <xliff version="1.0">
-	<file source-language="en" target-language="nl" datatype="plaintext" original="messages" date="2015-12-23T10:38:14Z" product-name="solr">
-		<header/>
-		<body>
-			<!-- From ModuleScheduler/nl.locallang.xlf //-->
-			<trans-unit id="reindex_title" xml:space="preserve" approved="yes">
+  <file source-language="en" datatype="plaintext" original="messages" date="2015-03-30T11:42:09Z" target-language="nl">
+    <header>
+      <generator>LFEditor</generator>
+    </header>
+    <body>
+      <!-- Index Administration -->
+      <!-- End: Index Maintenance -->
+      <!-- From Backend/locallang.xlf //-->
+      <!-- Backend Components -->
+      <!-- SiteSelector -->
+      <!-- CoreSelector -->
+      <!-- End: Backend Components -->
+      <!-- From ModuleAdministration/locallang.xlf //-->
+      <!-- From ModuleReports/locallang.xlf //-->
+      <!-- From ModuleScheduler/locallang.xlf //-->
+      <trans-unit id="reindex_title" xml:space="preserve" approved="yes">
 				<source>Force Re-Indexing of a site</source>
-				<target>Forceer herindexering van een website</target>
-			</trans-unit>
-			<trans-unit id="reindex_description" xml:space="preserve" approved="yes">
+			<target state="final">Forceer herindexering van een website</target></trans-unit>
+      <trans-unit id="reindex_description" xml:space="preserve" approved="yes">
 				<source>Purges the Solr Index and initializes the Index Queue of a site.</source>
-				<target>Leegt de Solr index en initialiseert de Index Wachtrij van een website.</target>
-			</trans-unit>
-			<trans-unit id="indexqueueworker_title" xml:space="preserve" approved="yes">
+			<target state="final">Leegt de Solr index en initialiseert de Index Wachtrij van een website.</target></trans-unit>
+      <trans-unit id="indexqueueworker_title" xml:space="preserve" approved="yes">
 				<source>Index Queue Worker</source>
-				<target>Index Wachtrij Taak</target>
-			</trans-unit>
-			<trans-unit id="indexqueueworker_description" xml:space="preserve" approved="yes">
+			<target state="final">Index Wachtrij Taak</target></trans-unit>
+      <trans-unit id="indexqueueworker_description" xml:space="preserve" approved="yes">
 				<source>Processes the items in the Index Queue and sends them to Solr.</source>
-				<target>Verwerkt de documenten in de Index Wachtrij en verstuurt deze naar Solr.</target>
-			</trans-unit>
-			<trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve" approved="yes">
+			<target state="final">Verwerkt de documenten in de Index Wachtrij en verstuurt deze naar Solr.</target></trans-unit>
+      <trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve" approved="yes">
 				<source>Number of documents to index</source>
-				<target>Aantal te indexeren documenten</target>
-			</trans-unit>
-			<trans-unit id="indexqueueworker_field_forcedWebRoot" xml:space="preserve">
-				<source>Forced webroot (only needed when webroot is not PATH_site)</source>
-				<target>Geforceerde webroot (alleen nodig als de webroot anders is dan PATH_site)</target>
-			</trans-unit>
-			<trans-unit id="field_host" xml:space="preserve" approved="yes">
+			<target state="final">Aantal te indexeren documenten</target></trans-unit>
+      <trans-unit id="field_host" xml:space="preserve" approved="yes">
 				<source>Solr Host</source>
-				<target>Solr host</target>
-			</trans-unit>
-			<trans-unit id="field_port" xml:space="preserve" approved="yes">
+			<target state="final">Solr host</target></trans-unit>
+      <trans-unit id="field_port" xml:space="preserve" approved="yes">
 				<source>Solr Port</source>
-				<target>Solr poort</target>
-			</trans-unit>
-			<trans-unit id="field_path" xml:space="preserve" approved="yes">
+			<target state="final">Solr poort</target></trans-unit>
+      <trans-unit id="field_path" xml:space="preserve" approved="yes">
 				<source>Solr Path</source>
-				<target>Solr pad</target>
-			</trans-unit>
-			<trans-unit id="field_server" xml:space="preserve" approved="yes">
+			<target state="final">Solr pad</target></trans-unit>
+      <trans-unit id="field_server" xml:space="preserve" approved="yes">
 				<source>Solr Server</source>
-				<target>Solr server</target>
-			</trans-unit>
-			<trans-unit id="field_site" xml:space="preserve" approved="yes">
+			<target state="final">Solr server</target></trans-unit>
+      <trans-unit id="field_site" xml:space="preserve" approved="yes">
 				<source>Site</source>
-				<target>Website</target>
-			</trans-unit>
-			<trans-unit id="optimizer_title" xml:space="preserve" approved="yes">
-				<source></source>
-				<target>Optimaliseer Solr index</target>
-			</trans-unit>
-			<trans-unit id="optimizer_description" xml:space="preserve" approved="yes">
-				<source></source>
-				<target>Voert een OPTIMIZE commando uit op de Solr index. Hoort een keer per dag uitgevoerd te worden voor websites met lage activiteit. Website met hoge activiteit kunnen dit vaker uitvoeren. Pas op, deze taak kan een aantal seconden in beslag nemen bij grote indexes.</target>
-			</trans-unit>
-			<trans-unit id="commit_title" xml:space="preserve" approved="yes">
-				<source></source>
-				<target>Commit Solr index</target>
-			</trans-unit>
-			<trans-unit id="commit_description" xml:space="preserve" approved="yes">
-				<source></source>
-				<target>Voert een COMMIT commando uit op de Solr index. Kan tussen de een keer per minuut en ieder uur uitgevoerd worden. Deze taak hoort korter te duren dan het OPTIMIZE commando welke ook een COMMIT uitvoert voor het OPTIMIZE commando.</target>
-			</trans-unit>
-
-			<!-- From PluginResults|PluginSearch|PluginFrequentSearches/nl.locallang.xlf -->
-			<trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
+			<target state="final">Website</target></trans-unit>
+      <!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
+      <trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
 				<source>Search is currently not available.</source>
-				<target>Zoeken is op dit moment niet beschikbaar.</target>
-			</trans-unit>
-			<trans-unit id="searchFailed" xml:space="preserve" approved="yes">
+			<target state="final">Zoeken is op dit moment niet beschikbaar.</target></trans-unit>
+      <trans-unit id="searchFailed" xml:space="preserve" approved="yes">
 				<source>We're sorry. The request you tried to make could not be processed.</source>
-				<target>Het spijt ons. Uw verzoek kon niet worden verwerkt.</target>
-			</trans-unit>
-			<trans-unit id="searchWord" xml:space="preserve" approved="yes">
+			<target state="final">Het spijt ons. Uw verzoek kon niet worden verwerkt.</target></trans-unit>
+      <trans-unit id="searchWord" xml:space="preserve" approved="yes">
 				<source>Search Term</source>
-				<target>Zoekwoord</target>
-			</trans-unit>
-			<trans-unit id="didYouMean" xml:space="preserve" approved="yes">
+			<target state="final">Zoekwoord</target></trans-unit>
+      <trans-unit id="didYouMean" xml:space="preserve" approved="yes">
 				<source>Did you mean</source>
-				<target>Bedoelde u</target>
-			</trans-unit>
-			<trans-unit id="submit" xml:space="preserve" approved="yes">
+			<target state="final">Bedoelde u</target></trans-unit>
+      <trans-unit id="submit" xml:space="preserve" approved="yes">
 				<source>Search</source>
-				<target>Zoek</target>
-			</trans-unit>
-			<trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
+			<target state="final">Zoek</target></trans-unit>
+      <trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
 				<source>Sort by</source>
-				<target>Sorteer op</target>
-			</trans-unit>
-			<trans-unit id="faceting_narrowSearch" xml:space="preserve" approved="yes">
+			<target state="final">Sorteer op</target></trans-unit>
+      <trans-unit id="faceting_narrowSearch" xml:space="preserve" approved="yes">
 				<source>Narrow Search</source>
-				<target>Resultaat verfijnen</target>
-			</trans-unit>
-			<trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve" approved="yes">
+			<target state="final">Resultaat verfijnen</target></trans-unit>
+      <trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve" approved="yes">
 				<source>Search narrowed by</source>
-				<target>Resultaat verfijnd op</target>
-			</trans-unit>
-			<trans-unit id="faceting_showMore" xml:space="preserve" approved="yes">
+			<target state="final">Resultaat verfijnd op</target></trans-unit>
+      <trans-unit id="faceting_showMore" xml:space="preserve" approved="yes">
 				<source>Show more</source>
-				<target>Toon meer</target>
-			</trans-unit>
-			<trans-unit id="faceting_showFewer" xml:space="preserve" approved="yes">
+			<target state="final">Toon meer</target></trans-unit>
+      <trans-unit id="faceting_showFewer" xml:space="preserve" approved="yes">
 				<source>Show fewer</source>
-				<target>Toon minder</target>
-			</trans-unit>
-			<trans-unit id="faceting_removeAllFilters" xml:space="preserve" approved="yes">
+			<target state="final">Toon minder</target></trans-unit>
+      <trans-unit id="faceting_removeAllFilters" xml:space="preserve" approved="yes">
 				<source>Remove all filters</source>
-				<target>Verwijder alle filters</target>
-			</trans-unit>
-			<trans-unit id="results_range" xml:space="preserve" approved="yes">
+			<target state="final">Verwijder alle filters</target></trans-unit>
+      <trans-unit id="results_range" xml:space="preserve" approved="yes">
 				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>Resultaat @resultsFrom tot @resultsTo van @resultsTotal.</target>
-			</trans-unit>
-			<trans-unit id="results_found" xml:space="preserve" approved="yes">
+			<target state="final">Resultaat @resultsFrom tot @resultsTo van @resultsTotal.</target></trans-unit>
+      <trans-unit id="results_found" xml:space="preserve" approved="yes">
 				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>Gevonden: @resultsTotal resultaten in @resultsTime milliseconden.</target>
-			</trans-unit>
-			<trans-unit id="results_found.singular" xml:space="preserve" approved="yes">
-				<source>Found 1 results in @resultsTime milliseconds.</source>
-				<target>Gevonden: 1 resultaten in @resultsTime milliseconden.</target>
-			</trans-unit>
-			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
+			<target state="final">Gevonden: @resultsTotal resultaten in @resultsTime milliseconden.</target></trans-unit>
+      <trans-unit id="results_found.singular" xml:space="preserve" approved="yes">
+				<source>Found 1 result in @resultsTime milliseconds.</source>
+			<target state="final">Gevonden: 1 resultaten in @resultsTime milliseconden.</target></trans-unit>
+      <trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
 				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>Gezocht naar &quot;@searchWord&quot;.</target>
-			</trans-unit>
-			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
+			<target state="final">Gezocht naar "@searchWord".</target></trans-unit>
+      <trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
 				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>Niets gevonden voor &quot;@searchWord&quot;.</target>
-			</trans-unit>
-			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
-^				<source>Showing results for &quot;@suggestedWord&quot;.</source>
-				<target></target>
-			</trans-unit>
-			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
-				<source>Search instead for &quot;@searchWord&quot;.</source>
-				<target></target>
-			</trans-unit>
-			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">
+			<target state="final">Niets gevonden voor "@searchWord".</target></trans-unit>
+      <trans-unit id="lastSearches" xml:space="preserve" approved="yes">
 				<source>Last searches</source>
-				<target>Laatste zoekopdrachten</target>
-			</trans-unit>
-			<trans-unit id="frequentSearches" xml:space="preserve" approved="yes">
+			<target state="final">Laatste zoekopdrachten</target></trans-unit>
+      <trans-unit id="frequentSearches" xml:space="preserve" approved="yes">
 				<source>Frequent searches</source>
-				<target>Vaak gezocht</target>
-			</trans-unit>
-			<trans-unit id="relevance" xml:space="preserve" approved="yes">
+			<target state="final">Vaak gezocht</target></trans-unit>
+      <trans-unit id="relevance" xml:space="preserve" approved="yes">
 				<source>Relevance</source>
-				<target>Relevantie</target>
-			</trans-unit>
-			<trans-unit id="sponsored" xml:space="preserve" approved="yes">
-				<source>Sponsored</source>
-				<target></target>
-			</trans-unit>
-			<trans-unit id="file_mimetype" xml:space="preserve" approved="yes">
+			<target state="final">Relevantie</target></trans-unit>
+      <trans-unit id="file_mimetype" xml:space="preserve" approved="yes">
 				<source>File type</source>
-				<target>Bestandstype</target>
-			</trans-unit>
-			<trans-unit id="file_referenced" xml:space="preserve" approved="yes">
+			<target state="final">Bestandstype</target></trans-unit>
+      <trans-unit id="file_referenced" xml:space="preserve" approved="yes">
 				<source>Referenced at</source>
-				<target>Geplaatst op</target>
-			</trans-unit>
-			<trans-unit id="results_per_page" xml:space="preserve" approved="yes">
+			<target state="final">Geplaatst op</target></trans-unit>
+      <trans-unit id="results_per_page" xml:space="preserve" approved="yes">
 				<source>Results per page:</source>
-				<target>Resultaten per pagina:</target>
-			</trans-unit>
-			<trans-unit id="error_errors" xml:space="preserve" approved="yes">
-				<source>We're sorry, there were some errors:</source>
-				<target></target>
-			</trans-unit>
-			<trans-unit id="error_emptyQuery" xml:space="preserve" approved="yes">
-				<source>Please enter your search term in the box above.</source>
-				<target></target>
-			</trans-unit>
-			<trans-unit id="pagebrowser_first" xml:space="preserve" approved="yes">
+			<target state="final">Resultaten per pagina:</target></trans-unit>
+      <trans-unit id="pagebrowser_first" xml:space="preserve" approved="yes">
 				<source>First</source>
-				<target>Eerste</target>
-			</trans-unit>
-			<trans-unit id="pagebrowser_prev" xml:space="preserve" approved="yes">
+			<target state="final">Eerste</target></trans-unit>
+      <trans-unit id="pagebrowser_prev" xml:space="preserve" approved="yes">
 				<source>Previous</source>
-				<target>Vorige</target>
-			</trans-unit>
-			<trans-unit id="pagebrowser_next" xml:space="preserve" approved="yes">
+			<target state="final">Vorige</target></trans-unit>
+      <trans-unit id="pagebrowser_next" xml:space="preserve" approved="yes">
 				<source>Next</source>
-				<target>Volgende</target>
-			</trans-unit>
-			<trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
+			<target state="final">Volgende</target></trans-unit>
+      <trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
 				<source>Last</source>
-				<target>Laatste</target>
-			</trans-unit>
-		</body>
-	</file>
+			<target state="final">Laatste</target></trans-unit>
+      <!-- From locallang.xlf -->
+      <!-- From locallang_db.xlf -->
+    </body>
+  </file>
 </xliff>
