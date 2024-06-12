@@ -1,16 +1,13 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <xliff version="1.0">
-	<file source-language="en" target-language="fr" datatype="plaintext" original="messages" date="2020-12-01T11:42:09Z">
-		<header>
-			<generator>LFEditor</generator>
-		</header>
-		<body>
+  <file source-language="en" datatype="plaintext" original="messages" date="2020-12-01T11:42:09Z" target-language="fr">
+    <header>
+      <generator>LFEditor</generator>
+    </header>
+    <body>
 
-			<trans-unit id="pages.no_search_sub_entries" xml:space="preserve">
-				<source>Include sub entries in Search</source>
-				<target>Inclure les sous-entrées dans la recherche</target>
-			</trans-unit>
+			
 
 		</body>
-	</file>
+  </file>
 </xliff>
