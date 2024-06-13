@@ -66,7 +66,7 @@ class DateRangeTest extends SetUpUnitTestCase
                 $error->getMessage() . ' in ' . $error->getFile() . ':' . $error->getLine()
             );
         }
-        self::assertEquals('-202107200000', $dateRangeCollectionKeyOpenStart);
+        self::assertEquals('-202107202359', $dateRangeCollectionKeyOpenStart);
         self::assertEquals('202107200000-', $dateRangeCollectionKeyOpenEnd);
     }
 }
