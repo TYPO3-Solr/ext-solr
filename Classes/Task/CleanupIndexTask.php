@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Task;
 
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use Doctrine\DBAL\ConnectionException as DBALConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,17 +25,25 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Scheduler task to empty the indexes of a site and re-initialize the
  * Solr Index Queue thus making the indexer re-index the site.
+ *
+ * @author Christoph Moeller <support@network-publishing.de>
  */
-class ReIndexTask extends AbstractSolrTask
+class CleanupIndexTask extends AbstractSolrTask
 {
-    /**
-     * Indexing configurations to re-initialize.
-     */
-    protected array $indexingConfigurationsToReIndex = [];
+    protected ?int $deleteOlderThanDays = null;
+
+    public function getDeleteOlderThanDays(): ?int
+    {
+        return $this->deleteOlderThanDays;
+    }
+
+    public function setDeleteOlderThanDays(?int $deleteOlderThanDays): void
+    {
+        $this->deleteOlderThanDays = $deleteOlderThanDays;
+    }
 
     /**
-     * Initializes the Index Queue
-     * and returns TRUE if the execution was successful
+     * Deletes old documents from index
      *
      * @return bool Returns TRUE on success, FALSE on failure.
      *
@@ -46,29 +54,28 @@ class ReIndexTask extends AbstractSolrTask
      */
     public function execute()
     {
-        // initialize for re-indexing
-        /** @var QueueInitializationService $indexQueueInitializationService */
-        $indexQueueInitializationService = GeneralUtility::makeInstance(QueueInitializationService::class);
-        $indexQueueInitializationResults = $indexQueueInitializationService
-            ->initializeBySiteAndIndexConfigurations($this->getSite(), $this->indexingConfigurationsToReIndex);
+        $cleanUpResult = true;
+        $solrConfiguration = $this->getSite()->getSolrConfiguration();
+        $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->getSite());
+        $enableCommitsSetting = $solrConfiguration->getEnableCommits();
 
-        return !in_array(false, $indexQueueInitializationResults);
-    }
+        foreach ($solrServers as $solrServer) {
+            $deleteQuery = 'siteHash:' . $this->getSite()->getSiteHash() . sprintf(' AND indexed:[* TO NOW-%dDAYS]', $this->deleteOlderThanDays ?? 1);
+            $solrServer->getWriteService()->deleteByQuery($deleteQuery);
 
-    /**
-     * Gets the indexing configurations to re-index.
-     */
-    public function getIndexingConfigurationsToReIndex(): array
-    {
-        return $this->indexingConfigurationsToReIndex;
-    }
+            if (!$enableCommitsSetting) {
+                // Do not commit
+                continue;
+            }
 
-    /**
-     * Sets the indexing configurations to re-index.
-     */
-    public function setIndexingConfigurationsToReIndex(array $indexingConfigurationsToReIndex): void
-    {
-        $this->indexingConfigurationsToReIndex = $indexingConfigurationsToReIndex;
+            $response = $solrServer->getWriteService()->commit(false, false);
+            if ($response->getHttpStatus() != 200) {
+                $cleanUpResult = false;
+                break;
+            }
+        }
+
+        return $cleanUpResult;
     }
 
     /**
@@ -90,14 +97,6 @@ class ReIndexTask extends AbstractSolrTask
             return 'Invalid site configuration for scheduler please re-create the task!';
         }
 
-        $information = 'Site: ' . $this->getSite()->getLabel();
-        if (!empty($this->indexingConfigurationsToReIndex)) {
-            $information .= ', Indexing Configurations: ' . implode(
-                ', ',
-                $this->indexingConfigurationsToReIndex
-            );
-        }
-
-        return $information;
+        return 'Site: ' . $this->getSite()->getLabel();
     }
 }

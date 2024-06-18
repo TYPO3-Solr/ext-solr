@@ -110,6 +110,15 @@
 			<trans-unit id="indexqueueworker_field_forcedWebRoot" xml:space="preserve">
 				<source>Forced webroot (only needed when webroot is not PATH_site)</source>
 			</trans-unit>
+			<trans-unit id="task.cleanupIndex.title">
+				<source>Index Cleanup</source>
+			</trans-unit>
+			<trans-unit id="task.cleanupIndex.description">
+				<source>Delete old documents from index</source>
+			</trans-unit>
+			<trans-unit id="task.cleanupIndex.deleteOlderThanDays">
+				<source>Delete documents older than # days</source>
+			</trans-unit>
 			<trans-unit id="field_host" xml:space="preserve">
 				<source>Solr Host</source>
 			</trans-unit>

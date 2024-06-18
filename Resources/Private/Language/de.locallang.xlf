@@ -36,6 +36,18 @@
 				<source>Forced webroot (only needed when webroot is not PATH_site)</source>
 				<target>Forced webroot (Nur notwendig wenn webroot von PATH_site abweicht)</target>
 			</trans-unit>
+			<trans-unit id="task.cleanupIndex.title">
+				<source>Index Cleanup</source>
+				<target>Index-Bereinigung</target>
+			</trans-unit>
+			<trans-unit id="task.cleanupIndex.description">
+				<source>Delete old documents from index</source>
+				<target>Löscht alte Dokumente aus dem Index</target>
+			</trans-unit>
+			<trans-unit id="task.cleanupIndex.deleteOlderThanDays">
+				<source>Delete documents older than # days</source>
+				<target>Lösche alle Dokumente älter als # Tage</target>
+			</trans-unit>
 			<trans-unit id="field_host" xml:space="preserve" approved="yes">
 				<source>Solr Host</source>
 				<target>Solr host</target>
