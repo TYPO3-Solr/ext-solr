@@ -38,7 +38,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
-use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -165,9 +164,9 @@ class IndexerTest extends SetUpUnitTestCase
                 $this->createMock(TypoScriptFrontendController::class)
             );
 
-        $eventDispatcher = new MockEventDispatcher();
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         if ($listener) {
-            $eventDispatcher->addListener($listener);
+            $eventDispatcher->expects(self::once())->method('dispatch')->willReturnCallback($listener);
         }
         $indexer->_set('eventDispatcher', $eventDispatcher);
 

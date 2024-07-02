@@ -22,10 +22,7 @@ use RuntimeException;
 
 class ManagerTest extends SetUpUnitTestCase
 {
-    /**
-     * @var Manager
-     */
-    protected $manager;
+    protected Manager $manager;
 
     protected function setUp(): void
     {

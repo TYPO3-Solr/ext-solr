@@ -36,11 +36,7 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
 class RecordMonitorTest extends SetUpUnitTestCase
 {
     protected RecordMonitor $recordMonitor;
-
-    /**
-     * @var EventDispatcherInterface|MockObject
-     */
-    protected $eventDispatcherMock;
+    protected EventDispatcherInterface|MockObject $eventDispatcherMock;
 
     protected function setUp(): void
     {

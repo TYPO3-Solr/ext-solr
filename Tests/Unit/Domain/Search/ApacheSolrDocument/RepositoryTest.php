@@ -35,20 +35,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class RepositoryTest extends SetUpUnitTestCase
 {
-    /**
-     * @var Search
-     */
-    protected $search;
-
-    /**
-     * @var ConnectionManager
-     */
-    protected $solrConnectionManager;
-
-    /**
-     * @var Site
-     */
-    protected $mockedAsSingletonSite;
+    protected Search $search;
+    protected ConnectionManager $solrConnectionManager;
+    protected Site $mockedAsSingletonSite;
 
     #[Test]
     public function findOneByPageIdAndByLanguageIdReturnsFirstFoundDocument(): void

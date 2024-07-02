@@ -33,10 +33,7 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 #[CoversClass(RoutingService::class)]
 class RoutingServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var Site
-     */
-    protected $site;
+    protected Site $site;
 
     protected function setUp(): void
     {

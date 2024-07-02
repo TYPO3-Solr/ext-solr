@@ -28,12 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
 {
-    /**
-     * Parser to build Solr range queries
-     *
-     * @var NumericRangeUrlDecoder
-     */
-    protected $rangeParser;
+    protected NumericRangeUrlDecoder $rangeParser;
 
     protected function setUp(): void
     {

@@ -26,10 +26,7 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class SearchResultCollectionTest extends SetUpUnitTestCase
 {
-    /**
-     * @var SearchResultCollection
-     */
-    protected $searchResultCollection;
+    protected SearchResultCollection $searchResultCollection;
 
     protected function setUp(): void
     {

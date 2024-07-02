@@ -25,10 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class HierarchyUrlDecoderTest extends SetUpUnitTestCase
 {
-    /**
-     * @var HierarchyUrlDecoder
-     */
-    protected $parser;
+    protected HierarchyUrlDecoder $parser;
 
     protected function setUp(): void
     {

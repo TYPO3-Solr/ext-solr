@@ -26,15 +26,8 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class SortingTest extends SetUpUnitTestCase
 {
-    /**
-     * @var Sorting
-     */
-    protected $sorting;
-
-    /**
-     * @var SearchResultSet
-     */
-    protected $resultSetMock;
+    protected Sorting $sorting;
+    protected SearchResultSet $resultSetMock;
 
     protected function setUp(): void
     {

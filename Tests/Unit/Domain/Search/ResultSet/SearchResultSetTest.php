@@ -33,7 +33,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class SearchResultSetTest extends SetUpUnitTestCase
 {
@@ -43,7 +43,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
     protected SolrLogManager|MockObject $solrLogManagerMock;
     protected Query|MockObject $queryMock;
     protected EscapeService|MockObject $escapeServiceMock;
-    protected MockEventDispatcher $eventDispatcher;
+    protected EventDispatcherInterface|MockObject $eventDispatcher;
 
     protected function setUp(): void
     {
@@ -60,7 +60,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
             $this->createMock(SiteHashService::class)
         );
 
-        $this->eventDispatcher = new MockEventDispatcher();
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->searchResultSetService = new SearchResultSetService(
             $this->configurationMock,
@@ -110,11 +110,13 @@ class SearchResultSetTest extends SetUpUnitTestCase
         $this->configurationMock->expects(self::once())->method('getSearchConfiguration')->willReturn([]);
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $this->eventDispatcher->addListener(function(object $event) {
-            if ($event instanceof AfterSearchQueryHasBeenPreparedEvent) {
-                $event->getTypoScriptConfiguration()->getSearchConfiguration();
+        $this->eventDispatcher->expects(self::once())->method('dispatch')->willReturnCallback(
+            static function(object $event) {
+                if ($event instanceof AfterSearchQueryHasBeenPreparedEvent) {
+                    $event->getTypoScriptConfiguration()->getSearchConfiguration();
+                }
             }
-        });
+        );
         $fakeResponse = $this->createMock(ResponseAdapter::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 3. search', 0, $fakeResponse);
 
@@ -130,13 +132,15 @@ class SearchResultSetTest extends SetUpUnitTestCase
     {
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $this->eventDispatcher->addListener(function(object $event) {
-            if ($event instanceof AfterSearchHasBeenExecutedEvent) {
-                foreach ($event->getSearchResultSet()->getSearchResults() as $result) {
-                    $result->type = strtoupper($result->type);
+        $this->eventDispatcher->expects(self::once())->method('dispatch')->willReturnCallback(
+            static function(object $event) {
+                if ($event instanceof AfterSearchHasBeenExecutedEvent) {
+                    foreach ($event->getSearchResultSet()->getSearchResults() as $result) {
+                        $result->type = strtoupper($result->type);
+                    }
                 }
             }
-        });
+        );
 
         $fakedSolrResponse = self::getFixtureContentByName('fakeResponse.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
