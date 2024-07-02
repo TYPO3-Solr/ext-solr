@@ -34,25 +34,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GarbageCollectorTest extends SetUpUnitTestCase
 {
-    /**
-     * @var GarbageCollector
-     */
-    protected $garbageCollector;
-
-    /**
-     * @var TCAService|MockObject
-     */
-    protected $tcaServiceMock;
-
-    /**
-     * @var EventDispatcherInterface|MockObject
-     */
-    protected $eventDispatcherMock;
-
-    /**
-     * @var GarbageHandler|MockObject
-     */
-    protected $garbageHandlerMock;
+    protected GarbageCollector $garbageCollector;
+    protected TCAService|MockObject $tcaServiceMock;
+    protected EventDispatcherInterface|MockObject $eventDispatcherMock;
+    protected GarbageHandler|MockObject $garbageHandlerMock;
 
     protected function setUp(): void
     {

@@ -25,10 +25,7 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class ResultParserRegistryTest extends SetUpUnitTestCase
 {
-    /**
-     * @var ResultParserRegistry
-     */
-    protected $registry;
+    protected ResultParserRegistry $registry;
 
     protected function setUp(): void
     {

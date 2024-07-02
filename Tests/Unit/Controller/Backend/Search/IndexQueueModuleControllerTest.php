@@ -25,21 +25,17 @@ use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Testcase for IndexQueueModuleController
+ *
+ * @property IndexQueueModuleController|MockObject $controller
  */
-class IndexQueueModuleControllerTest extends AbstractModuleController
+class IndexQueueModuleControllerTest extends SetUpSolrModuleControllerTestCase
 {
     protected Queue|MockObject $indexQueueMock;
-
-    /**
-     * @var IndexQueueModuleController|MockObject
-     */
-    protected $controller;
-
-    protected MockEventDispatcher $eventDispatcher;
+    protected EventDispatcherInterface|MockObject $eventDispatcher;
 
     protected function setUp(): void
     {
@@ -47,7 +43,7 @@ class IndexQueueModuleControllerTest extends AbstractModuleController
             IndexQueueModuleController::class,
             ['addIndexQueueFlashMessage']
         );
-        $this->eventDispatcher = new MockEventDispatcher();
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->indexQueueMock = $this->getMockBuilder(Queue::class)
             ->onlyMethods(['updateOrAddItemForAllRelatedRootPages'])
             ->setConstructorArgs([
@@ -78,9 +74,11 @@ class IndexQueueModuleControllerTest extends AbstractModuleController
     #[Test]
     public function hookIsTriggeredWhenRegistered(): void
     {
-        $this->eventDispatcher->addListener(function(AfterIndexQueueItemHasBeenMarkedForReindexingEvent $event) {
-            $event->setUpdateCount(5);
-        });
+        $this->eventDispatcher->expects(self::once())->method('dispatch')->willReturnCallback(
+            static function(AfterIndexQueueItemHasBeenMarkedForReindexingEvent $event) {
+                $event->setUpdateCount(5);
+            }
+        );
 
         $this->indexQueueMock->expects(self::once())->method('updateOrAddItemForAllRelatedRootPages')->willReturn(0);
 

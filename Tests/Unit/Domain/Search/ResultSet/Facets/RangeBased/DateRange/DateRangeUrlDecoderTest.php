@@ -25,10 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DateRangeUrlDecoderTest extends SetUpUnitTestCase
 {
-    /**
-     * @var DateRangeUrlDecoder
-     */
-    protected $rangeParser;
+    protected DateRangeUrlDecoder $rangeParser;
 
     protected function setUp(): void
     {

@@ -17,17 +17,10 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Event\Indexing;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-
 /**
  * Allows to add more documents to the Solr index.
  *
  * Previously used with
  * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments']
  */
-class BeforePageDocumentIsProcessedForIndexingEvent extends BeforeDocumentIsProcessedForIndexingEvent
-{
-}
+class BeforePageDocumentIsProcessedForIndexingEvent extends BeforeDocumentIsProcessedForIndexingEvent {}

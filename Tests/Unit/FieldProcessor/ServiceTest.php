@@ -25,17 +25,8 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class ServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var Document
-     */
-    protected $documentMock;
-
-    /**
-     * the service
-     *
-     * @var Service
-     */
-    protected $service;
+    protected Document $documentMock;
+    protected Service $service;
 
     protected function setUp(): void
     {

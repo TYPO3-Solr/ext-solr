@@ -27,10 +27,6 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 class FrontendUserSessionTest extends SetUpUnitTestCase
 {
     protected FrontendUserAuthentication|MockObject $feUserMock;
-
-    /**
-     * @var FrontendUserSession
-     */
     protected FrontendUserSession $session;
 
     protected function setUp(): void

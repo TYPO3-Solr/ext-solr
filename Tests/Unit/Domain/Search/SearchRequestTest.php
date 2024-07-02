@@ -22,10 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 class SearchRequestTest extends SetUpUnitTestCase
 {
-    /**
-     * @var SearchRequest
-     */
-    protected $searchRequest;
+    protected SearchRequest $searchRequest;
 
     protected function setUp(): void
     {

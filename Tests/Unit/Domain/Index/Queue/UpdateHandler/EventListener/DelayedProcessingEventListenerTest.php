@@ -15,7 +15,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler\EventListener;
 
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\AbstractBaseEventListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\DelayedProcessingEventListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingQueuingFinishedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
@@ -25,14 +24,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the DelayedProcessingEventListener
+ *
+ * @property DelayedProcessingEventListener $listener
  */
 class DelayedProcessingEventListenerTest extends SetUpEventListener
 {
-    /**
-     * @var DelayedProcessingEventListener
-     */
-    protected AbstractBaseEventListener $listener;
-
     #[Test]
     public function canHandleEvents(): void
     {

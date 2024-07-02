@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\Controller\Backend\Search\AbstractModuleController as ModuleController;
+use ApacheSolrForTypo3\Solr\Controller\Backend\Search\AbstractModuleController as AbstractSolrModuleController;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -28,13 +28,9 @@ use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
-abstract class AbstractModuleController extends SetUpUnitTestCase
+abstract class SetUpSolrModuleControllerTestCase extends SetUpUnitTestCase
 {
-    /**
-     * @var ModuleController|MockObject
-     */
-    protected $controller;
-
+    protected AbstractSolrModuleController|MockObject $controller;
     protected Site|MockObject $selectedSiteMock;
     protected ConnectionManager|MockObject $connectionManagerMock;
 
@@ -46,7 +42,8 @@ abstract class AbstractModuleController extends SetUpUnitTestCase
         array $mockMethods = ['addFlashMessage']
     ): void {
         $this->selectedSiteMock = $this->createMock(Site::class);
-        /** @var ModuleController|MockObject $subject */
+        /** @var AbstractSolrModuleController|MockObject $subject */
+        /** @noinspection PhpUnitInvalidMockingEntityInspection The dg/bypass-finals is used in project */
         $subject = $this->getMockBuilder($concreteModuleControllerClass)
             ->setConstructorArgs(
                 [

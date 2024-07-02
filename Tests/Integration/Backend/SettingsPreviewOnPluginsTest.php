@@ -95,6 +95,7 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
     {
         return new PageContentPreviewRenderingEvent(
             $table,
+            (string)($record[(string)($GLOBALS['TCA'][$table]['ctrl']['type'] ?? '')] ?? ''),
             $record,
             $this->createMock(PageLayoutContext::class)
         );
