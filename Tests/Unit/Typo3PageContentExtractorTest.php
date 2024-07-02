@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,10 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Typo3PageContentExtractorTest extends SetUpUnitTestCase
 {
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $typoScripConfigurationMock;
+    protected TypoScriptConfiguration|MockObject $typoScripConfigurationMock;
 
     protected function setUp(): void
     {

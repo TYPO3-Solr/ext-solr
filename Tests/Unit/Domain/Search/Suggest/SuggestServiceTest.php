@@ -37,12 +37,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\DependencyInjection\Container;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SuggestServiceTest extends SetUpUnitTestCase
@@ -66,6 +68,10 @@ class SuggestServiceTest extends SetUpUnitTestCase
             ->onlyMethods(['getSolrSuggestions'])
             ->setConstructorArgs([$this->searchResultSetServiceMock, $this->configurationMock, $this->queryBuilderMock])
             ->getMock();
+
+        $container = new Container();
+        $container->set(SiteFinder::class, $this->createMock(SiteFinder::class));
+        GeneralUtility::setContainer($container);
         parent::setUp();
     }
 

@@ -15,21 +15,17 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler\EventListener;
 
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\AbstractBaseEventListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\NoProcessingEventListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the NoProcessingEventListener
+ *
+ * @property NoProcessingEventListener $listener;
  */
 class NoProcessingEventListenerTest extends SetUpEventListener
 {
-    /**
-     * @var NoProcessingEventListener
-     */
-    protected AbstractBaseEventListener $listener;
-
     #[Test]
     public function canHandleEvents(): void
     {

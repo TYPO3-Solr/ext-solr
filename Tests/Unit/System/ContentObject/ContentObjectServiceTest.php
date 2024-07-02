@@ -28,14 +28,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class ContentObjectServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var ContentObjectRenderer|MockObject
-     */
-    protected $contentObjectRendererMock;
-
-    /**
-     * @var ContentObjectService
-     */
+    protected ContentObjectRenderer|MockObject $contentObjectRendererMock;
     protected ContentObjectService $contentObjectService;
 
     protected function setUp(): void

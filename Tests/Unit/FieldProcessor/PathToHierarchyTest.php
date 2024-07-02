@@ -24,10 +24,7 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class PathToHierarchyTest extends SetUpUnitTestCase
 {
-    /**
-     * @var PathToHierarchy
-     */
-    protected $processor;
+    protected PathToHierarchy $processor;
 
     protected function setUp(): void
     {

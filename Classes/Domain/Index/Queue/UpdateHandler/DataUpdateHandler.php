@@ -246,7 +246,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
         $this->applyPageChangesToQueue($uid);
 
         if ($previousParentId !== null) {
-            $pageRecord = BackendUtility::getRecord('pages', $uid);
+            $pageRecord = $this->getRecord('pages', $uid);
             if ($pageRecord !== null && (int)$pageRecord['pid'] !== $previousParentId) {
                 $treePageIds = $this->getSubPageIds($uid);
                 $this->updatePageIdItems($treePageIds);
@@ -386,8 +386,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
         $this->mountPageUpdater->update($uid);
 
         // We need to get the full record to find out if this is a page translation
-        $fullRecord = BackendUtility::getRecord('pages', $uid);
-        if ($fullRecord['sys_language_uid'] > 0) {
+        $fullRecord = $this->getRecord('pages', $uid);
+        if (($fullRecord['sys_language_uid'] ?? null) > 0) {
             $uid = (int)$fullRecord['l10n_parent'];
         }
 
@@ -491,7 +491,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
      */
     protected function getIsTranslationParentRecordEnabled(string $recordTable, int $recordUid): bool
     {
-        $l10nParentRecord = (array)BackendUtility::getRecord($recordTable, $recordUid, '*', '', false);
+        $l10nParentRecord = (array)$this->getRecord($recordTable, $recordUid, '*', '', false);
         return $this->tcaService->isEnabledRecord($recordTable, $l10nParentRecord);
     }
 
@@ -547,5 +547,26 @@ class DataUpdateHandler extends AbstractUpdateHandler
     protected function getSiteRepository(): SiteRepository
     {
         return GeneralUtility::makeInstance(SiteRepository::class);
+    }
+
+    /**
+     * Wraps {@link BackendUtility::getRecord()}
+     *
+     * Purpose: Unit-Tests
+     */
+    protected function getRecord(
+        string $table,
+        int|string $uid,
+        string $fields = '*',
+        string $where = '',
+        bool $useDeleteClause = true,
+    ): ?array {
+        return BackendUtility::getRecord(
+            $table,
+            $uid,
+            $fields,
+            $where,
+            $useDeleteClause,
+        );
     }
 }

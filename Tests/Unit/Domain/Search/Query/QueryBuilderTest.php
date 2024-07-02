@@ -78,12 +78,16 @@ class QueryBuilderTest extends SetUpUnitTestCase
         return $request->getParams();
     }
 
-    protected function getInitializedTestSearchQuery(string $queryString = '', TypoScriptConfiguration $fakeConfiguration = null): Query
-    {
-        $builder = new QueryBuilder($fakeConfiguration, $this->loggerMock, $this->siteHashServiceMock);
-        /** @var Query $query */
-        $query = $builder->buildSearchQuery($queryString);
-        return $query;
+    protected function getInitializedTestSearchQuery(
+        string $queryString = '',
+        TypoScriptConfiguration $fakeConfiguration = null,
+    ): Query {
+        $builder = new QueryBuilder(
+            $fakeConfiguration ?? $this->createMock(TypoScriptConfiguration::class),
+            $this->loggerMock,
+            $this->siteHashServiceMock,
+        );
+        return $builder->buildSearchQuery($queryString);
     }
 
     #[Test]
@@ -1077,7 +1081,10 @@ class QueryBuilderTest extends SetUpUnitTestCase
     public function canSetReturnFields(): void
     {
         // check initial value
-        $query = $this->getInitializedTestSearchQuery('test');
+        $query = $this->getInitializedTestSearchQuery(
+            'test',
+            new TypoScriptConfiguration([])
+        );
         $queryParameters = $this->getAllQueryParameters($query);
         self::assertSame('*,score', $queryParameters['fl'], 'FieldList initially contained unexpected values');
 
@@ -1120,7 +1127,10 @@ class QueryBuilderTest extends SetUpUnitTestCase
     #[Test]
     public function canSetQueryElevation(): void
     {
-        $query = $this->getInitializedTestSearchQuery('test');
+        $query = $this->getInitializedTestSearchQuery(
+            'test',
+            new TypoScriptConfiguration([])
+        );
         $queryParameters = $this->getAllQueryParameters($query);
 
         self::assertArrayNotHasKey('enableElevation', $queryParameters);

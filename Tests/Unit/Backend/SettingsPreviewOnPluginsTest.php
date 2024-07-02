@@ -74,6 +74,7 @@ class SettingsPreviewOnPluginsTest extends SetUpUnitTestCase
         $pageLayoutContextMock =  $this->createMock(PageLayoutContext::class);
         return new PageContentPreviewRenderingEvent(
             $table,
+            (string)($record[(string)($GLOBALS['TCA'][$table]['ctrl']['type'] ?? '')] ?? ''),
             $record,
             $pageLayoutContextMock
         );

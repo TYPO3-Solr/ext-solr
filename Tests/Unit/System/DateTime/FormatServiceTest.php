@@ -24,10 +24,7 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class FormatServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var FormatService
-     */
-    protected $formatService;
+    protected FormatService $formatService;
 
     protected function setUp(): void
     {

@@ -25,14 +25,11 @@ use Solarium\Core\Client\Endpoint;
 
 /**
  * Testcase for IndexQueueModuleController
+ *
+ * @property IndexAdministrationModuleController|MockObject $controller
  */
-class IndexAdministrationModuleControllerTest extends AbstractModuleController
+class IndexAdministrationModuleControllerTest extends SetUpSolrModuleControllerTestCase
 {
-    /**
-     * @var IndexAdministrationModuleController|MockObject
-     */
-    protected $controller;
-
     protected function setUp(): void
     {
         parent::setUpConcreteModuleController(IndexAdministrationModuleController::class);

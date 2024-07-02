@@ -436,7 +436,7 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemoveDeletedContentElement(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexed_content.csv');
 
@@ -629,7 +629,7 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemoveContentElementTests(array $dataMap, string $fixture = 'indexed_content.csv', array $indexPageIds = [1]): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture);
 
@@ -798,7 +798,7 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemovePagesTests(array $dataMap, array $cmdMap = []): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_remove_page.csv');
 
@@ -870,7 +870,7 @@ class GarbageCollectorTest extends IntegrationTestBase
             }'
         );
 
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
 
         $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_foo', 111);
         $this->waitToBeVisibleInSolr();

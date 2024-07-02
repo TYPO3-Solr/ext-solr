@@ -36,10 +36,15 @@ class ElevationComponentTest extends SetUpUnitTestCase
     {
         $query = $this->createMock(Query::class);
 
-        $queryBuilderMock = $this->getMockBuilder(QueryBuilder::class)
-            ->setConstructorArgs([null, null, $this->createMock(SiteHashService::class)])
-            ->disableProxyingToOriginalMethods()
-            ->getMock();
+        $queryBuilderMock = $this->getAccessibleMock(
+            QueryBuilder::class,
+            [],
+            [
+                $this->createMock(TypoScriptConfiguration::class),
+                null,
+                $this->createMock(SiteHashService::class),
+            ]
+        );
         $queryBuilderMock->expects(self::once())->method('startFrom')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects(self::once())->method('useElevationFromTypoScript')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects(self::once())->method('getQuery')->willReturn($query);
