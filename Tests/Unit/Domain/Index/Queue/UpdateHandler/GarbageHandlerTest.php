@@ -29,10 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GarbageHandlerTest extends SetUpUpdateHandler
 {
-    /**
-     * @var GarbageHandler
-     */
-    protected $garbageHandler;
+    protected GarbageHandler $garbageHandler;
 
     protected function setUp(): void
     {

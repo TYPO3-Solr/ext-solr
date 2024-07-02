@@ -50,7 +50,7 @@ class SuggestControllerTest extends IntegrationTestBase
      */
     protected function tearDown(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         parent::tearDown();
     }
 

@@ -35,7 +35,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
 {
     private const DUMMY_PAGE_ID = 10;
 
-    protected DataUpdateHandler $dataUpdateHandler;
+    protected DataUpdateHandler|MockObject $dataUpdateHandler;
 
     protected MountPagesUpdater|MockObject $mountPagesUpdaterMock;
 
@@ -55,17 +55,31 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->dataHandlerMock = $this->createMock(DataHandler::class);
         $this->loggerMock = $this->createMock(SolrLogManager::class);
 
-        $this->dataUpdateHandler = new DataUpdateHandler(
-            $this->recordServiceMock,
-            $this->frontendEnvironmentMock,
-            $this->tcaServiceMock,
-            $this->indexQueueMock,
-            $this->mountPagesUpdaterMock,
-            $this->rootPageResolverMock,
-            $this->pagesRepositoryMock,
-            $this->dataHandlerMock,
-            $this->loggerMock
+        $this->dataUpdateHandler = $this->getAccessibleMock(
+            DataUpdateHandler::class,
+            [
+                'getRecord',
+            ],
+            [
+                $this->recordServiceMock,
+                $this->frontendEnvironmentMock,
+                $this->tcaServiceMock,
+                $this->indexQueueMock,
+                $this->mountPagesUpdaterMock,
+                $this->rootPageResolverMock,
+                $this->pagesRepositoryMock,
+                $this->dataHandlerMock,
+                $this->loggerMock,
+            ]
         );
+        $this->dataUpdateHandler
+            ->expects(self::any())
+            ->method('getRecord')
+            ->willReturn([
+                'uid' => self::DUMMY_PAGE_ID,
+                'title' => 'dummy page on which dummy ce is placed',
+                'sys_language_uid' => 0,
+            ]);
 
         $this->dataHandlerMock
             ->expects(self::any())

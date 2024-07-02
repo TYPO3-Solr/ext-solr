@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result\Pars
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DefaultResultParser;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -37,7 +39,10 @@ class DefaultParserTest extends SetUpUnitTestCase
     protected function setUp(): void
     {
         $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
-        $this->parser = new DefaultResultParser();
+        $this->parser = new DefaultResultParser(
+            $this->createMock(SearchResultBuilder::class),
+            $this->createMock(DocumentEscapeService::class),
+        );
         parent::setUp();
     }
 

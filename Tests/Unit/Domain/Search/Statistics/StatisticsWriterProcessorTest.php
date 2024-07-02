@@ -37,35 +37,12 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class StatisticsWriterProcessorTest extends SetUpUnitTestCase
 {
-    /**
-     * @var StatisticsRepository|MockObject
-     */
-    protected $statisticsRepositoryMock;
-
-    /**
-     * @var SiteRepository|MockObject
-     */
-    protected $siteRepositoryMock;
-
-    /**
-     * @var StatisticsWriterProcessor|MockObject
-     */
-    protected $processor;
-
-    /**
-     * @var TypoScriptConfiguration|MockObject
-     */
-    protected $typoScriptConfigurationMock;
-
-    /**
-     * @var SearchRequest|MockObject
-     */
-    protected $searchRequestMock;
-
-    /**
-     * @var Query|MockObject
-     */
-    protected $queryMock;
+    protected StatisticsRepository|MockObject$statisticsRepositoryMock;
+    protected SiteRepository|MockObject $siteRepositoryMock;
+    protected StatisticsWriterProcessor|MockObject $processor;
+    protected TypoScriptConfiguration|MockObject $typoScriptConfigurationMock;
+    protected SearchRequest|MockObject $searchRequestMock;
+    protected Query|MockObject $queryMock;
 
     protected function setUp(): void
     {

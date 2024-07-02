@@ -15,24 +15,35 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result\Parser;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\DependencyInjection\Container;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Unit test case for the ResultParserRegistryTest.
  */
 class ResultParserRegistryTest extends SetUpUnitTestCase
 {
-    /**
-     * @var ResultParserRegistry
-     */
-    protected $registry;
+    protected ResultParserRegistry $registry;
 
     protected function setUp(): void
     {
         $this->registry = new ResultParserRegistry();
+        $container = new Container();
+        $container->set(
+            SearchResultBuilder::class,
+            $this->createMock(SearchResultBuilder::class)
+        );
+        $container->set(
+            DocumentEscapeService::class,
+            $this->createMock(DocumentEscapeService::class)
+        );
+        GeneralUtility::setContainer($container);
         parent::setUp();
     }
 

@@ -30,6 +30,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Traversable;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -67,6 +68,7 @@ class ConnectionManagerTest extends SetUpUnitTestCase
         $container->set(RequestFactoryInterface::class, $this->createMock(RequestFactoryInterface::class));
         $container->set(StreamFactoryInterface::class, $this->createMock(StreamFactoryInterface::class));
         $container->set(EventDispatcherInterface::class, $this->createMock(EventDispatcherInterface::class));
+        $container->set(SiteFinder::class, $this->createMock(SiteFinder::class));
         GeneralUtility::setContainer($container);
 
         parent::setUp();
@@ -119,7 +121,7 @@ class ConnectionManagerTest extends SetUpUnitTestCase
     }
 
     /**
-     * Tests the connect
+     * Tests the connection
      */
     #[DataProvider('connectDataProvider')]
     #[Test]

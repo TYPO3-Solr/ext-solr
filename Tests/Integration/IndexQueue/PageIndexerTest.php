@@ -57,16 +57,10 @@ class PageIndexerTest extends IntegrationTestBase
      */
     protected function tearDown(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         parent::tearDown();
     }
 
-    /**
-     * @param string $fixture
-     * @param int $expectedNumFound
-     * @param array $expectedAccessFieldValues
-     * @param array $expectedContents
-     */
     #[DataProvider('canIndexPageWithAccessProtectedContentIntoSolrDataProvider')]
     #[Test]
     public function canIndexPageWithAccessProtectedContentIntoSolr(
@@ -79,7 +73,7 @@ class PageIndexerTest extends IntegrationTestBase
         int $expectedNumFoundLoggedInUser,
         string $core = 'core_en'
     ): void {
-        $this->cleanUpSolrServerAndAssertEmpty($core);
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture . '.csv');
 
         $createPageIndexerMock = function(): PageIndexerRequest {

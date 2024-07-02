@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
@@ -35,20 +36,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class RepositoryTest extends SetUpUnitTestCase
 {
-    /**
-     * @var Search
-     */
-    protected $search;
-
-    /**
-     * @var ConnectionManager
-     */
-    protected $solrConnectionManager;
-
-    /**
-     * @var Site
-     */
-    protected $mockedAsSingletonSite;
+    protected Search $search;
+    protected ConnectionManager $solrConnectionManager;
+    protected Site $mockedAsSingletonSite;
 
     #[Test]
     public function findOneByPageIdAndByLanguageIdReturnsFirstFoundDocument(): void
@@ -115,7 +105,17 @@ class RepositoryTest extends SetUpUnitTestCase
 
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
 
-        $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['getSearch'], [null, null, $queryBuilderMock]);
+        $apacheSolrDocumentRepository = $this->getAccessibleMock(
+            Repository::class,
+            [
+                'getSearch',
+            ],
+            [
+                null,
+                $this->createMock(TypoScriptConfiguration::class),
+                $queryBuilderMock,
+            ]
+        );
         $apacheSolrDocumentRepository->expects(self::once())->method('getSearch')->willReturn($search);
         $queryMock = $this->createMock(Query::class);
         $queryBuilderMock->expects(self::any())->method('buildPageQuery')->willReturn($queryMock);

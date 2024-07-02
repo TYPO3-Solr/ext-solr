@@ -50,13 +50,13 @@ class SearchTest extends IntegrationTestBase
     protected function tearDown(): void
     {
         parent::tearDown();
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
 
     #[Test]
     public function canSearchForADocument(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/can_search.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
@@ -374,7 +374,7 @@ class SearchTest extends IntegrationTestBase
         */
 
         // Note positons beginning by 0 = first
-        // first position is the same for all three slop values
+        // The first position is the same for all three slop values
         // @extensionScannerIgnoreLine
         self::assertTrue($parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[1]->response->docs[0]->getUid()
             // @extensionScannerIgnoreLine

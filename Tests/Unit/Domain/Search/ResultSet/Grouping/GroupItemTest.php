@@ -27,15 +27,8 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class GroupItemTest extends SetUpUnitTestCase
 {
-    /**
-     * @var GroupItem
-     */
-    protected $groupItem;
-
-    /**
-     * @var Group
-     */
-    protected $parentGroup;
+    protected GroupItem $groupItem;
+    protected Group $parentGroup;
 
     protected function setUp(): void
     {

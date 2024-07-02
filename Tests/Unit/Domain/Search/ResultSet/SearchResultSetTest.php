@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
@@ -33,7 +34,9 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\DependencyInjection\Container;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SearchResultSetTest extends SetUpUnitTestCase
 {
@@ -43,7 +46,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
     protected SolrLogManager|MockObject $solrLogManagerMock;
     protected Query|MockObject $queryMock;
     protected EscapeService|MockObject $escapeServiceMock;
-    protected MockEventDispatcher $eventDispatcher;
+    protected EventDispatcherInterface|MockObject $eventDispatcher;
 
     protected function setUp(): void
     {
@@ -60,7 +63,12 @@ class SearchResultSetTest extends SetUpUnitTestCase
             $this->createMock(SiteHashService::class)
         );
 
-        $this->eventDispatcher = new MockEventDispatcher();
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
+            static function(object $event) {
+                return $event;
+            }
+        );
 
         $this->searchResultSetService = new SearchResultSetService(
             $this->configurationMock,
@@ -70,13 +78,20 @@ class SearchResultSetTest extends SetUpUnitTestCase
             $queryBuilder,
             $this->eventDispatcher
         );
+
+        $container = new Container();
+        $container->set(
+            DocumentEscapeService::class,
+            new DocumentEscapeService($this->createMock(TypoScriptConfiguration::class)),
+        );
+        GeneralUtility::setContainer($container);
         parent::setUp();
     }
 
     #[Test]
     public function testSearchIfFiredWithInitializedQuery(): void
     {
-        // we expect the ->search method on the Search object will be called once
+        // we expect the ->search method on the Search object will be called once,
         // and we pass the response that should be returned when it was call to compare
         // later if we retrieve the expected result
         $fakeResponse = $this->createMock(ResponseAdapter::class);
@@ -110,11 +125,14 @@ class SearchResultSetTest extends SetUpUnitTestCase
         $this->configurationMock->expects(self::once())->method('getSearchConfiguration')->willReturn([]);
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $this->eventDispatcher->addListener(function(object $event) {
-            if ($event instanceof AfterSearchQueryHasBeenPreparedEvent) {
-                $event->getTypoScriptConfiguration()->getSearchConfiguration();
+        $this->eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
+            static function(object $event) {
+                if ($event instanceof AfterSearchQueryHasBeenPreparedEvent) {
+                    $event->getTypoScriptConfiguration()->getSearchConfiguration();
+                }
+                return $event;
             }
-        });
+        );
         $fakeResponse = $this->createMock(ResponseAdapter::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 3. search', 0, $fakeResponse);
 
@@ -130,13 +148,16 @@ class SearchResultSetTest extends SetUpUnitTestCase
     {
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $this->eventDispatcher->addListener(function(object $event) {
-            if ($event instanceof AfterSearchHasBeenExecutedEvent) {
-                foreach ($event->getSearchResultSet()->getSearchResults() as $result) {
-                    $result->type = strtoupper($result->type);
+        $this->eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
+            static function(object $event) {
+                if ($event instanceof AfterSearchHasBeenExecutedEvent) {
+                    foreach ($event->getSearchResultSet()->getSearchResults() as $result) {
+                        $result->type = strtoupper($result->type);
+                    }
                 }
+                return $event;
             }
-        });
+        );
 
         $fakedSolrResponse = self::getFixtureContentByName('fakeResponse.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
@@ -199,12 +220,15 @@ class SearchResultSetTest extends SetUpUnitTestCase
         self::assertSame(5, count($fistResult->getVariants()), 'Unexpected amount of expanded result');
     }
 
-    public function assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse(string $expextedQueryString, int $expectedOffset, ResponseAdapter $fakeResponse): void
-    {
+    public function assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse(
+        string $expectedQueryString,
+        int $expectedOffset,
+        ResponseAdapter $fakeResponse,
+    ): void {
         $this->searchMock->expects(self::once())->method('search')->willReturnCallback(
-            function(Query $query, $offset) use ($expextedQueryString, $expectedOffset, $fakeResponse) {
-                $this->assertSame($expextedQueryString, $query->getQuery(), 'Search was not triggered with an expected queryString');
-                $this->assertSame($expectedOffset, $offset);
+            static function(Query $query, $offset) use ($expectedQueryString, $expectedOffset, $fakeResponse) {
+                self::assertSame($expectedQueryString, $query->getQuery(), 'Search was not triggered with an expected queryString');
+                self::assertSame($expectedOffset, $offset);
                 return $fakeResponse;
             }
         );

@@ -44,14 +44,14 @@ class PageIndexerTest extends IntegrationTestBase
      */
     protected function tearDown(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         parent::tearDown();
     }
 
     #[Test]
     public function canIndexPageIntoSolr(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_into_solr.csv');
         $this->addSimpleFrontendRenderingToTypoScriptRendering(
@@ -81,7 +81,7 @@ class PageIndexerTest extends IntegrationTestBase
     #[Test]
     public function canIndexPageWithCustomPageTypeIntoSolr(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_pagetype_into_solr.csv');
 
@@ -117,8 +117,7 @@ class PageIndexerTest extends IntegrationTestBase
     #[Test]
     public function canIndexTranslatedPageToPageRelation(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty('core_en');
-        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_page_with_relation_to_page.csv');
         $this->addSimpleFrontendRenderingToTypoScriptRendering(
@@ -149,17 +148,16 @@ class PageIndexerTest extends IntegrationTestBase
         self::assertStringContainsString('"title":"Seite"', $solrContentDe, 'Solr did not contain the translated page');
         self::assertStringContainsString('"relatedPageTitles_stringM":["Verwandte Seite"]', $solrContentDe, 'Did not get content of related field');
 
-        $this->cleanUpSolrServerAndAssertEmpty('core_en');
-        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
 
     /**
-     * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
+     * This testcase should check if we can queue a custom record with MM relations and respect the additionalWhere clause.
      */
     #[Test]
     public function canIndexPageToCategoryRelation(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_page_with_relation_to_category.csv');
         $this->addSimpleFrontendRenderingToTypoScriptRendering(
@@ -183,7 +181,7 @@ class PageIndexerTest extends IntegrationTestBase
         self::assertStringContainsString('"title":"Sub page"', $solrContentEn, 'Solr did not contain the english page');
         self::assertStringContainsString('"categories_stringM":["Test"]', $solrContentEn, 'There is no relation for the original, so ther should not be a related field');
 
-        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
 
     #[Test]
@@ -247,7 +245,7 @@ class PageIndexerTest extends IntegrationTestBase
     #[Test]
     public function canExecutePostProcessor(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_into_solr.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
@@ -306,7 +304,7 @@ class PageIndexerTest extends IntegrationTestBase
     {
         $GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 1;
 
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_mounted_page.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $this->indexQueuedPage(24, '/en/', ['MP' => '24-14']);
@@ -339,7 +337,7 @@ class PageIndexerTest extends IntegrationTestBase
     #[Test]
     public function canIndexMultipleMountedPage(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_multiple_mounted_page.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $this->indexQueuedPage(44, '/en/', ['MP' => '44-14']);

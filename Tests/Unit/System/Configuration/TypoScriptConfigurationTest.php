@@ -26,10 +26,7 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class TypoScriptConfigurationTest extends SetUpUnitTestCase
 {
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configuration;
+    protected TypoScriptConfiguration $configuration;
 
     protected function setUp(): void
     {

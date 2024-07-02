@@ -23,8 +23,8 @@ use ApacheSolrForTypo3\Solr\Event\Variants\AfterVariantIdWasBuiltEvent;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
-use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 
 /**
  * Testcase to check if the IdBuilder can be used to build proper variantIds.
@@ -42,10 +42,13 @@ class IdBuilderTest extends SetUpUnitTestCase
     #[Test]
     public function canUseCustomEventListener(): void
     {
-        $eventDispatcher = new MockEventDispatcher();
-        $eventDispatcher->addListener(function(AfterVariantIdWasBuiltEvent $event) {
-            $event->setVariantId('mycustomid');
-        });
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $eventDispatcher->expects(self::once())->method('dispatch')->willReturnCallback(
+            static function(AfterVariantIdWasBuiltEvent $event) {
+                $event->setVariantId('mycustomid');
+                return $event;
+            }
+        );
         $build = new IdBuilder($eventDispatcher);
         $variantId = $build->buildFromTypeAndUid('pages', 4711, [], $this->createMock(Site::class), new Document());
 

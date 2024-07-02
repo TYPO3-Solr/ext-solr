@@ -21,9 +21,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 class ScoreCalculationServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var ScoreCalculationService
-     */
     protected ScoreCalculationService $scoreCalculationService;
 
     protected function setUp(): void

@@ -260,7 +260,11 @@ class Indexer extends AbstractIndexer
 
         /** @var PageRepository $pageRepository */
         $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
-        return $pageRepository->getLanguageOverlay('pages', $itemRecord, LanguageAspectFactory::createFromSiteLanguage($typo3siteLanguage));
+        return $pageRepository->getLanguageOverlay(
+            $item->getType(),
+            $itemRecord,
+            LanguageAspectFactory::createFromSiteLanguage($typo3siteLanguage),
+        );
     }
 
     protected function isAFreeContentModeItemRecord(Item $item): bool

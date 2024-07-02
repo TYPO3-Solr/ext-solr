@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 use ReflectionException;
@@ -64,7 +65,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     protected array $testSolrCores = [
         'core_en',
         'core_de',
-        'core_dk',
+        'core_da',
     ];
 
     protected array $configurationToUseInTestInstance = [
@@ -94,7 +95,9 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     }
 
     /**
-     * @param string|null $coreName
+     * @throws InvalidArgumentException
+     *
+     * Please don't use that method, except you really want to clean a single core.
      */
     protected function cleanUpSolrServerAndAssertEmpty(?string $coreName = 'core_en'): void
     {
@@ -122,10 +125,19 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $this->assertSolrIsEmpty();
     }
 
+    protected function cleanUpAllCoresOnSolrServerAndAssertEmpty(): void
+    {
+        foreach ($this->testSolrCores as $coreName) {
+            try {
+                $this->cleanUpSolrServerAndAssertEmpty($coreName);
+            } catch (InvalidArgumentException) {
+                // no wrong cores can be passed there, nothing to do.
+            }
+        }
+    }
+
     /**
-     * @param string|null $coreName
-     *
-     * @return array|false
+     * @throws InvalidArgumentException
      */
     protected function waitToBeVisibleInSolr(?string $coreName = 'core_en'): array|false
     {
@@ -134,6 +146,9 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         return get_headers($url);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     protected function validateTestCoreName(string $coreName): void
     {
         if (!in_array($coreName, $this->testSolrCores, true)) {
@@ -271,12 +286,14 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     protected function failWhenSolrDeprecationIsCreated(): ?callable
     {
         error_reporting(error_reporting() & ~E_USER_DEPRECATED);
-        return set_error_handler(function(int $id, string $msg, string $file, int $line): bool {
-            if ($id === E_USER_DEPRECATED && str_starts_with($msg, 'solr:deprecation: ')) {
-                $this->fail('Executed deprecated EXT:solr code: ' . $msg);
+        return set_error_handler(
+            function(int $id, string $msg, string $file, int $line): bool {
+                if ($id === E_USER_DEPRECATED && str_starts_with($msg, 'solr:deprecation: ')) {
+                    $this->fail("Executed deprecated EXT:solr code: in $file:$line" . PHP_EOL . $msg);
+                }
+                return true;
             }
-            return true;
-        });
+        );
     }
 
     protected function getSolrConnectionInfo(): array
@@ -306,7 +323,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $reflection = new ReflectionClass($object);
         try {
             $property = $reflection->getProperty($property);
-        } catch (ReflectionException $e) {
+        } catch (ReflectionException) {
             return null;
         }
         return $property->getValue($object);
@@ -339,6 +356,8 @@ abstract class IntegrationTestBase extends FunctionalTestCase
 
     /**
      * Adds TypoScript setup snippet to the existing template record
+     *
+     * @throws DBALException
      */
     protected function addTypoScriptConstantsToTemplateRecord(int $pageId, string $constants): void
     {
@@ -358,10 +377,14 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     }
 
     /**
+     * @throws InvalidArgumentException
      * @throws SiteNotFoundException
+     * @throws DBALException
      */
-    protected function indexPages(array $importPageIds, int $frontendUserId = null)
-    {
+    protected function indexPages(
+        array $importPageIds,
+        int $frontendUserId = null,
+    ): void {
         // Mark the pages as items to index
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         foreach ($importPageIds as $importPageId) {
@@ -375,7 +398,9 @@ abstract class IntegrationTestBase extends FunctionalTestCase
 
     /**
      * Adds a page to the queue (into DB table tx_solr_indexqueue_item) so it can
-     * be fetched via a frontend subrequest
+     * be fetched via a frontend sub-request
+     *
+     * @throws DBALException
      */
     protected function addPageToIndexQueue(int $pageId, Site $site): Item
     {
@@ -401,6 +426,8 @@ abstract class IntegrationTestBase extends FunctionalTestCase
 
     /**
      * Returns the Item for given index queue uid
+     *
+     * @throws DBALException
      */
     protected function getIndexQueueItem(int $itemUid): Item
     {

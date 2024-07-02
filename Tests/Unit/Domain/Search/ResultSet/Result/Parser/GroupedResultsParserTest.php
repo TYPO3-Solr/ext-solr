@@ -16,7 +16,9 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result\Parser;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\GroupedResultParser;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -29,6 +31,16 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class GroupedResultsParserTest extends SetUpUnitTestCase
 {
+    protected GroupedResultParser $parser;
+
+    protected function setUp(): void
+    {
+        $this->parser = new GroupedResultParser(
+            $this->createMock(SearchResultBuilder::class),
+            $this->createMock(DocumentEscapeService::class),
+        );
+        parent::setUp();
+    }
     #[Test]
     public function canParsedQueryGroupResult(): void
     {
@@ -46,8 +58,7 @@ class GroupedResultsParserTest extends SetUpUnitTestCase
 
         $resultSet = $this->getSearchResultSetMockFromConfigurationAndFixtureFileName($configurationMock, 'fake_solr_response_group_on_queries.json');
 
-        $parser = new GroupedResultParser();
-        $searchResultsSet = $parser->parse($resultSet);
+        $searchResultsSet = $this->parser->parse($resultSet);
         $searchResultsCollection = $searchResultsSet->getSearchResults();
 
         self::assertTrue($searchResultsCollection->getHasGroups());
@@ -74,8 +85,7 @@ class GroupedResultsParserTest extends SetUpUnitTestCase
 
         $resultSet = $this->getSearchResultSetMockFromConfigurationAndFixtureFileName($configurationMock, 'fake_solr_response_group_on_fields.json');
 
-        $parser = new GroupedResultParser();
-        $searchResultsSet = $parser->parse($resultSet);
+        $searchResultsSet = $this->parser->parse($resultSet);
         $searchResultsCollection = $searchResultsSet->getSearchResults();
 
         self::assertTrue($searchResultsCollection->getHasGroups());

@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterRecordsForIndexQueueItemsHaveB
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -108,7 +108,15 @@ class QueueItemRepositoryTest extends IntegrationTestBase
     public function canFindItemsAndModifyViaEventListener(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_and_news_queueitems.csv');
-        $eventDispatcher = new MockEventDispatcher();
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
+            static function(
+                AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event
+            ): Object {
+                return $event;
+            }
+        );
+
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class, null, $eventDispatcher);
         $items = $queueItemRepository->findItems([], ['pages']);
 
@@ -117,11 +125,16 @@ class QueueItemRepositoryTest extends IntegrationTestBase
         self::assertSame(2, count($items));
         self::assertSame('pages', $firstItem->getType(), 'First item has unexpected type');
 
-        $eventDispatcher->addListener(function(AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event): void {
-            if ($event->getTable() === 'pages') {
-                $event->setRecords([]);
+        $eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
+            static function(
+                AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event
+            ): Object {
+                if ($event->getTable() === 'pages') {
+                    $event->setRecords([]);
+                }
+                return $event;
             }
-        });
+        );
 
         $items = $queueItemRepository->findItems([], ['pages']);
         self::assertCount(0, $items);
