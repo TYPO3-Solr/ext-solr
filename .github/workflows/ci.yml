@@ -8,6 +8,13 @@ on:
   pull_request:
     branches: [ main, release-13.0.x, release-12.0.x, release-11.6.x, release-11.5.x, task/*_compatibility ]
 
+  # Run tests daily at 19:23 to get TYPO3 changes and fix them immediately.
+  # @todo:
+  #   * run only on dev-<TYPO3-LTS-branch/alias>
+  #   * create issue on GH or message via TYPO3 Slack bot, if tests failed
+  schedule:
+    - cron:  '23 19 * * *'
+
 env:
   IS_ON_GITHUB_ACTIONS: 'true'
   CI_BUILD_DIRECTORY: '/home/runner/work/ext-solr/ext-solr/.Build'
