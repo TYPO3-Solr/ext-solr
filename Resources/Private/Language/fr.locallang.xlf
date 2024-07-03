@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<xliff version="1.0" xmlns="urn:oasis:names:tc:xliff:document:1.1">
-	<file source-language="en" target-language="fr" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang.xlf" date="2021-02-24T14:00:00Z" product-name="solr">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-03-30T11:42:09Z" target-language="fr">
 		<header/>
 		<body>
 

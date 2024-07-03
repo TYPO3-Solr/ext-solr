@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file source-language="en" target-language="fr" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_be.xlf" date="2021-12-15T13:10:00Z" product-name="solr">
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+	<file source-language="en" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_be.xlf" date="2021-12-15T13:10:00Z" product-name="solr" target-language="fr">
 		<header/>
 		<body>
 			<trans-unit id="extConf.monitoringType" xml:space="preserve">
