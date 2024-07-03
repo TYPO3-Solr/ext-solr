@@ -25,7 +25,7 @@ fi
 
 
 echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
-if ! composer t3:standards:fix -- --diff --verbose --dry-run && rm .php-cs-fixer.cache
+if ! composer t3:standards:fix -- --diff --verbose --dry-run --show-progress=none && rm .php-cs-fixer.cache
 then
   echo "Some files are not compliant to TYPO3 Coding Standards"
   echo "Please fix the files listed above."
@@ -45,7 +45,7 @@ fi
 
 echo -e "\n\n"
 echo "Run PHPStan analysis"
-if ! composer tests:phpstan
+if ! composer tests:phpstan -- --no-progress
 then
   EXIT_CODE=7
   echo "Error during running the PHPStan analysis, please check and fix them."
