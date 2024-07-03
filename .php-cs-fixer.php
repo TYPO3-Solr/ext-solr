@@ -2,7 +2,14 @@
 
 declare(strict_types=1);
 
-$config = \TYPO3\CodingStandards\CsFixerConfig::create();
+use TYPO3\CodingStandards\CsFixerConfig;
+
+$config = CsFixerConfig::create();
+
+if (getenv('IS_ON_GITHUB_ACTIONS') === 'true') {
+    $config = $config->setHideProgress(true);
+}
+
 $config
     ->addRules(
         [

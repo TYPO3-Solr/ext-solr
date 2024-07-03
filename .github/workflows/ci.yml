@@ -9,6 +9,7 @@ on:
     branches: [ main, release-13.0.x, release-12.0.x, release-11.6.x, release-11.5.x, task/*_compatibility ]
 
 env:
+  IS_ON_GITHUB_ACTIONS: 'true'
   CI_BUILD_DIRECTORY: '/home/runner/work/ext-solr/ext-solr/.Build'
   LOCAL_IMAGE_NAME: 'solrci-image:latest'
   LOCAL_CONTAINER_NAME: 'solrci-container'
