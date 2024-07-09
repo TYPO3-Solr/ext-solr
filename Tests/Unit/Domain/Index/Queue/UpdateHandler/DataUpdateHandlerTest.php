@@ -70,7 +70,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
                 $this->pagesRepositoryMock,
                 $this->dataHandlerMock,
                 $this->loggerMock,
-            ]
+            ],
         );
         $this->dataUpdateHandler
             ->expects(self::any())

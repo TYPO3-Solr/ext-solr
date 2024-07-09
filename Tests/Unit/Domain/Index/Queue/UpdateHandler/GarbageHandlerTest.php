@@ -34,11 +34,17 @@ class GarbageHandlerTest extends SetUpUpdateHandler
     protected function setUp(): void
     {
         parent::setUp();
-        $this->garbageHandler = new GarbageHandler(
-            $this->recordServiceMock,
-            $this->frontendEnvironmentMock,
-            $this->tcaServiceMock,
-            $this->indexQueueMock
+        $this->garbageHandler = $this->getAccessibleMock(
+            GarbageHandler::class,
+            [
+                'getRecord',
+            ],
+            [
+                $this->recordServiceMock,
+                $this->frontendEnvironmentMock,
+                $this->tcaServiceMock,
+                $this->indexQueueMock,
+            ],
         );
     }
 

@@ -47,41 +47,13 @@ class GarbageCollectorTest extends IntegrationTestBase
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
     ];
 
-    /**
-     * @var RecordMonitor
-     */
-    protected $recordMonitor;
-
-    /**
-     * @var DataHandler
-     */
-    protected $dataHandler;
-
-    /**
-     * @var Queue
-     */
-    protected $indexQueue;
-
-    /**
-     * @var GarbageCollector
-     */
-    protected $garbageCollector;
-
-    /**
-     * @var Indexer
-     */
-    protected $indexer;
-
-    /**
-     * @var ExtensionConfiguration
-     */
-    protected $extensionConfiguration;
-
-    /**
-     * @var EventQueueItemRepository
-     */
-    protected $eventQueue;
-
+    protected RecordMonitor $recordMonitor;
+    protected DataHandler $dataHandler;
+    protected Queue $indexQueue;
+    protected GarbageCollector $garbageCollector;
+    protected Indexer $indexer;
+    protected ExtensionConfiguration $extensionConfiguration;
+    protected EventQueueItemRepository $eventQueue;
     protected BackendUserAuthentication $backendUser;
 
     protected function setUp(): void

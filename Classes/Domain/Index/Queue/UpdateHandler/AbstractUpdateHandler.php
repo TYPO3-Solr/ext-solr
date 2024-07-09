@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -278,5 +279,26 @@ abstract class AbstractUpdateHandler
         }
 
         return $this->queryBuilders[$table];
+    }
+
+    /**
+     * Wraps {@link BackendUtility::getRecord()}
+     *
+     * Purpose: Unit-Tests
+     */
+    protected function getRecord(
+        string $table,
+        int|string $uid,
+        string $fields = '*',
+        string $where = '',
+        bool $useDeleteClause = true,
+    ): ?array {
+        return BackendUtility::getRecord(
+            $table,
+            $uid,
+            $fields,
+            $where,
+            $useDeleteClause,
+        );
     }
 }

@@ -33,7 +33,6 @@ use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -547,26 +546,5 @@ class DataUpdateHandler extends AbstractUpdateHandler
     protected function getSiteRepository(): SiteRepository
     {
         return GeneralUtility::makeInstance(SiteRepository::class);
-    }
-
-    /**
-     * Wraps {@link BackendUtility::getRecord()}
-     *
-     * Purpose: Unit-Tests
-     */
-    protected function getRecord(
-        string $table,
-        int|string $uid,
-        string $fields = '*',
-        string $where = '',
-        bool $useDeleteClause = true,
-    ): ?array {
-        return BackendUtility::getRecord(
-            $table,
-            $uid,
-            $fields,
-            $where,
-            $useDeleteClause,
-        );
     }
 }
