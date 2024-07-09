@@ -125,7 +125,13 @@ class GarbageHandler extends AbstractUpdateHandler
         }
 
         if ($table === 'pages') {
-            $this->deleteSubEntriesWhenRecursiveTriggerIsRecognized($table, $uid, $updatedFields);
+            // We need to get the full record to find out if this is a page translation
+            $fullRecord = $this->getRecord('pages', $uid);
+            $uidForRecursiveTriggers = $uid;
+            if (($fullRecord['sys_language_uid'] ?? null) > 0) {
+                $uidForRecursiveTriggers = (int)$fullRecord['l10n_parent'];
+            }
+            $this->deleteSubEntriesWhenRecursiveTriggerIsRecognized($table, $uidForRecursiveTriggers, $updatedFields);
         }
 
         $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
