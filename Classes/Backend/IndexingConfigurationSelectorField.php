@@ -190,7 +190,8 @@ class IndexingConfigurationSelectorField
         /** @var NodeFactory $nodeFactory */
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = [
-            'type' => 'select', 'renderType' => 'selectCheckBox',
+            'type' => 'select',
+            'renderType' => 'selectCheckBox',
             'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
             'tableName' => 'tx_solr_classes_backend_indexingconfigurationselector',
             'fieldName' => 'additionalFields',
