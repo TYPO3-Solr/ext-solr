@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Backend;
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
 use TYPO3\CMS\Backend\Form\FormResultCompiler;
@@ -118,10 +119,9 @@ class CoreSelectorField
     protected function getLanguageUidCoreMap(): array
     {
         $coreTableMap = [];
-        $cores = $this->site->getAllSolrConnectionConfigurations();
-        foreach ($cores as $languageUid => $core) {
-            $corePath = $core['write']['path'];
-            $coreTableMap[$languageUid] = $corePath;
+        $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
+        foreach ($solrServers as $languageUid => $solrConnection) {
+            $coreTableMap[$languageUid] = $solrConnection->getWriteService()->getCorePath();
         }
         return $coreTableMap;
     }
@@ -137,10 +137,13 @@ class CoreSelectorField
     {
         $selectorItems = [];
 
-        foreach ($coresToOptimize as $corePath) {
-            $icon = 'module-searchbackend_SolrCoreoptimization';
+        foreach ($coresToOptimize as $systemLanguageId => $corePath) {
             $corePath = rtrim($corePath, '/');
-            $selectorItems[] = [$corePath, $corePath, $icon];
+            $selectorItems[] = [
+                'label' => $corePath,
+                'value' => $corePath,
+                'icon' => $this->getFlagIdentifierForSystemLanguageId($systemLanguageId),
+            ];
         }
 
         return $selectorItems;
@@ -157,23 +160,37 @@ class CoreSelectorField
             'itemFormElValue' => $selectedValues,
             'fieldConf' => ['config' => ['items' => $items]],
             'fieldTSConfig' => ['noMatchingValue_label' => ''],
+            'itemFormElID' => '',
         ];
 
         /** @var NodeFactory $nodeFactory */
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = [
+            'type' => 'select',
             'renderType' => 'selectCheckBox',
-            'table' => 'tx_solr_classes_backend_coreselector',
+            'tableName' => 'tx_solr_classes_backend_coreselector',
             'fieldName' => 'additionalFields',
-            'databaseRow' => [],
+            'databaseRow' => ['uid' => 0],
             'parameterArray' => $parameterArray,
+            'processedTca' => ['columns' => ['additionalFields' => ['config' => ['type' => 'select']]]],
         ];
 
-        $selectCheckboxResult = $nodeFactory->create($options)->render();
+        $selectCheckboxResult = $nodeFactory
+            ->create($options)
+            ->render();
         $formResultCompiler = GeneralUtility::makeInstance(FormResultCompiler::class);
         $formResultCompiler->mergeResult($selectCheckboxResult);
 
         $formHtml = $selectCheckboxResult['html'] ?? '';
         return $formResultCompiler->addCssFiles() . $formHtml . $formResultCompiler->printNeededJSFunctions();
+    }
+
+    protected function getFlagIdentifierForSystemLanguageId(int|string $systemLanguageId): string
+    {
+        $flagIdentifier = $this->site->getTypo3SiteObject()->getLanguageById((int)$systemLanguageId)->getFlagIdentifier();
+        if (!empty($flagIdentifier)) {
+            return $flagIdentifier;
+        }
+        return 'flags-multiple';
     }
 }
