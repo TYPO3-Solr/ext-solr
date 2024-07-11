@@ -1,4 +1,4 @@
-FROM solr:9.6.0
+FROM solr:9.6.1
 MAINTAINER dkd Internet Service GmbH <info@dkd.de>
 ENV TERM linux
 
