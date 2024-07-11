@@ -1,7 +1,7 @@
 "pages",,,,,,,
 ,"uid","pid","is_siteroot","doktype","hidden","slug","title"
 # 100% matching
-,2,1,1,1,0,"/","Awesome Trigram Phrase Search"
+,2,1,0,1,0,"/awesome-trigram-phrase-search","Awesome Trigram Phrase Search"
 # trigram phrase slop = 0
 ,3,1,0,1,0,"/dump-sentence","This is some dump sentence to match Awesome Trigram Phrase"
 ,4,1,0,1,0,"/match-trigram-phrase-search","This is some dump sentence to match Trigram Phrase Search"
@@ -19,20 +19,3 @@
 ,14,1,0,1,0,"/match-trigram-only","This is some dump sentence to match Trigram only"
 ,15,1,0,1,0,"/match-awesome-only","This is some dump sentence to match Awesome only"
 ,16,1,0,1,0,"/trigram-gag-gag-gag-gag-phrase","Trigram gag gag gag gag Phrase gag gag gag gag Search is fascinating feature."
-"tx_solr_indexqueue_item",
-,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors"
-,2,1,"pages",2,"pages",1449151778,0,0,0,0,0
-,3,1,"pages",3,"pages",1449151778,0,0,0,0,0
-,4,1,"pages",4,"pages",1449151778,0,0,0,0,0
-,5,1,"pages",5,"pages",1449151778,0,0,0,0,0
-,6,1,"pages",6,"pages",1449151778,0,0,0,0,0
-,7,1,"pages",7,"pages",1449151778,0,0,0,0,0
-,8,1,"pages",8,"pages",1449151778,0,0,0,0,0
-,9,1,"pages",9,"pages",1449151778,0,0,0,0,0
-,10,1,"pages",10,"pages",1449151778,0,0,0,0,0
-,11,1,"pages",11,"pages",1449151778,0,0,0,0,0
-,12,1,"pages",12,"pages",1449151778,0,0,0,0,0
-,13,1,"pages",13,"pages",1449151778,0,0,0,0,0
-,14,1,"pages",14,"pages",1449151778,0,0,0,0,0
-,15,1,"pages",15,"pages",1449151778,0,0,0,0,0
-,16,1,"pages",16,"pages",1449151778,0,0,0,0,0

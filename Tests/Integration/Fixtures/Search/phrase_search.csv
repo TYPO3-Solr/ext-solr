@@ -1,6 +1,6 @@
 "pages",,,,,,,
 ,"uid","pid","is_siteroot","doktype","hidden","slug","title"
-,2,1,1,1,0,"/","World Hello Search Test"
+,2,1,0,1,0,"/world-hello-search-test","World Hello Search Test"
 ,3,1,0,1,0,"/improve","Hello you can improve the precision by using phrase configuration World"
 ,4,1,0,1,0,"/hello-phrase-search-world","Hello phrase search World"
 ,5,1,0,1,0,"/hello-test-wonderful-world","Hello Test wonderful World"
@@ -15,20 +15,3 @@
 ,14,1,0,1,0,"/hello-the-test-search-world","Hello the Test Search World"
 ,15,1,0,1,0,"/hello-world-for-phrase-searching","Hello World for phrase searching"
 ,16,1,0,1,0,"/about","Solr is blazing-fast and open source enterprise search platform built on Apache Lucene"
-"tx_solr_indexqueue_item",
-,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors"
-,2,1,"pages",2,"pages",1449151778,0,0,0,0,0
-,3,1,"pages",3,"pages",1449151778,0,0,0,0,0
-,4,1,"pages",4,"pages",1449151778,0,0,0,0,0
-,5,1,"pages",5,"pages",1449151778,0,0,0,0,0
-,6,1,"pages",6,"pages",1449151778,0,0,0,0,0
-,7,1,"pages",7,"pages",1449151778,0,0,0,0,0
-,8,1,"pages",8,"pages",1449151778,0,0,0,0,0
-,9,1,"pages",9,"pages",1449151778,0,0,0,0,0
-,10,1,"pages",10,"pages",1449151778,0,0,0,0,0
-,11,1,"pages",11,"pages",1449151778,0,0,0,0,0
-,12,1,"pages",12,"pages",1449151778,0,0,0,0,0
-,13,1,"pages",13,"pages",1449151778,0,0,0,0,0
-,14,1,"pages",14,"pages",1449151778,0,0,0,0,0
-,15,1,"pages",15,"pages",1449151778,0,0,0,0,0
-,16,1,"pages",16,"pages",1449151778,0,0,0,0,0
