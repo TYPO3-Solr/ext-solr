@@ -22,16 +22,15 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Slops;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use Doctrine\DBAL\Exception as DBALException;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 
 /**
  * Test class to perform a search on a real solr server
@@ -40,11 +39,16 @@ class SearchTest extends IntegrationTestBase
 {
     protected QueryBuilder $queryBuilder;
 
+    protected Search $searchInstance;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->queryBuilder = new QueryBuilder(new TypoScriptConfiguration([]));
+
+        $this->getConfiguredTSFE();
+        $this->searchInstance = GeneralUtility::makeInstance(Search::class);
     }
 
     protected function tearDown(): void
@@ -53,6 +57,11 @@ class SearchTest extends IntegrationTestBase
         $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
 
+    /**
+     * @throws DBALException
+     * @throws InvalidArgumentException
+     * @throws SiteNotFoundException
+     */
     #[Test]
     public function canSearchForADocument(): void
     {
@@ -60,27 +69,32 @@ class SearchTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/can_search.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
-        $this->fillIndexForPhraseSearchTests(2, 2);
+        $this->indexPages([2]);
 
-        $searchInstance = GeneralUtility::makeInstance(Search::class);
+
         $query = $this->queryBuilder
             ->newSearchQuery('hello')
             ->useQueryFields(QueryFields::fromString('content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0, description^4.0, abstract^1.0, subtitle^1.0, navtitle^1.0, author^1.0'))
             ->getQuery();
 
-        $searchResponse = $searchInstance->search($query);
+        $searchResponse = $this->searchInstance->search($query);
         $rawResponse = $searchResponse->getRawResponse();
         self::assertStringContainsString('"numFound":1', $rawResponse, 'Could not index document into solr');
         self::assertStringContainsString('"title":"Hello Search Test"', $rawResponse, 'Could not index document into solr');
     }
 
+    /**
+     * @throws SiteNotFoundException
+     * @throws InvalidArgumentException
+     * @throws DBALException
+     */
     #[Test]
     public function canHighlightTerms(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->fillIndexForPhraseSearchTests();
-        $searchInstance = GeneralUtility::makeInstance(Search::class);
+        $this->indexPages(range(2, 16));
+
 
         // fragmentSize 50 => fastVector
         $typoScriptConfiguration = new TypoScriptConfiguration([
@@ -101,7 +115,7 @@ class SearchTest extends IntegrationTestBase
         ]);
         $queryBuilder = new QueryBuilder($typoScriptConfiguration);
         $query = $queryBuilder->buildSearchQuery('enterprise');
-        $parsedData = $searchInstance->search($query)->getParsedData();
+        $parsedData = $this->searchInstance->search($query)->getParsedData();
         $highlightString = current((array)$parsedData->highlighting)?->title[0];
 
         // fragmentSize 20 => fastVector
@@ -115,7 +129,7 @@ class SearchTest extends IntegrationTestBase
             ],
         ]);
         $query = $queryBuilder->buildSearchQuery('enterprise');
-        $parsedData = $searchInstance->search($query)->getParsedData();
+        $parsedData = $this->searchInstance->search($query)->getParsedData();
         $highlightString2 = current((array)$parsedData->highlighting)?->title[0];
 
         // fragmentSize 10 => original
@@ -129,7 +143,7 @@ class SearchTest extends IntegrationTestBase
             ],
         ]);
         $query = $queryBuilder->buildSearchQuery('enterprise');
-        $parsedData = $searchInstance->search($query)->getParsedData();
+        $parsedData = $this->searchInstance->search($query)->getParsedData();
         $highlightString3 = current((array)$parsedData->highlighting)?->title[0];
 
         self::assertStringContainsString('<mark>', $highlightString);
@@ -139,30 +153,33 @@ class SearchTest extends IntegrationTestBase
         self::assertTrue((strlen($highlightString2) > strlen($highlightString3)));
     }
 
+    /**
+     * @throws SiteNotFoundException
+     * @throws InvalidArgumentException
+     * @throws DBALException
+     */
     #[Test]
     public function implicitPhraseSearchingBoostsDocsWithOccurringPhrase(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->fillIndexForPhraseSearchTests();
-
-        $searchInstance = GeneralUtility::makeInstance(Search::class);
+        $this->indexPages(range(2, 16));
 
         $query = $this->queryBuilder
             ->newSearchQuery('Hello World')
             ->getQuery();
 
-        $searchResponse = $searchInstance->search($query);
+        $searchResponse = $this->searchInstance->search($query);
         $parsedData = $searchResponse->getParsedData();
-        // document with "Hello World for phrase serchin" is not on first place!
+        // document with "Hello World for phrase searching" is not on first place!
         // @extensionScannerIgnoreLine
         self::assertGreaterThan(0, $parsedData->response->numFound, 'Could not index document into solr');
         // @extensionScannerIgnoreLine
-        self::assertNotEquals('Hello World for phrase serching', $parsedData->response->docs[0]->getTitle(), 'Unexpected score calculation. Expected Document shouldn\'t be at first place.');
+        self::assertNotEquals('Hello World for phrase searching', $parsedData->response->docs[0]->getTitle(), 'Unexpected score calculation. Expected Document shouldn\'t be at first place.');
 
         // Boost the document with query to make it first.
         $query = $this->queryBuilder->startFrom($query)->usePhraseFields(PhraseFields::fromString('title^10.0'))->getQuery();
-        $searchResponse = $searchInstance->search($query);
+        $searchResponse = $this->searchInstance->search($query);
         $parsedData = $searchResponse->getParsedData();
 
         // @extensionScannerIgnoreLine
@@ -171,14 +188,17 @@ class SearchTest extends IntegrationTestBase
         self::assertSame('Hello World for phrase searching', $parsedData->response->docs[0]->getTitle(), 'Unexpected score calculation. Document');
     }
 
+    /**
+     * @throws SiteNotFoundException
+     * @throws InvalidArgumentException
+     * @throws DBALException
+     */
     #[Test]
     public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByPhraseSlop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->fillIndexForPhraseSearchTests();
-
-        $searchInstance = GeneralUtility::makeInstance(Search::class);
+        $this->indexPages(range(2, 16));
 
         $query = $this->queryBuilder
             ->newSearchQuery('Hello World')
@@ -195,59 +215,61 @@ class SearchTest extends IntegrationTestBase
             $slops->setPhraseSlop($i);
             $query = $this->queryBuilder->startFrom($query)->useSlops($slops)->getQuery();
 
-            $searchResponse = $searchInstance->search($query);
+            $searchResponse = $this->searchInstance->search($query);
             $parsedDatasByPhraseSlop[$i] = $searchResponse->getParsedData();
         }
 
-        /* by changing of phrase slop values the documents with sloppy phrases move to top.
+        /* by changing of phrase slop values, the documents with sloppy phrases move to top.
           +------------------+---------------------------------|
           | ranking position | document UID @ phraseSlop value |
           +------------------+---------------------------------+
-          |         0        |   14 @ 0 || 14 @ 1 || 14 @ 2    |
+          |         0        |   15 @ 0 || 15 @ 1 || 15 @ 2    |
           +------------------+---------------------------------+
-          |         1        |    1 @ 0 || 11 @ 1 || 11 @ 2    |
+          |         1        |    2 @ 0 || 12 @ 1 || 12 @ 2    |
           +------------------+---------------------------------+
-          |         2        |    2 @ 0 || 12 @ 1 || 12 @ 2    |
+          |         2        |    3 @ 0 || 13 @ 1 || 13 @ 2    |
           +------------------+---------------------------------+
-          |         3        |    3 @ 0 ||  1 @ 1 ||  1 @ 2    |
+          |         3        |    4 @ 0 ||  2 @ 1 ||  2 @ 2    |
           +------------------+---------------------------------+
-          |         4        |    4 @ 0 ||  2 @ 1 ||  3 @ 2    |
+          |         4        |    5 @ 0 ||  3 @ 1 ||  4 @ 2    |
           +------------------+---------------------------------+
-          |         5        |    5 @ 0 ||  3 @ 1 ||  4 @ 2    |
+          |         5        |    6 @ 0 ||  4 @ 1 ||  5 @ 2    |
           +------------------+---------------------------------+
-          |         6        |   11 @ 0 ||  4 @ 1 ||  5 @ 2    |
+          |         6        |   12 @ 0 ||  5 @ 1 ||  6 @ 2    |
           +------------------+---------------------------------+
-          |         7        |   12 @ 0 ||  5 @ 1 ||  2 @ 2    |
+          |         7        |   13 @ 0 ||  6 @ 1 ||  3 @ 2    |
           +------------------+---------------------------------+
-          |         8        |   13 @ 0 || 13 @ 1 || 13 @ 2    |
+          |         8        |   14 @ 0 || 14 @ 1 || 14 @ 2    |
           +------------------+---------------------------------+
         */
-        // Note positons beginning by 0 = first
-        // first position is the same for all three slop values
+        // Note positions beginning by 0 = first.
+        // The first position is the same for all three slop values
         // @extensionScannerIgnoreLine
         self::assertTrue($parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[1]->response->docs[0]->getUid()
             // @extensionScannerIgnoreLine
                 && $parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[2]->response->docs[0]->getUid(), 'Phrase search does not work properly. Solr should position the document independent from slop value at first position.');
-        // the slop value of 1 moves doc UID = 11 to the second position
+        // the slop value of 1 moves doc UID = 12 to the second(key 1) position
         // @extensionScannerIgnoreLine
-        self::assertSame(12, $parsedDatasByPhraseSlop[1]->response->docs[1]->getUid(), 'Phrase slop setting does not work as expected.');
-        // the slop value of 2 moves doc UID = 3 to the fifth position
+        self::assertSame(12, $parsedDatasByPhraseSlop[1]->response->docs[1]->getUid(), 'Phrase slop setting does not work as expected. The PID is not 12');
+        // the slop value of 2 moves doc UID = 4 to the fifth(key 4) position
         // @extensionScannerIgnoreLine
         self::assertSame(4, $parsedDatasByPhraseSlop[2]->response->docs[4]->getUid(), 'Phrase slop setting does not work as expected. The Phrase Slop value of 2 has no influence on boosts.');
-        // the slop value of 2 has an influence of positions up to 8
+        // the slop value of 2 has an influence of positions up to 8(key 7)
         // @extensionScannerIgnoreLine
         self::assertSame(3, $parsedDatasByPhraseSlop[2]->response->docs[7]->getUid(), 'Phrase slop setting does not work as expected.');
     }
 
+    /**
+     * @throws SiteNotFoundException
+     * @throws InvalidArgumentException
+     * @throws DBALException
+     */
     #[Test]
     public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByBigramPhraseSlop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search_bigram.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->fillIndexForPhraseSearchTests();
-
-        $tsfe = $this->getConfiguredTSFE(1);
-        $searchInstance = GeneralUtility::makeInstance(Search::class);
+        $this->indexPages(range(2, 16));
 
         $this->switchPhraseSearchFeature('bigramPhrase', 1);
 
@@ -264,7 +286,7 @@ class SearchTest extends IntegrationTestBase
             $slops = new Slops();
             $slops->setBigramPhraseSlop($i);
             $this->queryBuilder->useSlops($slops);
-            $searchResponse = $searchInstance->search($this->queryBuilder->getQuery());
+            $searchResponse = $this->searchInstance->search($this->queryBuilder->getQuery());
             $parsedDatasByPhraseSlop[$i] = $searchResponse->getParsedData();
         }
 
@@ -272,28 +294,28 @@ class SearchTest extends IntegrationTestBase
           +------------------+---------------------------------|
           | ranking position | document UID @ phraseSlop value |
           +------------------+---------------------------------+
-          |         0        |    1 @ 0 ||  1 @ 1 ||  1 @ 2    |
+          |         0        |    2 @ 0 ||  2 @ 1 ||  2 @ 2    |
           +------------------+---------------------------------+
-          |         1        |    2 @ 0 ||  2 @ 1 ||  2 @ 2    |
+          |         1        |    3 @ 0 ||  3 @ 1 ||  3 @ 2    |
           +------------------+---------------------------------+
-          |         2        |    3 @ 0 ||  3 @ 1 ||  3 @ 2    |
+          |         2        |    4 @ 0 ||  4 @ 1 ||  4 @ 2    |
           +------------------+---------------------------------+
-          |         3        |   14 @ 0 ||  4 @ 1 ||  4 @ 2    |
+          |         3        |   15 @ 0 ||  5 @ 1 ||  5 @ 2    |
           +------------------+---------------------------------+
-          |         4        |   15 @ 0 ||  5 @ 1 ||  5 @ 2    |
+          |         4        |   16 @ 0 ||  6 @ 1 ||  6 @ 2    |
           +------------------+---------------------------------+
-          |         5        |    4 @ 0 || 14 @ 1 ||  6 @ 2    |
+          |         5        |    5 @ 0 || 15 @ 1 ||  7 @ 2    |
           +------------------+---------------------------------+
-          |         6        |    5 @ 0 || 15 @ 1 ||  7 @ 2    |
+          |         6        |    6 @ 0 || 16 @ 1 ||  8 @ 2    |
           +------------------+---------------------------------+
-          |         7        |    6 @ 0 ||  6 @ 1 || 14 @ 2    |
+          |         7        |    7 @ 0 ||  7 @ 1 || 15 @ 2    |
           +------------------+---------------------------------+
-          |         8        |    7 @ 0 ||  7 @ 1 || 15 @ 2    |
+          |         8        |    8 @ 0 ||  8 @ 1 || 16 @ 2    |
           +------------------+---------------------------------+
         */
 
-        // Note positons beginning by 0 = first
-        // first position is the same for all three slop values
+        // Note positions beginning by 0 = first.
+        // The first position is the same for all three slop values
         // @extensionScannerIgnoreLine
         self::assertTrue($parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[1]->response->docs[0]->getUid()
             // @extensionScannerIgnoreLine
@@ -314,7 +336,7 @@ class SearchTest extends IntegrationTestBase
         // the slop value of 2 moves doc UID = 7 to the sixth(key 5) position
         // @extensionScannerIgnoreLine
         self::assertSame(7, $parsedDatasByPhraseSlop[2]->response->docs[5]->getUid(), 'Trigram phrase slop setting does not work as expected. The Phrase Slop value of 2 has no influence on boosts.');
-        // the docuemnt on position 5 and 6 have same score
+        // the document on position 5 and 6 have same score
         self::assertTrue(
             // @extensionScannerIgnoreLine
             $parsedDatasByPhraseSlop[2]->response->docs[5]->getScore() === $parsedDatasByPhraseSlop[2]->response->docs[6]->getScore(),
@@ -322,14 +344,17 @@ class SearchTest extends IntegrationTestBase
         );
     }
 
+    /**
+     * @throws SiteNotFoundException
+     * @throws InvalidArgumentException
+     * @throws DBALException
+     */
     #[Test]
     public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByTrigramPhraseSlop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search_trigram.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->fillIndexForPhraseSearchTests();
-
-        $searchInstance = GeneralUtility::makeInstance(Search::class);
+        $this->indexPages(range(2, 16));
 
         $this->switchPhraseSearchFeature('trigramPhrase', 1);
 
@@ -347,7 +372,7 @@ class SearchTest extends IntegrationTestBase
             $slops = new Slops();
             $slops->setTrigramPhraseSlop($i);
             $this->queryBuilder->useSlops($slops);
-            $searchResponse = $searchInstance->search($this->queryBuilder->getQuery());
+            $searchResponse = $this->searchInstance->search($this->queryBuilder->getQuery());
             $parsedDatasByPhraseSlop[$i] = $searchResponse->getParsedData();
         }
 
@@ -355,25 +380,25 @@ class SearchTest extends IntegrationTestBase
           +------------------+---------------------------------|
           | ranking position | document UID @ phraseSlop value |
           +------------------+---------------------------------+
-          |         0        |    1 @ 0 ||  1 @ 1 ||  1 @ 2    |
+          |         0        |    2 @ 0 ||  2 @ 1 ||  2 @ 2    |
           +------------------+---------------------------------+
-          |         1        |    2 @ 0 ||  2 @ 1 ||  2 @ 2    |
+          |         1        |    3 @ 0 ||  3 @ 1 ||  3 @ 2    |
           +------------------+---------------------------------+
-          |         2        |    3 @ 0 ||  3 @ 1 ||  3 @ 2    |
+          |         2        |    4 @ 0 ||  4 @ 1 ||  4 @ 2    |
           +------------------+---------------------------------+
-          |         3        |    4 @ 0 ||  4 @ 1 ||  4 @ 2    | score boost here on slop = 1 || slop = 2
+          |         3        |    5 @ 0 ||  5 @ 1 ||  5 @ 2    | score boost here on slop = 1 || slop = 2
           +------------------+---------------------------------+
-          |         4        |    6 @ 0 ||  5 @ 1 ||  5 @ 2    |
+          |         4        |    7 @ 0 ||  6 @ 1 ||  6 @ 2    |
           +------------------+---------------------------------+
-          |         5        |    5 @ 0 ||  6 @ 1 ||  6 @ 2    | score boost here on slop = 2
+          |         5        |    6 @ 0 ||  7 @ 1 ||  7 @ 2    | score boost here on slop = 2
           +------------------+---------------------------------+
-          |         6        |    7 @ 0 ||  7 @ 1 ||  7 @ 2    |
+          |         6        |    8 @ 0 ||  8 @ 1 ||  8 @ 2    |
           +------------------+---------------------------------+
-          |         7        |   15 @ 0 || 15 @ 1 || 15 @ 2    |
+          |         7        |   16 @ 0 || 16 @ 1 || 16 @ 2    |
           +------------------+---------------------------------+
         */
 
-        // Note positons beginning by 0 = first
+        // Note positions beginning by 0 = first.
         // The first position is the same for all three slop values
         // @extensionScannerIgnoreLine
         self::assertTrue($parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[1]->response->docs[0]->getUid()
@@ -381,7 +406,7 @@ class SearchTest extends IntegrationTestBase
             && $parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[2]->response->docs[0]->getUid(), 'Trigram Phrase search does not work properly. Solr should position the documents independent from slop value at first position.');
 
         // slop = 1
-        // the slop value of 1 moves doc UID = 4 to the fourth(key 3) position
+        // the slop value of 1 moves doc UID = 5 to the fourth(key 3) position
         // @extensionScannerIgnoreLine
         $slop0ResponseDocs = $parsedDatasByPhraseSlop[0]->response->docs;
         // @extensionScannerIgnoreLine
@@ -401,19 +426,21 @@ class SearchTest extends IntegrationTestBase
         );
     }
 
+    /**
+     * @throws SiteNotFoundException
+     * @throws InvalidArgumentException
+     * @throws DBALException
+     */
     #[Test]
     public function explicitPhraseSearchMatchesMorePrecise(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->fillIndexForPhraseSearchTests();
-
-        /** @var Search $searchInstance */
-        $searchInstance = GeneralUtility::makeInstance(Search::class);
+        $this->indexPages(range(2, 16));
 
         $query = $this->getSearchQueryForSolr();
         $this->queryBuilder->startFrom($query)->useQueryString('"Hello World"');
-        $searchResponse = $searchInstance->search($this->queryBuilder->getQuery());
+        $searchResponse = $this->searchInstance->search($this->queryBuilder->getQuery());
         $parsedData = $searchResponse->getParsedData();
 
         // document with "Hello World for phrase searching" is not on first place!
@@ -423,33 +450,35 @@ class SearchTest extends IntegrationTestBase
         self::assertSame('Hello World for phrase searching', $parsedData->response->docs[0]->getTitle(), 'Document containing "Hello World for phrase searching" should be found on explicit(surrounded with double quotes) phrase searching.');
     }
 
+    /**
+     * @throws SiteNotFoundException
+     * @throws InvalidArgumentException
+     * @throws DBALException
+     */
     #[Test]
     public function explicitPhraseSearchPrecisionCanBeAdjustedByQuerySlop(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->fillIndexForPhraseSearchTests();
-
-        $tsfe = $this->getConfiguredTSFE(1);
-        $searchInstance = GeneralUtility::makeInstance(Search::class);
+        $this->indexPages(range(2, 16));
 
         $query = $this->getSearchQueryForSolr();
         $this->queryBuilder->useQueryString('"Hello World"');
 
-        $searchResponse = $searchInstance->search($query);
+        $searchResponse = $this->searchInstance->search($query);
         $parsedData = $searchResponse->getParsedData();
 
-        // document with "Hello World for phrase serchin" is not on first place!
+        // document with "Hello World for phrase searching" is not on first place!
         // @extensionScannerIgnoreLine
         self::assertSame(1, $parsedData->response->numFound, 'Could not index document into solr');
         // @extensionScannerIgnoreLine
-        self::assertSame('Hello World for phrase searching', $parsedData->response->docs[0]->getTitle(), 'Document containing "Hello World for phrase serching" should be found');
+        self::assertSame('Hello World for phrase searching', $parsedData->response->docs[0]->getTitle(), 'Document containing "Hello World for phrase searching" should be found');
 
         // simulate Lucenes "Hello World"~1
         $slops = new Slops();
         $slops->setQuerySlop(1);
         $query = $this->queryBuilder->useSlops($slops)->getQuery();
-        $searchResponse = $searchInstance->search($query);
+        $searchResponse = $this->searchInstance->search($query);
         $parsedData = $searchResponse->getParsedData();
         // @extensionScannerIgnoreLine
         self::assertSame(3, $parsedData->response->numFound, 'Could not index document into solr');
@@ -458,28 +487,10 @@ class SearchTest extends IntegrationTestBase
         $slops->setQuerySlop(2);
         $query = $this->queryBuilder->useSlops($slops)->getQuery();
 
-        $searchResponse = $searchInstance->search($query);
+        $searchResponse = $this->searchInstance->search($query);
         $parsedData = $searchResponse->getParsedData();
         // @extensionScannerIgnoreLine
-        self::assertSame(7, $parsedData->response->numFound, 'Found wrong number of decuments by explicit phrase search query.');
-    }
-
-    protected function fillIndexForPhraseSearchTests(int $startUid = 2, int $endUid = 16): void
-    {
-        for ($i = $startUid; $i <= $endUid; $i++) {
-            $tsfe = $this->getConfiguredTSFE($i);
-
-            $serverRequest = $GLOBALS['TYPO3_REQUEST'] ?? new ServerRequest();
-            $pageIndexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class);
-            $pageIndexerRequest->setParameter('item', $i);
-            $serverRequest = $serverRequest->withAttribute('solr.pageIndexingInstructions', $pageIndexerRequest);
-            $event = new AfterCacheableContentIsGeneratedEvent($serverRequest, $tsfe, 'cache-identifier', true);
-
-            $pageIndexer = GeneralUtility::makeInstance(PageIndexer::class);
-            $pageIndexer->activate();
-            $pageIndexer($event);
-        }
-        $this->waitToBeVisibleInSolr();
+        self::assertSame(7, $parsedData->response->numFound, 'Found wrong number of documents by explicit phrase search query.');
     }
 
     protected function getSearchQueryForSolr(): Query
@@ -499,9 +510,6 @@ class SearchTest extends IntegrationTestBase
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
     }
 
-    /**
-     * @deprecated Do not try to set up and configure TSFE in any way by self.
-     */
     protected function getConfiguredTSFE(int $id = 1): TypoScriptFrontendController
     {
         $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
