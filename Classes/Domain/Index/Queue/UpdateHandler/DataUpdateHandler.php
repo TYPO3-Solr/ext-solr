@@ -184,7 +184,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
         }
 
         if ($pid === null) {
-            $this->removeFromIndexAndQueueWhenItemInQueue('pages', $uid);
+            $this->removeFromIndexAndQueue('pages', $uid);
             return;
         }
 
@@ -284,7 +284,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
             $this->mountPageUpdater->update($uid);
             $this->indexQueue->updateItem('pages', $uid);
         } else {
-            $this->removeFromIndexAndQueueWhenItemInQueue('pages', $uid);
+            $this->removeFromIndexAndQueue('pages', $uid);
         }
     }
 
@@ -307,7 +307,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
                 $this->indexQueue->updateItem($table, $uid);
             } else {
                 // TODO should be moved to garbage collector
-                $this->removeFromIndexAndQueueWhenItemInQueue($table, $uid);
+                $this->removeFromIndexAndQueue($table, $uid);
             }
         }
     }
@@ -324,9 +324,17 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * Removes record from the index queue and from the solr index when the item is in the queue.
      *
      * @throws DBALException
+     * @deprecated DataUpdateHandler->removeFromIndexAndQueueWhenItemInQueue is deprecated and will be removed in v13.
+                   Use DataUpdateHandler->removeFromIndexAndQueue instead.
      */
     protected function removeFromIndexAndQueueWhenItemInQueue(string $recordTable, int $recordUid): void
     {
+        trigger_error(
+            'DataUpdateHandler->removeFromIndexAndQueueWhenItemInQueue is deprecated and will be removed in v13.'
+            . ' Use DataUpdateHandler->removeFromIndexAndQueue instead.',
+            E_USER_DEPRECATED
+        );
+
         if (!$this->indexQueue->containsItem($recordTable, $recordUid)) {
             return;
         }
@@ -406,7 +414,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
     protected function processRecord(string $recordTable, int $recordUid, array $rootPageIds): void
     {
         if (empty($rootPageIds)) {
-            $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
+            $this->removeFromIndexAndQueue($recordTable, $recordUid);
             return;
         }
 
@@ -424,9 +432,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
 
             $record = $this->configurationAwareRecordService->getRecord($recordTable, $recordUid, $solrConfiguration);
             if (empty($record)) {
-                // TODO move this part to the garbage collector
-                // check if the item should be removed from the index because it no longer matches the conditions
-                $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
+                // skip processing, queue and index entry will be removed by garbage collection triggered via RecordGarbageCheckEvent
                 continue;
             }
             // Clear existing index queue items to prevent mount point duplicates.
