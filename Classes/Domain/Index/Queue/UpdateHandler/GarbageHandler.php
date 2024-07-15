@@ -120,8 +120,9 @@ class GarbageHandler extends AbstractUpdateHandler
     ): void {
         $record = $this->getRecordWithFieldRelevantForGarbageCollection($table, $uid);
 
-        // If no record could be found skip further processing
+        // If no record could be found, remove remains from index and queue
         if (empty($record)) {
+            $this->collectGarbage($table, $uid);
             return;
         }
 

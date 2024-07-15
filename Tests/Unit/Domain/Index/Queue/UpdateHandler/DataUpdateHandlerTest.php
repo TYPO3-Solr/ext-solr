@@ -186,29 +186,14 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         ];
         $this->initSiteForDummyConfiguration($dummyPageRecord['uid']);
 
-        $garbageHandlerMock = $this->createMock(GarbageHandler::class);
-        $garbageHandlerMock
-            ->expects(self::once())
-            ->method('collectGarbage')
-            ->with(
-                'pages',
-                $dummyPageRecord['uid']
-            );
-        GeneralUtility::addInstance(GarbageHandler::class, $garbageHandlerMock);
-
         $this->mountPagesUpdaterMock
             ->expects(self::once())
             ->method('update')
             ->with($dummyPageRecord['uid']);
 
         $this->indexQueueMock
-            ->expects(self::once())
-            ->method('containsItem')
-            ->with(
-                'pages',
-                $dummyPageRecord['uid']
-            )
-            ->willReturn(true);
+            ->expects(self::never())
+            ->method('containsItem');
 
         $this->typoScriptConfigurationMock
             ->expects(self::once())
@@ -524,16 +509,6 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             'pid' => self::DUMMY_PAGE_ID,
         ];
 
-        $garbageHandlerMock = $this->createMock(GarbageHandler::class);
-        $garbageHandlerMock
-            ->expects(self::once())
-            ->method('collectGarbage')
-            ->with(
-                'tx_foo_bar',
-                $dummyRecord['uid']
-            );
-        GeneralUtility::addInstance(GarbageHandler::class, $garbageHandlerMock);
-
         $this->typoScriptConfigurationMock
             ->expects(self::once())
             ->method('getIndexQueueIsMonitoredTable')
@@ -551,13 +526,8 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->willReturn([]);
 
         $this->indexQueueMock
-            ->expects(self::once())
-            ->method('containsItem')
-            ->with(
-                'tx_foo_bar',
-                $dummyRecord['uid']
-            )
-            ->willReturn(true);
+            ->expects(self::never())
+            ->method('containsItem');
 
         $this->dataUpdateHandler->handleRecordUpdate($dummyRecord['uid'], 'tx_foo_bar');
     }
@@ -723,13 +693,8 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->willReturn([]);
 
         $this->indexQueueMock
-            ->expects(self::once())
-            ->method('containsItem')
-            ->with(
-                'pages',
-                $dummyPageRecord['uid']
-            )
-            ->willReturn(true);
+            ->expects(self::never())
+            ->method('containsItem');
 
         $garbageHandlerMock = $this->createMock(GarbageHandler::class);
         $garbageHandlerMock
@@ -822,13 +787,8 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         ->willReturn([]);
 
         $this->indexQueueMock
-            ->expects(self::once())
-            ->method('containsItem')
-            ->with(
-                'tx_foo_bar',
-                $dummyRecord['uid']
-            )
-            ->willReturn(true);
+            ->expects(self::never())
+            ->method('containsItem');
 
         $garbageHandlerMock = $this->createMock(GarbageHandler::class);
         $garbageHandlerMock
