@@ -17,7 +17,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -130,9 +133,26 @@ class ConfigurationAwareRecordService
             return $row;
         }
 
-        $row = BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause) ?? [];
-        $cache->set($cacheId, $row);
+        $queryBuilder = $this->getQueryBuilderForTable($recordTable);
+        $queryBuilder
+            ->select('*')
+            ->from($recordTable)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($recordUid, Connection::PARAM_INT)
+                )
+            );
 
+        if ($recordWhereClause !== '') {
+            $queryBuilder->andWhere(QueryHelper::stripLogicalOperatorPrefix($recordWhereClause));
+        }
+
+        $row = $queryBuilder->executeQuery()->fetchAssociative();
+        if ($row === false) {
+            $row = [];
+        }
+        $cache->set($cacheId, $row);
         return $row;
     }
 
@@ -153,5 +173,10 @@ class ConfigurationAwareRecordService
         }
 
         return false;
+    }
+
+    protected static function getQueryBuilderForTable(string $table): QueryBuilder
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
     }
 }

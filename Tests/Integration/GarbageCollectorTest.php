@@ -20,9 +20,12 @@ use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Traversable;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
@@ -358,6 +361,110 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler->process_cmdmap();
         $this->assertIndexQueueContainsItemAmount(4);
         $this->assertSolrContainsDocumentCount(3);
+    }
+
+    #[Test]
+    public function canCollectGarbageEvenIfNotInIndexQueue(): void
+    {
+        $this->prepareCanCollectGarbageEvenIfNotInIndexQueue();
+        $this->assertIndexQueueContainsItemAmount(0);
+        $this->assertSolrIsEmpty();
+    }
+
+    #[Test]
+    public function canCollectGarbageEvenIfNotInIndexQueueInDelayedProcessingMode(): void
+    {
+        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->prepareCanCollectGarbageEvenIfNotInIndexQueue();
+        $this->assertEventQueueContainsItemAmount(2);
+        $this->processEventQueue();
+        $this->assertIndexQueueContainsItemAmount(0);
+        $this->assertSolrIsEmpty();
+    }
+
+    protected function prepareCanCollectGarbageEvenIfNotInIndexQueue(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/subpage.csv');
+
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->assertEmptyIndexQueue();
+        $this->addToQueueAndIndexRecord('pages', 2);
+        $this->assertIndexQueueContainsItemAmount(1);
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrContainsDocumentCount(1);
+
+        // flush cache after preparing the environment to be sure no wrong version is cached
+        $cache = new TwoLevelCache('runtime');
+        $cache->flush();
+
+        // clear index queue, as we want to test if garbage collection works if record has no representation in queue
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_solr_indexqueue_item');
+        $connection->truncate('tx_solr_indexqueue_item');
+
+        $this->dataHandler->start(
+            ['pages' => [2 => ['hidden' => 1]]],
+            [],
+            $this->backendUser
+        );
+        $this->dataHandler->process_datamap();
+    }
+
+    #[Test]
+    #[DataProvider('canCollectGarbageOfDeletedRecordEvenIfNotInIndexQueueDataProvider')]
+    public function canCollectGarbageOfDeletedRecordEvenIfNotInIndexQueue(bool $forceHardDelete): void
+    {
+        $this->prepareCanCollectGarbageOfDeletedRecordEvenIfNotInIndexQueue($forceHardDelete);
+        $this->assertIndexQueueContainsItemAmount(0);
+        $this->assertSolrIsEmpty();
+    }
+
+    #[Test]
+    #[DataProvider('canCollectGarbageOfDeletedRecordEvenIfNotInIndexQueueDataProvider')]
+    public function canCollectGarbageOfDeletedRecordEvenIfNotInIndexQueueInDelayedProcessingMode(bool $forceHardDelete): void
+    {
+        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->prepareCanCollectGarbageOfDeletedRecordEvenIfNotInIndexQueue($forceHardDelete);
+        $this->assertEventQueueContainsItemAmount(1);
+        $this->processEventQueue();
+        $this->assertIndexQueueContainsItemAmount(0);
+        $this->assertSolrIsEmpty();
+    }
+
+    protected function prepareCanCollectGarbageOfDeletedRecordEvenIfNotInIndexQueue(bool $forceHardDelete): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/subpage.csv');
+
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->assertEmptyIndexQueue();
+        $this->addToQueueAndIndexRecord('pages', 2);
+        $this->assertIndexQueueContainsItemAmount(1);
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrContainsDocumentCount(1);
+
+        // flush cache after preparing the environment to be sure no wrong version is cached
+        $cache = new TwoLevelCache('runtime');
+        $cache->flush();
+
+        // clear index queue, as we want to test if garbage collection works if record has no representation in queue
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_solr_indexqueue_item');
+        $connection->truncate('tx_solr_indexqueue_item');
+
+        if ($forceHardDelete) {
+            unset($GLOBALS['TCA']['pages']['ctrl']['delete']);
+        }
+
+        $this->dataHandler->start(
+            [],
+            ['pages' => [2 => ['delete' => 1 ]]],
+            $this->backendUser
+        );
+        $this->dataHandler->process_cmdmap();
+    }
+
+    public static function canCollectGarbageOfDeletedRecordEvenIfNotInIndexQueueDataProvider(): Traversable
+    {
+        yield 'Test soft delete' => [ false ];
+        yield 'Test hard delete' => [ true ];
     }
 
     #[Test]

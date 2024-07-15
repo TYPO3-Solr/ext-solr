@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -33,15 +34,17 @@ use UnexpectedValueException;
 abstract class AbstractStrategy
 {
     protected QueueInterface $queue;
-
     protected ConnectionManager $connectionManager;
+    protected SiteRepository $siteRepository;
 
     public function __construct(
         QueueInterface $queue = null,
         ConnectionManager $connectionManager = null,
+        SiteRepository $siteRepository = null,
     ) {
         $this->queue = $queue ?? GeneralUtility::makeInstance(Queue::class);
         $this->connectionManager = $connectionManager ?? GeneralUtility::makeInstance(ConnectionManager::class);
+        $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
     }
 
     /**
@@ -90,8 +93,13 @@ abstract class AbstractStrategy
      */
     protected function deleteIndexDocuments(string $table, int $uid, int $language = 0): void
     {
-        // record can be indexed for multiple sites
         $indexQueueItems = $this->queue->getItems($table, $uid);
+        if ($indexQueueItems === []) {
+            $this->deleteRecordInAllSites($table, $uid);
+            return;
+        }
+
+        // record can be indexed for multiple sites
         foreach ($indexQueueItems as $indexQueueItem) {
             try {
                 $site = $indexQueueItem->getSite();
@@ -112,6 +120,21 @@ abstract class AbstractStrategy
                 $solrConnections = [$language => $solrConnections[$language]];
             }
             $this->deleteRecordInAllSolrConnections($table, $uid, $solrConnections, $siteHash, $enableCommitsSetting);
+        }
+    }
+
+    protected function deleteRecordInAllSites(string $table, int $uid): void
+    {
+        $sites = $this->siteRepository->getAvailableSites();
+        foreach ($sites as $site) {
+            $solrConnections = $this->connectionManager->getConnectionsBySite($site);
+            $this->deleteRecordInAllSolrConnections(
+                $table,
+                $uid,
+                $solrConnections,
+                $site->getSiteHash(),
+                $site->getSolrConfiguration()->getEnableCommits()
+            );
         }
     }
 
