@@ -1,6 +1,6 @@
 FROM solr:9.6.1
-MAINTAINER dkd Internet Service GmbH <info@dkd.de>
-ENV TERM linux
+LABEL maintainer="dkd Internet Service GmbH info@dkd.de"
+ENV TERM=linux
 
 ARG SOLR_UNIX_UID="8983"
 ARG SOLR_UNIX_GID="8983"

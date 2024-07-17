@@ -101,7 +101,7 @@ jobs:
     needs: ci_bootstrapping
     continue-on-error: ${{ contains(matrix.TYPO3, '-dev') }}
     strategy:
-      matrix: ${{fromJson(needs.ci_bootstrapping.outputs.matrix)}}
+      matrix: ${{ fromJson(needs.ci_bootstrapping.outputs.matrix) }}
     env:
       TYPO3_DATABASE_NAME: 'typo3_ci'
       TYPO3_DATABASE_HOST: '127.0.0.1'
