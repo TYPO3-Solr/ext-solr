@@ -476,8 +476,8 @@
 					<str name="hl.bs.type">SENTENCE</str>
 					<!-- language and country are used when constructing Locale object.  -->
 					<!-- And the Locale object will be used when getting instance of BreakIterator -->
-					<str name="hl.bs.language">${solr.core.langcode}</str>
-					<str name="hl.bs.country">${solr.core.country}</str>
+					<str name="hl.bs.language">${hl.bs.language}</str>
+					<str name="hl.bs.country">${hl.bs.country}</str>
 				</lst>
 			</boundaryScanner>
 		</highlighting>
