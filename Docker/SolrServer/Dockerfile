@@ -1,5 +1,5 @@
 FROM solr:9.6.1
-LABEL maintainer="dkd Internet Service GmbH info@dkd.de"
+LABEL org.opencontainers.image.authors="dkd Internet Service GmbH info@dkd.de"
 ENV TERM=linux
 
 ARG SOLR_UNIX_UID="8983"
