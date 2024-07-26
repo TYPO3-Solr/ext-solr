@@ -105,11 +105,26 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('q', $this->getQueryString());
         // @extensionScannerIgnoreLine
+        $this->getTemplateVariableContainer()->add('pageUid', $pageUid);
+        // @extensionScannerIgnoreLine
+        $this->getTemplateVariableContainer()->add(
+            'languageUid',
+            ($this->renderingContext->getRequest()->getAttribute('language')?->getLanguageId() ?? 0)
+        );
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('existingParameters', $this->getExistingSearchParameters());
         // @extensionScannerIgnoreLine
+        // Added addPageAndLanguageId for compatibility
+        $this->getTemplateVariableContainer()->add('addPageAndLanguageId', false);
         $formContent = $this->renderChildren();
         // @extensionScannerIgnoreLine
+        $this->getTemplateVariableContainer()->remove('addPageAndLanguageId');
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->remove('q');
+        // @extensionScannerIgnoreLine
+        $this->getTemplateVariableContainer()->remove('pageUid');
+        // @extensionScannerIgnoreLine
+        $this->getTemplateVariableContainer()->remove('languageUid');
         // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->remove('existingParameters');
 
