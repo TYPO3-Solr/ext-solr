@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - &composer-solarium
+  -
     package-ecosystem: "composer"
     directory: "/"
     schedule:
@@ -10,7 +10,7 @@ updates:
     target-branch: "main"
     commit-message:
       prefix: "[TASK] 13.0.x-dev "
-  - &docker-apache-solr
+  -
     package-ecosystem: "docker"
     directory: "/Docker/SolrServer"
     schedule:
@@ -20,28 +20,55 @@ updates:
       prefix: "[TASK] 13.0.x-dev "
 
   # For release-12.0.x
-  - <<: *composer-solarium
+  -
+    package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-name: "solarium/solarium"
     target-branch: "release-12.0.x"
     commit-message:
       prefix: "[TASK] 12.0.x-dev "
-  - <<: *docker-apache-solr
+  -
+    package-ecosystem: "docker"
+    directory: "/Docker/SolrServer"
+    schedule:
+      interval: "daily"
     target-branch: "release-12.0.x"
     commit-message:
       prefix: "[TASK] 12.0.x-dev "
 
   # For release-11.6.x
-  - <<: *composer-solarium
+  -
+    package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-name: "solarium/solarium"
     target-branch: "release-11.6.x"
     commit-message:
       prefix: "[TASK] 11.6.x-dev "
-  - <<: *docker-apache-solr
+  -
+    package-ecosystem: "docker"
+    directory: "/Docker/SolrServer"
+    schedule:
+      interval: "daily"
+
     target-branch: "release-11.6.x"
     commit-message:
       prefix: "[TASK] 11.6.x-dev "
 
   # For release-11.5.x
   # Apache Solr multiple versions not supported, but for 11.6.x
-  - <<: *composer-solarium
+  -
+    package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-name: "solarium/solarium"
     target-branch: "release-11.5.x"
     commit-message:
       prefix: "[TASK] 11.5.x-dev "
