@@ -70,6 +70,9 @@
   "minimum-stability": "stable",
   "prefer-stable": true,
   "config": {
+    "platform": {
+      "php": "8.1"
+    },
     "allow-plugins": true,
     "vendor-dir": ".Build/vendor",
     "bin-dir": ".Build/bin",
