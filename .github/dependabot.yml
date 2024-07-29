@@ -55,7 +55,6 @@ updates:
     directory: "/Docker/SolrServer"
     schedule:
       interval: "daily"
-
     target-branch: "release-11.6.x"
     commit-message:
       prefix: "[TASK] 11.6.x-dev "
