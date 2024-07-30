@@ -7,39 +7,48 @@ Releases 12.0
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 12.0.5
+==============
+
+This is a maintenance release for TYPO3 12.4 LTS, which mainly fixes 2 regressions introduced in version 12.0.4:
+
+* [TASK] Re-added template variables by @thomashohn in `#4118 <https://github.com/TYPO3-Solr/ext-solr/pull/4118>`__
+* [BUGFIX] Fix index queue clearance by @sal-lochbaum & @dkd-friedrich in `#4120 <https://github.com/TYPO3-Solr/ext-solr/pull/4120>`__
+* [TASK] Update to solarium/solarium 6.3.5 by @dkd-friedrich in `#4120 <https://github.com/TYPO3-Solr/ext-solr/pull/4120>`__
+
 Release 12.0.4
 ==============
 
 This is a maintenance release for TYPO3 12.4 LTS, containing:
 
-- [TASK] Use request object to retrieve query params instead of _GET by @sfroemkenjw in `#4045 <https://github.com/TYPO3-Solr/ext-solr/pull/4045`__
-- [TASK] Use Attributes for PHPUnit tests by @bmack in `#4048 <https://github.com/TYPO3-Solr/ext-solr/pull/4048`__
-- [TASK] Update PHP-Stan to at least 1.11.* by @sfroemkenjw in `#4055 <https://github.com/TYPO3-Solr/ext-solr/pull/4055`__
-- [TASK] Apply and repair rector refactorings by @sfroemkenjw in `#4049 <https://github.com/TYPO3-Solr/ext-solr/pull/4049`__
-- [TASK] Migrate requireJS to ES6. Solr BE Modal JS by @sfroemkenjw in `#4057 <https://github.com/TYPO3-Solr/ext-solr/pull/4057`__
-- [TASK] Apache Solr 9.6 compatibility by @dkd-friedrich in `#4056 <https://github.com/TYPO3-Solr/ext-solr/pull/4056`__
-- [TASK] Use new template module API by @sfroemkenjw in `#4054 <https://github.com/TYPO3-Solr/ext-solr/pull/4054`__
-- [FEATURE] Add contentObjectData to searchController by @spoonerWeb in `#4059 <https://github.com/TYPO3-Solr/ext-solr/pull/4059`__
-- [BUGFIX] Add empty array as fallback if null by @spoonerWeb in `#4061 <https://github.com/TYPO3-Solr/ext-solr/pull/4061`__
-- [BUGFIX] Add empty array defaults in SearchFormViewHelper by @hnadler in `#4042 <https://github.com/TYPO3-Solr/ext-solr/pull/4042`__
-- [TASK] Integrate content of Module layout into WithPageTree by @sfroemkenjw in `#4066 <https://github.com/TYPO3-Solr/ext-solr/pull/4066`__
-- [TASK] Repair statistics chart because of CSP in Solr Info module by @sfroemkenjw in `#4068 <https://github.com/TYPO3-Solr/ext-solr/pull/4068`__
-- [FEATURE:BP:12] Be able to disable tracking of last searches by @dkd-kaehm in `#4064 <https://github.com/TYPO3-Solr/ext-solr/pull/4064`__
-- [TASK] Add access plugin tests by @dkd-friedrich in `#4069 <https://github.com/TYPO3-Solr/ext-solr/pull/4069`__
-- [TASK] Update authors by @sfroemkenjw in `#4071 <https://github.com/TYPO3-Solr/ext-solr/pull/4071`__
-- [TASK] Remove content stream usage by @dkd-friedrich in `#4073 <https://github.com/TYPO3-Solr/ext-solr/pull/4073`__
-- [BUGFIX] Fix synonym and stop word upload by @dkd-friedrich in `#4074 <https://github.com/TYPO3-Solr/ext-solr/pull/4074`__
-- [TASK] Call getLabelFromItemListMerged with the current row data by @3l73 in `#4081 <https://github.com/TYPO3-Solr/ext-solr/pull/4081`__
-- [BUGFIX] numeric facet range slider sends lot of requests to server by @hvomlehn-sds in `#4084 <https://github.com/TYPO3-Solr/ext-solr/pull/4084`__
-- [BUGFIX] Typecast $userGroup to integer by @derhansen in `#4079 <https://github.com/TYPO3-Solr/ext-solr/pull/4079`__
-- [TASK] Remove getIsSiteManagedSite as all site are managed now by @sfroemkenjw in `#4070 <https://github.com/TYPO3-Solr/ext-solr/pull/4070`__
-- [BUGFIX] [4026] treat non-overlayed mount points as valid by @derMatze82 in `#4029 <https://github.com/TYPO3-Solr/ext-solr/pull/4029`__
-- [TASK] New Crowdin updates by @dkd-kaehm in `#4094 <https://github.com/TYPO3-Solr/ext-solr/pull/4094`__
-- [BUGFIX] Fix range string calculation in DateRange facet by @derhansen in `#4090 <https://github.com/TYPO3-Solr/ext-solr/pull/4090`__
-- [BUGFIX:12] scheduler task "Optimize index of a site" is not functional by @dkd-kaehm in `#4104 <https://github.com/TYPO3-Solr/ext-solr/pull/4104`__
-- [TASK] Apache Solr 9.6.1 compatibility by @dkd-kaehm in `#4106 <https://github.com/TYPO3-Solr/ext-solr/pull/4106`__
-- [BUGFIX] deprecations in Dockerfile by @dkd-kaehm in `#4110 <https://github.com/TYPO3-Solr/ext-solr/pull/4110`__
-- [BUGFIX] Ensure index document is deleted by @dkd-friedrich in `#4113 <https://github.com/TYPO3-Solr/ext-solr/pull/4113`__
+- [TASK] Use request object to retrieve query params instead of _GET by @sfroemkenjw in `#4045 <https://github.com/TYPO3-Solr/ext-solr/pull/4045>`__
+- [TASK] Use Attributes for PHPUnit tests by @bmack in `#4048 <https://github.com/TYPO3-Solr/ext-solr/pull/4048>`__
+- [TASK] Update PHP-Stan to at least 1.11.* by @sfroemkenjw in `#4055 <https://github.com/TYPO3-Solr/ext-solr/pull/4055>`__
+- [TASK] Apply and repair rector refactorings by @sfroemkenjw in `#4049 <https://github.com/TYPO3-Solr/ext-solr/pull/4049>`__
+- [TASK] Migrate requireJS to ES6. Solr BE Modal JS by @sfroemkenjw in `#4057 <https://github.com/TYPO3-Solr/ext-solr/pull/4057>`__
+- [TASK] Apache Solr 9.6 compatibility by @dkd-friedrich in `#4056 <https://github.com/TYPO3-Solr/ext-solr/pull/4056>`__
+- [TASK] Use new template module API by @sfroemkenjw in `#4054 <https://github.com/TYPO3-Solr/ext-solr/pull/4054>`__
+- [FEATURE] Add contentObjectData to searchController by @spoonerWeb in `#4059 <https://github.com/TYPO3-Solr/ext-solr/pull/4059>`__
+- [BUGFIX] Add empty array as fallback if null by @spoonerWeb in `#4061 <https://github.com/TYPO3-Solr/ext-solr/pull/4061>`__
+- [BUGFIX] Add empty array defaults in SearchFormViewHelper by @hnadler in `#4042 <https://github.com/TYPO3-Solr/ext-solr/pull/4042>`__
+- [TASK] Integrate content of Module layout into WithPageTree by @sfroemkenjw in `#4066 <https://github.com/TYPO3-Solr/ext-solr/pull/4066>`__
+- [TASK] Repair statistics chart because of CSP in Solr Info module by @sfroemkenjw in `#4068 <https://github.com/TYPO3-Solr/ext-solr/pull/4068>`__
+- [FEATURE:BP:12] Be able to disable tracking of last searches by @dkd-kaehm in `#4064 <https://github.com/TYPO3-Solr/ext-solr/pull/4064>`__
+- [TASK] Add access plugin tests by @dkd-friedrich in `#4069 <https://github.com/TYPO3-Solr/ext-solr/pull/4069>`__
+- [TASK] Update authors by @sfroemkenjw in `#4071 <https://github.com/TYPO3-Solr/ext-solr/pull/4071>`__
+- [TASK] Remove content stream usage by @dkd-friedrich in `#4073 <https://github.com/TYPO3-Solr/ext-solr/pull/4073>`__
+- [BUGFIX] Fix synonym and stop word upload by @dkd-friedrich in `#4074 <https://github.com/TYPO3-Solr/ext-solr/pull/4074>`__
+- [TASK] Call getLabelFromItemListMerged with the current row data by @3l73 in `#4081 <https://github.com/TYPO3-Solr/ext-solr/pull/4081>`__
+- [BUGFIX] numeric facet range slider sends lot of requests to server by @hvomlehn-sds in `#4084 <https://github.com/TYPO3-Solr/ext-solr/pull/4084>`__
+- [BUGFIX] Typecast $userGroup to integer by @derhansen in `#4079 <https://github.com/TYPO3-Solr/ext-solr/pull/4079>`__
+- [TASK] Remove getIsSiteManagedSite as all site are managed now by @sfroemkenjw in `#4070 <https://github.com/TYPO3-Solr/ext-solr/pull/4070>`__
+- [BUGFIX] [4026] treat non-overlayed mount points as valid by @derMatze82 in `#4029 <https://github.com/TYPO3-Solr/ext-solr/pull/4029>`__
+- [TASK] New Crowdin updates by @dkd-kaehm in `#4094 <https://github.com/TYPO3-Solr/ext-solr/pull/4094>`__
+- [BUGFIX] Fix range string calculation in DateRange facet by @derhansen in `#4090 <https://github.com/TYPO3-Solr/ext-solr/pull/4090>`__
+- [BUGFIX:12] scheduler task "Optimize index of a site" is not functional by @dkd-kaehm in `#4104 <https://github.com/TYPO3-Solr/ext-solr/pull/4104>`__
+- [TASK] Apache Solr 9.6.1 compatibility by @dkd-kaehm in `#4106 <https://github.com/TYPO3-Solr/ext-solr/pull/4106>`__
+- [BUGFIX] deprecations in Dockerfile by @dkd-kaehm in `#4110 <https://github.com/TYPO3-Solr/ext-solr/pull/4110>`__
+- [BUGFIX] Ensure index document is deleted by @dkd-friedrich in `#4113 <https://github.com/TYPO3-Solr/ext-solr/pull/4113>`__
 
 
 Release 12.0.3
@@ -592,6 +601,7 @@ awesome community. Here are the contributors to this release.
 - Ingo Fabbri
 - Jennifer Geiß
 - Julian Hofmann
+- Kai Lochbaum
 - Lars Tode
 - Lukas Niestroj
 - Marc Hirdes
