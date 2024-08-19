@@ -445,6 +445,17 @@ class SearchRequest
     }
 
     /**
+     * Unsets the query string.
+     */
+    public function removeQueryString(): SearchRequest
+    {
+        $this->stateChanged = true;
+        $path = $this->prefixWithNamespace('q');
+        $this->argumentsAccessor->reset($path);
+        return $this;
+    }
+
+    /**
      * Returns the passed rawQueryString.
      */
     public function getRawUserQuery(): string
