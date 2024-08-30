@@ -103,6 +103,7 @@ jobs:
         with:
           name: solrci-image
           path: /tmp/solrci-image.tar
+          retention-days: 1
 
   tests:
     runs-on: ubuntu-latest
