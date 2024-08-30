@@ -26,10 +26,9 @@ use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\View\FluidViewAdapter;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
-use TYPO3\CMS\Fluid\View\TemplateView;
 use TYPO3Fluid\Fluid\View\AbstractTemplateView;
-use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * Class SearchController
@@ -57,30 +56,28 @@ class SearchController extends AbstractBaseController
         }
     }
 
-    /**
-     * @param ViewInterface $view
-     */
-    public function initializeView($view): void
+    public function initializeView(FluidViewAdapter $view): void
     {
-        if ($view instanceof TemplateView) {
-            $variableProvider = GeneralUtility::makeInstance(SolrVariableProvider::class);
-            $variableProvider->setSource($view->getRenderingContext()->getVariableProvider()->getSource());
-            $view->getRenderingContext()->setVariableProvider($variableProvider);
-            $view->getRenderingContext()->getVariableProvider()->add(
-                'typoScriptConfiguration',
-                $this->typoScriptConfiguration
-            );
+        $variableProvider = GeneralUtility::makeInstance(SolrVariableProvider::class);
+        $variableProvider->setSource($view->getRenderingContext()->getVariableProvider()->getSource());
+        $view->getRenderingContext()->setVariableProvider($variableProvider);
+        $view->getRenderingContext()->getVariableProvider()->add(
+            'typoScriptConfiguration',
+            $this->typoScriptConfiguration
+        );
 
-            $customTemplate = $this->getCustomTemplateFromConfiguration();
-            if ($customTemplate === '') {
-                return;
-            }
+        $customTemplate = $this->getCustomTemplateFromConfiguration();
+        if ($customTemplate === '') {
+            return;
+        }
 
-            if (str_contains($customTemplate, 'EXT:')) {
-                $view->setTemplatePathAndFilename($customTemplate);
-            } else {
-                $view->setTemplate($customTemplate);
-            }
+        if (str_contains($customTemplate, 'EXT:')) {
+            $view->getRenderingContext()
+                ->getTemplatePaths()
+                ->setTemplatePathAndFilename($customTemplate);
+        } else {
+            $view->getRenderingContext()
+                ->setControllerAction($customTemplate);
         }
     }
 
