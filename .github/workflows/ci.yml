@@ -43,7 +43,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
-        if: github.event_name == 'push'
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
         uses: actions/checkout@v4
       # End: Workaround for issue with actions/checkout...
       -
@@ -53,7 +53,7 @@ jobs:
           echo "BRANCH_NAME=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
       -
         name: "Resolve branch name on push in branch of repository."
-        if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')
+        if: ${{ !startsWith(github.ref, 'refs/tags/') && (github.event_name == 'push' || github.event_name == 'schedule') }}
         run: |
           echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
       -
@@ -130,7 +130,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
-        if: github.event_name == 'push'
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
