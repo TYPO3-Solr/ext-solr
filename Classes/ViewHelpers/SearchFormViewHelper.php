@@ -18,9 +18,11 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
@@ -84,13 +86,14 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      */
     public function render()
     {
-        /** @phpstan-ignore-next-line */
-        $this->uriBuilder->setRequest($this->renderingContext->getRequest());
+        /** @var RequestInterface $request */
+        $request = $this->renderingContext->getAttribute(ServerRequestInterface::class);
+        $this->uriBuilder->setRequest($request);
         $pageUid = $this->arguments['pageUid'] ?? null;
         if ($pageUid === null && !empty($this->getTypoScriptConfiguration()->getSearchTargetPage())) {
             $pageUid = $this->getTypoScriptConfiguration()->getSearchTargetPage();
         } elseif ($pageUid === null) {
-            $pageUid = $this->renderingContext->getRequest()->getAttribute('routing')?->getPageId();
+            $pageUid = $this->renderingContext->getAttribute(ServerRequestInterface::class)->getAttribute('routing')?->getPageId();
         }
         $pageUid = (int)$pageUid;
 
@@ -128,7 +131,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     {
         $searchParameters = [];
         if ($this->getTypoScriptConfiguration()->getSearchKeepExistingParametersForNewSearches()) {
-            $request = $this->renderingContext->getRequest();
+            $request = $this->renderingContext->getAttribute(ServerRequestInterface::class);
             $pluginNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
             $arguments = $request->getQueryParams()[$pluginNamespace] ?? [];
             ArrayUtility::mergeRecursiveWithOverrule($arguments, $request->getParsedBody()[$pluginNamespace] ?? []);
