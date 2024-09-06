@@ -19,9 +19,19 @@ use ApacheSolrForTypo3\FakeExtension\Domain\Model\Foo;
 use ApacheSolrForTypo3\FakeExtension\Domain\Repository\FooRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use Doctrine\DBAL\Exception as DBALException;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
+use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class PersistenceEventListenerTest extends IntegrationTestBase
@@ -34,7 +44,11 @@ class PersistenceEventListenerTest extends IntegrationTestBase
     protected ?Queue $indexQueue = null;
     protected ?FooRepository $repository = null;
     protected ?PersistenceManager $persistenceManager = null;
+    protected ServerRequest $serverRequest;
 
+    /**
+     * @throws SiteNotFoundException
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -46,8 +60,22 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->repository = GeneralUtility::makeInstance(FooRepository::class);
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+
+        $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
+        $frontendTypoScript->setSetupArray([]);
+        $GLOBALS['TYPO3_REQUEST'] = $this->serverRequest = (new ServerRequest('http://testone.site/'))
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
+            ->withAttribute('frontend.typoscript', $frontendTypoScript)
+            ->withAttribute(
+                'site',
+                $this->get(SiteFinder::class)->getSiteByIdentifier('integration_tree_one')
+            );
     }
 
+    /**
+     * @throws IllegalObjectTypeException
+     * @throws DBALException
+     */
     #[Test]
     public function newEntityIsAddedToIndexQueue(): void
     {
@@ -60,6 +88,10 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         self::assertTrue($this->indexQueue->containsItem('tx_fakeextension_domain_model_foo', 1));
     }
 
+    /**
+     * @throws IllegalObjectTypeException
+     * @throws DBALException
+     */
     #[Test]
     public function newHiddenEntityIsNotAddedToIndexQueue(): void
     {
@@ -73,6 +105,12 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         self::assertFalse($this->indexQueue->containsItem('tx_fakeextension_domain_model_foo', 1));
     }
 
+    /**
+     * @throws AspectNotFoundException
+     * @throws UnknownObjectException
+     * @throws IllegalObjectTypeException
+     * @throws DBALException
+     */
     #[Test]
     public function updatedEntityIsUpdatedInIndexQueue(): void
     {
@@ -83,6 +121,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         $this->repository->update($object);
         $this->persistenceManager->persistAll();
 
+        /** @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
         $currentTimestamp = $context->getPropertyFromAspect('date', 'timestamp');
 
@@ -94,6 +133,10 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         self::assertSame($currentTimestamp, $item->getChanged());
     }
 
+    /**
+     * @throws IllegalObjectTypeException
+     * @throws DBALException
+     */
     #[Test]
     public function softDeletedEntityIsRemovedFromIndexQueue(): void
     {
@@ -106,6 +149,10 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         self::assertFalse($this->indexQueue->containsItem('tx_fakeextension_domain_model_foo', 3));
     }
 
+    /**
+     * @throws IllegalObjectTypeException
+     * @throws DBALException
+     */
     #[Test]
     public function deletedEntityIsRemovedFromIndexQueue(): void
     {
@@ -119,6 +166,11 @@ class PersistenceEventListenerTest extends IntegrationTestBase
         self::assertFalse($this->indexQueue->containsItem('tx_fakeextension_domain_model_foo', 3));
     }
 
+    /**
+     * @throws UnknownObjectException
+     * @throws IllegalObjectTypeException
+     * @throws DBALException
+     */
     #[Test]
     public function updatedEntityTurnedHiddenIsRemovedFromIndexQueue(): void
     {
