@@ -55,7 +55,7 @@ fi
 
 echo -e "\n\n"
 echo "Run unit tests"
-if ! composer tests:unit -- --coverage-clover=coverage.unit.clover
+if ! composer tests:unit
 then
   echo "Error during running the unit tests please check and fix them"
   EXIT_CODE=5
@@ -95,7 +95,7 @@ fi
 
 echo -e "\n\n"
 echo "Run integration tests"
-if ! composer tests:integration -- --coverage-clover=coverage.integration.clover
+if ! composer tests:integration
 then
   echo "Error during running the integration tests please check and fix them"
   EXIT_CODE=6

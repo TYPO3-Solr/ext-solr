@@ -158,8 +158,7 @@
       "ext-solrfal": {
       },
       "stack-for-ci": {
-        "sclable/xml-lint": "*",
-        "scrutinizer/ocular": "*"
+        "sclable/xml-lint": "*"
       }
     }
   }
