@@ -4,7 +4,6 @@
 /.github export-ignore
 /.gitignore export-ignore
 /.php-cs-fixer.php export-ignore
-/.scrutinizer.yml export-ignore
 /.styleci.yml export-ignore
 /Build/ export-ignore
 /CONTRIBUTING.md export-ignore
