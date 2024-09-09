@@ -165,11 +165,6 @@ jobs:
             && sudo du -sh "${{ env.CI_BUILD_DIRECTORY }}" \
             && sudo du -sh ${{ env.CI_BUILD_DIRECTORY }}/*
       -
-        name: Upload code coverage to Scrutinizer
-        run: |
-          ocular code-coverage:upload --format=php-clover coverage.unit.clover
-          ocular code-coverage:upload --format=php-clover coverage.integration.clover
-      -
         name: Clean up
         run: |
           docker stop "MySQL-CI" 2>&1
