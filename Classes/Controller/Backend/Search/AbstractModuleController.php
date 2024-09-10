@@ -146,9 +146,7 @@ abstract class AbstractModuleController extends ActionController
      */
     protected function initializeView($view): void
     {
-        $sites = $this->siteRepository->getAvailableSites();
-
-        $selectOtherPage = count($sites) > 0 || $this->selectedPageUID < 1;
+        $selectOtherPage = $this->siteRepository->hasAvailableSites() || $this->selectedPageUID < 1;
         $this->moduleTemplate->assign('showSelectOtherPage', $selectOtherPage);
         $this->moduleTemplate->assign('pageUID', $this->selectedPageUID);
         if ($this->selectedPageUID < 1) {
