@@ -66,8 +66,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
     public function getStatus(): array
     {
         $reports = [];
-        $sites = $this->siteRepository->getAvailableSites();
-        if (empty($sites)) {
+        if (!$this->siteRepository->hasAvailableSites()) {
             $reports[] = GeneralUtility::makeInstance(
                 Status::class,
                 self::TITLE_SITE_HANDLING_CONFIGURATION,
@@ -79,8 +78,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
             return $reports;
         }
 
-        /** @var Site $site */
-        foreach ($sites as $site) {
+        foreach ($this->siteRepository->getAvailableSites() as $site) {
             if (!($site instanceof Site)) {
                 $reports[] = GeneralUtility::makeInstance(
                     Status::class,
