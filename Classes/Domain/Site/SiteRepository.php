@@ -146,20 +146,10 @@ class SiteRepository
      */
     public function hasAvailableSites(bool $stopOnInvalidSite = false): bool
     {
-        $cacheId = 'SiteRepository' . '_' . 'hasAvailableSites';
-
-        $hasSites = $this->runtimeCache->get($cacheId);
-        if (is_bool($hasSites)) {
-            return $hasSites;
-        }
-
         $siteGenerator = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
         $siteGenerator->rewind();
 
-        $hasSites = ($site = $siteGenerator->current()) && $site instanceof Site;
-        $this->runtimeCache->set($cacheId, $hasSites);
-
-        return $hasSites;
+        return ($site = $siteGenerator->current()) && $site instanceof Site;
     }
 
     /**
@@ -170,15 +160,7 @@ class SiteRepository
      */
     public function hasExactlyOneAvailableSite(bool $stopOnInvalidSite = false): bool
     {
-        $cacheId = 'SiteRepository' . '_' . 'hasExactlyOneAvailableSite';
-
-        $hasExactlyOneSite = $this->runtimeCache->get($cacheId);
-        if (is_bool($hasExactlyOneSite)) {
-            return $hasExactlyOneSite;
-        }
-
         if (!$this->hasAvailableSites($stopOnInvalidSite)) {
-            $this->runtimeCache->set($cacheId, false);
             return false;
         }
 
@@ -189,13 +171,10 @@ class SiteRepository
         $counter = 1;
         foreach ($siteGenerator as $_) {
             if ($counter > 1) {
-                $this->runtimeCache->set($cacheId, false);
                 return false;
             }
             $counter++;
         }
-
-        $this->runtimeCache->set($cacheId, true);
 
         return true;
     }
