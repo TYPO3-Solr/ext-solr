@@ -118,15 +118,26 @@ abstract class AbstractModuleController extends ActionController
     }
 
     /**
-     * Tries to select single available site's root page
+     * For performance reasons we first check against cached TYPO3 sites. Only, if amount is not exactly 1 we
+     * start comparing against the slower "getAllSites()" method, too.
      *
-     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     protected function autoSelectFirstSiteAndRootPageWhenOnlyOneSiteIsAvailable(): bool
     {
+        // Early return, if there are no sites defined
+        if (($availableSites = $this->siteFinder->getAllSites()) === []) {
+            return false;
+        }
+
+        // Early return, if there are more than 1 site
+        if (count($availableSites) !== 1) {
+            return false;
+        }
+
         $solrConfiguredSites = $this->siteRepository->getAvailableSites();
-        $availableSites = $this->siteFinder->getAllSites();
-        if (count($solrConfiguredSites) === 1 && count($availableSites) === 1) {
+        if (count($solrConfiguredSites) === 1) {
             $this->selectedSite = $this->siteRepository->getFirstAvailableSite();
 
             // we only overwrite the selected pageUid when no id was passed
