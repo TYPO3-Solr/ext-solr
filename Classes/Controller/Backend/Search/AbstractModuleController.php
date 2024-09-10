@@ -124,9 +124,8 @@ abstract class AbstractModuleController extends ActionController
      */
     protected function autoSelectFirstSiteAndRootPageWhenOnlyOneSiteIsAvailable(): bool
     {
-        $solrConfiguredSites = $this->siteRepository->getAvailableSites();
         $availableSites = $this->siteFinder->getAllSites();
-        if (count($solrConfiguredSites) === 1 && count($availableSites) === 1) {
+        if (count($availableSites) === 1 && $this->siteRepository->hasExactlyOneAvailableSite()) {
             $this->selectedSite = $this->siteRepository->getFirstAvailableSite();
 
             // we only overwrite the selected pageUid when no id was passed
