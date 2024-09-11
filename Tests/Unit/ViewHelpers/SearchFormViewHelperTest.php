@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\SearchFormViewHelper;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
 use TYPO3\CMS\Extbase\Mvc\Request;
