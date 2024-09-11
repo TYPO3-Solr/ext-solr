@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace  ApacheSolrForTypo3\Solr\Tests\Unit\System\ContentObject;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\ContentObject;
 
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
@@ -28,14 +28,8 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class ContentObjectServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var ContentObjectRenderer|MockObject
-     */
-    protected $contentObjectRendererMock;
+    protected ContentObjectRenderer|MockObject $contentObjectRendererMock;
 
-    /**
-     * @var ContentObjectService
-     */
     protected ContentObjectService $contentObjectService;
 
     protected function setUp(): void
