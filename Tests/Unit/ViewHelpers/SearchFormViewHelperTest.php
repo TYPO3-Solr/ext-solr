@@ -64,7 +64,7 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
             new TemplatePaths()
         );
         $request = new Request((new ServerRequest())->withAttribute('extbase', new ExtbaseRequestParameters(SearchController::class)));
-        $renderingContext->setAttribute(ServerRequestInterface::class, $request);
+        $renderingContext->setRequest($request);
         $this->viewHelper->setRenderingContext($renderingContext);
         $this->viewHelper->expects(self::any())->method('getTypoScriptConfiguration')->willReturn($this->typoScriptConfigurationMock);
         $this->viewHelper->expects(self::any())->method('getTemplateVariableContainer')->willReturn($this->createMock(VariableProviderInterface::class));
