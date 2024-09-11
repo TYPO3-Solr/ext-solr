@@ -130,8 +130,12 @@ class SiteRepository
         $siteGenerator->rewind();
 
         $sites = [];
-        foreach ($siteGenerator as $rootPage => $site) {
-            $sites[$rootPage] = $site;
+        foreach ($siteGenerator as $rootPageId => $site) {
+            if (isset($sites[$rootPageId])) {
+                //get each site only once
+                continue;
+            }
+            $sites[$rootPageId] = $site;
         }
         $this->runtimeCache->set($cacheId, $sites);
 
@@ -190,10 +194,6 @@ class SiteRepository
         foreach ($this->siteFinder->getAllSites() as $typo3Site) {
             try {
                 $rootPageId = $typo3Site->getRootPageId();
-                if (isset($typo3ManagedSolrSites[$rootPageId])) {
-                    //get each site only once
-                    continue;
-                }
                 $typo3ManagedSolrSite = $this->buildSite($rootPageId);
                 if ($typo3ManagedSolrSite->isEnabled()) {
                     yield $rootPageId => $typo3ManagedSolrSite;
