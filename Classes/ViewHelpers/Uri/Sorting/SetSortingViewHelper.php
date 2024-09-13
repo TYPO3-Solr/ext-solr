@@ -16,8 +16,6 @@
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Sorting;
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
-use Closure;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Class SetSortingViewHelper
@@ -37,15 +35,12 @@ class SetSortingViewHelper extends AbstractUriViewHelper
     /**
      * Renders URI for setting the sorting.
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ) {
-        $sortingName = $arguments['sortingName'];
-        $sortingDirection = $arguments['sortingDirection'];
-        $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
+    public function render()
+    {
+        $sortingName = $this->arguments['sortingName'];
+        $sortingDirection = $this->arguments['sortingDirection'];
+        $previousRequest = static::getUsedSearchRequestFromRenderingContext($this->renderingContext);
 
-        return self::getSearchUriBuilder($renderingContext)->getSetSortingUri($previousRequest, $sortingName, $sortingDirection);
+        return self::getSearchUriBuilder($this->renderingContext)->getSetSortingUri($previousRequest, $sortingName, $sortingDirection);
     }
 }

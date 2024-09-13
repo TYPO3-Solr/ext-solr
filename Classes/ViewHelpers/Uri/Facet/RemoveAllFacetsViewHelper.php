@@ -16,8 +16,6 @@
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet;
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
-use Closure;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Class RemoveAllFacetsViewHelper
@@ -27,13 +25,10 @@ class RemoveAllFacetsViewHelper extends AbstractUriViewHelper
     /**
      * Renders URI for removing all facets.
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ): string {
-        return self::getSearchUriBuilder($renderingContext)->getRemoveAllFacetsUri(
-            static::getUsedSearchRequestFromRenderingContext($renderingContext)
+    public function render(): string
+    {
+        return self::getSearchUriBuilder($this->renderingContext)->getRemoveAllFacetsUri(
+            static::getUsedSearchRequestFromRenderingContext($this->renderingContext)
         );
     }
 }

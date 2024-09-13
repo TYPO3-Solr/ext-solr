@@ -17,17 +17,12 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Area;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
-use Closure;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class GroupViewHelper
  */
 class GroupViewHelper extends AbstractSolrFrontendViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * @inheritdoc
      */
@@ -46,19 +41,16 @@ class GroupViewHelper extends AbstractSolrFrontendViewHelper
     /**
      * Renders group
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ) {
+    public function render()
+    {
         /** @var FacetCollection $facets */
-        $facets = $arguments['facets'];
-        $requiredGroup = $arguments['groupName'] ?? 'main';
+        $facets = $this->arguments['facets'];
+        $requiredGroup = $this->arguments['groupName'] ?? 'main';
         $filtered = $facets->getByGroupName($requiredGroup);
 
-        $templateVariableProvider = $renderingContext->getVariableProvider();
+        $templateVariableProvider = $this->renderingContext->getVariableProvider();
         $templateVariableProvider->add('areaFacets', $filtered);
-        $content = $renderChildrenClosure();
+        $content = $this->renderChildren();
         $templateVariableProvider->remove('areaFacets');
 
         return $content;

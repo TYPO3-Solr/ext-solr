@@ -19,17 +19,12 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\OptionCollection;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
-use Closure;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class LabelPrefixesViewHelper
  */
 class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
 {
-    use CompileWithRenderStatic;
-
     protected $escapeOutput = false;
 
     /**
@@ -46,22 +41,19 @@ class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
     /**
      * @noinspection PhpMissingReturnTypeInspection
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
+    public function render()
+    {
         /** @var OptionCollection $options */
-        $options = $arguments['options'];
-        $length = $arguments['length'] ?? 1;
-        $sortBy = $arguments['sortBy'] ?? 'count';
+        $options = $this->arguments['options'];
+        $length = $this->arguments['length'] ?? 1;
+        $sortBy = $this->arguments['sortBy'] ?? 'count';
         $prefixes = $options->getLowercaseLabelPrefixes($length);
 
         $prefixes = static::applySortBy($prefixes, $sortBy);
 
-        $templateVariableProvider = $renderingContext->getVariableProvider();
+        $templateVariableProvider = $this->renderingContext->getVariableProvider();
         $templateVariableProvider->add('prefixes', $prefixes);
-        $content = $renderChildrenClosure();
+        $content = $this->renderChildren();
         $templateVariableProvider->remove('prefixes');
 
         return $content;

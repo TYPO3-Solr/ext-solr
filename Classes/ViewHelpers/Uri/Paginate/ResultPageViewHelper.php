@@ -18,8 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Paginate;
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
-use Closure;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Class ResultPageViewHelper
@@ -38,13 +36,10 @@ class ResultPageViewHelper extends AbstractUriViewHelper
     /**
      * Renders URI for pagination-page
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ) {
-        $page = $arguments['page'];
-        $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
-        return self::getSearchUriBuilder($renderingContext)->getResultPageUri($previousRequest, $page);
+    public function render()
+    {
+        $page = $this->arguments['page'];
+        $previousRequest = static::getUsedSearchRequestFromRenderingContext($this->renderingContext);
+        return self::getSearchUriBuilder($this->renderingContext)->getResultPageUri($previousRequest, $page);
     }
 }
