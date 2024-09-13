@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Domain\Access\RecordAccessGrantedEvent;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface;
-use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageOverlayHookInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
