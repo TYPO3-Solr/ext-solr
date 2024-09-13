@@ -72,7 +72,6 @@ class UserGroupDetector implements
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = UserGroupDetector::class . '->checkEnableFields';
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__] = UserGroupDetector::class;
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__] = UserGroupDetector::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__] = UserGroupDetector::class;
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
@@ -138,6 +137,10 @@ class UserGroupDetector implements
      * @param array $pageInput Page record
      * @param int $lUid Overlay language ID
      * @param PageRepository $parent Parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
+     * @see This code is not invoked in version 12 - instead an PSR-14 event was introduced to handle
+     * this case. In version 13 this has been fixed - so leaving the code here for now.
+     * The hook invoking part has been removed
+     * @see https://github.com/TYPO3-Solr/ext-solr/issues/4151
      */
     public function getPageOverlay_preProcess(
         &$pageInput,
