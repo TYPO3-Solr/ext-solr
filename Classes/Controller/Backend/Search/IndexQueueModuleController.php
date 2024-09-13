@@ -68,14 +68,14 @@ class IndexQueueModuleController extends AbstractModuleController
         $this->initializeAction();
         if (!$this->canQueueSelectedSite()) {
             $this->moduleTemplate->assign('can_not_proceed', true);
-            return $this->moduleTemplate->renderResponse('Index');
+            return $this->moduleTemplate->renderResponse('Backend/Search/IndexQueueModule/Index');
         }
 
         $statistics = $this->indexQueue->getStatisticsBySite($this->selectedSite);
         $this->moduleTemplate->assign('indexQueueInitializationSelector', $this->getIndexQueueInitializationSelector());
         $this->moduleTemplate->assign('indexqueue_statistics', $statistics);
         $this->moduleTemplate->assign('indexqueue_errors', $this->indexQueue->getErrorsBySite($this->selectedSite));
-        return $this->moduleTemplate->renderResponse('Index');
+        return $this->moduleTemplate->renderResponse('Backend/Search/IndexQueueModule/Index');
     }
 
     /**
@@ -269,7 +269,7 @@ class IndexQueueModuleController extends AbstractModuleController
         }
 
         $this->moduleTemplate->assign('indexQueueItem', $item);
-        return $this->moduleTemplate->renderResponse('ShowError');
+        return $this->moduleTemplate->renderResponse('Backend/Search/IndexQueueModule/ShowError');
     }
 
     /**
