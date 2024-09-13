@@ -15,9 +15,6 @@
 
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet;
 
-use Closure;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-
 /**
  * Class RemoveFacetItemViewHelper
  */
@@ -26,16 +23,13 @@ class RemoveFacetItemViewHelper extends AbstractValueViewHelper
     /**
      * Renders URI for removing the facet item.
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ) {
-        $name = self::getNameFromArguments($arguments);
-        $itemValue = self::getValueFromArguments($arguments);
-        $resultSet = self::getResultSetFromArguments($arguments);
+    public function render()
+    {
+        $name = self::getNameFromArguments($this->arguments);
+        $itemValue = self::getValueFromArguments($this->arguments);
+        $resultSet = self::getResultSetFromArguments($this->arguments);
         $previousRequest = $resultSet->getUsedSearchRequest();
 
-        return self::getSearchUriBuilder($renderingContext)->getRemoveFacetValueUri($previousRequest, $name, $itemValue);
+        return self::getSearchUriBuilder($this->renderingContext)->getRemoveFacetValueUri($previousRequest, $name, $itemValue);
     }
 }

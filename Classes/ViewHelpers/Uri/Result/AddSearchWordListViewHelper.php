@@ -19,18 +19,13 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Result;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Highlight\SiteHighlighterUrlModifier;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
-use Closure;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class AddSearchWordListViewHelper
  */
 class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * @inheritdoc
      */
@@ -46,21 +41,18 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
     /**
      * Renders URI for adding the search word list.
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $url = $arguments['url'];
+    public function render()
+    {
+        $url = $this->arguments['url'];
 
-        $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
+        $resultSet = self::getUsedSearchResultSetFromRenderingContext($this->renderingContext);
         if (!$resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsSiteHighlighting()) {
             return $url;
         }
 
-        $searchWords = $arguments['searchWords'] ?? '';
-        $addNoCache = $arguments['addNoCache'];
-        $keepCHash = $arguments['keepCHash'];
+        $searchWords = $this->arguments['searchWords'] ?? '';
+        $addNoCache = $this->arguments['addNoCache'];
+        $keepCHash = $this->arguments['keepCHash'];
 
         /** @var SiteHighlighterUrlModifier $siteHighlighterUrlModifier */
         $siteHighlighterUrlModifier = GeneralUtility::makeInstance(SiteHighlighterUrlModifier::class);

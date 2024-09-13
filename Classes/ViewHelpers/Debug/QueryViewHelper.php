@@ -16,12 +16,9 @@
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
-use Closure;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class QueryViewHelper
@@ -31,8 +28,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class QueryViewHelper extends AbstractSolrFrontendViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * @inheritdoc
      */
@@ -44,13 +39,10 @@ class QueryViewHelper extends AbstractSolrFrontendViewHelper
      * @throws AspectNotFoundException
      * @noinspection PhpUnused
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ) {
+    public function render()
+    {
         $content = '';
-        $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
+        $resultSet = self::getUsedSearchResultSetFromRenderingContext($this->renderingContext);
         $backendUserIsLoggedIn = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('backend.user', 'isLoggedIn');
         if (
             $backendUserIsLoggedIn === true
@@ -60,9 +52,9 @@ class QueryViewHelper extends AbstractSolrFrontendViewHelper
             && $resultSet->getUsedSearch()->getDebugResponse() !== null
             && !empty($resultSet->getUsedSearch()->getDebugResponse()->parsedquery)
         ) {
-            $renderingContext->getVariableProvider()->add('parsedQuery', $resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
-            $content = $renderChildrenClosure();
-            $renderingContext->getVariableProvider()->remove('parsedQuery');
+            $this->renderingContext->getVariableProvider()->add('parsedQuery', $resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
+            $content = $this->renderChildren();
+            $this->renderingContext->getVariableProvider()->remove('parsedQuery');
 
             if ($content === null) {
                 $content = '<br><strong>Parsed Query:</strong><br>' . htmlspecialchars($resultSet->getUsedSearch()->getDebugResponse()->parsedquery);

@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix\LabelPrefixesViewHelper;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
@@ -29,15 +30,18 @@ class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
     #[Test]
     public function canGetPrefixesSortedByOrderInCollection(): void
     {
-        $optionCollection = $this->getTestFacetOptionCollection();
-
-        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
-        $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
-
-        $testArguments['options'] = $optionCollection;
         $testArguments['length'] = 1;
-        LabelPrefixesViewHelper::renderStatic($testArguments, function() {}, $renderingContextMock);
+
+        $testableStack = $this->getTestableStack($testArguments);
+        extract($testableStack, EXTR_OVERWRITE);
+        /**
+         * extracted:
+         * @var LabelPrefixesViewHelper $testable
+         * @var StandardVariableProvider $variableContainer
+         * @var RenderingContextInterface $renderingContextMock
+         */
+        $testable->render();
+
         self::assertTrue($variableContainer->exists('prefixes'), 'Expected that prefixes has been set');
         $prefixes = $variableContainer->get('prefixes');
         self::assertSame(['r', 'p', 'l'], $prefixes, 'ViewHelper registers unexpected prefixes from passed options');
@@ -46,23 +50,23 @@ class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
     #[Test]
     public function canGetPrefixesSortedAlphabeticalByLabel(): void
     {
-        $optionCollection = $this->getTestFacetOptionCollection();
-
-        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
-        $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
-
-        $testArguments['options'] = $optionCollection;
         $testArguments['length'] = 1;
         $testArguments['sortBy'] = 'alpha';
-        LabelPrefixesViewHelper::renderStatic($testArguments, function() {}, $renderingContextMock);
+
+        $testableStack = $this->getTestableStack($testArguments);
+        extract($testableStack, EXTR_OVERWRITE);
+        /**
+         * extracted:
+         * @var LabelPrefixesViewHelper $testable
+         * @var StandardVariableProvider $variableContainer
+         * @var RenderingContextInterface $renderingContextMock
+         */
+        $testable->render();
+
         $prefixes = $variableContainer->get('prefixes');
         self::assertSame(['l', 'p', 'r'], $prefixes, 'ViewHelper registers unexpected prefixes from passed options');
     }
 
-    /**
-     * @return OptionCollection
-     */
     protected function getTestFacetOptionCollection(): OptionCollection
     {
         $facet = $this->createMock(OptionsFacet::class);
@@ -80,5 +84,26 @@ class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
         $optionCollection->add($red);
         $optionCollection->add($royalGreen);
         return $optionCollection;
+    }
+
+    protected function getTestableStack(
+        array &$testArguments,
+    ): array {
+        $testArguments['options'] = $this->getTestFacetOptionCollection();
+
+        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
+        $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
+
+        $labelPrefixesViewHelperTestable = new LabelPrefixesViewHelper();
+        $labelPrefixesViewHelperTestable->setRenderingContext($renderingContextMock);
+        $labelPrefixesViewHelperTestable->setArguments($testArguments);
+        $labelPrefixesViewHelperTestable->setViewHelperNode($this->createMock(ViewHelperNode::class));
+
+        return [
+            'testable' => $labelPrefixesViewHelperTestable,
+            'variableContainer' => $variableContainer,
+            'renderingContextMock' => $renderingContextMock,
+        ];
     }
 }

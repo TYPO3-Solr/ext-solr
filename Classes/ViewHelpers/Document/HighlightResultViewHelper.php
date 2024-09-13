@@ -20,18 +20,13 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
-use Closure;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class HighlightResultViewHelper
  */
 class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
 {
-    use CompileWithRenderStatic;
-
     protected $escapeOutput = false;
 
     /**
@@ -45,15 +40,12 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
         $this->registerArgument('fieldName', 'string', 'The fieldName', true);
     }
 
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ): string {
+    public function render(): string
+    {
         /** @var SearchResultSet $resultSet */
-        $resultSet = $arguments['resultSet'];
-        $fieldName = $arguments['fieldName'];
-        $document = $arguments['document'];
+        $resultSet = $this->arguments['resultSet'];
+        $fieldName = $this->arguments['fieldName'];
+        $document = $this->arguments['document'];
         $highlightedContent = self::getHighlightedContent($resultSet, $document, $fieldName);
         if (is_string($highlightedContent)) {
             return self::escapeEverythingExceptAllowedTags($resultSet, $highlightedContent);

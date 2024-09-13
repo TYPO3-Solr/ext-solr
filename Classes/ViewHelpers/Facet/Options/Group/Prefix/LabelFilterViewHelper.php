@@ -17,17 +17,12 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\OptionCollection;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
-use Closure;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class LabelFilterViewHelper
  */
 class LabelFilterViewHelper extends AbstractSolrFrontendViewHelper
 {
-    use CompileWithRenderStatic;
-
     protected $escapeOutput = false;
 
     /**
@@ -43,19 +38,16 @@ class LabelFilterViewHelper extends AbstractSolrFrontendViewHelper
     /**
      * Renders group label filter
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ) {
+    public function render()
+    {
         /** @var OptionCollection $options */
-        $options = $arguments['options'];
-        $requiredPrefix = mb_strtolower($arguments['prefix'] ?? '');
+        $options = $this->arguments['options'];
+        $requiredPrefix = mb_strtolower($this->arguments['prefix'] ?? '');
         $filtered = $options->getByLowercaseLabelPrefix($requiredPrefix);
 
-        $templateVariableProvider = $renderingContext->getVariableProvider();
+        $templateVariableProvider = $this->renderingContext->getVariableProvider();
         $templateVariableProvider->add('filteredOptions', $filtered);
-        $content = $renderChildrenClosure();
+        $content = $this->renderChildren();
         $templateVariableProvider->remove('filteredOptions');
 
         return $content;

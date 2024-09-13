@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService;
 use ApacheSolrForTypo3\Solr\Exception as SolrException;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use Closure;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
@@ -28,7 +27,6 @@ use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException as AspectNotFoundExceptionAlias;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Class LastSearchesViewHelper
@@ -55,11 +53,8 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
      * @throws DBALException
      * @throws SolrException
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface|RenderingContext $renderingContext
-    ) {
+    public function render()
+    {
         $cache = self::getInitializedCache();
         /** @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
@@ -71,20 +66,20 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
             $cache,
         );
 
-        if (!$renderingContext instanceof RenderingContext) {
+        if (!$this->renderingContext instanceof RenderingContext) {
             throw new SolrException(
                 'Solr rendering context must be an instance of RenderingContext',
                 1717760054,
             );
         }
 
-        $frequentSearches = $frequentSearchesService->getFrequentSearchTerms($renderingContext->getRequest());
+        $frequentSearches = $frequentSearchesService->getFrequentSearchTerms($this->renderingContext->getRequest());
         $minimumSize = $typoScriptConfiguration->getSearchFrequentSearchesMinSize();
         $maximumSize = $typoScriptConfiguration->getSearchFrequentSearchesMaxSize();
 
-        $templateVariableContainer = $renderingContext->getVariableProvider();
+        $templateVariableContainer = $this->renderingContext->getVariableProvider();
         $templateVariableContainer->add('frequentSearches', self::enrichFrequentSearchesInfo($frequentSearches, $minimumSize, $maximumSize));
-        $output = $renderChildrenClosure();
+        $output = $this->renderChildren();
         $templateVariableContainer->remove('frequentSearches');
         return $output;
     }

@@ -17,17 +17,11 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
-use Closure;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
-
 /**
  * Class PageBrowserRangeViewHelper
  */
 class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * Initializes the arguments
      */
@@ -42,18 +36,15 @@ class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
     /**
      * @noinspection PhpMissingReturnTypeInspection
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $from = $arguments['from'];
-        $to = $arguments['to'];
-        $total = $arguments['total'];
+    public function render()
+    {
+        $from = $this->arguments['from'];
+        $to = $this->arguments['to'];
+        $total = $this->arguments['total'];
 
-        $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
+        $resultSet = self::getUsedSearchResultSetFromRenderingContext($this->renderingContext);
         $search = $resultSet->getUsedSearch();
-        $variableProvider = $renderingContext->getVariableProvider();
+        $variableProvider = $this->renderingContext->getVariableProvider();
 
         $numberOfResultsOnPage = $resultSet->getSearchResults()->getCount();
         $numberOfAllResults = $resultSet->getAllResultCount();
@@ -64,7 +55,7 @@ class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
         $variableProvider->add($to, $resultsTo);
         $variableProvider->add($total, $numberOfAllResults);
 
-        $content = $renderChildrenClosure();
+        $content = $this->renderChildren();
 
         $variableProvider->remove($from);
         $variableProvider->remove($to);

@@ -38,7 +38,11 @@ class RelevanceViewHelperTest extends SetUpUnitTestCase
             'document' => $documentMock,
         ];
         $renderingContextMock = $this->createMock(RenderingContextInterface::class);
-        $score = RelevanceViewHelper::renderStatic($arguments, function() {}, $renderingContextMock);
+
+        $relevanceViewHelperTestable = new RelevanceViewHelper();
+        $relevanceViewHelperTestable->setRenderingContext($renderingContextMock);
+        $relevanceViewHelperTestable->setArguments($arguments);
+        $score = $relevanceViewHelperTestable->render();
 
         self::assertEquals(10.0, $score, 'Unexpected score');
     }
@@ -58,7 +62,10 @@ class RelevanceViewHelperTest extends SetUpUnitTestCase
             'maximumScore' => 11,
         ];
         $renderingContextMock = $this->createMock(RenderingContextInterface::class);
-        $score = RelevanceViewHelper::renderStatic($arguments, function() {}, $renderingContextMock);
+        $relevanceViewHelperTestable = new RelevanceViewHelper();
+        $relevanceViewHelperTestable->setRenderingContext($renderingContextMock);
+        $relevanceViewHelperTestable->setArguments($arguments);
+        $score = $relevanceViewHelperTestable->render();
 
         self::assertEquals(5.0, $score, 'Unexpected score');
     }

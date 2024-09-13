@@ -17,10 +17,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use Closure;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Class LastSearchesViewHelper
@@ -39,11 +37,8 @@ class LastSearchesViewHelper extends AbstractSolrViewHelper
      *
      * @throws DBALException
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ) {
+    public function render()
+    {
         /** @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration();
@@ -51,9 +46,9 @@ class LastSearchesViewHelper extends AbstractSolrViewHelper
             LastSearchesService::class,
             $typoScriptConfiguration
         );
-        $templateVariableContainer = $renderingContext->getVariableProvider();
+        $templateVariableContainer = $this->renderingContext->getVariableProvider();
         $templateVariableContainer->add('lastSearches', $lastSearchesService->getLastSearches());
-        $output = $renderChildrenClosure();
+        $output = $this->renderChildren();
         $templateVariableContainer->remove('lastSearches');
         return $output;
     }
