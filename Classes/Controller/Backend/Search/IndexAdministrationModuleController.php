@@ -35,7 +35,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
         if ($this->selectedSite === null || empty($this->solrConnectionManager->getConnectionsBySite($this->selectedSite))) {
             $this->moduleTemplate->assign('can_not_proceed', true);
         }
-        return $this->moduleTemplate->renderResponse('Index');
+        return $this->moduleTemplate->renderResponse('Backend/Search/IndexAdministrationModule/Index');
     }
 
     /**

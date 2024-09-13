@@ -56,7 +56,7 @@ class InfoModuleController extends AbstractModuleController
         $this->initializeAction();
         if ($this->selectedSite === null) {
             $this->moduleTemplate->assign('can_not_proceed', true);
-            return $this->moduleTemplate->renderResponse('Index');
+            return $this->moduleTemplate->renderResponse('Backend/Search/InfoModule/Index');
         }
 
         $this->collectConnectionInfos();
@@ -64,7 +64,7 @@ class InfoModuleController extends AbstractModuleController
         $this->collectIndexFieldsInfo();
         $this->collectIndexInspectorInfo();
 
-        return $this->moduleTemplate->renderResponse('Index');
+        return $this->moduleTemplate->renderResponse('Backend/Search/InfoModule/Index');
     }
 
     /**
@@ -77,7 +77,7 @@ class InfoModuleController extends AbstractModuleController
     {
         $documents = $this->apacheSolrDocumentRepository->findByTypeAndPidAndUidAndLanguageId($type, $uid, $pageId, $languageUid);
         $this->moduleTemplate->assign('documents', $documents);
-        return $this->moduleTemplate->renderResponse('DocumentsDetails');
+        return $this->moduleTemplate->renderResponse('Backend/Search/InfoModule/DocumentsDetails');
     }
 
     /**

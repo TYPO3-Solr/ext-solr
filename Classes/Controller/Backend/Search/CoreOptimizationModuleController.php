@@ -54,7 +54,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
     {
         if ($this->selectedSolrCoreConnection === null) {
             $this->moduleTemplate->assign('can_not_proceed', true);
-            return $this->moduleTemplate->renderResponse('Index');
+            return $this->moduleTemplate->renderResponse('Backend/Search/CoreOptimizationModule/Index');
         }
 
         $synonyms = [];
@@ -71,7 +71,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             'stopWordsCount' => count($stopWords),
         ]);
 
-        return $this->moduleTemplate->renderResponse('Index');
+        return $this->moduleTemplate->renderResponse('Backend/Search/CoreOptimizationModule/Index');
     }
 
     /**

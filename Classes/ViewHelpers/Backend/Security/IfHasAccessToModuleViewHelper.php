@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use RuntimeException;
 use TYPO3\CMS\Backend\Module\ModuleProvider;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 
 /**
@@ -54,12 +55,7 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
         $this->registerArgument('signature', 'string', 'The full signature of module. Simply mainmodulename_submodulename in most cases.');
     }
 
-    /**
-     * Evaluate condition
-     *
-     * @noinspection PhpMissingReturnTypeInspection
-     */
-    protected static function evaluateCondition($arguments = null)
+    public static function verdict(array $arguments, RenderingContextInterface $renderingContext): bool
     {
         try {
             $hasAccessToModule = self::getModuleProvider()->accessGranted(

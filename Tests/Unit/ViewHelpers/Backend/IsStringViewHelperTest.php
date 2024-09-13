@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Backend;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\IsStringViewHelper;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\Exception as MockObjectException;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -25,17 +26,30 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class IsStringViewHelperTest extends SetUpUnitTestCase
 {
+    protected IsStringViewHelper $isStringViewHelperTestable;
+
+    /**
+     * @throws MockObjectException
+     */
+    protected function setUp(): void
+    {
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
+        $this->isStringViewHelperTestable = new IsStringViewHelper();
+        $this->isStringViewHelperTestable->setRenderingContext($renderingContextMock);
+        parent::setUp();
+    }
+
     #[Test]
     public function viewHelperRendersThenChildIfStringIsGiven(): void
     {
         $arguments = [
             'value' => 'givenString',
-            '__then' => function() { return 'thenResult'; },
-            '__else' => function() { return 'elseResult'; },
+            'then' => 'thenResult',
+            'else' => 'elseResult',
         ];
 
-        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
-        $result = IsStringViewHelper::renderStatic($arguments, function() {}, $renderingContextMock);
+        $this->isStringViewHelperTestable->setArguments($arguments);
+        $result = $this->isStringViewHelperTestable->render();
         self::assertSame('thenResult', $result, 'thenClosure was not rendered');
     }
 
@@ -44,12 +58,12 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
     {
         $arguments = [
             'value' => ['givenStringInArray'],
-            '__then' => function() { return 'thenResult'; },
-            '__else' => function() { return 'elseResult'; },
+            'then' => 'thenResult',
+            'else' => 'elseResult',
         ];
 
-        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
-        $result = IsStringViewHelper::renderStatic($arguments, function() {}, $renderingContextMock);
+        $this->isStringViewHelperTestable->setArguments($arguments);
+        $result = $this->isStringViewHelperTestable->render();
         self::assertSame('elseResult', $result, 'elseResult was not rendered');
     }
 }

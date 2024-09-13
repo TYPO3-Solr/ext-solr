@@ -4,7 +4,6 @@
 <f:layout name="Backend/WithPageTree"/>
 
 <f:section name="Main">
-    <f:be.pageRenderer includeCssFiles="{0: '{f:uri.resource(path:\'StyleSheets/Backend/InfoModule.css\')}'}"/>
 
     <div role="tabpanel">
         <ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
@@ -99,12 +98,12 @@
             <div class="form-group">
                 <label for="baseWord">Base Word</label>
                 <f:form.textfield id="baseWord" name="baseWord" class="form-control" />
-                <span class="example">f.e. iphone</span>
+                <span>f.e. iphone</span>
             </div>
             <div class="form-group">
                 <label for="synonyms">Synonyms</label>
                 <f:form.textfield id="synonyms" name="synonyms" class="form-control" />
-                <span class="example">comma-separated; f.e. smartphone, cellphone</span>
+                <span>comma-separated; f.e. smartphone, cellphone</span>
             </div>
             <div class="form-group">
                 <f:form.checkbox id="overrideExistingSingle" name="overrideExisting" value="1" />
