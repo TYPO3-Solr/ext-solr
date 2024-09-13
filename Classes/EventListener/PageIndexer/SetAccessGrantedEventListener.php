@@ -28,7 +28,7 @@ class SetAccessGrantedEventListener
 {
     public function __invoke(RecordAccessGrantedEvent $event): void
     {
-        if ($GLOBALS['TYPO3_REQUEST']->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER) && $event->getTable() === 'pages') {
+        if ($GLOBALS['TYPO3_REQUEST']?->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER) && $event->getTable() === 'pages') {
             $header = $GLOBALS['TYPO3_REQUEST']->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER);
 
             if (isset($header[0])) {
@@ -36,7 +36,7 @@ class SetAccessGrantedEventListener
                 if (is_array($headerDecoded) && isset($headerDecoded['actions']) && $headerDecoded['actions'] === 'findUserGroups') {
                     $record = $event->getRecord();
                     $record['fe_group'] = '';
-                    $record['extendToSubpages'] = 1;
+                    $record['extendToSubpages'] = 0;
 
                     $event->updateRecord($record);
                 }
