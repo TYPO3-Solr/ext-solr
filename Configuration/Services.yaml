@@ -273,11 +273,13 @@ services:
       - name: event.listener
         identifier: 'solr.index.PageIndexer.FrontendUserAuthenticator'
 
-  ApacheSolrForTypo3\Solr\EventListener\PageIndexer\SetAccessGrantedEventListener:
+  ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector:
     autowire: true
     tags:
       - name: event.listener
-        identifier: 'solr.index.PageIndexer.SetAccessGrantedEventListener'
+        identifier: 'solr.index.IndexQueue.FrontendHelper.getPageOverlay_preProcess'
+        method: 'getPageOverlay_preProcess'
+        event: TYPO3\CMS\Core\Domain\Access\RecordAccessGrantedEvent
 
   ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer:
     autowire: true

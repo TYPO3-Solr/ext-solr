@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use TYPO3\CMS\Core\Domain\Access\RecordAccessGrantedEvent;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface;
 use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageOverlayHookInterface;
@@ -36,8 +37,7 @@ class UserGroupDetector implements
     FrontendHelper,
     SingletonInterface,
     ContentObjectPostInitHookInterface,
-    PageRepositoryGetPageHookInterface,
-    PageRepositoryGetPageOverlayHookInterface
+    PageRepositoryGetPageHookInterface
 {
     /**
      * Index Queue page indexer request.
@@ -63,11 +63,17 @@ class UserGroupDetector implements
     // activation
 
     /**
+     * All event listeners are only triggered if this flag is enabled.
+     */
+    protected bool $activated = false;
+
+    /**
      * Activates a frontend helper by registering for hooks and other
      * resources required by the frontend helper to work.
      */
     public function activate(): void
     {
+        $this->activated = true;
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = UserGroupDetector::class . '->deactivateTcaFrontendGroupEnableFields';
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = UserGroupDetector::class . '->checkEnableFields';
 
@@ -133,27 +139,19 @@ class UserGroupDetector implements
     /**
      * Modifies page records so that when checking for access through fe groups
      * no groups or extendToSubpages flag is found and thus access is granted.
-     *
-     * @param array $pageInput Page record
-     * @param int $lUid Overlay language ID
-     * @param PageRepository $parent Parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
-     * @see https://github.com/TYPO3-Solr/ext-solr/issues/4151
-     * @see \ApacheSolrForTypo3\Solr\EventListener\PageIndexer\SetAccessGrantedEventListener
-     *
-     * This code is not invoked in version 12 - instead an PSR-14 event was introduced to handle
-     * this case. In version 13 this has been fixed - so leaving the code here for now.
-     * The hook invoking part has been removed in this class since it makes no sense
      */
-    public function getPageOverlay_preProcess(
-        &$pageInput,
-        &$lUid,
-        PageRepository $parent
-    ): void {
-        if (!is_array($pageInput)) {
+    public function getPageOverlay_preProcess(RecordAccessGrantedEvent $event): void
+    {
+        if (!$this->activated) {
             return;
         }
+        if ($event->getTable() !== 'pages') {
+            return;
+        }
+        $pageInput = $event->getRecord();
         $pageInput['fe_group'] = '';
         $pageInput['extendToSubpages'] = '0';
+        $event->updateRecord($pageInput);
     }
 
     // execution
