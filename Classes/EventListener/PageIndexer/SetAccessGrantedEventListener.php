@@ -21,10 +21,10 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use TYPO3\CMS\Core\Domain\Access\RecordAccessGrantedEvent;
 
 /**
- * Class ExtendToSubpagesModifier is responsible to modify page records so that when checking for
+ * Class SetAccessGrantedEventListener is responsible to modify page records so that when checking for
  * access through fe groups no groups or extendToSubpages flag is found and thus access is granted.
  */
-class ExtendToSubpagesModifier
+class SetAccessGrantedEventListener
 {
     public function __invoke(RecordAccessGrantedEvent $event): void
     {

@@ -137,10 +137,12 @@ class UserGroupDetector implements
      * @param array $pageInput Page record
      * @param int $lUid Overlay language ID
      * @param PageRepository $parent Parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
-     * @see This code is not invoked in version 12 - instead an PSR-14 event was introduced to handle
-     * this case. In version 13 this has been fixed - so leaving the code here for now.
-     * The hook invoking part has been removed
      * @see https://github.com/TYPO3-Solr/ext-solr/issues/4151
+     * @see \ApacheSolrForTypo3\Solr\EventListener\PageIndexer\SetAccessGrantedEventListener
+     *
+     * This code is not invoked in version 12 - instead an PSR-14 event was introduced to handle
+     * this case. In version 13 this has been fixed - so leaving the code here for now.
+     * The hook invoking part has been removed in this class since it makes no sense
      */
     public function getPageOverlay_preProcess(
         &$pageInput,
