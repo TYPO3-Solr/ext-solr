@@ -102,34 +102,6 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
         self::assertFalse($showEmptyColor);
     }
 
-    /**
-     * @deprecated queue.[indexConfig].table is deprecated and will be removed in v13. As soon as setting is removed this
-     *             test must be removed too. For now this test ensures that 'table' and 'type' are supported.
-     */
-    #[Test]
-    public function canGetIndexQueueTableOrFallbackToConfigurationName(): void
-    {
-        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
-            'index.' => [
-                'queue.' => [
-                    'pages.' => [
-                    ],
-                    'custom.' => [
-                        'table' => 'tx_model_custom',
-                    ],
-                ],
-            ],
-        ];
-
-        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-
-        $customTableExpected = $configuration->getIndexQueueTypeOrFallbackToConfigurationName('pages');
-        self::assertSame($customTableExpected, 'pages', 'Can not fallback to configurationName');
-
-        $customTableExpected = @$configuration->getIndexQueueTypeOrFallbackToConfigurationName('custom');
-        self::assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
-    }
-
     #[Test]
     public function canGetIndexQueueTypeOrFallbackToConfigurationName(): void
     {

@@ -189,16 +189,6 @@ Defines additional pages to take into account when indexing records for example.
 Additional page IDs can be provided as comma-separated list.
 
 
-queue.[indexConfig].table
--------------------------
-
-:Type: String
-:TS Path: plugin.tx_solr.index.queue.[indexConfig].table
-:Since: 2.0
-:Deprecated: 11.5.1
-
-Defines the type to index, which is usally the database table. Setting the record type via 'table' is deprecated and will be removed in v13, use 'type' instead.
-
 queue.[indexConfig].type
 -------------------------
 

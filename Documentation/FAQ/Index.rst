@@ -384,7 +384,7 @@ The following example shows, how to fill the field "mytype_stringS" and build a 
             queue{
                 news = 1
                 news {
-                    table = tt_news
+                    type = tt_news
 
                     fields {
                         mytype_stringS = TEXT

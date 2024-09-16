@@ -358,18 +358,6 @@ class TypoScriptConfiguration
             return (string)$type;
         }
 
-        // TODO: Remove fallback to "table" in v13
-        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.table';
-        $type = $this->getValueByPath($path);
-        if (!is_null($type)) {
-            trigger_error(
-                'queue.[indexConfig].table is deprecated and will be removed in v13. Use plugin.tx_solr.index.queue.[indexConfig].type instead.',
-                E_USER_DEPRECATED
-            );
-
-            return (string)$type;
-        }
-
         return $configurationName;
     }
 
