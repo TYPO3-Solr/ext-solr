@@ -265,7 +265,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 queue {
                     foo = 1
                     foo {
-                        table = tx_fakeextension_domain_model_foo
+                        type = tx_fakeextension_domain_model_foo
                         fields.title = title
                     }
                 }
@@ -520,7 +520,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 queue {
                     foo = 1
                     foo {
-                        table = tx_fakeextension_domain_model_foo
+                        type = tx_fakeextension_domain_model_foo
                         fields.title = title
                     }
                 }
@@ -1481,7 +1481,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 foo {
                     additionalPageIds = 2
                     additionalWhereClause = uid=1
-                    table = tx_fakeextension_domain_model_foo
+                    type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
             }'
@@ -1495,7 +1495,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 foo {
                     additionalPageIds = 2
                     additionalWhereClause = uid=2
-                    table = tx_fakeextension_domain_model_foo
+                    type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
             }'
@@ -1525,7 +1525,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 foo = 1
                 foo {
                     additionalPageIds = 2
-                    table = tx_fakeextension_domain_model_foo
+                    type = tx_fakeextension_domain_model_foo
                     fields {
                         title = title
                     }
@@ -1588,7 +1588,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 foo = 1
                 foo {
                     additionalPageIds = 3
-                    table = tx_fakeextension_domain_model_foo
+                    type = tx_fakeextension_domain_model_foo
                     fields {
                         title = title
                     }
@@ -1603,7 +1603,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 foo = 1
                 foo {
                     additionalPageIds = 3
-                    table = tx_fakeextension_domain_model_foo
+                    type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
             }'
@@ -1638,7 +1638,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 foo = 1
                 foo {
                     additionalPageIds = 3
-                    table = tx_fakeextension_domain_model_foo
+                    type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
             }'
@@ -1651,7 +1651,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 foo = 1
                 foo {
                     additionalPageIds = 3
-                    table = tx_fakeextension_domain_model_foo
+                    type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
             }'

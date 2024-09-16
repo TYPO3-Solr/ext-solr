@@ -276,6 +276,7 @@ class Tsfe implements SingletonInterface
      *
      * Note: The requested $pidToUse can be one of configured plugin.tx_solr.index.queue.[indexConfig].additionalPageIds.
      *
+     * @throws AspectNotFoundException
      * @throws Exception\Exception
      * @throws DBALException
      */

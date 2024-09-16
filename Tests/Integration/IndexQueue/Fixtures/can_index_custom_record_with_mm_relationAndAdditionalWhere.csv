@@ -46,7 +46,7 @@ plugin.tx_solr {
         queue {
             foo = 1
             foo {
-                table = tx_fakeextension_domain_model_bar
+                type = tx_fakeextension_domain_model_bar
 
                 fields {
                     title = title

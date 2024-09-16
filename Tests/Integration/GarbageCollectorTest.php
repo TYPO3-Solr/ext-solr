@@ -836,7 +836,7 @@ class GarbageCollectorTest extends IntegrationTestBase
             plugin.tx_solr.index.queue {
                 foo = 1
                 foo {
-                    table = tx_fakeextension_domain_model_foo
+                    type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
             }'

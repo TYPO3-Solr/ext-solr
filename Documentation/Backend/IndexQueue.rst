@@ -16,7 +16,7 @@ As a core feature EXT:solr allows you to write custom TypoScript configuration t
 
         news = 1
         news {
-            table = tx_news_domain_model_news
+            type = tx_news_domain_model_news
 
             fields {
                 abstract = teaser
@@ -80,7 +80,7 @@ As a core feature EXT:solr allows you to write custom TypoScript configuration t
 By reading the example above you might recognize the following facts:
 
 * The indexing configuration is done in the TypoScript path 'plugin. tx_solr. index. queue. [configName]' and there can be multiple queue configurations.
-* The database table is configured in the property 'plugin.tx_solr.index.queue.[configName].table'. This allows you to have multiple index queue configurations for the same database table. This can be helpful when you have multiple queue configurations for news (e.g. if you have a press & corporate news section on your website).
+* The database table/type is configured in the property 'plugin.tx_solr.index.queue.[configName].type'. This allows you to have multiple index queue configurations for the same database table. This can be helpful when you have multiple queue configurations for news (e.g. if you have a press & corporate news section on your website).
 * The Solr fields are configured in 'plugin.tx_solr.index.queue.[configName].fields'. This allows you to flexibly fill any Solr field. The combination of dynamic fields (:ref:`appendix-dynamic-fields`) and the queue configuration allows you to write any kind of data into Solr without adapting the Solr schema.
 * There are custom TypoScript objects from EXT:solr that are used in the index queue configuration
    - :ref:`index-helper-solr-content`
