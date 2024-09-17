@@ -21,10 +21,11 @@ use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
 use Traversable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -288,9 +289,13 @@ class RelationTest extends IntegrationTestBase
     {
         $tsfeMock = $this->createMock(TypoScriptFrontendController::class);
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfeMock);
-        /** @var MockObject|ServerRequest $requestMock */
-        $requestMock = $this->createMock(ServerRequest::class);
-        $contentObjectRenderer->setRequest($requestMock);
+        $serverRequest = (new ServerRequest('http://testone.site/'))
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
+            ->withAttribute(
+                'language',
+                $this->createMock(SiteLanguage::class)
+            );
+        $contentObjectRenderer->setRequest($serverRequest);
         $contentObjectRenderer->start(
             BackendUtility::getRecord($table, $uid),
             $table
