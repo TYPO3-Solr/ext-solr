@@ -106,7 +106,8 @@ class AbstractIndexerTest extends SetUpUnitTestCase
                 $indexingConfiguration,
                 $solrFieldName,
                 $data,
-                $tsfe
+                $tsfe,
+                0,
             ),
             $expectedValue
         );
