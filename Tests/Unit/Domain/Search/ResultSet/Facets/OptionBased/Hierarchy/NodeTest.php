@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\Node;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -40,35 +41,41 @@ class NodeTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetHasChildNodeSelectedReturnFalseWhenNoChildNodeWasAssigned(): void
-    {
-        $facetMock = $this->createMock(HierarchyFacet::class);
-        $node = new Node($facetMock);
+    #[DataProvider('provideGetHasChildNodeSelectedDataSet')]
+    public function canHandleGetHasChildNodeSelected(
+        bool $expectedResult,
+        array $childNodes,
+    ): void {
+        $node = $this->convertDataToNode(['children' => $childNodes]);
 
-        self::assertFalse($node->getHasChildNodeSelected(), 'Node without childnodes should not indicate that it as a selected child node');
+        self::assertSame($expectedResult, $node->getHasChildNodeSelected());
     }
 
-    #[Test]
-    public function canGetHasChildNodeSelectedReturnFalseWhenNoSelectedChildNodeWasAssigned(): void
+    private function convertDataToNode(array $data): Node
     {
-        $facetMock = $this->createMock(HierarchyFacet::class);
-        $node = new Node($facetMock);
+        $node = new Node(
+            $this->createMock(HierarchyFacet::class),
+            null,
+            '',
+            '',
+            '',
+            0,
+            $data['selected'] ?? false
+        );
 
-        $childNode = new Node($facetMock, $node);
-        $node->addChildNode($childNode);
+        foreach (\array_map([$this, 'convertDataToNode'], $data['children'] ?? []) as $childNode) {
+            $node->addChildNode($childNode);
+        }
 
-        self::assertFalse($node->getHasChildNodeSelected(), 'Node with only unselected childnodes should not indicate that it has a selected child node');
+        return $node;
     }
 
-    #[Test]
-    public function canGetHasChildNodeSelectedReturnTrueWhenSelectedChildNodeWasAssigned(): void
+    public static function provideGetHasChildNodeSelectedDataSet(): iterable
     {
-        $facetMock = $this->createMock(HierarchyFacet::class);
-        $node = new Node($facetMock);
-
-        $selectedChildNode = new Node($facetMock, $node, '', '', '', 0, true);
-        $node->addChildNode($selectedChildNode);
-
-        self::assertTrue($node->getHasChildNodeSelected(), 'Node with selected child node should indicate that it has a selected child node');
+        yield 'No child nodes' => [false, []];
+        yield 'One direct child node: selected' => [true, [['selected' => true]]];
+        yield 'One direct child node: not selected' => [false, [['selected' => false]]];
+        yield 'Child node 1 level down: selected' => [true, [['selected' => false, 'children' => [['selected' => true]]]]];
+        yield 'Child node 2 levels down: selected' => [true, [['selected' => false, 'children' => [['selected' => false, 'children' => [['selected' => true]]]]]]];
     }
 }
