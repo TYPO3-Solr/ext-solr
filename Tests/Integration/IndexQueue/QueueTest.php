@@ -161,7 +161,7 @@ class QueueTest extends IntegrationTestBase
                 custom_page_type {
                     initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
                     indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
-                    table = pages
+                    type = pages
                     allowedPageTypes = 130
                     additionalWhereClause = doktype = 130 AND no_search = 0
 
