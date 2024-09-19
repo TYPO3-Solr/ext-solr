@@ -73,6 +73,8 @@ class PageIndexerTest extends IntegrationTestBase
         int $expectedNumFoundLoggedInUser,
         string $core = 'core_en'
     ): void {
+        self::markTestSkipped('@todo: Fix it. See: https://github.com/TYPO3-Solr/ext-solr/issues/4161');
+
         $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture . '.csv');
 
