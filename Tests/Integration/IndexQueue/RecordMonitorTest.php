@@ -618,7 +618,7 @@ class RecordMonitorTest extends IntegrationTestBase
                     initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
                     allowedPageTypes = 130
                     indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
-                    table = pages
+                    type = pages
                     additionalWhereClause = doktype = 130 AND no_search = 0
 
                     fields {
@@ -729,7 +729,7 @@ class RecordMonitorTest extends IntegrationTestBase
                     initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
                     allowedPageTypes = 130
                     indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
-                    table = pages
+                    type = pages
                     additionalWhereClause = doktype = 130 AND no_search = 0
 
                     fields {
