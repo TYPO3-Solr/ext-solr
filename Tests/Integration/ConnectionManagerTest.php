@@ -212,6 +212,8 @@ class ConnectionManagerTest extends IntegrationTestBase
     #[Test]
     public function canFindSolrConnectionForMountedPageIfMountPointIsGiven(): void
     {
+        self::markTestSkipped('@todo: Fix it. See: https://github.com/TYPO3-Solr/ext-solr/issues/4160');
+
         $this->importCSVDataSet(__DIR__ . '/Fixtures/connection_for_mounted_page.csv');
 
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);

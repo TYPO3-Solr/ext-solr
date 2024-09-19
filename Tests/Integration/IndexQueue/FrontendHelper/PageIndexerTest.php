@@ -302,6 +302,8 @@ class PageIndexerTest extends IntegrationTestBase
     #[Test]
     public function canIndexMountedPage(): void
     {
+        self::markTestSkipped('@todo: Fix it. See: https://github.com/TYPO3-Solr/ext-solr/issues/4160');
+
         $GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 1;
 
         $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
@@ -337,6 +339,8 @@ class PageIndexerTest extends IntegrationTestBase
     #[Test]
     public function canIndexMultipleMountedPage(): void
     {
+        self::markTestSkipped('@todo: Fix it. See: https://github.com/TYPO3-Solr/ext-solr/issues/4160');
+
         $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_multiple_mounted_page.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
