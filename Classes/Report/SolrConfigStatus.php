@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -39,7 +40,7 @@ class SolrConfigStatus extends AbstractSolrStatus
      *
      * Must be updated when changing the solrconfig.
      */
-    public const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-12-0-0--20230602';
+    public const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-13-0-0--20240513';
 
     /**
      * Compiles a collection of solrconfig version checks against each configured
@@ -47,6 +48,7 @@ class SolrConfigStatus extends AbstractSolrStatus
      * recommended one was found.
      *
      * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws InvalidArgumentException
      */
     public function getStatus(): array
     {
