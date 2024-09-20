@@ -241,7 +241,7 @@ Example (boosts tt_news documents by factor 10):
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.search.query.boostQuery.boostNews = (type:tt_news)^10
+    plugin.tx_solr.search.query.boostQuery.boostNews = type:tt_news^10
 
 
 query.tieParameter
