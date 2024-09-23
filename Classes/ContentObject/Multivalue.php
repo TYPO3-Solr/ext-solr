@@ -57,7 +57,7 @@ class Multivalue extends AbstractContentObject
             $data = $this->cObj->stdWrap($data, $conf);
         }
 
-        if (!array_key_exists('separator', $conf)) {
+        if (($conf['separator'] ?? '') === '') {
             $conf['separator'] = ',';
         }
 
@@ -68,7 +68,7 @@ class Multivalue extends AbstractContentObject
 
         $listAsArray = GeneralUtility::trimExplode(
             $conf['separator'],
-            $data,
+            $data ?? '',
             $removeEmptyValues
         );
 
