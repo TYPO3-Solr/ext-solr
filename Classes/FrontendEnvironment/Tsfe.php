@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
@@ -111,14 +112,20 @@ class Tsfe implements SingletonInterface
         $serverRequest = $this->serverRequestCache[$cacheIdentifier] ?? null;
         $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, '0', []);
         if (!isset($this->serverRequestCache[$cacheIdentifier])) {
-            $serverRequest = GeneralUtility::makeInstance(ServerRequest::class);
-            $this->serverRequestCache[$cacheIdentifier] = $serverRequest =
-                $serverRequest->withAttribute('site', $site)
+            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+
+            $serverRequest = GeneralUtility::makeInstance(ServerRequest::class)
+                ->withAttribute('site', $site)
                 ->withAttribute('language', $siteLanguage)
                 ->withAttribute('routing', $pageArguments)
                 ->withAttribute('frontend.page.information', $pageInformation)
                 ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
                 ->withUri($site->getBase());
+
+            $this->serverRequestCache[$cacheIdentifier] = $serverRequest = $serverRequest->withAttribute(
+                'frontend.typoscript',
+                $configurationManager->getCoreTypoScriptFrontendByRequest($serverRequest)
+            );
         }
 
         if (!isset($this->tsfeCache[$cacheIdentifier])) {
@@ -155,6 +162,7 @@ class Tsfe implements SingletonInterface
             /** @var TypoScriptFrontendController $tsfe */
             $tsfe = GeneralUtility::makeInstance(TypoScriptFrontendController::class);
             $tsfe->id = $pageId;
+            $tsfe->newCObj($serverRequest);
 
             $this->serverRequestCache[$cacheIdentifier] = $serverRequest;
             $this->tsfeCache[$cacheIdentifier] = $tsfe;
@@ -256,9 +264,6 @@ class Tsfe implements SingletonInterface
         if (!array_key_exists($cacheIdentifier, $this->tsfeCache)) {
             $this->initializeTsfe($pageId, $language, $rootPageId);
             return;
-        }
-        if ($this->tsfeCache[$cacheIdentifier] instanceof TypoScriptFrontendController) {
-            $this->tsfeCache[$cacheIdentifier]->newCObj($this->serverRequestCache[$cacheIdentifier]);
         }
     }
 
