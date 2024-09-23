@@ -29,6 +29,7 @@ use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScriptFactory;
 use TYPO3\CMS\Core\TypoScript\IncludeTree\SysTemplateRepository;
 use TYPO3\CMS\Core\TypoScript\IncludeTree\SysTemplateTreeBuilder;
@@ -65,7 +66,7 @@ class ConfigurationManager implements SingletonInterface
                 }
             }
         }
-        $fullConfig = $this->getTypoScriptFrontendFromCore($request);
+        $fullConfig = $this->getCoreTypoScriptFrontendByRequest($request)->getSetupArray();
         return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $fullConfig, $pageId);
     }
 
@@ -114,7 +115,7 @@ class ConfigurationManager implements SingletonInterface
      * @throws DBALException
      * @throws JsonException
      */
-    protected function getTypoScriptFrontendFromCore(ServerRequestInterface $request): array
+    public function getCoreTypoScriptFrontendByRequest(ServerRequestInterface $request): FrontendTypoScript
     {
         $typo3Site = $request->getAttribute('site');
         $sysTemplateRows = $this->getSysTemplateRowsForAssociatedContextPageId($request);
@@ -134,7 +135,7 @@ class ConfigurationManager implements SingletonInterface
             [],
             null,
         );
-        $frontendTypoScript = $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
+        return $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
             true,
             $frontendTypoScript,
             $typo3Site,
@@ -144,8 +145,6 @@ class ConfigurationManager implements SingletonInterface
             null,
             null,
         );
-
-        return $frontendTypoScript->getSetupArray();
     }
 
     /**
