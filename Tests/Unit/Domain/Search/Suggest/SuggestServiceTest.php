@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
@@ -126,8 +127,10 @@ class SuggestServiceTest extends SetUpUnitTestCase
             public static SuggestServiceTest $suggestServiceTest;
             public function search(Query $query, $offset = 0, $limit = 10): ?ResponseAdapter
             {
-                return self::$suggestServiceTest->getMockBuilder(ResponseAdapter::class)
+                /** @var ResponseAdapter|MockBuilder $mockObject */
+                $mockObject = self::$suggestServiceTest->provideMockBuilderInObjectsScope(ResponseAdapter::class)
                     ->onlyMethods([])->disableOriginalConstructor()->getMock();
+                return $mockObject;
             }
         };
         $searchStub::$suggestServiceTest = $this;
@@ -144,6 +147,11 @@ class SuggestServiceTest extends SetUpUnitTestCase
 
         $expectedSuggestions = ['status' => false];
         self::assertSame($expectedSuggestions, $suggestions, 'Suggest did not return status false');
+    }
+
+    public function provideMockBuilderInObjectsScope(string $className): ResponseAdapter|MockBuilder
+    {
+        return parent::getMockBuilder($className);
     }
 
     #[Test]
