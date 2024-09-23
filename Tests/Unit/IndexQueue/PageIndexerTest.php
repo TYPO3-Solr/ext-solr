@@ -105,9 +105,11 @@ class PageIndexerTest extends SetUpUnitTestCase
         $indexResponse->expects(self::once())->method('getActionResult')->with('indexPage')->willReturn(['pageIndexed' => 'Success']);
 
         // Two requests will be send, the first one for the access groups, the second one for the indexing itself
-        $this->pageIndexerRequestMock->expects(self::exactly(2))->method('send')->with('http://myfrontendurl.de/index.php?id=4711&L=0')->will(
-            self::onConsecutiveCalls($accessGroupResponse, $indexResponse)
-        );
+        $this->pageIndexerRequestMock
+            ->expects(self::exactly(2))
+            ->method('send')
+            ->with('http://myfrontendurl.de/index.php?id=4711&L=0')
+            ->willReturn($accessGroupResponse, $indexResponse);
 
         $pageIndexer = $this->getPageIndexerWithMockedDependencies([]);
         $pageRootLineMock = $this->createMock(Rootline::class);

@@ -91,9 +91,9 @@ class SolrReadServiceTest extends SetUpUnitTestCase
 
     public static function readServiceExceptionDataProvider(): Traversable
     {
-        yield 'Communication error' => ['exceptionClass' => SolrUnavailableException::class, 0];
-        yield 'Internal Server error' => ['exceptionClass' => SolrInternalServerErrorException::class, 500];
-        yield 'Other unspecific error' => ['exceptionClass' => SolrCommunicationException::class, 555];
+        yield 'Communication error' => ['exceptionClass' => SolrUnavailableException::class, 'statusCode' => 0];
+        yield 'Internal Server error' => ['exceptionClass' => SolrInternalServerErrorException::class, 'statusCode' => 500];
+        yield 'Other unspecific error' => ['exceptionClass' => SolrCommunicationException::class, 'statusCode' => 555];
     }
 
     #[DataProvider('readServiceExceptionDataProvider')]

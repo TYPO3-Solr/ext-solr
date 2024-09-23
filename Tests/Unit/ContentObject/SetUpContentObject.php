@@ -43,7 +43,6 @@ abstract class SetUpContentObject extends SetUpUnitTestCase
         parent::setUp();
 
         $tsfe = $this->getMockBuilder(TypoScriptFrontendController::class)
-            ->addMethods(['dummy'])
             ->disableOriginalConstructor()
             ->getMock();
 

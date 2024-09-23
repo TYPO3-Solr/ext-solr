@@ -198,7 +198,7 @@ class PageIndexerTest extends IntegrationTestBase
             'expectedNumFoundAnonymousUser' => 0,
             'userGroupToCheckAccessFilter' => '0,1,2',
             'expectedNumFoundLoggedInUser' => 2,
-            'core_de',
+            'core' => 'core_de',
         ];
 
         yield 'public page with protected content and global content' => [
