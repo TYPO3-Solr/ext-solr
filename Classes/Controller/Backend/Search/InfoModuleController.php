@@ -53,7 +53,6 @@ class InfoModuleController extends AbstractModuleController
      */
     public function indexAction(): ResponseInterface
     {
-        $this->initializeAction();
         if ($this->selectedSite === null) {
             $this->moduleTemplate->assign('can_not_proceed', true);
             return $this->moduleTemplate->renderResponse('Backend/Search/InfoModule/Index');
@@ -73,9 +72,9 @@ class InfoModuleController extends AbstractModuleController
      * @noinspection PhpUnused
      * @throws DBALException
      */
-    public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid): ResponseInterface
+    public function documentsDetailsAction(string $type, int $uid, int $selectedPageUID, int $languageUid): ResponseInterface
     {
-        $documents = $this->apacheSolrDocumentRepository->findByTypeAndPidAndUidAndLanguageId($type, $uid, $pageId, $languageUid);
+        $documents = $this->apacheSolrDocumentRepository->findByTypeAndPidAndUidAndLanguageId($type, $uid, $selectedPageUID, $languageUid);
         $this->moduleTemplate->assign('documents', $documents);
         return $this->moduleTemplate->renderResponse('Backend/Search/InfoModule/DocumentsDetails');
     }
@@ -274,7 +273,7 @@ class InfoModuleController extends AbstractModuleController
         }
 
         $this->moduleTemplate->assignMultiple([
-            'pageId' => $this->selectedPageUID,
+            'selectedPageUID' => $this->selectedPageUID,
             'indexInspectorDocumentsByLanguageAndType' => $documentsByCoreAndType,
         ]);
     }

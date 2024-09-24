@@ -29,8 +29,11 @@
 				<f:render partial="Backend/NoSiteAvailable" arguments="{_all}"/>
 			</f:then>
 			<f:else>
-				<f:variable name="args" value="{0: 'searchbackend', 1: pageUID}" />
-				<typo3-immediate-action action="TYPO3.Backend.Storage.ModuleStateStorage.update" args="{args -> f:format.json() -> f:format.htmlspecialchars()}"></typo3-immediate-action>
+				<f:variable name="immediateActionArgs" value="{0: 'searchbackend', 1: selectedPageUID}" />
+				<typo3-immediate-action
+					action="TYPO3.Backend.Storage.ModuleStateStorage.update"
+					args="{immediateActionArgs -> f:format.json() -> f:format.htmlspecialchars()}"
+				></typo3-immediate-action>
 
 				<f:render partial="Backend/FlashMessages" />
 				<f:render section="Main"/>

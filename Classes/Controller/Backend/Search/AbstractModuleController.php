@@ -34,10 +34,11 @@ use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
+use TYPO3\CMS\Core\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3Fluid\Fluid\View\ViewInterface;
+use TYPO3Fluid\Fluid\View\ViewInterface as FluidStandaloneViewInterface;
 
 /**
  * Abstract Module
@@ -142,16 +143,16 @@ abstract class AbstractModuleController extends ActionController
     /**
      * Set up the doc header properly here
      *
+     * @throws InvalidArgumentException
      * @throws UnexpectedTYPO3SiteInitializationException
-     * @param ViewInterface $view
      */
-    protected function initializeView($view): void
+    protected function initializeView(ViewInterface|FluidStandaloneViewInterface $view): void
     {
         $sites = $this->siteRepository->getAvailableSites();
 
         $selectOtherPage = count($sites) > 0 || $this->selectedPageUID < 1;
         $this->moduleTemplate->assign('showSelectOtherPage', $selectOtherPage);
-        $this->moduleTemplate->assign('pageUID', $this->selectedPageUID);
+        $this->moduleTemplate->assign('selectedPageUID', $this->selectedPageUID);
         if ($this->selectedPageUID < 1) {
             return;
         }
@@ -221,8 +222,6 @@ abstract class AbstractModuleController extends ActionController
 
     /**
      * Empties the Index Queue
-     *
-     * @throws DBALException
      *
      * @noinspection PhpUnused Used in IndexQueue- and IndexAdministration- controllers
      */
