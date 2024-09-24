@@ -129,7 +129,7 @@
 			<div class="row section-with-header">
 				<div class="col-md-3">
 
-                    <f:form action="clearIndexQueue" additionalParams="{id: '{pageUID}'}">
+                    <f:form action="clearIndexQueue" additionalParams="{id: '{selectedPageUID}'}">
 						<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
 									   data="{title: 'Please confirm', content: 'Are you sure you want to clear the Index Queue?', severity: 'warning'}"
 									   value="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"/>

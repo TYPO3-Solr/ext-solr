@@ -65,7 +65,6 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     public function indexAction(): ResponseInterface
     {
-        $this->initializeAction();
         if (!$this->canQueueSelectedSite()) {
             $this->moduleTemplate->assign('can_not_proceed', true);
             return $this->moduleTemplate->renderResponse('Backend/Search/IndexQueueModule/Index');
