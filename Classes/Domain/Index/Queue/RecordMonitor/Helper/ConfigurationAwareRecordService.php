@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
+use TYPO3\CMS\Core\Database\Query\Restriction\StartTimeRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -134,6 +135,7 @@ class ConfigurationAwareRecordService
         }
 
         $queryBuilder = $this->getQueryBuilderForTable($recordTable);
+        $queryBuilder->getRestrictions()->removeByType(StartTimeRestriction::class);
         $queryBuilder
             ->select('*')
             ->from($recordTable)
