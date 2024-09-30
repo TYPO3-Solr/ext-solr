@@ -59,12 +59,14 @@ use UnexpectedValueException;
  */
 class PageIndexer implements FrontendHelper, SingletonInterface
 {
+    public const ACTION_NAME = 'indexPage';
+
     protected bool $activated = false;
 
     /**
      * This frontend helper's executed action.
      */
-    protected string $action = 'indexPage';
+    protected string $action = self::ACTION_NAME;
 
     /**
      * Index Queue page indexer request.

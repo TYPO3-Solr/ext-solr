@@ -24,6 +24,8 @@ use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -461,6 +463,10 @@ abstract class IntegrationTestBase extends FunctionalTestCase
             $requestContext = (new InternalRequestContext())->withFrontendUserId($frontendUserId);
         }
         $response = $this->executeFrontendSubRequest($request, $requestContext);
+        /** @var VariableFrontend $runtimeCache */
+        $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime');
+        $runtimeCache->flush();
+
         $response->getBody()->rewind();
         return $response;
     }
