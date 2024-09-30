@@ -970,12 +970,12 @@ class SearchControllerTest extends IntegrationTestBase
      * @param array $getArguments
      *
      * @todo: See: https://github.com/TYPO3/testing-framework/issues/324
+     * Notes:
+     * Fits removed frontendWillRenderErrorMessageForSolrNotAvailableAction() test case as well.
+     * Removed code: https://github.com/TYPO3-Solr/ext-solr/blob/03080d4d55eeb9d50b15348f445d23e57e34e461/Tests/Integration/Controller/SearchControllerTest.php#L729-L747
      */
     #[DataProvider('frontendWillRenderErrorMessageIfSolrNotAvailableDataProvider')]
-    #[Group('frontend
-Notes:
-  Fits removed frontendWillRenderErrorMessageForSolrNotAvailableAction() test case as well.
-  Removed code: https://github.com/TYPO3-Solr/ext-solr/blob/03080d4d55eeb9d50b15348f445d23e57e34e461/Tests/Integration/Controller/SearchControllerTest.php#L729-L747')]
+    #[Group('frontend')]
     #[Test]
     public function frontendWillRenderErrorMessageIfSolrNotAvailable(string $action, array $getArguments): void
     {
@@ -1226,10 +1226,7 @@ Notes:
         self::assertTrue($isPid2OptionBefore1Option);
     }
 
-    #[Group('frontend
-Notes:
-  Fits removed canRenderSearchFormOnly() test case as well.
-    Removed code: https://github.com/TYPO3-Solr/ext-solr/blob/03080d4d55eeb9d50b15348f445d23e57e34e461/Tests/Integration/Controller/SearchControllerTest.php#L1053-L1062')]
+    #[Group('frontend')]
     #[Test]
     public function formActionIsRenderingTheForm(): void
     {
