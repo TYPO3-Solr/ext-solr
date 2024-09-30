@@ -295,6 +295,10 @@ services:
       - name: event.listener
         identifier: 'solr.index.PageFieldMappingIndexer'
 
+  ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector:
+    autowire: true
+    autoconfigure: true
+
   ApacheSolrForTypo3\Solr\EventListener\Extbase\PersistenceEventListener:
     autowire: true
     tags:

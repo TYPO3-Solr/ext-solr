@@ -34,6 +34,8 @@ use TYPO3\CMS\Frontend\Event\ModifyTypoScriptConfigEvent;
  */
 class UserGroupDetector implements FrontendHelper, SingletonInterface
 {
+    public const ACTION_NAME = 'findUserGroups';
+
     /**
      * Index Queue page indexer request.
      */
@@ -42,7 +44,7 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
     /**
      * This frontend helper's executed action.
      */
-    protected string $action = 'findUserGroups';
+    protected string $action = self::ACTION_NAME;
 
     /**
      * Holds the original, unmodified TCA during user group detection
@@ -96,9 +98,8 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
             return;
         }
         if (empty($this->originalTca)) {
-            return;
+            $this->originalTca = $GLOBALS['TCA'];
         }
-        $this->originalTca = $GLOBALS['TCA'];
 
         foreach ($GLOBALS['TCA'] as $tableName => $tableConfiguration) {
             if (isset($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['fe_group'])) {
@@ -117,8 +118,7 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
     public function getPage_preProcess(BeforePageIsRetrievedEvent $event): void
     {
         if ($this->activated) {
-            //$event->skipGroupAccessCheck();
-            $disableGroupAccessCheck = true;
+            $event->skipGroupAccessCheck();
         }
     }
 
@@ -227,6 +227,7 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
     public function deactivate(PageIndexerResponse $response): void
     {
         $this->activated = false;
+        $GLOBALS['TCA'] = $this->originalTca;
         $response->addActionResult($this->action, $this->getFrontendGroups());
     }
 }

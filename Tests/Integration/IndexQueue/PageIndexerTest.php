@@ -24,6 +24,8 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
@@ -50,14 +52,14 @@ class PageIndexerTest extends IntegrationTestBase
             page.10.stdWrap.dataWrap = <!--TYPO3SEARCH_begin-->|<!--TYPO3SEARCH_end-->
             '
         );
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
 
     /**
-     * Executed after each test. Emptys solr and checks if the index is empty
+     * Executed after each test. Empties solr and checks if the index is empty
      */
     protected function tearDown(): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         parent::tearDown();
     }
 
@@ -73,9 +75,6 @@ class PageIndexerTest extends IntegrationTestBase
         int $expectedNumFoundLoggedInUser,
         string $core = 'core_en'
     ): void {
-        self::markTestSkipped('@todo: Fix it. See: https://github.com/TYPO3-Solr/ext-solr/issues/4161');
-
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture . '.csv');
 
         $createPageIndexerMock = function(): PageIndexerRequest {
@@ -279,6 +278,9 @@ class PageIndexerTest extends IntegrationTestBase
             $indexerResponse->addActionResult($action, $actionResult);
         }
 
+        /** @var VariableFrontend $runtimeCache */
+        $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime');
+        $runtimeCache->flush();
         return $indexerResponse;
     }
 }
