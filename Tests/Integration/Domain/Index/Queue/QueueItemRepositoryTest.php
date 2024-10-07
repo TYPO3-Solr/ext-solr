@@ -110,7 +110,7 @@ class QueueItemRepositoryTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_and_news_queueitems.csv');
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
-            static function(
+            static function (
                 AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event
             ): Object {
                 return $event;
@@ -126,7 +126,7 @@ class QueueItemRepositoryTest extends IntegrationTestBase
         self::assertSame('pages', $firstItem->getType(), 'First item has unexpected type');
 
         $eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
-            static function(
+            static function (
                 AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event
             ): Object {
                 if ($event->getTable() === 'pages') {

@@ -297,10 +297,10 @@ class SearchUriBuilder
             }
         }
 
-        $keys = array_map(static function($value) {
+        $keys = array_map(static function ($value) {
             return urlencode((string)$value);
         }, array_keys($values));
-        $values = array_map(static function($value) {
+        $values = array_map(static function ($value) {
             return urlencode((string)$value);
         }, $values);
 
@@ -333,7 +333,7 @@ class SearchUriBuilder
 
         $values = $variableEvent->getVariableValues();
         // Take care that everything is urlencoded!
-        $keys = array_map(static function($value) {
+        $keys = array_map(static function ($value) {
             if (!str_contains($value, '###')) {
                 return $value;
             }

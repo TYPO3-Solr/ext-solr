@@ -52,7 +52,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
      */
     public function getSelected(): AbstractCollection
     {
-        return $this->getFilteredCopy(function(AbstractFacetItem $item) {
+        return $this->getFilteredCopy(function (AbstractFacetItem $item) {
             return $item->getSelected();
         });
     }

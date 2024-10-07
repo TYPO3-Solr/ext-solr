@@ -37,7 +37,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class StatisticsWriterProcessorTest extends SetUpUnitTestCase
 {
-    protected StatisticsRepository|MockObject$statisticsRepositoryMock;
+    protected StatisticsRepository|MockObject $statisticsRepositoryMock;
     protected SiteRepository|MockObject $siteRepositoryMock;
     protected StatisticsWriterProcessor|MockObject $processor;
     protected TypoScriptConfiguration|MockObject $typoScriptConfigurationMock;
@@ -83,7 +83,7 @@ class StatisticsWriterProcessorTest extends SetUpUnitTestCase
         $resultSetMock->expects(self::once())->method('getUsedQuery')->willReturn($this->queryMock);
         $resultSetMock->expects(self::once())->method('getUsedSearchRequest')->willReturn($this->searchRequestMock);
 
-        $this->statisticsRepositoryMock->expects(self::any())->method('saveStatisticsRecord')->willReturnCallback(function($statisticData) {
+        $this->statisticsRepositoryMock->expects(self::any())->method('saveStatisticsRecord')->willReturnCallback(function ($statisticData) {
             $this->assertSame('my search', $statisticData['keywords'], 'Unexpected keywords given');
             $this->assertSame('192.168.2.22', $statisticData['ip'], 'Unexpected ip given');
             $this->assertSame(4711, $statisticData['root_pid'], 'Unexpected root pid given');
