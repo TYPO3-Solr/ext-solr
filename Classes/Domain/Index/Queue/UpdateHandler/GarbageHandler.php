@@ -99,7 +99,7 @@ class GarbageHandler extends AbstractUpdateHandler
                 $subPageIds = $this->getSubPageIds($uid);
                 array_walk(
                     $subPageIds,
-                    fn (int $subPageId) => $this->collectGarbage('pages', $subPageId)
+                    fn(int $subPageId) => $this->collectGarbage('pages', $subPageId)
                 );
             }
         }

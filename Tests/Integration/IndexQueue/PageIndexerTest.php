@@ -77,11 +77,11 @@ class PageIndexerTest extends IntegrationTestBase
     ): void {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture . '.csv');
 
-        $createPageIndexerMock = function(): PageIndexerRequest {
+        $createPageIndexerMock = function (): PageIndexerRequest {
             $requestMock = $this->getMockBuilder(PageIndexerRequest::class)
                 ->onlyMethods(['send'])
                 ->getMock();
-            $sendCallback = function($indexRequestUrl) use ($requestMock): PageIndexerResponse {
+            $sendCallback = function ($indexRequestUrl) use ($requestMock): PageIndexerResponse {
                 return $this->sendPageIndexerRequest($indexRequestUrl, $requestMock);
             };
             $requestMock->method('send')->willReturnCallback($sendCallback);

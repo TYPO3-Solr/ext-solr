@@ -223,7 +223,7 @@ class PageIndexer extends Indexer
      * Builds a URL for a given page ID and then actually build and return the page URL.
      *
      * @throws DBALException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getDataUrl(Item $item, int $language = 0): string
     {
@@ -235,7 +235,7 @@ class PageIndexer extends Indexer
     /**
      * Returns the URI strategy object
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getUriBuilder(): PageUriBuilder
     {

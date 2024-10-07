@@ -145,7 +145,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
     protected function assertThatSitesAreCreatedWithPageIds(array $pageIds, array $fakedConnectionConfiguration = []): void
     {
         $this->siteRepository->expects(self::any())->method('buildSite')->willReturnCallback(
-            function($idToUse) use ($pageIds, $fakedConnectionConfiguration) {
+            function ($idToUse) use ($pageIds, $fakedConnectionConfiguration) {
                 if (in_array($idToUse, $pageIds)) {
                     $site = $this->createMock(Site::class);
                     $site->expects($this->any())->method('getRootPageId')->willReturn(

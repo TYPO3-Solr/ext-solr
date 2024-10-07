@@ -44,7 +44,7 @@ class IdBuilderTest extends SetUpUnitTestCase
     {
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $eventDispatcher->expects(self::once())->method('dispatch')->willReturnCallback(
-            static function(AfterVariantIdWasBuiltEvent $event) {
+            static function (AfterVariantIdWasBuiltEvent $event) {
                 $event->setVariantId('mycustomid');
                 return $event;
             }

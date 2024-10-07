@@ -61,17 +61,17 @@ abstract class SetUpFacetParser extends SetUpUnitTestCase
         // Replace calls with own data bag
         $searchRequestMock->expects(self::any())
             ->method('getActiveFacetNames')
-            ->willReturnCallback(function() use ($activeUrlFacets) {
+            ->willReturnCallback(function () use ($activeUrlFacets) {
                 return $activeUrlFacets->getActiveFacetNames();
             });
         $searchRequestMock->expects(self::any())
             ->method('getActiveFacets')
-            ->willReturnCallback(function() use ($activeUrlFacets) {
+            ->willReturnCallback(function () use ($activeUrlFacets) {
                 return $activeUrlFacets->getActiveFacets();
             });
         $searchRequestMock->expects(self::any())
             ->method('getActiveFacetValuesByName')
-            ->willReturnCallback(function(string $facetName) use ($activeUrlFacets) {
+            ->willReturnCallback(function (string $facetName) use ($activeUrlFacets) {
                 return $activeUrlFacets->getActiveFacetValuesByName($facetName);
             });
 

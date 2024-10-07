@@ -388,7 +388,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $this->indexQueueMock
             ->expects($matcher)
             ->method('updateItem')
-            ->willReturnCallback(static function(string $type, int $uid) use ($dummyPageRecord, $matcher): int {
+            ->willReturnCallback(static function (string $type, int $uid) use ($dummyPageRecord, $matcher): int {
                 match ($matcher->numberOfInvocations()) {
                     1 => self::assertEquals(
                         [

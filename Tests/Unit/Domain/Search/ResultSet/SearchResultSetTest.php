@@ -65,7 +65,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
 
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
-            static function(object $event) {
+            static function (object $event) {
                 return $event;
             }
         );
@@ -126,7 +126,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
         $this->eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
-            static function(object $event) {
+            static function (object $event) {
                 if ($event instanceof AfterSearchQueryHasBeenPreparedEvent) {
                     $event->getTypoScriptConfiguration()->getSearchConfiguration();
                 }
@@ -149,7 +149,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
         $this->eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
-            static function(object $event) {
+            static function (object $event) {
                 if ($event instanceof AfterSearchHasBeenExecutedEvent) {
                     foreach ($event->getSearchResultSet()->getSearchResults() as $result) {
                         $result->type = strtoupper($result->type);
@@ -226,7 +226,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
         ResponseAdapter $fakeResponse,
     ): void {
         $this->searchMock->expects(self::once())->method('search')->willReturnCallback(
-            static function(Query $query, $offset) use ($expectedQueryString, $expectedOffset, $fakeResponse) {
+            static function (Query $query, $offset) use ($expectedQueryString, $expectedOffset, $fakeResponse) {
                 self::assertSame($expectedQueryString, $query->getQuery(), 'Search was not triggered with an expected queryString');
                 self::assertSame($expectedOffset, $offset);
                 return $fakeResponse;

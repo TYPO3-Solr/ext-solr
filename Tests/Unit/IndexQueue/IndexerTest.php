@@ -171,7 +171,7 @@ class IndexerTest extends SetUpUnitTestCase
             // @todo: it is really needed to test the EventDispatcher-Stack of libs there?
             // If not, remove this else block and 'no listener registered' from canGetAdditionalDocumentsDataProvider.
             $eventDispatcher->expects(self::once())->method('dispatch')->willReturnCallback(
-                static function(object $event) {
+                static function (object $event) {
                     return $event;
                 }
             );
@@ -221,14 +221,14 @@ class IndexerTest extends SetUpUnitTestCase
         ];
 
         yield 'valid listener, no additional documents' => [
-            'listener' => static function(BeforeDocumentIsProcessedForIndexingEvent $event) {
+            'listener' => static function (BeforeDocumentIsProcessedForIndexingEvent $event) {
                 return $event;
             },
             'expectedException' => null,
             'expectedResultCount' => 1,
         ];
         yield 'valid listener, adds an additional document' => [
-            'listener' => static function(BeforeDocumentIsProcessedForIndexingEvent $event) {
+            'listener' => static function (BeforeDocumentIsProcessedForIndexingEvent $event) {
                 $event->addDocuments([new Document()]);
                 return $event;
             },

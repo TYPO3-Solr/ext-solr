@@ -44,7 +44,7 @@ class OptionCollection extends AbstractFacetItemCollection
      */
     public function getByLowercaseLabelPrefix(string $filteredPrefix): AbstractCollection|AbstractFacetItemCollection|OptionCollection
     {
-        return $this->getFilteredCopy(function(Option $option) use ($filteredPrefix) {
+        return $this->getFilteredCopy(function (Option $option) use ($filteredPrefix) {
             $filteredPrefixLength = mb_strlen($filteredPrefix);
             $currentPrefix = mb_substr(mb_strtolower($option->getLabel()), 0, $filteredPrefixLength);
 
