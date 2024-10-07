@@ -27,7 +27,7 @@
     "ext-libxml": "*",
     "ext-pdo": "*",
     "ext-simplexml": "*",
-    "solarium/solarium": "6.3.2",
+    "solarium/solarium": "6.3.5",
     "typo3/cms-backend": "*",
     "typo3/cms-core": "^v13.1",
     "typo3/cms-extbase": "*",
@@ -39,10 +39,10 @@
   },
   "require-dev": {
     "dg/bypass-finals": "^1.6",
-    "phpunit/phpunit": "^11.2",
+    "phpunit/phpunit": "^11.4",
     "typo3/cms-fluid-styled-content": "*",
-    "typo3/coding-standards": "dev-main#27798dd4b8a15d2178260dbd6aad83fb0d6a017e",
-    "typo3/testing-framework": "dev-main#60f586e8923e48be2e7a2dcd9634e9eac51eab6d",
+    "typo3/coding-standards": "v0.8.0",
+    "typo3/testing-framework": "dev-main#47bf0daab24b4210221f46a1fde59b9c3e245e39",
     "phpstan/phpstan": "^1.11",
     "phpstan/phpstan-phpunit": "^1.3"
   },
