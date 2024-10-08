@@ -179,7 +179,8 @@ defined('TYPO3') or die('Access denied.');
         ],
         [
             SearchController::class => 'results',
-        ]
+        ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     ExtensionUtility::configurePlugin(
@@ -187,7 +188,11 @@ defined('TYPO3') or die('Access denied.');
         'pi_search',
         [
             SearchController::class => 'form',
-        ]
+        ],
+        [
+
+        ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     ExtensionUtility::configurePlugin(
@@ -198,7 +203,8 @@ defined('TYPO3') or die('Access denied.');
         ],
         [
             SearchController::class => 'frequentlySearched',
-        ]
+        ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     ExtensionUtility::configurePlugin(
@@ -209,7 +215,8 @@ defined('TYPO3') or die('Access denied.');
         ],
         [
             SuggestController::class => 'suggest',
-        ]
+        ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     // register the Fluid namespace 'solr' globally

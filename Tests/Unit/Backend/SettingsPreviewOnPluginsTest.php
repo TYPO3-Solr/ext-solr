@@ -50,7 +50,7 @@ class SettingsPreviewOnPluginsTest extends SetUpUnitTestCase
             $this->getFakePageContentPreviewRenderingEvent(
                 'tt_content',
                 [
-                    'list_type' => 'some_other_CE',
+                    'CType' => 'some_other_CE',
                 ]
             )
         );

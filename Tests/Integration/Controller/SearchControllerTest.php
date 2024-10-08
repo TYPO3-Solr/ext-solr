@@ -1233,7 +1233,7 @@ class SearchControllerTest extends IntegrationTestBase
         $connection = $this->getConnectionPool()->getConnectionForTable('tt_content');
         $connection->update(
             'tt_content',
-            ['list_type' => 'solr_pi_search'],
+            ['CType' => 'solr_pi_search'],
             ['uid' => 2022]
         );
 
@@ -1259,7 +1259,7 @@ class SearchControllerTest extends IntegrationTestBase
         $this->getConnectionPool()->getConnectionForTable('tt_content')
             ->update(
                 'tt_content',
-                ['list_type' => 'solr_pi_frequentlysearched'],
+                ['CType' => 'solr_pi_frequentlysearched'],
                 ['uid' => 2022]
             );
 

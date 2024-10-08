@@ -74,7 +74,7 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
             [
                 'pid' => 11,
                 'pi_flexform' => 'provided via mock return value $this->flexFormArray',
-                'list_type' => 'solr_pi_results',
+                'CType' => 'solr_pi_results',
                 'hidden' => 0,
             ]
         );

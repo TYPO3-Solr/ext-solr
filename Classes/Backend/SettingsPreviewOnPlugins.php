@@ -45,7 +45,7 @@ class SettingsPreviewOnPlugins
         $this->pluginsTtContentRecord = $event->getRecord();
         if (
             $event->getTable() !== 'tt_content'
-            || !str_starts_with($this->pluginsTtContentRecord['list_type'], 'solr_pi_')
+            || !str_starts_with($this->pluginsTtContentRecord['CType'], 'solr_pi_')
         ) {
             return;
         }
@@ -152,14 +152,17 @@ class SettingsPreviewOnPlugins
         $label = BackendUtility::getLabelFromItemListMerged(
             $this->pluginsTtContentRecord['pid'],
             'tt_content',
-            'list_type',
-            $this->pluginsTtContentRecord['list_type'],
+            'CType',
+            $this->pluginsTtContentRecord['CType'],
             $this->pluginsTtContentRecord
         );
         if (!empty($label)) {
             $label = $this->getLanguageService()->sL($label);
         } else {
-            $label = sprintf($this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.noMatchingValue'), $this->pluginsTtContentRecord['list_type']);
+            $label = sprintf(
+                $this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.noMatchingValue'),
+                $this->pluginsTtContentRecord['CType']
+            );
         }
 
         return $label;

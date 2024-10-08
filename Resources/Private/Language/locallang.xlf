@@ -339,13 +339,13 @@
 			</trans-unit>
 
 			<!-- From locallang_db.xlf -->
-			<trans-unit id="tt_content.list_type_pi_frequentsearches" xml:space="preserve">
+			<trans-unit id="tt_content.CType_pi_frequentsearches" xml:space="preserve">
 				<source>Search: Frequent Searches</source>
 			</trans-unit>
-			<trans-unit id="tt_content.list_type_pi_results" xml:space="preserve">
+			<trans-unit id="tt_content.CType_pi_results" xml:space="preserve">
 				<source>Search: Form, Result, Additional Components</source>
 			</trans-unit>
-			<trans-unit id="tt_content.list_type_pi_search" xml:space="preserve">
+			<trans-unit id="tt_content.CType_pi_search" xml:space="preserve">
 				<source>Search: Form only</source>
 			</trans-unit>
 
