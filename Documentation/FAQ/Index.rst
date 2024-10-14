@@ -15,6 +15,7 @@ Are versions of EXT:solr compatible with TYPO3 ELTS versions?
 
 Yes, the updates will be available via EXT:solr ELTS regiment in EB program.
 For ELTS version of EXT:solr, you have following options:
+
 * visit https://shop.dkd.de/Produkte/Apache-Solr-fuer-TYPO3/
 * or contact us via solr-eb-support@dkd.de
 * or call us +49 (0)69 - 2475218 0
@@ -45,7 +46,7 @@ Please send an email to the `TYPO3 security team <mailto:security@typo3.org>`_ w
 Is there some chat/irc channel for EXT:solr available?
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Join us on the official `Slack for TYPO3 <https://forger.typo3.org/slack>`_ and get answers related to EXT:solr in the #ext-solr channel immediately!
+Join us on the official `Slack for TYPO3 <https://typo3.slack.com/>`_ and get answers related to EXT:solr in the #ext-solr channel immediately!
 
 
 Which plugins(TYPO3 Frontend) are available?
