@@ -1,29 +1,34 @@
 # There is following scenario:
 #   [0]
 #    |
-#    ——[20] Shared-Pages (Not root)
+#    |—[111] 2nd page root
 #    |   |
-#    |   ——[44] FirstShared (Not root)
+#    |   |—[44] FirstShared (Not root)
 #    |
-#    ——[ 1] Page (Root)
+#    |—[ 1] Page (Root)
 #        |
-#        ——[14] Mount Point (to [44] to show contents from)
-#    |
-#    ——[ 2] Page (Root)
+#        |—[14] Mount Point (to [44] to show contents from)
 #        |
-#        ——[24] Mount Point (to [44] to show contents from)
+#        |—[24] Mount Point (to [44] to show contents from)
 "pages",
 ,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title"
 # Site tree a
 ,14,1,0,7,44,1,"/mount-point","Mount Point"
 ,24,1,0,7,44,1,"/mount-point-2","Mount Point 2"
 # Shared Pages tree
-,20,0,0,254,0,0,"/shared-pages","Shared-Pages"
-,44,20,0,1,0,0,"/first-shared","FirstShared (Not root)"
+,44,111,0,1,0,0,"/first-shared","FirstShared (Not root)"
 "tt_content",
 ,"uid","pid","colPos","CType","bodytext"
 ,99,44,0,"text","Some Lorem Ipsum conteint!"
 "tx_solr_indexqueue_item",
 ,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors"
-,4711,1,"pages",44,"pages",1449151778,0,0,0,0,0
-,4712,1,"pages",44,"pages",1449151778,0,0,0,0,0
+,4711,1,"pages",14,"pages",1449151778,0,1,0,0,0
+,4712,1,"pages",24,"pages",1449151778,0,1,0,0,0
+"tx_solr_indexqueue_indexing_property",
+,"uid","root","item_id","property_key","property_value"
+,1,1,4711,"mountPageSource",44
+,2,1,4711,"mountPageDestination",14
+,3,1,4711,"isMountedPage",1
+,4,1,4712,"mountPageSource",44
+,5,1,4712,"mountPageDestination",24
+,6,1,4712,"isMountedPage",1

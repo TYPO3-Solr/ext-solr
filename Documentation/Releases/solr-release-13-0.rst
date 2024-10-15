@@ -5,15 +5,30 @@
 Releases 13.0
 =============
 
+
+Release 13.0.0-beta-1
+=====================
+
+This is a first beta release for TYPO3 13.4 LTS
+
+New in this release
+-------------------
+
+Adjust mount point indexing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Mount point indexing and corresponding tests have been adjusted for TYPO3 13. Mount points are supported in general and the mounted pages will be indexed like standard pages.
+
+But there is a point to consider: Mounted pages from a pagetree without a site configuration cannot be indexed, in fact TYPO3 currently can't mount a page from a page tree without a site configuration and an exeception occurs.
+The behavior is intentionally designed this way in TYPO3 core, the background is that it is not possible to specify the languages of the mounted page tree without Site Configuration.
+
+.. note::
+   We require at least TYPO3 13.4.2, as this version contains some bugfixes that address problems with the determination of TypoScript and the site configuration of mounted pages.
+
 Release 13.0.0-alpha-1
 ======================
 
 This is a first alpha release for upcoming TYPO3 13 LTS
-
-Known Bugs
-----------
-
-*   Mount pages cannot be indexed, see `#4160 <https://github.com/TYPO3-Solr/ext-solr/issues/4160>`__
 
 New in this release
 -------------------
