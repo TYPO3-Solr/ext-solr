@@ -43,7 +43,7 @@
     "phpunit/phpunit": "^11.4",
     "typo3/cms-fluid-styled-content": "*",
     "typo3/coding-standards": "v0.8.0",
-    "typo3/testing-framework": "dev-main#47bf0daab24b4210221f46a1fde59b9c3e245e39",
+    "typo3/testing-framework": "dev-main#5787ec240dc634665e09fca500f307828dee07f1",
     "phpstan/phpstan": "^1.11",
     "phpstan/phpstan-phpunit": "^1.3"
   },
