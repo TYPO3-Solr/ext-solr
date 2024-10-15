@@ -5,18 +5,43 @@
 Releases 13.0
 =============
 
+
+Release 13.0.0-beta-1
+=====================
+
+This is a first beta release for TYPO3 13.4 LTS
+
+New in this release
+-------------------
+
+Adjust mount point indexing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Mount point indexing and corresponding tests have been adjusted for TYPO3 13. Mount points are supported in general and the mounted pages will be indexed like standard pages.
+
+But there are some points to consider:
+
+*   Cross-site mounts require that `config.index_enable = 1` is set in the pagetree of the mounted page, as TYPO3 loads the TypoScript of the mounted page
+*   Mounted pages from a pagetree without a site configuration cannot be indexed, in fact TYPO3 currently can't mount a page from a page tree without a site configuration and an exeception occurs
+
+
 Release 13.0.0-alpha-1
 ======================
 
 This is a first alpha release for upcoming TYPO3 13 LTS
 
-Known Bugs
-----------
-
-*   Mount pages cannot be indexed, see `#4160 <https://github.com/TYPO3-Solr/ext-solr/issues/4160>`__
-
 New in this release
 -------------------
+
+Adjust mount point indexing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Mount point indexing and corresponding tests have been adjusted for TYPO3 13. Mount points are supported in general and the mounted pages will be indexed like standard pages.
+
+But there are some points to consider:
+
+*   Cross-site mounts require that `config.index_enable = 1` is set in the pagetree of the mounted page, as TYPO3 loads the TypoScript of the mounted page
+*   Mounted pages from a pagetree without a site configuration cannot be indexed, in fact TYPO3 currently can't mount a page from a page tree without a site configuration and an exeception occurs
 
 !!! Upgrade to Apache Solr 9.7.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
