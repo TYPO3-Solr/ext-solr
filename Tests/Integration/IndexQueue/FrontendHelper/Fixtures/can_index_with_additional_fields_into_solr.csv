@@ -1,6 +1,6 @@
 "pages",
 ,"uid","pid","is_siteroot","doktype","slug","title","subtitle","crdate","tstamp"
-,2,1,1,1,"/","hello solr","the subtitle",1449151778,1449151778
+,2,1,1,1,"/hello-solr","hello solr","the subtitle",1449151778,1449151778
 "tx_solr_indexqueue_item",
 ,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors"
 ,4711,1,"pages",2,"pages",1449151778,0,0,0,0,0
