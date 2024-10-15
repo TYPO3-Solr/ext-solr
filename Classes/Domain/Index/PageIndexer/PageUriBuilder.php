@@ -61,7 +61,14 @@ class PageUriBuilder
         int $language = 0,
         string $mountPointParameter = '',
     ): UriInterface {
-        $site = $this->siteFinder->getSiteByPageId($item->getRecordUid());
+        if ($item->hasIndexingProperty('isMountedPage')) {
+            $recordUid = (int)$item->getIndexingProperty('mountPageDestination');
+        } else {
+            $recordUid = $item->getRecordUid();
+        }
+
+        $site = $this->siteFinder->getSiteByPageId($recordUid);
+
         $parameters = [];
 
         if ($language > 0) {

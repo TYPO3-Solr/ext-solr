@@ -17,9 +17,11 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\PageUriBuilder;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
@@ -66,7 +68,7 @@ class PageIndexerTest extends IntegrationTestBase
             '
         );
 
-        $this->indexQueuedPage(2);
+        $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -100,7 +102,7 @@ class PageIndexerTest extends IntegrationTestBase
             '
         );
 
-        $this->indexQueuedPage(2);
+        $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -133,8 +135,8 @@ class PageIndexerTest extends IntegrationTestBase
             '
         );
 
-        $this->indexQueuedPage(2, '/en/');
-        $this->indexQueuedPage(2, '/de/');
+        $this->indexQueuedPage(4711, 0);
+        $this->indexQueuedPage(4711, 1);
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr('core_en');
@@ -173,7 +175,7 @@ class PageIndexerTest extends IntegrationTestBase
             '
         );
 
-        $this->indexQueuedPage(10);
+        $this->indexQueuedPage();
 
         $this->waitToBeVisibleInSolr('core_en');
 
@@ -199,7 +201,7 @@ class PageIndexerTest extends IntegrationTestBase
             }
             '
         );
-        $this->indexQueuedPage(2);
+        $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -229,7 +231,7 @@ class PageIndexerTest extends IntegrationTestBase
             '
         );
 
-        $this->indexQueuedPage(2);
+        $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -249,7 +251,7 @@ class PageIndexerTest extends IntegrationTestBase
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_into_solr.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->indexQueuedPage(2);
+        $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -273,7 +275,7 @@ class PageIndexerTest extends IntegrationTestBase
             }
             '
         );
-        $this->indexQueuedPage(2, '/en/', ['additionalTestPageIndexer' => true]);
+        $this->indexQueuedPage(4711, 0, ['additionalTestPageIndexer' => 1]);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -285,37 +287,64 @@ class PageIndexerTest extends IntegrationTestBase
     }
 
     /**
-     * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
+     * This testcase should check if we can index a mounted page in the same site
      *
      * There is following scenario:
      *
      *  [0]
      *  |
-     *  ——[20] Shared-Pages (Not root)
-     *  |   |
-     *  |   ——[24] FirstShared (Not root)
-     *  |
-     *  ——[ 1] Page (Root)
-     *  |
-     *  ——[14] Mount Point (to [24] to show contents from)
+     *  |—[ 1] Page (Root Testpage 1)
+     *     |
+     *     |——[14] Mount Point (to [24] to show contents from)
+     *     |——[24] FirstShared
      */
     #[Test]
     public function canIndexMountedPage(): void
     {
-        self::markTestSkipped('@todo: Fix it. See: https://github.com/TYPO3-Solr/ext-solr/issues/4160');
-
         $GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 1;
 
         $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_mounted_page.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->indexQueuedPage(24, '/en/', ['MP' => '24-14']);
+        $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        self::assertStringContainsString('"title":"FirstShared (Not root)"', $solrContent, 'Could not find content from mounted page in solr');
+        self::assertStringContainsString('"title":"FirstShared"', $solrContent, 'Could not find content from mounted page in Solr');
+    }
+
+    /**
+     * This testcase should check if we can index a cross-site mount, a mount point
+     * that mounts a page from another site
+     *
+     * There is following scenario:
+     *
+     *  [0]
+     *  |
+     *  |—[ 111] Page (Root Testpage 2)
+     *  |   |
+     *  |   |—[24] FirstShared
+     *  |
+     *  |—[ 1] Page (Root Testpage 1)
+     *      |—[14] Mount Point (to [24] to show contents from)
+     */
+    #[Test]
+    public function canIndexCrossSiteMounts(): void
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 1;
+
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_mounted_page_from_another_site.csv');
+        $this->addTypoScriptToTemplateRecord(111, 'config.index_enable = 1');
+        $this->indexQueuedPage();
+
+        // we wait to make sure the document will be available in solr
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        self::assertStringContainsString('"title":"FirstShared"', $solrContent, 'Could not find content from mounted page in Solr');
     }
 
     /**
@@ -323,29 +352,28 @@ class PageIndexerTest extends IntegrationTestBase
      *
      *  [0]
      *  |
-     *  ——[20] Shared-Pages (Not root)
+     *  |—[111] 2nd page root
      *  |   |
-     *  |   ——[44] FirstShared (Not root)
+     *  |   |—[44] FirstShared (Not root)
      *  |
-     *  ——[ 1] Page (Root)
-     *  |
-     *  ——[14] Mount Point (to [24] to show contents from)
-     *
-     *  |
-     *  ——[ 2] Page (Root)
-     *  |
-     *  ——[24] Mount Point (to [24] to show contents from)
+     *  |—[ 1] Page (Root)
+     *      |
+     *      |—[14] Mount Point (to [24] to show contents from)
+     *      |
+     *      |—[24] Mount Point (to [24] to show contents from)
      */
     #[Test]
     public function canIndexMultipleMountedPage(): void
     {
-        self::markTestSkipped('@todo: Fix it. See: https://github.com/TYPO3-Solr/ext-solr/issues/4160');
-
         $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_multiple_mounted_page.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->indexQueuedPage(44, '/en/', ['MP' => '44-14']);
-        $this->indexQueuedPage(44, '/en/', ['MP' => '44-24']);
+
+        // Enabling "index_enable" is currently required as due to changes in RootlineUtility->generateRootlineCache
+        // the mount point pid isn't used for the rootline and the TypoScript of the mounted page is loaded.
+        $this->addTypoScriptToTemplateRecord(111, 'config.index_enable = 1');
+        $this->indexQueuedPage();
+        $this->indexQueuedPage(4712);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -366,7 +394,7 @@ class PageIndexerTest extends IntegrationTestBase
     public function phpProcessDoesNotDieIfPageIsNotAvailable(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/does_not_die_if_page_not_available.csv');
-        $response = $this->indexQueuedPage(1636120156);
+        $response = $this->indexQueuedPage(forceUrl: 'http://testone.site/?id=1636120156');
 
         $decodedResponse = json_decode($response->getBody()->getContents(), true);
         self::assertIsArray($decodedResponse, 'Response couldn\'t be decoded');
@@ -378,19 +406,45 @@ class PageIndexerTest extends IntegrationTestBase
     /**
      * Executes a Frontend request within the same PHP process (possible since TYPO3 v11).
      */
-    protected function indexQueuedPage(int $pageId = 1, string $siteLanguageBase = '/en/', $additionalQueryParams = [], string $domain = 'http://testone.site'): ResponseInterface
-    {
-        $additionalQueryParams['id'] = $pageId;
-        $additionalQueryParams = array_filter($additionalQueryParams);
-        $queryString = http_build_query($additionalQueryParams, '', '&');
-        $cacheHash = GeneralUtility::makeInstance(CacheHashCalculator::class)->generateForParameters($queryString);
-        if ($cacheHash) {
-            $queryString .= '&cHash=' . $cacheHash;
-        }
-        $url = rtrim($domain, '/') . '/' . ltrim($siteLanguageBase, '/') . '?' . $queryString;
+    protected function indexQueuedPage(
+        int $indexQueueItem = 4711,
+        int $siteLanguageUid = 0,
+        array $additionalQueryParams = [],
+        string $forceUrl = ''
+    ): ResponseInterface {
+        $item = $this->getIndexQueueItem($indexQueueItem);
 
-        // Now add the headers for item 4711 to the request
-        $item = $this->getIndexQueueItem(4711);
+        if ($forceUrl !== '') {
+            return $this->executePageIndexer($forceUrl, $item);
+        }
+
+        $uriBuilder = GeneralUtility::makeInstance(PageUriBuilder::class);
+        $mountPointParameter = '';
+        if ($item->hasIndexingProperty('isMountedPage')) {
+            $mountPointParameter = $item->getIndexingProperty('mountPageSource')
+                . '-' . $item->getIndexingProperty('mountPageDestination');
+        }
+        $url = $uriBuilder->getPageIndexingUriFromPageItemAndLanguageId(
+            $item,
+            $siteLanguageUid,
+            $mountPointParameter,
+        );
+
+        if ($additionalQueryParams !== []) {
+            $url = new Uri($url);
+            $queryString = ltrim(
+                $url->getQuery()
+                    . '&id=' . $item->getRecordUid()
+                    . GeneralUtility::implodeArrayForUrl('', $additionalQueryParams),
+                '&'
+            );
+            $cacheHash = GeneralUtility::makeInstance(CacheHashCalculator::class)->generateForParameters($queryString);
+            if ($cacheHash) {
+                $queryString .= '&cHash=' . $cacheHash;
+            }
+            $url = (string)$url->withQuery($queryString);
+        }
+
         return $this->executePageIndexer($url, $item);
     }
 }
