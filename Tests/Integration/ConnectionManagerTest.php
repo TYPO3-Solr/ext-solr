@@ -31,12 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ConnectionManagerTest extends IntegrationTestBase
 {
-    /**
-     * @inheritdoc
-     * @todo: Remove unnecessary fixtures and remove that property as intended.
-     */
-    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
-
     protected function setUp(): void
     {
         parent::setUp();
