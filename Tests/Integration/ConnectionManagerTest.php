@@ -31,12 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ConnectionManagerTest extends IntegrationTestBase
 {
-    /**
-     * @inheritdoc
-     * @todo: Remove unnecessary fixtures and remove that property as intended.
-     */
-    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -195,24 +189,32 @@ class ConnectionManagerTest extends IntegrationTestBase
      * ConnectionManager must use the connection for site(tree), where mount Point is defined.
      * There is following scenario:
      *
-     *     [0]
-     *     |
-     *     ——[20] Shared-Pages (Folder)
-     *     |   |
-     *     |   ——[24] FirstShared
-     *     |       |
-     *     |       ——[25] first sub page from FirstShared
-     *     |       |
-     *     |       ——[26] second sub page from FirstShared
-     *     |
-     *     ——[ 1] Page (Root)
-     *         |
-     *         ——[14] Mount Point 1 (to [24] to show contents from)
+     *  [0]
+     *   |
+     *   |—[211] Page3 (Root)
+     *   |  |
+     *   |   |—[24] FirstShared
+     *   |       |
+     *   |       |—[25] first sub page from FirstShared
+     *   |       |
+     *   |       |—[26] second sub page from FirstShared
+     *   |
+     *   |—[  1] Page (Root)
+     *   |   |
+     *   |   |—[14] Mount Point 1 (to [24] to show contents from)
+     *   |
+     *   |—[111] Page2 (Root)
+     *       |
+     *       |—[34] Mount Point 2 (to [24] to show contents from)
      */
     #[Test]
     public function canFindSolrConnectionForMountedPageIfMountPointIsGiven(): void
     {
-        self::markTestSkipped('@todo: Fix it. See: https://github.com/TYPO3-Solr/ext-solr/issues/4160');
+        self::markTestSkipped(
+            '@todo: Test currently fails in TYPO3 13.4 due to changes in RootlineUtility'
+            . ' RootlineUtility doesn\'t use the mount point pid in RootlineUtility->generateRootlineCache currently,'
+            . ' which is probably a bug. See: https://github.com/TYPO3-Solr/ext-solr/issues/4160'
+        );
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/connection_for_mounted_page.csv');
 

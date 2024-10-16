@@ -693,7 +693,7 @@ Yes. If user is not logged in one can redirect to a login page with the help of 
 
 The reason for that:
 
-With Typo3 10 and solr 11.0.1 it was possible for solr to read it's configuration from shortcut pages directly. With Typo3 11 and solr 11.5 these shortcuts are followed. And if the access to the destination of the shortcut is restricted, solr cannot read the configuration because solr is not logged in.
+With TYPO3 10 and solr 11.0.1 it was possible for solr to read it's configuration from shortcut pages directly. With TYPO3 11 and solr 11.5 these shortcuts are followed. And if the access to the destination of the shortcut is restricted, solr cannot read the configuration because solr is not logged in.
 
 The solution:
 
@@ -721,3 +721,17 @@ The container log did not contain any output relevant to the container quitting.
 Changing to Docker Desktop as provider keep the container alive.
 
 Relevant DDEV link: https://ddev.readthedocs.io/en/latest/users/providers/
+
+
+
+Can mount points be indexed?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Mount points are supported in general and the mounted pages will be indexed like standard pages.
+
+But there are some points to consider:
+
+*   Cross-site mounts require that `config.index_enable = 1` is set in the page tree of the mounted page
+    This might change as due to changes in RootlineUtility->generateRootlineCache the mount point pid isn't used for the rootline.
+*   Mounted pages from a pagetree without a site configuration cannot be indexed, in fact TYPO3 currently can't mount a page from a page tree without a site configuration and an exeception occurs
+
