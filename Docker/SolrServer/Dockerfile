@@ -1,4 +1,4 @@
-FROM solr:8.11.3
+FROM solr:8.11.4
 MAINTAINER dkd Internet Service GmbH <solr-eb-support@dkd.de>
 ENV TERM linux
 
