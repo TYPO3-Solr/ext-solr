@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Area\GroupViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
@@ -68,6 +69,8 @@ class GroupViewHelperTest extends UnitTest
 
         $viewHelper = $this->getMockBuilder(GroupViewHelper::class)->onlyMethods(['renderChildren'])->getMock();
         $viewHelper->setRenderingContext($renderingContextMock);
+        $viewHelperNodeMock = $this->createMock(ViewHelperNode::class);
+        $viewHelper->setViewHelperNode($viewHelperNodeMock);
         $viewHelper->setArguments(['facets' => $facetCollection, 'groupName' => 'left']);
         $viewHelper->render();
 
