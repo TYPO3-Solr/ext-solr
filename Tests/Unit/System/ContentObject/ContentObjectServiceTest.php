@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace  ApacheSolrForTypo3\Solr\Tests\Unit\System\ContentObject;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\ContentObject;
 
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
