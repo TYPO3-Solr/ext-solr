@@ -1,0 +1,5 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title","seo_title"
+,2,1,1,1,"/multiple-fields","Multiple fields","Totally different SEO title"
+,3,1,0,1,"/multiple-fields2","Multiple fields 2","Another SEO title"
+,4,1,0,1,"/multiple-fields2","Multiple fields 3","Another title"

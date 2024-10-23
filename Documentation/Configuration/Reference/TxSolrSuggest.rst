@@ -28,9 +28,10 @@ suggestField
 :Default: spell
 
 Sets the Solr index field used to get suggestions from. A general advice is to use a field without stemming on it. For practical reasons this is currently the spell checker field.
+Multiple fields can be defined as a comma separated list.
 
 Note: With EXT:solr 11.1.0 ASCII folding and language depending normalization filters were introduced, but due to the special behaviour of the auto suggestions ascii-terms were not treated correctly. So with 11.1.3 the untouched tokens are also kept, as this might lead to duplicate
-suggestions, a new field for exact suggestions is introduced, if you want to avoid duplicates and use stricter suggestions, just configure `spellExact` as suggest field. 
+suggestions, a new field for exact suggestions is introduced, if you want to avoid duplicates and use stricter suggestions, just configure `spellExact` as suggest field.
 
 forceHttps
 ----------

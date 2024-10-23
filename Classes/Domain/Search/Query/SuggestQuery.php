@@ -51,10 +51,11 @@ class SuggestQuery extends Query
         }
 
         $this->getEDisMax()->setQueryAlternative('*:*');
-        $this->setFields(ReturnFields::fromString(($this->configuration['suggestField'] ?? ''))->getValues());
+        $suggestFields = ReturnFields::fromString(($this->configuration['suggestField'] ?? ''))->getValues();
+        $this->setFields($suggestFields);
         $this->addParam('facet', 'on');
         $this->addParam('facet.prefix', $this->prefix);
-        $this->addParam('facet.field', ($this->configuration['suggestField'] ?? null));
+        $this->addParam('facet.field', count($suggestFields) ? $suggestFields : null);
         $this->addParam('facet.limit', ($this->configuration['numberOfSuggestions'] ?? null));
         $this->addParam('facet.mincount', 1);
         $this->addParam('facet.method', 'enum');

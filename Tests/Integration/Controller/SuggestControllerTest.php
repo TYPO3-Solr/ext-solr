@@ -110,6 +110,44 @@ class SuggestControllerTest extends IntegrationTestBase
         }
     }
 
+    #[Test]
+    public function canSuggestWithMultipleFields(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/suggest_with_multiple_fields.csv');
+
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            /* @lang TYPO3_TypoScript */
+            '
+			plugin.tx_solr.suggest.suggestField = title,seo_title_stringS
+			plugin.tx_solr.index.queue.pages.fields {
+                seo_title_stringS = SOLR_CONTENT
+                seo_title_stringS.field = seo_title
+			}
+            '
+        );
+
+        $this->indexPages([1, 2, 3, 4]);
+
+        $testCases = [
+            [
+                'prefix' => 'Multiple',
+                'expected' => 'suggestions":{"multiple":3}',
+            ],
+            [
+                'prefix' => 'SEO',
+                'expected' => 'suggestions":{"SEO":2}',
+            ],
+            [
+                'prefix' => 'different',
+                'expected' => 'suggestions":{"different":1}',
+            ],
+        ];
+        foreach ($testCases as $testCase) {
+            $this->expectSuggested($testCase['prefix'], $testCase['expected']);
+        }
+    }
+
     protected function expectSuggested(string $prefix, string $expected)
     {
         $result = (string)($this->executeFrontendSubRequestForSuggestQueryString($prefix, 'rand')->getBody());
