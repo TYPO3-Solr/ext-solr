@@ -60,18 +60,6 @@ class SuggestControllerTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
-        $result = (string)($this->executeFrontendSubRequestForSuggestQueryString('Sweat', 'rand')->getBody());
-
-        // we assume to get suggestions like Sweatshirt
-        self::assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
-    }
-
-    #[Test]
-    public function canDoABasicSuggestWithoutCallback(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
-        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
-
         $result = (string)($this->executeFrontendSubRequestForSuggestQueryString('Sweat')->getBody());
 
         // we assume to get suggestions like Sweatshirt
@@ -112,13 +100,13 @@ class SuggestControllerTest extends IntegrationTestBase
 
     protected function expectSuggested(string $prefix, string $expected)
     {
-        $result = (string)($this->executeFrontendSubRequestForSuggestQueryString($prefix, 'rand')->getBody());
+        $result = (string)($this->executeFrontendSubRequestForSuggestQueryString($prefix)->getBody());
 
         //we assume to get suggestions like some/large/path
         self::assertStringContainsString($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
     }
 
-    protected function executeFrontendSubRequestForSuggestQueryString(string $queryString, string $callback = null): ResponseInterface
+    protected function executeFrontendSubRequestForSuggestQueryString(string $queryString): ResponseInterface
     {
         $request = new InternalRequest('http://testone.site/en/');
         $request = $request
@@ -126,9 +114,6 @@ class SuggestControllerTest extends IntegrationTestBase
             ->withQueryParameter('type', '7384')
             ->withQueryParameter('tx_solr[queryString]', $queryString);
 
-        if ($callback !== null) {
-            $request = $request->withQueryParameter('tx_solr[callback]', $callback);
-        }
         return $this->executeFrontendSubRequest($request);
     }
 }
