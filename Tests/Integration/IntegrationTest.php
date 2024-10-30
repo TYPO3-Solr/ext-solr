@@ -44,6 +44,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Schema\SchemaMigrator;
 use TYPO3\CMS\Core\Database\Schema\SqlReader;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
@@ -275,7 +276,17 @@ abstract class IntegrationTest extends FunctionalTestCase
         $this->validateTestCoreName($coreName);
 
         // cleanup the solr server
-        $result = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
+        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        $response = $requestFactory->request(
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update',
+            'POST',
+            [
+                'headers' => ['Content-Type' => 'application/xml'],
+                'body' => '<delete><query>*:*</query></delete>',
+            ]
+        );
+        $result = $response->getBody()->getContents();
+
         if (strpos($result, '<int name="QTime">') == false) {
             self::fail('Could not empty solr test index');
         }
