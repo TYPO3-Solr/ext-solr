@@ -193,6 +193,7 @@
         "ext-solrfluidgrouping": "^10.0",
         "ext-solrmlt": "^10.0",
         "Apache-Solr": [
+          "9.8.0",
           "9.7.0",
           "9.5.0",
           "9.4.1",
