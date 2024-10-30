@@ -8,11 +8,35 @@ Releases 11.5
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
-Release 11.5.6
+Release 11.5.7
 ==============
 
 This is a maintenance release for TYPO3 11.5 and the last release that supports Apache Solr 8.11.
-Next EXT:solr feature release for TYPO3 11.5 will be 11.6.0, it will contain support for Apache Solr 9 and some breaking improvements.
+
+Next EXT:solr release for TYPO3 11.5 will be 11.6.0, it will contain support for Apache Solr 9 and some breaking improvements.
+
+Apache Solr support
+-------------------
+
+11.5.7 has been tested with Apache Solr 11.8.1, 11.8.2, 11.8.3 and 11.8.4. All of this versions are supported, but it's recommended to use the latest version, especially as 11.8.4 contains some security fixes.
+
+Full list of changes
+--------------------
+
+* [TASK] Modify column changed to int(11) unsigned, in respect of core.pages.s… by @ferfrost in `#3981 <https://github.com/TYPO3-Solr/ext-solr/pull/3981>`__
+* [TASK] Full fixed french translation by @megamisan in `#3984 <https://github.com/TYPO3-Solr/ext-solr/pull/3984>`__
+* [TASK] Fix tests on 11.5.x @2024.05.07 by @dkd-kaehm in `#4025 <https://github.com/TYPO3-Solr/ext-solr/pull/4025>`__
+* [BUGFIX:P:11.5] Cast pageType and suggestPageType to int in SearchFormViewHelper by @dkd-kaehm in `#4027 <https://github.com/TYPO3-Solr/ext-solr/pull/4027>`__
+* [BUGFIX] Typos in last FR translation PR by @megamisan in `#4032 <https://github.com/TYPO3-Solr/ext-solr/pull/4032>`__
+* [BUGFIX:P:11.5] Fix range string calculation in DateRange facet by @dkd-kaehm in `#4100 <https://github.com/TYPO3-Solr/ext-solr/pull/4100>`__
+* [BUGFIX:11.5] scheduler task "Optimize index of a site" is not functional by @dkd-kaehm in `#4105 <https://github.com/TYPO3-Solr/ext-solr/pull/4105>`__
+* [TASK] Apache Solr 8.11.4 compatibility by @dkd-friedrich in `#4196 <https://github.com/TYPO3-Solr/ext-solr/pull/4196>`__
+
+
+Release 11.5.6
+==============
+
+This is a maintenance release for TYPO3 11.5.
 
 Apache Solr support
 -------------------
@@ -44,7 +68,6 @@ Release 11.5.5
 ==============
 
 This is a maintenance release for TYPO3 11.5.
-Next EXT:solr feature release for TYPO3 11.5 will be 11.6.0, it will contain support for Apache Solr 9 and some breaking improvements.
 
 ..  note::
     This change requires the database schema update, due of database schema change from `pull-request #3880 <https://github.com/TYPO3-Solr/ext-solr/pull/3880>`__
@@ -426,6 +449,7 @@ awesome community. Here are the contributors to this release.
 * Dmitry Dulepov
 * dsone
 * FearFreddy
+* ferfrost
 * Georg Ringer
 * garfieldius
 * Guido Schmechel
@@ -445,6 +469,7 @@ awesome community. Here are the contributors to this release.
 * Michiel Roos
 * Nicola Widmer
 * Pascal Hofmair
+* Pierrick Caillon
 * Peter, CyberForum e.V
 * Peter Kraume
 * Philipp Kitzberger
@@ -470,73 +495,111 @@ Also a big thank you to our partners who have already concluded one of our new d
 or Apache Solr EB for TYPO3 9 ELTS (Extended):
 
 * .hausformat GmbH
+* 3m5. Media GmbH
+* abteilung_digital GmbH
 * ACO Ahlmann SE & Co. KG
+* Agence E-magineurs
+* Agenda d.o.o.
 * AgenturWebfox GmbH
 * Amedick & Sommer Neue Medien GmbH
+* Ampack AG
+* Atol CD
+* Autorité des Marchés Financiers (Québec)
 * avenit AG
 * b13 GmbH
+* brandung GmbH Oliver Krause
+* Bundesanstalt Statistik Österreich
 * Bytebetrieb GmbH & Co. KG
-* Cobytes B.V.
-* Connetation Web Engineering GmbH
+* Canton de Neuchâtel - SIEN
+* CARL von CHIARI GmbH
+* chiliSCHARF GmbH
+* clickstorm GmbH
+* co-operate Wegener & Rieke GmbH
+* Columbus Interactive GmbH
 * cosmoblonde GmbH
 * creativ clicks GmbH
 * cyperfection GmbH
-* DVT - Daten-Verarbeitung-Tirol GmbH
+* digit.ly
+* DMK E-BUSINESS GmbH
 * Earlybird GmbH & Co KG
 * elancer-team GmbH
 * eulenblick Kommunikation und Werbung
-* FONDA GmbH
+* Fa. .hausformat
+* Fa. Ausy
+* Fachagentur Nachwachsende Rohstoffe fnr.de
+* Fachhochschule Erfurt
+* Fourdegrees GbR
+* FTI Touristik GmbH
+* für novotegra GmbH (BayWa r.e. AG)
+* Getdesigned GmbH
 * GFE Media GmbH
 * graphodata GmbH
+* gressourcenmangel integral gmbh
+* grips IT GmbH
+* hiroki digital GmbH
 * Hirsch & Wölfl GmbH
-* Hochschule Niederrhein
-* i-fabrik GmbH
-* in2code GmbH
+* Hochschule Furtwangen
+* Hochschule Koblenz - Standort Remagen
+* HSPV NRW
+* in2code
+* INOTEC Sicherheitstechnik GmbH
+* Institut national d'excellence en santé et en services sociaux inesss.qc.ca
 * internezzo ag
-* Intersim AG
 * IW Medien GmbH
-* Jochen Weiland
+* jweiland
 * Kassenärztliche Vereinigung Rheinland-Pfalz
 * Kreis Euskirchen
-* Landeskriminalamt Thüringen
 * L.N. Schaffrath DigitalMedien GmbH
-* Leitgab Gernot
+* La Financière agricole du Québec
+* Landeskriminalamt Thüringen
+* Leuchtfeuer Digital Marketing GmbH
+* Lingner Consulting New Media GmbH
 * LOUIS INTERNET GmbH
-* Marketing Factory Consulting GmbH
+* Marketing Factory
+* media::essenz
 * medien.de mde GmbH
-* MEDIA::ESSENZ
 * mehrwert intermediale kommunikation GmbH
-* Neue Medien GmbH
+* Meridium Technologies
+* MOSAIQ GmbH
 * NEW.EGO GmbH
-* novotegra GmbH
 * Overlap GmbH & Co KG
-* Pädagogische Hochschule Karlsruhe
+* Patrick Gaumond Québec.ca gouv.qc.ca
 * peytz.dk
+* pietzpluswild GmbH
+* Pixelant / Resultify
+* Plan Software GmbH
+* Plan.Net France
 * ProPotsdam GmbH
-* Proud Nerds
 * Provitex GmbH
 * queo GmbH
-* Québec.ca
 * rms. relationship marketing solutions GmbH
+* RR Anwendungsentwicklung
 * Sandstein Neue Medien GmbH
 * Schoene neue kinder GmbH
 * seam media group gmbh
+* Shop F7 Media GmbH
 * SITE'NGO
 * Snowflake Productions GmbH
 * SOS Software Service GmbH
+* Stadtverwaltung Villingen-Schwenningen
 * Stämpfli AG
-* Studio 9 GmbH
 * systime.dk
-* techniConcept Sàrl
-* TOUMORØ
+* Talleux & Zöllner GbR
+* tirol.gv.at
+* toumoro.com
 * Typoheads GmbH
 * UEBERBIT GmbH
+* unternehmen online GmbH Co. KG (UO)
+* Verband der Vereine Creditreform e.V.
+* VisionConnect.de
 * visol digitale Dienstleistungen GmbH
+* visuellverstehen GmbH
 * WACON Internet GmbH
-* we.byte GmbH
-* wegewerk GmbH
+* webconsulting business services gmbh
+* Webtech AG
+* Werbeagentur netzpepper
 * werkraum Digitalmanufaktur GmbH
-* WIND Internet
+* wow! solution
 * zimmer7 GmbH
 
 How to Get Involved
@@ -556,5 +619,3 @@ https://shop.dkd.de/Produkte/Apache-Solr-fuer-TYPO3/
 or call:
 
 +49 (0)69 - 2475218 0
-
-
