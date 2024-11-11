@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesRepositoryAtExtSolr;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
@@ -92,6 +93,7 @@ class ConnectionManager implements SingletonInterface
     public function getSolrConnectionForEndpoints(
         array $readEndpointConfiguration,
         array $writeEndpointConfiguration,
+        TypoScriptConfiguration $typoScriptConfiguration,
     ): SolrConnection {
         $connectionHash = md5(json_encode($readEndpointConfiguration) . json_encode($writeEndpointConfiguration));
         if (!isset(self::$connections[$connectionHash])) {
@@ -105,7 +107,12 @@ class ConnectionManager implements SingletonInterface
                 throw new InvalidConnectionException('Invalid write endpoint');
             }
 
-            self::$connections[$connectionHash] = GeneralUtility::makeInstance(SolrConnection::class, $readEndpoint, $writeEndpoint);
+            self::$connections[$connectionHash] = GeneralUtility::makeInstance(
+                SolrConnection::class,
+                $readEndpoint,
+                $writeEndpoint,
+                $typoScriptConfiguration,
+            );
         }
 
         return self::$connections[$connectionHash];
@@ -155,9 +162,15 @@ class ConnectionManager implements SingletonInterface
      *
      * @throws InvalidConnectionException
      */
-    public function getConnectionFromConfiguration(array $solrConfiguration): SolrConnection
-    {
-        return $this->getSolrConnectionForEndpoints($solrConfiguration['read'], $solrConfiguration['write']);
+    public function getConnectionFromConfiguration(
+        array $solrConfiguration,
+        TypoScriptConfiguration $typoScriptConfiguration,
+    ): SolrConnection {
+        return $this->getSolrConnectionForEndpoints(
+            $solrConfiguration['read'],
+            $solrConfiguration['write'],
+            $typoScriptConfiguration
+        );
     }
 
     /**
@@ -174,7 +187,10 @@ class ConnectionManager implements SingletonInterface
                 'No site for pageId ' . $pageId,
             );
             $config = $site->getSolrConnectionConfiguration($language);
-            return $this->getConnectionFromConfiguration($config);
+            return $this->getConnectionFromConfiguration(
+                $config,
+                $site->getSolrConfiguration(),
+            );
         } catch (Throwable $unexpectedError) {
             throw $this->buildNoConnectionExceptionForPageAndLanguage(
                 $pageId,
@@ -200,7 +216,10 @@ class ConnectionManager implements SingletonInterface
         }
 
         try {
-            return $this->getConnectionFromConfiguration($config);
+            return $this->getConnectionFromConfiguration(
+                $config,
+                $this->siteRepository->getSiteByRootPageId($typo3Site->getRootPageId())->getSolrConfiguration(),
+            );
         } catch (Throwable $unexpectedError) {
             throw $this->buildNoConnectionExceptionForPageAndLanguage(
                 $typo3Site->getRootPageId(),
@@ -223,7 +242,10 @@ class ConnectionManager implements SingletonInterface
             $site = $this->siteRepository->getSiteByRootPageId($pageId);
             $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
             $config = $site->getSolrConnectionConfiguration($language ?? 0);
-            return $this->getConnectionFromConfiguration($config);
+            return $this->getConnectionFromConfiguration(
+                $config,
+                $site->getSolrConfiguration(),
+            );
         } catch (InvalidArgumentException) {
             throw $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
         }
@@ -242,7 +264,10 @@ class ConnectionManager implements SingletonInterface
         $solrConnections = [];
         foreach ($this->siteRepository->getAvailableSites() as $site) {
             foreach ($site->getAllSolrConnectionConfigurations() as $solrConfiguration) {
-                $solrConnections[] = $this->getConnectionFromConfiguration($solrConfiguration);
+                $solrConnections[] = $this->getConnectionFromConfiguration(
+                    $solrConfiguration,
+                    $site->getSolrConfiguration(),
+                );
             }
         }
 
@@ -261,7 +286,10 @@ class ConnectionManager implements SingletonInterface
         $connections = [];
 
         foreach ($site->getAllSolrConnectionConfigurations() as $languageId => $solrConnectionConfiguration) {
-            $connections[$languageId] = $this->getConnectionFromConfiguration($solrConnectionConfiguration);
+            $connections[$languageId] = $this->getConnectionFromConfiguration(
+                $solrConnectionConfiguration,
+                $site->getSolrConfiguration(),
+            );
         }
 
         return $connections;

@@ -111,7 +111,11 @@ class SolrStatus extends AbstractSolrStatus
         $this->responseStatus = ContextualFeedbackSeverity::OK;
 
         $solrAdmin = $this->connectionManager
-            ->getSolrConnectionForEndpoints($solrConnection['read'], $solrConnection['write'])
+            ->getSolrConnectionForEndpoints(
+                $solrConnection['read'],
+                $solrConnection['write'],
+                $site->getSolrConfiguration()
+            )
             ->getAdminService();
 
         $solrVersion = $this->checkSolrVersion($solrAdmin);

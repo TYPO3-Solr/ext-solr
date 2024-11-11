@@ -228,8 +228,6 @@ class Site
 
     /**
      * Gets the site's Solr TypoScript configuration (plugin.tx_solr.*)
-     *
-     * Purpose: Interface and Unit test mocking helper method.
      */
     public function getSolrConfiguration(): TypoScriptConfiguration
     {

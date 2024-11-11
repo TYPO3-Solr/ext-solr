@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -141,7 +142,10 @@ class ConnectionManagerTest extends SetUpUnitTestCase
             ];
             $configuration['write'] = $configuration['read'];
 
-            $solrService = $this->connectionManager->getConnectionFromConfiguration($configuration);
+            $solrService = $this->connectionManager->getConnectionFromConfiguration(
+                $configuration,
+                $this->createMock(TypoScriptConfiguration::class)
+            );
             self::assertEquals($expectedConnectionString, $solrService->getReadService()->__toString());
         } catch (InvalidConnectionException $exception) {
             $exceptionOccurred = true;
