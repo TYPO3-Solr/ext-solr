@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,58 +31,105 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Site
 {
-    protected TypoScriptConfiguration $configuration;
-
-    protected array $rootPageRecord = [];
-
-    protected string $domain = '';
-
-    protected string $siteHash = '';
-
     protected PagesRepository $pagesRepository;
-
-    protected int $defaultLanguageId = 0;
-
-    /**
-     * @var int[] Available language ids
-     */
-    protected array $availableLanguageIds = [];
 
     protected ?Typo3Site $typo3SiteObject = null;
 
-    protected array $solrConnectionConfigurations = [];
-
+    /**
+     * @var int[]
+     */
     protected array $freeContentModeLanguages = [];
 
     /**
-     * Constructor of Site
-     *
-     * @todo Use dependency injection instead.
+     * @param TypoScriptConfiguration $configuration
+     * @param array{
+     *    'uid': int,
+     *    'pid': int,
+     *    'title': string
+     * } $rootPageRecord
+     * @param string $domain
+     * @param string $siteHash
+     * @param PagesRepository|null $pagesRepository
+     * @param int $defaultLanguageId
+     * @param int[] $availableLanguageIds Available language ids
+     * @param array<int, array{
+     *    'connectionKey': string,
+     *    'language': string,
+     *    'rootPageUid': int,
+     *    'read': array{
+     *        'scheme': string,
+     *        'host': string,
+     *        'port': int,
+     *        'path': string,
+     *        'context': string,
+     *        'collection': string,
+     *        'core': string,
+     *        'leader': bool,
+     *        'username': string,
+     *        'password': string
+     *    },
+     *    'write': array{
+     *        'scheme': string,
+     *        'host': string,
+     *        'port': int,
+     *        'path': string,
+     *        'context': string,
+     *        'collection': string,
+     *        'core': string,
+     *        'leader': bool,
+     *        'username': string,
+     *        'password': string
+     *    }
+     * }> $solrConnectionConfigurations
+     * @param Typo3Site|null $typo3SiteObject
      */
     public function __construct(
-        TypoScriptConfiguration $configuration,
-        array $page,
-        string $domain,
-        string $siteHash,
-        PagesRepository $pagesRepository = null,
-        int $defaultLanguageId = 0,
-        array $availableLanguageIds = [],
-        array $solrConnectionConfigurations = [],
+        protected TypoScriptConfiguration $configuration,
+        protected array $rootPageRecord,
+        protected string $domain,
+        protected string $siteHash,
+        ?PagesRepository $pagesRepository = null,
+        protected int $defaultLanguageId = 0,
+        protected array $availableLanguageIds = [],
+        protected array $solrConnectionConfigurations = [],
         Typo3Site $typo3SiteObject = null,
     ) {
-        $this->configuration = $configuration;
-        $this->rootPageRecord = $page;
-        $this->domain = $domain;
-        $this->siteHash = $siteHash;
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
-        $this->defaultLanguageId = $defaultLanguageId;
-        $this->availableLanguageIds = $availableLanguageIds;
-        $this->solrConnectionConfigurations = $solrConnectionConfigurations;
         $this->typo3SiteObject = $typo3SiteObject;
     }
 
     /**
      * Returns Solr connection configurations indexed by language id.
+     *
+     * @return array{
+     *    'connectionKey': string,
+     *    'language': string,
+     *    'rootPageUid': int,
+     *    'read': array{
+     *        'scheme': string,
+     *        'host': string,
+     *        'port': int,
+     *        'path': string,
+     *        'context': string,
+     *        'collection': string,
+     *        'core': string,
+     *        'leader': bool,
+     *        'username': string,
+     *        'password': string
+     *    },
+     *    'write': array{
+     *        'scheme': string,
+     *        'host': string,
+     *        'port': int,
+     *        'path': string,
+     *        'context': string,
+     *        'collection': string,
+     *        'core': string,
+     *        'leader': bool,
+     *        'username': string,
+     *        'password': string
+     *    }
+     * }
      *
      * @throws NoSolrConnectionFoundException
      */
@@ -122,6 +170,9 @@ class Site
      * Note: There is no "fallback type" nor "fallbacks" for default language 0
      *       See "displayCond" on https://github.com/TYPO3/typo3/blob/1394a4cff5369df3f835dae254b3d4ada2f83c7b/typo3/sysext/backend/Configuration/SiteConfiguration/site_language.php#L403-L416
      *         or https://review.typo3.org/c/Packages/TYPO3.CMS/+/56505/ for more information.
+     *
+     *
+     * @return array<int, int>
      */
     public function getFreeContentModeLanguages(): array
     {
@@ -151,6 +202,8 @@ class Site
 
     /**
      * Gets available language id's for this site
+     *
+     * @return int[]
      */
     public function getAvailableLanguageIds(): array
     {
@@ -205,7 +258,9 @@ class Site
      * @param int|null $pageId Page ID from where to start collection sub-pages. Uses and includes the root page if none given.
      * @param string|null $indexQueueConfigurationName The name of index queue.
      *
-     * @return array Array of pages (IDs) in this site
+     * @return int[] Array of pages (IDs) in this site
+     *
+     * @throws DBALException
      */
     public function getPages(
         ?int $pageId = null,
@@ -247,7 +302,11 @@ class Site
     /**
      * Gets the site's root page record.
      *
-     * @return array The site's root page.
+     * @return array{
+     *    'uid': int,
+     *    'pid': int,
+     *    'title': string
+     *  } The site's root page.
      */
     public function getRootPageRecord(): array
     {
@@ -266,6 +325,35 @@ class Site
 
     /**
      * Returns all Solr connection configurations.
+     * @return array<int, array{
+     *    'connectionKey': string,
+     *    'language': string,
+     *    'rootPageUid': int,
+     *    'read': array{
+     *        'scheme': string,
+     *        'host': string,
+     *        'port': int,
+     *        'path': string,
+     *        'context': string,
+     *        'collection': string,
+     *        'core': string,
+     *        'leader': bool,
+     *        'username': string,
+     *        'password': string
+     *    },
+     *    'write': array{
+     *        'scheme': string,
+     *        'host': string,
+     *        'port': int,
+     *        'path': string,
+     *        'context': string,
+     *        'collection': string,
+     *        'core': string,
+     *        'leader': bool,
+     *        'username': string,
+     *        'password': string
+     *    }
+     * }>
      */
     public function getAllSolrConnectionConfigurations(): array
     {

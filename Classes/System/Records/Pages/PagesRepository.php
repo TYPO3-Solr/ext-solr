@@ -49,7 +49,10 @@ class PagesRepository extends AbstractRepository
      * Gets the site's root pages. The "Is root of website" flag must be set,
      * which usually is the case for pages with pid = 0.
      *
-     * @return array An array of (partial) root page records, containing the uid and title fields
+     * @return array{array{
+     *    'uid': int,
+     *    'title': string
+     * }} An array of (partial) root page records, containing the uid and title fields
      *
      * @throws DBALException
      */
@@ -75,10 +78,21 @@ class PagesRepository extends AbstractRepository
     /**
      * Finds the MountPointProperties array for mount points(destinations) by mounted page UID(source) or by the rootline array of mounted page.
      *
+     * @param int $mountedPageUid
+     * @param int[] $rootLineParentPageIds
+     * @return array{array{
+     *    'uid': int,
+     *    'mountPageDestination': int,
+     *    'mountPageSource': int,
+     *    'mountPageOverlayed': int
+     * }}
      * @throws DBALException
+     * @throws InvalidArgumentException
      */
-    public function findMountPointPropertiesByPageIdOrByRootLineParentPageIds(int $mountedPageUid, array $rootLineParentPageIds = []): array
-    {
+    public function findMountPointPropertiesByPageIdOrByRootLineParentPageIds(
+        int $mountedPageUid,
+        array $rootLineParentPageIds = [],
+    ): array {
         if (array_filter($rootLineParentPageIds, 'is_int') !== $rootLineParentPageIds) {
             throw new InvalidArgumentException('Given $rootLineParentPageIds array is not valid. Allowed only the arrays with the root line page UIDs as integers.', 1502459711);
         }
@@ -94,11 +108,13 @@ class PagesRepository extends AbstractRepository
     /**
      * This method builds the where clause for the mountpoint destinations. It retrieves all records where the mount_pid = $mountedPageUid or the mount_pid is
      * in the rootLineParentPageIds.
+     *
+     * @param int[] $rootLineParentPageIds
      */
     protected function addWhereClauseForMountpointDestinationProperties(
         QueryBuilder $queryBuilder,
         int $mountedPageUid,
-        array $rootLineParentPageIds
+        array $rootLineParentPageIds,
     ): QueryBuilder {
         if (empty($rootLineParentPageIds)) {
             $queryBuilder->andWhere(
@@ -132,7 +148,7 @@ class PagesRepository extends AbstractRepository
      * * Includes all page types except deleted pages!
      *
      * @param int $rootPageId Page ID from where to start collection sub-pages
-     * @return array Array of pages (IDs) in this site
+     * @return int[] Array of pages (IDs) in this site
      *
      * @throws DBALException
      */
@@ -160,11 +176,14 @@ class PagesRepository extends AbstractRepository
      * This method retrieves the pages ids from the current tree level a calls getPages recursive,
      * when the maxDepth has not been reached.
      *
+     * @param int[] $pageIds
+     * @param string $initialPagesAdditionalWhereClause
+     * @return int[]
      * @throws DBALException
      */
     protected function filterPageIdsByInitialPagesAdditionalWhereClause(
         array $pageIds,
-        string $initialPagesAdditionalWhereClause
+        string $initialPagesAdditionalWhereClause,
     ): array {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
@@ -186,6 +205,8 @@ class PagesRepository extends AbstractRepository
 
     /**
      * Finds all PIDs within no_search_sub_entries=1 marked pages in all sites.
+     *
+     * @return int[]
      */
     public function findAllPagesWithinNoSearchSubEntriesMarkedPages(): array
     {
@@ -197,7 +218,7 @@ class PagesRepository extends AbstractRepository
                 ->select('uid')
                 ->from($this->table)
                 ->where(
-                    $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, \Doctrine\DBAL\ParameterType::INTEGER))
+                    $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, ParameterType::INTEGER))
                 )->executeQuery();
             while (($pageRow = $noSearchSubEntriesEnabledPagesStatement->fetchAssociative()) !== false) {
                 $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage((int)$pageRow['uid']));
@@ -210,6 +231,12 @@ class PagesRepository extends AbstractRepository
 
     /**
      * Finds translation overlays by given page Id.
+     *
+     * @return array{array{
+     *    'pid': int,
+     *    'l10n_parent': int,
+     *    'sys_language_uid': int,
+     * }}
      *
      * @throws DBALException
      */
@@ -233,7 +260,9 @@ class PagesRepository extends AbstractRepository
      * Finds Pages, which are showing content from the page currently being updated.
      *
      * @param int $pageId UID of the page currently being updated
-     * @return array with page Uids from pages, which are showing contents from given Page Id
+     * @return array{array{
+     *    'uid': int
+     * }} with page Uids from pages, which are showing contents from given Page Id
      *
      * @throws DBALException
      */
@@ -259,6 +288,13 @@ class PagesRepository extends AbstractRepository
 
     /**
      * Finds all pages by given where clause
+     *
+     * @return array{array{
+     *    'uid': int,
+     *    'mountPageSource': int,
+     *    'mountPageDestination': int,
+     *    'mountPageOverlayed': int
+     * }}
      *
      * @throws DBALException
      */
@@ -287,9 +323,18 @@ class PagesRepository extends AbstractRepository
 
     /**
      * Returns a specific page
+     *
+     * @return null|array{
+     *    'uid': int,
+     *    'pid': int
+     * }
      */
-    public function getPage(int $uid, string $fields = '*', string $additionalWhereClause = '', bool $useDeleteClause = true): ?array
-    {
+    public function getPage(
+        int $uid,
+        string $fields = '*',
+        string $additionalWhereClause = '',
+        bool $useDeleteClause = true,
+    ): ?array {
         if (!$uid > 0) {
             return null;
         }

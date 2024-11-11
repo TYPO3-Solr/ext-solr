@@ -107,10 +107,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * @param $amount
-     */
-    protected function assertIndexQueueContainsItemAmount($amount): void
+    protected function assertIndexQueueContainsItemAmount(int $amount): void
     {
         $itemsInQueue = $this->indexQueue->getAllItemsCount();
         self::assertEquals(
@@ -125,9 +122,6 @@ class GarbageCollectorTest extends IntegrationTestBase
         self::assertEquals(0, $this->eventQueue->count(), 'Event queue is not empty as expected');
     }
 
-    /**
-     * @param int $amount
-     */
     protected function assertEventQueueContainsItemAmount(int $amount): void
     {
         $itemsInQueue = $this->eventQueue->count();

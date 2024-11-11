@@ -24,6 +24,7 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
+use Doctrine\DBAL\Exception as DBALException;
 use RuntimeException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -58,8 +59,11 @@ class RootPageResolver implements SingletonInterface
      * if the pid is references in another site with additionalPageIds and returning those rootPageIds as well.
      * The result is cached by the caching framework.
      *
+     * @return int[]
+     *
      * @throws UnexpectedTYPO3SiteInitializationException
      * @throws RootPageRecordNotFoundException
+     * @throws DBALException
      */
     public function getResponsibleRootPageIds(string $table, int $uid): array
     {
@@ -118,6 +122,12 @@ class RootPageResolver implements SingletonInterface
 
     /**
      * Returns record of page for given conditions or empty array if nothing found.
+     *
+     * @return array{
+     *    'uid'?: int,
+     *    'pid'?: int,
+     *    'is_siteroot'?: int
+     * }
      */
     protected function getPageRecordByPageId(int $pageId, string $fieldList = 'is_siteroot'): array
     {
@@ -126,6 +136,8 @@ class RootPageResolver implements SingletonInterface
 
     /**
      * Determines the root page ID for a given page.
+     *
+     * @throws DBALException
      */
     public function getRootPageId(
         int $pageId = 0,
@@ -163,8 +175,11 @@ class RootPageResolver implements SingletonInterface
      * This method determines the responsible site roots for a record by getting the rootPage of the record and checking
      * if the pid is references in another site with additionalPageIds and returning those rootPageIds as well.
      *
+     * @return int[]
+     *
      * @throws UnexpectedTYPO3SiteInitializationException
      * @throws RootPageRecordNotFoundException
+     * @throws DBALException
      */
     protected function buildResponsibleRootPageIds(string $table, int $uid): array
     {
@@ -188,6 +203,8 @@ class RootPageResolver implements SingletonInterface
     /**
      * This method checks if the record is a pages record or another one and determines the rootPageId from the records
      * rootline.
+     *
+     * @throws DBALException
      */
     protected function getRootPageIdByTableAndUid(string $table, int $uid): int
     {
@@ -215,6 +232,8 @@ class RootPageResolver implements SingletonInterface
      * configuration of another site, if so we return the rootPageId of this site.
      * The result is cached by the caching framework.
      *
+     * @return int[]
+     *
      * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function getAlternativeSiteRootPagesIds(string $table, int $uid, int $recordPageId): array
@@ -229,6 +248,8 @@ class RootPageResolver implements SingletonInterface
 
     /**
      * Retrieves an optimized array structure with the monitored pageId as key and the relevant site rootIds as value.
+     *
+     * @return array<int, int[]>
      *
      * @throws UnexpectedTYPO3SiteInitializationException
      */
@@ -249,6 +270,8 @@ class RootPageResolver implements SingletonInterface
     /**
      * This method builds an array with observer page id as key and rootPageIds as values to determine which root pages
      * are responsible for this record by referencing the pageId in additionalPageIds configuration.
+     *
+     * @return array<int, int[]>
      *
      * @throws UnexpectedTYPO3SiteInitializationException
      */
