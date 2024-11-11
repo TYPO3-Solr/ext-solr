@@ -148,6 +148,29 @@ class ConfigurationManager implements SingletonInterface
     }
 
     /**
+     * @return array{
+     *    'uid': int,
+     *    'pid': int,
+     *    'tstamp': int,
+     *    'crdate': int,
+     *    'deleted': int,
+     *    'hidden': int,
+     *    'starttime': int,
+     *    'endtime': int,
+     *    'sorting': int,
+     *    'description': string,
+     *    'tx_impexp_origuid': int,
+     *    'title': string,
+     *    'root': int,
+     *    'clear': int,
+     *    'constants': string,
+     *    'include_static_file': string,
+     *    'basedOn': string,
+     *    'includeStaticAfterBasedOn': int,
+     *    'config': string,
+     *    'static_file_mode': int,
+     * }
+     *
      * @throws DBALException
      */
     protected function getSysTemplateRowsForAssociatedContextPageId(ServerRequestInterface $request): array

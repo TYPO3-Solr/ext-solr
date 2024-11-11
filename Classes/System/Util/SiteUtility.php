@@ -220,6 +220,10 @@ class SiteUtility
 
     /**
      * Takes a page record and checks whether the page is marked as root page.
+     *
+     * @param array{
+     *    'is_siteroot'?: int
+     * } $pageRecord
      */
     public static function isRootPage(array $pageRecord): bool
     {

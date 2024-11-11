@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageReso
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
@@ -29,6 +28,7 @@ use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -67,6 +67,7 @@ class SiteRepository
      *
      * @throws DBALException
      * @throws InvalidArgumentException
+     * @throws SiteNotFoundException
      */
     public function getSiteByPageId(int $pageId, string $mountPointIdentifier = ''): ?Site
     {
@@ -77,8 +78,8 @@ class SiteRepository
     /**
      * Gets the Site for a specific root page-id.
      *
-     * @throws DBALException
      * @throws InvalidArgumentException
+     * @throws SiteNotFoundException
      */
     public function getSiteByRootPageId(int $rootPageId): ?Site
     {
@@ -166,8 +167,8 @@ class SiteRepository
     /**
      * Creates an instance of the Site object.
      *
-     * @throws DBALException
      * @throws InvalidArgumentException
+     * @throws SiteNotFoundException
      */
     protected function buildSite(int $rootPageId): ?Site
     {
@@ -197,6 +198,11 @@ class SiteRepository
     /**
      * Validates given root page record, if it fits requirements.
      *
+     * @param array{
+     *    'uid'?: int,
+     *    'is_siteroot'?: int
+     * } $rootPageRecord
+     *
      * @throws InvalidArgumentException
      */
     protected function validateRootPageRecord(array $rootPageRecord): void
@@ -211,8 +217,12 @@ class SiteRepository
 
     /**
      * Builds a TYPO3 managed site with TypoScript configuration.
+     * @param array{
+     *    'uid': int,
+     *    'pid'?: int
+     * } $rootPageRecord
      *
-     * @throws DBALException
+     * @throws SiteNotFoundException
      */
     protected function buildTypo3ManagedSite(array $rootPageRecord): ?Site
     {
