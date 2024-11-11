@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractO
  */
 class Node extends AbstractOptionFacetItem
 {
-    protected int $depth;
+    protected int $depth = 0;
 
     public function __construct(
         HierarchyFacet $facet,
@@ -41,6 +41,10 @@ class Node extends AbstractOptionFacetItem
             $documentCount,
             $selected,
         );
+
+        if ($parentNode) {
+            $this->depth = $parentNode->getDepth() + 1;
+        }
     }
 
     public function getKey(): string
@@ -66,6 +70,11 @@ class Node extends AbstractOptionFacetItem
     public function getHasParentNode(): bool
     {
         return $this->parentNode !== null;
+    }
+
+    public function getDepth(): int
+    {
+        return $this->depth;
     }
 
     public function getHasChildNodeSelected(): bool
