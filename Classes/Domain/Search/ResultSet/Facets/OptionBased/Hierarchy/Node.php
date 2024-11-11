@@ -43,7 +43,7 @@ class Node extends AbstractOptionFacetItem
         );
 
         if ($parentNode) {
-            $this->depth = $parentNode()->getDepth() + 1;
+            $this->depth = $parentNode->getDepth() + 1;
         }
     }
 
