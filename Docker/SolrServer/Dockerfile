@@ -11,9 +11,10 @@ RUN rm -fR /opt/solr/server/solr/* \
   && groupmod --non-unique --gid "${SOLR_UNIX_GID}" solr \
   && chown -R solr:solr /var/solr /opt/solr \
   && apt update && apt upgrade -y && apt install sudo -y \
-  && echo "solr ALL=NOPASSWD: /docker-entrypoint-initdb.d/as-sudo/*" > /etc/sudoers.d/solr
+  && echo "solr ALL=NOPASSWD: /docker-entrypoint-initdb.d-as-sudo/*" > /etc/sudoers.d/solr
 
 COPY Docker/SolrServer/docker-entrypoint-initdb.d/ /docker-entrypoint-initdb.d
+COPY Docker/SolrServer/docker-entrypoint-initdb.d-as-sudo/ /docker-entrypoint-initdb.d-as-sudo
 USER solr
 
 COPY --chown=solr:solr Resources/Private/Solr/ /var/solr/data

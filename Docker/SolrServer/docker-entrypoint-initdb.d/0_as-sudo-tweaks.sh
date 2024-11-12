@@ -9,4 +9,4 @@ while read -r f; do
         *)        echo "$0: ignoring $f" ;;
     esac
     echo
-done < <(find /docker-entrypoint-initdb.d/as-sudo/ -mindepth 1 -type f | sort -n)
+done < <(find /docker-entrypoint-initdb.d-as-sudo/ -mindepth 1 -type f | sort -n)
