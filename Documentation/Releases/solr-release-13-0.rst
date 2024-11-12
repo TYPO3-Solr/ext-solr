@@ -18,7 +18,7 @@ All Apache Solr libs, modules or plugins must be configured within the main serv
 See: https://issues.apache.org/jira/browse/SOLR-16781
 
 Impact:
-~~~~~~~~~
+~~~~~~~
 
 Docker
 """"""
@@ -86,6 +86,46 @@ Add following to `/etc/default/solr.in.sh` file
     	SOLR_OPTS="$SOLR_OPTS -Dsolr.config.lib.enabled=true"
 
 Or do that in other ways to set the `solr.config.lib.enabled=true` to sys-props of Apache Solr Server.
+
+!!![FIX] Docker execution order issue for as-sudo tweaks
+--------------------------------------------------------
+
+This change renames the file
+
+*   from `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`
+*   to `/docker-entrypoint-initdb.d/0_as-sudo-tweaks.sh`
+
+and moves the folder
+
+*   from `/docker-entrypoint-initdb.d/as-sudo/`
+*   to `/docker-entrypoint-initdb.d-as-sudo/`
+
+to fix the execution order issue when setting the correct file permissions
+when starting the docker container, leading to a `Operation not permitted` errors.
+
+More details see:
+
+*   https://github.com/TYPO3-Solr/ext-solr/issues/3837#issuecomment-2461668377.
+*   https://github.com/TYPO3-Solr/ext-solr/pull/4219#issuecomment-2622600937
+
+Impact:
+~~~~~~~
+
+This change requires adjustments in your Docker setup, only if you modified:
+
+*   files in folder `/docker-entrypoint-initdb.d/as-sudo/`
+*   file `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`.
+
+Make sure to use:
+"""""""""""""""""
+
+*   `/docker-entrypoint-initdb.d/0_as-sudo-tweaks.sh` instead of
+
+    *   `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`
+
+*   `/docker-entrypoint-initdb.d-as-sudo` instead of
+
+    *   `/docker-entrypoint-initdb.d/as-sudo/`
 
 
 Release 13.0.0
