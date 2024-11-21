@@ -297,6 +297,36 @@ should check the ``solr.indexingInstructions`` request attribute instead.
 those calls — the sub-request pipeline handles CWD automatically.
 
 
+!!! Trailing Space Removed from ``searchResultClassName`` and ``searchResultSetClassName`` Keys
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The configuration keys
+``$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName ']`` and
+``$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName ']``
+had an unintentional trailing space. The space has been removed.
+
+Impact
+""""""
+
+**Code registering a custom search result class** using the old key with a trailing space will
+silently fall back to the default class, since the key no longer matches.
+
+Migration
+"""""""""
+
+Remove the trailing space from the key in your ``ext_localconf.php``:
+
+..  code-block:: php
+
+    // Before (broken — trailing space)
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] = MySearchResult::class;
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] = MySearchResultSet::class;
+
+    // After (correct)
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName'] = MySearchResult::class;
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName'] = MySearchResultSet::class;
+
+
 !!! Upgrade to Apache Solr 10.0.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -340,6 +370,7 @@ Since EXT:solr 9 and Apache Solr 7 dynamic fields based on trie fields are marke
 All Changes
 -----------
 
+*   [!!!][BUGFIX] Remove space in ``searchResultClassName`` and ``searchResultSetClassName`` configuration keys by @beardcoder in `#4226 <https://github.com/TYPO3-Solr/ext-solr/pull/4226>`_
 *   [!!!][TASK] Remove jQuery dependency from frontend JavaScript by @dkd-lehnebach in `#4619 <https://github.com/TYPO3-Solr/ext-solr/pull/4619>`_
 *   [BUGFIX] Prevent c:0 variant and content leakage on fe_group-restricted pages by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
 *   [!!!][TASK] Remove legacy PageIndexer system and migrate to IndexingInstructions by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
@@ -417,6 +448,7 @@ awesome community. Here are the contributors to this release.
 (patches, comments, bug reports, reviews, ... in alphabetical order)
 
 - `Amir Arends <https://github.com/amirarends>`_
+- `@beardcoder <https://github.com/beardcoder>`_
 - `Benni Mack <https://github.com/bmack>`_
 - `Florian Lehnebach <https://github.com/dkd-lehnebach>`_
 - `@garfieldius <https://github.com/garfieldius>`_

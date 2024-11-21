@@ -141,12 +141,12 @@ use TYPO3\CMS\Scheduler\Task\TableGarbageCollectionTask;
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-    if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '])) {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] = SearchResult::class;
+    if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName'])) {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName'] = SearchResult::class;
     }
 
-    if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '])) {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] = SearchResultSet::class;
+    if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName'])) {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName'] = SearchResultSet::class;
     }
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['writerConfiguration'])) {
