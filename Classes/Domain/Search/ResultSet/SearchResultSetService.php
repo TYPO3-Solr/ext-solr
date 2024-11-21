@@ -95,7 +95,7 @@ class SearchResultSetService
 
     protected function getResultSetClassName(): string
     {
-        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] ?? SearchResultSet::class;
+        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName'] ?? SearchResultSet::class;
     }
 
     /**
