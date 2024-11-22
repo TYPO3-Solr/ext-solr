@@ -1,4 +1,6 @@
-import { Chart, registerables } from './Chart/chart.esm.js'
+import { Chart, registerables } from './Chart/chart.esm.js';
+import DateTimePicker from '@typo3/backend/date-time-picker.js';
+
 Chart.register(...registerables);
 
 const queriesOverTimeChartElement = document.getElementById('queriesOverTime');
@@ -58,3 +60,6 @@ new Chart(queriesOverTimeChartElement, {
     }
   }
 });
+
+document.querySelectorAll('.t3js-datetimepicker')
+  .forEach(datePickerElement => { DateTimePicker.initialize(datePickerElement) });
