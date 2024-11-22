@@ -15,8 +15,10 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\StatisticsRepository;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsFilterDto;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use DateTime;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,11 +30,11 @@ class StatisticsRepositoryTest extends IntegrationTestBase
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1471203378;
-        $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
+        $filterDto = self::getFilterDto(1, $fixtureTimestamp);
 
         /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
-        $topHits = $repository->getTopKeyWordsWithHits(1, $daysSinceFixture);
+        $topHits = $repository->getTopKeyWordsWithHits($filterDto);
         $expectedResult = [
             ['keywords' => 'content', 'count' => 2, 'hits' => '5.0000', 'percent' => '50.0000'],
             ['keywords' => 'typo3', 'count' => 1, 'hits' => '6.0000', 'percent' => '25.0000'],
@@ -46,11 +48,11 @@ class StatisticsRepositoryTest extends IntegrationTestBase
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1471203378;
-        $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
+        $filterDto = self::getFilterDto(1, $fixtureTimestamp);
 
         /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
-        $topHits = $repository->getTopKeyWordsWithoutHits(1, $daysSinceFixture);
+        $topHits = $repository->getTopKeyWordsWithoutHits($filterDto);
 
         $expectedResult = [
             ['keywords' => 'cms', 'count' => 1, 'hits' => '0.0000', 'percent' => '25.0000'],
@@ -64,11 +66,11 @@ class StatisticsRepositoryTest extends IntegrationTestBase
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1480000000;
-        $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
+        $filterDto = self::getFilterDto(1, $fixtureTimestamp);
 
         /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
-        $topHits = $repository->getTopKeyWordsWithoutHits(1, $daysSinceFixture);
+        $topHits = $repository->getTopKeyWordsWithoutHits($filterDto);
 
         $expectedResult = [];
 
@@ -80,11 +82,11 @@ class StatisticsRepositoryTest extends IntegrationTestBase
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1480000000;
-        $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
+        $filterDto = self::getFilterDto(37, $fixtureTimestamp);
 
         /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
-        $topHits = $repository->getSearchStatistics(37, $daysSinceFixture);
+        $topHits = $repository->getSearchStatistics($filterDto);
 
         $expectedResult = [];
 
@@ -123,13 +125,13 @@ class StatisticsRepositoryTest extends IntegrationTestBase
         self::assertEquals(5, $repository->countByRootPageId(1), 'Does not contain shortly inserted statistic record.');
     }
 
-    /**
-     * Helper method to calculate the number of days from now to a specific timestamp.
-     */
-    protected static function getDaysSinceTimestamp(int $timestamp): int
+    protected static function getFilterDto(int $rootPageId, int $sinceTimestamp): StatisticsFilterDto
     {
-        $secondsUntilNow = time() - $timestamp;
-        $days = floor($secondsUntilNow / (60 * 60 * 24));
-        return (int)$days;
+        $startDate = DateTime::createFromFormat('U', (string)$sinceTimestamp);
+        $filterDto = new StatisticsFilterDto();
+        $filterDto->setSiteRootPageId($rootPageId)
+            ->setFromTypoScriptConstants([])
+            ->setStartDate($startDate->modify('-1 day'));
+        return $filterDto;
     }
 }

@@ -410,7 +410,7 @@ class PageIndexerTest extends IntegrationTestBase
         int $indexQueueItem = 4711,
         int $siteLanguageUid = 0,
         array $additionalQueryParams = [],
-        string $forceUrl = ''
+        string $forceUrl = '',
     ): ResponseInterface {
         $item = $this->getIndexQueueItem($indexQueueItem);
 
