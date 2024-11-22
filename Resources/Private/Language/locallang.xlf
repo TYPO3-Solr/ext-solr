@@ -373,6 +373,18 @@
 			<trans-unit id="solr.backend.search_statistics_module.search_phrases_header" xml:space="preserve">
 				<source>Search Phrase Statistics</source>
 			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.filter" xml:space="preserve">
+				<source>Filter</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.filter.reset" xml:space="preserve">
+				<source>Reset</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.filter.start" xml:space="preserve">
+				<source>Start</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.filter.end" xml:space="preserve">
+				<source>End</source>
+			</trans-unit>
 
 		</body>
 	</file>
