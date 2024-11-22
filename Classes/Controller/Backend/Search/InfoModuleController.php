@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository as ApacheSolrDocumentRepository;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsFilterDto;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
@@ -51,15 +52,20 @@ class InfoModuleController extends AbstractModuleController
      *
      * @noinspection PhpUnused
      */
-    public function indexAction(): ResponseInterface
-    {
+    public function indexAction(
+        ?StatisticsFilterDto $statisticsFilter = null,
+        int $activeTabId = 0,
+        string $operation = '',
+    ): ResponseInterface {
+        $this->moduleTemplate->assign('activeTabId', $activeTabId);
+
         if ($this->selectedSite === null) {
             $this->moduleTemplate->assign('can_not_proceed', true);
             return $this->moduleTemplate->renderResponse('Backend/Search/InfoModule/Index');
         }
 
         $this->collectConnectionInfos();
-        $this->collectStatistics();
+        $this->collectStatistics($statisticsFilter, $operation);
         $this->collectIndexFieldsInfo();
         $this->collectIndexInspectorInfo();
 
@@ -132,65 +138,41 @@ class InfoModuleController extends AbstractModuleController
      *
      * @throws DBALException
      */
-    protected function collectStatistics(): void
+    protected function collectStatistics(?StatisticsFilterDto $statisticsFilterDto, string $operation): void
     {
-        $frameWorkConfiguration = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
-            'solr'
-        );
-        $statisticsConfig = $frameWorkConfiguration['plugin.']['tx_solr.']['statistics.'] ?? [];
+        $statisticsFilter = $this->getStatisticsFilter($statisticsFilterDto, $operation);
 
-        $topHitsLimit = (int)($statisticsConfig['topHits.']['limit'] ?? 5);
-        $noHitsLimit = (int)($statisticsConfig['noHits.']['limit'] ?? 5);
-
-        $queriesDays = (int)($statisticsConfig['queries.']['days'] ?? 30);
-
-        $siteRootPageId = $this->selectedSite->getRootPageId();
         /** @var StatisticsRepository $statisticsRepository */
         $statisticsRepository = GeneralUtility::makeInstance(StatisticsRepository::class);
 
         $this->moduleTemplate->assign(
             'top_search_phrases',
-            $statisticsRepository->getTopKeyWordsWithHits(
-                $siteRootPageId,
-                (int)($statisticsConfig['topHits.']['days'] ?? 30),
-                $topHitsLimit
-            )
+            $statisticsRepository->getTopKeyWordsWithHits($statisticsFilter)
         );
         $this->moduleTemplate->assign(
             'top_search_phrases_without_hits',
-            $statisticsRepository->getTopKeyWordsWithoutHits(
-                $siteRootPageId,
-                (int)($statisticsConfig['noHits.']['days'] ?? 30),
-                $noHitsLimit
-            )
+            $statisticsRepository->getTopKeyWordsWithoutHits($statisticsFilter)
         );
         $this->moduleTemplate->assign(
             'search_phrases_statistics',
-            $statisticsRepository->getSearchStatistics(
-                $siteRootPageId,
-                $queriesDays,
-                (int)($statisticsConfig['queries.']['limit'] ?? 100)
-            )
+            $statisticsRepository->getSearchStatistics($statisticsFilter)
         );
 
         $labels = [];
         $data = [];
-        $chartData = $statisticsRepository->getQueriesOverTime(
-            $siteRootPageId,
-            $queriesDays,
-            86400
-        );
+        $chartData = $statisticsRepository->getQueriesOverTime($statisticsFilter, 86400);
+
         foreach ($chartData as $bucket) {
             // @todo Replace deprecated strftime in php 8.1. Suppress warning for now
             $labels[] = @strftime('%x', $bucket['timestamp']);
             $data[] = (int)$bucket['numQueries'];
         }
 
+        $this->moduleTemplate->assign('statisticsFilter', $statisticsFilter);
         $this->moduleTemplate->assign('queriesChartLabels', json_encode($labels));
         $this->moduleTemplate->assign('queriesChartData', json_encode($data));
-        $this->moduleTemplate->assign('topHitsLimit', $topHitsLimit);
-        $this->moduleTemplate->assign('noHitsLimit', $noHitsLimit);
+        $this->moduleTemplate->assign('topHitsLimit', $statisticsFilter->getTopHitsLimit());
+        $this->moduleTemplate->assign('noHitsLimit', $statisticsFilter->getNoHitsLimit());
     }
 
     /**
@@ -320,5 +302,21 @@ class InfoModuleController extends AbstractModuleController
             'numberOfTerms' => $lukeData->index->numTerms ?? 0,
             'numberOfFields' => count($fields),
         ];
+    }
+
+    protected function getStatisticsFilter(?StatisticsFilterDto $statisticsFilterDto, string $operation): StatisticsFilterDto
+    {
+        $frameWorkConfiguration = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
+            'solr'
+        );
+        $statisticsConfig = $frameWorkConfiguration['plugin.']['tx_solr.']['statistics.'] ?? [];
+
+        if ($statisticsFilterDto === null || $operation === 'reset-filters') {
+            $statisticsFilterDto = GeneralUtility::makeInstance(StatisticsFilterDto::class);
+        }
+
+        return $statisticsFilterDto->setFromTypoScriptConstants($statisticsConfig)
+            ->setSiteRootPageId($this->selectedSite->getRootPageId());
     }
 }

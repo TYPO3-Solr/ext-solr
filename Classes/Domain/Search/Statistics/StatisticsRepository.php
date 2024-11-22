@@ -33,11 +33,14 @@ class StatisticsRepository extends AbstractRepository
      *
      * @throws DBALException
      */
-    public function getSearchStatistics(int $rootPageId, int $days = 30, int $limit = 10): array
+    public function getSearchStatistics(StatisticsFilterDto $statisticsFilterDto): array
     {
-        $now = time();
-        $timeStart = $now - 86400 * $days; // 86400 seconds/day
-        return $this->getPreparedQueryBuilderForSearchStatisticsAndTopKeywords($rootPageId, $timeStart, $limit)
+        return $this->getPreparedQueryBuilderForSearchStatisticsAndTopKeywords(
+            $statisticsFilterDto->getSiteRootPageId(),
+            $statisticsFilterDto->getQueriesStartDate(),
+            $statisticsFilterDto->getEndDateTimestamp(),
+            $statisticsFilterDto->getQueriesLimit()
+        )
             ->executeQuery()
             ->fetchAllAssociative();
     }
@@ -48,8 +51,12 @@ class StatisticsRepository extends AbstractRepository
      *
      * @throws DBALException
      */
-    protected function getPreparedQueryBuilderForSearchStatisticsAndTopKeywords(int $rootPageId, int $timeStart, int $limit): QueryBuilder
-    {
+    protected function getPreparedQueryBuilderForSearchStatisticsAndTopKeywords(
+        int $rootPageId,
+        int $timeStart,
+        int $timeEnd,
+        int $limit,
+    ): QueryBuilder {
         $countRows = $this->countByRootPageId($rootPageId);
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -66,6 +73,7 @@ class StatisticsRepository extends AbstractRepository
             ->from($this->table)
             ->where(
                 $queryBuilder->expr()->gt('tstamp', $timeStart),
+                $queryBuilder->expr()->lt('tstamp', $timeEnd),
                 $queryBuilder->expr()->eq('root_pid', $rootPageId)
             )
             ->groupBy('keywords')
@@ -81,9 +89,14 @@ class StatisticsRepository extends AbstractRepository
      *
      * @throws DBALException
      */
-    public function getTopKeyWordsWithHits(int $rootPageId, int $days = 30, int $limit = 10): array
+    public function getTopKeyWordsWithHits(StatisticsFilterDto $filterDto): array
     {
-        return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $days, $limit);
+        return $this->getTopKeyWordsWithOrWithoutHits(
+            $filterDto->getSiteRootPageId(),
+            $filterDto->getTopHitsStartDate(),
+            $filterDto->getEndDateTimestamp(),
+            $filterDto->getTopHitsLimit()
+        );
     }
 
     /**
@@ -91,9 +104,15 @@ class StatisticsRepository extends AbstractRepository
      *
      * @throws DBALException
      */
-    public function getTopKeyWordsWithoutHits(int $rootPageId, int $days = 30, int $limit = 10): array
+    public function getTopKeyWordsWithoutHits(StatisticsFilterDto $filterDto): array
     {
-        return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $days, $limit, true);
+        return $this->getTopKeyWordsWithOrWithoutHits(
+            $filterDto->getSiteRootPageId(),
+            $filterDto->getNoHitsStartDate(),
+            $filterDto->getEndDateTimestamp(),
+            $filterDto->getNoHitsLimit(),
+            true
+        );
     }
 
     /**
@@ -101,12 +120,20 @@ class StatisticsRepository extends AbstractRepository
      *
      * @throws DBALException
      */
-    protected function getTopKeyWordsWithOrWithoutHits(int $rootPageId, int $days = 30, int $limit = 10, bool $withoutHits = false): array
-    {
-        $now = time();
-        $timeStart = $now - 86400 * $days; // 86400 seconds/day
+    protected function getTopKeyWordsWithOrWithoutHits(
+        int $rootPageId,
+        int $timeStart,
+        int $timeEnd,
+        int $limit = 10,
+        bool $withoutHits = false,
+    ): array {
+        $queryBuilder = $this->getPreparedQueryBuilderForSearchStatisticsAndTopKeywords(
+            $rootPageId,
+            $timeStart,
+            $timeEnd,
+            $limit
+        );
 
-        $queryBuilder = $this->getPreparedQueryBuilderForSearchStatisticsAndTopKeywords($rootPageId, $timeStart, $limit);
         // Check if we want without or with hits
         if ($withoutHits === true) {
             $queryBuilder->andWhere($queryBuilder->expr()->eq('num_found', 0));
@@ -124,12 +151,10 @@ class StatisticsRepository extends AbstractRepository
      *
      * @throws DBALException
      */
-    public function getQueriesOverTime(int $rootPageId, int $days = 30, int $bucketSeconds = 3600): array
+    public function getQueriesOverTime(StatisticsFilterDto $statisticsFilterDto, int $bucketSeconds = 3600): array
     {
-        $now = time();
-        $timeStart = $now - 86400 * $days; // 86400 seconds/day
-
         $queryBuilder = $this->getQueryBuilder();
+
         return $queryBuilder
             ->addSelectLiteral(
                 'FLOOR(tstamp/' . $bucketSeconds . ') AS bucket',
@@ -138,8 +163,9 @@ class StatisticsRepository extends AbstractRepository
             )
             ->from($this->table)
             ->andWhere(
-                $queryBuilder->expr()->gt('tstamp', $timeStart),
-                $queryBuilder->expr()->eq('root_pid', $rootPageId)
+                $queryBuilder->expr()->gt('tstamp', $statisticsFilterDto->getQueriesStartDate()),
+                $queryBuilder->expr()->lt('tstamp', $statisticsFilterDto->getEndDateTimestamp()),
+                $queryBuilder->expr()->eq('root_pid', $statisticsFilterDto->getSiteRootPageId())
             )
             ->groupBy('bucket', 'timestamp')
             ->orderBy('bucket', 'ASC')
