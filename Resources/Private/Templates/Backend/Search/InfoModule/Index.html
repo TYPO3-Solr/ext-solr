@@ -7,49 +7,49 @@
     <div role="tabpanel">
         <ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
             <li role="presentation" class="t3js-tabmenu-item nav-item">
-                <a href="#connections-tab" class="nav-link active" title="" aria-controls="tab-1" role="tab" data-bs-toggle="tab">
+                <a href="#connections-tab" class="nav-link{f:if(condition: '{activeTabId} == 0', then: ' active')}" title="" aria-controls="tab-1" role="tab" data-bs-toggle="tab">
                     Connections
                 </a>
             </li>
             <li role="presentation" class="t3js-tabmenu-item nav-item ">
-                <a href="#statistics-tab" class="nav-link" title="" aria-controls="tab-3" role="tab" data-bs-toggle="tab">
+                <a href="#statistics-tab" class="nav-link{f:if(condition: '{activeTabId} == 1', then: ' active')}" title="" aria-controls="tab-3" role="tab" data-bs-toggle="tab">
                     Statistics
                 </a>
             </li>
             <li role="presentation" class="t3js-tabmenu-item nav-item ">
-                <a href="#index_fields-tab" class="nav-link" title="" aria-controls="tab-2" role="tab" data-bs-toggle="tab">
+                <a href="#index_fields-tab" class="nav-link{f:if(condition: '{activeTabId} == 2', then: ' active')}" title="" aria-controls="tab-2" role="tab" data-bs-toggle="tab">
                     Index Fields
                 </a>
             </li>
             <li role="presentation" class="t3js-tabmenu-item nav-item">
-                <a href="#index_inspector-tab" class="nav-link" title="" aria-controls="tab-2" role="tab" data-bs-toggle="tab">
+                <a href="#index_inspector-tab" class="nav-link{f:if(condition: '{activeTabId} == 3', then: ' active')}" title="" aria-controls="tab-2" role="tab" data-bs-toggle="tab">
                     Index Documents
                 </a>
             </li>
         </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="connections-tab">
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 0', then: ' active')}" id="connections-tab">
                 <div class="panel panel-tab">
                     <div class="panel-body">
                         <f:render section="ConnectionInfos" arguments="{_all}"/>
                     </div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="statistics-tab">
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 1', then: ' active')}" id="statistics-tab">
                 <div class="panel panel-tab">
                     <div class="panel-body">
                         <f:render section="Statistics" arguments="{_all}"/>
                     </div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="index_fields-tab">
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 2', then: ' active')}" id="index_fields-tab">
                 <div class="panel panel-tab">
                     <div class="panel-body">
                         <f:render section="IndexFields" arguments="{_all}"/>
                     </div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="index_inspector-tab">
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 3', then: ' active')}" id="index_inspector-tab">
                 <div class="panel panel-tab">
                     <div class="panel-body">
                         <f:render section="IndexInspector" arguments="{_all}"/>
@@ -108,13 +108,67 @@
 </f:section>
 
 <f:section name="Statistics">
-    <!-- TODO add buttons to select time frame [last 24h] [last 30 days] [all] -->
-
     <f:be.pageRenderer
             includeJsFiles="{
         0: '{f:uri.resource(path:\'JavaScript/SearchStatistics.js\')}'
     }"
+						includeRequireJsModules="{0: 'TYPO3/CMS/Backend/DateTimePicker'}"
     />
+
+	<div class="row">
+		<div class="col-md-12">
+			<f:form action="index" object="{statisticsFilter}" name="statisticsFilter">
+				<div class="row row-cols-auto align-items-end g-3">
+					<div class="col">
+						<label for="statisticsStartDate" class="form-label">{f:translate(key: 'solr.backend.search_statistics_module.filter.start')}</label>
+						<div class="input-group">
+							<f:form.textfield
+								name="startDate"
+								value="{f:format.date(format:'c', date: '{statisticsFilter.startDate}')}"
+								id="statisticsStartDate"
+								additionalAttributes="{'autocomplete': 'off'}"
+								class="form-control t3js-datetimepicker t3js-clearable"
+								data="{date-type: 'datetime'}"
+							/>
+							<f:form.hidden
+								property="startDate"
+								value="{f:format.date(format:'c', date: '{statisticsFilter.startDate}')}"
+							/>
+							<label class="mb-0 btn btn-default" for="statisticsStartDate">
+								<core:icon identifier="actions-calendar" />
+							</label>
+						</div>
+					</div>
+
+					<div class="col">
+						<label for="statisticsEndDate" class="form-label">{f:translate(key: 'solr.backend.search_statistics_module.filter.end')}</label>
+						<div class="input-group">
+							<f:form.textfield
+								name="endDate"
+								value="{f:format.date(format:'c', date: '{statisticsFilter.endDate}')}"
+								id="statisticsEndDate"
+								additionalAttributes="{'autocomplete': 'off'}"
+								class="form-control t3js-datetimepicker t3js-clearable"
+								data="{date-type: 'datetime'}"
+							/>
+							<f:form.hidden
+								property="endDate"
+								value="{f:format.date(format:'c', date: '{statisticsFilter.endDate}')}"
+							/>
+							<label class="mb-0 btn btn-default" for="statisticsEndDate">
+								<core:icon identifier="actions-calendar" />
+							</label>
+						</div>
+					</div>
+					<div class="col">
+						<f:form.button type="submit" name="operation" value="filter" class="btn btn-light">{f:translate(key: 'solr.backend.search_statistics_module.filter')}</f:form.button>
+						<f:form.button type="submit" name="operation" value="reset-filters" class="btn btn-link">{f:translate(key: 'solr.backend.search_statistics_module.filter.reset')}</f:form.button>
+					</div>
+				</div>
+				<f:form.hidden name="activeTabId" value="1" />
+			</f:form>
+		</div>
+	</div>
 
     <div class="row">
         <div class="col-md-12">

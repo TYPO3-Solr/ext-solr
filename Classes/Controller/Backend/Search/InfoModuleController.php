@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository as ApacheSolrDocumentRepository;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsFilterDto;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
@@ -49,15 +50,21 @@ class InfoModuleController extends AbstractModuleController
      *
      * @return ResponseInterface
      */
-    public function indexAction(): ResponseInterface
-    {
+    public function indexAction(
+        ?StatisticsFilterDto $statisticsFilter = null,
+        int $activeTabId = 0,
+        string $operation = ''
+    ): ResponseInterface {
+        $this->initializeAction();
+
+        $this->view->assign('activeTabId', $activeTabId);
         if ($this->selectedSite === null) {
             $this->view->assign('can_not_proceed', true);
             return $this->getModuleTemplateResponse();
         }
 
         $this->collectConnectionInfos();
-        $this->collectStatistics();
+        $this->collectStatistics($statisticsFilter, $operation);
         $this->collectIndexFieldsInfo();
         $this->collectIndexInspectorInfo();
 
@@ -129,37 +136,39 @@ class InfoModuleController extends AbstractModuleController
     /**
      * Index action, shows an overview of the state of the Solr index
      */
-    protected function collectStatistics(): void
+    protected function collectStatistics(?StatisticsFilterDto $statisticsFilterDto, string $operation): void
     {
         // TODO make time frame user adjustable, for now it's last 30 days
+        $statisticsFilter = $this->getStatisticsFilter($statisticsFilterDto, $operation);
 
-        $siteRootPageId = $this->selectedSite->getRootPageId();
-        /* @var StatisticsRepository $statisticsRepository */
+        /** @var StatisticsRepository $statisticsRepository */
         $statisticsRepository = GeneralUtility::makeInstance(StatisticsRepository::class);
 
         // @TODO: Do we want Typoscript constants to restrict the results?
         $this->view->assign(
             'top_search_phrases',
-            $statisticsRepository->getTopKeyWordsWithHits($siteRootPageId, 30, 5)
+            $statisticsRepository->getTopKeyWordsWithHits($statisticsFilter)
         );
         $this->view->assign(
             'top_search_phrases_without_hits',
-            $statisticsRepository->getTopKeyWordsWithoutHits($siteRootPageId, 30, 5)
+            $statisticsRepository->getTopKeyWordsWithoutHits($statisticsFilter)
         );
         $this->view->assign(
             'search_phrases_statistics',
-            $statisticsRepository->getSearchStatistics($siteRootPageId, 30, 100)
+            $statisticsRepository->getSearchStatistics($statisticsFilter)
         );
 
         $labels = [];
         $data = [];
-        $chartData = $statisticsRepository->getQueriesOverTime($siteRootPageId, 30, 86400);
+        $chartData = $statisticsRepository->getQueriesOverTime($statisticsFilter, 86400);
+
         foreach ($chartData as $bucket) {
             // @todo Replace deprecated strftime in php 8.1. Suppress warning for now
             $labels[] = @strftime('%x', $bucket['timestamp']);
             $data[] = (int)$bucket['numQueries'];
         }
 
+        $this->view->assign('statisticsFilter', $statisticsFilter);
         $this->view->assign('queriesChartLabels', json_encode($labels));
         $this->view->assign('queriesChartData', json_encode($data));
     }
@@ -293,5 +302,14 @@ class InfoModuleController extends AbstractModuleController
             'numberOfTerms' => $lukeData->index->numTerms ?? 0,
             'numberOfFields' => count($fields),
         ];
+    }
+
+    protected function getStatisticsFilter(?StatisticsFilterDto $statisticsFilterDto, string $operation): StatisticsFilterDto
+    {
+        if ($statisticsFilterDto === null || $operation === 'reset-filters') {
+            $statisticsFilterDto = GeneralUtility::makeInstance(StatisticsFilterDto::class);
+        }
+
+        return $statisticsFilterDto->setSiteRootPageId($this->selectedSite->getRootPageId());
     }
 }
