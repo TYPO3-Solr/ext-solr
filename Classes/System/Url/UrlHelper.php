@@ -44,8 +44,10 @@ class UrlHelper extends Uri
     /**
      * Add a given parameter with value to the query and create a new instance.
      */
-    public function withQueryParameter(string $parameterName, $value): UrlHelper
-    {
+    public function withQueryParameter(
+        string $parameterName,
+        mixed $value,
+    ): UrlHelper {
         parse_str($this->query, $parameters);
         $parameters[$parameterName] = $value;
         $query = http_build_query($parameters);
