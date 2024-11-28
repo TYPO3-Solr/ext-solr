@@ -15,7 +15,7 @@ List of EXT:solr versions and the matching versions of Apache Solr and TYPO3 tha
 TYPO3     EXT:solr   EXT:tika   EXT:solrfal EXT:solrconsole EXT:solrdebugtools EXT:solrfluidgrouping            EXT:solrmlt     Apache Solr     Configset
 ========= ========== ========== =========== =============== ================== ================================ =============== =============== =================
 13.4      13.0 (ᾱ)   13.0 (Ø)   13.0 (ᾱ)    13.0 (Ø)        13.0 (Ø)           N/A (integrated in EXT:solr)     13.0 (Ø)        9.7.0¹          ext_solr_13_0_0
-12.4      12.0       12.0       12.0        12.0            12.0               N/A (integrated in EXT:solr)     12.0 (Ø)        9.6.1¹          ext_solr_12_0_0
+12.4      12.0       12.0       12.0        12.0            12.0               N/A (integrated in EXT:solr)     12.0 (Ø)        9.7.0¹          ext_solr_12_0_0
 ========= ========== ========== =========== =============== ================== ================================ =============== =============== =================
 
 | Ø  - not yet available
