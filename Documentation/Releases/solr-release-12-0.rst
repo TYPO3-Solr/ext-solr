@@ -7,6 +7,41 @@ Releases 12.0
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 12.0.4
+==============
+
+This is a maintenance release for TYPO3 12.4 LTS, containing:
+
+- [TASK] Use request object to retrieve query params instead of _GET by @sfroemkenjw in `#4045 <https://github.com/TYPO3-Solr/ext-solr/pull/4045`__
+- [TASK] Use Attributes for PHPUnit tests by @bmack in `#4048 <https://github.com/TYPO3-Solr/ext-solr/pull/4048`__
+- [TASK] Update PHP-Stan to at least 1.11.* by @sfroemkenjw in `#4055 <https://github.com/TYPO3-Solr/ext-solr/pull/4055`__
+- [TASK] Apply and repair rector refactorings by @sfroemkenjw in `#4049 <https://github.com/TYPO3-Solr/ext-solr/pull/4049`__
+- [TASK] Migrate requireJS to ES6. Solr BE Modal JS by @sfroemkenjw in `#4057 <https://github.com/TYPO3-Solr/ext-solr/pull/4057`__
+- [TASK] Apache Solr 9.6 compatibility by @dkd-friedrich in `#4056 <https://github.com/TYPO3-Solr/ext-solr/pull/4056`__
+- [TASK] Use new template module API by @sfroemkenjw in `#4054 <https://github.com/TYPO3-Solr/ext-solr/pull/4054`__
+- [FEATURE] Add contentObjectData to searchController by @spoonerWeb in `#4059 <https://github.com/TYPO3-Solr/ext-solr/pull/4059`__
+- [BUGFIX] Add empty array as fallback if null by @spoonerWeb in `#4061 <https://github.com/TYPO3-Solr/ext-solr/pull/4061`__
+- [BUGFIX] Add empty array defaults in SearchFormViewHelper by @hnadler in `#4042 <https://github.com/TYPO3-Solr/ext-solr/pull/4042`__
+- [TASK] Integrate content of Module layout into WithPageTree by @sfroemkenjw in `#4066 <https://github.com/TYPO3-Solr/ext-solr/pull/4066`__
+- [TASK] Repair statistics chart because of CSP in Solr Info module by @sfroemkenjw in `#4068 <https://github.com/TYPO3-Solr/ext-solr/pull/4068`__
+- [FEATURE:BP:12] Be able to disable tracking of last searches by @dkd-kaehm in `#4064 <https://github.com/TYPO3-Solr/ext-solr/pull/4064`__
+- [TASK] Add access plugin tests by @dkd-friedrich in `#4069 <https://github.com/TYPO3-Solr/ext-solr/pull/4069`__
+- [TASK] Update authors by @sfroemkenjw in `#4071 <https://github.com/TYPO3-Solr/ext-solr/pull/4071`__
+- [TASK] Remove content stream usage by @dkd-friedrich in `#4073 <https://github.com/TYPO3-Solr/ext-solr/pull/4073`__
+- [BUGFIX] Fix synonym and stop word upload by @dkd-friedrich in `#4074 <https://github.com/TYPO3-Solr/ext-solr/pull/4074`__
+- [TASK] Call getLabelFromItemListMerged with the current row data by @3l73 in `#4081 <https://github.com/TYPO3-Solr/ext-solr/pull/4081`__
+- [BUGFIX] numeric facet range slider sends lot of requests to server by @hvomlehn-sds in `#4084 <https://github.com/TYPO3-Solr/ext-solr/pull/4084`__
+- [BUGFIX] Typecast $userGroup to integer by @derhansen in `#4079 <https://github.com/TYPO3-Solr/ext-solr/pull/4079`__
+- [TASK] Remove getIsSiteManagedSite as all site are managed now by @sfroemkenjw in `#4070 <https://github.com/TYPO3-Solr/ext-solr/pull/4070`__
+- [BUGFIX] [4026] treat non-overlayed mount points as valid by @derMatze82 in `#4029 <https://github.com/TYPO3-Solr/ext-solr/pull/4029`__
+- [TASK] New Crowdin updates by @dkd-kaehm in `#4094 <https://github.com/TYPO3-Solr/ext-solr/pull/4094`__
+- [BUGFIX] Fix range string calculation in DateRange facet by @derhansen in `#4090 <https://github.com/TYPO3-Solr/ext-solr/pull/4090`__
+- [BUGFIX:12] scheduler task "Optimize index of a site" is not functional by @dkd-kaehm in `#4104 <https://github.com/TYPO3-Solr/ext-solr/pull/4104`__
+- [TASK] Apache Solr 9.6.1 compatibility by @dkd-kaehm in `#4106 <https://github.com/TYPO3-Solr/ext-solr/pull/4106`__
+- [BUGFIX] deprecations in Dockerfile by @dkd-kaehm in `#4110 <https://github.com/TYPO3-Solr/ext-solr/pull/4110`__
+- [BUGFIX] Ensure index document is deleted by @dkd-friedrich in `#4113 <https://github.com/TYPO3-Solr/ext-solr/pull/4113`__
+
+
 Release 12.0.3
 ==============
 
@@ -540,6 +575,7 @@ awesome community. Here are the contributors to this release.
 - Benoit Chenu
 - Christoph Lehmann
 - Daniel Siepmann
+- `@derMatze82 <https://github.com/derMatze82>`_
 - Dmitry Dulepov
 - Elias Häußler
 - Eric Chavaillaz
@@ -550,6 +586,8 @@ awesome community. Here are the contributors to this release.
 - Florian Rival
 - Georg Ringer
 - Harald Witt
+- `Hendrik vom Lehn <https://github.com/hvomlehn-sds>`_
+- `@hnadler <https://github.com/hnadler>`_
 - Henrik Elsner
 - Ingo Fabbri
 - Jennifer Geiß
@@ -558,14 +596,14 @@ awesome community. Here are the contributors to this release.
 - Lukas Niestroj
 - Marc Hirdes
 - Mario Lubenka
-- Markus Friedrich
+- `Markus Friedrich <https://github.com/dkd-friedrich>`_
 - Matthias Vogel
 - `@n3amil / Cypelt <https://github.com/n3amil>`_
 - Oliver Bartsch
 - Patrick Schriner
 - Philipp Kitzberger
 - Pierrick Caillon
-- Rafael Kähm
+- `Rafael Kähm <https://github.com/dkd-kaehm>`_
 - René Maas
 - Roman Schilter
 - Sascha Nowak
@@ -578,6 +616,7 @@ awesome community. Here are the contributors to this release.
 - Stämpfli Kommunikation
 - Sven Erens
 - Sven Teuber
+- Thomas Löffler
 - Till Hörner
 - Tim Dreier
 - Tobias Hövelborn
@@ -589,6 +628,7 @@ Also a big thank you to our partners who have already concluded one of our new d
 as Apache Solr EB for TYPO3 12 LTS (Feature):
 
 - .hausformat
+- +Pluswerk AG
 - 711media websolutions GmbH
 - ACO Ahlmann SE & Co. KG
 - AVM Computersysteme Vertriebs GmbH
@@ -597,6 +637,7 @@ as Apache Solr EB for TYPO3 12 LTS (Feature):
 - Autorité des Marchés Financiers (Québec)
 - b13 GmbH
 - Beech IT
+- Bytebetrieb GmbH & Co. KG
 - CARL von CHIARI GmbH
 - clickstorm GmbH Apache Solr EB für TYPO3 12 LTS (Feature)
 - Connecta AG
@@ -605,23 +646,32 @@ as Apache Solr EB for TYPO3 12 LTS (Feature):
 - CS2 AG
 - cyperfection GmbH
 - digit.ly
+- DGB Rechtsschutz GmbH
 - DMK E-BUSINESS GmbH
 - DP-Medsystems AG
 - DSCHOY GmbH
 - Deutsches Literaturarchiv Marbach
 - EB-12LTS-FEATURE
 - F7 Media GmbH
+- Fachagentur Nachwachsende Rohstoffe fnr.de
+- Forte Digital Germany GmbH
 - FTI Touristik GmbH
 - gedacht
+- Getdesigned GmbH
 - GPM Deutsche Gesellschaft für Projektmanagement e. V.
+- Groupe Toumoro inc
 - HEAD acoustics GmbH
+- helhum.io
+- Hochschule Koblenz - Standort Remagen
 - in2code GmbH
 - Internezzo
+- IW Medien GmbH
 - jweiland.net
+- Kassenärztliche Vereinigung Rheinland-Pfalz
 - keeen GmbH
 - KONVERTO AG
-- Kassenärztliche Vereinigung Rheinland-Pfalz
 - Kreis Euskirchen
+- Kwintessens B.V.
 - L.N. Schaffrath DigitalMedien GmbH
 - LOUIS INTERNET GmbH
 - Leuchtfeuer Digital Marketing GmbH
@@ -635,12 +685,19 @@ as Apache Solr EB for TYPO3 12 LTS (Feature):
 - plan2net GmbH
 - ProPotsdam GmbH
 - Québec.ca gouv.qc.ca Apache Solr EB für TYPO3 12 LTS (Feature)
+- Rechnungshof Österreich
 - Red Dot GmbH & Co. KG
+- rocket-media GmbH & Co KG
+- Sandstein Neue Medien GmbH
 - Schoene neue kinder GmbH
+- SIWA Online GmbH
 - Snowflake Productions GmbH Apache Solr EB für TYPO3 12 LTS (Feature)
 - Stadtverwaltung Villingen-Schwenningen
 - Stämpfli AG
+- Statistik Österreich
 - studio ahoi - Weitenauer Schwardt GbR
+- Südwestfalen IT
+- Systime/Gyldendal A/S
 - THE BRETTINGHAMS GmbH
 - Typoheads GmbH
 - UEBERBIT GmbH
