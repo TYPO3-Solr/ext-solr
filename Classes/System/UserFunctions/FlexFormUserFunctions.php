@@ -120,7 +120,7 @@ class FlexFormUserFunctions
      */
     protected function getConnection(array $pageRecord): SolrConnection
     {
-        return GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($pageRecord['pid'], $pageRecord['sys_language_uid']);
+        return GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($pageRecord['pid'], (int) $pageRecord['sys_language_uid']);
     }
 
     /**
