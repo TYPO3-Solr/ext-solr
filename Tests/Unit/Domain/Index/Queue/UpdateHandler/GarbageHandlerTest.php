@@ -44,6 +44,7 @@ class GarbageHandlerTest extends SetUpUpdateHandler
                 $this->frontendEnvironmentMock,
                 $this->tcaServiceMock,
                 $this->indexQueueMock,
+                $this->loggerMock,
             ],
         );
     }

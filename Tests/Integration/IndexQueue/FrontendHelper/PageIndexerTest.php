@@ -337,7 +337,7 @@ class PageIndexerTest extends IntegrationTestBase
 
         $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_mounted_page_from_another_site.csv');
-        $this->addTypoScriptToTemplateRecord(111, 'config.index_enable = 1');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
