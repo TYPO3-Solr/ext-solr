@@ -148,7 +148,7 @@ class ConfigurationManager implements SingletonInterface
     }
 
     /**
-     * @return array{
+     * @return array|array{
      *    'uid': int,
      *    'pid': int,
      *    'tstamp': int,
@@ -198,6 +198,10 @@ class ConfigurationManager implements SingletonInterface
             '', // @todo: tag: MountPoint,
             $coreContext,
         );
+        $rootline = $rootlineUtility->get();
+        if ($rootline === []) {
+            return [];
+        }
 
         /** @var SysTemplateRepository $sysTemplateRepository */
         $sysTemplateRepository = GeneralUtility::makeInstance(
@@ -208,7 +212,7 @@ class ConfigurationManager implements SingletonInterface
         );
 
         return $sysTemplateRepository->getSysTemplateRowsByRootline(
-            $rootlineUtility->get(),
+            $rootline,
             $request
         );
     }

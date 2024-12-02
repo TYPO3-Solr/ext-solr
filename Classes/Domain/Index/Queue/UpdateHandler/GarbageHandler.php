@@ -23,6 +23,8 @@ use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
 
@@ -189,7 +191,26 @@ class GarbageHandler extends AbstractUpdateHandler
      */
     protected function isIndexablePageType(array $record): bool
     {
-        return $this->frontendEnvironment->isAllowedPageType($record);
+        try {
+            $isAllowedPageType = $this->frontendEnvironment->isAllowedPageType($record);
+        } catch (SiteNotFoundException $e) {
+            $this->logger->log(
+                LogLevel::WARNING,
+                'Couldn\t determine site for page ' . $record['uid'],
+                [
+                    'pageUid' => $record['uid'],
+                    'error' => [
+                        'code' => $e->getCode(),
+                        'file' => $e->getFile() . ':' . $e->getLine(),
+                        'message' => $e->getMessage(),
+                    ],
+                ]
+            );
+
+            $isAllowedPageType = false;
+        }
+
+        return $isAllowedPageType;
     }
 
     /**
