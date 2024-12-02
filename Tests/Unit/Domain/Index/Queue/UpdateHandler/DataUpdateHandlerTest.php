@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Context\Context;
@@ -43,17 +42,12 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
 
     protected DataHandler|MockObject $dataHandlerMock;
 
-    protected SolrLogManager|MockObject $solrLogManagerMock;
-
-    protected MockObject|SolrLogManager $loggerMock;
-
     protected function setUp(): void
     {
         parent::setUp();
         $this->mountPagesUpdaterMock = $this->createMock(MountPagesUpdater::class);
         $this->rootPageResolverMock = $this->createMock(RootPageResolver::class);
         $this->dataHandlerMock = $this->createMock(DataHandler::class);
-        $this->loggerMock = $this->createMock(SolrLogManager::class);
 
         $this->dataUpdateHandler = $this->getAccessibleMock(
             DataUpdateHandler::class,

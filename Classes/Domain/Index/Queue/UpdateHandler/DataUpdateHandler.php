@@ -95,8 +95,6 @@ class DataUpdateHandler extends AbstractUpdateHandler
 
     protected ?PagesRepository $pagesRepository;
 
-    protected SolrLogManager $logger;
-
     protected DataHandler $dataHandler;
 
     public function __construct(
@@ -110,16 +108,12 @@ class DataUpdateHandler extends AbstractUpdateHandler
         DataHandler $dataHandler,
         ?SolrLogManager $solrLogManager = null,
     ) {
-        parent::__construct($recordService, $frontendEnvironment, $tcaService, $indexQueue);
+        parent::__construct($recordService, $frontendEnvironment, $tcaService, $indexQueue, $solrLogManager);
 
         $this->mountPageUpdater = $mountPageUpdater;
         $this->rootPageResolver = $rootPageResolver;
         $this->pagesRepository = $pagesRepository;
         $this->dataHandler = $dataHandler;
-        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(
-            SolrLogManager::class,
-            __CLASS__
-        );
     }
 
     /**

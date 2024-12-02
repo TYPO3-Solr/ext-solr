@@ -20,12 +20,15 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -76,6 +79,8 @@ abstract class AbstractUpdateHandler
 
     protected ?PagesRepository $pagesRepository;
 
+    protected SolrLogManager $logger;
+
     /**
      * @var QueryBuilder[]
      */
@@ -86,11 +91,17 @@ abstract class AbstractUpdateHandler
         FrontendEnvironment $frontendEnvironment,
         TCAService $tcaService,
         Queue $indexQueue,
+        ?SolrLogManager $solrLogManager = null,
     ) {
         $this->configurationAwareRecordService = $recordService;
         $this->frontendEnvironment = $frontendEnvironment;
         $this->tcaService = $tcaService;
         $this->indexQueue = $indexQueue;
+
+        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(
+            SolrLogManager::class,
+            __CLASS__
+        );
     }
 
     /**
@@ -165,12 +176,28 @@ abstract class AbstractUpdateHandler
         $isRecursiveUpdateRequired = $this->isRecursiveUpdateRequired($pageId, $updatedFields);
         // If RecursiveUpdateTriggerConfiguration is false => check if changeFields are part of recursiveUpdateFields
         if ($isRecursiveUpdateRequired === false) {
-            $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId);
-            $indexQueueConfigurationName = $this->configurationAwareRecordService->getIndexingConfigurationName(
-                'pages',
-                $pageId,
-                $solrConfiguration
-            );
+            try {
+                $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId);
+                $indexQueueConfigurationName = $this->configurationAwareRecordService->getIndexingConfigurationName(
+                    'pages',
+                    $pageId,
+                    $solrConfiguration
+                );
+            } catch (SiteNotFoundException $e) {
+                $this->logger->log(
+                    LogLevel::WARNING,
+                    'Couldn\t determine site for page ' . $pageId,
+                    [
+                        'pageUid' => $pageId,
+                        'error' => [
+                            'code' => $e->getCode(),
+                            'file' => $e->getFile() . ':' . $e->getLine(),
+                            'message' => $e->getMessage(),
+                        ],
+                    ]
+                );
+                return false;
+            }
             if ($indexQueueConfigurationName === null) {
                 return false;
             }
