@@ -135,7 +135,7 @@ abstract class AbstractSolrService
         string $url,
         string $method = Request::METHOD_GET,
         string $body = '',
-        Closure $initializeRequest = null
+        ?Closure $initializeRequest = null
     ): ResponseAdapter {
         $logSeverity = LogLevel::INFO;
         $exception = null;
@@ -198,7 +198,7 @@ abstract class AbstractSolrService
         string $message,
         string $url,
         ?ResponseAdapter $solrResponse,
-        Throwable $exception = null,
+        ?Throwable $exception = null,
         string $contentSend = ''
     ): void {
         $logData = $this->buildLogDataFromResponse($solrResponse, $exception, $url, $contentSend);
@@ -210,7 +210,7 @@ abstract class AbstractSolrService
      */
     protected function buildLogDataFromResponse(
         ResponseAdapter $solrResponse,
-        Throwable $e = null,
+        ?Throwable $e = null,
         string $url = '',
         string $contentSend = ''
     ): array {

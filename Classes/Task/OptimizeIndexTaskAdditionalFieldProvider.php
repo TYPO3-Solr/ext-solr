@@ -86,7 +86,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      */
     protected function initialize(
         SchedulerModuleController $schedulerModule,
-        OptimizeIndexTask $task = null,
+        ?OptimizeIndexTask $task = null,
         array $taskInfo = []
     ): void {
         $this->task = $task;

@@ -48,9 +48,9 @@ class Repository implements SingletonInterface
      * Repository constructor.
      */
     public function __construct(
-        DocumentEscapeService $documentEscapeService = null,
-        TypoScriptConfiguration $typoScriptConfiguration = null,
-        QueryBuilder $queryBuilder = null
+        ?DocumentEscapeService $documentEscapeService = null,
+        ?TypoScriptConfiguration $typoScriptConfiguration = null,
+        ?QueryBuilder $queryBuilder = null
     ) {
         $this->typoScriptConfiguration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
         $this->documentEscapeService = $documentEscapeService ?? GeneralUtility::makeInstance(DocumentEscapeService::class, $typoScriptConfiguration);

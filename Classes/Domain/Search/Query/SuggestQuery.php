@@ -30,7 +30,7 @@ class SuggestQuery extends Query
 
     protected string $prefix;
 
-    public function __construct(string $keywords, TypoScriptConfiguration $solrConfiguration = null)
+    public function __construct(string $keywords, ?TypoScriptConfiguration $solrConfiguration = null)
     {
         parent::__construct();
         $solrConfiguration = $solrConfiguration ?? Util::getSolrConfiguration();

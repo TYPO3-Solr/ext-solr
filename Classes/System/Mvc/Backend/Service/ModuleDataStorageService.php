@@ -56,7 +56,7 @@ class ModuleDataStorageService implements SingletonInterface
     /**
      * Unsets not serializable module data.
      */
-    private function unsetModuleDataIfCanNotBeSerialized(string &$serializedModuleData = null): void
+    private function unsetModuleDataIfCanNotBeSerialized(?string &$serializedModuleData = null): void
     {
         if (!isset($serializedModuleData)) {
             $serializedModuleData = '';

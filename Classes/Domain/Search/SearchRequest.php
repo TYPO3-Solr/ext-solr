@@ -81,7 +81,7 @@ class SearchRequest
         array $argumentsArray = [],
         int $pageUid = 0,
         int $sysLanguageUid = 0,
-        TypoScriptConfiguration $typoScriptConfiguration = null,
+        ?TypoScriptConfiguration $typoScriptConfiguration = null,
     ) {
         $this->stateChanged = true;
         $this->persistedArguments = $argumentsArray;
