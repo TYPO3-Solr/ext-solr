@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Definitions for modules provided by EXT:solr
  */
