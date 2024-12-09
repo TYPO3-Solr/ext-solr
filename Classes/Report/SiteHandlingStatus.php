@@ -51,8 +51,8 @@ class SiteHandlingStatus extends AbstractSolrStatus
     protected ExtensionConfiguration $extensionConfiguration;
 
     public function __construct(
-        ExtensionConfiguration $extensionConfiguration = null,
-        SiteRepository $siteRepository = null
+        ?ExtensionConfiguration $extensionConfiguration = null,
+        ?SiteRepository $siteRepository = null
     ) {
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);

@@ -31,7 +31,7 @@ class MountPagesUpdater
 {
     protected PagesRepository $pagesRepository;
 
-    public function __construct(PagesRepository $pagesRepository = null)
+    public function __construct(?PagesRepository $pagesRepository = null)
     {
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
     }

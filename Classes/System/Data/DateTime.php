@@ -25,7 +25,7 @@ use DateTimeZone;
  */
 class DateTime extends PhpDateTime
 {
-    public function __construct(string $time = 'now', DateTimeZone $timezone = null)
+    public function __construct(string $time = 'now', ?DateTimeZone $timezone = null)
     {
         parent::__construct($time, $timezone);
     }

@@ -30,7 +30,7 @@ class TCAService
 
     protected array $visibilityAffectingFields = [];
 
-    public function __construct(array $TCA = null)
+    public function __construct(?array $TCA = null)
     {
         $this->tca = (array)($TCA ?? $GLOBALS['TCA']);
     }

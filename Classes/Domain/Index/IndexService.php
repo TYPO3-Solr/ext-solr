@@ -52,9 +52,9 @@ class IndexService
 
     public function __construct(
         Site $site,
-        QueueInterface $queue = null,
-        EventDispatcherInterface $eventDispatcher = null,
-        SolrLogManager $solrLogManager = null,
+        ?QueueInterface $queue = null,
+        ?EventDispatcherInterface $eventDispatcher = null,
+        ?SolrLogManager $solrLogManager = null,
     ) {
         $this->site = $site;
         $this->indexQueue = $queue ?? GeneralUtility::makeInstance(Queue::class);
