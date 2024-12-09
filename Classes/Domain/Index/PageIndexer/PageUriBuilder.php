@@ -41,9 +41,9 @@ class PageUriBuilder
     protected EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
-        SolrLogManager $logger = null,
-        SiteFinder $siteFinder = null,
-        EventDispatcherInterface $eventDispatcher = null
+        ?SolrLogManager $logger = null,
+        ?SiteFinder $siteFinder = null,
+        ?EventDispatcherInterface $eventDispatcher = null
     ) {
         $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->siteFinder = $siteFinder ?? GeneralUtility::makeInstance(SiteFinder::class);

@@ -58,9 +58,9 @@ class QueryBuilder extends AbstractQueryBuilder
     protected SiteHashService $siteHashService;
 
     public function __construct(
-        TypoScriptConfiguration $configuration = null,
-        SolrLogManager $solrLogManager = null,
-        SiteHashService $siteHashService = null,
+        ?TypoScriptConfiguration $configuration = null,
+        ?SolrLogManager $solrLogManager = null,
+        ?SiteHashService $siteHashService = null,
     ) {
         $this->typoScriptConfiguration = $configuration ?? Util::getSolrConfiguration();
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);

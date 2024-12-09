@@ -39,7 +39,7 @@ class SiteSelectorField
      */
     public function getAvailableSitesSelector(
         string $selectorName,
-        Site $selectedSite = null
+        ?Site $selectedSite = null
     ): string {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
 

@@ -78,7 +78,7 @@ class ConfigurationManager implements SingletonInterface
      * @throws JsonException
      * @throws SiteNotFoundException
      */
-    public function getTypoScriptConfiguration(int $contextPageId = null, int $contextLanguageId = 0): TypoScriptConfiguration
+    public function getTypoScriptConfiguration(?int $contextPageId = null, int $contextLanguageId = 0): TypoScriptConfiguration
     {
         if ($contextPageId !== null) {
             $site = GeneralUtility::makeInstance(SiteFinder::class)

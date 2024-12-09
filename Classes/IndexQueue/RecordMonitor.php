@@ -42,7 +42,7 @@ class RecordMonitor
     protected array $trackedRecords = [];
     protected EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher = null)
+    public function __construct(?EventDispatcherInterface $eventDispatcher = null)
     {
         $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }

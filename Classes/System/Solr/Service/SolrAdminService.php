@@ -67,11 +67,11 @@ class SolrAdminService extends AbstractSolrService
 
     public function __construct(
         Client $client,
-        TypoScriptConfiguration $typoScriptConfiguration = null,
-        SolrLogManager $logManager = null,
-        SynonymParser $synonymParser = null,
-        StopWordParser $stopWordParser = null,
-        SchemaParser $schemaParser = null
+        ?TypoScriptConfiguration $typoScriptConfiguration = null,
+        ?SolrLogManager $logManager = null,
+        ?SynonymParser $synonymParser = null,
+        ?StopWordParser $stopWordParser = null,
+        ?SchemaParser $schemaParser = null
     ) {
         parent::__construct($client, $typoScriptConfiguration, $logManager);
 

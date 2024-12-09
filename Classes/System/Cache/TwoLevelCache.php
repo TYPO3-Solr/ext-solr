@@ -37,7 +37,7 @@ class TwoLevelCache
     /**
      * @throws NoSuchCacheException
      */
-    public function __construct(string $cacheName, FrontendInterface $secondaryCacheFrontend = null)
+    public function __construct(string $cacheName, ?FrontendInterface $secondaryCacheFrontend = null)
     {
         $this->cacheName = $cacheName;
         if ($secondaryCacheFrontend == null) {

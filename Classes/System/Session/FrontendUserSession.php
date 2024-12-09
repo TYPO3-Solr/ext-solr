@@ -29,7 +29,7 @@ class FrontendUserSession
     /**
      * FrontendUserSession constructor.
      */
-    public function __construct(FrontendUserAuthentication $feUser = null)
+    public function __construct(?FrontendUserAuthentication $feUser = null)
     {
         $this->feUser = $feUser ?? $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.user');
     }

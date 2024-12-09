@@ -32,8 +32,8 @@ abstract class AbstractResultParser
     protected DocumentEscapeService $documentEscapeService;
 
     public function __construct(
-        SearchResultBuilder $resultBuilder = null,
-        DocumentEscapeService $documentEscapeService = null,
+        ?SearchResultBuilder $resultBuilder = null,
+        ?DocumentEscapeService $documentEscapeService = null,
     ) {
         $this->searchResultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
         $this->documentEscapeService = $documentEscapeService ?? GeneralUtility::makeInstance(DocumentEscapeService::class);

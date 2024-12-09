@@ -46,7 +46,7 @@ class GarbageCollector implements SingletonInterface
     /**
      * GarbageCollector constructor.
      */
-    public function __construct(TCAService $TCAService = null, EventDispatcherInterface $eventDispatcher = null)
+    public function __construct(?TCAService $TCAService = null, ?EventDispatcherInterface $eventDispatcher = null)
     {
         $this->tcaService = $TCAService ?? GeneralUtility::makeInstance(TCAService::class);
         $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);

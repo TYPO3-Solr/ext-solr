@@ -37,7 +37,7 @@ class AdditionalFieldsForPageIndexing
 
     protected ContentObjectService $contentObjectService;
 
-    public function __construct(ContentObjectService $contentObjectService = null)
+    public function __construct(?ContentObjectService $contentObjectService = null)
     {
         $this->contentObjectService = $contentObjectService ?? GeneralUtility::makeInstance(ContentObjectService::class);
     }

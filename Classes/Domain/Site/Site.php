@@ -92,7 +92,7 @@ class Site
         protected int $defaultLanguageId = 0,
         protected array $availableLanguageIds = [],
         protected array $solrConnectionConfigurations = [],
-        Typo3Site $typo3SiteObject = null,
+        ?Typo3Site $typo3SiteObject = null,
     ) {
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
         $this->typo3SiteObject = $typo3SiteObject;

@@ -104,7 +104,7 @@ class RequirementsService
     /**
      * Negates the result when configured.
      */
-    protected function getNegationWhenConfigured(bool $value, array $configuration = null): bool
+    protected function getNegationWhenConfigured(bool $value, ?array $configuration = null): bool
     {
         if (!is_array($configuration) || empty($configuration['negate'])) {
             return $value;

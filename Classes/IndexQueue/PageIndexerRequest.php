@@ -85,10 +85,10 @@ class PageIndexerRequest
      * PageIndexerRequest constructor.
      */
     public function __construct(
-        string $jsonEncodedParameters = null,
-        SolrLogManager $solrLogManager = null,
-        ExtensionConfiguration $extensionConfiguration = null,
-        RequestFactory $requestFactory = null
+        ?string $jsonEncodedParameters = null,
+        ?SolrLogManager $solrLogManager = null,
+        ?ExtensionConfiguration $extensionConfiguration = null,
+        ?RequestFactory $requestFactory = null
     ) {
         $this->requestId = uniqid();
         $this->timeout = (float)ini_get('default_socket_timeout');

@@ -40,7 +40,7 @@ class PagesRepository extends AbstractRepository
 
     protected TwoLevelCache $transientVariableCache;
 
-    public function __construct(TwoLevelCache $transientVariableCache = null)
+    public function __construct(?TwoLevelCache $transientVariableCache = null)
     {
         $this->transientVariableCache = $transientVariableCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
     }

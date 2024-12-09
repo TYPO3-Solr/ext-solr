@@ -72,7 +72,7 @@ class Rootline
      *
      * @param string|null $accessRootline Access Rootline String representation.
      */
-    public function __construct(string $accessRootline = null)
+    public function __construct(?string $accessRootline = null)
     {
         if (!is_null($accessRootline)) {
             $rawRootlineElements = explode(self::ELEMENT_DELIMITER, $accessRootline);

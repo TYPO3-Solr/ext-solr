@@ -52,7 +52,7 @@ class SuggestService
     public function __construct(
         SearchResultSetService $searchResultSetService,
         TypoScriptConfiguration $typoScriptConfiguration,
-        QueryBuilder $queryBuilder = null
+        ?QueryBuilder $queryBuilder = null
     ) {
         $this->searchService = $searchResultSetService;
         $this->typoScriptConfiguration = $typoScriptConfiguration;
