@@ -55,7 +55,7 @@ class SuggestService
         TypoScriptFrontendController $tsfe,
         SearchResultSetService $searchResultSetService,
         TypoScriptConfiguration $typoScriptConfiguration,
-        QueryBuilder $queryBuilder = null
+        ?QueryBuilder $queryBuilder = null
     ) {
         $this->tsfe = $tsfe;
         $this->searchService = $searchResultSetService;

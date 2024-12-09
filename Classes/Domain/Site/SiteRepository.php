@@ -50,11 +50,11 @@ class SiteRepository
     protected FrontendEnvironment $frontendEnvironment;
 
     public function __construct(
-        RootPageResolver $rootPageResolver = null,
-        TwoLevelCache $twoLevelCache = null,
-        SiteFinder $siteFinder = null,
-        ExtensionConfiguration $extensionConfiguration = null,
-        FrontendEnvironment $frontendEnvironment = null
+        ?RootPageResolver $rootPageResolver = null,
+        ?TwoLevelCache $twoLevelCache = null,
+        ?SiteFinder $siteFinder = null,
+        ?ExtensionConfiguration $extensionConfiguration = null,
+        ?FrontendEnvironment $frontendEnvironment = null
     ) {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');

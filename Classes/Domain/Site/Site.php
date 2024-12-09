@@ -63,11 +63,11 @@ class Site
         array $page,
         string $domain,
         string $siteHash,
-        PagesRepository $pagesRepository = null,
+        ?PagesRepository $pagesRepository = null,
         int $defaultLanguageId = 0,
         array $availableLanguageIds = [],
         array $solrConnectionConfigurations = [],
-        Typo3Site $typo3SiteObject = null,
+        ?Typo3Site $typo3SiteObject = null,
     ) {
         $this->configuration = $configuration;
         $this->rootPageRecord = $page;

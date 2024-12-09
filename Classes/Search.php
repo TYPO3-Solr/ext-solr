@@ -59,7 +59,7 @@ class Search
      * @throws DBALException
      * @throws NoSolrConnectionFoundException
      */
-    public function __construct(SolrConnection $solrConnection = null)
+    public function __construct(?SolrConnection $solrConnection = null)
     {
         $this->logger = new SolrLogManager(__CLASS__, GeneralUtility::makeInstance(DebugWriter::class));
 

@@ -61,8 +61,8 @@ class TypoScriptConfiguration
 
     public function __construct(
         array $configuration,
-        int $contextPageId = null,
-        ContentObjectService $contentObjectService = null,
+        ?int $contextPageId = null,
+        ?ContentObjectService $contentObjectService = null,
     ) {
         $this->configurationAccess = new ArrayAccessor($configuration, '.', true);
         $this->contextPageId = $contextPageId ?? 0;

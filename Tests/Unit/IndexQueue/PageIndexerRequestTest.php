@@ -206,7 +206,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
      * @param RequestFactory|null $requestFactory
      * @return PageIndexerRequest
      */
-    protected function getPageIndexerRequest(string $jsonEncodedParameter = null, RequestFactory $requestFactory = null): PageIndexerRequest
+    protected function getPageIndexerRequest(?string $jsonEncodedParameter = null, ?RequestFactory $requestFactory = null): PageIndexerRequest
     {
         /** @var MockObject|SolrLogManager $solrLogManagerMock */
         $solrLogManagerMock = $this->createMock(SolrLogManager::class);

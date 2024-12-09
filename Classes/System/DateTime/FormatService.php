@@ -39,7 +39,7 @@ class FormatService
         string $input = '',
         string $inputFormat = 'Y-m-d\TH:i:s\Z',
         string $outputFormat = '',
-        DateTimeZone $timezone = null,
+        ?DateTimeZone $timezone = null,
     ): string {
         if ($outputFormat === '') {
             // when no value was passed we use the TYPO3 configured or fallback to Y-m-d

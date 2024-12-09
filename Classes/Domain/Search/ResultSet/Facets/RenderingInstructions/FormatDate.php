@@ -33,7 +33,7 @@ class FormatDate
 {
     protected FormatService $formatService;
 
-    public function __construct(FormatService $formatService = null)
+    public function __construct(?FormatService $formatService = null)
     {
         $this->formatService = $formatService ?? GeneralUtility::makeInstance(FormatService::class);
     }

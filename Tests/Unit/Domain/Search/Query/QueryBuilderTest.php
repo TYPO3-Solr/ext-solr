@@ -71,7 +71,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         return $request->getParams();
     }
 
-    protected function getInitializedTestSearchQuery(string $queryString = '', TypoScriptConfiguration $fakeConfiguration = null): Query
+    protected function getInitializedTestSearchQuery(string $queryString = '', ?TypoScriptConfiguration $fakeConfiguration = null): Query
     {
         $builder = new QueryBuilder($fakeConfiguration, $this->loggerMock, $this->siteHashServiceMock);
         /** @var Query $query */

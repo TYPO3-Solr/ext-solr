@@ -55,7 +55,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
      *
      * @throws DBALException
      */
-    public function getEventQueueItems(int $limit = null, bool $excludeErroneousItems = true): array
+    public function getEventQueueItems(?int $limit = null, bool $excludeErroneousItems = true): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder

@@ -38,9 +38,9 @@ abstract class AbstractStrategy
     protected SiteRepository $siteRepository;
 
     public function __construct(
-        QueueInterface $queue = null,
-        ConnectionManager $connectionManager = null,
-        SiteRepository $siteRepository = null,
+        ?QueueInterface $queue = null,
+        ?ConnectionManager $connectionManager = null,
+        ?SiteRepository $siteRepository = null,
     ) {
         $this->queue = $queue ?? GeneralUtility::makeInstance(Queue::class);
         $this->connectionManager = $connectionManager ?? GeneralUtility::makeInstance(ConnectionManager::class);

@@ -54,17 +54,17 @@ class SolrConnectionTest extends SetUpUnitTestCase
      * @return SolrConnection|null
      */
     protected function getSolrConnectionWithDummyConstructorArgs(
-        Endpoint $readEndpoint = null,
-        Endpoint $writeEndpoint = null,
-        TypoScriptConfiguration $configuration = null,
-        SynonymParser $synonymParser = null,
-        StopWordParser $stopWordParser = null,
-        SchemaParser $schemaParser = null,
-        SolrLogManager $logManager = null,
-        ClientInterface $psr7Client = null,
-        RequestFactoryInterface $requestFactory = null,
-        StreamFactoryInterface $streamFactory = null,
-        EventDispatcherInterface $eventDispatcher = null
+        ?Endpoint $readEndpoint = null,
+        ?Endpoint $writeEndpoint = null,
+        ?TypoScriptConfiguration $configuration = null,
+        ?SynonymParser $synonymParser = null,
+        ?StopWordParser $stopWordParser = null,
+        ?SchemaParser $schemaParser = null,
+        ?SolrLogManager $logManager = null,
+        ?ClientInterface $psr7Client = null,
+        ?RequestFactoryInterface $requestFactory = null,
+        ?StreamFactoryInterface $streamFactory = null,
+        ?EventDispatcherInterface $eventDispatcher = null
     ): ?SolrConnection {
         try {
             return new SolrConnection(

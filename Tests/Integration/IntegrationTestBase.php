@@ -360,7 +360,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     /**
      * @throws SiteNotFoundException
      */
-    protected function indexPages(array $importPageIds, int $frontendUserId = null)
+    protected function indexPages(array $importPageIds, ?int $frontendUserId = null)
     {
         // Mark the pages as items to index
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
@@ -412,7 +412,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     /**
      * Executes a Frontend request within the same PHP process to trigger the indexing of a page.
      */
-    protected function executePageIndexer(string $url, Item $item, int $frontendUserId = null): ResponseInterface
+    protected function executePageIndexer(string $url, Item $item, ?int $frontendUserId = null): ResponseInterface
     {
         $request = new InternalRequest($url);
         $requestContext = null;

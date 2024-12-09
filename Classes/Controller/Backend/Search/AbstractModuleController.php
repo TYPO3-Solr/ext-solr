@@ -174,7 +174,7 @@ abstract class AbstractModuleController extends ActionController
     /**
      * Generates selector menu in backends doc header using selected page from page tree.
      */
-    public function generateCoreSelectorMenuUsingPageTree(string $uriToRedirectTo = null): void
+    public function generateCoreSelectorMenuUsingPageTree(?string $uriToRedirectTo = null): void
     {
         if ($this->selectedPageUID < 1 || $this->selectedSite === null) {
             return;
@@ -186,7 +186,7 @@ abstract class AbstractModuleController extends ActionController
     /**
      * Generates Core selector Menu for given Site.
      */
-    protected function generateCoreSelectorMenu(Site $site, string $uriToRedirectTo = null): void
+    protected function generateCoreSelectorMenu(Site $site, ?string $uriToRedirectTo = null): void
     {
         $this->coreSelectorMenu = $this->moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
         $this->coreSelectorMenu->setIdentifier('component_core_selector_menu');

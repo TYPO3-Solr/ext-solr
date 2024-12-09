@@ -39,8 +39,8 @@ class ConfigurationManager implements SingletonInterface
      * path that is used in the current context.
      */
     public function getTypoScriptConfiguration(
-        array $configurationArray = null,
-        int $contextPageId = null,
+        ?array $configurationArray = null,
+        ?int $contextPageId = null,
         int $contextLanguageId = 0,
         string $contextTypoScriptPath = '',
     ): TypoScriptConfiguration {
@@ -78,8 +78,8 @@ class ConfigurationManager implements SingletonInterface
      * This method is used to build the TypoScriptConfiguration.
      */
     protected function getTypoScriptConfigurationInstance(
-        array $configurationArray = null,
-        int $contextPageId = null,
+        ?array $configurationArray = null,
+        ?int $contextPageId = null,
     ): TypoScriptConfiguration {
         return GeneralUtility::makeInstance(
             TypoScriptConfiguration::class,

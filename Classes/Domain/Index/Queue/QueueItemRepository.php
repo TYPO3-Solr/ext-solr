@@ -43,7 +43,7 @@ class QueueItemRepository extends AbstractRepository
     protected SolrLogManager $logger;
     protected EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(SolrLogManager $logManager = null, EventDispatcherInterface $eventDispatcher = null)
+    public function __construct(?SolrLogManager $logManager = null, ?EventDispatcherInterface $eventDispatcher = null)
     {
         $this->logger = $logManager ?? GeneralUtility::makeInstance(
             SolrLogManager::class,
@@ -343,7 +343,7 @@ class QueueItemRepository extends AbstractRepository
      *
      * @throws DBALException
      */
-    public function deleteItem(string $itemType, int $itemUid = null): void
+    public function deleteItem(string $itemType, ?int $itemUid = null): void
     {
         $itemUids = empty($itemUid) ? [] : [$itemUid];
         $this->deleteItems([], [], [$itemType], $itemUids);
@@ -566,8 +566,8 @@ class QueueItemRepository extends AbstractRepository
      * @throws DBALException
      */
     protected function getItemsByCompositeExpression(
-        CompositeExpression $expression = null,
-        QueryBuilder $queryBuilder = null
+        ?CompositeExpression $expression = null,
+        ?QueryBuilder $queryBuilder = null
     ): array {
         if (!$queryBuilder instanceof QueryBuilder) {
             $queryBuilder = $this->getQueryBuilder();

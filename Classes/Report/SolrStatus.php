@@ -57,7 +57,7 @@ class SolrStatus extends AbstractSolrStatus
     /**
      * SolrStatus constructor.
      */
-    public function __construct(SiteRepository $siteRepository = null, ConnectionManager $connectionManager = null)
+    public function __construct(?SiteRepository $siteRepository = null, ?ConnectionManager $connectionManager = null)
     {
         $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
         $this->connectionManager = $connectionManager ?? GeneralUtility::makeInstance(ConnectionManager::class);
