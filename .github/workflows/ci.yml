@@ -150,7 +150,7 @@ jobs:
         with:
           php-version: ${{ matrix.PHP }}
           coverage: pcov
-          tools: composer:2.5.5
+          tools: composer:v2
       -
         name: CI-Bootstrap
         run: |
