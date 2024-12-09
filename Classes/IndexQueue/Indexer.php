@@ -84,12 +84,12 @@ class Indexer extends AbstractIndexer
 
     public function __construct(
         array $options = [],
-        PagesRepository $pagesRepository = null,
-        Builder $documentBuilder = null,
-        ConnectionManager $connectionManager = null,
-        FrontendEnvironment $frontendEnvironment = null,
-        SolrLogManager $logger = null,
-        EventDispatcherInterface $eventDispatcher = null,
+        ?PagesRepository $pagesRepository = null,
+        ?Builder $documentBuilder = null,
+        ?ConnectionManager $connectionManager = null,
+        ?FrontendEnvironment $frontendEnvironment = null,
+        ?SolrLogManager $logger = null,
+        ?EventDispatcherInterface $eventDispatcher = null,
     ) {
         $this->options = $options;
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);

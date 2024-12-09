@@ -121,8 +121,8 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     public function __construct(
         array $itemMetaData,
         array $fullRecord = [],
-        IndexQueueIndexingPropertyRepository $indexQueueIndexingPropertyRepository = null,
-        QueueItemRepository $queueItemRepository = null
+        ?IndexQueueIndexingPropertyRepository $indexQueueIndexingPropertyRepository = null,
+        ?QueueItemRepository $queueItemRepository = null
     ) {
         $this->indexQueueUid = $itemMetaData['uid'] ?? null;
         $this->rootPageUid = $itemMetaData['root'] ?? null;

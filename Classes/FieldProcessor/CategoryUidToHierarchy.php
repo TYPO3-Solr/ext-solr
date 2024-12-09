@@ -51,7 +51,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
     /**
      * CategoryUidToHierarchy constructor.
      */
-    public function __construct(SystemCategoryRepository $systemCategoryRepository = null)
+    public function __construct(?SystemCategoryRepository $systemCategoryRepository = null)
     {
         $this->systemCategoryRepository = $systemCategoryRepository ?? GeneralUtility::makeInstance(SystemCategoryRepository::class);
     }

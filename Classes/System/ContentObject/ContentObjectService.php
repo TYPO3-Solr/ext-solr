@@ -32,7 +32,7 @@ class ContentObjectService
      * @todo: refactor to constructor property
      */
     public function __construct(
-        ContentObjectRenderer $contentObjectRenderer = null,
+        ?ContentObjectRenderer $contentObjectRenderer = null,
     ) {
         $this->contentObjectRenderer = $contentObjectRenderer ?? GeneralUtility::makeInstance(ContentObjectRenderer::class);
     }

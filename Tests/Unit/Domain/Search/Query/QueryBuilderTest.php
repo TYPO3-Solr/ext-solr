@@ -80,7 +80,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
 
     protected function getInitializedTestSearchQuery(
         string $queryString = '',
-        TypoScriptConfiguration $fakeConfiguration = null,
+        ?TypoScriptConfiguration $fakeConfiguration = null,
     ): Query {
         $builder = new QueryBuilder(
             $fakeConfiguration ?? $this->createMock(TypoScriptConfiguration::class),

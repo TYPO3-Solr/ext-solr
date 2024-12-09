@@ -46,8 +46,8 @@ class RootPageResolver implements SingletonInterface
     protected ExtensionConfiguration $extensionConfiguration;
 
     public function __construct(
-        ConfigurationAwareRecordService $recordService = null,
-        TwoLevelCache $twoLevelCache = null
+        ?ConfigurationAwareRecordService $recordService = null,
+        ?TwoLevelCache $twoLevelCache = null
     ) {
         $this->recordService = $recordService ?? GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');

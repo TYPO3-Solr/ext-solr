@@ -84,15 +84,15 @@ class SolrConnection
     public function __construct(
         Endpoint $readEndpoint,
         Endpoint $writeEndpoint,
-        TypoScriptConfiguration $configuration = null,
-        SynonymParser $synonymParser = null,
-        StopWordParser $stopWordParser = null,
-        SchemaParser $schemaParser = null,
-        SolrLogManager $logManager = null,
-        ClientInterface $psr7Client = null,
-        RequestFactoryInterface $requestFactory = null,
-        StreamFactoryInterface $streamFactory = null,
-        EventDispatcherInterface $eventDispatcher = null,
+        ?TypoScriptConfiguration $configuration = null,
+        ?SynonymParser $synonymParser = null,
+        ?StopWordParser $stopWordParser = null,
+        ?SchemaParser $schemaParser = null,
+        ?SolrLogManager $logManager = null,
+        ?ClientInterface $psr7Client = null,
+        ?RequestFactoryInterface $requestFactory = null,
+        ?StreamFactoryInterface $streamFactory = null,
+        ?EventDispatcherInterface $eventDispatcher = null,
     ) {
         $this->endpoints['read'] = $readEndpoint;
         $this->endpoints['write'] = $writeEndpoint;
