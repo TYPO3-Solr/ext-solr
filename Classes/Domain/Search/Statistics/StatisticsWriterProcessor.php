@@ -36,8 +36,8 @@ class StatisticsWriterProcessor
     protected SiteRepository $siteRepository;
 
     public function __construct(
-        StatisticsRepository $statisticsRepository = null,
-        SiteRepository $siteRepository = null
+        ?StatisticsRepository $statisticsRepository = null,
+        ?SiteRepository $siteRepository = null
     ) {
         $this->statisticsRepository = $statisticsRepository ?? GeneralUtility::makeInstance(StatisticsRepository::class);
         $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);

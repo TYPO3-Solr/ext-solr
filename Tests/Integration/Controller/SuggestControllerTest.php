@@ -118,7 +118,7 @@ class SuggestControllerTest extends IntegrationTestBase
         self::assertStringContainsString($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
     }
 
-    protected function executeFrontendSubRequestForSuggestQueryString(string $queryString, string $callback = null): ResponseInterface
+    protected function executeFrontendSubRequestForSuggestQueryString(string $queryString, ?string $callback = null): ResponseInterface
     {
         $request = new InternalRequest('http://testone.site/en/');
         $request = $request

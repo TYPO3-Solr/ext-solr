@@ -31,7 +31,7 @@ class DocumentEscapeService
     /**
      * DocumentEscapeService constructor.
      */
-    public function __construct(TypoScriptConfiguration $typoScriptConfiguration = null)
+    public function __construct(?TypoScriptConfiguration $typoScriptConfiguration = null)
     {
         $this->typoScriptConfiguration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
     }

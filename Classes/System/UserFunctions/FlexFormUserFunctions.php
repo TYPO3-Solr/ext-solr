@@ -95,7 +95,7 @@ class FlexFormUserFunctions
     /**
      * Retrieves the configured facets for a page.
      */
-    protected function getConfiguredFacetsForPage(int $pid = null): ?array
+    protected function getConfiguredFacetsForPage(?int $pid = null): ?array
     {
         if ($pid === null) {
             return null;
@@ -182,7 +182,7 @@ class FlexFormUserFunctions
     /**
      * Returns TypoScriptConfiguration if is available or can be resolved for given pid
      */
-    protected function getConfigurationFromPageId(int $pid = null): ?TypoScriptConfiguration
+    protected function getConfigurationFromPageId(?int $pid = null): ?TypoScriptConfiguration
     {
         if ($pid === null) {
             return null;
