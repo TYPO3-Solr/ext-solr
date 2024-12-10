@@ -40,7 +40,7 @@ class FacetingComponentTest extends SetUpUnitTestCase
 {
     private function getQueryParametersFromExecutedFacetingModifier(
         TypoScriptConfiguration $fakeConfiguration,
-        SearchRequest $fakeSearchRequest
+        SearchRequest $fakeSearchRequest,
     ): array {
         $facetRegistry = new FacetRegistry();
 

@@ -117,7 +117,7 @@ abstract class AbstractSolrService
     protected function _sendRawPost(
         string $url,
         string $rawPost,
-        string $contentType = 'text/xml; charset=UTF-8'
+        string $contentType = 'text/xml; charset=UTF-8',
     ): ResponseAdapter {
         $initializeRequest = function (Request $request) use ($rawPost, $contentType) {
             $request->setRawData($rawPost);
@@ -135,7 +135,7 @@ abstract class AbstractSolrService
         string $url,
         string $method = Request::METHOD_GET,
         string $body = '',
-        ?Closure $initializeRequest = null
+        ?Closure $initializeRequest = null,
     ): ResponseAdapter {
         $logSeverity = LogLevel::INFO;
         $exception = null;
@@ -199,7 +199,7 @@ abstract class AbstractSolrService
         string $url,
         ?ResponseAdapter $solrResponse,
         ?Throwable $exception = null,
-        string $contentSend = ''
+        string $contentSend = '',
     ): void {
         $logData = $this->buildLogDataFromResponse($solrResponse, $exception, $url, $contentSend);
         $this->logger->log($logSeverity, $message, $logData);
@@ -212,7 +212,7 @@ abstract class AbstractSolrService
         ResponseAdapter $solrResponse,
         ?Throwable $e = null,
         string $url = '',
-        string $contentSend = ''
+        string $contentSend = '',
     ): array {
         $logData = ['query url' => $url, 'response' => (array)$solrResponse];
 

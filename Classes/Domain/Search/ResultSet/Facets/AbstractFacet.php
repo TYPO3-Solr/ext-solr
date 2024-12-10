@@ -38,7 +38,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
         protected string $name,
         protected string $field,
         protected string $label = '',
-        protected array $facetConfiguration = []
+        protected array $facetConfiguration = [],
     ) {}
 
     /**

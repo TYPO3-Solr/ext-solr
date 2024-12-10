@@ -89,7 +89,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
     protected function initialize(
         SchedulerModuleController $schedulerModule,
         ?OptimizeIndexTask $task = null,
-        array $taskInfo = []
+        array $taskInfo = [],
     ): void {
         $this->task = $task;
         $this->schedulerModule = $schedulerModule;
@@ -120,7 +120,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
     public function getAdditionalFields(
         array &$taskInfo,
         $task,
-        SchedulerModuleController $schedulerModule
+        SchedulerModuleController $schedulerModule,
     ) {
         $additionalFields = [];
 
@@ -177,7 +177,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      */
     public function validateAdditionalFields(
         array &$submittedData,
-        SchedulerModuleController $schedulerModule
+        SchedulerModuleController $schedulerModule,
     ) {
         $result = true;
         // validate site
@@ -208,7 +208,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      */
     public function saveAdditionalFields(
         array $submittedData,
-        AbstractTask|OptimizeIndexTask|AbstractSolrTask $task
+        AbstractTask|OptimizeIndexTask|AbstractSolrTask $task,
     ): void {
         if (!$this->isTaskInstanceofOptimizeIndexTask($task) || !$task instanceof AbstractSolrTask) {
             return;

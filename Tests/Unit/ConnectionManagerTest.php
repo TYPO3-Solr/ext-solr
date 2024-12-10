@@ -133,7 +133,7 @@ class ConnectionManagerTest extends SetUpUnitTestCase
         string $path,
         string $core,
         bool $expectsException,
-        ?string $expectedConnectionString
+        ?string $expectedConnectionString,
     ): void {
         $exceptionOccurred = false;
         try {

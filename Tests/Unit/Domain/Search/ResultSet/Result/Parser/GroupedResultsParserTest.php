@@ -109,7 +109,7 @@ class GroupedResultsParserTest extends SetUpUnitTestCase
 
     protected function getSearchResultSetMockFromConfigurationAndFixtureFileName(
         TypoScriptConfiguration $configurationMock,
-        string $fixtureName
+        string $fixtureName,
     ): SearchResultSet {
         $searchRequestMock = $this->createMock(SearchRequest::class);
         $searchRequestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($configurationMock);

@@ -161,7 +161,7 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
         string $itemType,
         int|string $itemUid,
         int $forcedChangeTime = 0,
-        ?array $validLanguageUids = null
+        ?array $validLanguageUids = null,
     ): int {
         $updateCount = $this->updateOrAddItemForAllRelatedRootPages($itemType, $itemUid, $forcedChangeTime);
         $event = new AfterIndexQueueItemHasBeenMarkedForReindexingEvent($itemType, $itemUid, $forcedChangeTime, $updateCount, $validLanguageUids);
@@ -268,7 +268,7 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
         int $itemUid,
         string $indexingConfiguration,
         int $rootPageId,
-        int $indexingPriority = 0
+        int $indexingPriority = 0,
     ): int {
         $additionalRecordFields = '';
         if ($itemType === 'pages') {
@@ -398,7 +398,7 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
         string $itemType,
         int|string $itemUid,
         int $rootPageId,
-        string $indexingConfiguration
+        string $indexingConfiguration,
     ): bool {
         return $this->queueItemRepository->containsItemWithRootPageId($itemType, (int)$itemUid, $rootPageId, $indexingConfiguration);
     }

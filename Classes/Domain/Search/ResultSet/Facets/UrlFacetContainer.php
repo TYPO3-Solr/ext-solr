@@ -62,7 +62,7 @@ class UrlFacetContainer implements Countable
     public function __construct(
         ArrayAccessor $argumentsAccessor,
         string $argumentNameSpace = SearchRequest::DEFAULT_PLUGIN_NAMESPACE,
-        string $parameterStyle = self::PARAMETER_STYLE_INDEX
+        string $parameterStyle = self::PARAMETER_STYLE_INDEX,
     ) {
         // Take care that the url style matches in case and is one of the allowed values
         $parameterStyle = strtolower(trim($parameterStyle));

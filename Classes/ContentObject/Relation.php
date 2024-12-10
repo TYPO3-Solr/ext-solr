@@ -57,7 +57,7 @@ class Relation extends AbstractContentObject
     protected ?FrontendOverlayService $frontendOverlayService = null;
 
     public function __construct(
-        protected readonly TCAService $tcaService
+        protected readonly TCAService $tcaService,
     ) {
         $this->configuration['enableRecursiveValueResolution'] = 1;
         $this->configuration['removeEmptyValues'] = 1;
@@ -251,7 +251,7 @@ class Relation extends AbstractContentObject
         string $localTableName,
         int $localRecordUid,
         array $localFieldTca,
-        ContentObjectRenderer $parentContentObject
+        ContentObjectRenderer $parentContentObject,
     ): array {
         $relatedItems = [];
         $foreignTableName = $localFieldTca['config']['foreign_table'];
@@ -318,7 +318,7 @@ class Relation extends AbstractContentObject
         array $foreignTableTca,
         string $foreignTableLabelField,
         ContentObjectRenderer $parentContentObject,
-        string $foreignTableName = ''
+        string $foreignTableName = '',
     ): array {
         if ($this->getLanguageUid($parentContentObject) > 0 && !empty($foreignTableName)) {
             $relatedRecord = $this->getFrontendOverlayService($parentContentObject)->getOverlay($foreignTableName, $relatedRecord);

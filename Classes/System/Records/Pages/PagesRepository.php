@@ -154,7 +154,7 @@ class PagesRepository extends AbstractRepository
      */
     public function findAllSubPageIdsByRootPage(
         int $rootPageId,
-        string $initialPagesAdditionalWhereClause = ''
+        string $initialPagesAdditionalWhereClause = '',
     ): array {
         $cacheIdentifier = sha1('getPages' . $rootPageId . $initialPagesAdditionalWhereClause);
         if ($this->transientVariableCache->get($cacheIdentifier) !== false) {

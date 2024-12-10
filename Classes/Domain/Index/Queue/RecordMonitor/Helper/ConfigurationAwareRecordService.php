@@ -40,7 +40,7 @@ class ConfigurationAwareRecordService
     public function getIndexingConfigurationName(
         string $recordTable,
         int $recordUid,
-        TypoScriptConfiguration $solrConfiguration
+        TypoScriptConfiguration $solrConfiguration,
     ): ?string {
         $name = null;
         $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
@@ -78,7 +78,7 @@ class ConfigurationAwareRecordService
     public function getRecord(
         string $recordTable,
         int $recordUid,
-        TypoScriptConfiguration $solrConfiguration
+        TypoScriptConfiguration $solrConfiguration,
     ): array {
         $record = [];
         $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
@@ -105,7 +105,7 @@ class ConfigurationAwareRecordService
         string $recordTable,
         int $recordUid,
         string $indexingConfigurationName,
-        TypoScriptConfiguration $solrConfiguration
+        TypoScriptConfiguration $solrConfiguration,
     ): array {
         if (!$this->isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName, $solrConfiguration)) {
             return [];
@@ -123,7 +123,7 @@ class ConfigurationAwareRecordService
     protected function getRecordForIndexConfigurationIsValid(
         string $recordTable,
         int $recordUid,
-        string $recordWhereClause = ''
+        string $recordWhereClause = '',
     ): array {
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
         $cacheId = md5('ConfigurationAwareRecordService' . ':' . 'getRecordIfIndexConfigurationIsValid' . ':' . $recordTable . ':' . $recordUid . ':' . $recordWhereClause);
@@ -162,7 +162,7 @@ class ConfigurationAwareRecordService
     protected function isValidTableForIndexConfigurationName(
         string $recordTable,
         string $indexingConfigurationName,
-        TypoScriptConfiguration $solrConfiguration
+        TypoScriptConfiguration $solrConfiguration,
     ): bool {
         $tableToIndex = $solrConfiguration->getIndexQueueTypeOrFallbackToConfigurationName($indexingConfigurationName);
 

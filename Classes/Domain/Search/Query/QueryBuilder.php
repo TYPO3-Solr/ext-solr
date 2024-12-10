@@ -86,7 +86,7 @@ class QueryBuilder extends AbstractQueryBuilder
     public function buildSearchQuery(
         string $rawQuery = '',
         int $resultsPerPage = 10,
-        array $additionalFiltersFromRequest = []
+        array $additionalFiltersFromRequest = [],
     ): Query {
         if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
             $this->logger->info('Received search query', [$rawQuery]);

@@ -71,7 +71,7 @@ class SolrAdminService extends AbstractSolrService
         ?SolrLogManager $logManager = null,
         ?SynonymParser $synonymParser = null,
         ?StopWordParser $stopWordParser = null,
-        ?SchemaParser $schemaParser = null
+        ?SchemaParser $schemaParser = null,
     ) {
         parent::__construct($client, $typoScriptConfiguration, $logManager);
 

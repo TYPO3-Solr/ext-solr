@@ -112,7 +112,7 @@ class FormatService
         string $input,
         string $inputFormat,
         string $outputFormat,
-        DateTimeZone $timezone
+        DateTimeZone $timezone,
     ): string {
         $formattedDate = DateTime::createFromFormat($inputFormat, $input, $timezone);
         if ($formattedDate) {

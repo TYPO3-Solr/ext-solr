@@ -150,7 +150,7 @@ class QueueItemRepository extends AbstractRepository
         int $rootPageId,
         int $changedTime,
         string $indexingConfiguration = '',
-        int $indexingPriority = 0
+        int $indexingPriority = 0,
     ): int {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -181,7 +181,7 @@ class QueueItemRepository extends AbstractRepository
         int $rootPageId,
         int $changedTime,
         string $indexingConfiguration,
-        int $indexingPriority = 0
+        int $indexingPriority = 0,
     ): int {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder
@@ -206,7 +206,7 @@ class QueueItemRepository extends AbstractRepository
         array $indexQueueConfigurationNames = [],
         array $itemTypes = [],
         array $itemUids = [],
-        array $uids = []
+        array $uids = [],
     ): int {
         $rootPageIds = SiteUtility::getRootPageIdsFromSites($sites);
         $indexQueueConfigurationList = implode(',', $indexQueueConfigurationNames);
@@ -467,7 +467,7 @@ class QueueItemRepository extends AbstractRepository
         string $indexQueueConfigurationList,
         string $itemTypeList,
         array $itemUids,
-        array $uids
+        array $uids,
     ): QueryBuilder {
         $queryBuilderForSelectingProperties = $queryBuilderForDeletingItems->getConnection()->createQueryBuilder();
         $queryBuilderForSelectingProperties
@@ -566,7 +566,7 @@ class QueueItemRepository extends AbstractRepository
      */
     protected function getItemsByCompositeExpression(
         ?CompositeExpression $expression = null,
-        ?QueryBuilder $queryBuilder = null
+        ?QueryBuilder $queryBuilder = null,
     ): array {
         if (!$queryBuilder instanceof QueryBuilder) {
             $queryBuilder = $this->getQueryBuilder();

@@ -37,7 +37,7 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilderI
         bool $isEnabled,
         string $collapseFieldName = 'variantId',
         bool $expand = false,
-        int $expandRowCount = 10
+        int $expandRowCount = 10,
     ) {
         $this->isEnabled = $isEnabled;
         $this->collapseFieldName = $collapseFieldName;

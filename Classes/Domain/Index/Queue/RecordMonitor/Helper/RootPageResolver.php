@@ -47,7 +47,7 @@ class RootPageResolver implements SingletonInterface
 
     public function __construct(
         ?ConfigurationAwareRecordService $recordService = null,
-        ?TwoLevelCache $twoLevelCache = null
+        ?TwoLevelCache $twoLevelCache = null,
     ) {
         $this->recordService = $recordService ?? GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
@@ -142,7 +142,7 @@ class RootPageResolver implements SingletonInterface
     public function getRootPageId(
         int $pageId = 0,
         bool $forceFallback = false,
-        string $mountPointIdentifier = ''
+        string $mountPointIdentifier = '',
     ): int {
         if ($pageId === 0) {
             return 0;

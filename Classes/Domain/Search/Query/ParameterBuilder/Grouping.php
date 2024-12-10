@@ -43,7 +43,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilderInterfac
         array $sortings = [],
         array $queries = [],
         int $numberOfGroups = 5,
-        int $resultsPerGroup = 1
+        int $resultsPerGroup = 1,
     ) {
         $this->isEnabled = $isEnabled;
         $this->fields = $fields;

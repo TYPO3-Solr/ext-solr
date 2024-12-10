@@ -46,7 +46,7 @@ class ArrayAccessor
     public function __construct(
         array $data = [],
         string $pathSeparator = ':',
-        bool $includePathSeparatorInKeys = false
+        bool $includePathSeparatorInKeys = false,
     ) {
         $this->data = $data;
         $this->pathSeparator = $pathSeparator;
