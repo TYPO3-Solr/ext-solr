@@ -56,7 +56,7 @@ class Slops implements ParameterBuilderInterface
         ?int $querySlop = self::NO_SLOP,
         ?int $phraseSlop = self::NO_SLOP,
         ?int $bigramPhraseSlop = self::NO_SLOP,
-        ?int $trigramPhraseSlop = self::NO_SLOP
+        ?int $trigramPhraseSlop = self::NO_SLOP,
     ) {
         $this->querySlop = $querySlop;
         $this->phraseSlop = $phraseSlop;

@@ -103,7 +103,7 @@ class ConfigurationServiceTest extends SetUpUnitTestCase
     public function canOverrideConfigurationWithFlexFormSettings(
         string $filterField,
         $filterValue,
-        string $expectedFilterString
+        string $expectedFilterString,
     ): void {
         $fakeFlexFormArrayData = [
             'search' => [

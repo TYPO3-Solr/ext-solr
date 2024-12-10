@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 class AccessComponent
 {
     public function __construct(
-        protected readonly QueryBuilder $queryBuilder
+        protected readonly QueryBuilder $queryBuilder,
     ) {}
 
     /**

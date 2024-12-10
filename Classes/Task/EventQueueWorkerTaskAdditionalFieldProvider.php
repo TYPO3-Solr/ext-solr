@@ -41,7 +41,7 @@ class EventQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
     public function getAdditionalFields(
         array &$taskInfo,
         $task,
-        SchedulerModuleController $schedulerModule
+        SchedulerModuleController $schedulerModule,
     ): array {
         /** @var EventQueueWorkerTask $task */
         $additionalFields = [];
@@ -74,7 +74,7 @@ class EventQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
      */
     public function validateAdditionalFields(
         array &$submittedData,
-        SchedulerModuleController $schedulerModule
+        SchedulerModuleController $schedulerModule,
     ): bool {
         $submittedData['solr_eventqueueworkertask_limit'] = max(
             (int)($submittedData['solr_eventqueueworkertask_limit'] ?? EventQueueWorkerTask::DEFAULT_PROCESSING_LIMIT),
@@ -90,7 +90,7 @@ class EventQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
      */
     public function saveAdditionalFields(
         array $submittedData,
-        AbstractTask $task
+        AbstractTask $task,
     ): void {
         if (!$task instanceof EventQueueWorkerTask) {
             return;

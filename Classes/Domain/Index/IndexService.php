@@ -185,7 +185,7 @@ class IndexService
      */
     protected function getIndexerByItem(
         string $indexingConfigurationName,
-        TypoScriptConfiguration $configuration
+        TypoScriptConfiguration $configuration,
     ): Indexer {
         $indexerClass = $configuration->getIndexQueueIndexerByConfigurationName($indexingConfigurationName);
         $indexerConfiguration = $configuration->getIndexQueueIndexerConfigurationByConfigurationName($indexingConfigurationName);

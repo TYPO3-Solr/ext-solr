@@ -37,7 +37,7 @@ class SettingsPreviewOnPlugins
     protected array $settings = [];
 
     public function __construct(
-        protected FlexFormService $flexFormService
+        protected FlexFormService $flexFormService,
     ) {}
 
     public function __invoke(PageContentPreviewRenderingEvent $event): void

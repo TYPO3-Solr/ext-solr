@@ -45,7 +45,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      * Constructor
      */
     public function __construct(
-        protected readonly UriBuilder $uriBuilder
+        protected readonly UriBuilder $uriBuilder,
     ) {
         parent::__construct();
     }
@@ -167,7 +167,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      */
     protected function translateSearchParametersToInputTagAttributes(
         array $arguments,
-        string $nameAttributePrefix = ''
+        string $nameAttributePrefix = '',
     ): array {
         $attributes = [];
         foreach ($arguments as $key => $value) {

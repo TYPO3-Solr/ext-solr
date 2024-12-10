@@ -39,7 +39,7 @@ final class BeforeSearchResultIsShownEvent
         string $pluginNamespace,
         array $arguments,
         PaginationInterface $pagination,
-        int $currentPage
+        int $currentPage,
     ) {
         $this->resultSet = $resultSet;
         $this->additionalFilters = $additionalFilters;

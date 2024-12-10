@@ -100,7 +100,7 @@ class SolrReadServiceTest extends SetUpUnitTestCase
     #[Test]
     public function searchThrowsExpectedExceptionForStatusCode(
         string $exceptionClass,
-        int $statusCode
+        int $statusCode,
     ): void {
         $this->responseMock->expects(self::any())->method('getStatusCode')->willReturn($statusCode);
         $this->clientMock->expects(self::once())->method('createRequest')->willReturn($this->createMock(Request::class));

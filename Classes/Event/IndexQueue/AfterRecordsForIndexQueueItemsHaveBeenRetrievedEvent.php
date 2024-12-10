@@ -27,7 +27,7 @@ final class AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent
     public function __construct(
         private readonly string $table,
         private readonly array $uids,
-        private array $records
+        private array $records,
     ) {}
 
     public function getTable(): string

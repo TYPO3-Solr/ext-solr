@@ -30,7 +30,7 @@ class ResultsPaginator extends AbstractPaginator
     public function __construct(
         SearchResultSet $resultSet,
         int $currentPageNumber = 1,
-        int $itemsPerPage = 10
+        int $itemsPerPage = 10,
     ) {
         $this->resultSet = $resultSet;
         $this->setCurrentPageNumber($currentPageNumber);

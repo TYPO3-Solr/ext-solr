@@ -39,7 +39,7 @@ use TYPO3\CMS\Frontend\Page\PageInformation;
 class Builder
 {
     public function __construct(
-        protected readonly IdBuilder $variantIdBuilder
+        protected readonly IdBuilder $variantIdBuilder,
     ) {}
 
     /**

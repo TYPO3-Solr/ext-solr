@@ -62,7 +62,7 @@ class GroupedResultParser extends AbstractResultParser
     protected function parseGroups(
         SearchResultSet $resultSet,
         array $groupsConfigurations,
-        SearchResultCollection $searchResultCollection
+        SearchResultCollection $searchResultCollection,
     ): SearchResultCollection {
         $parsedData = $resultSet->getResponse()->getParsedData();
         if ($parsedData === null) {
@@ -92,7 +92,7 @@ class GroupedResultParser extends AbstractResultParser
         SearchResultSet $resultSet,
         array $options,
         stdClass $parsedData,
-        string $name
+        string $name,
     ): ?Group {
         if (!empty($options['field'])) {
             return $this->parseFieldGroup($resultSet, $parsedData, $name, $options);
@@ -111,7 +111,7 @@ class GroupedResultParser extends AbstractResultParser
         SearchResultSet $resultSet,
         stdClass $parsedData,
         string $groupedResultName,
-        array $groupedResultConfiguration
+        array $groupedResultConfiguration,
     ): Group {
         $resultsPerGroup = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchGroupingResultLimit($groupedResultName);
         $group = GeneralUtility::makeInstance(Group::class, $groupedResultName, $resultsPerGroup);
@@ -144,7 +144,7 @@ class GroupedResultParser extends AbstractResultParser
         SearchResultSet $resultSet,
         stdClass $parsedData,
         string $groupedResultName,
-        array $groupedResultConfiguration
+        array $groupedResultConfiguration,
     ): Group {
         $resultsPerGroup = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchGroupingResultLimit($groupedResultName);
         $group = GeneralUtility::makeInstance(Group::class, $groupedResultName, $resultsPerGroup);
@@ -202,7 +202,7 @@ class GroupedResultParser extends AbstractResultParser
         SearchRequest $searchRequest,
         Group $parentGroup,
         string $groupValue,
-        stdClass $rawGroup
+        stdClass $rawGroup,
     ): GroupItem {
         $groupItem = GeneralUtility::makeInstance(
             GroupItem::class,
@@ -267,7 +267,7 @@ class GroupedResultParser extends AbstractResultParser
      */
     protected function addAllSearchResultsOfGroupToGlobalSearchResults(
         Group $group,
-        SearchResultCollection $searchResultCollection
+        SearchResultCollection $searchResultCollection,
     ): SearchResultCollection {
         /** @var GroupItem $groupItem */
         foreach ($group->getGroupItems() as $groupItem) {

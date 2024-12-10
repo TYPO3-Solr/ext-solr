@@ -67,7 +67,7 @@ class SearchResultSetService
         ?SolrLogManager $solrLogManager = null,
         ?SearchResultBuilder $resultBuilder = null,
         ?QueryBuilder $queryBuilder = null,
-        ?EventDispatcherInterface $eventDispatcher = null
+        ?EventDispatcherInterface $eventDispatcher = null,
     ) {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;

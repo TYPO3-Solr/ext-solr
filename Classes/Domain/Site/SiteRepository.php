@@ -53,7 +53,7 @@ class SiteRepository
         ?TwoLevelCache $twoLevelCache = null,
         ?SiteFinder $siteFinder = null,
         ?ExtensionConfiguration $extensionConfiguration = null,
-        ?FrontendEnvironment $frontendEnvironment = null
+        ?FrontendEnvironment $frontendEnvironment = null,
     ) {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');

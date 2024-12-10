@@ -33,7 +33,7 @@ final class AfterSuggestQueryHasBeenPreparedEvent
         private Query $query,
         private readonly SearchRequest $searchRequest,
         private readonly Search $search,
-        private readonly TypoScriptConfiguration $typoScriptConfiguration
+        private readonly TypoScriptConfiguration $typoScriptConfiguration,
     ) {}
 
     public function getQuery(): Query

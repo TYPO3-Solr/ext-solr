@@ -108,7 +108,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
         RootPageResolver $rootPageResolver,
         PagesRepository $pagesRepository,
         DataHandler $dataHandler,
-        ?SolrLogManager $solrLogManager = null
+        ?SolrLogManager $solrLogManager = null,
     ) {
         parent::__construct($recordService, $frontendEnvironment, $tcaService, $indexQueue);
 

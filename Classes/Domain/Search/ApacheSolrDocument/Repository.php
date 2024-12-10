@@ -50,7 +50,7 @@ class Repository implements SingletonInterface
     public function __construct(
         ?DocumentEscapeService $documentEscapeService = null,
         ?TypoScriptConfiguration $typoScriptConfiguration = null,
-        ?QueryBuilder $queryBuilder = null
+        ?QueryBuilder $queryBuilder = null,
     ) {
         $this->typoScriptConfiguration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
         $this->documentEscapeService = $documentEscapeService ?? GeneralUtility::makeInstance(DocumentEscapeService::class, $typoScriptConfiguration);
@@ -99,7 +99,7 @@ class Repository implements SingletonInterface
         string $type,
         int $uid,
         int $pageId,
-        int $languageId
+        int $languageId,
     ): array {
         try {
             $this->initializeSearch($pageId, $languageId);

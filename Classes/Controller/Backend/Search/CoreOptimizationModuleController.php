@@ -136,7 +136,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     public function importSynonymListAction(
         bool $overrideExisting = false,
-        bool $deleteSynonymsBefore = false
+        bool $deleteSynonymsBefore = false,
     ): ResponseInterface {
         $synonymFileUpload = $this->request->getUploadedFiles()['synonymFileUpload'] ?? null;
         if (!$synonymFileUpload instanceof UploadedFile) {

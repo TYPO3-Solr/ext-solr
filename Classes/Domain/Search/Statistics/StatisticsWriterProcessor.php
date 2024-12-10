@@ -37,7 +37,7 @@ class StatisticsWriterProcessor
 
     public function __construct(
         ?StatisticsRepository $statisticsRepository = null,
-        ?SiteRepository $siteRepository = null
+        ?SiteRepository $siteRepository = null,
     ) {
         $this->statisticsRepository = $statisticsRepository ?? GeneralUtility::makeInstance(StatisticsRepository::class);
         $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
@@ -102,7 +102,7 @@ class StatisticsWriterProcessor
 
     protected function getProcessedKeywords(
         Query $query,
-        bool $lowerCaseQuery = false
+        bool $lowerCaseQuery = false,
     ): string {
         $keywords = $query->getQuery();
         $keywords = $this->sanitizeString($keywords);

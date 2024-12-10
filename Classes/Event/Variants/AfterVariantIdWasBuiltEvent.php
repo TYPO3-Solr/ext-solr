@@ -35,7 +35,7 @@ final class AfterVariantIdWasBuiltEvent
         private readonly int $uid,
         private readonly array $itemRecord,
         private readonly Site $site,
-        private readonly Document $document
+        private readonly Document $document,
     ) {}
 
     public function getVariantId(): string

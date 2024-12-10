@@ -43,7 +43,7 @@ class FrequentSearchesService
     public function __construct(
         TypoScriptConfiguration $typoscriptConfiguration,
         ?AbstractFrontend $cache = null,
-        ?StatisticsRepository $statisticsRepository = null
+        ?StatisticsRepository $statisticsRepository = null,
     ) {
         $this->configuration = $typoscriptConfiguration;
         $this->cache = $cache;

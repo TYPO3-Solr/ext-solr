@@ -89,7 +89,7 @@ class RecordMonitor
         $command,
         $table,
         $uid,
-        $value
+        $value,
     ): void {
         if (Util::isDraftRecord($table, $uid)) {
             // skip workspaces: index only LIVE workspace

@@ -776,7 +776,7 @@ class TypoScriptConfiguration
     public function getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap(
         string $path,
         string $fallbackPath,
-        mixed $defaultValueIfBothIsEmpty
+        mixed $defaultValueIfBothIsEmpty,
     ): mixed {
         $result = (string)$this->getValueByPathOrDefaultValue($path, '');
         if ($result !== '') {

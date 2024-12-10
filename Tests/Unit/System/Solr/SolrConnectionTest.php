@@ -64,7 +64,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
         ?ClientInterface $psr7Client = null,
         ?RequestFactoryInterface $requestFactory = null,
         ?StreamFactoryInterface $streamFactory = null,
-        ?EventDispatcherInterface $eventDispatcher = null
+        ?EventDispatcherInterface $eventDispatcher = null,
     ): ?SolrConnection {
         try {
             return new SolrConnection(

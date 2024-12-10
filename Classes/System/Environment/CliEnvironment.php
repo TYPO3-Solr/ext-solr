@@ -44,7 +44,7 @@ class CliEnvironment implements SingletonInterface
         string $webRoot,
         string $scriptFileName = '',
         string $phpSelf = '/index.php',
-        string $scriptName = '/index.php'
+        string $scriptName = '/index.php',
     ): bool {
         // if the environment has be initialized once, we do not need to initialize it twice.
         if ($this->isInitialized) {

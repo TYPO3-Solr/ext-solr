@@ -26,7 +26,7 @@ use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 class RelevanceComponent
 {
     public function __construct(
-        protected readonly QueryBuilder $queryBuilder
+        protected readonly QueryBuilder $queryBuilder,
     ) {}
 
     /**

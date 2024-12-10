@@ -42,7 +42,7 @@ abstract class AbstractBaseEventListener
      */
     public function __construct(
         ExtensionConfiguration $extensionConfiguration,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
     ) {
         $this->extensionConfiguration = $extensionConfiguration;
         $this->eventDispatcher = $eventDispatcher;

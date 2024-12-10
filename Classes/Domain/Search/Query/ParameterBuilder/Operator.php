@@ -33,7 +33,7 @@ class Operator extends AbstractDeactivatable
      */
     public function __construct(
         bool $isEnabled,
-        string $operator = Operator::OPERATOR_AND
+        string $operator = Operator::OPERATOR_AND,
     ) {
         $this->isEnabled = $isEnabled;
         $this->setOperator($operator);

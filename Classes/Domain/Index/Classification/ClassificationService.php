@@ -27,7 +27,7 @@ class ClassificationService
      */
     public function getMatchingClassNames(
         string $stringToMatch,
-        array $classifications
+        array $classifications,
     ): array {
         $matchingClassification = [];
         foreach ($classifications as $classification) {
@@ -41,7 +41,7 @@ class ClassificationService
     protected function applyMatchPatterns(
         string $stringToMatch,
         Classification $classification,
-        $matchingClassification
+        $matchingClassification,
     ): array {
         foreach ($classification->getMatchPatterns() as $matchPattern) {
             if (preg_match_all('~' . $matchPattern . '~ims', $stringToMatch) > 0) {
@@ -56,7 +56,7 @@ class ClassificationService
     protected function applyUnMatchPatterns(
         string $stringToMatch,
         Classification $classification,
-        $matchingClassification
+        $matchingClassification,
     ): array {
         foreach ($classification->getUnMatchPatterns() as $unMatchPattern) {
             if (preg_match_all('~' . $unMatchPattern . '~ims', $stringToMatch) > 0) {
