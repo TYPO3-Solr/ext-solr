@@ -40,7 +40,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
 
     public function __construct(
         ?ExtensionConfiguration $extensionConfiguration = null,
-        ?FrontendEnvironment $frontendEnvironment = null
+        ?FrontendEnvironment $frontendEnvironment = null,
     ) {
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);

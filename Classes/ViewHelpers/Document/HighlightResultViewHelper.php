@@ -48,7 +48,7 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
     public static function renderStatic(
         array $arguments,
         Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
+        RenderingContextInterface $renderingContext,
     ): string {
         /** @var SearchResultSet $resultSet */
         $resultSet = $arguments['resultSet'];

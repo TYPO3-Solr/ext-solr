@@ -30,7 +30,7 @@ class Option extends AbstractOptionFacetItem
         string|int $value = '',
         int $documentCount = 0,
         bool $selected = false,
-        array $metrics = []
+        array $metrics = [],
     ) {
         parent::__construct($facet, $label, $value, $documentCount, $selected, $metrics);
     }

@@ -43,7 +43,7 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilderInte
         int $fragmentSize = 200,
         string $highlightingFieldList = '',
         string $prefix = '',
-        string $postfix = ''
+        string $postfix = '',
     ) {
         $this->isEnabled = $isEnabled;
         $this->fragmentSize = $fragmentSize;

@@ -34,7 +34,7 @@ final class AfterInitialSearchResultSetHasBeenCreatedEvent
         private SearchResultSet $searchResultSet,
         private readonly SearchRequest $searchRequest,
         private readonly Search $search,
-        private readonly TypoScriptConfiguration $typoScriptConfiguration
+        private readonly TypoScriptConfiguration $typoScriptConfiguration,
     ) {}
 
     public function getSearchResultSet(): SearchResultSet

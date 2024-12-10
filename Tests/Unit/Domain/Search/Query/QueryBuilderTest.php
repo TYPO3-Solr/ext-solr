@@ -166,7 +166,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     public function buildSearchIsRespectingPageSectionFilters(
         array $rootLines,
         array $filterConfiguration,
-        string $expectedResult
+        string $expectedResult,
     ): void {
         $rootLinesCount = count($rootLines);
         $rootlineUtilityMock = $this->createMock(RootlineUtility::class);

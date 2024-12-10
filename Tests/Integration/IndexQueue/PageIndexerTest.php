@@ -77,7 +77,7 @@ class PageIndexerTest extends IntegrationTestBase
         int $expectedNumFoundAnonymousUser,
         string $userGroupToCheckAccessFilter,
         int $expectedNumFoundLoggedInUser,
-        string $core = 'core_en'
+        string $core = 'core_en',
     ): void {
         $this->cleanUpSolrServerAndAssertEmpty($core);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture . '.csv');

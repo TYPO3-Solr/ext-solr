@@ -51,7 +51,7 @@ class BeforeCachedVariablesAreProcessedEvent
         UriInterface $uri,
         array $routerConfiguration,
         array $variableKeys,
-        array $variableValues
+        array $variableValues,
     ) {
         $this->uri = $uri;
         $this->routerConfiguration = $routerConfiguration;

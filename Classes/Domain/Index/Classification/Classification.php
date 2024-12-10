@@ -40,7 +40,7 @@ class Classification
     public function __construct(
         array $matchPatterns = [],
         array $unMatchPatterns = [],
-        string $mappedClass = ''
+        string $mappedClass = '',
     ) {
         $this->matchPatterns = $matchPatterns;
         $this->unMatchPatterns = $unMatchPatterns;

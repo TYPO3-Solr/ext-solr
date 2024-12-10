@@ -30,7 +30,7 @@ class SiteHighlighterUrlModifier
         string $url,
         string $searchWords,
         bool $addNoCache = true,
-        bool $keepCHash = false
+        bool $keepCHash = false,
     ): string {
         $searchWords = str_replace('&quot;', '', $searchWords);
         $searchWords = GeneralUtility::trimExplode(' ', $searchWords, true);

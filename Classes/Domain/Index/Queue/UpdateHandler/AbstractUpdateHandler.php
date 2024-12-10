@@ -84,7 +84,7 @@ abstract class AbstractUpdateHandler
         ConfigurationAwareRecordService $recordService,
         FrontendEnvironment $frontendEnvironment,
         TCAService $tcaService,
-        Queue $indexQueue
+        Queue $indexQueue,
     ) {
         $this->configurationAwareRecordService = $recordService;
         $this->frontendEnvironment = $frontendEnvironment;

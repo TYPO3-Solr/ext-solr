@@ -33,7 +33,7 @@ class AbstractOptionFacetItem extends AbstractFacetItem
         string|int $value = '',
         int $documentCount = 0,
         bool $selected = false,
-        array $metrics = []
+        array $metrics = [],
     ) {
         $this->value = $value;
         parent::__construct(

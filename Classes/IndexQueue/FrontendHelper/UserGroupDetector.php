@@ -92,7 +92,7 @@ class UserGroupDetector implements
      */
     public function checkEnableFields(
         array &$parameters,
-        TypoScriptFrontendController $tsfe
+        TypoScriptFrontendController $tsfe,
     ): void {
         $parameters['row']['fe_group'] = '';
     }
@@ -106,7 +106,7 @@ class UserGroupDetector implements
      */
     public function deactivateTcaFrontendGroupEnableFields(
         array &$parameters,
-        TypoScriptFrontendController $parentObject
+        TypoScriptFrontendController $parentObject,
     ): void {
         $this->originalTca = $GLOBALS['TCA'];
 
@@ -130,7 +130,7 @@ class UserGroupDetector implements
     public function getPage_preProcess(
         &$uid,
         &$disableGroupAccessCheck,
-        PageRepository $parentObject
+        PageRepository $parentObject,
     ): void {
         $disableGroupAccessCheck = true;
     }

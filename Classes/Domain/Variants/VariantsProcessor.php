@@ -93,7 +93,7 @@ class VariantsProcessor implements SearchResultSetProcessor
     protected function buildVariantDocumentAndAssignToParentResult(
         ResponseAdapter $response,
         string $variantAccessKey,
-        SearchResult $resultDocument
+        SearchResult $resultDocument,
     ): void {
         foreach ($response->{'expanded'}->{$variantAccessKey}->{'docs'} as $variantDocumentArray) {
             $fields = get_object_vars($variantDocumentArray);

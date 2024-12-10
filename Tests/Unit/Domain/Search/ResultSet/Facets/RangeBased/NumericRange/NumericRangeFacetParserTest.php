@@ -55,7 +55,7 @@ class NumericRangeFacetParserTest extends SetUpFacetParser
     protected function getNumericRangeFacet(
         array $facetConfiguration,
         array $filters,
-        string $facetName
+        string $facetName,
     ): ?NumericRangeFacet {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_numericRange_facet.json',

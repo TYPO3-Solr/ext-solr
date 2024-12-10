@@ -34,7 +34,7 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {
     public function __construct(
-        protected readonly SiteRepository $siteRepository
+        protected readonly SiteRepository $siteRepository,
     ) {}
 
     /**
@@ -54,7 +54,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
     public function getAdditionalFields(
         array &$taskInfo,
         $task,
-        SchedulerModuleController $schedulerModule
+        SchedulerModuleController $schedulerModule,
     ): array {
         $additionalFields = [];
         $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
@@ -110,7 +110,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
      */
     public function validateAdditionalFields(
         array &$submittedData,
-        SchedulerModuleController $schedulerModule
+        SchedulerModuleController $schedulerModule,
     ): bool {
         $result = false;
 
@@ -135,7 +135,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
      */
     public function saveAdditionalFields(
         array $submittedData,
-        AbstractTask $task
+        AbstractTask $task,
     ): void {
         if (!$this->isTaskInstanceofIndexQueueWorkerTask($task)) {
             return;

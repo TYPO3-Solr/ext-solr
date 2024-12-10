@@ -122,7 +122,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
         array $itemMetaData,
         array $fullRecord = [],
         ?IndexQueueIndexingPropertyRepository $indexQueueIndexingPropertyRepository = null,
-        ?QueueItemRepository $queueItemRepository = null
+        ?QueueItemRepository $queueItemRepository = null,
     ) {
         $this->indexQueueUid = $itemMetaData['uid'] ?? null;
         $this->rootPageUid = $itemMetaData['root'] ?? null;

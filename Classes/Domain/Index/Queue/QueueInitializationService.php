@@ -145,7 +145,7 @@ class QueueInitializationService
         string $indexingConfigurationName,
         string $initializerClass,
         string $type,
-        array $indexConfiguration
+        array $indexConfiguration,
     ): bool {
         $initializer = GeneralUtility::makeInstance($initializerClass);
         /** @var AbstractInitializer $initializer */

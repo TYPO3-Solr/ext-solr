@@ -118,7 +118,7 @@ abstract class AbstractIndexer
         array $indexingConfiguration,
         string $solrFieldName,
         array $data,
-        TypoScriptFrontendController $tsfe
+        TypoScriptFrontendController $tsfe,
     ): mixed {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj

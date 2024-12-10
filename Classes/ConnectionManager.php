@@ -50,7 +50,7 @@ class ConnectionManager implements SingletonInterface
 
     public function __construct(
         ?PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null,
-        ?SiteRepository $siteRepository = null
+        ?SiteRepository $siteRepository = null,
     ) {
         $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
         $this->pagesRepositoryAtExtSolr = $pagesRepositoryAtExtSolr ?? GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);

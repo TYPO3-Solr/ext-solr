@@ -31,6 +31,6 @@ interface SerializedValueDetector
      */
     public function isSerializedValue(
         array $indexingConfiguration,
-        string $solrFieldName
+        string $solrFieldName,
     ): bool;
 }

@@ -116,7 +116,7 @@ class GarbageHandler extends AbstractUpdateHandler
         int $uid,
         string $table,
         array $updatedFields,
-        bool $frontendGroupsRemoved
+        bool $frontendGroupsRemoved,
     ): void {
         $record = $this->getRecordWithFieldRelevantForGarbageCollection($table, $uid);
 
@@ -147,7 +147,7 @@ class GarbageHandler extends AbstractUpdateHandler
     protected function deleteSubEntriesWhenRecursiveTriggerIsRecognized(
         string $table,
         int $uid,
-        array $updatedFields
+        array $updatedFields,
     ): void {
         if (!$this->isRecursivePageUpdateRequired($uid, $updatedFields)) {
             return;
