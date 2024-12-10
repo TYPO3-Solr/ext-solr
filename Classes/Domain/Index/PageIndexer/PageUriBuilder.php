@@ -43,7 +43,7 @@ class PageUriBuilder
     public function __construct(
         ?SolrLogManager $logger = null,
         ?SiteFinder $siteFinder = null,
-        ?EventDispatcherInterface $eventDispatcher = null
+        ?EventDispatcherInterface $eventDispatcher = null,
     ) {
         $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->siteFinder = $siteFinder ?? GeneralUtility::makeInstance(SiteFinder::class);
@@ -104,7 +104,7 @@ class PageUriBuilder
         Item $item,
         int $language = 0,
         string $mountPointParameter = '',
-        array $options = []
+        array $options = [],
     ): string {
         $pageIndexUri = $this->buildPageIndexingUriFromPageItemAndLanguageId($item, $language, $mountPointParameter);
         $overrideConfiguration = $options['frontendDataHelper.'] ?? [];

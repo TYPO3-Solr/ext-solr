@@ -45,7 +45,7 @@ class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
     public static function renderStatic(
         array $arguments,
         Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
+        RenderingContextInterface $renderingContext,
     ) {
         $from = $arguments['from'];
         $to = $arguments['to'];

@@ -847,7 +847,7 @@ class RoutingService implements LoggerAwareInterface
     public function addPathArgumentsToQuery(
         ServerRequestInterface $request,
         array $arguments,
-        array $parameters
+        array $parameters,
     ): ServerRequestInterface {
         $queryParams = $request->getQueryParams();
         foreach ($arguments as $fieldName => $queryPath) {
@@ -947,7 +947,7 @@ class RoutingService implements LoggerAwareInterface
         array $queryParams,
         string $fieldName,
         array $parameters,
-        array $pathElements
+        array $pathElements,
     ): array {
         $queryKey = array_shift($pathElements);
         $queryKey = (string)$queryKey;

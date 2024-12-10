@@ -43,7 +43,7 @@ class QueueStatisticsRepository extends AbstractRepository
      */
     public function findOneByRootPidAndOptionalIndexingConfigurationName(
         int $rootPid,
-        ?string $indexingConfigurationName = null
+        ?string $indexingConfigurationName = null,
     ): QueueStatistic {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder

@@ -49,7 +49,7 @@ class SiteHashService
      */
     public function getAllowedSitesForPageIdAndAllowedSitesConfiguration(
         int $pageId,
-        ?string $allowedSitesConfiguration = ''
+        ?string $allowedSitesConfiguration = '',
     ): string {
         if ($allowedSitesConfiguration === '__all') {
             return $this->getDomainListOfAllSites();

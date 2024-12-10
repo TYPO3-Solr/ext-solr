@@ -264,7 +264,7 @@ class SiteUtilityTest extends SetUpUnitTestCase
         array $fakeConfiguration,
         string $property,
         string $scope,
-        $expectedConfigurationValue
+        $expectedConfigurationValue,
     ): void {
         $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::any())->method('getConfiguration')->willReturn($fakeConfiguration);

@@ -49,7 +49,7 @@ class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
     public static function renderStatic(
         array $arguments,
         Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
+        RenderingContextInterface $renderingContext,
     ) {
         /** @var OptionCollection $options */
         $options = $arguments['options'];

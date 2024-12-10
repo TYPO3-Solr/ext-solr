@@ -36,7 +36,7 @@ class FrontendOverlayService
      */
     public function __construct(
         protected readonly TCAService $tcaService,
-        protected readonly TypoScriptFrontendController $tsfe
+        protected readonly TypoScriptFrontendController $tsfe,
     ) {}
 
     /**
@@ -65,7 +65,7 @@ class FrontendOverlayService
     public function getUidOfOverlay(
         string $table,
         string $field,
-        int $uid
+        int $uid,
     ): int {
         $contextsLanguageId = $this->tsfe->getContext()->getPropertyFromAspect('language', 'id');
         // when no language is set at all we do not need to overlay

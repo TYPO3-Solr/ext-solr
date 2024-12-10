@@ -38,7 +38,7 @@ final class AfterSearchHasBeenExecutedEvent
         private readonly Query $query,
         private readonly SearchRequest $searchRequest,
         private readonly Search $search,
-        private readonly TypoScriptConfiguration $typoScriptConfiguration
+        private readonly TypoScriptConfiguration $typoScriptConfiguration,
     ) {}
 
     public function getSearchResultSet(): SearchResultSet

@@ -54,7 +54,7 @@ class TypoScript implements SingletonInterface
         int $pageId,
         string $path,
         int $language = 0,
-        ?int $rootPageId = null
+        ?int $rootPageId = null,
     ): TypoScriptConfiguration {
         $cacheId = md5($pageId . '|' . $path . '|' . $language);
         if (isset($this->configurationObjectCache[$cacheId])) {

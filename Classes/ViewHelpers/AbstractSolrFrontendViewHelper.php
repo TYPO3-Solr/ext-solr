@@ -38,7 +38,7 @@ abstract class AbstractSolrFrontendViewHelper extends AbstractSolrViewHelper
     }
 
     protected static function getUsedSearchResultSetFromRenderingContext(
-        RenderingContextInterface $renderingContext
+        RenderingContextInterface $renderingContext,
     ): SearchResultSet|GroupItem|null {
         return $renderingContext->getVariableProvider()->get('resultSet')
             ?? $renderingContext->getVariableProvider()->get('searchResultSet');

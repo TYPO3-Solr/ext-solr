@@ -39,7 +39,7 @@ final class AfterPageDocumentIsCreatedForIndexingEvent
         private readonly Item $indexQueueItem,
         private readonly array $record,
         private readonly TypoScriptFrontendController $tsfe,
-        private readonly TypoScriptConfiguration $configuration
+        private readonly TypoScriptConfiguration $configuration,
     ) {}
 
     public function getDocument(): Document

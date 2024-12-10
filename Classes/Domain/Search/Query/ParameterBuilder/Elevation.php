@@ -36,7 +36,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilderInterfa
     public function __construct(
         bool $isEnabled = false,
         bool $isForced = true,
-        bool $markElevatedResults = true
+        bool $markElevatedResults = true,
     ) {
         $this->isEnabled = $isEnabled;
         $this->isForced = $isForced;

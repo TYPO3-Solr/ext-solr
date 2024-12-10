@@ -209,7 +209,7 @@ class Site
      */
     public function getPages(
         ?int $pageId = null,
-        ?string $indexQueueConfigurationName = null
+        ?string $indexQueueConfigurationName = null,
     ): array {
         $pageId = $pageId ?? (int)$this->rootPageRecord['uid'];
 

@@ -36,7 +36,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class Builder
 {
     public function __construct(
-        protected readonly IdBuilder $variantIdBuilder
+        protected readonly IdBuilder $variantIdBuilder,
     ) {}
 
     /**

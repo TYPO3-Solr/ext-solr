@@ -36,7 +36,7 @@ class LastSearchesService
     public function __construct(
         TypoScriptConfiguration $typoscriptConfiguration,
         ?FrontendUserSession $session = null,
-        ?LastSearchesRepository $lastSearchesRepository = null
+        ?LastSearchesRepository $lastSearchesRepository = null,
     ) {
         $this->configuration = $typoscriptConfiguration;
         $this->session = $session ?? GeneralUtility::makeInstance(FrontendUserSession::class);

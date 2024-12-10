@@ -98,7 +98,7 @@ class PagesRepository extends AbstractRepository
     protected function addWhereClauseForMountpointDestinationProperties(
         QueryBuilder $queryBuilder,
         int $mountedPageUid,
-        array $rootLineParentPageIds
+        array $rootLineParentPageIds,
     ): QueryBuilder {
         if (empty($rootLineParentPageIds)) {
             $queryBuilder->andWhere(
@@ -138,7 +138,7 @@ class PagesRepository extends AbstractRepository
      */
     public function findAllSubPageIdsByRootPage(
         int $rootPageId,
-        string $initialPagesAdditionalWhereClause = ''
+        string $initialPagesAdditionalWhereClause = '',
     ): array {
         $cacheIdentifier = sha1('getPages' . $rootPageId . $initialPagesAdditionalWhereClause);
         if ($this->transientVariableCache->get($cacheIdentifier) !== false) {
@@ -164,7 +164,7 @@ class PagesRepository extends AbstractRepository
      */
     protected function filterPageIdsByInitialPagesAdditionalWhereClause(
         array $pageIds,
-        string $initialPagesAdditionalWhereClause
+        string $initialPagesAdditionalWhereClause,
     ): array {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));

@@ -55,7 +55,7 @@ class SuggestService
         TypoScriptFrontendController $tsfe,
         SearchResultSetService $searchResultSetService,
         TypoScriptConfiguration $typoScriptConfiguration,
-        ?QueryBuilder $queryBuilder = null
+        ?QueryBuilder $queryBuilder = null,
     ) {
         $this->tsfe = $tsfe;
         $this->searchService = $searchResultSetService;
@@ -174,7 +174,7 @@ class SuggestService
     protected function getSuggestionArray(
         SuggestQuery $suggestQuery,
         array $solrSuggestions,
-        int $maxSuggestions
+        int $maxSuggestions,
     ): array {
         $queryString = $suggestQuery->getQuery();
         $suggestionCount = 0;
@@ -247,7 +247,7 @@ class SuggestService
         SearchRequest $searchRequest,
         array $suggestions,
         array $documents,
-        bool $didASecondSearch
+        bool $didASecondSearch,
     ): array {
         return [
             'suggestions' => $suggestions,

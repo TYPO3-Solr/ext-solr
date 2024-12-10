@@ -31,7 +31,7 @@ class Spellchecking extends AbstractDeactivatable implements ParameterBuilderInt
      */
     public function __construct(
         bool $isEnabled = false,
-        int $maxCollationTries = 0
+        int $maxCollationTries = 0,
     ) {
         $this->isEnabled = $isEnabled;
         $this->maxCollationTries = $maxCollationTries;

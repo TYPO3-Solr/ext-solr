@@ -68,7 +68,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
     protected function initialize(
         array $taskInfo,
         ?ReIndexTask $task,
-        SchedulerModuleController $schedulerModule
+        SchedulerModuleController $schedulerModule,
     ): void {
         /* ReIndexTask @var $task  */
         $this->taskInformation = $taskInfo;
@@ -104,7 +104,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
     public function getAdditionalFields(
         array &$taskInfo,
         $task,
-        SchedulerModuleController $schedulerModule
+        SchedulerModuleController $schedulerModule,
     ) {
         $additionalFields = [];
 
@@ -167,7 +167,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      */
     public function validateAdditionalFields(
         array &$submittedData,
-        SchedulerModuleController $schedulerModule
+        SchedulerModuleController $schedulerModule,
     ): bool {
         $result = false;
 
@@ -189,7 +189,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      */
     public function saveAdditionalFields(
         array $submittedData,
-        ReIndexTask|AbstractTask $task
+        ReIndexTask|AbstractTask $task,
     ): void {
         if (!$this->isTaskInstanceofReIndexTask($task)) {
             return;

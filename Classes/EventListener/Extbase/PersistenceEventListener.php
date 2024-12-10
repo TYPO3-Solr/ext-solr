@@ -35,7 +35,7 @@ class PersistenceEventListener
 
     public function __construct(
         protected DataMapFactory $dataMapFactory,
-        protected EventDispatcher $eventDispatcher
+        protected EventDispatcher $eventDispatcher,
     ) {}
 
     public function entityPersisted(EntityPersistedEvent $event): void

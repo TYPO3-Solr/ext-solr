@@ -123,7 +123,7 @@ class Rootline
      */
     public static function getAccessRootlineByPageId(
         int $pageId,
-        string $mountPointParameter = ''
+        string $mountPointParameter = '',
     ): Rootline {
         /** @var Rootline $accessRootline */
         $accessRootline = GeneralUtility::makeInstance(Rootline::class);

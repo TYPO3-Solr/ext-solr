@@ -61,7 +61,7 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
         string $eventClass,
         string $handlerClass,
         array $eventArguments,
-        bool $eventHandled
+        bool $eventHandled,
     ): void {
         $this->extensionConfigurationMock
             ->expects(self::once())
@@ -79,7 +79,7 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
         string $eventClass,
         string $handlerClass,
         array $eventArguments,
-        bool $eventHandled
+        bool $eventHandled,
     ): void {
         $this->extensionConfigurationMock
             ->expects(self::any())
@@ -98,7 +98,7 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
     protected function checkEventHandling(
         DataUpdateEventInterface $event,
         string $handlerClass,
-        bool $eventHandled
+        bool $eventHandled,
     ): void {
         $handlerMock = $this->createMock($handlerClass);
         GeneralUtility::addInstance($handlerClass, $handlerMock);

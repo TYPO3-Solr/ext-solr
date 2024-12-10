@@ -46,7 +46,7 @@ class FrequentSearchesService
         TypoScriptConfiguration $typoscriptConfiguration,
         ?AbstractFrontend $cache = null,
         ?TypoScriptFrontendController $tsfe = null,
-        ?StatisticsRepository $statisticsRepository = null
+        ?StatisticsRepository $statisticsRepository = null,
     ) {
         $this->configuration = $typoscriptConfiguration;
         $this->cache = $cache;

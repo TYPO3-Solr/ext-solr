@@ -43,7 +43,7 @@ abstract class AbstractModuleController extends SetUpUnitTestCase
      */
     protected function setUpConcreteModuleController(
         string $concreteModuleControllerClass,
-        array $mockMethods = ['addFlashMessage']
+        array $mockMethods = ['addFlashMessage'],
     ): void {
         $this->selectedSiteMock = $this->createMock(Site::class);
         /** @var ModuleController|MockObject $subject */

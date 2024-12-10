@@ -30,7 +30,7 @@ class Sortings extends AbstractDeactivatable
      */
     public function __construct(
         bool $isEnabled = false,
-        array $sortings = []
+        array $sortings = [],
     ) {
         $this->isEnabled = $isEnabled;
         $this->setSortings($sortings);
