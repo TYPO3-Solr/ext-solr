@@ -24,6 +24,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Writes the last searches
+ * @todo: Neither the table `tx_solr_last_searches` know about pluginNamespaces/PID nor the component is covered with caching.
+ *        So either make the last searches component distinguishable for PID+pluginNamespaces, or enable caching for that, to avoid to restore same data from DB.
  */
 class LastSearchesComponent
 {

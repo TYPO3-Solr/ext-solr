@@ -24,6 +24,9 @@ use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 
 /**
  * Statistics search component
+ *
+ * @todo: Neither the table `tx_solr_statistics` know about pluginNamespaces nor the component is covered with caching.
+ *         So either make the statistics component distinguishable for pluginNamespaces, or enable caching, to avoid to restore same data from DB.
  */
 class StatisticsComponent
 {

@@ -33,6 +33,8 @@ use Psr\Log\LoggerAwareTrait;
 
 /**
  * Modifies a query to add faceting parameters
+ *
+ * @todo: Check the implementation can handle results properly if multiple plugins inserted to page.
  */
 class FacetingComponent implements LoggerAwareInterface
 {
