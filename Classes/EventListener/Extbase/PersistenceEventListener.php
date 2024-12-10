@@ -43,7 +43,7 @@ class PersistenceEventListener
         $object = $event->getObject();
         $tableName = $this->getTableName($object);
         if (!$this->skipMonitoringOfTable($tableName)) {
-            // Entity might turn inaccessable
+            // Entity might turn inaccessible
             $this->eventDispatcher->dispatch(new RecordGarbageCheckEvent($object->getUid(), $tableName));
             // Entity added/updated
             $this->eventDispatcher->dispatch(new RecordUpdatedEvent($object->getUid(), $tableName));
