@@ -1,4 +1,3 @@
-.. include:: /Includes.rst.txt
 .. _appendix-version-matrix:
 
 Appendix - Version Matrix

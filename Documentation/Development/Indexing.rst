@@ -1,5 +1,3 @@
-.. This file will be replaced from solrfluid later
-
 ========
 Indexing
 ========
@@ -41,7 +39,7 @@ The corresponding event listener class:
         }
     }
 
-For other records than pages, the PSR-14 Event :php:class:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent` can be used.
+For other records than pages, the PSR-14 Event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent` can be used.
 
 AfterPageDocumentIsCreatedForIndexingEvent
 ------------------------------------------

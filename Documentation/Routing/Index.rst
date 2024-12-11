@@ -1,6 +1,3 @@
-.. include:: /Includes.rst.txt
-
-
 .. _conf-routing:
 
 
@@ -18,7 +15,7 @@ The configuration of `routing <https://docs.typo3.org/m/typo3/reference-coreapi/
 	:titlesonly:
 	:glob:
 
-	ConfigureRouting.rst
-	FacetsInPathSegment.rst
-	SimplifyFacetsInQuery.rst
-	Example.rst
+	ConfigureRouting
+	FacetsInPathSegment
+	SimplifyFacetsInQuery
+	Example

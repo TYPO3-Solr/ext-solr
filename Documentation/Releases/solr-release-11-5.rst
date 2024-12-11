@@ -1,4 +1,3 @@
-..  include:: /Includes.rst.txt
 ..  index:: Archive
 .. _releases-11-5:
 
@@ -276,7 +275,7 @@ The list of all changes:
 - [TASK] Fix Index-Queue module: "Clear Index Queue" functionality `1307974e9 <https://github.com/TYPO3-Solr/ext-solr/commit/1307974e9>`_
 - [TASK] Disable temporary testing against TYPO3 < v11.5.4 `9faf73fb6 <https://github.com/TYPO3-Solr/ext-solr/commit/9faf73fb6>`_
 - [TASK] Refactor LastSearches and FrequentlySearched widgets `b3a9fef4c <https://github.com/TYPO3-Solr/ext-solr/commit/b3a9fef4c>`_
-- [TASK] Allow to publish (-PRE)-(ALPHA|BETA|RC) releases to TYPO3 TER `5cb71c168 <https://github.com/TYPO3-Solr/ext-solr/commit/5cb71c168>`_
+- [TASK] Allow to publish (-PRE)-(ALPHA\|BETA\|RC) releases to TYPO3 TER `5cb71c168 <https://github.com/TYPO3-Solr/ext-solr/commit/5cb71c168>`_
 - [FIX] Allow to edit pages outside of site root `6c8801154 <https://github.com/TYPO3-Solr/ext-solr/commit/6c8801154>`_
 - [FIX] Allow to mark pages as site root `09009909b <https://github.com/TYPO3-Solr/ext-solr/commit/09009909b>`_
 - [FIX] Don't auto select first configured Solr site if non configured exists `352998671 <https://github.com/TYPO3-Solr/ext-solr/commit/352998671>`_

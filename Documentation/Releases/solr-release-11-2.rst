@@ -1,4 +1,3 @@
-..  include:: /Includes.rst.txt
 ..  index:: Releases
 .. _releases-11-2:
 
@@ -73,7 +72,7 @@ This release contains:
 - [BUGFIX:BP:11.2] Use plugin namespace as label for flexforms by @dkd-friedrich in #3553
 - [BUGFIX:BP:11.2] Respect indexingPriority in QueueItemRepository by @dkd-friedrich in #3557
 - [BUGFIX:BP:11.2] use siteLanguage TypoScript object to get language id by @dkd-friedrich in #3555
-- [TASK:11.2] equalize CI/Github-Actions for release-11.0|2|5 and main by @dkd-kaehm in #3467
+- [TASK:11.2] equalize CI/Github-Actions for release-11.0\|2\|5 and main by @dkd-kaehm in #3467
 - [BUGFIX:BP:11.2] Sanitize frequent and last searches output by @dkd-friedrich in #3592
 - [BUGFIX:BP:11.2] changed from always picking the 0 array value to pic… by @dkd-friedrich in #3594
 - [BUGFIX] Enforce visibility context in Tsfe by @saitho in #3050
