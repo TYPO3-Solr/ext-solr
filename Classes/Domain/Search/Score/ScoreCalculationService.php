@@ -98,7 +98,7 @@ class ScoreCalculationService
                 $pattern = '/' . preg_quote($field, '/') . '\^([\d.]*)/';
                 $boostMatches = [];
                 preg_match_all($pattern, $queryFields, $boostMatches);
-                $boost = (float)$boostMatches[1][0];
+                $boost = (float)($boostMatches[1][0] ?? 0);
                 $highScores[$field] = new Score($boost, $field, $currentScoreValue, $searchTerm);
             }
         }
