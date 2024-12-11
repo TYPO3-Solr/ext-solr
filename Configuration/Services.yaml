@@ -30,6 +30,7 @@ services:
     resource: '../Classes/ViewHelpers/*'
     public: true
     autowire: true
+    shared: false
 
   backend_controller:
     namespace: ApacheSolrForTypo3\Solr\Controller\Backend\Search\
@@ -41,14 +42,17 @@ services:
   ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder:
     public: true
     autowire: true
+    shared: false
 
   ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder:
     public: true
     autowire: true
+    shared: false
 
   ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder:
     public: true
     autowire: true
+    shared: false
 
   # BE modules, plugins
   ApacheSolrForTypo3\Solr\Backend\SettingsPreviewOnPlugins:
@@ -58,6 +62,7 @@ services:
       - name: event.listener
         identifier: 'solr.plugin.be.settings.preview'
         event: TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent
+    shared: false
   # END: BE modules
 
   viewhelpers_backend:
@@ -65,9 +70,11 @@ services:
     resource: '../Classes/ViewHelpers/Backend/*'
     public: true
     autowire: true
+    shared: false
 
   ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler:
     public: true
+    shared: true
     arguments:
       $recordService: '@ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService'
       $frontendEnvironment: '@ApacheSolrForTypo3\Solr\FrontendEnvironment'
@@ -79,6 +86,7 @@ services:
       $dataHandler: '@TYPO3\CMS\Core\DataHandling\DataHandler'
   ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler:
     public: true
+    shared: true
     arguments:
       $recordService: '@ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService'
       $frontendEnvironment: '@ApacheSolrForTypo3\Solr\FrontendEnvironment'
@@ -88,27 +96,33 @@ services:
   ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService:
     public: true
     autowire: true
+    shared: true
 
   ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler:
     public: true
     autowire: true
+    shared: true
 
   ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\CachedUrlModifier:
+    shared: true
     tags:
       - name: event.listener
         identifier: 'solr.routing.cachedurl-modifier'
         event: ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent
   ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\CachedPathVariableModifier:
+    shared: true
     tags:
       - name: event.listener
         identifier: 'solr.routing.cachedurl-modifier'
         event: ApacheSolrForTypo3\Solr\Event\Routing\BeforeCachedVariablesAreProcessedEvent
   ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\PostEnhancedUriProcessor:
+    shared: true
     tags:
       - name: event.listener
         identifier: 'solr.routing.postenhanceduriprocessor-modifier'
         event: ApacheSolrForTypo3\Solr\Event\Routing\AfterUriIsProcessedEvent
   ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\NoProcessingEventListener:
+    shared: true
     arguments:
       $extensionConfiguration: '@ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration'
       $eventDispatcher: '@Psr\EventDispatcher\EventDispatcherInterface'
@@ -142,6 +156,7 @@ services:
         before: 'solr.index.updatehandler.immediateprocessingeventlistener,solr.index.updatehandler.delayedprocessingeventlistener'
         event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent
   ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\ImmediateProcessingEventListener:
+    shared: true
     arguments:
       $extensionConfiguration: '@ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration'
       $eventDispatcher: '@Psr\EventDispatcher\EventDispatcherInterface'
@@ -175,6 +190,7 @@ services:
         before: 'solr.index.updatehandler.delayedprocessingeventlistener'
         event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent
   ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\DelayedProcessingEventListener:
+    shared: true
     arguments:
       $extensionConfiguration: '@ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration'
       $eventDispatcher: '@Psr\EventDispatcher\EventDispatcherInterface'
@@ -204,61 +220,76 @@ services:
   # Register search components
   ApacheSolrForTypo3\Solr\Search\AccessComponent:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.search-component.access'
   ApacheSolrForTypo3\Solr\Search\AnalysisComponent:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.search-component.analysis'
   ApacheSolrForTypo3\Solr\Search\DebugComponent:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.search-component.debug'
   ApacheSolrForTypo3\Solr\Search\ElevationComponent:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.search-component.elevation'
   ApacheSolrForTypo3\Solr\Search\GroupingComponent:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.search-component.grouping'
   ApacheSolrForTypo3\Solr\Search\FacetingComponent:
     autowire: true
+    # Uses FacetRegistry, which is singleton. @todo: See classes doc-comment
+    shared: true
     tags:
       - name: event.listener
         identifier: 'solr.search-component.faceting'
   ApacheSolrForTypo3\Solr\Search\HighlightingComponent:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.search-component.highlighting'
   ApacheSolrForTypo3\Solr\Search\LastSearchesComponent:
     autowire: true
+    # @todo: See classes doc-comment
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.search-component.last-searches'
   ApacheSolrForTypo3\Solr\Search\RelevanceComponent:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.search-component.relevance'
   ApacheSolrForTypo3\Solr\Search\SortingComponent:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.search-component.sorting'
   ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.search-component.spellchecking'
   ApacheSolrForTypo3\Solr\Search\StatisticsComponent:
     autowire: true
+    # @todo: See classes doc-comment
+    shared: true
     tags:
       - name: event.listener
         identifier: 'solr.search-component.statistics'
@@ -269,6 +300,7 @@ services:
   ### Indexing
   ApacheSolrForTypo3\Solr\EventListener\PageIndexer\FrontendGroupsModifier:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.index.PageIndexer.FrontendUserAuthenticator'
@@ -283,28 +315,33 @@ services:
 
   ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer:
     autowire: true
+    shared: true
     tags:
       - name: event.listener
         identifier: 'solr.index.FrontendHelper.PageIndexer.indexPageContentAfterCacheableContentIsGenerated'
   ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider:
     public: true
+    shared: true
     arguments:
       $siteRepository: '@ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository'
 
   ApacheSolrForTypo3\Solr\EventListener\PageIndexer\AdditionalFieldsForPageIndexing:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.index.AdditionalFieldsForPageIndexing'
 
   ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer:
     autowire: true
+    shared: false
     tags:
       - name: event.listener
         identifier: 'solr.index.PageFieldMappingIndexer'
 
   ApacheSolrForTypo3\Solr\EventListener\Extbase\PersistenceEventListener:
     autowire: true
+    shared: true
     tags:
       - name: event.listener
         identifier: 'solr.index.ExtbaseEntityPersisted'
@@ -315,26 +352,30 @@ services:
 
   ###  EXT:solr content objects
   ApacheSolrForTypo3\Solr\ContentObject\Classification:
+    shared: false
     tags:
       - name: frontend.contentobject
         identifier: 'SOLR_CLASSIFICATION'
   ApacheSolrForTypo3\Solr\ContentObject\Content:
+    shared: false
     tags:
       - name: frontend.contentobject
         identifier: 'SOLR_CONTENT'
   ApacheSolrForTypo3\Solr\ContentObject\Multivalue:
+    shared: false
     tags:
       - name: frontend.contentobject
         identifier: 'SOLR_MULTIVALUE'
   ApacheSolrForTypo3\Solr\ContentObject\Relation:
+    shared: false
     arguments:
       $tcaService: '@ApacheSolrForTypo3\Solr\System\TCA\TCAService'
     tags:
       - name: frontend.contentobject
         identifier: 'SOLR_RELATION'
 
-
   # Reports: Status
   ApacheSolrForTypo3\Solr\Report\:
     resource: '../Classes/Report/*'
     autoconfigure: true
+    shared: false
