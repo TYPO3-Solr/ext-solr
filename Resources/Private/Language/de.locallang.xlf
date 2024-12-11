@@ -132,6 +132,9 @@
 			<target state="final">Letzte</target></trans-unit>
       <!-- From locallang.xlf -->
       <!-- From locallang_db.xlf -->
+      <trans-unit id="solr.backend.search_statistics_module.filter" xml:space="preserve" approved="yes">
+				<source>Filter</source>
+			<target state="final">Filtern</target></trans-unit>
     </body>
   </file>
 </xliff>
