@@ -1,6 +1,3 @@
-.. include:: /Includes.rst.txt
-
-
 .. _conf-backend:
 
 =======
@@ -21,5 +18,5 @@ In this chapter we want to go deeper and learn how to write more complex indexin
 	IndexInspector
 	PageProperties
 	Scheduler
-	Plugins.rst
-	ResultsPlugin.rst
+	Plugins
+	ResultsPlugin
