@@ -84,8 +84,18 @@ class SiteHandlingStatus extends AbstractSolrStatus
     public function getStatus()
     {
         $reports = [];
+        if (!$this->siteRepository->hasAvailableSites()) {
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
+                self::TITLE_SITE_HANDLING_CONFIGURATION,
+                'No sites found',
+                '',
+                Status::WARNING
+            );
 
-        /* @var Site $site */
+            return $reports;
+        }
+
         foreach ($this->siteRepository->getAvailableSites() as $site) {
             if (!($site instanceof Site)) {
                 $reports[] = GeneralUtility::makeInstance(

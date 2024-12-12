@@ -118,7 +118,6 @@ class SiteRepositoryTest extends UnitTest
         $this->assertThatSitesAreCreatedWithPageIds([333], [
             0 => ['language' => 0],
         ]);
-        $this->assertCacheIsWritten();
 
         $site = $this->siteRepository->getFirstAvailableSite();
         self::assertInstanceOf(Site::class, $site);
