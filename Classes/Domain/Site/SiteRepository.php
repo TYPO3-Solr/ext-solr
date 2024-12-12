@@ -26,6 +26,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Exception as DBALException;
+use Generator;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -103,8 +104,12 @@ class SiteRepository
      */
     public function getFirstAvailableSite(bool $stopOnInvalidSite = false): ?Site
     {
-        $sites = $this->getAvailableSites($stopOnInvalidSite);
-        return array_shift($sites);
+        $siteGenerator = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
+        $siteGenerator->rewind();
+
+        $site = $siteGenerator->current();
+
+        return $site instanceof Site ? $site : null;
     }
 
     /**
@@ -119,37 +124,81 @@ class SiteRepository
         $cacheId = 'SiteRepository' . '_' . 'getAvailableSites';
 
         $sites = $this->runtimeCache->get($cacheId);
-        if (!empty($sites)) {
+        if (is_array($sites) && $sites !== []) {
             return $sites;
         }
 
-        $sites = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
+        $siteGenerator = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
+        $siteGenerator->rewind();
+
+        $sites = [];
+        foreach ($siteGenerator as $rootPageId => $site) {
+            if (isset($sites[$rootPageId])) {
+                //get each site only once
+                continue;
+            }
+            $sites[$rootPageId] = $site;
+        }
         $this->runtimeCache->set($cacheId, $sites);
 
         return $sites;
     }
 
     /**
-     * Returns available TYPO3 sites
-     *
-     * @return Site[]
+     * Check, if there are any managed sites available
      *
      * @throws UnexpectedTYPO3SiteInitializationException
      */
-    protected function getAvailableTYPO3ManagedSites(bool $stopOnInvalidSite): array
+    public function hasAvailableSites(bool $stopOnInvalidSite = false): bool
     {
-        $typo3ManagedSolrSites = [];
-        $typo3Sites = $this->siteFinder->getAllSites();
-        foreach ($typo3Sites as $typo3Site) {
+        $siteGenerator = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
+        $siteGenerator->rewind();
+
+        return ($site = $siteGenerator->current()) && $site instanceof Site;
+    }
+
+    /**
+     * Check, if there is exactly one managed site available
+     * Needed in AbstractModuleController::autoSelectFirstSiteAndRootPageWhenOnlyOneSiteIsAvailable
+     *
+     * @throws UnexpectedTYPO3SiteInitializationException
+     */
+    public function hasExactlyOneAvailableSite(bool $stopOnInvalidSite = false): bool
+    {
+        if (!$this->hasAvailableSites($stopOnInvalidSite)) {
+            return false;
+        }
+
+        $siteGenerator = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
+        $siteGenerator->rewind();
+
+        // We start with 1 here as we know from hasAvailableSites() above we have at least one site
+        $counter = 1;
+        foreach ($siteGenerator as $_) {
+            if ($counter > 1) {
+                return false;
+            }
+            $counter++;
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns available TYPO3 sites
+     *
+     * @return Site[]|Generator
+     *
+     * @throws UnexpectedTYPO3SiteInitializationException
+     */
+    protected function getAvailableTYPO3ManagedSites(bool $stopOnInvalidSite): Generator
+    {
+        foreach ($this->siteFinder->getAllSites() as $typo3Site) {
             try {
                 $rootPageId = $typo3Site->getRootPageId();
-                if (isset($typo3ManagedSolrSites[$rootPageId])) {
-                    //get each site only once
-                    continue;
-                }
                 $typo3ManagedSolrSite = $this->buildSite($rootPageId);
                 if ($typo3ManagedSolrSite->isEnabled()) {
-                    $typo3ManagedSolrSites[$rootPageId] = $typo3ManagedSolrSite;
+                    yield $rootPageId => $typo3ManagedSolrSite;
                 }
             } catch (Throwable $e) {
                 if ($stopOnInvalidSite) {
@@ -161,7 +210,6 @@ class SiteRepository
                 }
             }
         }
-        return $typo3ManagedSolrSites;
     }
 
     /**
