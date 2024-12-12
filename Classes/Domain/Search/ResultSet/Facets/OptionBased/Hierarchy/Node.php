@@ -81,7 +81,7 @@ class Node extends AbstractOptionFacetItem
     {
         /** @var Node $childNode */
         foreach ($this->childNodes as $childNode) {
-            if ($childNode->getSelected()) {
+            if ($childNode->getSelected() || $childNode->getHasChildNodeSelected()) {
                 return true;
             }
         }
