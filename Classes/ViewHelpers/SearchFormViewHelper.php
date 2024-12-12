@@ -24,14 +24,10 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 
 /**
  * Class SearchFormViewHelper
- *
- *
- * @property RenderingContext $renderingContext
  */
 class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
 {
@@ -87,7 +83,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     public function render()
     {
         /** @var RequestInterface $request */
-        $request = $this->renderingContext->getAttribute(ServerRequestInterface::class);
+        $request = $this->renderingContext->getRequest();
         $this->uriBuilder->setRequest($request);
         $pageUid = $this->arguments['pageUid'] ?? null;
         if ($pageUid === null && !empty($this->getTypoScriptConfiguration()->getSearchTargetPage())) {
