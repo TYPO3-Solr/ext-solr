@@ -148,6 +148,10 @@ class RecordMonitor
             return;
         }
 
+        if (Util::skipHooksForRecord($table, (int)$recordUid, $recordPid)) {
+            return;
+        }
+
         if ($status === 'new' && !MathUtility::canBeInterpretedAsInteger($recordUid)) {
             if (isset($tceMain->substNEWwithIDs[$recordUid])) {
                 $recordUid = $tceMain->substNEWwithIDs[$recordUid];
