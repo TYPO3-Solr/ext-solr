@@ -87,8 +87,6 @@ jobs:
   test_documentation:
     name: test Documentation
     runs-on: ubuntu-latest
-    ## @todo: remove `continue-on-error: true`, if Version matrix tables are fixed.
-    continue-on-error: true
     steps:
       # Workaround for issue with actions/checkout "wrong PR commit checkout". See: ci_bootstrapping job
       - name: Checkout current state of Pull Request
@@ -106,7 +104,7 @@ jobs:
 
       - name: Test if the documentation will render without warnings
         run: |
-          Build/generate_documentation.sh --no-progress --minimal-test
+          Build/generate_documentation.sh --no-progress
 
   tests:
     runs-on: ubuntu-latest

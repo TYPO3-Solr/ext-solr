@@ -12,7 +12,14 @@ if ! command -v docker &> /dev/null; then
   exit 1
 fi
 
-if ! docker run --rm --pull always -v "$(pwd)":/project -t ghcr.io/typo3-documentation/render-guides:latest --config=Documentation "$@"; then
+# @todo: Don't run the command twice: https://github.com/phpDocumentor/guides/issues/1188
+if ! docker run --rm --pull always -v "$(pwd)":/project -t ghcr.io/typo3-documentation/render-guides:latest \
+    --config=Documentation \
+    --fail-on-error "$@" \
+  || ! docker run --rm --pull always -v "$(pwd)":/project -t ghcr.io/typo3-documentation/render-guides:latest \
+    --config=Documentation \
+    --fail-on-log "$@"
+then
   echo "Something went wrong on rendering the docs. Please check the output and affected documentation files of EXT:solr and fix them."
   exit 1;
 else
