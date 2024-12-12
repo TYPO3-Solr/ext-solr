@@ -123,9 +123,9 @@ class ConfigurationAwareRecordService
     protected function getRecordForIndexConfigurationIsValid(
         string $recordTable,
         int $recordUid,
-        string $recordWhereClause = '',
+        string $recordWhereClause = ''
     ): array {
-        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'runtime');
         $cacheId = md5('ConfigurationAwareRecordService' . ':' . 'getRecordIfIndexConfigurationIsValid' . ':' . $recordTable . ':' . $recordUid . ':' . $recordWhereClause);
 
         $row = $cache->get($cacheId);
@@ -133,27 +133,10 @@ class ConfigurationAwareRecordService
             return $row;
         }
 
-        $queryBuilder = $this->getQueryBuilderForTable($recordTable);
-        $queryBuilder
-            ->select('*')
-            ->from($recordTable)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid',
-                    $queryBuilder->createNamedParameter($recordUid, Connection::PARAM_INT)
-                )
-            );
-
-        if ($recordWhereClause !== '') {
-            $queryBuilder->andWhere(QueryHelper::stripLogicalOperatorPrefix($recordWhereClause));
-        }
-
-        $row = $queryBuilder->executeQuery()->fetchAssociative();
-        if ($row === false) {
-            $row = [];
-        }
+        $row = (array)BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
         $cache->set($cacheId, $row);
-        return $row;
+
+        return $row ?? [];
     }
 
     /**
