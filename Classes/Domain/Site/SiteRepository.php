@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\Event\Site\AfterDomainHasBeenDeterminedForSiteEvent;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
@@ -27,6 +28,7 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Exception as DBALException;
 use Generator;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -49,18 +51,22 @@ class SiteRepository
 
     protected FrontendEnvironment $frontendEnvironment;
 
+    protected EventDispatcherInterface $eventDispatcher;
+
     public function __construct(
         ?RootPageResolver $rootPageResolver = null,
         ?TwoLevelCache $twoLevelCache = null,
         ?SiteFinder $siteFinder = null,
         ?ExtensionConfiguration $extensionConfiguration = null,
         ?FrontendEnvironment $frontendEnvironment = null,
+        ?EventDispatcherInterface $eventDispatcherInterface = null
     ) {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
         $this->siteFinder = $siteFinder ?? GeneralUtility::makeInstance(SiteFinder::class);
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
+        $this->eventDispatcher = $eventDispatcherInterface ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }
 
     /**
@@ -291,6 +297,10 @@ class SiteRepository
         }
 
         $domain = $typo3Site->getBase()->getHost();
+        $event = $this->eventDispatcher->dispatch(
+            new AfterDomainHasBeenDeterminedForSiteEvent($domain, $rootPageRecord, $typo3Site, $this->extensionConfiguration)
+        );
+        $domain = $event->getDomain();
 
         $siteHash = $this->getSiteHashForDomain($domain);
         $defaultLanguage = $typo3Site->getDefaultLanguage()->getLanguageId();
