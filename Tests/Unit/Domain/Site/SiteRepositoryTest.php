@@ -18,13 +18,18 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Site;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to check if the SiteRepository class works as expected.
@@ -37,6 +42,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
     protected RootPageResolver|MockObject $rootPageResolverMock;
     protected SiteRepository|MockObject $siteRepository;
     protected SiteFinder|MockObject $siteFinderMock;
+    protected EventDispatcherInterface|MockObject $eventDispatcherMock;
 
     protected function setUp(): void
     {
@@ -47,7 +53,14 @@ class SiteRepositoryTest extends SetUpUnitTestCase
 
         // we mock buildSite to avoid the creation of real Site objects and pass all dependencies as mock
         $this->siteRepository = $this->getMockBuilder(SiteRepository::class)
-            ->setConstructorArgs([$this->rootPageResolverMock, $this->cacheMock, $this->siteFinderMock])
+            ->setConstructorArgs([
+                $this->rootPageResolverMock,
+                $this->cacheMock,
+                $this->siteFinderMock,
+                GeneralUtility::makeInstance(ExtensionConfiguration::class),
+                GeneralUtility::makeInstance(FrontendEnvironment::class),
+                new NoopEventDispatcher(),
+            ])
             ->onlyMethods(['buildSite'])
             ->getMock();
         parent::setUp();
