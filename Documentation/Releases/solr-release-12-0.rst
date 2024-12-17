@@ -93,6 +93,14 @@ Or do that in other ways to set the `solr.config.lib.enabled=true` to sys-props 
 
 
 
+!!![TASK] Remove JSONP callback in suggest
+------------------------------------------
+
+ by @bmack and @dkd-kaehm in `#4267 <https://github.com/TYPO3-Solr/ext-solr/pull/4267>`__
+
+  In own implementation of autosuggest JS parts with usage of JSONP, the action must be migrated to non-JSONP calls.
+
+
 Release 12.0.5
 ==============
 
