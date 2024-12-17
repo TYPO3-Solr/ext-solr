@@ -37,7 +37,7 @@ class SuggestController extends AbstractBaseController
      *
      * @noinspection PhpUnused
      */
-    public function suggestAction(string $queryString, ?string $callback = null, ?array $additionalFilters = []): ResponseInterface
+    public function suggestAction(string $queryString, ?array $additionalFilters = []): ResponseInterface
     {
         // Get suggestions
         $rawQuery = htmlspecialchars(mb_strtolower(trim($queryString)));
@@ -64,9 +64,6 @@ class SuggestController extends AbstractBaseController
             $result = $suggestService->getSuggestions($searchRequest, $additionalFilters);
         } catch (SolrUnavailableException) {
             return $this->handleSolrUnavailable();
-        }
-        if ($callback) {
-            return $this->htmlResponse(htmlspecialchars($callback) . '(' . json_encode($result, JSON_UNESCAPED_SLASHES) . ')');
         }
         return $this->htmlResponse(json_encode($result, JSON_UNESCAPED_SLASHES));
     }
