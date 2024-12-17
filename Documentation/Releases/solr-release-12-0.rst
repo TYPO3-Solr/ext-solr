@@ -7,6 +7,14 @@ Releases 12.0
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 12.0.6
+==============
+
+This is a maintenance release for TYPO3 12.4 LTS, containing:
+
+- !!![TASK] Remove JSONP callback in suggest by @bmack in `#4267 <https://github.com/TYPO3-Solr/ext-solr/pull/4267>`__
+  By own implementation of autosuggest JS parts with usage of JSONP, the action must be migrated to non-JSONP calls.
+
 Release 12.0.5
 ==============
 

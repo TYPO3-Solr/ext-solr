@@ -29,10 +29,7 @@ function SuggestController() {
 
             $form.find('.tx-solr-suggest').devbridgeAutocomplete({
                 serviceUrl: $form.data('suggest'),
-                dataType: 'jsonp',
-                ajaxSettings: {
-                    jsonp: "tx_solr[callback]"
-                },
+                dataType: 'json',
                 paramName: 'tx_solr[queryString]',
                 groupBy: 'category',
                 maxHeight: 1000,
