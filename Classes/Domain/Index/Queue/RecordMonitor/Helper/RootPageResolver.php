@@ -151,11 +151,6 @@ class RootPageResolver implements SingletonInterface
         /** @var Rootline $rootLine */
         $rootLine = GeneralUtility::makeInstance(Rootline::class);
 
-        // frontend
-        if (!empty($GLOBALS['TSFE']->rootLine)) {
-            $rootLine->setRootLineArray($GLOBALS['TSFE']->rootLine);
-        }
-
         // fallback, backend
         if ($forceFallback || !$rootLine->getHasRootPage()) {
             /** @var RootlineUtility $rootlineUtility */
