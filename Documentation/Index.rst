@@ -69,4 +69,3 @@ and many more by searching for "solr" in the TYPO3 Extension Repository (TER).
    :hidden:
 
    Sitemap
-   genindex
