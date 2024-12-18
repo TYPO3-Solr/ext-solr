@@ -7,17 +7,19 @@
 >
   <extension
 	  class="\T3Docs\Typo3DocsTheme\DependencyInjection\Typo3DocsThemeExtension"
+	  interlink-shortcode="apache-solr-for-typo3/solr"
 	  project-home="https://www.typo3-solr.com"
-	  project-contact="https://typo3.slack.com/archives/C02FF05Q4"
+	  project-contact="info@dkd.de"
 	  project-repository="https://github.com/TYPO3-Solr/ext-solr"
 	  project-issues="https://github.com/TYPO3-Solr/ext-solr/issues"
+	  project-discussions="https://typo3.slack.com/archives/C02FF05Q4"
 	  edit-on-github-branch="main"
 	  edit-on-github="TYPO3-Solr/ext-solr"
-	  typo3-core-preferred="stable"
+	  typo3-core-preferred="13.4"
   />
   <project
 	  title="Apache Solr for TYPO3"
-	  release="13.0.0"
+	  release="13.0"
 	  version="13.0"
 	  copyright="since 2009 by dkd &amp; contributors"
   />
