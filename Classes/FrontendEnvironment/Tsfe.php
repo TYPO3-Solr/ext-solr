@@ -109,6 +109,7 @@ class Tsfe implements SingletonInterface
         $pageInformation = new PageInformation();
         $pageInformation->setId($pageId);
         $pageInformation->setPageRecord(BackendUtility::getRecord('pages', $pageId));
+        $pageInformation->setContentFromPid($pageId);
         $serverRequest = $this->serverRequestCache[$cacheIdentifier] ?? null;
         $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, '0', []);
         if (!isset($this->serverRequestCache[$cacheIdentifier])) {
