@@ -76,7 +76,7 @@ final class AfterPageDocumentIsCreatedForIndexingEvent
      */
     public function getSiteLanguage(): SiteLanguage
     {
-        return $this->getSite()->getAttribute('language');
+        return clone $this->tsfe->cObj->getRequest()->getAttribute('language');
     }
 
     public function getRecord(): array
