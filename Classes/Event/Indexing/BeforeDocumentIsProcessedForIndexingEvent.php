@@ -59,7 +59,7 @@ class BeforeDocumentIsProcessedForIndexingEvent
      */
     public function getSiteLanguage(): SiteLanguage
     {
-        return clone $this->getSite()->getAttribute('language');
+        return clone $this->tsfe->cObj->getRequest()->getAttribute('language');
     }
 
     public function getIndexQueueItem(): Item
