@@ -37,7 +37,7 @@ class RemoveAllFacetsViewHelperTest extends SetUpFacetItemViewHelper
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $searchResultSetMock->expects(self::once())->method('getUsedSearchRequest')->willReturn($mockedPreviousFakedRequest);
 
-        $requestUriBuilderStub = $this->createStub(RequestBuilder::class);
+        $requestUriBuilderStub = self::createStub(RequestBuilder::class);
         $requestUriBuilderStub->method('build')->willReturn($mockedControllerRequest);
 
         $variableProvideMock = $this->createMock(StandardVariableProvider::class);

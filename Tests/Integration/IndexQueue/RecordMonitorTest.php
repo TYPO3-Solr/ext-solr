@@ -902,6 +902,324 @@ class RecordMonitorTest extends IntegrationTestBase
     }
 
     #[Test]
+    #[DataProvider('mountedPageIsUpdatedInQueueOnUpdateDataProvider')]
+    public function mountedPageIsUpdatedInQueueOnUpdate(
+        int $monitoringType,
+        int $itemUid,
+        int $itemsInEventQueue,
+        array $dataMap,
+        array $expectedResult,
+    ): void {
+        $this->extensionConfiguration->set('solr', ['monitoringType' => $monitoringType]);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/mount_page_updates.csv');
+
+        $this->dataHandler->start($dataMap, [], $this->backendUser);
+        $this->dataHandler->process_datamap();
+
+        $this->assertEventQueueContainsItemAmount($itemsInEventQueue);
+        if ($monitoringType === 1) {
+            $this->processEventQueue();
+        }
+
+        $items = $this->indexQueue->getItems('pages', $itemUid);
+        self::assertCount(count($expectedResult), $items, 'Index queue items not added/updated as expected.');
+
+        foreach ($expectedResult as $itemCount => $itemData) {
+            self::assertEquals($itemData['mountPointIdentifier'], $items[$itemCount]->getMountPointIdentifier());
+            self::assertGreaterThan(0, $items[$itemCount]->getChanged());
+
+            if (($itemData['mountPageSource'] ?? null) !== null) {
+                self::assertEquals(
+                    [
+                        'mountPageSource' => $itemData['mountPageSource'],
+                        'mountPageDestination' => $itemData['mountPageDestination'],
+                        'isMountedPage' => 1,
+                    ],
+                    $items[$itemCount]->getIndexingProperties()
+                );
+            }
+        }
+    }
+
+    public static function mountedPageIsUpdatedInQueueOnUpdateDataProvider(): Traversable
+    {
+        $hideContentElementOnMountedPageInSysFolder = [
+            'monitoringType' => 0,
+            'itemUid' => 20,
+            'itemsInEventQueue' => 0,
+            'dataMap' => [
+                'tt_content' => [
+                    20 => ['hidden' => 1],
+                ],
+            ],
+            'expectedResult' => [
+                0 => [
+                    'mountPointIdentifier' => '20-30-1',
+                    'mountPageSource' => '20',
+                    'mountPageDestination' => '30',
+                ],
+            ],
+        ];
+        yield 'hide content element on mounted page in sys_folder (default monitoring)'
+            => $hideContentElementOnMountedPageInSysFolder;
+
+        yield 'hide content element on mounted page in sys_folder (delayed monitoring)' => array_merge(
+            $hideContentElementOnMountedPageInSysFolder,
+            [
+                'monitoringType' => 1,
+                'itemsInEventQueue' => 2,
+            ]
+        );
+
+        $enableContentElementOnMountedPageInSysFolder = [
+            'monitoringType' => 0,
+            'itemUid' => 20,
+            'itemsInEventQueue' => 0,
+            'dataMap' => [
+                'tt_content' => [
+                    21 => ['hidden' => 0],
+                ],
+            ],
+            'expectedResult' => [
+                0 => [
+                    'mountPointIdentifier' => '20-30-1',
+                    'mountPageSource' => '20',
+                    'mountPageDestination' => '30',
+                ],
+            ],
+        ];
+        yield 'enable content element on mounted page in sys_folder (default monitoring)'
+            => $enableContentElementOnMountedPageInSysFolder;
+
+        yield 'enable content element on mounted page in sys_folder (delayed monitoring)' => array_merge(
+            $enableContentElementOnMountedPageInSysFolder,
+            [
+                'monitoringType' => 1,
+                'itemsInEventQueue' => 2,
+            ],
+        );
+
+        $hideContentElementOnMountedPageOnRoot = [
+            'monitoringType' => 0,
+            'itemUid' => 21,
+            'itemsInEventQueue' => 0,
+            'dataMap' => [
+                'tt_content' => [
+                    22 => ['hidden' => 1],
+                ],
+            ],
+            'expectedResult' => [
+                0 => [
+                    'mountPointIdentifier' => '',
+                ],
+                1 => [
+                    'mountPointIdentifier' => '21-31-1',
+                    'mountPageSource' => '21',
+                    'mountPageDestination' => '31',
+                ],
+            ],
+        ];
+        yield 'hide content element on mounted page on root (default monitoring)'
+            => $hideContentElementOnMountedPageOnRoot;
+
+        yield 'hide content element on mounted page on root (delayed monitoring)' => array_merge(
+            $hideContentElementOnMountedPageOnRoot,
+            [
+                'monitoringType' => 1,
+                'itemsInEventQueue' => 2,
+            ]
+        );
+
+        $updateMountedPageInSysFolder = [
+            'monitoringType' => 0,
+            'itemUid' => 20,
+            'itemsInEventQueue' => 0,
+            'dataMap' => [
+                'pages' => [
+                    20 => ['subtitle' => 'new subtitle'],
+                ],
+            ],
+            'expectedResult' => [
+                0 => [
+                    'mountPointIdentifier' => '20-30-1',
+                    'mountPageSource' => '20',
+                    'mountPageDestination' => '30',
+                ],
+            ],
+        ];
+        yield 'update mounted page in sys_folder (default monitoring)' => $updateMountedPageInSysFolder;
+
+        yield 'update mounted page in sys_folder (delayed monitoring)' => array_merge(
+            $updateMountedPageInSysFolder,
+            [
+                'monitoringType' => 1,
+                'itemsInEventQueue' => 2,
+            ]
+        );
+
+        $updateMountedPageInRoot = [
+            'monitoringType' => 0,
+            'itemUid' => 21,
+            'itemsInEventQueue' => 0,
+            'dataMap' => [
+                'pages' => [
+                    21 => ['subtitle' => 'new subtitle'],
+                ],
+            ],
+            'expectedResult' => [
+                0 => [
+                    'mountPointIdentifier' => '',
+                ],
+                1 => [
+                    'mountPointIdentifier' => '21-31-1',
+                    'mountPageSource' => '21',
+                    'mountPageDestination' => '31',
+                ],
+            ],
+        ];
+        yield 'update mounted page in root (default monitoring)' => $updateMountedPageInRoot;
+
+        yield 'update mounted page in root (delayed monitoring)' => array_merge(
+            $updateMountedPageInRoot,
+            [
+                'monitoringType' => 1,
+                'itemsInEventQueue' => 2,
+            ]
+        );
+
+        $hideMountedPageInSysFolder = [
+            'monitoringType' => 0,
+            'itemUid' => 20,
+            'itemsInEventQueue' => 0,
+            'dataMap' => [
+                'pages' => [
+                    20 => ['hidden' => 1],
+                ],
+            ],
+            'expectedResult' => [],
+        ];
+        yield 'hide mounted page in sys_folder (default monitoring)' => $hideMountedPageInSysFolder;
+
+        yield 'hide mounted page in sys_folder (delayed monitoring)' => array_merge(
+            $hideMountedPageInSysFolder,
+            [
+                'monitoringType' => 1,
+                'itemsInEventQueue' => 2,
+            ]
+        );
+
+        $hideMountedPageInRoot = [
+            'monitoringType' => 0,
+            'itemUid' => 21,
+            'itemsInEventQueue' => 0,
+            'dataMap' => [
+                'pages' => [
+                    21 => ['hidden' => 1],
+                ],
+            ],
+            'expectedResult' => [],
+        ];
+        yield 'hide mounted page in root (default monitoring)' => $hideMountedPageInRoot;
+
+        yield 'hide mounted page in root (delayed monitoring)' => array_merge(
+            $hideMountedPageInRoot,
+            [
+                'monitoringType' => 1,
+                'itemsInEventQueue' => 2,
+            ]
+        );
+
+        $hideContentElementOnAnotherMountedPageInSysFolderWhichIsInQueue = [
+            'monitoringType' => 0,
+            'itemUid' => 22,
+            'itemsInEventQueue' => 0,
+            'dataMap' => [
+                'tt_content' => [
+                    24 => ['hidden' => 1],
+                ],
+            ],
+            'expectedResult' => [
+                0 => [
+                    'mountPointIdentifier' => '22-32-1',
+                    'mountPageSource' => '22',
+                    'mountPageDestination' => '32',
+                ],
+            ],
+        ];
+        yield 'hide content element on another mounted page in sys_folder'
+                . ', which is already in queue (default monitoring)'
+            => $hideContentElementOnAnotherMountedPageInSysFolderWhichIsInQueue;
+
+        yield 'hide content element on another mounted page in sys_folder'
+                . ', which is already in queue (delayed monitoring)' => array_merge(
+                    $hideContentElementOnAnotherMountedPageInSysFolderWhichIsInQueue,
+                    [
+                        'monitoringType' => 1,
+                        'itemsInEventQueue' => 2,
+                    ]
+                );
+
+        $enableContentElementOnMountedPageInSysFolderWhichIsInQueue = [
+            'monitoringType' => 0,
+            'itemUid' => 22,
+            'itemsInEventQueue' => 0,
+            'dataMap' => [
+                'tt_content' => [
+                    25 => ['hidden' => 0],
+                ],
+            ],
+            'expectedResult' => [
+                0 => [
+                    'mountPointIdentifier' => '22-32-1',
+                    'mountPageSource' => '22',
+                    'mountPageDestination' => '32',
+                ],
+            ],
+        ];
+        yield 'enable content element on another mounted page in sys_folder'
+            . ', which is already in queue (default monitoring)'
+            => $enableContentElementOnMountedPageInSysFolderWhichIsInQueue;
+
+        yield 'enable content element on another mounted page in sys_folder'
+            . ', which is already in queue (delayed monitoring)' => array_merge(
+                $enableContentElementOnMountedPageInSysFolderWhichIsInQueue,
+                [
+                    'monitoringType' => 1,
+                    'itemsInEventQueue' => 2,
+                ],
+            );
+
+        $updateMountedPageInSysFolderWhichIsInQueue = [
+            'monitoringType' => 0,
+            'itemUid' => 22,
+            'itemsInEventQueue' => 0,
+            'dataMap' => [
+                'pages' => [
+                    22 => ['subtitle' => 'new subtitle'],
+                ],
+            ],
+            'expectedResult' => [
+                0 => [
+                    'mountPointIdentifier' => '22-32-1',
+                    'mountPageSource' => '22',
+                    'mountPageDestination' => '32',
+                ],
+            ],
+        ];
+        yield 'update mounted page in sys_folder'
+            . ', which is already in queue (default monitoring)' => $updateMountedPageInSysFolderWhichIsInQueue;
+
+        yield 'update mounted page in sys_folder'
+            . ', which is already in queue (delayed monitoring)' => array_merge(
+                $updateMountedPageInSysFolderWhichIsInQueue,
+                [
+                    'monitoringType' => 1,
+                    'itemsInEventQueue' => 2,
+                ]
+            );
+    }
+
+    #[Test]
     public function localizedPageIsAddedToTheQueue(): void
     {
         $this->prepareLocalizedPageIsAddedToTheQueue();
