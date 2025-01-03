@@ -23,7 +23,9 @@ use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\Traits\SkipRecordByRootlineConfigurationTrait;
 use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
 
@@ -33,6 +35,8 @@ use UnexpectedValueException;
  */
 abstract class AbstractStrategy
 {
+    use SkipRecordByRootlineConfigurationTrait;
+
     protected QueueInterface $queue;
     protected ConnectionManager $connectionManager;
     protected SiteRepository $siteRepository;
@@ -82,7 +86,15 @@ abstract class AbstractStrategy
     protected function deleteInSolrAndUpdateIndexQueue(string $table, int $uid): void
     {
         $this->deleteIndexDocuments($table, $uid);
-        $this->queue->updateItem($table, $uid);
+
+        $record = BackendUtility::getRecord($table, $uid);
+        if ($record === null) {
+            return;
+        }
+
+        if (!$this->skipRecordByRootlineConfiguration((int)($record['pid'] ?? 0))) {
+            $this->queue->updateItem($table, $uid);
+        }
     }
 
     /**

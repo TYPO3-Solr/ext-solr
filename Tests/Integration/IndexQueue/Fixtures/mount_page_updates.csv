@@ -1,0 +1,25 @@
+"pages",
+,"uid","pid","tstamp","hidden","doktype","mount_pid","mount_pid_ol","slug","title","no_search_sub_entries"
+,2,1,1736145036,0,254,0,0,"/sysfolder","Sys folder (no_search_sub_entries)",1
+,20,2,1736145036,0,1,0,0,"/mounted-page-in-sysfolder","Mounted page in sysfolder",0
+,21,1,1736145036,0,1,0,0,"/mounted-page-on-root","Mounted page on root page",0
+,22,2,1736145036,0,1,0,0,"/another-mounted-page-in-sysfolder","Another mounted page in sysfolder",0
+,30,1,1736145036,0,7,20,1,"/mount-point-1","Mount point for page in sysfolder",0
+,31,1,1736145036,0,7,21,1,"/mount-point-2","Mount point for page on root page",0
+,32,1,1736145036,0,7,22,1,"/mount-point-3","Mount point for another page in sysfolder",0
+"tt_content",
+,"uid","pid","header","hidden"
+,20,20,"ce on mounted page",0
+,21,20,"hidden ce on mounted page",1
+,22,21,"ce on mounted page",0
+,23,21,"hidden ce on mounted page",1
+,24,22,"ce on another mounted page",0
+,25,22,"hidden ce on another mounted page",1
+"tx_solr_indexqueue_item"
+,"uid","root","item_type","item_uid","indexing_configuration","has_indexing_properties","pages_mountidentifier","errors"
+,1,1,"pages",22,"pages",1,"22-32-1",""
+"tx_solr_indexqueue_indexing_property"
+,"uid","root","item_id","property_key","property_value"
+,1,1,1,"mountPageSource",22
+,2,1,1,"mountPageDestination",32
+,3,1,1,"isMountedPage",1
