@@ -22,6 +22,7 @@ use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -223,8 +224,22 @@ class Page extends AbstractInitializer
     {
         $mountPointIdentifier = $this->getMountPointIdentifier($mountProperties);
         $mountPointPageIsWithExistingQueueEntry = $this->queueItemRepository->findPageIdsOfExistingMountPagesByMountIdentifier($mountPointIdentifier);
-        $mountedPagesThatNeedToBeAdded = array_diff($mountedPages, $mountPointPageIsWithExistingQueueEntry);
 
+        // update existing queue entries to trigger reindexing
+        array_walk(
+            $mountPointPageIsWithExistingQueueEntry,
+            function (int $pageUid): void {
+                $tstamp = GeneralUtility::makeInstance(Context::class)
+                    ->getPropertyFromAspect('date', 'timestamp') ?? time();
+                $items = $this->queueItemRepository->findItemsByItemTypeAndItemUid('pages', $pageUid);
+                foreach ($items as $item) {
+                    $this->queueItemRepository->updateChangedTimeByItem($item, $tstamp);
+                }
+            }
+        );
+
+        // add new items if necessary
+        $mountedPagesThatNeedToBeAdded = array_diff($mountedPages, $mountPointPageIsWithExistingQueueEntry);
         if (count($mountedPagesThatNeedToBeAdded) === 0) {
             //nothing to do
             return;

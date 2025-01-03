@@ -30,6 +30,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use ApacheSolrForTypo3\Solr\Traits\SkipRecordByRootlineConfigurationTrait;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
@@ -45,6 +46,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DataUpdateHandler extends AbstractUpdateHandler
 {
+    use SkipRecordByRootlineConfigurationTrait;
+
     /**
      * List of fields in the update field array that
      * are required for processing
@@ -381,7 +384,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
         }
         $rootPageIds = [$configurationPageId];
 
-        $this->processRecord('pages', $uid, $rootPageIds);
+        if (!$this->skipRecordByRootlineConfiguration($uid)) {
+            $this->processRecord('pages', $uid, $rootPageIds);
+        }
 
         $this->updateCanonicalPages($uid);
         $this->mountPageUpdater->update($uid);
