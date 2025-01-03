@@ -24,9 +24,12 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 /**
  * Testcase for the DataUpdateHandler class.
@@ -105,6 +108,9 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             'sys_language_uid' => 0,
         ];
         $this->initSiteForDummyConfiguration($dummyPageRecord['uid']);
+
+        $rootineUtilityMock = $this->createMock(RootlineUtility::class);
+        GeneralUtility::addInstance(RootlineUtility::class, $rootineUtilityMock);
 
         $this->mountPagesUpdaterMock
             ->expects(self::once())
@@ -186,6 +192,9 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         ];
         $this->initSiteForDummyConfiguration($dummyPageRecord['uid']);
 
+        $rootineUtilityMock = $this->createMock(RootlineUtility::class);
+        GeneralUtility::addInstance(RootlineUtility::class, $rootineUtilityMock);
+
         $this->mountPagesUpdaterMock
             ->expects(self::once())
             ->method('update')
@@ -247,6 +256,9 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         ];
 
         $this->initBasicPageUpdateExpectations($dummyPageRecord);
+
+        $rootineUtilityMock = $this->createMock(RootlineUtility::class);
+        GeneralUtility::addInstance(RootlineUtility::class, $rootineUtilityMock);
 
         $this->mountPagesUpdaterMock
             ->expects(self::once())
@@ -338,6 +350,13 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         ];
 
         $GLOBALS['TCA']['pages'] = ['columns' => []];
+
+        $frontendCacheMock = $this->createMock(VariableFrontend::class);
+        $frontendCacheMock->method('has')->willReturn(true);
+        $frontendCacheMock->method('get')->willReturn(['uid' => 1, 'no_search_sub_entries' => false]);
+        $cacheManagerMock = $this->createMock(CacheManager::class);
+        $cacheManagerMock->method('getCache')->willReturn($frontendCacheMock);
+        GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManagerMock);
 
         $this->pagesRepositoryMock
             ->expects(self::any())

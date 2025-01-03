@@ -22,14 +22,13 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedE
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
 use ApacheSolrForTypo3\Solr\Traits\SkipMonitoringTrait;
+use ApacheSolrForTypo3\Solr\Traits\SkipRecordByRootlineConfigurationTrait;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Exception\Page\PageNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 /**
  * A class that monitors changes to the records so that the changed record get
@@ -38,6 +37,7 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
 class RecordMonitor
 {
     use SkipMonitoringTrait;
+    use SkipRecordByRootlineConfigurationTrait;
 
     protected array $trackedRecords = [];
     protected EventDispatcherInterface $eventDispatcher;
@@ -144,7 +144,11 @@ class RecordMonitor
                 $recordPid = $recordInfo['pid'] ?? null;
             }
         }
-        if (!is_null($recordPid) && $this->skipRecordByRootlineConfiguration((int)$recordPid)) {
+        if (
+            !is_null($recordPid)
+            && !GeneralUtility::inList('pages,tt_content', $table)
+            && $this->skipRecordByRootlineConfiguration((int)$recordPid)
+        ) {
             return;
         }
 
@@ -163,25 +167,5 @@ class RecordMonitor
         $this->eventDispatcher->dispatch(
             new RecordUpdatedEvent((int)$recordUid, $table, $fields)
         );
-    }
-
-    /**
-     * Check if at least one page in the record's rootline is configured to exclude sub-entries from indexing
-     */
-    protected function skipRecordByRootlineConfiguration(int $pid): bool
-    {
-        /** @var RootlineUtility $rootlineUtility */
-        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid);
-        try {
-            $rootline = $rootlineUtility->get();
-        } catch (PageNotFoundException) {
-            return true;
-        }
-        foreach ($rootline as $page) {
-            if (isset($page['no_search_sub_entries']) && $page['no_search_sub_entries']) {
-                return true;
-            }
-        }
-        return false;
     }
 }

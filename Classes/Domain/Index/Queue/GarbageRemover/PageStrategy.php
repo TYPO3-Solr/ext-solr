@@ -15,9 +15,11 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class PageStrategy
@@ -39,6 +41,23 @@ class PageStrategy extends AbstractStrategy
 
         if ($table === 'pages') {
             $this->collectPageGarbageByPageChange($uid);
+        }
+    }
+
+    /**
+     * Deletes a page from Solr and updates the item in the index queue
+     * The MountPagesUpdater takes care of mounted pages
+     *
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     */
+    protected function deleteInSolrAndUpdateIndexQueue(string $table, int $uid): void
+    {
+        parent::deleteInSolrAndUpdateIndexQueue($table, $uid);
+
+        if ($table === 'pages') {
+            $mountPagesUpdater = GeneralUtility::makeInstance(MountPagesUpdater::class);
+            $mountPagesUpdater->update($uid);
         }
     }
 
