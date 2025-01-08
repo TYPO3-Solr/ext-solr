@@ -1,5 +1,5 @@
 {
-  "name": "apache-solr-for-typo3/solr",
+  "name": "apache-solr-for-typo3/elts-solr",
   "type": "typo3-cms-extension",
   "description": "Apache Solr for TYPO3",
   "license": "GPL-3.0-or-later",
@@ -45,9 +45,13 @@
     "typo3/testing-framework": "^6.12",
     "typo3/cms-fluid-styled-content": "*"
   },
+  "conflict": {
+    "apache-solr-for-typo3/solr": "*"
+  },
   "replace": {
+    "apache-solr-for-typo3/solr": ">11.6.0 <12.0.0",
+    "typo3-ter/solr": ">11.6.0 <12.0.0",
     "apache-solr-for-typo3/solrfluid": "*",
-    "typo3-ter/solr": "self.version",
     "typo3-ter/solrfluid": "*"
   },
   "autoload": {
@@ -153,7 +157,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-release-11.6.x": "11.6.x-dev"
+      "dev-release-11.6.x": "11.6.x-dev-elts"
     },
     "typo3/cms": {
       "extension-key": "solr",
@@ -170,7 +174,7 @@
         "Apache-Solr": [
           "9.7.0"
         ],
-        "configset": "ext_solr_11_6_0"
+        "configset": "ext_solr_11_6_0_elts"
       },
       "ext-solrfal": {
       },
