@@ -10,6 +10,7 @@ composer.lock
 Documentation-GENERATED-temp
 Documentation.HTML
 Documentation/_make
+Documentation/_build
 index.php
 Resources/Public/Documentation
 typo3

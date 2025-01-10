@@ -2,7 +2,23 @@
 ..  index:: Releases
 .. _releases-11-6:
 
-==============
+=============
+Releases 11.6
+=============
+
+Release 11.6.1 ELTS
+===================
+
+This is a non-public maintenance release for TYPO3 11.5.
+
+Full list of changes
+~~~~~~~~~~~~~~~~~~~~
+
+* [TASK] Integrate TYPO3 11.5 ELTS by @dkd-kaehm & @dkd-friedrich
+* [TASK] Prepare release-11.6.x ELTS by @dkd-friedrich
+* [BUGFIX] NPE in Index Queue module when no site is selected by @adamkoppede
+* [FEATURE] Add timeframe filter to statistics module by @BastiLu
+
 Release 11.6.0
 ==============
 
@@ -50,6 +66,8 @@ awesome community. Here are the contributors to this release.
 
 (patches, comments, bug reports, reviews, ... in alphabetical order)
 
+* Adam Koppe
+* @BastiLu
 * Christoph Lehmann
 * Markus Friedrich
 * Rafael Kähm
