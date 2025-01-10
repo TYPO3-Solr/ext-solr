@@ -33,7 +33,7 @@ class AddFacetItemViewHelperTest extends SetUpFacetItemViewHelper
         $viewHelper->setRenderingContext($renderContextMock);
 
         $searchUriBuilderMock = $this->createMock(SearchUriBuilder::class);
-        $requestUriBuilderStub = $this->createStub(RequestBuilder::class);
+        $requestUriBuilderStub = self::createStub(RequestBuilder::class);
 
         // we expected that the getAddFacetOptionUri will be called on the searchUriBuilder in the end.
         $searchUriBuilderMock->expects(self::once())->method('getAddFacetValueUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color', 'red');
