@@ -1,11 +1,11 @@
 ..  index:: Archive
-.. _releases-11-5:
+.. _releases-archive-11-5:
 
 =============
 Releases 11.5
 =============
 
-..  include:: HintAboutOutdatedChangelog.rst.txt
+..  include:: ../HintAboutOutdatedChangelog.rst.txt
 
 Release 11.5.5
 ==============
