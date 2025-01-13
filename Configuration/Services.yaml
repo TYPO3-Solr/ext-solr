@@ -21,6 +21,7 @@ services:
       - '../Classes/Domain/Search/ResultSet/Facets/{OptionBased/Hierarchy/Node.php,*/Abstract*}'
       - '../Classes/Domain/Search/ResultSet/Facets/*/*/*Facet.php'
       - '../Classes/Domain/Search/ResultSet/Facets/RangeBased/*/*RangeCount.php'
+      - '../Classes/Domain/Search/ResultSet/Facets/FacetRegistry.php'
     public: true
     autowire: true
     shared: false
