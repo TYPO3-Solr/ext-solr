@@ -90,11 +90,19 @@ jobs:
           docker image ls -a
           ./Build/Test/cibuild_docker.sh
       -
-        name: Upload artifact
+        name: Upload Docker Image
         uses: actions/upload-artifact@v4
         with:
           name: solrci-image
           path: /tmp/solrci-image.tar
+          retention-days: 1
+      -
+        name: Upload Solr-Server containers logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: solrci-logs
+          path: /tmp/docker_image_logs_**/
 
   tests:
     runs-on: ubuntu-latest
