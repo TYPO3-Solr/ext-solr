@@ -4,6 +4,89 @@
 Releases 13.0
 =============
 
+Release 13.0.1
+==============
+
+!!![SECURITY] Update to Apache solr 9.8.0 : CVE-2025-24814
+----------------------------------------------------------
+
+Updates EXT:solr to Apache Solr 9.8.0.
+
+Apache Solr 9.8.0 disables the possibility to load the `jar` files with `lib` directive by default,
+which was used to load jar files within the EXT:solr configsets. Apache Solr 10.0.0 will drop that functionality.
+All Apache Solr libs, modules or plugins must be configured within the main server configuration files.
+See: https://issues.apache.org/jira/browse/SOLR-16781
+
+Impact:
+~~~~~~~~~
+
+Docker
+""""""
+
+By using our official Docker image from https://hub.docker.com/r/typo3solr/ext-solr,
+you want to pull the image v. 13.0.1+ and restart the container with that image, which will run a migrations-script
+automatically to secure the configuration in used volume automatically.
+No other steps are required.
+
+Alternatively you can wipe the volume and start the container with v. 13.0.1+ image, but that method will wipe the index as well.
+
+See the script `EXT:solr/Docker/SolrServer/docker-entrypoint-initdb.d/as-sudo/fix-CVE-2025-24814.sh`
+
+
+Other server setups
+"""""""""""""""""""
+
+You have 2 possibilities to fix that issue in your Apache Solr Server:
+
+
+(PREFERRED) Migrate the EXT:solr's Apache Solr configuration
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+Refer to https://github.com/TYPO3-Solr/ext-solr/pull/4290/files .
+
+Following 3 files are relevant:
+
+*   Changes in `<Apache-Solr data dir>/configsets/ext_solr_13_0_0/conf/solrconfig.xml`
+*   Changes in `<Apache-Solr data dir>/solr.xml`
+*   Movement from `<Apache-Solr data dir>/configsets/ext_solr_13_0_0/typo3lib/solr-typo3-plugin-6.0.0.jar`
+
+    *   to `<Apache-Solr data dir>/typo3lib/solr-typo3-plugin-6.0.0.jar`
+
+Steps:
+
+#.  Remove all occurrences of `<lib dir=".*` from `<Apache-Solr data dir>/configsets/ext_solr_13_0_0/conf/solrconfig.xml` file.
+#.  Replace in `<Apache-Solr data dir>/solr.xml` file
+    the snipped
+
+    ..  code-block:: xml
+        <str name="modules">scripting</str>
+
+    by
+
+    ..  code-block:: xml
+        	<str name="modules">scripting,analytics,analysis-extras,langid,clustering,extraction,${solr.modules:}</str>
+        	<str name="allowPaths">${solr.allowPaths:}</str>
+        	<str name="allowUrls">${solr.allowUrls:}</str>
+
+        	<!-- TYPO3 Plugins -->
+        	<str name="sharedLib">/var/solr/data/typo3lib/</str>
+#.  Move the directory from `<Apache-Solr data dir>/configsets/ext_solr_13_0_0/typo3lib`
+
+    *   to `<Apache-Solr data dir>/typo3lib`
+
+
+(NOT-RECOMMENDED) Re-enable <lib> directives on Apache Solr >=9.8.0 <10.0.0
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+Add following to `/etc/default/solr.in.sh` file
+
+..  code-block:: shell
+    	SOLR_OPTS="$SOLR_OPTS -Dsolr.config.lib.enabled=true"
+
+Or do that in other ways to set the `solr.config.lib.enabled=true` to sys-props of Apache Solr Server.
+
 
 Release 13.0.0
 ==============
