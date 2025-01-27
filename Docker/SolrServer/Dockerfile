@@ -1,4 +1,4 @@
-FROM solr:9.7.0
+FROM solr:9.8.0
 LABEL org.opencontainers.image.authors="dkd Internet Service GmbH info@dkd.de"
 ENV TERM=linux
 

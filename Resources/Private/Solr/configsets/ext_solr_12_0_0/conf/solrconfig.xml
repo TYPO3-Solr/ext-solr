@@ -4,15 +4,6 @@
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
 
-	<lib dir="${solr.install.dir:../../../..}/modules/extraction/lib/" regex=".*\.jar" />
-	<lib dir="${solr.install.dir:../../../..}/modules/clustering/lib/" regex=".*\.jar" />
-	<lib dir="${solr.install.dir:../../../..}/modules/langid/lib/" regex=".*\.jar" />
-	<lib dir="${solr.install.dir:../../../..}/modules/analytics/lib/" regex=".*\.jar" />
-	<lib dir="${solr.install.dir:../../../..}/modules/analysis-extras/lib/" regex=".*\.jar" />
-
-	<!-- TYPO3 Plugins -->
-	<lib dir="typo3lib" regex=".*\.jar" />
-
 	<directoryFactory name="DirectoryFactory"
 					  class="solr.NRTCachingDirectoryFactory"/>
 
