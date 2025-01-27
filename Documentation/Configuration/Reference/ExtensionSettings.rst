@@ -81,8 +81,8 @@ By default (=0) recognized updates will be processed directly and the Solr index
 the Solr index where appropriate. As in huge instances the monitoring can slow down the TYPO3 backend, two more monitoring
 options are available:
 
-- Delayed: Record update events will be queue and processed later, the scheduler task "Event Queue Worker" is required for processing.
-- No monitoring: Monitoring is completely disabled, please note that you have to take care of Solr index updates yourself.
+- 1: Delayed: Record update events will be queue and processed later, the scheduler task "Event Queue Worker" is required for processing.
+- 2: No monitoring: Monitoring is completely disabled, please note that you have to take care of Solr index updates yourself.
 
 Route Enhancer
 --------------
