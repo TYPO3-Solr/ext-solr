@@ -106,7 +106,9 @@ class SiteRepository
     {
         $siteGenerator = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
         $siteGenerator->rewind();
-
+        if (!$siteGenerator->valid()) {
+            return null;
+        }
         $site = $siteGenerator->current();
 
         return $site instanceof Site ? $site : null;
@@ -132,6 +134,9 @@ class SiteRepository
         $siteGenerator->rewind();
 
         $sites = [];
+        if (!$siteGenerator->valid()) {
+            return $sites;
+        }
         foreach ($siteGenerator as $rootPageId => $site) {
             if (isset($sites[$rootPageId])) {
                 //get each site only once
@@ -153,6 +158,9 @@ class SiteRepository
     {
         $siteGenerator = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
         $siteGenerator->rewind();
+        if (!$siteGenerator->valid()) {
+            return false;
+        }
 
         return ($site = $siteGenerator->current()) && $site instanceof Site;
     }
@@ -171,6 +179,9 @@ class SiteRepository
 
         $siteGenerator = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
         $siteGenerator->rewind();
+        if (!$siteGenerator->valid()) {
+            return false;
+        }
 
         // We start with 1 here as we know from hasAvailableSites() above we have at least one site
         $counter = 1;
