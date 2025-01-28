@@ -1,4 +1,3 @@
-..  include:: /Includes.rst.txt
 ..  index:: Releases
 .. _releases:
 

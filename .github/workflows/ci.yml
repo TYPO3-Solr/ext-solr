@@ -96,10 +96,31 @@ jobs:
           name: solrci-image
           path: /tmp/solrci-image.tar
 
+  test_documentation:
+    name: test Documentation
+    runs-on: ubuntu-latest
+    steps:
+      # Workaround for issue with actions/checkout "wrong PR commit checkout". See: ci_bootstrapping job
+      - name: Checkout current state of Pull Request
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Checkout current state of Branch
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      # End: Workaround for issue with actions/checkout...
+
+      - name: Test if the documentation will render without warnings
+        run: |
+          Build/generate_documentation.sh --no-progress
+
   tests:
     runs-on: ubuntu-latest
     needs: ci_bootstrapping
-    continue-on-error: ${{ contains(matrix.TYPO3, '-dev') }}
     strategy:
       matrix: ${{ fromJson(needs.ci_bootstrapping.outputs.matrix) }}
     env:
@@ -189,7 +210,7 @@ jobs:
     name: Publish new version to TER
     needs: tests
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
     steps:
@@ -233,7 +254,7 @@ jobs:
           echo "Following message will be printed in TER as release description:"
           echo -e "$TER_COMMENT"
           if ! composer extension-build; then
-            >&2 echo -e "Something went wrong on bulding EXT:solr for NON-Composer mode. Please look in the job."
+            >&2 echo -e "Something went wrong on building EXT:solr for NON-Composer mode. Please look in the job."
             exit 13
           fi
           php ~/.composer/vendor/bin/tailor ter:publish --comment "$TER_COMMENT" "$RELEASE_VERSION"

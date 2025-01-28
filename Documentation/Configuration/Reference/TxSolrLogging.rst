@@ -1,6 +1,3 @@
-.. include:: /Includes.rst.txt
-
-
 .. _conf-tx-solr-logging:
 
 tx_solr.logging

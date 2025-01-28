@@ -1,4 +1,3 @@
-.. include:: /Includes.rst.txt
 .. _configuration.reference.solrsearch:
 
 tx_solr.search
@@ -853,11 +852,12 @@ When ```keepAllFacetsOnSelection``` is active the count of a facet do not get re
 
 The following example shows how to keep all options of all facets by keeping the real document count, even when it has zero options:
 
-```
-plugin.tx_solr.search.faceting.keepAllFacetsOnSelection = 1
-plugin.tx_solr.search.faceting.countAllFacetsForSelection = 1
-plugin.tx_solr.search.faceting.minimumCount = 0
-```````````````````````````````````````````````
+..  code-block:: typoscript
+
+    plugin.tx_solr.search.faceting.keepAllFacetsOnSelection = 1
+    plugin.tx_solr.search.faceting.countAllFacetsForSelection = 1
+    plugin.tx_solr.search.faceting.minimumCount = 0
+
 
 faceting.showAllLink.wrap
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -878,7 +878,7 @@ faceting.showEmptyFacets
 :Default: 0
 :Options: 0, 1
 
-By setting this option to 1, you will allow rendering of empty facets. Usually, if a facet does not offer any options to filter a resultset of documents, the facet header will not be shown. Using this option allows the header still to be rendered when no filter options are provided.
+By setting this option to 1, you will allow rendering of empty facets. Usually, if a facet does not offer any options to filter a result-set of documents, the facet header will not be shown. Using this option allows the header still to be rendered when no filter options are provided.
 
 faceting.urlParameterStyle
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -889,7 +889,7 @@ faceting.urlParameterStyle
 :Default: index
 
 
-Allows to change the URL style of facets. 
+Allows to change the URL style of facets.
 
 Possible values:
 
@@ -983,10 +983,10 @@ faceting.facets.[facetName].additionalExcludeTags
 :Since: 9.0
 :Required: no
 
-The settings ``keepAllOptionsOnSelection``` and ``keepAllFacetsOnSelection``` are used internally to build exclude tags for facets in order to exclude the filters from the facet counts.
-This helps to keep the counts of a facet as expected by the user, in some usecases (Read also: http://yonik.com/multi-select-faceting/).
+The settings ```keepAllOptionsOnSelection``` and ```keepAllFacetsOnSelection``` are used internally to build exclude tags for facets in order to exclude the filters from the facet counts.
+This helps to keep the counts of a facet as expected by the user, in some use-cases (Read also: http://yonik.com/multi-select-faceting/).
 
-With the setting ``additionalExcludeTags``` you can add tags of factes that should be excluded from the counts as well.
+With the setting ```additionalExcludeTags``` you can add tags of facets that should be excluded from the counts as well.
 
 **Note:** This setting is only available for option facets by now.
 
@@ -1032,7 +1032,7 @@ faceting.facets.[facetName].excludeValues
 
 Defines a comma separated list of options that are excluded (The value needs to match the value in solr)
 
-Important: This setting only makes sence for option based facets (option, query, hierarchy)
+Important: This setting only makes sense for option based facets (option, query, hierarchy)
 
 
 faceting.facets.[facetName].facetLimit
@@ -1119,13 +1119,13 @@ faceting.facets.[facetName].sortBy
 :Type: String
 :TS Path: plugin.tx_solr.search.faceting.facets.[facetName].sortBy
 :Since: 1.2
-:Default: -
+:Default: by count of results
 :Options: alpha (aliases: index, lex)
 
-Sets how a single facet's options are sorted, by default they are sorted by number of results, highest on top.
+Sets how a single facet's options are sorted, by default they are sorted by count of results, highest on top.
 Facet options can also be sorted alphabetically by setting the option to alpha.
 
-Note: Since 9.0.0 it is possible to sort a facet by a function. This can be done be defining a metric and use that metric in the sortBy configuration. As sorting name you then need to use by convention "metrics_<metricName>"
+Note: Since 9.0.0 it is possible to sort a facet by a function. This can be done by defining a metric and use that metric in the sortBy configuration. As sorting name you then need to use by convention "metrics_<metricName>"
 
 Example:
 
@@ -1139,7 +1139,6 @@ Example:
         }
         sortBy = metrics_newest desc
     }
-
 
 
 faceting.facets.[facetName].manualSortOrder
@@ -1192,11 +1191,11 @@ faceting.facets.[facetName].minimumCount
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Integer
-:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].minumumCount
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].minimumCount
 :Since: 8.0
 :Default: 1
 
-Set's the minimumCount for a single facet. This can be usefull e.g. to set the minimumCount of a single facet to 0,
+Set's the minimumCount for a single facet. This can be useful e.g. to set the minimumCount of a single facet to 0,
 to have the options available even when there is result available.
 
 **Note**: This setting is only available for facets that are using the json faceting API of solr. By now this
@@ -1236,7 +1235,7 @@ faceting.facets.[facetName].includeInAvailableFacets
 
 By setting this option to 0, you can prevent rendering of a given facet within the list of available facets.
 
-This is useful if you render the facet somewhere eles on the page using the facet view helper and don't want the facet to be rendered twice.
+This is useful if you render the facet somewhere else on the page using the facet view helper and don't want the facet to be rendered twice.
 
 faceting.facets.[facetName].includeInUsedFacets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1394,7 +1393,7 @@ EXT:solr provides the following renderingInstructions that you can use in your p
 **FormatDate**:
 
 This rendering instruction can be used in combination with a date field or an integer field that hold a timestamp. You can use this rendering instruction to format the facet value on rendering.
-A common usecase for this is, when the datatype in Solr needs to be sortable (date or int) but you need to render the date as readable date option in the frontend:
+A common use-case for this is, when the datatype in Solr needs to be sortable (date or int) but you need to render the date as readable date option in the frontend:
 
 
 .. code-block:: typoscript
@@ -1633,5 +1632,3 @@ grouping.groups.[groupName].sortBy
 Allows to set a custom sorting for the group. Useful especially if you have already set `plugin.tx_solr.search.query.sortBy`. By default Solr will sort within a group by relevance, using this setting you can sort by any sortable field.
 
 Needs a Solr field name followed by asc for ascending order or desc for descending.
-
-
