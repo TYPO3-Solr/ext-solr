@@ -12,23 +12,25 @@ if ! command -v docker &> /dev/null; then
   exit 1
 fi
 
-if ! command -v dockrun_t3rd &> /dev/null; then
-  echo "The command \"dockrun_t3rd\" is not initialized on system."
-  echo "Making \"dockrun_t3rd\" available in current script."
-  if [[ "$(docker images -q ghcr.io/t3docs/render-documentation 2> /dev/null)" == "" ]]; then
-    docker pull ghcr.io/t3docs/render-documentation && docker tag ghcr.io/t3docs/render-documentation t3docs/render-documentation
-  fi
-  # shellcheck disable=SC2034
-  DOCKRUN_FN_QUIET=1
-  # shellcheck disable=SC1090
-  source <(docker run --rm ghcr.io/t3docs/render-documentation show-shell-commands)
+# @todo: Don't run the command twice: https://github.com/phpDocumentor/guides/issues/1188
+if ! docker run --rm --pull always -v "$(pwd)":/project -t ghcr.io/typo3-documentation/render-guides:latest \
+    --config=Documentation \
+    --fail-on-error "$@" \
+  || ! docker run --rm --pull always -v "$(pwd)":/project -t ghcr.io/typo3-documentation/render-guides:latest \
+    --config=Documentation \
+    --fail-on-log "$@"
+then
+  echo "Something went wrong on rendering the docs. Please check the output and affected documentation files of EXT:solr and fix them."
+  exit 1;
+else
+  echo "Great job, the documentation is fine."
 fi
-
-dockrun_t3rd makehtml-no-cache
 
 if [[ "$BUILD_DOCS_FOR_PRODUCTION" == 1 || "$BUILD_DOCS_FOR_PRODUCTION" == "true" ]]; then
   rm -Rf "${PRODUCTION_DOCS_PATH}" "Documentation.HTML"
-  mv -v "Documentation-GENERATED-temp/Result/project/0.0.0" "${PRODUCTION_DOCS_PATH}"
+  mv -v "Documentation-GENERATED-temp" "${PRODUCTION_DOCS_PATH}"
   ln -s "${PRODUCTION_DOCS_PATH}" "Documentation.HTML"
   rm -Rf "Documentation-GENERATED-temp"
 fi
+
+exit 0;
