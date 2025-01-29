@@ -1,8 +1,23 @@
 #!/bin/bash
 
 ## BASH COLORS
+# shellcheck disable=SC2034
+BLACK='\033[0;30m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+BROWN_ORANGE='\033[0;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+LIGHT_GRAY='\033[0;37m'
+DARK_GRAY='\033[1;30m'
+LIGHT_RED='\033[1;31m'
+LIGHT_GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+LIGHT_BLUE='\033[1;34m'
+LIGHT_PURPLE='\033[1;35m'
+LIGHT_CYAN='\033[1;36m'
+WHITE='\033[1;37m'
 NC='\033[0m'
 
 ## DEFAULT VOLUME EXPORT from original Solr Dockerfile:
@@ -57,36 +72,70 @@ AVAILABLE_CORES=(
   "core_lv"
 )
 
+DOCKER_CONTAINER_START_NUMBER=0
+# shellcheck disable=SC2120
+backupApacheLogs () {
+  LOGS_DIRECTORY_SUFFIX=${1}
+  if [[ -z "${VAR}" ]]
+  then
+    ((DOCKER_CONTAINER_START_NUMBER++))
+    LOGS_DIRECTORY_SUFFIX="${DOCKER_CONTAINER_START_NUMBER}"
+  fi
+  echo -e "${GREEN}  Store Apache Solr log files to provide them as artifacts for docker container from step ${LOGS_DIRECTORY_SUFFIX} ${NC}"
+  sudo cp -R "$LOCAL_VOLUME_PATH/logs" /tmp/docker_image_logs_"${LOGS_DIRECTORY_SUFFIX}"
+  sudo chmod -R 777 /tmp/docker_image_logs_*
+}
+
+cleanUp ()
+{
+  backupApacheLogs
+  echo "Clean up the artifacts"
+
+  echo -n "  stop container $LOCAL_CONTAINER_NAME"
+  prettyPrintOrExitOnError $? "$(docker stop "$LOCAL_CONTAINER_NAME" 2>&1)"
+
+  echo -n "  remove container $LOCAL_CONTAINER_NAME"
+  prettyPrintOrExitOnError $? "$(docker container rm "$LOCAL_CONTAINER_NAME" 2>&1)"
+
+  echo -n "  remove volume $LOCAL_VOLUME_NAME"
+  prettyPrintOrExitOnError $? "$(docker volume rm "$LOCAL_VOLUME_NAME" 2>&1)"
+
+  echo -n "  remove \"$LOCAL_VOLUME_PATH\" directory"
+  prettyPrintOrExitOnError $? "$(sudo rm -Rf "$LOCAL_VOLUME_PATH" 2>&1)"
+  echo
+}
+
 prettyPrintOrExitOnError ()
 {
   local output=${2}
   # shellcheck disable=SC2015
-  [ "${1}" -eq 0 ] && echo -en "${GREEN}"' ✔\n'"${NC}" || { echo -en "${RED}"' ✘\n'"${NC}" "${output[@]}"; exit 1; }
+  if [[ "${1}" -eq 0 ]]
+  then
+    echo -en "${GREEN}"' ✔' "${output}"'\n'"${NC}"
+  else
+    echo -en "${RED}"' ✘' "${output}"'\n'"${NC}"
+    cleanUp
+    exit 1
+  fi
 }
 
-assertDockerVersionIsGtOrEq193 ()
+prettyPrint ()
 {
-  echo -n "Check Docker version is >= 19.03"
-  local DOCKER_VERSION
-  DOCKER_VERSION=$(docker version -f "{{.Server.Version}}")
-  local DOCKER_VERSION_MAJOR
-  DOCKER_VERSION_MAJOR=$(echo "$DOCKER_VERSION"| cut -d'.' -f 1)
-  local DOCKER_VERSION_MINOR
-  DOCKER_VERSION_MINOR=$(echo "$DOCKER_VERSION"| cut -d'.' -f 2)
-
-  if { [ "${DOCKER_VERSION_MAJOR}" -eq 19 ] && [ "${DOCKER_VERSION_MINOR}" -ge 3 ]; } || [ "${DOCKER_VERSION_MAJOR}" -gt 19 ]; then
-      prettyPrintOrExitOnError 0
+  local output=${2}
+  # shellcheck disable=SC2015
+  if [[ "${1}" -eq 0 ]]
+  then
+    echo -en "${GREEN}"' ✔' "${output}"'\n'"${NC}"
   else
-    echo -en "${RED}"' ✘\n'"${NC}"
-    echo -e "${RED}"'Docker version less than 19.0.3 can not continue'"${NC}"
-    exit 1
+    echo -en "${RED}"' ✘' "${output}"'\n'"${NC}"
   fi
 }
 
 isHTTP200 ()
 {
   response=$(curl --write-out %\{http_code\} --silent --output /dev/null "${1}")
-  if [ "$response" -eq "200" ] ; then
+  if [[ "$response" -eq "200" ]]
+  then
      return 0
   fi
 
@@ -99,11 +148,16 @@ isPathOwnedBySolr ()
   for path in "$@"
   do
     pathOwner=$(sudo stat -c '%u' "$path")
-    # shellcheck disable=SC2015
-    [ "$pathOwner" == 8983 ] && echo -e '  '"${GREEN}"'✔'"${NC}" "$path" || { echo -e '  '"${RED}"'✘'"${NC}" "$path"; status=1; }
+    if [[ "$pathOwner" == 8983 ]]
+    then
+      echo -e '  '"${GREEN}"'✔'"${NC}" "$path"
+    else
+      echo -e '  '"${RED}"'✘'"${NC}" "$path"
+      status=1
+    fi
   done
 
-  return $status;
+  return $status
 }
 
 run_container ()
@@ -124,52 +178,43 @@ run_container ()
   prettyPrintOrExitOnError $? "$(docker run --name="$LOCAL_CONTAINER_NAME" -d -p 127.0.0.1:8998:8983 -v "$LOCAL_VOLUME_NAME":"$DEFAULT_IMAGE_VOLUME_EXPORT_PATH" "$LOCAL_IMAGE_NAME" 2>&1)"
 }
 
-cleanUp ()
-{
-  echo "Clean up the artifacts"
-
-  echo -n "  stop container $LOCAL_CONTAINER_NAME"
-  prettyPrintOrExitOnError $? "$(docker stop "$LOCAL_CONTAINER_NAME" 2>&1)"
-
-  echo -n "  remove container $LOCAL_CONTAINER_NAME"
-  prettyPrintOrExitOnError $? "$(docker container rm "$LOCAL_CONTAINER_NAME" 2>&1)"
-
-  echo -n "  remove volume $LOCAL_VOLUME_NAME"
-  prettyPrintOrExitOnError $? "$(docker volume rm "$LOCAL_VOLUME_NAME" 2>&1)"
-
-  echo -n "  remove image $LOCAL_IMAGE_NAME"
-  prettyPrintOrExitOnError $? "$(docker image rm "$LOCAL_IMAGE_NAME" 2>&1)"
-
-  echo -n "  remove \"$LOCAL_VOLUME_PATH\" directory"
-  prettyPrintOrExitOnError $? "$(sudo rm -Rf "$LOCAL_VOLUME_PATH" 2>&1)"
-  # clean stdout
-  echo
-}
-
 isCoreAvailable ()
 {
-  isHTTP200 "http://localhost:8998/solr/${1}/select" || { return 1; }
-  isHTTP200 "http://localhost:8998/solr/${1}/mlt?q=*" || { return 1; }
-  return 0;
+  if ! isHTTP200 "http://localhost:8998/solr/${1}/select"
+  then
+    return 1
+  fi
+
+  if ! isHTTP200 "http://localhost:8998/solr/${1}/mlt?q=*"
+  then
+    return 2
+  fi
+  return 0
 }
 
 isCoreUnavailable ()
 {
-  if ! isCoreAvailable $1; then
-    return 0;
+  if ! isCoreAvailable "$1"
+  then
+    return 0
   fi
-  return 1;
+  return 1
 }
 
 pingCore ()
 {
   # shellcheck disable=SC2015
-  isHTTP200 "http://localhost:8998/solr/${1}/admin/ping" && { return 0; } || { return 1; }
+  if ! isHTTP200 "http://localhost:8998/solr/${1}/admin/ping"
+  then
+    return 1
+  fi
+  return 0
 }
 
 getExpandedListOfPathsAsSudo ()
 {
-  if [[ $EUID -ne 0 ]] ; then
+  if [[ $EUID -ne 0 ]]
+  then
     echo "Function is unusable as non root user, please call function as root."
     return 1
   fi
@@ -185,11 +230,12 @@ getExpandedListOfPathsAsSudo ()
 
 assertVolumeExportHasNotBeenChanged ()
 {
-  echo -n "Check Dockerfile's VOLUME definition has not been changed."
+  echo -en "${LIGHT_CYAN}Check Dockerfile's VOLUME definition has not been changed.${NC}"
   local EXPORTED_VOLUME
   EXPORTED_VOLUME=$(docker image inspect --format='{{ range $a, $b := .Config.Volumes }}{{ printf "%s " $a }}{{end}}' $LOCAL_IMAGE_NAME)
-  if [[ "$EXPORTED_VOLUME" == "$DEFAULT_IMAGE_VOLUME_EXPORT_PATH " ]]; then
-    prettyPrintOrExitOnError 0;
+  if [[ "$EXPORTED_VOLUME" == "$DEFAULT_IMAGE_VOLUME_EXPORT_PATH " ]]
+  then
+    prettyPrintOrExitOnError 0
   else
     prettyPrintOrExitOnError 1 "${RED}"'\n  The VOLUME definition of image has been changed to "'"$EXPORTED_VOLUME"'".\n\n"'"${NC}"
   fi
@@ -200,17 +246,20 @@ assertDataPathIsCreatedByApacheSolr ()
   local DATA_PATH
   DATA_PATH="$LOCAL_VOLUME_PATH""/data/data"
   echo -en "\nWaiting for data directory: ""$DATA_PATH"
-  while true ; do
+  while true
+  do
     ((iteration++))
     # wait 10 seconds(80 times 0.125s)
-    if [[ $iteration -gt 80 ]] ; then
+    if [[ $iteration -gt 80 ]]
+    then
       echo -ne "${RED}"'\nTimeout by awaiting of data directory.\nApache Solr would normally have to do this.\n\n'"${NC}"
       cleanUp
-      exit 1;
+      exit 1
     fi
 
-    if sudo test -d "$DATA_PATH" ; then
-      prettyPrintOrExitOnError 0;
+    if sudo test -d "$DATA_PATH"
+    then
+      prettyPrintOrExitOnError 0
       return 0
     fi
 
@@ -218,62 +267,87 @@ assertDataPathIsCreatedByApacheSolr ()
   done
 }
 
-assertAllCoresAreUp ()
+assertCoresAreUp ()
 {
-  echo -e "\nWaiting for cores:"
+  echo -e "\n${LIGHT_CYAN}Waiting for cores to boot up: ${NC}"
 
-  local cores=("${AVAILABLE_CORES[@]}")
-  local iteration=0
-  while true ; do
-    ((iteration++))
-    if [[ $iteration -gt 30 ]] ; then
-      echo -ne "${RED}"'\nTimeout by pinging the cores.\n\n'"${NC}"
-      cleanUp
-      exit 1;
-    fi
+  local cores=("$@")
+  local iteration=1
+  local MAX_ITERATIONS=5
+  while true
+  do
+    for key in "${!cores[@]}"
+    do
 
-    for key in "${!cores[@]}" ; do
-
-      if ! pingCore "${cores[$key]}";
+      if ! pingCore "${cores[$key]}"
       then
+        if [[ $iteration -lt $MAX_ITERATIONS ]]
+        then
+          continue
+        fi
+        echo -en "  ""${cores[$key]}"
+        prettyPrint 1 " last try"
+      else
         echo -en "  ""${cores[$key]}"
         unset 'cores[key]'
-        prettyPrintOrExitOnError 0
+        prettyPrint 0
       fi
     done
 
-    if [ "${#cores[@]}" -eq 0 ] ; then
+    if [[ "${#cores[@]}" -eq 0 ]]
+    then
       return 0
     fi
 
-    sleep 1
+    if [[ $iteration -ge $MAX_ITERATIONS ]]
+    then
+      echo -ne "${RED}"'\nTimeout by pinging the cores.\n\n'"${NC}"
+      backupApacheLogs
+      cleanUp
+      exit 1
+    fi
+
+    echo -ne "${YELLOW}"'Waiting 5 seconds to retry contacting the failed cores...\n'"${NC}"
+    sleep 5
+    ((iteration++))
   done
 }
 
-assertAllCoresAreQueriable ()
+assertCoresAreQueriable ()
 {
-  echo -e "\nCheck all cores are queriable:"
-  for core in "${AVAILABLE_CORES[@]}"
+  echo -e "\n${LIGHT_CYAN}Check the cores are queriable:${NC}"
+
+  for core in "$@"
   do
     echo -n "  $core"
-    prettyPrintOrExitOnError $? "$(isCoreAvailable "$core" 2>&1)"
+    if isCoreAvailable "$core"
+    then
+      prettyPrintOrExitOnError 0
+    else
+      prettyPrintOrExitOnError 1
+    fi
   done
 }
 
 assertNecessaryPathsAreOwnedBySolr ()
 {
-  echo -e "\nCheck paths are owned by solr(8983):"
+  echo -e "\n${LIGHT_CYAN}Check paths are owned by solr(8983):${NC}"
   local paths
   # shellcheck disable=SC2207
   paths=($(sudo /bin/bash -c "$(declare -f getExpandedListOfPathsAsSudo); getExpandedListOfPathsAsSudo $LOCAL_VOLUME_PATH"))
 
-  isPathOwnedBySolr "${paths[@]}" || { echo -e "${RED}"'\nThe image has files, which are not owned by solr(8983) user.\n Please fix this issue.'"${NC}"; cleanUp; exit 1; }
+  if ! isPathOwnedBySolr "${paths[@]}"
+  then
+    echo -e "${RED}"'\nThe image has files, which are not owned by solr(8983) user.\n Please fix this issue.'"${NC}"
+    cleanUp
+    exit 1
+  fi
 }
 
 assertCoresAreSwitchableViaEnvVar ()
 {
-  echo -e "\nCheck all cores are disabled except desired by \$TYPO3_SOLR_ENABLED_CORES env:"
-  echo -n "  stop container $LOCAL_CONTAINER_NAME" prettyPrintOrExitOnError $? "$(docker stop "$LOCAL_CONTAINER_NAME" 2>&1)"
+  echo -e "\n${LIGHT_CYAN}Check the cores are disabled except desired by \$TYPO3_SOLR_ENABLED_CORES env:${NC}"
+  cleanUp
 
   echo -n "Starting container"
   prettyPrintOrExitOnError $? "$(docker run --env TYPO3_SOLR_ENABLED_CORES='german english danish' --name="$LOCAL_CONTAINER_NAME" -d -p 127.0.0.1:8998:8983 -v "$LOCAL_VOLUME_NAME":"$DEFAULT_IMAGE_VOLUME_EXPORT_PATH" "$LOCAL_IMAGE_NAME" 2>&1)"
@@ -296,14 +370,11 @@ assertCoresAreSwitchableViaEnvVar ()
     "core_ja"
   )
 
-  echo -e "\nCheck enabled cores are available:"
-  for core in "${ENABLED_CORES[@]}"
-  do
-    echo -n "  $core is enabled"
-    prettyPrintOrExitOnError $? "$(isCoreAvailable "$core" 2>&1)"
-  done
+  echo -e "\n${LIGHT_CYAN}Check enabled cores are available:${NC}"
+  assertCoresAreUp "${ENABLED_CORES[@]}"
+  assertCoresAreQueriable "${ENABLED_CORES[@]}"
 
-  echo -e "\nCheck few other cores are really disabled:"
+  echo -e "\n${LIGHT_CYAN}Check few other cores are really disabled:${NC}"
   for core in "${SOME_DISABLED_CORES[@]}"
   do
     echo -n "  $core is disabled"
@@ -314,20 +385,19 @@ assertCoresAreSwitchableViaEnvVar ()
 
 ### run the tests
 
-assertDockerVersionIsGtOrEq193
-
 assertVolumeExportHasNotBeenChanged
 
 run_container
-assertAllCoresAreUp
+assertCoresAreUp "${AVAILABLE_CORES[@]}"
 
-assertAllCoresAreQueriable
+assertCoresAreQueriable "${AVAILABLE_CORES[@]}"
 
 assertDataPathIsCreatedByApacheSolr
 assertNecessaryPathsAreOwnedBySolr
 
 assertCoresAreSwitchableViaEnvVar
 
+cleanUp
 
 echo -e "${GREEN}"'\nAll checks passed successfully!\n'"${NC}"
 
