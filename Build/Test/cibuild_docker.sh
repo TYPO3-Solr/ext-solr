@@ -160,7 +160,7 @@ isPathOwnedBySolr ()
   return $status
 }
 
-run_container ()
+create_clean_local_volume ()
 {
   echo -n "Creating testvolume"
   prettyPrintOrExitOnError $? "$(mkdir -p "$LOCAL_VOLUME_PATH" 2>&1)"
@@ -173,8 +173,13 @@ run_container ()
 
   echo -n "Create named volume inside of ~/solrcivolume"
   prettyPrintOrExitOnError $? "$(docker volume create --name "$LOCAL_VOLUME_NAME" --opt type=none --opt device="$LOCAL_VOLUME_PATH" --opt o=bind 2>&1)"
+}
 
-  echo -n "Starting container"
+run_container ()
+{
+  create_clean_local_volume
+
+  echo -n "Starting standard container"
   prettyPrintOrExitOnError $? "$(docker run --name="$LOCAL_CONTAINER_NAME" -d -p 127.0.0.1:8998:8983 -v "$LOCAL_VOLUME_NAME":"$DEFAULT_IMAGE_VOLUME_EXPORT_PATH" "$LOCAL_IMAGE_NAME" 2>&1)"
 }
 
@@ -349,7 +354,9 @@ assertCoresAreSwitchableViaEnvVar ()
   echo -e "\n${LIGHT_CYAN}Check the cores are disabled except desired by \$TYPO3_SOLR_ENABLED_CORES env:${NC}"
   cleanUp
 
-  echo -n "Starting container"
+  create_clean_local_volume
+
+  echo -n "Starting custom container: with --env TYPO3_SOLR_ENABLED_CORES='german english danish'"
   prettyPrintOrExitOnError $? "$(docker run --env TYPO3_SOLR_ENABLED_CORES='german english danish' --name="$LOCAL_CONTAINER_NAME" -d -p 127.0.0.1:8998:8983 -v "$LOCAL_VOLUME_NAME":"$DEFAULT_IMAGE_VOLUME_EXPORT_PATH" "$LOCAL_IMAGE_NAME" 2>&1)"
 
   ENABLED_CORES=(
