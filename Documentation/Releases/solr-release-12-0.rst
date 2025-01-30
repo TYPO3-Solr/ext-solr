@@ -9,7 +9,38 @@ Releases 12.0
 Release 12.0.6
 ==============
 
-This is a security release for TYPO3 12.4 LTS, containing:
+List of all changes
+
+- [BUGFIX] GroupViewHelperTest `9e2b6bf9f <https://github.com/TYPO3-Solr/ext-solr/commit/9e2b6bf9f>`_
+- [TASK] Remove Scrutinizer integrations on release-12.0.x `ac09602b4 <https://github.com/TYPO3-Solr/ext-solr/commit/ac09602b4>`_
+- [FIX] CS issue in Tests\\Unit\\System\\ContentObject\\ContentObjectServiceTest `b5be2e1c5 <https://github.com/TYPO3-Solr/ext-solr/commit/b5be2e1c5>`_
+- [BUGFIX] Convert getPageOverlay hook into PSR-14 Event `fe7c9eb08 <https://github.com/TYPO3-Solr/ext-solr/commit/fe7c9eb08>`_
+- [BUGFIX] PhpStan Variable $parameters in empty() always exists and is not falsy `1b3218b7c <https://github.com/TYPO3-Solr/ext-solr/commit/1b3218b7c>`_
+- [TASK] Apache Solr 9.7 compatibility `27ab5cd7f <https://github.com/TYPO3-Solr/ext-solr/commit/27ab5cd7f>`_
+- [TASK] 12.0.x-dev Update solarium/solarium requirement `01440e68d <https://github.com/TYPO3-Solr/ext-solr/commit/01440e68d>`_
+- [TASK] Remove Implicitly nullable parameter declarations deprecated `825bb9bdb <https://github.com/TYPO3-Solr/ext-solr/commit/825bb9bdb>`_
+- Fix file `a185cb863 <https://github.com/TYPO3-Solr/ext-solr/commit/a185cb863>`_
+- [TASK] CS change to multiline parameters with comma on last `b5b22eb3b <https://github.com/TYPO3-Solr/ext-solr/commit/b5b22eb3b>`_
+- [TASK] Evaluate all entries in Services.yaml regarding to `shared` setting `a3da67ac2 <https://github.com/TYPO3-Solr/ext-solr/commit/a3da67ac2>`_
+- [FEATURE] Add timeframe filter to statistics module `9e8d69772 <https://github.com/TYPO3-Solr/ext-solr/commit/9e8d69772>`_
+- [BUGFIX] Respect foreignLabel in related items from mm table `fc67246a5 <https://github.com/TYPO3-Solr/ext-solr/commit/fc67246a5>`_
+- [BUGFIX] Make getHasChildNodeSelected recursive `5d3ab6b0b <https://github.com/TYPO3-Solr/ext-solr/commit/5d3ab6b0b>`_
+- [BUGFIX] Add StartTimeRestriction to ConfigurationAwareRecordService `7369adf95 <https://github.com/TYPO3-Solr/ext-solr/commit/7369adf95>`_
+- [FEATURE] Use PHP generator to prevent processing of all available site `fe71a4f48 <https://github.com/TYPO3-Solr/ext-solr/commit/fe71a4f48>`_
+- [BUGFIX] Fix monitoring of mounted pages `f4924d144 <https://github.com/TYPO3-Solr/ext-solr/commit/f4924d144>`_
+- [DOCS] Switch documentation rendering to PHP-based rendering `82773617f <https://github.com/TYPO3-Solr/ext-solr/commit/82773617f>`_
+- [BUGFIX] Add check if generator is valid before traversing it `1c45b5318 <https://github.com/TYPO3-Solr/ext-solr/commit/1c45b5318>`_
+- [FIX] docker image tests do not fail if core can not start `f52a50ec2 <https://github.com/TYPO3-Solr/ext-solr/commit/f52a50ec2>`_
+- !!![SECURITY] Update to Apache solr 9.8.0 : CVE-2025-24814 `71ac3ee1a <https://github.com/TYPO3-Solr/ext-solr/commit/71ac3ee1a>`_
+- [DOCS] Actually mention the values of monitoringType `7f72a9fab <https://github.com/TYPO3-Solr/ext-solr/commit/7f72a9fab>`_
+- !!![TASK] Remove JSONP callback in suggest `fca9069ed <https://github.com/TYPO3-Solr/ext-solr/commit/fca9069ed>`_
+- [BUGFIX] Fix notice exception in ScoreCalculationService `52800162b <https://github.com/TYPO3-Solr/ext-solr/commit/52800162b>`_
+- [FIX] Docker tests suite does not contain all logs `9ce209824 <https://github.com/TYPO3-Solr/ext-solr/commit/9ce209824>`_
+- !!![FIX] Docker execution order issue for as-sudo tweaks `6ac30c124 <https://github.com/TYPO3-Solr/ext-solr/commit/6ac30c124>`_
+- [BUGFIX] Docker tweaks as-sudo do not preserve the Docker image ENV `c88254506 <https://github.com/TYPO3-Solr/ext-solr/commit/c88254506>`_
+- [TASK] Use relative path to typo3lib in Apache Solr config `ad32c9905 <https://github.com/TYPO3-Solr/ext-solr/commit/ad32c9905>`_
+- [DOCS] Improve Solr core creation via API and other deployment parts `387826fca <https://github.com/TYPO3-Solr/ext-solr/commit/387826fca>`_
+
 
 !!![SECURITY] Update to Apache solr 9.8.0 : CVE-2025-24814
 ----------------------------------------------------------
@@ -34,7 +65,7 @@ No other steps are required.
 
 Alternatively you can wipe the volume and start the container with v. 12.0.6+ image, but that method will wipe the index as well.
 
-See the script `EXT:solr/Docker/SolrServer/docker-entrypoint-initdb.d/as-sudo/fix-CVE-2025-24814.sh`
+See the script `EXT:solr/Docker/SolrServer/docker-entrypoint-initdb.d-as-sudo/fix-CVE-2025-24814.sh`
 
 
 Other server setups
@@ -43,8 +74,8 @@ Other server setups
 You have 2 possibilities to fix that issue in your Apache Solr Server:
 
 
-(PREFERRED) Migrate the EXT:solrs Apache Solr configuration
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+(PREFERRED) Migrate the EXT:solr's Apache Solr configuration
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 
 Refer to https://github.com/TYPO3-Solr/ext-solr/pull/4290/files .
@@ -74,7 +105,7 @@ Steps:
         	<str name="allowUrls">${solr.allowUrls:}</str>
 
         	<!-- TYPO3 Plugins -->
-        	<str name="sharedLib">/var/solr/data/typo3lib/</str>
+        	<str name="sharedLib">typo3lib/</str>
 #.  Move the directory from `<Apache-Solr data dir>/configsets/ext_solr_12_0_0/typo3lib`
 
     *   to `<Apache-Solr data dir>/typo3lib`
@@ -90,6 +121,56 @@ Add following to `/etc/default/solr.in.sh` file
     	SOLR_OPTS="$SOLR_OPTS -Dsolr.config.lib.enabled=true"
 
 Or do that in other ways to set the `solr.config.lib.enabled=true` to sys-props of Apache Solr Server.
+
+
+
+!!![TASK] Remove JSONP callback in suggest
+------------------------------------------
+
+ by @bmack and @dkd-kaehm in `#4267 <https://github.com/TYPO3-Solr/ext-solr/pull/4267>`__
+
+  In own implementation of autosuggest JS parts with usage of JSONP, the action must be migrated to non-JSONP calls.
+
+
+!!![FIX] Docker execution order issue for as-sudo tweaks
+--------------------------------------------------------
+
+This change renames the file
+
+*   from `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`
+*   to `/docker-entrypoint-initdb.d/0_as-sudo-tweaks.sh`
+
+and moves the folder
+
+*   from `/docker-entrypoint-initdb.d/as-sudo/`
+*   to `/docker-entrypoint-initdb.d-as-sudo/`
+
+to fix the execution order issue when setting the correct file permissions
+when starting the docker container, leading to a `Operation not permitted` errors.
+
+More details see:
+
+*   https://github.com/TYPO3-Solr/ext-solr/issues/3837#issuecomment-2461668377.
+*   https://github.com/TYPO3-Solr/ext-solr/pull/4219#issuecomment-2622600937
+
+Impact:
+~~~~~~~
+
+This change requires adjustments in your Docker setup, only if you modified:
+
+*   files in folder `/docker-entrypoint-initdb.d/as-sudo/`
+*   file `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`.
+
+Make sure to use:
+"""""""""""""""""
+
+*   `/docker-entrypoint-initdb.d/0_as-sudo-tweaks.sh` instead of
+
+    *   `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`
+
+*   `/docker-entrypoint-initdb.d-as-sudo` instead of
+
+    *   `/docker-entrypoint-initdb.d/as-sudo/`
 
 
 
