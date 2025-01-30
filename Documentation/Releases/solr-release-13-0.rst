@@ -7,6 +7,25 @@ Releases 13.0
 Release 13.0.1
 ==============
 
+List of all changes:
+
+- [TASK] Update version matrix `0ed896675 <https://github.com/TYPO3-Solr/ext-solr/commit/0ed896675>`_
+- [BUGFIX] Fix coding standards issues `1f3a281ad <https://github.com/TYPO3-Solr/ext-solr/commit/1f3a281ad>`_
+- [BUGFIX] Fix monitoring of mounted pages `ad2548006 <https://github.com/TYPO3-Solr/ext-solr/commit/ad2548006>`_
+- [BUGFIX] Add check if generator is valid before traversing it `1e3fe3f70 <https://github.com/TYPO3-Solr/ext-solr/commit/1e3fe3f70>`_
+- !!![SECURITY] Update to Apache solr 9.8.0 : CVE-2025-24814 `88918f61d <https://github.com/TYPO3-Solr/ext-solr/commit/88918f61d>`_
+- [FIX] docker image tests do not fail if core can not start `2b7b95602 <https://github.com/TYPO3-Solr/ext-solr/commit/2b7b95602>`_
+- [DOCS] Actually mention the values of monitoringType `508477f64 <https://github.com/TYPO3-Solr/ext-solr/commit/508477f64>`_
+- [BUGFIX] set PageInformation contentFromPid `1c29157cc <https://github.com/TYPO3-Solr/ext-solr/commit/1c29157cc>`_
+- [BUGFIX] site has no attribute language `972950af5 <https://github.com/TYPO3-Solr/ext-solr/commit/972950af5>`_
+- [BUGFIX] Fix notice exception in ScoreCalculationService `a7b819cbd <https://github.com/TYPO3-Solr/ext-solr/commit/a7b819cbd>`_
+- [FEATURE] Add an event for modifying the domain used for a site `2b848a77e <https://github.com/TYPO3-Solr/ext-solr/commit/2b848a77e>`_
+- [FIX] Docker tests suite does not contain all logs `a89de2f97 <https://github.com/TYPO3-Solr/ext-solr/commit/a89de2f97>`_
+- !!![FIX] Docker execution order issue for as-sudo tweaks `77c3c0f44 <https://github.com/TYPO3-Solr/ext-solr/commit/77c3c0f44>`_
+- [BUGFIX] Docker tweaks as-sudo do not preserve the Docker image ENV `eb8546858 <https://github.com/TYPO3-Solr/ext-solr/commit/eb8546858>`_
+- [TASK] Use relative path to typo3lib in Apache Solr config `dbbf4c5b4 <https://github.com/TYPO3-Solr/ext-solr/commit/dbbf4c5b4>`_
+- [DOCS] Improve Solr core creation via API and other deployment parts `761894713 <https://github.com/TYPO3-Solr/ext-solr/commit/761894713>`_
+
 !!![SECURITY] Update to Apache solr 9.8.0 : CVE-2025-24814
 ----------------------------------------------------------
 
@@ -126,6 +145,7 @@ Make sure to use:
 *   `/docker-entrypoint-initdb.d-as-sudo` instead of
 
     *   `/docker-entrypoint-initdb.d/as-sudo/`
+
 
 
 Release 13.0.0
