@@ -27,7 +27,7 @@ Docker
 
 You can wipe the volume and start the container with v. 11.6.2+ image, but that method will wipe the index as well.
 
-See the script `EXT:solr/Docker/SolrServer/docker-entrypoint-initdb.d/as-sudo/fix-CVE-2025-24814.sh`
+See the script `EXT:solr/Docker/SolrServer/docker-entrypoint-initdb.d-as-sudo/fix-CVE-2025-24814.sh`
 
 
 Other server setups
@@ -67,7 +67,7 @@ Steps:
          <str name="allowUrls">${solr.allowUrls:}</str>
 
          <!-- TYPO3 Plugins -->
-         <str name="sharedLib">/var/solr/data/typo3lib/</str>
+         <str name="sharedLib">typo3lib/</str>
 #.  Move the directory from `<Apache-Solr data dir>/configsets/ext_solr_11_6_0_elts/typo3lib`
 
     *   to `<Apache-Solr data dir>/typo3lib`

@@ -18,5 +18,5 @@
 	<str name="allowUrls">${solr.allowUrls:}</str>
 
 	<!-- TYPO3 Plugins -->
-	<str name="sharedLib">/var/solr/data/typo3lib/</str>
+	<str name="sharedLib">typo3lib/</str>
 </solr>
