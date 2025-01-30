@@ -21,7 +21,7 @@ To pull the TYPO3 Solr image from Docker hub, simply type the following in comma
 
 .. code-block:: bash
 
-    docker pull typo3solr/ext-solr:<EXT:Solr_Version>
+    docker pull typo3solr/ext-solr:<EXT:Solr_Version_main_version eg 13.0 or exact 13.0.1>
 
 .. tip::
 
@@ -39,13 +39,13 @@ Our Docker image is based on `official Apache Solr image <https://github.com/doc
 This volume will be mounted to persist the index and other resources from Apache Solr server.
 Following paths inside the exported volume are relevant for backups.
 
-+---------------------------------------------------------------------------------------------------------+----------------------------------------------------------------+
-| Path                                                                                                    | Contents                                                       |
-+=========================================================================================================+================================================================+
-| data/data/<language>                                                                                    | the index data of corresponding core                           |
-+---------------------------------------------------------------------------------------------------------+----------------------------------------------------------------+
-| data/configsets/ext_solr_<EXT:Solr_Version>/conf/_schema_analysis_(stopwords\|synonyms)_<language>.json | the managed stop words and synonyms of corresponding core      |
-+---------------------------------------------------------------------------------------------------------+----------------------------------------------------------------+
++------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------+
+| Path                                                                                                                   | Contents                                                       |
++========================================================================================================================+================================================================+
+| data/data/<language>                                                                                                   | the index data of corresponding core                           |
++------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------+
+| data/configsets/ext_solr_<See_configset_on_version_matrix>/conf/_schema_analysis_(stopwords\|synonyms)_<language>.json | the managed stop words and synonyms of corresponding core      |
++------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------+
 
 .. tip::
 
@@ -95,7 +95,6 @@ Following commands will create the named volume "typo3s-solr-server-data" on hos
 
     .. code-block:: yaml
 
-        version: '3.6'
         services:
           solr:
             container_name: typo3s-solr-server
@@ -177,28 +176,24 @@ e.g. https://galaxy.ansible.com/geerlingguy/solr/ (ansible) or https://supermark
 Deployment of EXT:solr configuration into Apache Solr
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Since EXT:solr 6.0.0 the configuration and all JAR files are shipped in one "configSet". The goal of this approach is to make the deployment much easier.
+Since EXT:solr 6.0.0 the configuration and all JAR files can be found in `EXT:solr/Resources/Private/Solr` folder.
+The goal of this approach is to make the deployment much easier.
 
 All you need to do is, you need to copy the configSet directory into your prepared Solr installation and replace the solr.xml file. In the installer we do it like this:
 
 .. code-block:: bash
 
-    cp -r ${EXTENSION_ROOTPATH}/Resources/Private/Solr/configsets ${SOLR_INSTALL_DIR}/server/solr
-    cp ${EXTENSION_ROOTPATH}/Resources/Private/Solr/solr.xml ${SOLR_INSTALL_DIR}/server/solr/solr.xml
+    cp -r ${EXTENSION_ROOTPATH}/Resources/Private/Solr/* ${SOLR_INSTALL_DIR}/server/solr
 
-After this, you can decide if you want to create the default cores by copying the default core.properties files or if you want to create a core with the Solr rest api.
+After this, you can decide which cores you want to boot and delete not relevant cores from `${SOLR_INSTALL_DIR}/server/solr/cores/` directory.
 
-Copy the default cores:
-
-.. code-block:: bash
-
-    cp -r ${EXTENSION_ROOTPATH}/Resources/Private/Solr/cores ${SOLR_INSTALL_DIR}/server/solr
+If you want to create other cores, you can create them by adding a `<core_name>/core.properties` file or via Apache Solr admin api:
 
 Create a core with the rest api:
 
 .. code-block:: bash
 
-    curl "http://localhost:8983/solr/admin/cores?action=CREATE&name=core_de&configSet=ext_solr_8_0_0&schema=german/schema.xml&dataDir=../../data/german"
+    curl "http://localhost:8983/solr/admin/cores?action=CREATE&name=<core_name>&configSet=ext_solr_13_0_0&schema=german/schema.xml&dataDir=../../data/german"
 
 After installing the Solr server and deploying all schemata, the TYPO3 reports module helps you to verify if your setup fits to the requirements of EXT:solr
 
