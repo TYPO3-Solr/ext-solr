@@ -20,12 +20,14 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\PageUriBuilder;
+use ApacheSolrForTypo3\Solr\IndexQueue\Exception\IndexingException;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
 use Exception;
 use Psr\Log\LogLevel;
 use RuntimeException;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -53,11 +55,18 @@ class PageIndexer extends Indexer
         $this->setLogging($item);
 
         // check whether we should move on at all
-        if (!$this->isPageIndexable($item)) {
+        if (!$this->isPageEnabled($item->getRecord())) {
             return false;
         }
 
         $systemLanguageUids = array_keys($this->getSolrConnectionsByItem($item));
+        if ($systemLanguageUids === []) {
+            throw new IndexingException(
+                'No Solr connections found for item',
+                1740383223,
+            );
+        }
+
         foreach ($systemLanguageUids as $systemLanguageUid) {
             $contentAccessGroups = $this->getAccessGroupsFromContent($item, $systemLanguageUid);
             foreach ($contentAccessGroups as $userGroup) {
@@ -74,15 +83,22 @@ class PageIndexer extends Indexer
      * @param Item $item The page we want to index encapsulated in an index queue item
      *
      * @return bool True if we can index this page, FALSE otherwise
+     * @deprecated PageIndexer->isPageIndexable is deprecated and will be removed in v14.
+     *             Use PageIndexer->isPageEnabled() instead.
      */
     protected function isPageIndexable(Item $item): bool
     {
-        // TODO do we still need this?
-        // shouldn't those be sorted out by the record monitor / garbage collector already?
+        trigger_error(
+            'PageIndexer->isPageIndexable is deprecated and will be removed in v14.'
+            . ' Use PageIndexer->isPageEnabled instead.',
+            E_USER_DEPRECATED,
+        );
+        return $this->isPageEnabled($item->getRecord());
+    }
 
+    protected function isPageEnabled(array $record): bool
+    {
         $isIndexable = true;
-        $record = $item->getRecord();
-
         if (isset($GLOBALS['TCA']['pages']['ctrl']['enablecolumns']['disabled'])
             && $record[$GLOBALS['TCA']['pages']['ctrl']['enablecolumns']['disabled']]
         ) {
@@ -103,25 +119,53 @@ class PageIndexer extends Indexer
      *
      * @throws NoSolrConnectionFoundException
      * @throws DBALException
+     * @throws IndexingException
      */
     protected function getSolrConnectionsByItem(Item $item): array
     {
-        $solrConnections = parent::getSolrConnectionsByItem($item);
+        $solrConnections = $this->filterSolrConectionByPage(
+            parent::getSolrConnectionsByItem($item),
+            $item->getRecord(),
+        );
 
-        $page = $item->getRecord();
-        if ((new PageTranslationVisibility((int)($page['l18n_cfg'] ?? 0)))->shouldBeHiddenInDefaultLanguage()) {
+        if ($item->hasIndexingProperty('isMountedPage')) {
+            $mountPageId = $item->getIndexingProperty('mountPageDestination');
+            $mountPage = BackendUtility::getRecord(
+                'pages',
+                $mountPageId,
+            );
+            if ($mountPage === null) {
+                throw new IndexingException(
+                    'Mounted page couldn\'t be indexed, mount point ' . $mountPageId . ' not found',
+                    1740383224,
+                );
+            }
+            $solrConnections = $this->filterSolrConectionByPage($solrConnections, $mountPage, true);
+        }
+
+        return $solrConnections;
+    }
+
+    protected function filterSolrConectionByPage(
+        array $solrConnections,
+        array $page,
+        bool $forceHideTranslationIfNoTranslatedRecordExists = false,
+    ): array {
+        $pageTranslationVisibility = new PageTranslationVisibility((int)($page['l18n_cfg'] ?? 0));
+        if ($pageTranslationVisibility->shouldBeHiddenInDefaultLanguage()) {
             // page is configured to hide the default translation -> remove Solr connection for default language
             unset($solrConnections[0]);
         }
 
-        if ((new PageTranslationVisibility((int)($page['l18n_cfg'] ?? 0)))->shouldHideTranslationIfNoTranslatedRecordExists()) {
+        if ($forceHideTranslationIfNoTranslatedRecordExists
+            || $pageTranslationVisibility->shouldHideTranslationIfNoTranslatedRecordExists()
+        ) {
             $accessibleSolrConnections = [];
             if (isset($solrConnections[0])) {
                 $accessibleSolrConnections[0] = $solrConnections[0];
             }
 
             $translationOverlays = $this->pagesRepository->findTranslationOverlaysByPageId((int)$page['uid']);
-
             foreach ($translationOverlays as $overlay) {
                 $languageId = $overlay['sys_language_uid'];
                 if (array_key_exists($languageId, $solrConnections)) {
@@ -320,7 +364,8 @@ class PageIndexer extends Indexer
         }
 
         if (empty($indexActionResult['pageIndexed'])) {
-            $message = 'Failed indexing page Index Queue item: ' . $item->getIndexQueueUid() . ' url: ' . $indexRequestUrl;
+            $message = 'Failed indexing page Index Queue item: ' . $item->getIndexQueueUid()
+                . ', language: ' . $language . ', url: ' . $indexRequestUrl;
             throw new RuntimeException($message, 1331837081);
         }
 

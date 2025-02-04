@@ -782,12 +782,42 @@ class QueueItemRepository extends AbstractRepository
      */
     public function updateChangedTimeByItem(ItemInterface $item, int $changedTime = 0): int
     {
+        return $this->updateItemsChangedTime($changedTime, uids: [$item->getIndexQueueUid()]);
+    }
+
+    /**
+     * Updates items in the index queue filtered by the passed arguments.
+     *
+     * @throws DBALException
+     */
+    public function updateItemsChangedTime(
+        int $changedTime = 0,
+        array $sites = [],
+        array $indexQueueConfigurationNames = [],
+        array $itemTypes = [],
+        array $itemUids = [],
+        array $uids = [],
+    ): int {
+        $rootPageIds = SiteUtility::getRootPageIdsFromSites($sites);
+        $indexQueueConfigurationList = implode(',', $indexQueueConfigurationNames);
+        $itemTypeList = implode(',', $itemTypes);
+        $itemUids = array_map('intval', $itemUids);
+        $uids = array_map('intval', $uids);
+
         $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder
+        $queryBuilder
             ->update($this->table)
-            ->set('changed', $changedTime)
-            ->where($queryBuilder->expr()->eq('uid', $item->getIndexQueueUid()))
-            ->executeStatement();
+            ->set('changed', $changedTime);
+        $queryBuilder = $this->addItemWhereClauses(
+            $queryBuilder,
+            $rootPageIds,
+            $indexQueueConfigurationList,
+            $itemTypeList,
+            $itemUids,
+            $uids,
+        );
+
+        return $queryBuilder->executeStatement();
     }
 
     /**
@@ -808,6 +838,7 @@ class QueueItemRepository extends AbstractRepository
      * Retrieves an array of pageIds from mountPoints that already have a queue entry.
      *
      * @throws DBALException
+     * @return int[]
      */
     public function findPageIdsOfExistingMountPagesByMountIdentifier(string $mountPointIdentifier): array
     {
@@ -826,7 +857,7 @@ class QueueItemRepository extends AbstractRepository
         $mountedPagesIdsWithQueueItems = [];
         while ($record = $resultSet->fetchAssociative()) {
             if ($record['queueItemCount'] > 0) {
-                $mountedPagesIdsWithQueueItems[] = $record['item_uid'];
+                $mountedPagesIdsWithQueueItems[] = (int)$record['item_uid'];
             }
         }
 
@@ -843,17 +874,42 @@ class QueueItemRepository extends AbstractRepository
         string $mountPointIdentifier,
         array $mountedPids,
     ): array {
+        return $this->findAllIndexQueueByMountIdentifier($rootPid, $mountPointIdentifier, $mountedPids);
+    }
+
+    /**
+     * Retrieves an array of items for mount destinations matched by root page ID and Mount Identifier
+     *
+     * @throws DBALException
+     */
+    public function findAllIndexQueueItemsByRootPidAndMountIdentifier(
+        int $rootPid,
+        string $mountPointIdentifier,
+    ): array {
+        return $this->findAllIndexQueueByMountIdentifier($rootPid, $mountPointIdentifier);
+    }
+
+    protected function findAllIndexQueueByMountIdentifier(
+        int $rootPid,
+        string $mountPointIdentifier,
+        ?array $mountedPids = null,
+    ): array {
         $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder
+        $queryBuilder = $queryBuilder
             ->select('*')
             ->from($this->table)
             ->where(
                 $queryBuilder->expr()->eq('root', $queryBuilder->createNamedParameter($rootPid, \Doctrine\DBAL\ParameterType::INTEGER)),
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter('pages')),
-                $queryBuilder->expr()->in('item_uid', $mountedPids),
                 $queryBuilder->expr()->eq('has_indexing_properties', $queryBuilder->createNamedParameter(1, \Doctrine\DBAL\ParameterType::INTEGER)),
                 $queryBuilder->expr()->eq('pages_mountidentifier', $queryBuilder->createNamedParameter($mountPointIdentifier)),
-            )
+            );
+
+        if ($mountedPids !== null) {
+            $queryBuilder->andWhere($queryBuilder->expr()->in('item_uid', $mountedPids));
+        }
+
+        return $queryBuilder
             ->executeQuery()
             ->fetchAllAssociative();
     }
