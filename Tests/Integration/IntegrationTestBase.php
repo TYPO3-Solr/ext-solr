@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 use ReflectionException;
@@ -31,6 +32,7 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Scheduler;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -152,10 +154,14 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     /**
      * Assertion to check if the solr server contains an expected count of documents.
      */
-    protected function assertSolrContainsDocumentCount(int $documentCount): void
+    protected function assertSolrContainsDocumentCount(int $documentCount, ?string $message = null): void
     {
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        self::assertStringContainsString('"numFound":' . $documentCount, $solrContent, 'Solr contains unexpected amount of documents');
+        self::assertStringContainsString(
+            '"numFound":' . $documentCount,
+            $solrContent,
+            $message ?? 'Solr contains unexpected amount of documents'
+        );
     }
 
     /**
@@ -373,6 +379,31 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $this->waitToBeVisibleInSolr();
     }
 
+    protected function indexPageQueueItem(Item $item): bool
+    {
+        $parameters = [];
+        if ($item->hasIndexingProperty('isMountedPage')) {
+            $parameters['MP'] = $item->getIndexingProperty('mountPageSource')
+                . '-' . $item->getIndexingProperty('mountPageDestination');
+        }
+
+        $frontendUrl = $item->getSite()->getTypo3SiteObject()->getRouter()->generateUri(
+            $item->getRecordUid(),
+            $parameters
+        );
+        $response = $this->executePageIndexer($frontendUrl, $item);
+        $this->waitToBeVisibleInSolr();
+
+        $connection = $this->getConnectionPool()->getConnectionForTable('sys_template');
+        $connection->update(
+            'tx_solr_indexqueue_item',
+            ['indexed' => time()],
+            ['uid' => $item->getIndexQueueUid()]
+        );
+
+        return $response->getStatusCode() === 200;
+    }
+
     /**
      * Adds a page to the queue (into DB table tx_solr_indexqueue_item) so it can
      * be fetched via a frontend subrequest
@@ -436,6 +467,19 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $response = $this->executeFrontendSubRequest($request, $requestContext);
         $response->getBody()->rewind();
         return $response;
+    }
+
+    /**
+     * Triggers event queue processing
+     */
+    protected function processEventQueue(): void
+    {
+        /** @var EventQueueWorkerTask $task */
+        $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
+
+        /** @var Scheduler $scheduler */
+        $scheduler = GeneralUtility::makeInstance(Scheduler::class);
+        $scheduler->executeTask($task);
     }
 
     protected function addSimpleFrontendRenderingToTypoScriptRendering(int $templateRecord, string $additionalContent = ''): void

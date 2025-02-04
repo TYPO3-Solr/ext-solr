@@ -16,13 +16,16 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Traits\SkipRecordByRootlineConfigurationTrait;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -40,15 +43,18 @@ abstract class AbstractStrategy
     protected QueueInterface $queue;
     protected ConnectionManager $connectionManager;
     protected SiteRepository $siteRepository;
+    protected QueueItemRepository $queueItemRepository;
 
     public function __construct(
         ?QueueInterface $queue = null,
         ?ConnectionManager $connectionManager = null,
         ?SiteRepository $siteRepository = null,
+        ?QueueItemRepository $queueItemRepository = null,
     ) {
         $this->queue = $queue ?? GeneralUtility::makeInstance(Queue::class);
         $this->connectionManager = $connectionManager ?? GeneralUtility::makeInstance(ConnectionManager::class);
         $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
+        $this->queueItemRepository = $queueItemRepository ?? GeneralUtility::makeInstance(QueueItemRepository::class);
     }
 
     /**
@@ -162,28 +168,56 @@ abstract class AbstractStrategy
     ): void {
         foreach ($solrConnections as $solr) {
             $query = 'type:' . $table . ' AND uid:' . $uid . ' AND siteHash:' . $siteHash;
-            $response = $solr->getWriteService()->deleteByQuery($query);
-
-            if ($response->getHttpStatus() !== 200) {
-                $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
-                $logger->error(
-                    'Couldn\'t delete index document',
-                    [
-                        'status' => $response->getHttpStatus(),
-                        'msg' => $response->getHttpStatusMessage(),
-                        'core' => $solr->getWriteService()->getCorePath(),
-                        'query' => $query,
-                    ]
-                );
-
-                // @todo: Ensure index is updated later on, e.g. via a new index queue status
+            if (!$this->sendDeleteQuery($solr, $query, $enableCommitsSetting)) {
                 continue;
             }
+        }
+    }
 
-            if ($enableCommitsSetting) {
-                $solr->getWriteService()->commit(false, false);
+    /**
+     * Deletes indexed mounted pages in all solr connections from that site.
+     */
+    protected function deleteMountedPagesInAllSolrConnections(
+        Site $site,
+        string $mountPointIdentifier,
+    ): void {
+        $solrConnections = $this->connectionManager->getConnectionsBySite($site);
+        foreach ($solrConnections as $solr) {
+            $query = 'type:pages'
+                . ' AND id:*/pages/*/' . $mountPointIdentifier . '/*'
+                . ' AND siteHash:' . $site->getSiteHash();
+            if (!$this->sendDeleteQuery($solr, $query, $site->getSolrConfiguration()->getEnableCommits())) {
+                continue;
             }
         }
+    }
+
+    protected function sendDeleteQuery(
+        SolrConnection $connection,
+        string $query,
+        bool $enableCommitsSetting = true
+    ): bool {
+        $response = $connection->getWriteService()->deleteByQuery($query);
+        $success = ($response->getHttpStatus() === 200);
+        if (!$success) {
+            $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+            $logger->error(
+                'Couldn\'t delete index document',
+                [
+                    'status' => $response->getHttpStatus(),
+                    'msg' => $response->getHttpStatusMessage(),
+                    'core' => $connection->getWriteService()->getCorePath(),
+                    'query' => $query,
+                ]
+            );
+            return false;
+        }
+
+        if ($enableCommitsSetting) {
+            $connection->getWriteService()->commit(false, false);
+        }
+
+        return $success;
     }
 
     /**

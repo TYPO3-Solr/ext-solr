@@ -27,7 +27,6 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -40,7 +39,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Scheduler\Scheduler;
 
 /**
  * Testcase for the record monitor
@@ -2166,19 +2164,6 @@ class RecordMonitorTest extends IntegrationTestBase
         );
 
         $this->assertIndexQueueContainsItemAmount(1);
-    }
-
-    /**
-     * Triggers event queue processing
-     */
-    protected function processEventQueue(): void
-    {
-        /** @var EventQueueWorkerTask $task */
-        $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
-
-        /** @var Scheduler $scheduler */
-        $scheduler = GeneralUtility::makeInstance(Scheduler::class);
-        $scheduler->executeTask($task);
     }
 
     /**
