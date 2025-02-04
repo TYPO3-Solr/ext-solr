@@ -34,8 +34,10 @@ use ApacheSolrForTypo3\Solr\Traits\SkipRecordByRootlineConfigurationTrait;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -388,8 +390,13 @@ class DataUpdateHandler extends AbstractUpdateHandler
             $this->processRecord('pages', $uid, $rootPageIds);
         }
 
-        $this->updateCanonicalPages($uid);
-        $this->mountPageUpdater->update($uid);
+        if ($this->isRelevantMountPageUpdate($uid, $updatedFields)) {
+            $this->getGarbageHandler()->collectGarbage('pages', $uid);
+            $this->mountPageUpdater->updateMountPoint($uid);
+        } else {
+            $this->updateCanonicalPages($uid);
+            $this->mountPageUpdater->update($uid);
+        }
 
         // We need to get the full record to find out if this is a page translation
         $fullRecord = $this->getRecord('pages', $uid);
@@ -402,6 +409,18 @@ class DataUpdateHandler extends AbstractUpdateHandler
             $treePageIds = $this->getSubPageIds($uid);
             $this->updatePageIdItems($treePageIds);
         }
+    }
+
+    protected function isRelevantMountPageUpdate(int $pageUid, array $updatedFields): bool
+    {
+        $pageRecord = BackendUtility::getRecord('pages', $pageUid, '*', '', false);
+        if ($pageRecord === null || $pageRecord['doktype'] !== PageRepository::DOKTYPE_MOUNTPOINT) {
+            return false;
+        }
+        return array_filter(
+            array_keys($updatedFields),
+            static fn(string $field): bool => in_array($field, ['slug', 'hidden']),
+        ) !== [];
     }
 
     /**

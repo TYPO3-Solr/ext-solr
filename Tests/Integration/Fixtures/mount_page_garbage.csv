@@ -1,0 +1,14 @@
+"pages",
+,"uid","pid","tstamp","hidden","doktype","mount_pid","mount_pid_ol","slug","title","no_search"
+,10,1,1736145035,0,1,0,0,"/mounted-page","Mounted page on root page 1",1
+,11,10,1736145036,0,1,0,0,"/mounted-page/subpage-of-mounted-page","Subpage of mounted ",0
+,20,1,1736145037,0,7,10,1,"/mount-point","Mount point for page on root page",0
+"tx_solr_indexqueue_item"
+,"uid","root","item_type","item_uid","indexing_configuration","has_indexing_properties","pages_mountidentifier","changed","errors"
+,1,1,"pages",11,"pages",0,"",1736145036,""
+,2,1,"pages",11,"pages",1,"10-20-1",1736145036,""
+"tx_solr_indexqueue_indexing_property"
+,"uid","root","item_id","property_key","property_value"
+,1,1,2,"mountPageSource",10
+,2,1,2,"mountPageDestination",20
+,3,1,2,"isMountedPage",1

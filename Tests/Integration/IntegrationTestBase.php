@@ -19,8 +19,10 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
@@ -34,6 +36,9 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Domain\Repository\SchedulerTaskRepository;
+use TYPO3\CMS\Scheduler\Scheduler;
+use TYPO3\CMS\Scheduler\Task\TaskSerializer;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -101,7 +106,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      *
      * Please don't use that method, except you really want to clean a single core.
      */
-    protected function cleanUpSolrServerAndAssertEmpty(?string $coreName = 'core_en'): void
+    protected function cleanUpSolrServerAndAssertEmpty(string $coreName = 'core_en'): void
     {
         $this->validateTestCoreName($coreName);
 
@@ -122,9 +127,9 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         }
 
         // we wait to make sure the document will be deleted in solr
-        $this->waitToBeVisibleInSolr();
+        $this->waitToBeVisibleInSolr($coreName);
 
-        $this->assertSolrIsEmpty();
+        $this->assertSolrIsEmpty($coreName);
     }
 
     protected function cleanUpAllCoresOnSolrServerAndAssertEmpty(): void
@@ -141,7 +146,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     /**
      * @throws InvalidArgumentException
      */
-    protected function waitToBeVisibleInSolr(?string $coreName = 'core_en'): array|false
+    protected function waitToBeVisibleInSolr(string $coreName = 'core_en'): array|false
     {
         $this->validateTestCoreName($coreName);
         $url = $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?softCommit=true';
@@ -161,18 +166,27 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     /**
      * Assertion to check if the solr server is empty.
      */
-    protected function assertSolrIsEmpty(): void
+    protected function assertSolrIsEmpty(string $coreName = 'core_en'): void
     {
-        $this->assertSolrContainsDocumentCount(0);
+        $this->assertSolrContainsDocumentCount(0, coreName: $coreName);
     }
 
     /**
      * Assertion to check if the solr server contains an expected count of documents.
      */
-    protected function assertSolrContainsDocumentCount(int $documentCount): void
-    {
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        self::assertStringContainsString('"numFound":' . $documentCount, $solrContent, 'Solr contains unexpected amount of documents');
+    protected function assertSolrContainsDocumentCount(
+        int $documentCount,
+        ?string $message = null,
+        string $coreName = 'core_en',
+    ): void {
+        $solrContent = file_get_contents(
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/select?q=*:*',
+        );
+        self::assertStringContainsString(
+            '"numFound":' . $documentCount,
+            $solrContent,
+            $message ?? 'Solr contains unexpected amount of documents',
+        );
     }
 
     /**
@@ -398,6 +412,36 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $this->waitToBeVisibleInSolr();
     }
 
+    protected function indexPageQueueItem(Item $item, int $language = 0, string $coreName = 'core_en'): bool
+    {
+        $parameters = [];
+        if ($item->hasIndexingProperty('isMountedPage')) {
+            $parameters['MP'] = $item->getIndexingProperty('mountPageSource')
+                . '-' . $item->getIndexingProperty('mountPageDestination');
+        }
+
+        if ($language > 0) {
+            $parameters['_language'] = $language;
+        }
+
+        $frontendUrl = $item->getSite()->getTypo3SiteObject()->getRouter()->generateUri(
+            $item->getRecordUid(),
+            $parameters,
+        );
+
+        $response = $this->executePageIndexer($frontendUrl, $item);
+        $this->waitToBeVisibleInSolr($coreName);
+
+        $connection = $this->getConnectionPool()->getConnectionForTable('sys_template');
+        $connection->update(
+            'tx_solr_indexqueue_item',
+            ['indexed' => time()],
+            ['uid' => $item->getIndexQueueUid()],
+        );
+
+        return $response->getStatusCode() === 200;
+    }
+
     /**
      * Adds a page to the queue (into DB table tx_solr_indexqueue_item) so it can
      * be fetched via a frontend sub-request
@@ -469,6 +513,25 @@ abstract class IntegrationTestBase extends FunctionalTestCase
 
         $response->getBody()->rewind();
         return $response;
+    }
+
+    /**
+     * Triggers event queue processing
+     */
+    protected function processEventQueue(): void
+    {
+        /** @var EventQueueWorkerTask $task */
+        $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
+
+        /** @var Scheduler $scheduler */
+        $scheduler = GeneralUtility::makeInstance(
+            Scheduler::class,
+            $this->createMock(NullLogger::class),
+            $this->createMock(TaskSerializer::class),
+            $this->createMock(SchedulerTaskRepository::class),
+        );
+
+        $scheduler->executeTask($task);
     }
 
     protected function addSimpleFrontendRenderingToTypoScriptRendering(int $templateRecord, string $additionalContent = ''): void

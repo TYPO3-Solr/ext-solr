@@ -18,14 +18,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\ItemInterface;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
-use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use Psr\Log\NullLogger;
 use Traversable;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -34,9 +34,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Scheduler\Domain\Repository\SchedulerTaskRepository;
-use TYPO3\CMS\Scheduler\Scheduler;
-use TYPO3\CMS\Scheduler\Task\TaskSerializer;
 
 /**
  * This testcase is used to check if the GarbageCollector can delete garbage from the
@@ -468,6 +465,204 @@ class GarbageCollectorTest extends IntegrationTestBase
     {
         yield 'Test soft delete' => [ false ];
         yield 'Test hard delete' => [ true ];
+    }
+
+    #[Test]
+    #[DataProvider('canCollectMountPageGarbageDataProvider')]
+    public function canCollectMountPageGarbage(
+        int $monitoringType,
+        array $dataMap,
+        array $cmdMap,
+        int $expectedQueueCount,
+        int $expectedDocumentCount,
+        int $expectedItemsToReindex = 0,
+    ): void {
+        $this->extensionConfiguration->set('solr', ['monitoringType' => $monitoringType]);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/mount_page_garbage.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->assertEmptyEventQueue();
+
+        // index all queue items
+        foreach ($this->indexQueue->getAllItems() as $item) {
+            self::assertTrue($this->indexPageQueueItem($item), 'Queue item failed to be indexed.');
+        }
+        self::assertSolrContainsDocumentCount(2, 'Initial number of documents in index not as expected');
+
+        $this->dataHandler->start(
+            $dataMap,
+            $cmdMap,
+            $this->backendUser,
+        );
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+
+        if ($monitoringType === 1) {
+            $this->processEventQueue();
+        }
+        $this->waitToBeVisibleInSolr();
+
+        $queueItems = $this->indexQueue->getAllItems();
+        self::assertCount($expectedQueueCount, $queueItems, 'Total number of index queue items differs');
+        $itemsToReindex = array_filter(
+            $queueItems,
+            static fn(Item $item): bool => $item->getState() === ItemInterface::STATE_PENDING,
+        );
+        self::assertCount($expectedItemsToReindex, $itemsToReindex, 'Number of items that need reindexing differs');
+        self::assertSolrContainsDocumentCount($expectedDocumentCount, 'Final number of documents in index not as expected');
+    }
+
+    public static function canCollectMountPageGarbageDataProvider(): Traversable
+    {
+        yield 'collect garbage on mount point deletion (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [20 => ['delete' => 1]]],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCount' => 1,
+        ];
+        yield 'collect garbage on mount point deletion (delayed processing)' => [
+            'monitoringType' => 1,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [20 => ['delete' => 1]]],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCount' => 1,
+        ];
+        yield 'collect garbage on mount point deactivation (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => ['pages' => [20 => ['hidden' => 1]]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCount' => 1,
+        ];
+        yield 'collect garbage on mount point deactivation (delayed processing)' => [
+            'monitoringType' => 1,
+            'dataMap' => ['pages' => [20 => ['hidden' => 1]]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCount' => 1,
+        ];
+        yield 'collect garbage on mount point title update (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => ['pages' => [20 => ['title' => 'new title']]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCount' => 2,
+        ];
+        yield 'collect garbage on mount point title update (delayed processing)' => [
+            'monitoringType' => 1,
+            'dataMap' => ['pages' => [20 => ['title' => 'new title']]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCount' => 2,
+        ];
+        yield 'collect garbage on mount point slug update (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => ['pages' => [20 => ['slug' => '/new-mount-point-slug']]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCount' => 1,
+            'expectedItemsToReindex' => 1,
+        ];
+        yield 'collect garbage on mount point slug update (delayed) processing)' => [
+            'monitoringType' => 1,
+            'dataMap' => ['pages' => [20 => ['slug' => '/new-mount-point-slug']]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCount' => 1,
+            'expectedItemsToReindex' => 1,
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('canCollectTranslatedMountPageGarbageDataProvider')]
+    public function canCollectTranslatedMountPageGarbage(
+        int $monitoringType,
+        array $dataMap,
+        array $cmdMap,
+        int $expectedQueueCount,
+        int $expectedDocumentCountEn,
+        int $expectedDocumentCountDe,
+        int $expectedItemsToReindex = 0,
+    ): void {
+        $this->extensionConfiguration->set('solr', ['monitoringType' => $monitoringType]);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/translated_mount_page_garbage.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+        $this->assertEmptyEventQueue();
+
+        // index all queue items
+        foreach ($this->indexQueue->getAllItems() as $item) {
+            self::assertTrue($this->indexPageQueueItem($item), 'Queue item failed to be indexed in default language.');
+            self::assertTrue(
+                $this->indexPageQueueItem($item, 1, 'core_de'),
+                'Queue item failed to be indexed in german translation.',
+            );
+        }
+        self::assertSolrContainsDocumentCount(2, 'Initial number of documents in english index not as expected', 'core_en');
+        self::assertSolrContainsDocumentCount(2, 'Initial number of documents in german index not as expected', 'core_de');
+
+        $this->dataHandler->start(
+            $dataMap,
+            $cmdMap,
+            $this->backendUser,
+        );
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+
+        if ($monitoringType === 1) {
+            $this->processEventQueue();
+        }
+        $this->waitToBeVisibleInSolr();
+
+        $queueItems = $this->indexQueue->getAllItems();
+        self::assertCount($expectedQueueCount, $queueItems, 'Total number of index queue items differs');
+        $itemsToReindex = array_filter(
+            $queueItems,
+            static fn(Item $item): bool => $item->getState() === ItemInterface::STATE_PENDING,
+        );
+        self::assertCount($expectedItemsToReindex, $itemsToReindex, 'Number of items that need reindexing differs');
+        self::assertSolrContainsDocumentCount($expectedDocumentCountDe, 'Final number of documents in english index not as expected');
+        self::assertSolrContainsDocumentCount($expectedDocumentCountDe, 'Final number of documents in german index not as expected');
+    }
+
+    public static function canCollectTranslatedMountPageGarbageDataProvider(): Traversable
+    {
+        yield 'collect garbage on mount point deletion (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [20 => ['delete' => 1]]],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCountEn' => 1,
+            'expectedDocumentCountDe' => 1,
+        ];
+        yield 'collect garbage on mount point deletion (delayed processing)' => [
+            'monitoringType' => 1,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [20 => ['delete' => 1]]],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCountEn' => 1,
+            'expectedDocumentCountDe' => 1,
+        ];
+        yield 'collect garbage on mount point translation deletion (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [21 => ['delete' => 1]]],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCountEn' => 1,
+            'expectedDocumentCountDe' => 1,
+            'expectedItemsToReindex' => 1,
+        ];
+        yield 'collect garbage on mount point translation deletion (delayed processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [21 => ['delete' => 1]]],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCountEn' => 1,
+            'expectedDocumentCountDe' => 1,
+            'expectedItemsToReindex' => 1,
+        ];
     }
 
     #[Test]
@@ -978,20 +1173,5 @@ class GarbageCollectorTest extends IntegrationTestBase
         }
 
         return $result;
-    }
-
-    /**
-     * Triggers event queue processing
-     */
-    protected function processEventQueue(): void
-    {
-        $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
-        $scheduler = GeneralUtility::makeInstance(
-            Scheduler::class,
-            $this->createMock(NullLogger::class),
-            $this->createMock(TaskSerializer::class),
-            $this->createMock(SchedulerTaskRepository::class),
-        );
-        $scheduler->executeTask($task);
     }
 }
