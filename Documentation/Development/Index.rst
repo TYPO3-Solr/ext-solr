@@ -19,4 +19,5 @@ There are many ways to extend and hook into EXT:solr to customize EXT:solr for y
         CI
         CodeStructure
         Signals
+        Events
         ViewHelpers

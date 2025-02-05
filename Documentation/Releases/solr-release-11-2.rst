@@ -10,6 +10,8 @@ Apache Solr for TYPO3 11.2
 Apache Solr for TYPO3 11.2.5 ELTS
 =================================
 
+This is a non-public security release for TYPO3 10.4 ELTS, containing:
+
 !!![SECURITY] Update to Apache Solr 9.8.0 : CVE-2025-24814
 ----------------------------------------------------------
 
@@ -131,6 +133,18 @@ Upgrade to Apache Solr 9.7.0
 This release requires Apache Solr v9.7.0+.
 
 Along with the compatibility to Solr 9.7 the dependency to SOLR_ENABLE_STREAM_BODY is removed.
+
+
+Minor changes & bugfixes
+------------------------
+
+*   [TASK] Update GitHub actions by @dkd-friedrich in #42
+*   [DOCS] Improve Solr core creation via API and other deployment parts by @dkd-kaehm & @dkd-friedrich in #42
+*   [TASK] Use relative path to typo3lib in Apache Solr config by @dkd-kaehm & @dkd-friedrich in #42
+*   [BUGFIX] Docker twaks as-sudo do not preserve the Docker image ENV by @dkd-kaehm & @dkd-friedrich in #42
+*   [BUGFIX] Docker tests suite does not contain all logs by @dkd-kaehm & @dkd-friedrich in #42
+*   [BUGFIX] docker image tests do not fail if core can not start by @dkd-kaehm & @dkd-friedrich in #42
+
 
 Apache Solr for TYPO3 11.2.4 ELTS
 =================================
@@ -280,6 +294,7 @@ awesome community. Here are the contributors to this release.
 (patches, comments, bug reports, reviews, ... in alphabetical order)
 
 * Georg Ringer
+* @itzonban
 * Lars Tode
 * Mario Lubenka
 * Markus Friedrich
@@ -287,8 +302,7 @@ awesome community. Here are the contributors to this release.
 * Michael Wagner
 * Rafael Kähm
 
-Also a big thank you to our partners who have already concluded one of our new development participation packages such as Apache Solr EB for TYPO3 11 LTS (Feature), Apache Solr EB for TYPO3 10 LTS (Maintenance)
-or Apache Solr EB for TYPO3 9 ELTS (Extended):
+Also a big thank you to our partners who have already concluded one of our new development participation packages for Apache Solr EB for TYPO3 10 LTS (Feature, Maintenance, ELTS):
 
 * ACO Ahlmann SE & Co. KG
 * avenit AG
@@ -298,6 +312,8 @@ or Apache Solr EB for TYPO3 9 ELTS (Extended):
 * Leitgab Gernot
 * medien.de mde GmbH
 * TOUMORØ
+* visuellverstehen GmbH
+* WE DO communication GmbH GWA
 * WIND Internet
 
 How to Get Involved
