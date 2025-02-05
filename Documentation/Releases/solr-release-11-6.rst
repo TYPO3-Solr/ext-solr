@@ -9,6 +9,8 @@ Releases 11.6
 Release 11.6.2 ELTS
 ===================
 
+This is a non-public security release for TYPO3 11.5 ELTS, containing:
+
 !!![SECURITY] Update to Apache solr 9.8.0 : CVE-2025-24814
 ----------------------------------------------------------
 
@@ -125,6 +127,16 @@ Make sure to use:
     *   `/docker-entrypoint-initdb.d/as-sudo/`
 
 
+Minor changes & bugfixes
+------------------------
+
+*   [DOCS] Improve Solr core creation via API and other deployment parts by @dkd-kaehm & @dkd-friedrich in #41
+*   [TASK] Use relative path to typo3lib in Apache Solr config by @dkd-kaehm & @dkd-friedrich in #41
+*   [BUGFIX] Docker twaks as-sudo do not preserve the Docker image ENV by @dkd-kaehm & @dkd-friedrich in #41
+*   [BUGFIX] Docker tests suite does not contain all logs by @dkd-kaehm & @dkd-friedrich in #41
+*   [BUGFIX] docker image tests do not fail if core can not start by @dkd-kaehm & @dkd-friedrich in #41
+*   [TASK] Replace "Publish to TER" to release by @dkd-kaehm in #38
+
 Release 11.6.1 ELTS
 ===================
 
@@ -188,6 +200,7 @@ awesome community. Here are the contributors to this release.
 * Adam Koppe
 * @BastiLu
 * Christoph Lehmann
+* @itzonban
 * Markus Friedrich
 * Rafael Kähm
 
@@ -199,6 +212,7 @@ Also a big thank you to our partners who have already concluded one of our new d
 * ACO Ahlmann SE & Co. KG
 * Agence E-magineurs
 * Agenda d.o.o.
+* Agentur für neue Kommunikation GmbH
 * AgenturWebfox GmbH
 * Amedick & Sommer Neue Medien GmbH
 * Ampack AG
@@ -257,6 +271,7 @@ Also a big thank you to our partners who have already concluded one of our new d
 * Marketing Factory
 * media::essenz
 * medien.de mde GmbH
+* MEDIENHAUS der Evangelischen Kirche in Hessen und Nassau GmbH
 * mehrwert intermediale kommunikation GmbH
 * Meridium Technologies
 * MOSAIQ GmbH
@@ -271,6 +286,7 @@ Also a big thank you to our partners who have already concluded one of our new d
 * ProPotsdam GmbH
 * Provitex GmbH
 * queo GmbH
+* reality bytes GmbH
 * rms. relationship marketing solutions GmbH
 * RR Anwendungsentwicklung
 * Sandstein Neue Medien GmbH

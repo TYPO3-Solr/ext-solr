@@ -103,6 +103,14 @@
       "mkdir -p .Build/Web/typo3conf/ext/",
       "[ -L .Build/Web/typo3conf/ext/solr ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/solr"
     ],
+    "ext:build:for-ter": [
+      "@extension-build",
+      "git add -f Resources/Private/Php/ComposerLibraries",
+      "git commit Resources/Private/Php/ComposerLibraries -m 'include solarium in export'",
+      "mkdir -p .Build/archive",
+      "git archive HEAD . -o .Build/archive/solr.zip",
+      "git reset HEAD~1 --hard"
+    ],
     "t3:docs:build": [
       "rm -Rf Documentation-GENERATED-temp/",
       "./Build/generate_documentation.sh"
@@ -172,7 +180,7 @@
         "ext-solrfluidgrouping": "^11.0",
         "ext-solrmlt": "^11.0",
         "Apache-Solr": [
-          "9.8.0",  
+          "9.8.0",
           "9.7.0"
         ],
         "configset": "ext_solr_11_6_0_elts"

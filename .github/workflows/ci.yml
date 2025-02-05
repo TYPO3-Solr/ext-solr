@@ -213,4 +213,4 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            .Build/archive/solr_*.zip
+            .Build/archive/solr.zip

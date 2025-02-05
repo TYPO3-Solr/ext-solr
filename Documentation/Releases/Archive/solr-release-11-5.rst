@@ -6,7 +6,7 @@
 Releases 11.5
 =============
 
-..  include:: HintAboutOutdatedChangelog.rst.txt
+..  include:: /Releases/HintAboutOutdatedChangelog.rst.txt
 
 Release 11.5.7
 ==============

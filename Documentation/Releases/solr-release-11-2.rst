@@ -1,25 +1,158 @@
-..  include:: /Includes.rst.txt
-..  index:: Releases
+.. include:: ../Includes.rst.txt
+
+
 .. _releases-11-2:
 
-=============
-Releases 11.2
-=============
+==========================
+Apache Solr for TYPO3 11.2
+==========================
 
-..  include:: HintAboutOutdatedChangelog.rst.txt
+Apache Solr for TYPO3 11.2.5 ELTS
+=================================
+
+This is a non-public security release for TYPO3 10.4 ELTS, containing:
+
+!!![SECURITY] Update to Apache Solr 9.8.0 : CVE-2025-24814
+----------------------------------------------------------
+
+Updates EXT:solr to Apache Solr 9.8.0.
+
+Apache Solr 9.8.0 disables the possibility to load the `jar` files with `lib` directive by default,
+which was used to load jar files within the EXT:solr configsets. Apache Solr 10.0.0 will drop that functionality.
+All Apache Solr libs, modules or plugins must be configured within the main server configuration files.
+See: https://issues.apache.org/jira/browse/SOLR-16781
+
+Impact:
+~~~~~~~
+
+Docker
+""""""
+
+You can wipe the volume and start the container with v. 11.2.5+ image, but that method will wipe the index as well.
+
+See the script `EXT:solr/Docker/SolrServer/docker-entrypoint-initdb.d-as-sudo/fix-CVE-2025-24814.sh`
 
 
-Release 11.2.4 ELTS
-===================
+Other server setups
+"""""""""""""""""""
 
-..  note::
-    Non public ELTS release, you can find more details on `typo3-solr.com <https://www.typo3-solr.com/solr-for-typo3/add-ons/typo3-10-elts-extended/>`__
+You have 2 possibilities to fix that issue in your Apache Solr Server:
+
+
+(PREFERRED) Migrate the EXT:solr's Apache Solr configuration
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+Refer to https://github.com/TYPO3-Solr/ext-solr/pull/4290/files .
+
+Following 3 files are relevant:
+
+*   Changes in `<Apache-Solr data dir>/configsets/ext_solr_11_2_0_elts/conf/solrconfig.xml`
+*   Changes in `<Apache-Solr data dir>/solr.xml`
+*   Movement from `<Apache-Solr data dir>/configsets/ext_solr_11_2_0_elts/typo3lib/solr-typo3-plugin-6.0.0.jar`
+
+    *   to `<Apache-Solr data dir>/typo3lib/solr-typo3-plugin-6.0.0.jar`
+
+Steps:
+
+#.  Remove all occurrences of `<lib dir=".*` from `<Apache-Solr data dir>/configsets/ext_solr_11_2_0_elts/conf/solrconfig.xml` file.
+#.  Replace in `<Apache-Solr data dir>/solr.xml` file
+    the snipped
+
+    ..  code-block:: xml
+        <str name="modules">scripting</str>
+
+    by
+
+    ..  code-block:: xml
+         <str name="modules">scripting,analytics,analysis-extras,langid,clustering,extraction,${solr.modules:}</str>
+         <str name="allowPaths">${solr.allowPaths:}</str>
+         <str name="allowUrls">${solr.allowUrls:}</str>
+
+         <!-- TYPO3 Plugins -->
+         <str name="sharedLib">typo3lib/</str>
+#.  Move the directory from `<Apache-Solr data dir>/configsets/ext_solr_11_2_0_elts/typo3lib`
+
+    *   to `<Apache-Solr data dir>/typo3lib`
+
+
+(NOT-RECOMMENDED) Re-enable <lib> directives on Apache Solr >=9.8.0 <10.0.0
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+Add following to `/etc/default/solr.in.sh` file
+
+..  code-block:: shell
+      SOLR_OPTS="$SOLR_OPTS -Dsolr.config.lib.enabled=true"
+
+Or do that in other ways to set the `solr.config.lib.enabled=true` to sys-props of Apache Solr Server.
+
+!!![FIX] Docker execution order issue for as-sudo tweaks
+--------------------------------------------------------
+
+This change renames the file
+
+*   from `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`
+*   to `/docker-entrypoint-initdb.d/0_as-sudo-tweaks.sh`
+
+and moves the folder
+
+*   from `/docker-entrypoint-initdb.d/as-sudo/`
+*   to `/docker-entrypoint-initdb.d-as-sudo/`
+
+to fix the execution order issue when setting the correct file permissions
+when starting the docker container, leading to a `Operation not permitted` errors.
+
+More details see:
+
+*   https://github.com/TYPO3-Solr/ext-solr/issues/3837#issuecomment-2461668377.
+*   https://github.com/TYPO3-Solr/ext-solr/pull/4219#issuecomment-2622600937
+
+Impact:
+~~~~~~~
+
+This change requires adjustments in your Docker setup, only if you modified:
+
+*   files in folder `/docker-entrypoint-initdb.d/as-sudo/`
+*   file `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`.
+
+Make sure to use:
+"""""""""""""""""
+
+*   `/docker-entrypoint-initdb.d/0_as-sudo-tweaks.sh` instead of
+
+    *   `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`
+
+*   `/docker-entrypoint-initdb.d-as-sudo` instead of
+
+    *   `/docker-entrypoint-initdb.d/as-sudo/`
+
+Upgrade to Apache Solr 9.7.0
+----------------------------
+
+This release requires Apache Solr v9.7.0+.
+
+Along with the compatibility to Solr 9.7 the dependency to SOLR_ENABLE_STREAM_BODY is removed.
+
+
+Minor changes & bugfixes
+------------------------
+
+*   [TASK] Update GitHub actions by @dkd-friedrich in #42
+*   [DOCS] Improve Solr core creation via API and other deployment parts by @dkd-kaehm & @dkd-friedrich in #42
+*   [TASK] Use relative path to typo3lib in Apache Solr config by @dkd-kaehm & @dkd-friedrich in #42
+*   [BUGFIX] Docker twaks as-sudo do not preserve the Docker image ENV by @dkd-kaehm & @dkd-friedrich in #42
+*   [BUGFIX] Docker tests suite does not contain all logs by @dkd-kaehm & @dkd-friedrich in #42
+*   [BUGFIX] docker image tests do not fail if core can not start by @dkd-kaehm & @dkd-friedrich in #42
+
+
+Apache Solr for TYPO3 11.2.4 ELTS
+=================================
 
 Support of Apache Solr 9.5.0
 ----------------------------
 
 Compatibility with Apache Solr 9.5.0 is checked and EXT:solr now accepts the following Apache Solr versions:
-
 - 9.3.0
 - 9.4.0
 - 9.4.1
@@ -39,8 +172,8 @@ Small improvements and bugfixes
 - [BUGFIX:P:11.2] prevent undefined array key warning if filter is empty by Achim Fritz in #32
 - [TASK] Allow Apache Solr 9.5 by @dkd-friedrich in #31
 
-Release 11.2.3 - Last non ELTS release
-======================================
+Apache Solr for TYPO3 11.2.3 - Last non ELTS release
+====================================================
 
 This is a maintenance release for TYPO3 10.4 and the last non ELTS release, as TYPO3 10 LTS reaches the ELTS phase on April 30, 2023.
 
@@ -49,16 +182,11 @@ repository and ELTS versions, EXT:solr 11.2.4+ for TYPO3 10 ELTS versions, can b
 
 This release contains:
 
-* [BUGFIX:P:11.2] make CE search form in backend editable again by @dkd-kaehm in `#3640 <https://github.com/TYPO3-Solr/ext-solr/pull/3640>`__
+- [BUGFIX:P:11.2] make CE search form in backend editable again by @dkd-kaehm in `#3640 <https://github.com/TYPO3-Solr/ext-solr/pull/3640>`__
 * [DOC] Fix wrong type for boostQuery in the docs and example by @rr-it  and @dkd-kaehm in `a997a2f4 <https://github.com/TYPO3-Solr/ext-solr/commit/a997a2f464462bc998aa755215f765e5efc6f172>`__
 
-Release 11.2.2
-==============
-
-This is a maintenance release for TYPO3 10.4.
-
-EXT:solr release-11.2.x will not be maintained in `TYPO3-Solr/ext-solr <https://github.com/TYPO3-Solr/ext-solr/>`__ repository any more. The maintenance and builds will be moved to a private
-repository and ELTS versions, EXT:solr 11.2.3+ for TYPO3 10 ELTS versions, can be obtained through the `dkd EB program <https://shop.dkd.de/Produkte/Apache-Solr-fuer-TYPO3/>`__.
+Apache Solr for TYPO3 11.2.2
+============================
 
 This release contains:
 
@@ -80,8 +208,8 @@ This release contains:
 - [TASK:BP:11.2] Disable sql handler by @dkd-friedrich in #3604
 
 
-Release 11.2.1
-==============
+Apache Solr for TYPO3 11.2.1
+============================
 
 This is a maintenance release for TYPO3 10.4, containing:
 
@@ -107,14 +235,17 @@ This is a maintenance release for TYPO3 10.4, containing:
 - [BUGFIX:BP:11.2] Fix write connection (#2916)
 
 
-Release 11.2.0
-==============
+Apache Solr for TYPO3 11.2.0
+============================
 
 We are happy to release EXT:solr 11.2.0.
 The focus of this release has been on supporting the latest Apache Solr version 8.11.1 and on optimizing the data update monitoring.
 
+New in this release
+-------------------
+
 Apache Solr 8.11.1 support
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 With EXT:solr 11.2.0 we support Apache Solr 8.11.1, the latest release of Apache Solr.
 
@@ -122,7 +253,7 @@ To see what has changed in Apache Solr please read the release notes of Apache S
 https://solr.apache.org/docs/8_11_1/changes/Changes.html
 
 Improved data update monitoring and handling
---------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To ensure the Solr index is up-to-date an extensive monitoring is done, in huge sites this may slow down the TYPO3 backend, as many records and
 pages have to be checked and updated. With EXT:solr 11.2 you can configure how EXT:solr will monitor and handle data updates, by default EXT:solr
@@ -130,32 +261,32 @@ acts as in all former versions, but you can now configure a delayed update handl
 
 
 Small improvements and bugfixes
--------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Beside the major changes we did several small improvements and bugfixes:
 
-- `[TASK] Upgrade Solarium to 6.0.4 .. <https://github.com/TYPO3-Solr/ext-solr/issues/3178>`__
-- `[BUGFIX] Fix thrown exception in Synonym and StopWordParser .. <https://github.com/TYPO3-Solr/ext-solr/commit/300325221d9b4ec38b83b6d5e985d8d95ab1f9c5>`__
-- `[BUGFIX] TER releases missing composer dependencies .. <https://github.com/TYPO3-Solr/ext-solr/issues/3176>`__
-- `[TASK] Configure CI matrix for release 11.2 .. <https://github.com/TYPO3-Solr/ext-solr/commit/5a3843e191a2d3924412a43b54b48ba399e00036>`__
-- `[BUGFIX:BP:11.1] Fix autosuggest with non-ascii terms .. <https://github.com/TYPO3-Solr/ext-solr/issues/3096>`__
-- `[BUGFIX] Prevent unwanted filter parameters from being generated .. <https://github.com/TYPO3-Solr/ext-solr/issues/3126>`__
-- `[TASK] Add Czech translation .. <https://github.com/TYPO3-Solr/ext-solr/issues/3132>`__
-- `[TASK] Replace mirrors for Apache Solr binaries on install-solr.sh .. <https://github.com/TYPO3-Solr/ext-solr/issues/3094>`__
-- `[BUGFIX:BP:11-1] routeenhancer with empty filters .. <https://github.com/TYPO3-Solr/ext-solr/issues/3099>`__
-- `[TASK] Use Environment::getContext() instead of GeneralUtility .. <https://github.com/TYPO3-Solr/ext-solr/commit/7cde5222a6203ab97d353d8eca723fa3fa924e48>`__
-- `[BUGFIX] Don't use jQuery.ajaxSetup() .. <https://github.com/TYPO3-Solr/ext-solr/issues/2503>`__
-- `[TASK] Setup Github Actions :: Basics .. <https://github.com/TYPO3-Solr/ext-solr/commit/e545d692ce41133fcff8ec1d294b0a9d0e68bd2a>`__
-- `[TASK] Setup Dependabot to watch "solarium/solarium" .. <https://github.com/TYPO3-Solr/ext-solr/commit/561815044e3651a0aaa8fa2ad4de5e2c3ccf4e3e>`__
-- `[BUGFIX] Filter within route enhancers .. <https://github.com/TYPO3-Solr/ext-solr/issues/3054>`__
-- `[BUGFIX] Fix NON-Composer mod libs composer.json for composer v2 <https://github.com/TYPO3-Solr/ext-solr/issues/3053>`__
-- ... See older commits, which are a part of `previous releases <https://github.com/TYPO3-Solr/ext-solr/commits/main?after=d3f9a919d44f8a72b982bdde131408b571ff02c8+139&branch=release-11-2>`__
+- [TASK] Upgrade Solarium to 6.0.4 .. __: https://github.com/TYPO3-Solr/ext-solr/issues/3178
+- [BUGFIX] Fix thrown exception in Synonym and StopWordParser .. __: https://github.com/TYPO3-Solr/ext-solr/commit/300325221d9b4ec38b83b6d5e985d8d95ab1f9c5
+- [BUGFIX] TER releases missing composer dependencies .. __: https://github.com/TYPO3-Solr/ext-solr/issues/3176
+- [TASK] Configure CI matrix for release 11.2 .. __: https://github.com/TYPO3-Solr/ext-solr/commit/5a3843e191a2d3924412a43b54b48ba399e00036
+- [BUGFIX:BP:11.1] Fix autosuggest with non-ascii terms .. __: https://github.com/TYPO3-Solr/ext-solr/issues/3096
+- [BUGFIX] Prevent unwanted filter parameters from being generated .. __: https://github.com/TYPO3-Solr/ext-solr/issues/3126
+- [TASK] Add Czech translation .. __: https://github.com/TYPO3-Solr/ext-solr/issues/3132
+- [TASK] Replace mirrors for Apache Solr binaries on install-solr.sh .. __: https://github.com/TYPO3-Solr/ext-solr/issues/3094
+- [BUGFIX:BP:11-1] routeenhancer with empty filters .. __: https://github.com/TYPO3-Solr/ext-solr/issues/3099
+- [TASK] Use Environment::getContext() instead of GeneralUtility .. __: https://github.com/TYPO3-Solr/ext-solr/commit/7cde5222a6203ab97d353d8eca723fa3fa924e48
+- [BUGFIX] Don't use jQuery.ajaxSetup() .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2503
+- [TASK] Setup Github Actions :: Basics .. __: https://github.com/TYPO3-Solr/ext-solr/commit/e545d692ce41133fcff8ec1d294b0a9d0e68bd2a
+- [TASK] Setup Dependabot to watch "solarium/solarium" .. __: https://github.com/TYPO3-Solr/ext-solr/commit/561815044e3651a0aaa8fa2ad4de5e2c3ccf4e3e
+- [BUGFIX] Filter within route enhancers .. __: https://github.com/TYPO3-Solr/ext-solr/issues/3054
+- [BUGFIX] Fix NON-Composer mod libs composer.json for composer v2 .. __: https://github.com/TYPO3-Solr/ext-solr/issues/3053
+- ... See older commits, which are a part of previous releases: https://github.com/TYPO3-Solr/ext-solr/commits/master?after=d3f9a919d44f8a72b982bdde131408b571ff02c8+139&branch=release-11-2
 
 
 Contributors
 ============
 
-Special thanks to ACO Ahlmann SE & Co. KG for sponsoring the improved data update handling, `#3153 <https://github.com/TYPO3-Solr/ext-solr/issues/3153>`__!
+Special thanks to ACO Ahlmann SE & Co. KG for sponsoring the improved data update handling, [#3153](https://github.com/TYPO3-Solr/ext-solr/issues/3153)!
 
 Like always this release would not have been possible without the help from our
 awesome community. Here are the contributors to this release.
@@ -163,6 +294,7 @@ awesome community. Here are the contributors to this release.
 (patches, comments, bug reports, reviews, ... in alphabetical order)
 
 * Georg Ringer
+* @itzonban
 * Lars Tode
 * Mario Lubenka
 * Markus Friedrich
@@ -170,8 +302,7 @@ awesome community. Here are the contributors to this release.
 * Michael Wagner
 * Rafael Kähm
 
-Also a big thank you to our partners who have already concluded one of our new development participation packages such as Apache Solr EB for TYPO3 11 LTS (Feature), Apache Solr EB for TYPO3 10 LTS (Maintenance)
-or Apache Solr EB for TYPO3 9 ELTS (Extended):
+Also a big thank you to our partners who have already concluded one of our new development participation packages for Apache Solr EB for TYPO3 10 LTS (Feature, Maintenance, ELTS):
 
 * ACO Ahlmann SE & Co. KG
 * avenit AG
@@ -181,6 +312,8 @@ or Apache Solr EB for TYPO3 9 ELTS (Extended):
 * Leitgab Gernot
 * medien.de mde GmbH
 * TOUMORØ
+* visuellverstehen GmbH
+* WE DO communication GmbH GWA
 * WIND Internet
 
 How to Get Involved
@@ -188,10 +321,10 @@ How to Get Involved
 
 There are many ways to get involved with Apache Solr for TYPO3:
 
-* Submit bug reports and feature requests on `GitHub <https://github.com/TYPO3-Solr/ext-solr>`__
-* Ask or help or answer questions in our `Slack channel <https://typo3.slack.com/messages/ext-solr/>`__
-* Provide patches through Pull Request or review and comment on existing `Pull Requests <https://github.com/TYPO3-Solr/ext-solr/pulls>`__
-* Go to `www.typo3-solr.com <https://www.typo3-solr.com>`__ or call `dkd <http://www.dkd.de>`__ to sponsor the ongoing development of Apache Solr for TYPO3
+* Submit bug reports and feature requests on [GitHub](https://github.com/TYPO3-Solr/ext-solr)
+* Ask or help or answer questions in our [Slack channel](https://typo3.slack.com/messages/ext-solr/)
+* Provide patches through Pull Request or review and comment on existing [Pull Requests](https://github.com/TYPO3-Solr/ext-solr/pulls)
+* Go to [www.typo3-solr.com](http://www.typo3-solr.com) or call [dkd](http://www.dkd.de) to sponsor the ongoing development of Apache Solr for TYPO3
 
 Support us by becoming an EB partner:
 
