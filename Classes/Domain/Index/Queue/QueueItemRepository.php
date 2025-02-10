@@ -809,6 +809,7 @@ class QueueItemRepository extends AbstractRepository
      * Retrieves an array of pageIds from mountPoints that already have a queue entry.
      *
      * @throws DBALException
+     * @return int[]
      */
     public function findPageIdsOfExistingMountPagesByMountIdentifier(string $mountPointIdentifier): array
     {
@@ -827,7 +828,7 @@ class QueueItemRepository extends AbstractRepository
         $mountedPagesIdsWithQueueItems = [];
         while ($record = $resultSet->fetchAssociative()) {
             if ($record['queueItemCount'] > 0) {
-                $mountedPagesIdsWithQueueItems[] = $record['item_uid'];
+                $mountedPagesIdsWithQueueItems[] = (int)$record['item_uid'];
             }
         }
 
@@ -844,17 +845,42 @@ class QueueItemRepository extends AbstractRepository
         string $mountPointIdentifier,
         array $mountedPids,
     ): array {
+        return $this->findAllIndexQueueByMountIdentifier($rootPid, $mountPointIdentifier, $mountedPids);
+    }
+
+    /**
+     * Retrieves an array of items for mount destinations matched by root page ID and Mount Identifier
+     *
+     * @throws DBALException
+     */
+    public function findAllIndexQueueItemsByRootPidAndMountIdentifier(
+        int $rootPid,
+        string $mountPointIdentifier,
+    ): array {
+        return $this->findAllIndexQueueByMountIdentifier($rootPid, $mountPointIdentifier);
+    }
+
+    protected function findAllIndexQueueByMountIdentifier(
+        int $rootPid,
+        string $mountPointIdentifier,
+        ?array $mountedPids = null,
+    ): array {
         $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder
+        $queryBuilder = $queryBuilder
             ->select('*')
             ->from($this->table)
             ->where(
                 $queryBuilder->expr()->eq('root', $queryBuilder->createNamedParameter($rootPid, PDO::PARAM_INT)),
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter('pages')),
-                $queryBuilder->expr()->in('item_uid', $mountedPids),
                 $queryBuilder->expr()->eq('has_indexing_properties', $queryBuilder->createNamedParameter(1, PDO::PARAM_INT)),
                 $queryBuilder->expr()->eq('pages_mountidentifier', $queryBuilder->createNamedParameter($mountPointIdentifier))
-            )
+            );
+
+        if ($mountedPids !== null) {
+            $queryBuilder->andWhere($queryBuilder->expr()->in('item_uid', $mountedPids));
+        }
+
+        return $queryBuilder
             ->executeQuery()
             ->fetchAllAssociative();
     }

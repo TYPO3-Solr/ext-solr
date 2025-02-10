@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUp
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -81,11 +82,37 @@ class PageStrategy extends AbstractStrategy
      */
     protected function collectPageGarbageByPageChange(int $uid): void
     {
-        $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent, sys_language_uid', '', false);
-        if (!empty($pageOverlay['l10n_parent']) && (int)($pageOverlay['l10n_parent']) !== 0) {
-            $this->deleteIndexDocuments('pages', (int)$pageOverlay['l10n_parent'], (int)$pageOverlay['sys_language_uid']);
+        $page = BackendUtility::getRecord('pages', $uid, '*', '', false);
+        if (!empty($page['l10n_parent']) && (int)($page['l10n_parent']) !== 0) {
+            $this->deleteIndexDocuments('pages', (int)$page['l10n_parent'], (int)$page['sys_language_uid']);
         } else {
             $this->deleteInSolrAndRemoveFromIndexQueue('pages', $uid);
         }
+
+        $this->collectMountPointGarbage($page);
+    }
+
+    protected function collectMountPointGarbage(?array $page): void
+    {
+        if ($page === null || (int)$page['doktype'] !== PageRepository::DOKTYPE_MOUNTPOINT) {
+            return;
+        }
+
+        $site = $this->siteRepository->getSiteByPageId($page['pid']);
+        $itemUids = array_map(
+            static function (array $item): int {
+                return (int)$item['uid'];
+            },
+            $this->queueItemRepository->findAllIndexQueueItemsByRootPidAndMountIdentifier(
+                $site->getRootPageId(),
+                $page['mount_pid'] . '-' . $page['uid'] . '-' . $site->getRootPageId()
+            )
+        );
+
+        if ($itemUids !== []) {
+            $this->queueItemRepository->deleteItems(uids: $itemUids);
+        }
+
+        $this->deleteMountedPagesInAllSolrConnections($site, $page['mount_pid'] . '-' . $page['uid']);
     }
 }

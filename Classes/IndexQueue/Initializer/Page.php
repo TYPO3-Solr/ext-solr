@@ -81,6 +81,16 @@ class Page extends AbstractInitializer
     }
 
     /**
+     * Initializes the pages of a single mount point
+     *
+     * @param int $mountPointId Uid of mount point (doktype = 7) to initialize
+     */
+    public function initializeMountPoint(int $mountPointId)
+    {
+        return $this->initializeMountPointPages($mountPointId);
+    }
+
+    /**
      * Initializes Mount Point(pages) to be indexed through the Index Queue. The Mount
      * Points are searched and their mounted virtual sub-trees are then resolved
      * and added to the Index Queue as if they were actually present below the
@@ -92,13 +102,14 @@ class Page extends AbstractInitializer
      * @throws DBALException
      * @throws UnexpectedTYPO3SiteInitializationException
      */
-    protected function initializeMountPointPages(): bool
+    protected function initializeMountPointPages(?int $restrictToMountPoint = null): bool
     {
         $mountPointsInitialized = false;
         $mountPoints = $this->pagesRepository->findAllMountPagesByWhereClause(
             $this->buildPagesClause()
             . $this->buildTcaWhereClause()
             . ' AND doktype = 7 AND no_search = 0'
+            . ($restrictToMountPoint !== null ? ' AND uid=' . $restrictToMountPoint : '')
         );
 
         if (empty($mountPoints)) {
@@ -319,7 +330,14 @@ class Page extends AbstractInitializer
     {
         $mountPageSourceId = (int)$mountPage['mountPageSource'];
 
-        $mountPageTree = $this->site->getPages($mountPageSourceId, 'pages');
+        $mountPageTree = $this->site->getPages(
+            $mountPageSourceId,
+            'pages',
+            $this->site->getSolrConfiguration()->getValueByPathOrDefaultValue(
+                'plugin.tx_solr.index.queue.pages.additionalWhereClause',
+                '',
+            )
+        );
 
         // Do not include $mountPageSourceId in tree, if the mount point is not set to overlay.
         if (!empty($mountPageTree) && !$mountPage['mountPageOverlayed']) {

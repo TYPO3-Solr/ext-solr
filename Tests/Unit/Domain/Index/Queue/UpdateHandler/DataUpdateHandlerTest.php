@@ -27,6 +27,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
@@ -357,6 +359,11 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $cacheManagerMock = $this->createMock(CacheManager::class);
         $cacheManagerMock->method('getCache')->willReturn($frontendCacheMock);
         GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManagerMock);
+
+        $queryBuilderMock = $this->createMock(QueryBuilder::class);
+        $connectionPoolMock = $this->createMock(ConnectionPool::class);
+        $connectionPoolMock->method('getQueryBuilderForTable')->willReturn($queryBuilderMock);
+        GeneralUtility::addInstance(ConnectionPool::class, $connectionPoolMock);
 
         $this->pagesRepositoryMock
             ->expects(self::any())
