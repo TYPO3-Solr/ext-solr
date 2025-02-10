@@ -126,6 +126,7 @@ class ExtensionConfiguration
 
         if ($this->getIncludeGlobalQParameterInCacheHash() === false) {
             $exclusions[] = 'q';
+            $exclusions[] = '_';
         }
         return array_combine($exclusions, $exclusions);
     }
