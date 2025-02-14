@@ -20,6 +20,7 @@ use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -38,6 +39,7 @@ use TYPO3\CMS\Core\TypoScript\IncludeTree\Traverser\IncludeTreeTraverser;
 use TYPO3\CMS\Core\TypoScript\Tokenizer\LossyTokenizer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
  * Configuration manager old the configuration instance.
@@ -86,8 +88,13 @@ class ConfigurationManager implements SingletonInterface
             $language = $site->getLanguageById($contextLanguageId);
             // @todo: Storage-Folder can not be used to get TypoScript Config!!!
             $uri = $site->getRouter()->generateUri($contextPageId, ['_language' => $language]);
+            $pageInformation = new PageInformation();
+            $pageInformation->setId($contextPageId);
+            $pageInformation->setPageRecord(BackendUtility::getRecord('pages', $contextPageId));
+            $pageInformation->setContentFromPid($contextPageId);
             $request = (new ServerRequest($uri, 'GET'))
                 ->withAttribute('site', $site)
+                ->withAttribute('frontend.page.information', $pageInformation)
                 ->withQueryParams(['id' => $contextPageId])
                 ->withAttribute('language', $language);
             return $this->getTypoScriptFromRequest($request);
@@ -104,8 +111,13 @@ class ConfigurationManager implements SingletonInterface
         $site = reset($allSites);
         $language = $site->getDefaultLanguage();
         $uri = $site->getRouter()->generateUri($site->getRootPageId(), ['_language' => $language]);
+        $pageInformation = new PageInformation();
+        $pageInformation->setId($site->getRootPageId());
+        $pageInformation->setPageRecord(BackendUtility::getRecord('pages', $site->getRootPageId()));
+        $pageInformation->setContentFromPid($site->getRootPageId());
         $request = (new ServerRequest($uri, 'GET'))
             ->withAttribute('site', $site)
+            ->withAttribute('frontend.page.information', $pageInformation)
             ->withQueryParams(['id' => $site->getRootPageId()])
             ->withAttribute('language', $language);
         return $this->getTypoScriptFromRequest($request);
@@ -129,10 +141,31 @@ class ConfigurationManager implements SingletonInterface
             GeneralUtility::makeInstance(IncludeTreeTraverser::class),
             GeneralUtility::makeInstance(ConditionVerdictAwareIncludeTreeTraverser::class),
         );
+
+        $expressionMatcherVariables = ['request' => $request];
+        $pageInformation = $request->getAttribute('frontend.page.information');
+        if ($pageInformation instanceof PageInformation) {
+            $expressionMatcherVariables['pageId'] = $pageInformation->getId();
+            $expressionMatcherVariables['page'] = $pageInformation->getPageRecord();
+        } else {
+            $pageUid = (int)(
+                $request->getParsedBody()['id']
+                ?? $request->getQueryParams()['id']
+                ?? $request->getAttribute('site')?->getRootPageId()
+            );
+            if ($pageUid !== 0) {
+                $expressionMatcherVariables['pageId'] = $pageUid;
+                $expressionMatcherVariables['page'] = BackendUtility::getRecord('pages', $pageUid);
+            }
+        }
+        $site = $request->getAttribute('site');
+        if ($site instanceof Site) {
+            $expressionMatcherVariables['site'] = $site;
+        }
         $frontendTypoScript = $frontendTypoScriptFactory->createSettingsAndSetupConditions(
             $typo3Site,
             $sysTemplateRows,
-            [],
+            $expressionMatcherVariables,
             null,
         );
         return $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
@@ -140,7 +173,7 @@ class ConfigurationManager implements SingletonInterface
             $frontendTypoScript,
             $typo3Site,
             $sysTemplateRows,
-            [],
+            $expressionMatcherVariables,
             '0',
             null,
             null,
