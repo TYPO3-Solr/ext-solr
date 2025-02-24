@@ -189,6 +189,10 @@ class GarbageCollector implements SingletonInterface
             return;
         }
 
+        if (Util::skipHooksForRecord($table, $uid, $fields['pid'] ?? null)) {
+            return;
+        }
+
         $updatedRecord = $this->getGarbageHandler()->getRecordWithFieldRelevantForGarbageCollection($table, $uid);
         if (empty($updatedRecord)) {
             return;
