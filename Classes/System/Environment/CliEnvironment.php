@@ -52,7 +52,10 @@ class CliEnvironment implements SingletonInterface
         }
 
         if (defined('TYPO3_PATH_WEB')) {
-            throw new WebRootAllReadyDefinedException('TYPO3_PATH_WEB is already defined');
+            throw new WebRootAllReadyDefinedException(
+                'TYPO3_PATH_WEB is already defined',
+                7904456080,
+            );
         }
 
         if ($scriptFileName === '') {

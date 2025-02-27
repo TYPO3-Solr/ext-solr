@@ -215,7 +215,7 @@ class RequirementsServiceTest extends SetUpUnitTestCase
     public function exceptionIsThrownForRequirementWithNotExistingFacet(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Requirement for unexisting facet configured');
+        $this->expectExceptionMessage('Requirement for non-existing facet configured');
         $resultSet = new SearchResultSet();
 
         $categoryConfig = [

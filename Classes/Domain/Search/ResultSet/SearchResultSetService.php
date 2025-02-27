@@ -299,7 +299,10 @@ class SearchResultSetService
         $resultDocument = $parsedData->response->docs[0] ?? null;
 
         if (!$resultDocument instanceof Document) {
-            throw new UnexpectedValueException('Response did not contain a valid Document object');
+            throw new UnexpectedValueException(
+                'Response did not contain a valid Document object',
+                1113053393,
+            );
         }
 
         return $this->searchResultBuilder->fromApacheSolrDocument($resultDocument);

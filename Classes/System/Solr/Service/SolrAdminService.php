@@ -172,7 +172,10 @@ class SolrAdminService extends AbstractSolrService
             $response = $this->_sendRawGet($solrconfigXmlUrl);
             $solrconfigXml = simplexml_load_string($response->getRawResponse());
             if ($solrconfigXml === false) {
-                throw new InvalidArgumentException('No valid xml response from schema file: ' . $solrconfigXmlUrl);
+                throw new InvalidArgumentException(
+                    'No valid xml response from schema file: ' . $solrconfigXmlUrl,
+                    6337336918,
+                );
             }
             $this->solrconfigName = (string)$solrconfigXml->attributes()->name;
         }
@@ -291,7 +294,10 @@ class SolrAdminService extends AbstractSolrService
     {
         $this->initializeStopWordsUrl();
         if (empty($stopWordToDelete)) {
-            throw new InvalidArgumentException('Must provide stop word.');
+            throw new InvalidArgumentException(
+                'Must provide stop word.',
+                5002188179,
+            );
         }
 
         return $this->_sendRawDelete($this->_stopWordsUrl . '/' . rawurlencode(rawurlencode($stopWordToDelete)));

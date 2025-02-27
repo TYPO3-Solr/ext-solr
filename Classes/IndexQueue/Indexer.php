@@ -625,7 +625,10 @@ class Indexer extends AbstractIndexer
             $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
         } elseif (($rootPageRecord['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
             $message = 'Root page ' . (int)$item->getRootPageUid() . ' is set to hide default translation, but no other language is configured!';
-            throw new RuntimeException($message);
+            throw new RuntimeException(
+                $message,
+                2554826832,
+            );
         }
 
         return $defaultLanguageUid;
