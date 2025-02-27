@@ -42,7 +42,10 @@ class Operator extends AbstractDeactivatable
     public function setOperator(string $operator): void
     {
         if (!in_array($operator, [self::OPERATOR_AND, self::OPERATOR_OR])) {
-            throw new InvalidArgumentException('Invalid operator');
+            throw new InvalidArgumentException(
+                'Invalid operator',
+                8402616466,
+            );
         }
 
         $this->operator = $operator;

@@ -513,7 +513,10 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
         $this->extBaseUriBuilderMock->expects(self::exactly(2))->method('build')
             ->willReturnCallback(function () use ($linkBuilderResult, &$buildCounter) {
                 if (++$buildCounter === 1) {
-                    throw new InvalidParameterException('First call fails, should reprocess with regular arguments');
+                    throw new InvalidParameterException(
+                        'First call fails, should reprocess with regular arguments',
+                        5962606500,
+                    );
                 }
                 return $linkBuilderResult;
             });

@@ -39,7 +39,10 @@ class ParsingUtil
                 $valueFromKeyNode = $value;
             } else {
                 if ($valueFromKeyNode == -1) {
-                    throw new UnexpectedValueException('No optionValue before count value');
+                    throw new UnexpectedValueException(
+                        'No optionValue before count value',
+                        5795798675,
+                    );
                 }
                 //we have a countNode
                 $keyValueMap[$valueFromKeyNode] = $value;

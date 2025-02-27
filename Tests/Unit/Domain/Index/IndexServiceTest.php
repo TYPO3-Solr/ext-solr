@@ -119,7 +119,10 @@ class IndexServiceTest extends SetUpUnitTestCase
             ->onlyMethods(['index'])
             ->getMock();
         $indexerMock->expects(self::exactly(2))->method('index')->willReturnCallback(function () {
-            throw new Exception('unknown error occurred');
+            throw new Exception(
+                'unknown error occurred',
+                8102831540,
+            );
         });
         $indexService->expects(self::exactly(2))->method('getIndexerByItem')->willReturn($indexerMock);
 
