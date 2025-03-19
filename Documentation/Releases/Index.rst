@@ -15,5 +15,4 @@ Releases
 
     solr-release-11-6
     solr-release-11-2
-    solr-release-11-0
     Archive/Index

@@ -106,7 +106,7 @@
     "ext:build:for-ter": [
       "@extension-build",
       "git add -f Resources/Private/Php/ComposerLibraries",
-      "git commit Resources/Private/Php/ComposerLibraries -m 'include solarium in export'",
+      "git commit Resources/Private/Php/ComposerLibraries -m 'include solarium in export' --author='Apache Solr for TYPO3 <solr-eb-support@dkd.de>'",
       "mkdir -p .Build/archive",
       "git archive HEAD . -o .Build/archive/solr.zip",
       "git reset HEAD~1 --hard"

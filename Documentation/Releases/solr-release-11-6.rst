@@ -6,6 +6,27 @@
 Releases 11.6
 =============
 
+Release 11.6.3 ELTS
+===================
+
+This is a non-public maintenance release for TYPO3 11.5 ELTS, containing:
+
+New in this release
+-------------------
+
+Apache Solr 9.8.1 support
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+EXT:solr 11.6.3 has been tested with Apache Solr 9.8.1, this version can be used without any update steps to consider.
+
+Full list of changes
+~~~~~~~~~~~~~~~~~~~~
+
+- [TASK] Allow Apache Solr 9.8.1 by @dkd-friedrich
+- [BUGFIX:P:11.6] Add check if generator is valid before traversing it by @jacobsenj and @dkd-friedrich
+- [FEATURE:P:11.6] Use PHP generator to prevent processing of all available site @sfroemkenjw and @dkd-friedrich
+
+
 Release 11.6.2 ELTS
 ===================
 
@@ -59,11 +80,13 @@ Steps:
     the snipped
 
     ..  code-block:: xml
+
         <str name="modules">scripting</str>
 
     by
 
     ..  code-block:: xml
+
          <str name="modules">scripting,analytics,analysis-extras,langid,clustering,extraction,${solr.modules:}</str>
          <str name="allowPaths">${solr.allowPaths:}</str>
          <str name="allowUrls">${solr.allowUrls:}</str>
@@ -82,6 +105,7 @@ Steps:
 Add following to `/etc/default/solr.in.sh` file
 
 ..  code-block:: shell
+
       SOLR_OPTS="$SOLR_OPTS -Dsolr.config.lib.enabled=true"
 
 Or do that in other ways to set the `solr.config.lib.enabled=true` to sys-props of Apache Solr Server.
@@ -143,7 +167,7 @@ Release 11.6.1 ELTS
 This is a non-public maintenance release for TYPO3 11.5.
 
 Full list of changes
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 * [TASK] Integrate TYPO3 11.5 ELTS by @dkd-kaehm & @dkd-friedrich
 * [TASK] Prepare release-11.6.x ELTS by @dkd-friedrich
@@ -201,8 +225,10 @@ awesome community. Here are the contributors to this release.
 * @BastiLu
 * Christoph Lehmann
 * @itzonban
+* Jens Jacobsen
 * Markus Friedrich
 * Rafael Kähm
+* Stefan Frömken
 
 Also a big thank you to our partners who have already concluded one of our new development participation packages such as Apache Solr EB for TYPO3 11 LTS:
 
@@ -251,6 +277,7 @@ Also a big thank you to our partners who have already concluded one of our new d
 * grips IT GmbH
 * hiroki digital GmbH
 * Hirsch & Wölfl GmbH
+* Hob by Horse GmbH
 * Hochschule Furtwangen
 * Hochschule Koblenz - Standort Remagen
 * HSPV NRW
@@ -279,6 +306,7 @@ Also a big thank you to our partners who have already concluded one of our new d
 * Overlap GmbH & Co KG
 * Patrick Gaumond Québec.ca gouv.qc.ca
 * peytz.dk
+* pick2webServices Magdalena Rybak
 * pietzpluswild GmbH
 * Pixelant / Resultify
 * Plan Software GmbH

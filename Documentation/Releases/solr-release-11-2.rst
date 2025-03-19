@@ -3,9 +3,9 @@
 
 .. _releases-11-2:
 
-==========================
-Apache Solr for TYPO3 11.2
-==========================
+=============
+Releases 11.2
+=============
 
 Apache Solr for TYPO3 11.2.5 ELTS
 =================================
@@ -60,11 +60,13 @@ Steps:
     the snipped
 
     ..  code-block:: xml
+
         <str name="modules">scripting</str>
 
     by
 
     ..  code-block:: xml
+
          <str name="modules">scripting,analytics,analysis-extras,langid,clustering,extraction,${solr.modules:}</str>
          <str name="allowPaths">${solr.allowPaths:}</str>
          <str name="allowUrls">${solr.allowUrls:}</str>
@@ -83,6 +85,7 @@ Steps:
 Add following to `/etc/default/solr.in.sh` file
 
 ..  code-block:: shell
+
       SOLR_OPTS="$SOLR_OPTS -Dsolr.config.lib.enabled=true"
 
 Or do that in other ways to set the `solr.config.lib.enabled=true` to sys-props of Apache Solr Server.
@@ -182,7 +185,7 @@ repository and ELTS versions, EXT:solr 11.2.4+ for TYPO3 10 ELTS versions, can b
 
 This release contains:
 
-- [BUGFIX:P:11.2] make CE search form in backend editable again by @dkd-kaehm in `#3640 <https://github.com/TYPO3-Solr/ext-solr/pull/3640>`__
+* [BUGFIX:P:11.2] make CE search form in backend editable again by @dkd-kaehm in `#3640 <https://github.com/TYPO3-Solr/ext-solr/pull/3640>`__
 * [DOC] Fix wrong type for boostQuery in the docs and example by @rr-it  and @dkd-kaehm in `a997a2f4 <https://github.com/TYPO3-Solr/ext-solr/commit/a997a2f464462bc998aa755215f765e5efc6f172>`__
 
 Apache Solr for TYPO3 11.2.2

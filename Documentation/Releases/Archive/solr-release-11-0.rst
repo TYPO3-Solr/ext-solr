@@ -6,7 +6,7 @@
 Releases 11.0
 =============
 
-..  include:: HintAboutOutdatedChangelog.rst.txt
+..  include:: ../HintAboutOutdatedChangelog.rst.txt
 
 Release 11.0.9 ELTS
 ===================

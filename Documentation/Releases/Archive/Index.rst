@@ -15,6 +15,7 @@ Archive
 
     solr-release-11-5.rst
     solr-release-11-1.rst
+    solr-release-11-0.rst
     solr-release-10-0.rst
     solr-release-9-0.rst
     solr-release-8-1.rst
