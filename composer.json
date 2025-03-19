@@ -180,6 +180,7 @@
         "ext-solrfluidgrouping": "^11.0",
         "ext-solrmlt": "^11.0",
         "Apache-Solr": [
+          "9.8.1",
           "9.8.0",
           "9.7.0"
         ],
