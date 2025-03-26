@@ -36,7 +36,7 @@ functionalities.
 Additional features can be obtained through the following free add-ons:
 
 1. `Apache Tika for TYPO3 <https://extensions.typo3.org/extension/tika>`__
-2. `Apache Solr for TYPO3 - More Like This <https://extensions.typo3.org/extension/solrmlt>`__
+2. `Apache Nutch plugins for TYPO3 CMS <https://github.com/TYPO3-Solr/nutch-typo3-cms>`__
 
 and many more by searching for "solr" in the TYPO3 Extension Repository (TER).
 
