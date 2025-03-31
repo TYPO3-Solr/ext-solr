@@ -33,6 +33,13 @@ non-content elements. Like this for example:
 
 You should notice a significant difference right away:
 
+
+.. code-block:: bash
+
+    bin/typo3 scheduler:run --task=<tast-id-for-site> --force
+
+or if EXT:solrconsole is installed on your system:
+
 .. code-block:: bash
 
     bin/typo3 solr:queue:index -n -a 1 -s <site>
