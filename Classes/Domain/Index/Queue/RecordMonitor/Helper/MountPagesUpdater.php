@@ -86,6 +86,11 @@ class MountPagesUpdater
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $mountingSite = $siteRepository->getSiteByPageId($mountProperties['mountPageDestination']);
 
+        if (!$mountingSite) {
+            // Indexing is not enabled for this site. See https://github.com/TYPO3-Solr/ext-solr/issues/4337
+            return;
+        }
+
         /** @var Page $pageInitializer */
         $pageInitializer = GeneralUtility::makeInstance(Page::class);
         $pageInitializer->setSite($mountingSite);
