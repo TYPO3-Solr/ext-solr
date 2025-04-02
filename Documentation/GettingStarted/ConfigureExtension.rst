@@ -48,7 +48,7 @@ The most simple configuration for my page was:
 Enable indexing
 ---------------
 
-Indexing wil only work if you allow content to be indexed by stating so in your TypoScript setup configuration:
+Indexing will only work if you allow content to be indexed by stating so in your TypoScript setup configuration:
 
 
 .. code-block:: typoscript
