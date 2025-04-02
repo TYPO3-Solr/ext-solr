@@ -86,7 +86,10 @@ class FacetRegistry extends AbstractClassRegistry
     {
         $instance = $this->getInstance($type);
         if (!$instance instanceof AbstractFacetPackage) {
-            throw new InvalidFacetPackageException('Invalid class registered for ' . htmlspecialchars($type));
+            throw new InvalidFacetPackageException(
+                'Invalid class registered for ' . htmlspecialchars($type),
+                2019898766,
+            );
         }
         return $instance;
     }

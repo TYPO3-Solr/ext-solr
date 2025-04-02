@@ -81,7 +81,10 @@ class RequirementsService
     {
         $facetToCheckRequirements = $facet->getResultSet()->getFacets()->getByName($facetNameToCheckRequirementsOn)->getByPosition(0);
         if (!$facetToCheckRequirements instanceof AbstractFacet) {
-            throw new InvalidArgumentException('Requirement for unexisting facet configured');
+            throw new InvalidArgumentException(
+                'Requirement for non-existing facet configured',
+                4953268822,
+            );
         }
 
         if (!$facetToCheckRequirements->getIsUsed()) {
