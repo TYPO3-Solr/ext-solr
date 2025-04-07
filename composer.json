@@ -39,7 +39,7 @@
     "typo3/cms-tstemplate": "*"
   },
   "require-dev": {
-    "dg/bypass-finals": "^1.6",
+    "dg/bypass-finals": "^1.9",
     "phpunit/phpunit": "^11.4",
     "typo3/cms-fluid-styled-content": "*",
     "typo3/coding-standards": "v0.8.0",
