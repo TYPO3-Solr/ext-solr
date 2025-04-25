@@ -19,6 +19,8 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\IsStringViewHelper;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception as MockObjectException;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -28,6 +30,8 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
 {
     protected IsStringViewHelper $isStringViewHelperTestable;
 
+    protected MockObject|ViewHelperNode $viewHelperNodeMock;
+
     /**
      * @throws MockObjectException
      */
@@ -36,6 +40,8 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
         $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $this->isStringViewHelperTestable = new IsStringViewHelper();
         $this->isStringViewHelperTestable->setRenderingContext($renderingContextMock);
+        $this->viewHelperNodeMock = $this->createMock(ViewHelperNode::class);
+        $this->isStringViewHelperTestable->setViewHelperNode($this->viewHelperNodeMock);
         parent::setUp();
     }
 
@@ -49,6 +55,9 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
         ];
 
         $this->isStringViewHelperTestable->setArguments($arguments);
+        $this->viewHelperNodeMock->expects(self::any())->method(
+            'getArguments'
+        )->willReturn($arguments);
         $result = $this->isStringViewHelperTestable->render();
         self::assertSame('thenResult', $result, 'thenClosure was not rendered');
     }
@@ -63,6 +72,9 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
         ];
 
         $this->isStringViewHelperTestable->setArguments($arguments);
+        $this->viewHelperNodeMock->expects(self::any())->method(
+            'getArguments'
+        )->willReturn($arguments);
         $result = $this->isStringViewHelperTestable->render();
         self::assertSame('elseResult', $result, 'elseResult was not rendered');
     }
