@@ -95,6 +95,7 @@ class PageIndexerTest extends SetUpUnitTestCase
         $item = $this->createMock(Item::class);
         $item->expects(self::any())->method('getRootPageUid')->willReturn(88);
         $item->expects(self::any())->method('getRecordUid')->willReturn(4711);
+        $item->expects(self::any())->method('getRecord')->willReturn(['uid' => 4711]);
         $item->expects(self::any())->method('getSite')->willReturn($siteMock);
         $item->expects(self::any())->method('getIndexingConfigurationName')->willReturn('pages');
 

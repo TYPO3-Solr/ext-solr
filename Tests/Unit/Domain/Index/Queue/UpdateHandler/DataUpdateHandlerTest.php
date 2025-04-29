@@ -26,6 +26,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -77,6 +79,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
                 'uid' => self::DUMMY_PAGE_ID,
                 'title' => 'dummy page on which dummy ce is placed',
                 'sys_language_uid' => 0,
+                'doktype' => 1,
             ]);
 
         $this->dataHandlerMock
@@ -372,6 +375,11 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         $cacheManagerMock->method('getCache')->willReturn($frontendCacheMock);
         GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManagerMock);
         GeneralUtility::addInstance(PageRepository::class, $this->createMock(PageRepository::class));
+
+        $queryBuilderMock = $this->createMock(QueryBuilder::class);
+        $connectionPoolMock = $this->createMock(ConnectionPool::class);
+        $connectionPoolMock->method('getQueryBuilderForTable')->willReturn($queryBuilderMock);
+        GeneralUtility::addInstance(ConnectionPool::class, $connectionPoolMock);
 
         $this->pagesRepositoryMock
             ->expects(self::any())
