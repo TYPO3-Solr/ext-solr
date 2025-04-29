@@ -99,12 +99,18 @@ class ConnectionManager implements SingletonInterface
         if (!isset(self::$connections[$connectionHash])) {
             $readEndpoint = new Endpoint($readEndpointConfiguration);
             if (!$this->isValidEndpoint($readEndpoint)) {
-                throw new InvalidConnectionException('Invalid read endpoint');
+                throw new InvalidConnectionException(
+                    'Invalid read endpoint',
+                    1451844097,
+                );
             }
 
             $writeEndpoint = new Endpoint($writeEndpointConfiguration);
             if (!$this->isValidEndpoint($writeEndpoint)) {
-                throw new InvalidConnectionException('Invalid write endpoint');
+                throw new InvalidConnectionException(
+                    'Invalid write endpoint',
+                    1049743991,
+                );
             }
 
             self::$connections[$connectionHash] = GeneralUtility::makeInstance(

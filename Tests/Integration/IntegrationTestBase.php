@@ -154,7 +154,10 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     protected function validateTestCoreName(string $coreName): void
     {
         if (!in_array($coreName, $this->testSolrCores, true)) {
-            throw new InvalidArgumentException('No valid test core passed');
+            throw new InvalidArgumentException(
+                'No valid test core passed',
+                1104133825,
+            );
         }
     }
 

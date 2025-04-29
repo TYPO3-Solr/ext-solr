@@ -150,7 +150,10 @@ class RecordMonitorTest extends IntegrationTestBase
     #[Test]
     public function canUpdateRootPageRecordWithoutSQLErrorFromMountPages(): void
     {
-        throw new SkippedWithMessageException('Skipping canUpdateRootPageRecordWithoutSQLErrorFromMountPages');
+        throw new SkippedWithMessageException(
+            'Skipping canUpdateRootPageRecordWithoutSQLErrorFromMountPages',
+            9115338385,
+        );
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
