@@ -20,4 +20,31 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events;
 /**
  * Event fired if a record is created or updated
  */
-class RecordUpdatedEvent extends AbstractDataUpdateEvent {}
+class RecordUpdatedEvent extends AbstractDataUpdateEvent
+{
+    /**
+     * @deprecated For compatibility reasons flag "$isNewRecord" is added to RecordUpdatedEvent,
+     *             in v14 a separate RecordInsertedEvent will be used
+     */
+    protected bool $isNewRecord;
+
+    public function __construct(
+        int $uid,
+        string $table,
+        array $fields = [],
+        bool $frontendGroupsRemoved = false,
+        bool $isNewRecord = false,
+    ) {
+        parent::__construct($uid, $table, $fields, $frontendGroupsRemoved);
+        $this->isNewRecord = $isNewRecord;
+    }
+
+    /**
+     * @deprecated For compatibility reasons flag "$isNewRecord" is added to RecordUpdatedEvent,
+     *             in v14 a separate RecordInsertedEvent will be used
+     */
+    final public function isNewRecord(): bool
+    {
+        return $this->isNewRecord;
+    }
+}
