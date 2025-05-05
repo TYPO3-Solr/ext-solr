@@ -165,7 +165,12 @@ class RecordMonitor
         }
 
         $this->eventDispatcher->dispatch(
-            new RecordUpdatedEvent((int)$recordUid, $table, $fields),
+            new RecordUpdatedEvent(
+                (int)$recordUid,
+                $table,
+                $fields,
+                isNewRecord: ($status === 'new' ? true : false),
+            ),
         );
     }
 }
