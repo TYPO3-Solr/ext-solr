@@ -35,22 +35,46 @@ class SystemTemplateRepository extends AbstractRepository
      */
     public function findOneClosestPageIdWithActiveTemplateByRootLine(array $rootLine): ?int
     {
+        if (empty($rootLine)) {
+            return null;
+        }
+
         $rootLinePageIds = [0];
-        foreach ($rootLine as $rootLineItem) {
-            $rootLinePageIds[] = (int)$rootLineItem['uid'];
+        $rootLinePositions = [];
+
+        // Create position mapping for sorting later
+        foreach ($rootLine as $position => $rootLineItem) {
+            $pageId = (int)$rootLineItem['uid'];
+            $rootLinePageIds[] = $pageId;
+            $rootLinePositions[$pageId] = $position;
         }
 
         $queryBuilder = $this->getQueryBuilder();
 
-        $result = $queryBuilder
+        // Get all pages with templates in the rootline
+        $templatesInRootline = $queryBuilder
             ->select('uid', 'pid')
             ->from($this->table)
             ->where(
-                $queryBuilder->expr()->in('pid', $rootLinePageIds)
+                $queryBuilder->expr()->in(
+                    'pid',
+                    $queryBuilder->createNamedParameter(
+                        $rootLinePageIds,
+                        \Doctrine\DBAL\ArrayParameterType::INTEGER
+                    )
+                )
             )
             ->executeQuery()
-            ->fetchAssociative();
+            ->fetchAllAssociative();
 
-        return $result['pid'] ?? null;
+        if (empty($templatesInRootline)) {
+            return null;
+        }
+
+        usort($templatesInRootline, function ($a, $b) use ($rootLinePositions) {
+            return $rootLinePositions[$b['pid']] <=> $rootLinePositions[$a['pid']];
+        });
+
+        return isset($templatesInRootline[0]['pid']) ? (int)$templatesInRootline[0]['pid'] : null;
     }
 }
