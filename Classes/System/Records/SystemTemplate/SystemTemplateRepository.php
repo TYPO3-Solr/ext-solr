@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\System\Records\SystemTemplate;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Exception as DBALException;
 
 /**
@@ -39,20 +40,48 @@ class SystemTemplateRepository extends AbstractRepository
             return null;
         }
 
+        [$rootLinePageIds, $rootLinePositions] = $this->extractPageIdsAndPositions($rootLine);
+        $templateRecords = $this->getTemplateRecordsFromRootlinePages($rootLinePageIds);
+
+        if (empty($templateRecords)) {
+            return null;
+        }
+
+        $this->sortTemplateRecordsByPageRootlinePosition($templateRecords, $rootLinePositions);
+
+        return isset($templateRecords[0]['pid']) ? (int)$templateRecords[0]['pid'] : null;
+    }
+
+    /**
+     * @param array<int, array{uid: int}> $rootLine
+     * @return array{0: list<int>, 1: array<int, int>}
+     */
+    protected function extractPageIdsAndPositions(array $rootLine): array
+    {
         $rootLinePageIds = [0];
         $rootLinePositions = [];
 
-        // Create position mapping for sorting later
         foreach ($rootLine as $position => $rootLineItem) {
             $pageId = (int)$rootLineItem['uid'];
             $rootLinePageIds[] = $pageId;
             $rootLinePositions[$pageId] = $position;
         }
 
+        return [$rootLinePageIds, $rootLinePositions];
+    }
+
+    /**
+     * Retrieves template records associated with the given page IDs from the rootline.
+     *
+     * @param list<int> $rootLinePageIds The page IDs from the rootline to search for templates on.
+     * @return list<array{uid: int, pid: int}> A list of template records (uid, pid) found, or an empty list if none are found.
+     * @throws DBALException
+     */
+    protected function getTemplateRecordsFromRootlinePages(array $rootLinePageIds): array
+    {
         $queryBuilder = $this->getQueryBuilder();
 
-        // Get all pages with templates in the rootline
-        $templatesInRootline = $queryBuilder
+        $result = $queryBuilder
             ->select('uid', 'pid')
             ->from($this->table)
             ->where(
@@ -60,21 +89,24 @@ class SystemTemplateRepository extends AbstractRepository
                     'pid',
                     $queryBuilder->createNamedParameter(
                         $rootLinePageIds,
-                        \Doctrine\DBAL\ArrayParameterType::INTEGER
+                        ArrayParameterType::INTEGER
                     )
                 )
             )
             ->executeQuery()
             ->fetchAllAssociative();
 
-        if (empty($templatesInRootline)) {
-            return null;
-        }
+        return $result ?: [];
+    }
 
-        usort($templatesInRootline, function ($a, $b) use ($rootLinePositions) {
-            return $rootLinePositions[$b['pid']] <=> $rootLinePositions[$a['pid']];
-        });
-
-        return isset($templatesInRootline[0]['pid']) ? (int)$templatesInRootline[0]['pid'] : null;
+    /**
+     * Sorts template records based on the rootline position of the page they belong to.
+     *
+     * @param list<array{uid: int, pid: int}> $templateRecords The template records to sort.
+     * @param array<int, int> $pageRootlinePositions A map of page IDs to their rootline positions.
+     */
+    protected function sortTemplateRecordsByPageRootlinePosition(array &$templateRecords, array $pageRootlinePositions): void
+    {
+        usort($templateRecords, static fn(array $a, array $b): int => $pageRootlinePositions[$b['pid']] <=> $pageRootlinePositions[$a['pid']]);
     }
 }
