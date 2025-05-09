@@ -25,6 +25,7 @@ use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\Log\NullLogger;
 use Traversable;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -33,7 +34,9 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Domain\Repository\SchedulerTaskRepository;
 use TYPO3\CMS\Scheduler\Scheduler;
+use TYPO3\CMS\Scheduler\Task\TaskSerializer;
 
 /**
  * This testcase is used to check if the GarbageCollector can delete garbage from the
@@ -983,7 +986,12 @@ class GarbageCollectorTest extends IntegrationTestBase
     protected function processEventQueue(): void
     {
         $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
-        $scheduler = GeneralUtility::makeInstance(Scheduler::class);
+        $scheduler = GeneralUtility::makeInstance(
+            Scheduler::class,
+            $this->createMock(NullLogger::class),
+            $this->createMock(TaskSerializer::class),
+            $this->createMock(SchedulerTaskRepository::class),
+        );
         $scheduler->executeTask($task);
     }
 }
