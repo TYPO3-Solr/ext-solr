@@ -73,6 +73,15 @@ class MountPagesUpdater
         }
     }
 
+    public function updateMountPoint(int $mountPointId): void
+    {
+        $mountingSite = $this->getSiteRepository()->getSiteByPageId($mountPointId);
+        $pageInitializer = $this->getPageInitializer();
+        $pageInitializer->setSite($mountingSite);
+        $pageInitializer->setIndexingConfigurationName('pages');
+        $pageInitializer->initializeMountPoint($mountPointId);
+    }
+
     /**
      * Adds a page to the Index Queue of a site mounting the page.
      *
@@ -83,14 +92,23 @@ class MountPagesUpdater
      */
     protected function addPageToMountingSiteIndexQueue(int $mountedPageId, array $mountProperties): void
     {
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $siteRepository = $this->getSiteRepository();
         $mountingSite = $siteRepository->getSiteByPageId($mountProperties['mountPageDestination']);
 
-        /** @var Page $pageInitializer */
-        $pageInitializer = GeneralUtility::makeInstance(Page::class);
+        $pageInitializer = $this->getPageInitializer();
         $pageInitializer->setSite($mountingSite);
         $pageInitializer->setIndexingConfigurationName('pages');
 
         $pageInitializer->initializeMountedPage($mountProperties, $mountedPageId);
+    }
+
+    protected function getPageInitializer(): Page
+    {
+        return GeneralUtility::makeInstance(Page::class);
+    }
+
+    protected function getSiteRepository(): SiteRepository
+    {
+        return GeneralUtility::makeInstance(SiteRepository::class);
     }
 }

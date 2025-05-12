@@ -17,8 +17,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -81,11 +83,44 @@ class PageStrategy extends AbstractStrategy
      */
     protected function collectPageGarbageByPageChange(int $uid): void
     {
-        $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent, sys_language_uid', '', false);
-        if (!empty($pageOverlay['l10n_parent']) && (int)($pageOverlay['l10n_parent']) !== 0) {
-            $this->deleteIndexDocuments('pages', (int)$pageOverlay['l10n_parent'], (int)$pageOverlay['sys_language_uid']);
+        $page = BackendUtility::getRecord('pages', $uid, '*', '', false);
+        if (!empty($page['l10n_parent']) && (int)($page['l10n_parent']) !== 0) {
+            $this->deleteIndexDocuments('pages', (int)$page['l10n_parent'], (int)$page['sys_language_uid']);
         } else {
             $this->deleteInSolrAndRemoveFromIndexQueue('pages', $uid);
         }
+
+        $this->collectMountPointGarbage($page);
+    }
+
+    protected function collectMountPointGarbage(?array $page): void
+    {
+        if ($page === null || (int)$page['doktype'] !== PageRepository::DOKTYPE_MOUNTPOINT) {
+            return;
+        }
+
+        $mountPointUid = (GeneralUtility::makeInstance(TCAService::class))
+            ->getTranslationOriginalUidIfTranslated('pages', $page, $page['uid']);
+
+        $site = $this->siteRepository->getSiteByPageId($page['pid']);
+        $itemUids = array_map(
+            static function (array $item): int {
+                return (int)$item['uid'];
+            },
+            $this->queueItemRepository->findAllIndexQueueItemsByRootPidAndMountIdentifier(
+                $site->getRootPageId(),
+                $page['mount_pid'] . '-' . $mountPointUid . '-' . $site->getRootPageId()
+            )
+        );
+
+        if ($itemUids !== []) {
+            if ($page['uid'] !== $mountPointUid) {
+                $this->queueItemRepository->updateItemsChangedTime(time(), uids: $itemUids);
+            } else {
+                $this->queueItemRepository->deleteItems(uids: $itemUids);
+            }
+        }
+
+        $this->deleteMountedPagesInAllSolrConnections($site, $page['mount_pid'] . '-' . $mountPointUid);
     }
 }
