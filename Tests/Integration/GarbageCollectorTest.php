@@ -94,7 +94,7 @@ class GarbageCollectorTest extends IntegrationTestBase
             $this->extensionConfiguration,
             $this->eventQueue,
             $this->backendUser,
-            $GLOBALS['LANG']
+            $GLOBALS['LANG'],
         );
         parent::tearDown();
     }
@@ -109,7 +109,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         self::assertGreaterThan(
             0,
             $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to be not empty.'
+            'Index queue is empty and was expected to be not empty.',
         );
     }
 
@@ -119,7 +119,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         self::assertEquals(
             $amount,
             $itemsInQueue,
-            'Index queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.'
+            'Index queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.',
         );
     }
 
@@ -134,7 +134,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         self::assertEquals(
             $amount,
             $itemsInQueue,
-            'Event queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.'
+            'Event queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.',
         );
     }
 
@@ -311,7 +311,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler->start(
             [],
             ['pages' => [10 => ['move' => 2]]],
-            $this->backendUser
+            $this->backendUser,
         );
 
         $this->dataHandler->process_cmdmap();
@@ -335,7 +335,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler->start(
             [],
             ['pages' => [10 => ['move' => 4]]],
-            $this->backendUser
+            $this->backendUser,
         );
         $this->dataHandler->process_cmdmap();
         $this->assertEmptyIndexQueue();
@@ -358,7 +358,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler->start(
             [],
             ['pages' => [10 => ['move' => -2]]],
-            $this->backendUser
+            $this->backendUser,
         );
 
         $this->dataHandler->process_cmdmap();
@@ -407,7 +407,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler->start(
             ['pages' => [2 => ['hidden' => 1]]],
             [],
-            $this->backendUser
+            $this->backendUser,
         );
         $this->dataHandler->process_datamap();
     }
@@ -459,7 +459,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler->start(
             [],
             ['pages' => [2 => ['delete' => 1 ]]],
-            $this->backendUser
+            $this->backendUser,
         );
         $this->dataHandler->process_cmdmap();
     }
@@ -943,7 +943,7 @@ class GarbageCollectorTest extends IntegrationTestBase
                     type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
-            }'
+            }',
         );
 
         $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();

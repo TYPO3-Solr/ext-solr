@@ -58,7 +58,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
             $facetName,
             $fieldName,
             $label,
-            $facetConfiguration
+            $facetConfiguration,
         );
 
         $activeFacets = $resultSet->getUsedSearchRequest()->getActiveFacetNames();
@@ -82,7 +82,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
                     $value,
                     $count,
                     $facetName,
-                    $facetConfiguration
+                    $facetConfiguration,
                 );
                 $facet->addOption(GeneralUtility::makeInstance(Option::class, $facet, $label, $value, $count, $isOptionsActive));
             }

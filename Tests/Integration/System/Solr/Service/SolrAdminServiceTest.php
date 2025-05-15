@@ -46,7 +46,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
         $adapter = new Curl();
         $client = new Client(
             $adapter,
-            $eventDispatcher
+            $eventDispatcher,
         );
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
@@ -186,7 +186,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
         $adapter = new Curl();
         $client = new Client(
             $adapter,
-            $eventDispatcher
+            $eventDispatcher,
         );
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();

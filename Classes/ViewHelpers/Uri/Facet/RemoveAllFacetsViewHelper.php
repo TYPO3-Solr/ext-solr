@@ -28,7 +28,7 @@ class RemoveAllFacetsViewHelper extends AbstractUriViewHelper
     public function render(): string
     {
         return self::getSearchUriBuilder($this->renderingContext)->getRemoveAllFacetsUri(
-            static::getUsedSearchRequestFromRenderingContext($this->renderingContext)
+            static::getUsedSearchRequestFromRenderingContext($this->renderingContext),
         );
     }
 }

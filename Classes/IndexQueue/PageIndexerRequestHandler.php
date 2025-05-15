@@ -67,7 +67,7 @@ class PageIndexerRequestHandler
                     'Page indexer request received',
                     [
                         'request' => (array)$request,
-                    ]
+                    ],
                 );
             }
         }

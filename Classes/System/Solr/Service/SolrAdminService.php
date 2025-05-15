@@ -131,7 +131,7 @@ class SolrAdminService extends AbstractSolrService
         if (!isset($this->lukeData[$numberOfTerms])) {
             $lukeUrl = $this->_constructUrl(
                 self::LUKE_SERVLET,
-                ['numTerms' => $numberOfTerms, 'wt' => 'json', 'fl' => '*']
+                ['numTerms' => $numberOfTerms, 'wt' => 'json', 'fl' => '*'],
             );
 
             $this->lukeData[$numberOfTerms] = $this->_sendRawGet($lukeUrl);

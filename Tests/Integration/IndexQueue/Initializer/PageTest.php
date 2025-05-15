@@ -79,7 +79,7 @@ class PageTest extends IntegrationTestBase
         foreach ($sites as $site) {
             $this->pageInitializer->setIndexingConfigurationName('pages');
             $this->pageInitializer->setIndexingConfiguration(
-                $site->getSolrConfiguration()->getIndexQueueConfigurationByName('pages')
+                $site->getSolrConfiguration()->getIndexQueueConfigurationByName('pages'),
             );
             $this->pageInitializer->setSite($site);
             $this->pageInitializer->setType('pages');
@@ -275,7 +275,7 @@ class PageTest extends IntegrationTestBase
         self::assertTrue(
             $this->indexQueue->containsItem('pages', 3),
             'The index queue does not contain the sub pages of restricted by additionalWhereClause page.' . PHP_EOL
-            . 'The initializer MUST NOT ignore the sub pages of restricted pages.'
+            . 'The initializer MUST NOT ignore the sub pages of restricted pages.',
         );
     }
 }

@@ -147,15 +147,15 @@ class InfoModuleController extends AbstractModuleController
 
         $this->moduleTemplate->assign(
             'top_search_phrases',
-            $statisticsRepository->getTopKeyWordsWithHits($statisticsFilter)
+            $statisticsRepository->getTopKeyWordsWithHits($statisticsFilter),
         );
         $this->moduleTemplate->assign(
             'top_search_phrases_without_hits',
-            $statisticsRepository->getTopKeyWordsWithoutHits($statisticsFilter)
+            $statisticsRepository->getTopKeyWordsWithoutHits($statisticsFilter),
         );
         $this->moduleTemplate->assign(
             'search_phrases_statistics',
-            $statisticsRepository->getSearchStatistics($statisticsFilter)
+            $statisticsRepository->getSearchStatistics($statisticsFilter),
         );
 
         $labels = [];
@@ -215,7 +215,7 @@ class InfoModuleController extends AbstractModuleController
                 $this->addFlashMessage(
                     '',
                     'Unable to contact Apache Solr server: ' . $this->selectedSite->getLabel() . ' ' . $coreAdmin->getCorePath(),
-                    ContextualFeedbackSeverity::ERROR
+                    ContextualFeedbackSeverity::ERROR,
                 );
             }
             $indexFieldsInfoByCorePaths[$coreAdmin->getCorePath()] = $indexFieldsInfo;
@@ -308,7 +308,7 @@ class InfoModuleController extends AbstractModuleController
     {
         $frameWorkConfiguration = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
-            'solr'
+            'solr',
         );
         $statisticsConfig = $frameWorkConfiguration['plugin.']['tx_solr.']['statistics.'] ?? [];
 

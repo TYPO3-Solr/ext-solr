@@ -96,7 +96,7 @@ class QueueInitializerServiceTest extends SetUpUnitTestCase
                             'MyPagesInitializer',
                             'pages',
                             $fakeTs['plugin.']['tx_solr.']['index.']['queue.']['my_pages.'],
-                        ]
+                        ],
                     ),
                     2 => self::assertEquals(
                         func_get_args(),
@@ -106,9 +106,9 @@ class QueueInitializerServiceTest extends SetUpUnitTestCase
                             'MyNewsInitializer',
                             'tx_news_domain_model_news',
                             $fakeTs['plugin.']['tx_solr.']['index.']['queue.']['my_news.'],
-                        ]
+                        ],
                     ),
-                    default => self::fail('Unexpected number of invocations: ' . $matcher->numberOfInvocations())
+                    default => self::fail('Unexpected number of invocations: ' . $matcher->numberOfInvocations()),
                 };
 
                 return true;

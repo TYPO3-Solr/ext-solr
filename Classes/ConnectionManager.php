@@ -169,7 +169,7 @@ class ConnectionManager implements SingletonInterface
         return $this->getSolrConnectionForEndpoints(
             $solrConfiguration['read'],
             $solrConfiguration['write'],
-            $typoScriptConfiguration
+            $typoScriptConfiguration,
         );
     }
 
@@ -211,7 +211,7 @@ class ConnectionManager implements SingletonInterface
         if ($config === null) {
             throw $this->buildNoConnectionExceptionForPageAndLanguage(
                 $typo3Site->getRootPageId(),
-                $languageUid
+                $languageUid,
             );
         }
 
@@ -329,7 +329,7 @@ class ConnectionManager implements SingletonInterface
 
         throw $this->buildNoConnectionException(
             $message,
-            $previous
+            $previous,
         );
     }
 
@@ -343,7 +343,7 @@ class ConnectionManager implements SingletonInterface
         return new NoSolrConnectionFoundException(
             $message,
             1575396474,
-            $previous
+            $previous,
         );
     }
 }

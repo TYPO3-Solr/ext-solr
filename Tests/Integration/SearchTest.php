@@ -327,7 +327,7 @@ class SearchTest extends IntegrationTestBase
         self::assertTrue(
             // @extensionScannerIgnoreLine
             $parsedDatasByPhraseSlop[1]->response->docs[3]->getScore() === $parsedDatasByPhraseSlop[1]->response->docs[4]->getScore(),
-            'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=1.'
+            'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=1.',
         );
 
         // slop = 2
@@ -338,7 +338,7 @@ class SearchTest extends IntegrationTestBase
         self::assertTrue(
             // @extensionScannerIgnoreLine
             $parsedDatasByPhraseSlop[2]->response->docs[5]->getScore() === $parsedDatasByPhraseSlop[2]->response->docs[6]->getScore(),
-            'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=2.'
+            'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=2.',
         );
     }
 
@@ -412,7 +412,7 @@ class SearchTest extends IntegrationTestBase
         self::assertTrue(
             $slop0ResponseDocs[3]->getUid() === $slop1ResponseDocs[3]->getUid()
             && $slop0ResponseDocs[3]->getScore() < $slop1ResponseDocs[3]->getScore(),
-            'Trigram phrase slop value = 1 does not boost docs with "sloppy phrases"'
+            'Trigram phrase slop value = 1 does not boost docs with "sloppy phrases"',
         );
 
         // @extensionScannerIgnoreLine
@@ -420,7 +420,7 @@ class SearchTest extends IntegrationTestBase
         self::assertTrue(
             $slop1ResponseDocs[5]->getUid() === $slop2ResponseDocs[5]->getUid()
             && $slop0ResponseDocs[5]->getScore() < $slop1ResponseDocs[5]->getScore(),
-            'Trigram phrase slop value = 2 does not boost docs with "sloppy phrases"'
+            'Trigram phrase slop value = 2 does not boost docs with "sloppy phrases"',
         );
     }
 

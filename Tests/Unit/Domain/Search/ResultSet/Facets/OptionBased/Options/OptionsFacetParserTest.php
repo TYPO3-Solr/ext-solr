@@ -37,14 +37,14 @@ class OptionsFacetParserTest extends SetUpUnitTestCase
                   ]
                 }
               }
-            }'
+            }',
         );
         $optionsFacetParser = $this->getAccessibleMock(
             OptionsFacetParser::class,
             null,
             [],
             '',
-            false
+            false,
         );
         /** @link OptionsFacetParser::getOptionsFromSolrResponse */
         $optionsArray = $optionsFacetParser->_call(

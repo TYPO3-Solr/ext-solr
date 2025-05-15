@@ -47,7 +47,7 @@ class NumericRangeUrlDecoder implements FacetUrlDecoderInterface
         if ($filterParts[1] == '' || $filterParts[2] == '') {
             throw new InvalidArgumentException(
                 'Invalid numeric range given',
-                1466062730
+                1466062730,
             );
         }
 

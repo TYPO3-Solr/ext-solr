@@ -70,7 +70,7 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
                 'configuration' => $configuration,
                 'resultSet' => $this->arguments['resultSet'],
                 'groupItem' => $this->arguments['groupItem'],
-            ]
+            ],
         );
 
         $paginationRendered = $paginationView->render();

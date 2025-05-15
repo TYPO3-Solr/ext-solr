@@ -83,7 +83,7 @@ class SolrStatus extends AbstractSolrStatus
                 'Apache Solr connection',
                 'No Apache Solr connection configured',
                 '',
-                ContextualFeedbackSeverity::WARNING
+                ContextualFeedbackSeverity::WARNING,
             );
         }
 
@@ -114,7 +114,7 @@ class SolrStatus extends AbstractSolrStatus
             ->getSolrConnectionForEndpoints(
                 $solrConnection['read'],
                 $solrConnection['write'],
-                $site->getSolrConfiguration()
+                $site->getSolrConfiguration(),
             )
             ->getAdminService();
 
@@ -147,7 +147,7 @@ class SolrStatus extends AbstractSolrStatus
             'Apache Solr Connection',
             $header,
             $report,
-            $this->responseStatus
+            $this->responseStatus,
         );
     }
 

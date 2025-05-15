@@ -329,7 +329,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
         trigger_error(
             'DataUpdateHandler->removeFromIndexAndQueueWhenItemInQueue is deprecated and will be removed in v13.'
             . ' Use DataUpdateHandler->removeFromIndexAndQueue instead.',
-            E_USER_DEPRECATED
+            E_USER_DEPRECATED,
         );
 
         if (!$this->indexQueue->containsItem($recordTable, $recordUid)) {
@@ -485,7 +485,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
         $alternativeSiteRoots = $this->rootPageResolver->getAlternativeSiteRootPagesIds(
             $recordTable,
             $recordUid,
-            $recordPageId
+            $recordPageId,
         );
         return (int)array_pop($alternativeSiteRoots);
     }

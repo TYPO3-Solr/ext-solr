@@ -165,5 +165,5 @@ $GLOBALS['SiteConfiguration']['site_language']['columns']['solr_core_read'] = [
 $GLOBALS['SiteConfiguration']['site_language']['types']['1']['showitem'] = str_replace(
     'flag',
     'flag, solr_core_read, ',
-    $GLOBALS['SiteConfiguration']['site_language']['types']['1']['showitem']
+    $GLOBALS['SiteConfiguration']['site_language']['types']['1']['showitem'],
 );

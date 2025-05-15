@@ -52,12 +52,12 @@ class SolrConfigurationStatusTest extends IntegrationTestBase
         self::assertEquals(
             $results[0]->getSeverity(),
             ContextualFeedbackSeverity::OK,
-            'We expect to get no violations concerning root page configurations'
+            'We expect to get no violations concerning root page configurations',
         );
         self::assertEquals(
             $results[1]->getSeverity(),
             ContextualFeedbackSeverity::OK,
-            'We expect to get no violations concerning index enable flags'
+            'We expect to get no violations concerning index enable flags',
         );
     }
 
@@ -89,12 +89,12 @@ class SolrConfigurationStatusTest extends IntegrationTestBase
         self::assertEquals(
             $results[0]->getSeverity(),
             ContextualFeedbackSeverity::OK,
-            'We expect to get no violations concerning root page configurations'
+            'We expect to get no violations concerning root page configurations',
         );
         self::assertStringContainsString(
             'Indexing is disabled',
             $results[1]->getValue(),
-            'Did not get an indexing disabled violation'
+            'Did not get an indexing disabled violation',
         );
     }
 }

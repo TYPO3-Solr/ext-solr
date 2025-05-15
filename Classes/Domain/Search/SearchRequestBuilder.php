@@ -121,7 +121,7 @@ class SearchRequestBuilder
                 $argumentsNamespace => $controllerArguments,
             ],
             $pageId,
-            $languageId
+            $languageId,
         );
     }
 
@@ -135,7 +135,7 @@ class SearchRequestBuilder
             $requestArguments,
             $pageId,
             $languageId,
-            $this->typoScriptConfiguration
+            $this->typoScriptConfiguration,
         );
     }
 

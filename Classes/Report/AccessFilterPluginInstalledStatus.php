@@ -76,7 +76,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
                 'Solr Access Filter Plugin',
                 'OK',
                 'Solr Access Filter Plugin is installed in at least version ' . self::RECOMMENDED_PLUGIN_VERSION,
-                ContextualFeedbackSeverity::OK
+                ContextualFeedbackSeverity::OK,
             );
         }
 
@@ -108,7 +108,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
             'Solr Access Filter Plugin',
             'Not Installed',
             $report,
-            ContextualFeedbackSeverity::WARNING
+            ContextualFeedbackSeverity::WARNING,
         );
     }
 
@@ -130,7 +130,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
             'Solr Access Filter Plugin',
             'Outdated',
             $report,
-            ContextualFeedbackSeverity::WARNING
+            ContextualFeedbackSeverity::WARNING,
         );
     }
 

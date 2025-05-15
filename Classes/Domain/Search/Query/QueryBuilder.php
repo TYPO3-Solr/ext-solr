@@ -370,7 +370,7 @@ class QueryBuilder extends AbstractQueryBuilder
                 $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
                 $searchQueryFilters['__pageSections'] = $cObj->stdWrap(
                     $searchQueryFilters['__pageSections'],
-                    $searchQueryFilters['__pageSections.']
+                    $searchQueryFilters['__pageSections.'],
                 );
             }
             $pageIds = GeneralUtility::trimExplode(',', (string)$searchQueryFilters['__pageSections']);

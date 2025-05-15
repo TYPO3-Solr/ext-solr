@@ -35,7 +35,7 @@ class NumericRangeFacetQueryBuilderTest extends SetUpUnitTestCase
         ];
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
-            $fakeFacetConfiguration
+            $fakeFacetConfiguration,
         );
 
         $builder = new NumericRangeFacetQueryBuilder();

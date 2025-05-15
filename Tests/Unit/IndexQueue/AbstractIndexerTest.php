@@ -109,7 +109,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
                 $tsfe,
                 0,
             ),
-            $expectedValue
+            $expectedValue,
         );
     }
 

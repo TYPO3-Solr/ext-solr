@@ -97,7 +97,7 @@ class Classification extends AbstractContentObject
                 ClassificationItem::class,
                 $matchPatterns,
                 $unMatchPatters,
-                $className
+                $className,
             );
         }
 

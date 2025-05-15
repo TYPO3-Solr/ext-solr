@@ -84,7 +84,7 @@ class RootlineElement
             if (count($elementAccess) !== 2) {
                 throw new RootlineElementFormatException(
                     'Wrong Access Rootline Element format for a record type element.',
-                    1308342937
+                    1308342937,
                 );
             }
 
@@ -95,7 +95,7 @@ class RootlineElement
             if (count($elementAccess) !== 2 || !is_numeric($elementAccess[0])) {
                 throw new RootlineElementFormatException(
                     'Wrong Access Rootline Element format for a page type element.',
-                    1294421105
+                    1294421105,
                 );
             }
 

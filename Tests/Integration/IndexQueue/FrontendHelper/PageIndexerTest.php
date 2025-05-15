@@ -65,7 +65,7 @@ class PageIndexerTest extends IntegrationTestBase
               custom_stringS = TEXT
               custom_stringS.value = my text
             }
-            '
+            ',
         );
 
         $this->indexQueuedPage();
@@ -99,7 +99,7 @@ class PageIndexerTest extends IntegrationTestBase
               fields.custom_stringS = TEXT
               fields.custom_stringS.value = my text from custom page type
             }
-            '
+            ',
         );
 
         $this->indexQueuedPage();
@@ -132,7 +132,7 @@ class PageIndexerTest extends IntegrationTestBase
               enableRecursiveValueResolution = 0
               multiValue = 1
             }
-            '
+            ',
         );
 
         $this->indexQueuedPage(4711, 0);
@@ -172,7 +172,7 @@ class PageIndexerTest extends IntegrationTestBase
               foreignLabelField = title
               multiValue = 1
             }
-            '
+            ',
         );
 
         $this->indexQueuedPage();
@@ -199,7 +199,7 @@ class PageIndexerTest extends IntegrationTestBase
               additional_custom_stringS = TEXT
               additional_custom_stringS.value = my text
             }
-            '
+            ',
         );
         $this->indexQueuedPage();
 
@@ -228,7 +228,7 @@ class PageIndexerTest extends IntegrationTestBase
             '
             plugin.tx_solr.index.queue.pages.fields.additional_stringS = TEXT
             plugin.tx_solr.index.queue.pages.fields.additional_stringS.value = from rootline
-            '
+            ',
         );
 
         $this->indexQueuedPage();
@@ -273,7 +273,7 @@ class PageIndexerTest extends IntegrationTestBase
               custom_stringS = TEXT
               custom_stringS.value = my text
             }
-            '
+            ',
         );
         $this->indexQueuedPage(4711, 0, ['additionalTestPageIndexer' => 1]);
 
@@ -436,7 +436,7 @@ class PageIndexerTest extends IntegrationTestBase
                 $url->getQuery()
                     . '&id=' . $item->getRecordUid()
                     . GeneralUtility::implodeArrayForUrl('', $additionalQueryParams),
-                '&'
+                '&',
             );
             $cacheHash = GeneralUtility::makeInstance(CacheHashCalculator::class)->generateForParameters($queryString);
             if ($cacheHash) {

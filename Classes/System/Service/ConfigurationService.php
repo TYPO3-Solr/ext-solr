@@ -87,7 +87,7 @@ class ConfigurationService
                         'filter' => $filter,
                     ],
                 ],
-            ]
+            ],
         );
     }
 

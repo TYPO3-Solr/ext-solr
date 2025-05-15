@@ -49,7 +49,7 @@ abstract class SetUpFacetParser extends SetUpUnitTestCase
         $searchResultSet->setResponse($fakeResponse);
 
         $activeUrlFacets = new UrlFacetContainer(
-            new ArrayAccessor([ 'tx_solr' => ['filter' => $activeFilters] ])
+            new ArrayAccessor([ 'tx_solr' => ['filter' => $activeFilters] ]),
         );
         $configuration = [];
         $configuration['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = $facetConfiguration;

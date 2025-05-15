@@ -39,7 +39,7 @@ abstract class AbstractRangeFacetItem extends AbstractFacetItem
             $this->label,
             $this->documentCount,
             $this->selected,
-            $this->metrics
+            $this->metrics,
         );
     }
 

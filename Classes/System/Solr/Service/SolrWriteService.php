@@ -54,7 +54,7 @@ class SolrWriteService extends AbstractSolrService
                     'file' => $query->getFile(),
                     'query url' => self::EXTRACT_SERVLET,
                     'exception' => $e->getMessage(),
-                ]
+                ],
             );
             return [
                 null,
@@ -62,7 +62,7 @@ class SolrWriteService extends AbstractSolrService
                 new ResponseAdapter(
                     $e->getTraceAsString(),
                     $e->getCode(),
-                    $e->getMessage()
+                    $e->getMessage(),
                 ),
             ];
         }

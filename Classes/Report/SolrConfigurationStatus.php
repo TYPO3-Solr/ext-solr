@@ -88,7 +88,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
                 'Sites',
                 'OK',
                 '',
-                ContextualFeedbackSeverity::OK
+                ContextualFeedbackSeverity::OK,
             );
         }
 
@@ -98,7 +98,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
             'Sites',
             'No sites found',
             $report,
-            ContextualFeedbackSeverity::ERROR
+            ContextualFeedbackSeverity::ERROR,
         );
     }
 
@@ -119,7 +119,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
                 'Page Indexing',
                 'OK',
                 '',
-                ContextualFeedbackSeverity::OK
+                ContextualFeedbackSeverity::OK,
             );
         }
 
@@ -129,7 +129,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
             'Page Indexing',
             'Indexing is disabled',
             $report,
-            ContextualFeedbackSeverity::WARNING
+            ContextualFeedbackSeverity::WARNING,
         );
     }
 

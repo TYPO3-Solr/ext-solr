@@ -105,7 +105,7 @@ abstract class AbstractBaseController extends ActionController
             $this->typoScriptConfiguration->mergeSolrConfiguration(
                 $typoScriptService->convertPlainArrayToTypoScriptArray($pluginSettings),
                 true,
-                false
+                false,
             );
         }
 
@@ -113,7 +113,7 @@ abstract class AbstractBaseController extends ActionController
             GeneralUtility::makeInstance(ConfigurationService::class)
                 ->overrideConfigurationWithFlexFormSettings(
                     $this->contentObjectRenderer->data['pi_flexform'],
-                    $this->typoScriptConfiguration
+                    $this->typoScriptConfiguration,
                 );
         }
 
@@ -134,7 +134,7 @@ abstract class AbstractBaseController extends ActionController
 
         // Make sure plugin.tx_solr.settings are available in the view as {settings}
         $this->settings = $typoScriptService->convertTypoScriptArrayToPlainArray(
-            $this->typoScriptConfiguration->getObjectByPathOrDefault('plugin.tx_solr.settings.')
+            $this->typoScriptConfiguration->getObjectByPathOrDefault('plugin.tx_solr.settings.'),
         );
     }
 
@@ -155,7 +155,7 @@ abstract class AbstractBaseController extends ActionController
             $this->searchService = GeneralUtility::makeInstance(
                 SearchResultSetService::class,
                 $this->typoScriptConfiguration,
-                $search
+                $search,
             );
         } catch (NoSolrConnectionFoundException) {
             $this->logSolrUnavailable();

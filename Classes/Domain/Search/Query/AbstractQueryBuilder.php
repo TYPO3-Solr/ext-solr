@@ -282,7 +282,7 @@ abstract class AbstractQueryBuilder
                 $queryString = $query->getQuery();
                 $storedFieldName = substr($queryString, 0, strpos($queryString, ':'));
                 return $storedFieldName == $fieldName;
-            }
+            },
         );
     }
 
@@ -294,7 +294,7 @@ abstract class AbstractQueryBuilder
         return $this->removeFilterByFunction(
             function ($key, $query) use ($name) {
                 return $query->getKey() === $name;
-            }
+            },
         );
     }
 
@@ -307,7 +307,7 @@ abstract class AbstractQueryBuilder
             function ($key, $query) use ($value) {
                 $query = $query->getQuery();
                 return $query == $value;
-            }
+            },
         );
     }
 

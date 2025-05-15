@@ -119,7 +119,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
                     ->getAttribute(ServerRequestInterface::class)
                     ->getAttribute('language')
                     ?->getLanguageId() ?? 0
-            )
+            ),
         );
         // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('existingParameters', $this->getExistingSearchParameters());
@@ -175,7 +175,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
             if (is_array($value)) {
                 $attributes = array_merge(
                     $attributes,
-                    $this->translateSearchParametersToInputTagAttributes($value, $name)
+                    $this->translateSearchParametersToInputTagAttributes($value, $name),
                 );
             } else {
                 $attributes[$name] = $value;

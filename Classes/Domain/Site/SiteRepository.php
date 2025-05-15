@@ -59,7 +59,7 @@ class SiteRepository
         ?SiteFinder $siteFinder = null,
         ?ExtensionConfiguration $extensionConfiguration = null,
         ?FrontendEnvironment $frontendEnvironment = null,
-        ?EventDispatcherInterface $eventDispatcherInterface = null
+        ?EventDispatcherInterface $eventDispatcherInterface = null,
     ) {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
@@ -222,7 +222,7 @@ class SiteRepository
                     throw new UnexpectedTYPO3SiteInitializationException(
                         'Something went wrong on TYPO3 site initialization. See stack trace for more information.',
                         1680859613,
-                        $e
+                        $e,
                     );
                 }
             }
@@ -241,7 +241,7 @@ class SiteRepository
         if (empty($rootPageRecord)) {
             throw new InvalidArgumentException(
                 "The rootPageRecord for the given rootPageRecord ID '$rootPageId' could not be found in the database and can therefore not be used as site root rootPageRecord.",
-                1487326416
+                1487326416,
             );
         }
 
@@ -275,7 +275,7 @@ class SiteRepository
         if (!SiteUtility::isRootPage($rootPageRecord)) {
             throw new InvalidArgumentException(
                 'The rootPageRecord for the given rootPageRecord ID \'' . $rootPageRecord['uid'] . '\' is not marked as root rootPageRecord and can therefore not be used as site root rootPageRecord.',
-                1309272922
+                1309272922,
             );
         }
     }
@@ -298,7 +298,7 @@ class SiteRepository
 
         $domain = $typo3Site->getBase()->getHost();
         $event = $this->eventDispatcher->dispatch(
-            new AfterDomainHasBeenDeterminedForSiteEvent($domain, $rootPageRecord, $typo3Site, $this->extensionConfiguration)
+            new AfterDomainHasBeenDeterminedForSiteEvent($domain, $rootPageRecord, $typo3Site, $this->extensionConfiguration),
         );
         $domain = $event->getDomain();
 
@@ -342,7 +342,7 @@ class SiteRepository
             $defaultLanguage,
             $availableLanguageIds,
             $solrConnectionConfigurations,
-            $typo3Site
+            $typo3Site,
         );
     }
 

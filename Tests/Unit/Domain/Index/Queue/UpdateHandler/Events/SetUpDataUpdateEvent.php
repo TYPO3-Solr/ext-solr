@@ -131,7 +131,7 @@ abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
         if ($event->getFields() !== []) {
             $requiredUpdateFields = array_unique(array_merge(
                 DataUpdateHandler::getRequiredUpdatedFields(),
-                GarbageHandler::getRequiredUpdatedFields()
+                GarbageHandler::getRequiredUpdatedFields(),
             ));
 
             foreach ($requiredUpdateFields as $requiredUpdateField) {

@@ -293,12 +293,12 @@ class RelationTest extends IntegrationTestBase
             ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
             ->withAttribute(
                 'language',
-                $this->createMock(SiteLanguage::class)
+                $this->createMock(SiteLanguage::class),
             );
         $contentObjectRenderer->setRequest($serverRequest);
         $contentObjectRenderer->start(
             BackendUtility::getRecord($table, $uid),
-            $table
+            $table,
         );
         /** @var Relation $relation */
         $relation = $contentObjectRenderer->getContentObject(Relation::CONTENT_OBJECT_NAME);

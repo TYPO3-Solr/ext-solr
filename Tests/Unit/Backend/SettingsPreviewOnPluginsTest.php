@@ -51,8 +51,8 @@ class SettingsPreviewOnPluginsTest extends SetUpUnitTestCase
                 'tt_content',
                 [
                     'CType' => 'some_other_CE',
-                ]
-            )
+                ],
+            ),
         );
     }
 
@@ -76,7 +76,7 @@ class SettingsPreviewOnPluginsTest extends SetUpUnitTestCase
             $table,
             (string)($record[(string)($GLOBALS['TCA'][$table]['ctrl']['type'] ?? '')] ?? ''),
             $record,
-            $pageLayoutContextMock
+            $pageLayoutContextMock,
         );
     }
 

@@ -39,7 +39,7 @@ class StatisticsRepository extends AbstractRepository
             $statisticsFilterDto->getSiteRootPageId(),
             $statisticsFilterDto->getQueriesStartDate(),
             $statisticsFilterDto->getEndDateTimestamp(),
-            $statisticsFilterDto->getQueriesLimit()
+            $statisticsFilterDto->getQueriesLimit(),
         )
             ->executeQuery()
             ->fetchAllAssociative();
@@ -66,7 +66,7 @@ class StatisticsRepository extends AbstractRepository
             ->addSelect(
                 $queryBuilder->expr()->count('keywords', 'count'),
                 $queryBuilder->expr()->avg('num_found', 'hits'),
-                '(' . $queryBuilder->expr()->count('keywords') . ' * 100 / ' . $countRows . ') AS percent'
+                '(' . $queryBuilder->expr()->count('keywords') . ' * 100 / ' . $countRows . ') AS percent',
             );
 
         $queryBuilder
@@ -74,7 +74,7 @@ class StatisticsRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->gt('tstamp', $timeStart),
                 $queryBuilder->expr()->lt('tstamp', $timeEnd),
-                $queryBuilder->expr()->eq('root_pid', $rootPageId)
+                $queryBuilder->expr()->eq('root_pid', $rootPageId),
             )
             ->groupBy('keywords')
             ->orderBy('count', 'DESC')
@@ -95,7 +95,7 @@ class StatisticsRepository extends AbstractRepository
             $filterDto->getSiteRootPageId(),
             $filterDto->getTopHitsStartDate(),
             $filterDto->getEndDateTimestamp(),
-            $filterDto->getTopHitsLimit()
+            $filterDto->getTopHitsLimit(),
         );
     }
 
@@ -111,7 +111,7 @@ class StatisticsRepository extends AbstractRepository
             $filterDto->getNoHitsStartDate(),
             $filterDto->getEndDateTimestamp(),
             $filterDto->getNoHitsLimit(),
-            true
+            true,
         );
     }
 
@@ -131,7 +131,7 @@ class StatisticsRepository extends AbstractRepository
             $rootPageId,
             $timeStart,
             $timeEnd,
-            $limit
+            $limit,
         );
 
         // Check if we want without or with hits
@@ -159,13 +159,13 @@ class StatisticsRepository extends AbstractRepository
             ->addSelectLiteral(
                 'FLOOR(tstamp/' . $bucketSeconds . ') AS bucket',
                 '(tstamp - (tstamp % 86400)) AS timestamp',
-                $queryBuilder->expr()->count('*', 'numQueries')
+                $queryBuilder->expr()->count('*', 'numQueries'),
             )
             ->from($this->table)
             ->andWhere(
                 $queryBuilder->expr()->gt('tstamp', $statisticsFilterDto->getQueriesStartDate()),
                 $queryBuilder->expr()->lt('tstamp', $statisticsFilterDto->getEndDateTimestamp()),
-                $queryBuilder->expr()->eq('root_pid', $statisticsFilterDto->getSiteRootPageId())
+                $queryBuilder->expr()->eq('root_pid', $statisticsFilterDto->getSiteRootPageId()),
             )
             ->groupBy('bucket', 'timestamp')
             ->orderBy('bucket', 'ASC')
@@ -184,7 +184,7 @@ class StatisticsRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->addSelectLiteral(
-                $frequentSearchConfiguration['select.']['SELECT']
+                $frequentSearchConfiguration['select.']['SELECT'],
             )
             ->from($frequentSearchConfiguration['select.']['FROM']);
 

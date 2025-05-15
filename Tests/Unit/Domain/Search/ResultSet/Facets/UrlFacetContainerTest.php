@@ -66,7 +66,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
-            'assoc'
+            'assoc',
         );
         self::assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
@@ -86,7 +86,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
-            'assoc'
+            'assoc',
         );
         self::assertEquals(4, $urlFacetBack->count());
         $urlFacetBack->removeAllFacets();
@@ -108,7 +108,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
-            'assoc'
+            'assoc',
         );
         self::assertEquals(4, $urlFacetBack->count());
         $urlFacetBack->removeAllFacetValuesByName('type');
@@ -130,7 +130,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
-            'assoc'
+            'assoc',
         );
         $urlFacetBack->removeFacetValue('type', 'example');
         self::assertEquals(3, $urlFacetBack->count());
@@ -157,11 +157,11 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
-            'assoc'
+            'assoc',
         );
         self::assertNotEquals(
             ['pages', 'example', 'news'],
-            $urlFacetBack->getActiveFacetValuesByName('type')
+            $urlFacetBack->getActiveFacetValuesByName('type'),
         );
     }
 
@@ -171,7 +171,7 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
         $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
-            'assoc'
+            'assoc',
         );
         self::assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }

@@ -50,7 +50,7 @@ class PageIndexerTest extends IntegrationTestBase
             page.10.renderObj.5 = TEXT
             page.10.renderObj.5.field = header
             page.10.stdWrap.dataWrap = <!--TYPO3SEARCH_begin-->|<!--TYPO3SEARCH_end-->
-            '
+            ',
         );
         $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
@@ -102,7 +102,7 @@ class PageIndexerTest extends IntegrationTestBase
 
         $solrContent = json_decode(
             file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $core . '/select?q=*:*&sort=access%20asc'),
-            true
+            true,
         );
 
         self::assertEquals($expectedNumFound, $solrContent['response']['numFound'] ?? 0, 'Could not index documents into Solr');
@@ -110,26 +110,26 @@ class PageIndexerTest extends IntegrationTestBase
             self::assertEquals(
                 $expectedAccessFieldValue,
                 $solrContent['response']['docs'][$index]['access'][0] ?? '',
-                'Wrong access settings document ' . ($index + 1)
+                'Wrong access settings document ' . ($index + 1),
             );
         }
         foreach ($expectedContents as $index => $expectedContent) {
             self::assertEquals(
                 $expectedContent,
                 $solrContent['response']['docs'][$index]['content'] ?? '',
-                'Wrong content in document ' . ($index + 1)
+                'Wrong content in document ' . ($index + 1),
             );
         }
 
         $solrContent = json_decode(
             file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $core . '/select?q=*:*&fl=uid&sort=access%20asc&fq={!typo3access}0'),
-            true
+            true,
         );
         self::assertEquals($expectedNumFoundAnonymousUser, $solrContent['response']['numFound'], 'Protected contents not filtered correctly');
 
         $solrContent = json_decode(
             file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $core . '/select?q=*:*&fl=uid&sort=access%20asc&fq={!typo3access}' . $userGroupToCheckAccessFilter),
-            true
+            true,
         );
         self::assertEquals($expectedNumFoundLoggedInUser, $solrContent['response']['numFound'], 'Protected contents not returned correctly');
     }

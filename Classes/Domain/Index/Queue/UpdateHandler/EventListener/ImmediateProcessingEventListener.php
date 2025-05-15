@@ -167,7 +167,7 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
             $event->getUid(),
             $event->getTable(),
             $event->getFields(),
-            $event->frontendGroupsRemoved()
+            $event->frontendGroupsRemoved(),
         );
     }
 }

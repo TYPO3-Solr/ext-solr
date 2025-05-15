@@ -107,7 +107,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
                 $direction,
                 $label,
                 $selected,
-                $isResetOption
+                $isResetOption,
             );
             $resultSet->addSorting($sorting);
         }

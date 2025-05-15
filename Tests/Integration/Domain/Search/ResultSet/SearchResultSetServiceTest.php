@@ -252,7 +252,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         $searchResultSetService = GeneralUtility::makeInstance(
             SearchResultSetService::class,
             $typoScriptConfiguration,
-            $search
+            $search,
         );
 
         $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 0, 0, $typoScriptConfiguration);

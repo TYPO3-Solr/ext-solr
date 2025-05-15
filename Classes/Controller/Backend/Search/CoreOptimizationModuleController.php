@@ -85,7 +85,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 'Please provide a base word and synonyms.',
                 'Missing parameter',
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
         } else {
             $baseWord = mb_strtolower($baseWord);
@@ -99,7 +99,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $coreAdmin->reloadCore();
 
             $this->addFlashMessage(
-                '"' . $synonyms . '" added as synonyms for base word "' . $baseWord . '"'
+                '"' . $synonyms . '" added as synonyms for base word "' . $baseWord . '"',
             );
         }
 
@@ -115,7 +115,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         return $this->exportFile(
             implode(PHP_EOL, $coreAdmin->getStopWords()),
             'stopwords',
-            $fileFormat
+            $fileFormat,
         );
     }
 
@@ -143,7 +143,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 'Synonyms upload not found.',
                 '',
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
             return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
         }
@@ -167,7 +167,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
         $coreAdmin->reloadCore();
         $this->addFlashMessage(
-            $synonymCount . ' synonyms imported.'
+            $synonymCount . ' synonyms imported.',
         );
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
@@ -182,14 +182,14 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 'Stop Word upload not found.',
                 '',
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
             return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
         }
 
         $this->saveStopWordsAction(
             ManagedResourcesUtility::importStopwordsFromPlainTextContents($stopwordsFileUpload),
-            $replaceStopwords
+            $replaceStopwords,
         );
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
@@ -210,13 +210,13 @@ class CoreOptimizationModuleController extends AbstractModuleController
             && $reloadResponse->getHttpStatus() == 200
         ) {
             $this->addFlashMessage(
-                'All synonym removed.'
+                'All synonym removed.',
             );
         } else {
             $this->addFlashMessage(
                 'Failed to remove all synonyms.',
                 'An error occurred',
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
         }
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
@@ -239,13 +239,13 @@ class CoreOptimizationModuleController extends AbstractModuleController
             && $reloadResponse->getHttpStatus() == 200
         ) {
             $this->addFlashMessage(
-                'Synonym removed.'
+                'Synonym removed.',
             );
         } else {
             $this->addFlashMessage(
                 'Failed to remove synonym.',
                 'An error occurred',
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
         }
 
@@ -283,7 +283,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $reloadResponse = $coreAdmin->reloadCore();
         if ($wordsRemoved && $wordsAdded && $reloadResponse->getHttpStatus() == 200) {
             $this->addFlashMessage(
-                'Stop Words Updated.'
+                'Stop Words Updated.',
             );
         }
 
@@ -299,7 +299,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             ->withHeader('Content-Description', 'File transfer')
             ->withHeader(
                 'Content-disposition',
-                'attachment; filename =' . $type . '_' . $coreAdmin->getPrimaryEndpoint()->getCore() . '.' . $fileExtension
+                'attachment; filename =' . $type . '_' . $coreAdmin->getPrimaryEndpoint()->getCore() . '.' . $fileExtension,
             )
             ->withBody($this->streamFactory->createStream($content));
     }
@@ -336,7 +336,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
                 $this->addFlashMessage(
                     'Failed to remove stop word "' . $word . '".',
                     'An error occurred',
-                    ContextualFeedbackSeverity::ERROR
+                    ContextualFeedbackSeverity::ERROR,
                 );
                 break;
             }

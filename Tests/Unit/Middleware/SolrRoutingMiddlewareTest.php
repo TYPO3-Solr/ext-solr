@@ -91,8 +91,8 @@ class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
                 new SiteRouteResult(
                     new Uri('https://domain.example/facet/bar,buz,foo'),
                     new Site('website', 1, []),
-                    new SiteLanguage(0, 'en_US', new Uri('https://domain.example/'), [])
-                )
+                    new SiteLanguage(0, 'en_US', new Uri('https://domain.example/'), []),
+                ),
             );
         $this->routingServiceMock->expects(self::exactly(1))
             ->method('getSiteMatcher')
@@ -117,14 +117,14 @@ class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
         $solrRoutingMiddleware->injectRoutingService($this->routingServiceMock);
         $solrRoutingMiddleware->process(
             $serverRequest,
-            $this->responseOutputHandler
+            $this->responseOutputHandler,
         );
         $request = $this->responseOutputHandler->getRequest();
         $uri = $request->getUri();
 
         self::assertEquals(
             '/facet/bar,buz,foo',
-            $uri->getPath()
+            $uri->getPath(),
         );
     }
 
@@ -136,7 +136,7 @@ class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
             'https://domain.example/',
             [
                 PageIndexerRequest::SOLR_INDEX_HEADER => '1',
-            ]
+            ],
         );
 
         $this->routingServiceMock->expects(self::never())->method('getSiteMatcher');
@@ -145,7 +145,7 @@ class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
         $solrRoutingMiddleware->injectRoutingService($this->routingServiceMock);
         $solrRoutingMiddleware->process(
             $serverRequest,
-            $this->responseOutputHandler
+            $this->responseOutputHandler,
         );
     }
 }

@@ -86,7 +86,7 @@ abstract class AbstractStrategyTestBase extends SetUpUnitTestCase
                         'msg' => 'msg' . $status,
                         'core' => 'core_en',
                         'query' => $query,
-                    ]
+                    ],
                 );
         } else {
             $solrLogManagerMock
@@ -100,7 +100,7 @@ abstract class AbstractStrategyTestBase extends SetUpUnitTestCase
             123,
             [$connectionMock],
             '#siteHash#',
-            $commit
+            $commit,
         );
     }
 

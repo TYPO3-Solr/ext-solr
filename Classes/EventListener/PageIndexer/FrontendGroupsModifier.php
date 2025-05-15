@@ -70,7 +70,7 @@ class FrontendGroupsModifier
                 [
                     'page indexer request' => (array)$pageIndexerRequest,
                     'index queue header' => $event->getRequest()->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0],
-                ]
+                ],
             );
             throw new PropagateResponseException(
                 new JsonResponse(
@@ -80,9 +80,9 @@ class FrontendGroupsModifier
                             'message' => 'Invalid Index Queue Request.',
                         ],
                     ],
-                    403
+                    403,
                 ),
-                1646655622
+                1646655622,
             );
         }
 

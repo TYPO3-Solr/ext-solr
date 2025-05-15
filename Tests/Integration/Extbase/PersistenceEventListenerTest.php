@@ -68,7 +68,7 @@ class PersistenceEventListenerTest extends IntegrationTestBase
             ->withAttribute('frontend.typoscript', $frontendTypoScript)
             ->withAttribute(
                 'site',
-                $this->get(SiteFinder::class)->getSiteByIdentifier('integration_tree_one')
+                $this->get(SiteFinder::class)->getSiteByIdentifier('integration_tree_one'),
             );
     }
 

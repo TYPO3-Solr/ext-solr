@@ -47,14 +47,14 @@ class RecordMonitorTest extends SetUpUnitTestCase
         $GLOBALS['BE_USER']->workspace = 0;
         GeneralUtility::addInstance(
             ExtensionConfiguration::class,
-            $this->createMock(ExtensionConfiguration::class)
+            $this->createMock(ExtensionConfiguration::class),
         );
 
         $rootlineUtilityMock = $this->createMock(RootlineUtility::class);
         $rootlineUtilityMock->method('get')->willReturn([]);
         GeneralUtility::addInstance(
             RootlineUtility::class,
-            $rootlineUtilityMock
+            $rootlineUtilityMock,
         );
         parent::setUp();
     }
@@ -63,7 +63,7 @@ class RecordMonitorTest extends SetUpUnitTestCase
     {
         unset(
             $GLOBALS['BE_USER'],
-            $this->recordMonitor
+            $this->recordMonitor,
         );
         GeneralUtility::purgeInstances();
         parent::tearDown();

@@ -60,7 +60,7 @@ class SolrConfigStatus extends AbstractSolrStatus
                 'Solrconfig Version',
                 'No Solr connections configured',
                 '',
-                ContextualFeedbackSeverity::WARNING
+                ContextualFeedbackSeverity::WARNING,
             );
 
             return $reports;
@@ -75,7 +75,7 @@ class SolrConfigStatus extends AbstractSolrStatus
                     'Solrconfig Version',
                     'Couldn\'t connect to ' . $adminService->__toString(),
                     '',
-                    ContextualFeedbackSeverity::WARNING
+                    ContextualFeedbackSeverity::WARNING,
                 );
 
                 continue;
@@ -89,7 +89,7 @@ class SolrConfigStatus extends AbstractSolrStatus
                     'Solrconfig Version',
                     'Unsupported solrconfig.xml',
                     $report,
-                    ContextualFeedbackSeverity::WARNING
+                    ContextualFeedbackSeverity::WARNING,
                 );
 
                 $reports[] = $status;
@@ -102,7 +102,7 @@ class SolrConfigStatus extends AbstractSolrStatus
                 'Solrconfig Version',
                 'OK',
                 '',
-                ContextualFeedbackSeverity::OK
+                ContextualFeedbackSeverity::OK,
             );
         }
 

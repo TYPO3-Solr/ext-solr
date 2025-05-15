@@ -172,7 +172,7 @@ class QueueTest extends IntegrationTestBase
                         }
                     }
                 }
-           }'
+           }',
         );
         $site = $this->siteRepository->getFirstAvailableSite();
         $this->indexQueue->getQueueInitializationService()->initializeBySiteAndIndexConfiguration($site, 'custom_page_type');
@@ -183,7 +183,7 @@ class QueueTest extends IntegrationTestBase
         self::assertEquals(
             'custom_page_type',
             $queueItem->getIndexingConfigurationName(),
-            'Item was queued with unexpected configuration'
+            'Item was queued with unexpected configuration',
         );
     }
 

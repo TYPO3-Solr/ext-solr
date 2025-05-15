@@ -288,7 +288,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
             }
             $conditions['languageField'] = '(' . implode(
                 ' OR ',
-                $conditions['languageField']
+                $conditions['languageField'],
             ) . ')';
         }
 

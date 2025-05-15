@@ -206,7 +206,7 @@ class TypoScriptConfiguration
             $configurationToMerge,
             $addKeys,
             $includeEmptyValues,
-            $enableUnsetFeature
+            $enableUnsetFeature,
         );
 
         $this->configurationAccess->setData($data);
@@ -1497,7 +1497,7 @@ class TypoScriptConfiguration
     {
         return (string)$this->getValueByPathOrDefaultValue(
             'plugin.tx_solr.search.faceting.urlParameterStyle',
-            $defaultUrlParameterStyle
+            $defaultUrlParameterStyle,
         );
     }
 
@@ -1510,7 +1510,7 @@ class TypoScriptConfiguration
     {
         return (bool)$this->getValueByPathOrDefaultValue(
             'plugin.tx_solr.search.faceting.urlParameterSort',
-            $defaultUrlParameterSort
+            $defaultUrlParameterSort,
         );
     }
 

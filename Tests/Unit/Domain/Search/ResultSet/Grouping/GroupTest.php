@@ -65,7 +65,7 @@ class GroupTest extends SetUpUnitTestCase
             12,
             0,
             22.0,
-            $this->createMock(SearchRequest::class)
+            $this->createMock(SearchRequest::class),
         );
         $groupItems[] = $groupItem;
 
@@ -86,7 +86,7 @@ class GroupTest extends SetUpUnitTestCase
             12,
             0,
             22.0,
-            $this->createMock(SearchRequest::class)
+            $this->createMock(SearchRequest::class),
         );
         $group->addGroupItem($groupItem);
 

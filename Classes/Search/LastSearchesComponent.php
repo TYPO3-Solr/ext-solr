@@ -58,7 +58,7 @@ class LastSearchesComponent
     {
         return GeneralUtility::makeInstance(
             LastSearchesService::class,
-            $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()
+            $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration(),
         );
     }
 }

@@ -47,7 +47,7 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
             ->setConstructorArgs(
                 [
                     'uriBuilder' => $this->uriBuilderMock,
-                ]
+                ],
             )
             ->onlyMethods([
                 'getTypoScriptConfiguration',
@@ -61,7 +61,7 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
             $this->createMock(FluidCacheInterface::class),
             [],
             [],
-            new TemplatePaths()
+            new TemplatePaths(),
         );
         $request = new Request((new ServerRequest())->withAttribute('extbase', new ExtbaseRequestParameters(SearchController::class)));
         $renderingContext->setAttribute(ServerRequestInterface::class, $request);

@@ -119,7 +119,7 @@ class SearchResultSetService
         $query = $this->queryBuilder->buildSearchQuery(
             $searchRequest->getRawUserQuery(),
             $searchRequest->getResultsPerPage(),
-            $searchRequest->getAdditionalFilters()
+            $searchRequest->getAdditionalFilters(),
         );
 
         $event = new AfterSearchQueryHasBeenPreparedEvent($query, $searchRequest, $this->search, $this->typoScriptConfiguration);
@@ -147,7 +147,7 @@ class SearchResultSetService
         $variantsProcessor = GeneralUtility::makeInstance(
             VariantsProcessor::class,
             $this->typoScriptConfiguration,
-            $this->searchResultBuilder
+            $this->searchResultBuilder,
         );
         $variantsProcessor->process($resultSet);
 

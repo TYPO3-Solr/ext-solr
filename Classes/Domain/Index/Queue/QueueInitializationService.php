@@ -119,7 +119,7 @@ class QueueInitializationService
 
         /** @var QueueInterface $queue */
         $queue = GeneralUtility::makeInstance(
-            $solrConfiguration->getIndexQueueClassByConfigurationName($indexingConfigurationName)
+            $solrConfiguration->getIndexQueueClassByConfigurationName($indexingConfigurationName),
         );
         if ($queue instanceof QueueInitializationServiceAwareInterface) {
             $queue->setQueueInitializationService($this);

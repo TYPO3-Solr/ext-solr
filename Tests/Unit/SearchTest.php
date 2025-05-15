@@ -47,7 +47,7 @@ class SearchTest extends SetUpUnitTestCase
             ],
             [
                 $this->createMock(Client::class),
-            ]
+            ],
         );
 
         $this->solrConnectionMock = $this->createMock(SolrConnection::class);
@@ -65,7 +65,7 @@ class SearchTest extends SetUpUnitTestCase
             function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
                 return $this->createMock(ResponseAdapter::class);
-            }
+            },
         );
 
         $this->search->search($query, 0, $limit);
@@ -82,7 +82,7 @@ class SearchTest extends SetUpUnitTestCase
             function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
                 return $this->createMock(ResponseAdapter::class);
-            }
+            },
         );
 
         $this->search->search($query, 0, null);

@@ -194,7 +194,7 @@ class IndexService
         if (!($indexer instanceof Indexer)) {
             throw new RuntimeException(
                 'The indexer class "' . $indexerClass . '" for indexing configuration "' . $indexingConfigurationName . '" is not a valid indexer. Must be a subclass of ApacheSolrForTypo3\Solr\IndexQueue\Indexer.',
-                1260463206
+                1260463206,
             );
         }
 

@@ -84,7 +84,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
                 $this->addFlashMessage(
                     'Failed to reload index configuration for core "' . $coreName . '"',
                     '',
-                    ContextualFeedbackSeverity::ERROR
+                    ContextualFeedbackSeverity::ERROR,
                 );
                 break;
             }

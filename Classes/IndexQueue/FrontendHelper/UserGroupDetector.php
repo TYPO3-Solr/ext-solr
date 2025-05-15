@@ -184,7 +184,7 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
                         'groups' => $frontendGroups,
                         'record' => $record,
                         'record type' => $table,
-                    ]
+                    ],
                 );
             }
 
@@ -201,14 +201,14 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
         $frontendGroups = GeneralUtility::intExplode(
             ',',
             $frontendGroupsList,
-            true
+            true,
         );
 
         // clean up: filter double groups
         $frontendGroups = array_unique($frontendGroups);
         $frontendGroups = array_filter(
             array_values($frontendGroups),
-            static fn(int $val): bool => ($val !== -1)
+            static fn(int $val): bool => ($val !== -1),
         );
 
         if (empty($frontendGroups)) {

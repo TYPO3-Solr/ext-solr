@@ -470,7 +470,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         foreach ($queryParameters as $queryParameter => $value) {
             self::assertTrue(
                 !str_starts_with($queryParameter, 'group'),
-                'Query already contains grouping parameter "' . $queryParameter . '"'
+                'Query already contains grouping parameter "' . $queryParameter . '"',
             );
         }
     }
@@ -506,7 +506,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         foreach ($queryParameters as $queryParameter => $value) {
             self::assertTrue(
                 !str_starts_with($queryParameter, 'group'),
-                'Query contains grouping parameter "' . $queryParameter . '"'
+                'Query contains grouping parameter "' . $queryParameter . '"',
             );
         }
     }
@@ -1083,7 +1083,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         // check initial value
         $query = $this->getInitializedTestSearchQuery(
             'test',
-            new TypoScriptConfiguration([])
+            new TypoScriptConfiguration([]),
         );
         $queryParameters = $this->getAllQueryParameters($query);
         self::assertSame('*,score', $queryParameters['fl'], 'FieldList initially contained unexpected values');
@@ -1129,7 +1129,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     {
         $query = $this->getInitializedTestSearchQuery(
             'test',
-            new TypoScriptConfiguration([])
+            new TypoScriptConfiguration([]),
         );
         $queryParameters = $this->getAllQueryParameters($query);
 

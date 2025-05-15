@@ -221,8 +221,8 @@ class ConfigurationManager implements SingletonInterface
             GeneralUtility::makeInstance(
                 VisibilityAspect::class,
                 false,
-                false
-            )
+                false,
+            ),
         );
         /** @var RootLineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(
@@ -246,7 +246,7 @@ class ConfigurationManager implements SingletonInterface
 
         return $sysTemplateRepository->getSysTemplateRowsByRootline(
             $rootline,
-            $request
+            $request,
         );
     }
 }

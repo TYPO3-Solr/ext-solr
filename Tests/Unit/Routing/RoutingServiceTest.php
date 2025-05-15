@@ -40,7 +40,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         $this->site = new Site(
             'example',
             1,
-            Yaml::parse(self::getFixtureContentByName('siteConfiguration.yaml'))
+            Yaml::parse(self::getFixtureContentByName('siteConfiguration.yaml')),
         );
         parent::setUp();
     }
@@ -52,7 +52,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
 
         self::assertEquals(
             ',',
-            $routingService->getDefaultMultiValueSeparator()
+            $routingService->getDefaultMultiValueSeparator(),
         );
     }
 
@@ -62,12 +62,12 @@ class RoutingServiceTest extends SetUpUnitTestCase
         $routingService = new RoutingService(
             [
                 'multiValueSeparator' => '+',
-            ]
+            ],
         );
 
         self::assertEquals(
             '+',
-            $routingService->getDefaultMultiValueSeparator()
+            $routingService->getDefaultMultiValueSeparator(),
         );
     }
 
@@ -78,7 +78,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
 
         self::assertEquals(
             'bar,buz,foo',
-            $routingService->facetsToString(['foo', 'bar', 'buz'])
+            $routingService->facetsToString(['foo', 'bar', 'buz']),
         );
     }
 
@@ -88,12 +88,12 @@ class RoutingServiceTest extends SetUpUnitTestCase
         $routingService = new RoutingService(
             [
                 'multiValueSeparator' => '+',
-            ]
+            ],
         );
 
         self::assertEquals(
             'bar+buz+foo',
-            $routingService->facetsToString(['foo', 'bar', 'buz'])
+            $routingService->facetsToString(['foo', 'bar', 'buz']),
         );
     }
 
@@ -102,10 +102,10 @@ class RoutingServiceTest extends SetUpUnitTestCase
     {
         $routingService = new RoutingService();
         self::assertNotNull(
-            $routingService->convertStringIntoUri('https://domain.example')
+            $routingService->convertStringIntoUri('https://domain.example'),
         );
         self::assertNotNull(
-            $routingService->convertStringIntoUri('://domain.example')
+            $routingService->convertStringIntoUri('://domain.example'),
         );
     }
 
@@ -114,7 +114,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         $configuration = Yaml::parse(self::getFixtureContentByName($fixtureName));
         $routingService = new RoutingService(
             $configuration['routeEnhancers']['example']['solr'],
-            (string)$configuration['routeEnhancers']['example']['extensionKey']
+            (string)$configuration['routeEnhancers']['example']['extensionKey'],
         );
         $routingService->setLogger(new NullLogger());
         return $routingService;
@@ -156,7 +156,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         self::assertTrue($routingService->shouldConcatQueryParameters());
         self::assertEquals(
             $expectedResult,
-            $routingService->concatQueryParameter($queryParameters)
+            $routingService->concatQueryParameter($queryParameters),
         );
     }
 
@@ -196,7 +196,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
         self::assertTrue($routingService->shouldConcatQueryParameters());
         self::assertEquals(
             $expectedResult,
-            $routingService->inflateQueryParameter($filter)
+            $routingService->inflateQueryParameter($filter),
         );
     }
 
@@ -232,7 +232,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
 
         self::assertEquals(
             $expectedResult,
-            $routingService->maskQueryParameters($queryParameters)
+            $routingService->maskQueryParameters($queryParameters),
         );
     }
 
@@ -268,7 +268,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
 
         self::assertEquals(
             $expectedResult,
-            $routingService->inflateQueryParameter($queryParameters)
+            $routingService->inflateQueryParameter($queryParameters),
         );
     }
 
@@ -277,7 +277,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     {
         $uri = new Uri('http://domain.example/');
         $request = new ServerRequest(
-            $uri
+            $uri,
         );
         $routingService = $this->getRoutingService();
         $newRequest = $routingService->addPathArgumentsToQuery(
@@ -287,7 +287,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
             ],
             [
                 'color' => 'blue',
-            ]
+            ],
         );
 
         self::assertEquals(
@@ -296,7 +296,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
                     'filter' => ['colorType:blue'],
                 ],
             ],
-            $newRequest->getQueryParams()
+            $newRequest->getQueryParams(),
         );
     }
 
@@ -305,7 +305,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     {
         $uri = new Uri('http://domain.example/');
         $request = new ServerRequest(
-            $uri
+            $uri,
         );
         $routingService = $this->getRoutingService();
         $newRequest = $routingService->addPathArgumentsToQuery(
@@ -315,7 +315,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
             ],
             [
                 'color' => 'green,blue',
-            ]
+            ],
         );
 
         self::assertEquals(
@@ -324,7 +324,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
                     'filter' => ['colorType:blue', 'colorType:green'],
                 ],
             ],
-            $newRequest->getQueryParams()
+            $newRequest->getQueryParams(),
         );
     }
 
@@ -333,7 +333,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
     {
         $uri = new Uri('http://domain.example/candy?taste=sweet,sour');
         $request = new ServerRequest(
-            $uri
+            $uri,
         );
         $request = $request->withQueryParams(['taste' => 'sweet,sour']);
         $routingService = $this->getRoutingService();
@@ -345,11 +345,11 @@ class RoutingServiceTest extends SetUpUnitTestCase
             ],
             [
                 'color' => 'green,blue',
-            ]
+            ],
         );
 
         $uri = $request->getUri()->withPath(
-            '/candy'
+            '/candy',
         );
         $request = $request->withUri($uri);
         $queryParams = $request->getQueryParams();
@@ -368,7 +368,7 @@ class RoutingServiceTest extends SetUpUnitTestCase
                     ],
                 ],
             ],
-            $request->getQueryParams()
+            $request->getQueryParams(),
         );
     }
 }

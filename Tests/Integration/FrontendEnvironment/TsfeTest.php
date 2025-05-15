@@ -21,7 +21,7 @@ class TsfeTest extends IntegrationTestBase
             TypoScriptFrontendController::class,
             $tsfeNotRestricted,
             'The TSFE can not be initialized at all, nor for public page either for access restricted(fe_group) page. ' .
-                'Most probably nothing will work.'
+                'Most probably nothing will work.',
         );
 
         $tsfeRestrictedForExistingFeGroup = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdIgnoringLanguage(2);
@@ -29,7 +29,7 @@ class TsfeTest extends IntegrationTestBase
             TypoScriptFrontendController::class,
             $tsfeRestrictedForExistingFeGroup,
             'The TSFE can not be initialized for existing fe_group. ' .
-                'This will lead to failures on editing the access restricted [sub]pages in BE.'
+                'This will lead to failures on editing the access restricted [sub]pages in BE.',
         );
 
         $tsfeForLoggedInUserOnly = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdIgnoringLanguage(3);
@@ -37,7 +37,7 @@ class TsfeTest extends IntegrationTestBase
             TypoScriptFrontendController::class,
             $tsfeForLoggedInUserOnly,
             'The TSFE can not be initialized for page with fe_group="-2". ' .
-                'This will lead to failures on editing the [sub]pages in BE for pages with fe_group="-2".'
+                'This will lead to failures on editing the [sub]pages in BE for pages with fe_group="-2".',
         );
     }
 }

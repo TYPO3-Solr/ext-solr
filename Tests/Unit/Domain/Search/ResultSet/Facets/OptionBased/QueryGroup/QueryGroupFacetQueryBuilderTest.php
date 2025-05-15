@@ -50,7 +50,7 @@ class QueryGroupFacetQueryBuilderTest extends SetUpUnitTestCase
         ];
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
-            $fakeFacetConfiguration
+            $fakeFacetConfiguration,
         );
 
         $builder = new QueryGroupFacetQueryBuilder();
@@ -138,7 +138,7 @@ class QueryGroupFacetQueryBuilderTest extends SetUpUnitTestCase
         ];
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
-            $fakeFacetConfiguration
+            $fakeFacetConfiguration,
         );
 
         $builder = new QueryGroupFacetQueryBuilder();

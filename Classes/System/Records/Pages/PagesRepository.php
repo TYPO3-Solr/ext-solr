@@ -65,7 +65,7 @@ class PagesRepository extends AbstractRepository
             ->from($this->table)
             ->where(
                 $queryBuilder->expr()->neq('pid', -1),
-                $queryBuilder->expr()->eq('is_siteroot', 1)
+                $queryBuilder->expr()->eq('is_siteroot', 1),
             );
 
         $this->addDefaultLanguageUidConstraint($queryBuilder);
@@ -121,7 +121,7 @@ class PagesRepository extends AbstractRepository
                 $queryBuilder->expr()->eq('doktype', 7),
                 $queryBuilder->expr()->eq('no_search', 0),
                 $queryBuilder->expr()->eq('mount_pid', $mountedPageUid),
-                $queryBuilder->expr()->eq('mount_pid_ol', 1)
+                $queryBuilder->expr()->eq('mount_pid_ol', 1),
             );
         } else {
             $queryBuilder->andWhere(
@@ -130,10 +130,10 @@ class PagesRepository extends AbstractRepository
                 $queryBuilder->expr()->or(
                     $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq('mount_pid', $mountedPageUid),
-                        $queryBuilder->expr()->eq('mount_pid_ol', 1)
+                        $queryBuilder->expr()->eq('mount_pid_ol', 1),
                     ),
-                    $queryBuilder->expr()->in('mount_pid', $rootLineParentPageIds)
-                )
+                    $queryBuilder->expr()->in('mount_pid', $rootLineParentPageIds),
+                ),
             );
         }
 
@@ -194,8 +194,8 @@ class PagesRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->in(
                     'uid',
-                    $queryBuilder->createNamedParameter($pageIds, ArrayParameterType::INTEGER)
-                )
+                    $queryBuilder->createNamedParameter($pageIds, ArrayParameterType::INTEGER),
+                ),
             );
 
         $queryBuilder->andWhere(QueryHelper::stripLogicalOperatorPrefix($initialPagesAdditionalWhereClause));
@@ -218,7 +218,7 @@ class PagesRepository extends AbstractRepository
                 ->select('uid')
                 ->from($this->table)
                 ->where(
-                    $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, ParameterType::INTEGER))
+                    $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, ParameterType::INTEGER)),
                 )->executeQuery();
             while (($pageRow = $noSearchSubEntriesEnabledPagesStatement->fetchAssociative()) !== false) {
                 $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage((int)$pageRow['uid']));
@@ -251,7 +251,7 @@ class PagesRepository extends AbstractRepository
             ->from('pages')
             ->where(
                 $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, ParameterType::INTEGER))
-                . BackendUtility::BEenableFields('pages')
+                . BackendUtility::BEenableFields('pages'),
             )->executeQuery()
             ->fetchAllAssociative();
     }
@@ -276,7 +276,7 @@ class PagesRepository extends AbstractRepository
             ->select('uid')
             ->from($this->table)
             ->where(
-                $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, ParameterType::INTEGER))
+                $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, ParameterType::INTEGER)),
             );
 
         $this->addDefaultLanguageUidConstraint($queryBuilder);
@@ -307,11 +307,11 @@ class PagesRepository extends AbstractRepository
                 'uid',
                 'mount_pid AS mountPageSource',
                 'uid AS mountPageDestination',
-                'mount_pid_ol AS mountPageOverlayed'
+                'mount_pid_ol AS mountPageOverlayed',
             )
             ->from($this->table)
             ->where(
-                QueryHelper::stripLogicalOperatorPrefix($whereClause)
+                QueryHelper::stripLogicalOperatorPrefix($whereClause),
             );
 
         $this->addDefaultLanguageUidConstraint($queryBuilder);
@@ -386,7 +386,7 @@ class PagesRepository extends AbstractRepository
                 ->from('pages')
                 ->where(
                     $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($id, ParameterType::INTEGER)),
-                    $queryBuilder->expr()->eq('sys_language_uid', 0)
+                    $queryBuilder->expr()->eq('sys_language_uid', 0),
                 )
                 ->orderBy('uid');
             if ($permClause !== '') {

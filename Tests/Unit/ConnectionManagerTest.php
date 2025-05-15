@@ -61,7 +61,7 @@ class ConnectionManagerTest extends SetUpUnitTestCase
         $this->configurationManager = new ConfigurationManager();
         $this->connectionManager = new ConnectionManager(
             $this->pageRepositoryMock,
-            $this->siteRepositoryMock
+            $this->siteRepositoryMock,
         );
 
         $container = new Container();
@@ -144,7 +144,7 @@ class ConnectionManagerTest extends SetUpUnitTestCase
 
             $solrService = $this->connectionManager->getConnectionFromConfiguration(
                 $configuration,
-                $this->createMock(TypoScriptConfiguration::class)
+                $this->createMock(TypoScriptConfiguration::class),
             );
             self::assertEquals($expectedConnectionString, $solrService->getReadService()->__toString());
         } catch (InvalidConnectionException $exception) {

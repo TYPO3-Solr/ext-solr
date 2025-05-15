@@ -63,7 +63,7 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
             $facetName,
             $fieldName,
             $label,
-            $facetConfiguration
+            $facetConfiguration,
         );
 
         $facet->setIsAvailable(count($valuesFromResponse) > 0);
@@ -110,7 +110,7 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
                 $gap,
                 $allCount,
                 $rangeCounts,
-                true
+                true,
             );
             $facet->setRange($range);
         }

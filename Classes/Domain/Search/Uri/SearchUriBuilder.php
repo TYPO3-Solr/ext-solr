@@ -198,7 +198,7 @@ class SearchUriBuilder
             [],
             $contextPageUid,
             $contextSystemLanguage,
-            $contextConfiguration
+            $contextConfiguration,
         );
         $arguments = $request->setRawQueryString($queryString)->getAsArray();
 
@@ -315,7 +315,7 @@ class SearchUriBuilder
         /** @var Uri $uri */
         $uri = GeneralUtility::makeInstance(
             Uri::class,
-            $uriCacheTemplate
+            $uriCacheTemplate,
         );
 
         $urlEvent = new BeforeVariableInCachedUrlAreReplacedEvent($uri, $enhancedRouting);
@@ -327,7 +327,7 @@ class SearchUriBuilder
             $uri,
             $routingConfigurations,
             $keys,
-            $values
+            $values,
         );
         $this->eventDispatcher->dispatch($variableEvent);
 
@@ -343,7 +343,7 @@ class SearchUriBuilder
         $uri = str_replace($keys, $values, $uriCacheTemplate);
         $uri = GeneralUtility::makeInstance(
             Uri::class,
-            $uri
+            $uri,
         );
         $uriEvent = new AfterUriIsProcessedEvent($uri, $routingConfigurations);
         $this->eventDispatcher->dispatch($uriEvent);
@@ -436,7 +436,7 @@ class SearchUriBuilder
             if (!empty($arguments[$pluginNameSpace]['filter']) && is_array($arguments[$pluginNameSpace]['filter'])) {
                 $arguments[$pluginNameSpace]['filter'] = ParameterSortingUtility::sortByType(
                     $arguments[$pluginNameSpace]['filter'],
-                    $searchRequest->getActiveFacetsUrlParameterStyle()
+                    $searchRequest->getActiveFacetsUrlParameterStyle(),
                 );
             }
         }

@@ -192,7 +192,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         ) {
             $this->addMessage(
                 $this->getLanguageService()->sL($this->languageFile . ':tasks.validate.invalidCores'),
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
             $result = false;
         }
@@ -244,7 +244,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
             throw new LogicException(
                 '$task must be an instance of OptimizeIndexTask, '
                 . 'other instances are not supported.',
-                1624620844
+                1624620844,
             );
         }
         return true;

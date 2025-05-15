@@ -145,7 +145,7 @@ abstract class AbstractStrategy
                 $uid,
                 $solrConnections,
                 $site->getSiteHash(),
-                $site->getSolrConfiguration()->getEnableCommits()
+                $site->getSolrConfiguration()->getEnableCommits(),
             );
         }
     }
@@ -173,7 +173,7 @@ abstract class AbstractStrategy
                         'msg' => $response->getHttpStatusMessage(),
                         'core' => $solr->getWriteService()->getCorePath(),
                         'query' => $query,
-                    ]
+                    ],
                 );
 
                 // @todo: Ensure index is updated later on, e.g. via a new index queue status

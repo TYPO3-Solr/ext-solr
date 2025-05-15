@@ -67,7 +67,7 @@ class PageIndexerTest extends SetUpUnitTestCase
                     $this->frontendEnvironmentMock,
                     $this->solrLogManagerMock,
                     $this->createMock(EventDispatcherInterface::class),
-                ]
+                ],
             )
             ->onlyMethods(['getPageIndexerRequest', 'getAccessRootlineByPageId', 'getUriBuilder'])
             ->getMock();

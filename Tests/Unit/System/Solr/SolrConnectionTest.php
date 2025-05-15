@@ -78,7 +78,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
                 $psr7Client ?? $this->createMock(ClientInterface::class),
                 $requestFactory ?? $this->createMock(RequestFactoryInterface::class),
                 $streamFactory ?? $this->createMock(StreamFactoryInterface::class),
-                $eventDispatcher ?? $this->createMock(EventDispatcherInterface::class)
+                $eventDispatcher ?? $this->createMock(EventDispatcherInterface::class),
             );
         } catch (Throwable) {
             // No exception will be ever happen, this is for saving up the lines in test cases.
@@ -97,7 +97,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
         $clientMock->expects(self::any())->method('getEndpoints')->willReturn([$endpointMock]);
 
         $readEndpoint = new Endpoint(
-            ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/', 'core' => 'core_en', 'scheme' => 'https', 'username' => '', 'password' => '']
+            ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/', 'core' => 'core_en', 'scheme' => 'https', 'username' => '', 'password' => ''],
         );
         $writeEndpoint = $readEndpoint;
         $connection = $this->getSolrConnectionWithDummyConstructorArgs($readEndpoint, $writeEndpoint);
@@ -118,7 +118,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
         $clientMock->expects(self::any())->method('getEndpoints')->willReturn([$endpointMock]);
 
         $readEndpoint = new Endpoint(
-            ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/', 'core' => 'core_en', 'scheme' => 'https', 'username' => 'foo', 'password' => 'bar']
+            ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/', 'core' => 'core_en', 'scheme' => 'https', 'username' => 'foo', 'password' => 'bar'],
         );
         $writeEndpoint = $readEndpoint;
         $connection = $this->getSolrConnectionWithDummyConstructorArgs($readEndpoint, $writeEndpoint);
@@ -143,7 +143,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
     {
         $fakeConfiguration = $this->createMock(TypoScriptConfiguration::class);
         $readEndpoint = new Endpoint(
-            ['host' => 'localhost', 'port' => 8080, 'path' => $path, 'core' => $core, 'scheme' => 'http', 'username' => '', 'password' => '']
+            ['host' => 'localhost', 'port' => 8080, 'path' => $path, 'core' => $core, 'scheme' => 'http', 'username' => '', 'password' => ''],
         );
         $writeEndpoint = $readEndpoint;
         $solrService = $this->getSolrConnectionWithDummyConstructorArgs($readEndpoint, $writeEndpoint, $fakeConfiguration);
@@ -161,7 +161,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
     public function canGetCoreBasePath(string $path, string $core, string $expectedCoreBasePath): void
     {
         $readEndpoint = new Endpoint(
-            ['host' => 'localhost', 'port' => 8080, 'path' => $path, 'core' => $core, 'scheme' => 'http', 'username' => '', 'password' => '']
+            ['host' => 'localhost', 'port' => 8080, 'path' => $path, 'core' => $core, 'scheme' => 'http', 'username' => '', 'password' => ''],
         );
         $writeEndpoint = $readEndpoint;
         $solrService = $this->getSolrConnectionWithDummyConstructorArgs($readEndpoint, $writeEndpoint);
@@ -185,7 +185,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
         self::assertSame(
             'http://localhost:8080/mypath/solr/core_de/',
             $solrService->getEndpoint('read')->getCoreBaseUri(),
-            'Core base URI doesn\'t contain expected segments'
+            'Core base URI doesn\'t contain expected segments',
         );
     }
 }
