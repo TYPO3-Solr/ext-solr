@@ -4,6 +4,30 @@
 Releases 13.0
 =============
 
+Release 13.0.2
+==============
+
+This is a maintenance release for TYPO3 13.4 LTS.
+
+List of all changes:
+
+* [BUGFIX] 404 on auto-suggest with enabled TYPO3 enforceValidation setting by Wolfgang Wagner | wow! solution [(901743e85)](https://github.com/TYPO3-Solr/ext-solr/commit/901743e85)
+* [TASK] 13.0.x-dev Update solarium/solarium requirement by dependabot[bot] [(e21bef00f)](https://github.com/TYPO3-Solr/ext-solr/commit/e21bef00f)
+* [BUGFIX] provide some expression matcher variables by Achim Fritz [(c810d8986)](https://github.com/TYPO3-Solr/ext-solr/commit/c810d8986)
+* [TASK] Remove solrmlt by Markus Friedrich [(9aba2dff3)](https://github.com/TYPO3-Solr/ext-solr/commit/9aba2dff3)
+* [TASK] Update version matrix by Markus Friedrich [(f1e8cf03a)](https://github.com/TYPO3-Solr/ext-solr/commit/f1e8cf03a)
+* [TASK] Allow Apache Solr 9.8.1 by Markus Friedrich [(35a774de0)](https://github.com/TYPO3-Solr/ext-solr/commit/35a774de0)
+* [DOCS] Add section on how to optimize page index runtimes (#4334) by Philipp Kitzberger [(27cbd7612)](https://github.com/TYPO3-Solr/ext-solr/commit/27cbd7612)
+* [DOCS] Fix typo in ConfigureExtension.rst by Jon Echeveste González [(3245c1370)](https://github.com/TYPO3-Solr/ext-solr/commit/3245c1370)
+* [BUGFIX] PhpUnit IsStringViewHelperTest for typo3fluid/fluid v 4.1.+ by Rafael Kähm [(ca41f0fbc)](https://github.com/TYPO3-Solr/ext-solr/commit/ca41f0fbc)
+* [BUGFIX] Update hardcoded legacy css resource filepath by Charlotte [(b2bdbbb7c)](https://github.com/TYPO3-Solr/ext-solr/commit/b2bdbbb7c)
+* [TASK] fix integration tests for TYPO3 13.4.10+ by Rafael Kähm [(5fe6eb107)](https://github.com/TYPO3-Solr/ext-solr/commit/5fe6eb107)
+* [FEATURE] Add arm64 and ppc64le platforms to docker-images by Rafael Kähm [(253a0a327)](https://github.com/TYPO3-Solr/ext-solr/commit/253a0a327)
+* [TASK] bump dg/bypass-finals to 1.9+ by Rafael Kähm [(33b02aaca)](https://github.com/TYPO3-Solr/ext-solr/commit/33b02aaca)
+* [TASK] Form.html: maxlength for search text input field by Bernd Wilke [(650b9439e)](https://github.com/TYPO3-Solr/ext-solr/commit/650b9439e)
+* [TASK] Enable rule trailing_comma_in_multiline by Markus Friedrich [(4afd0b5f5)](https://github.com/TYPO3-Solr/ext-solr/commit/4afd0b5f5)
+* [TASK] Extend RecordUpdatedEvent to indicate creations by Markus Friedrich [(c64c4ac81)](https://github.com/TYPO3-Solr/ext-solr/commit/c64c4ac81)
+
 Release 13.0.1
 ==============
 
@@ -274,7 +298,10 @@ awesome community. Here are the contributors to this release.
 *  Ayke Halder
 *  Bastien Lutz
 *  Benni Mack
+*  Bernd Wilke
 *  Christoph Lehmann
+*  @chrrynobaka
+*  @derMatze82
 *  Florian Seirer
 *  Guido Schmechel
 *  Hendrik vom Lehn
@@ -282,23 +309,50 @@ awesome community. Here are the contributors to this release.
 *  Lars Tode
 *  Markus Friedrich
 *  Rafael Kähm
+*  @snk-spo
 *  Stefan Frömken
 *  Thomas Hohn
 *  Thomas Löffler
 *  Till Hörner
 *  Tobias Wojtylak
 *  Torben Hansen
-*  @snk-spo
-*  @derMatze82
+*  Wolfgang Wagner
 
-
-Also a big thank you to our partners who have already concluded one of our new development participation packages such
+Also a big thank you to our partners who have already concluded one of our development participation packages such
 as Apache Solr EB for TYPO3 13 LTS (Feature):
 
-- b13 GmbH
-- Berlin-Brandenburgische Akademie der Wissenschaften
-- in2code GmbH
-- mehrwert intermediale kommunikation GmbH
+*   .hausformat
+*   711media websolutions GmbH
+*   Amt der Oö Landesregierung
+*   Autorité des marchés financiers
+*   Berlin-Brandenburgische Akademie der Wissenschaften
+*   Bestellung EB13 SOS Software GmbH für Telekom
+*   CS2 AG
+*   F7 Media GmbH
+*   Fachhochschule Erfurt
+*   Getdesigned GmbH
+*   KONVERTO AG
+*   Kassenärztliche Vereinigung Rheinland-Pfalz
+*   Kreis Euskirchen
+*   LOUIS INTERNET GmbH
+*   Leuchtfeuer Digital Marketing GmbH
+*   LfdA - Labor für digitale Angelegenheiten GmbH
+*   MOSAIQ GmbH
+*   Marketing Factory Digital GmbH
+*   Snowflake Productions GmbH
+*   Stämpfli AG
+*   THE BRETTINGHAMS GmbH
+*   b13 GmbH
+*   clickstorm GmbH
+*   cron IT GmbH
+*   graphodata GmbH
+*   i-kiu motion
+*   in2code GmbH
+*   internezzo ag
+*   jweiland.net e.K.
+*   mehrwert intermediale kommunikation GmbH
+*   network.publishing Möller-Westbunk GmbH
+*   werkraum Digitalmanufaktur GmbH
 
 How to Get Involved
 ===================
