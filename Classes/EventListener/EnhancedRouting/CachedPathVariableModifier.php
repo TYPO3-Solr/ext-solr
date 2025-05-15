@@ -51,7 +51,7 @@ class CachedPathVariableModifier
         $this->routingService = GeneralUtility::makeInstance(
             RoutingService::class,
             $enhancerConfiguration['solr'] ?? [],
-            (string)$enhancerConfiguration['extensionKey']
+            (string)$enhancerConfiguration['extensionKey'],
         );
 
         if (!$this->routingService->isRouteEnhancerForSolr((string)$enhancerConfiguration['type'])) {
@@ -70,7 +70,7 @@ class CachedPathVariableModifier
             if ($this->containsMultiValue()) {
                 // Note: if the customer configured a + as separator an additional check on the facet value is required!
                 $facets = $this->routingService->pathFacetStringToArray(
-                    $this->standardizeKey((string)$variableValues[$standardizedKey])
+                    $this->standardizeKey((string)$variableValues[$standardizedKey]),
                 );
 
                 $singleValues = [];
@@ -89,7 +89,7 @@ class CachedPathVariableModifier
                 $value = explode(
                     ':',
                     $this->standardizeKey((string)$variableValues[$standardizedKey]),
-                    2
+                    2,
                 )[1];
             }
             $standardizedKeys[$i] = $standardizedKey;

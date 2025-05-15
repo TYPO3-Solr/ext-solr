@@ -119,7 +119,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $additionalFields['site'] = [
             'code' => $siteSelectorField->getAvailableSitesSelector(
                 'tx_scheduler[site]',
-                $this->site
+                $this->site,
             ),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
         ];
@@ -226,7 +226,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
             throw new LogicException(
                 '$task must be an instance of ReIndexTask, '
                 . 'other instances are not supported.',
-                1487500366
+                1487500366,
             );
         }
         return true;

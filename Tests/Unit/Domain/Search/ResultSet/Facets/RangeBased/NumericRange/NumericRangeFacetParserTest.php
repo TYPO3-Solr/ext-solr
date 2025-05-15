@@ -60,7 +60,7 @@ class NumericRangeFacetParserTest extends SetUpFacetParser
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_numericRange_facet.json',
             $facetConfiguration,
-            $filters
+            $filters,
         );
 
         /** @var NumericRangeFacetParser $parser */
@@ -80,7 +80,7 @@ class NumericRangeFacetParserTest extends SetUpFacetParser
         self::assertSame(
             $facet->getConfiguration(),
             $facetConfiguration['myPids.'],
-            'Configuration was not passed to new facets'
+            'Configuration was not passed to new facets',
         );
         self::assertTrue($facet->getIsUsed());
 
@@ -89,7 +89,7 @@ class NumericRangeFacetParserTest extends SetUpFacetParser
         self::assertCount(
             4,
             $facet->getRange()->getRangeCounts(),
-            'We expected that there are four count items attached'
+            'We expected that there are four count items attached',
         );
 
         self::assertSame($facet->getRange()->getEndInResponse(), 100.0);
@@ -110,7 +110,7 @@ class NumericRangeFacetParserTest extends SetUpFacetParser
         $facet = $this->getNumericRangeFacet(
             $facetConfiguration,
             ['myPids:' . $startRequested . '-' . $endRequested],
-            'myPids'
+            'myPids',
         );
 
         self::assertSame((int)$facet->getRange()->getStartRequested(), $startRequested);

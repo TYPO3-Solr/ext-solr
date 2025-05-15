@@ -56,7 +56,7 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
 
         $this->isStringViewHelperTestable->setArguments($arguments);
         $this->viewHelperNodeMock->expects(self::any())->method(
-            'getArguments'
+            'getArguments',
         )->willReturn($arguments);
         $result = $this->isStringViewHelperTestable->render();
         self::assertSame('thenResult', $result, 'thenClosure was not rendered');
@@ -73,7 +73,7 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
 
         $this->isStringViewHelperTestable->setArguments($arguments);
         $this->viewHelperNodeMock->expects(self::any())->method(
-            'getArguments'
+            'getArguments',
         )->willReturn($arguments);
         $result = $this->isStringViewHelperTestable->render();
         self::assertSame('elseResult', $result, 'elseResult was not rendered');

@@ -178,7 +178,7 @@ class HtmlContentExtractor
         return preg_replace(
             '/[\x{' . $start . '}-\x{' . $end . '}]/u',
             '',
-            $content
+            $content,
         );
     }
 
@@ -207,16 +207,16 @@ class HtmlContentExtractor
         // strip all ignored tags
         $content = strip_tags(
             $content,
-            '<' . implode('><', array_keys($this->tagToFieldMapping)) . '>'
+            '<' . implode('><', array_keys($this->tagToFieldMapping)) . '>',
         );
 
         preg_match_all(
             '@<(' . implode(
                 '|',
-                array_keys($this->tagToFieldMapping)
+                array_keys($this->tagToFieldMapping),
             ) . ')[^>]*>(.*)</\1>@Ui',
             $content,
-            $matches
+            $matches,
         );
 
         foreach ($matches[1] as $key => $tag) {

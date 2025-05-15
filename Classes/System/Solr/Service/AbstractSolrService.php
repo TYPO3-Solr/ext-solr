@@ -274,14 +274,14 @@ abstract class AbstractSolrService
         } catch (HttpException $e) {
             throw new PingFailedException(
                 'Solr ping failed with unexpected response code: ' . $e->getCode(),
-                1645716101
+                1645716101,
             );
         }
 
         if ($httpResponse->getHttpStatus() !== 200) {
             throw new PingFailedException(
                 'Solr ping failed with unexpected response code: ' . $httpResponse->getHttpStatus(),
-                1645716102
+                1645716102,
             );
         }
 

@@ -113,7 +113,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
             [
                 'headers' => ['Content-Type' => 'application/xml'],
                 'body' => '<delete><query>*:*</query></delete>',
-            ]
+            ],
         );
         $result = $response->getBody()->getContents();
 
@@ -226,7 +226,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
             [
                 $defaultLanguage, $german, $danish,
             ],
-            $this->buildErrorHandlingConfiguration('Fluid', [404])
+            $this->buildErrorHandlingConfiguration('Fluid', [404]),
         );
 
         $this->writeSiteConfiguration(
@@ -235,13 +235,13 @@ abstract class IntegrationTestBase extends FunctionalTestCase
             [
                 $defaultLanguage, $german, $danish,
             ],
-            $this->buildErrorHandlingConfiguration('Fluid', [404])
+            $this->buildErrorHandlingConfiguration('Fluid', [404]),
         );
 
         $this->writeSiteConfiguration(
             'integration_tree_three',
             $this->buildSiteConfiguration(211, 'http://testthree.site/'),
-            [$defaultLanguage]
+            [$defaultLanguage],
         );
 
         $globalSolrSettings = [
@@ -294,7 +294,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
                     $this->fail("Executed deprecated EXT:solr code: in $file:$line" . PHP_EOL . $msg);
                 }
                 return true;
-            }
+            },
         );
     }
 
@@ -374,7 +374,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $connection->update(
             'sys_template',
             $updateFields,
-            ['uid' => $template['uid']]
+            ['uid' => $template['uid']],
         );
     }
 

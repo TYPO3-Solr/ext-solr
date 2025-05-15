@@ -138,7 +138,7 @@ defined('TYPO3') or die('Access denied.');
                     'excludedParameters' => $extensionConfiguration->getCacheHashExcludedParameters(),
                 ],
             ],
-        ]
+        ],
     );
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
@@ -180,7 +180,7 @@ defined('TYPO3') or die('Access denied.');
         [
             SearchController::class => 'results',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     ExtensionUtility::configurePlugin(
@@ -192,7 +192,7 @@ defined('TYPO3') or die('Access denied.');
         [
 
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     ExtensionUtility::configurePlugin(
@@ -204,7 +204,7 @@ defined('TYPO3') or die('Access denied.');
         [
             SearchController::class => 'frequentlySearched',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     ExtensionUtility::configurePlugin(
@@ -216,7 +216,7 @@ defined('TYPO3') or die('Access denied.');
         [
             SuggestController::class => 'suggest',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     // register the Fluid namespace 'solr' globally
@@ -253,7 +253,7 @@ defined('TYPO3') or die('Access denied.');
             'os' => '',
             'exec' => '',
             'className' => AuthorizationService::class,
-        ]
+        ],
     );
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #

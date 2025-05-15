@@ -70,7 +70,7 @@ class ApiEid
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
         $siteHash = $siteHashService->getSiteHashForDomain($domain);
         return new JsonResponse(
-            ['sitehash' => $siteHash]
+            ['sitehash' => $siteHash],
         );
     }
 
@@ -88,7 +88,7 @@ class ApiEid
                     ['errorMessage' => 'Invalid API key'],
                     403,
                 ),
-                403
+                403,
             );
         }
 
@@ -99,9 +99,9 @@ class ApiEid
                         'errorMessage' => 'You must provide an available API method, e.g. siteHash. See: available methods in methods key.',
                         'methods' => $this->getApiMethodDefinitions(),
                     ],
-                    400
+                    400,
                 ),
-                400
+                400,
             );
         }
 
@@ -116,9 +116,9 @@ class ApiEid
                         'missing_params' => $missingParams,
                         'methods' => $this->getApiMethodDefinitions()[$params['api']],
                     ],
-                    400
+                    400,
                 ),
-                400
+                400,
             );
         }
     }
@@ -132,7 +132,7 @@ class ApiEid
         foreach ($apiMethodDefinitions as $apiMethodName => $apiMethodDefinition) {
             $apiMethodDefinitions[$apiMethodName]['params']['required'] = array_merge(
                 self::REQUIRED_PARAMS_GLOBAL,
-                $apiMethodDefinition['params']['required']
+                $apiMethodDefinition['params']['required'],
             );
         }
         return $apiMethodDefinitions;

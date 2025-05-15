@@ -45,7 +45,7 @@ class SchemaStatusTest extends IntegrationTestBase
         self::assertEquals(
             $results[0]->getSeverity(),
             ContextualFeedbackSeverity::OK,
-            'We expect to get no violations against the test Solr server '
+            'We expect to get no violations against the test Solr server ',
         );
     }
 }

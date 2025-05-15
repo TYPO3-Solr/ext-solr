@@ -49,7 +49,7 @@ class RepositoryTest extends SetUpUnitTestCase
             ['findByPageIdAndByLanguageId'],
             [],
             '',
-            false
+            false,
         );
 
         $apacheSolrDocumentRepository
@@ -69,7 +69,7 @@ class RepositoryTest extends SetUpUnitTestCase
             ['initializeSearch'],
             [],
             '',
-            false
+            false,
         );
         $apacheSolrDocumentRepository
             ->expects(self::exactly(1))
@@ -114,7 +114,7 @@ class RepositoryTest extends SetUpUnitTestCase
                 null,
                 $this->createMock(TypoScriptConfiguration::class),
                 $queryBuilderMock,
-            ]
+            ],
         );
         $apacheSolrDocumentRepository->expects(self::once())->method('getSearch')->willReturn($search);
         $queryMock = $this->createMock(Query::class);

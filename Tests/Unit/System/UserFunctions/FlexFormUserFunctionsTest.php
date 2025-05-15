@@ -73,7 +73,7 @@ class FlexFormUserFunctionsTest extends SetUpUnitTestCase
             ->onlyMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
         $flexFormUserFunctionsMock->expects(self::once())->method('getFieldNamesFromSolrMetaDataForPage')
             ->willReturn(
-                ['some_field', 'someOther_field']
+                ['some_field', 'someOther_field'],
             );
 
         $flexFormUserFunctionsMock->expects(self::once())->method('getConfiguredFacetsForPage')
@@ -128,7 +128,7 @@ class FlexFormUserFunctionsTest extends SetUpUnitTestCase
                     return 'Translated Facet';
                 }
                 return '';
-            }
+            },
         );
 
         $parentInformation = [

@@ -82,7 +82,7 @@ class PageFieldMappingIndexer
             if (!AbstractIndexer::isAllowedToOverrideField($mappedFieldName)) {
                 throw new InvalidFieldNameException(
                     'Must not overwrite field "type".',
-                    1435441863
+                    1435441863,
                 );
             }
             $fields[$mappedFieldName] = $this->resolveFieldValue($mappedFieldName, $pageDocument, $pageRecord);
@@ -113,7 +113,7 @@ class PageFieldMappingIndexer
 
             $fieldValue = $contentObject->cObjGetSingle(
                 $pageIndexingConfiguration[$solrFieldName],
-                $pageIndexingConfiguration[$solrFieldName . '.']
+                $pageIndexingConfiguration[$solrFieldName . '.'],
             );
 
             if (AbstractIndexer::isSerializedValue($pageIndexingConfiguration, $solrFieldName)) {

@@ -123,7 +123,7 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
             trigger_error(
                 'queueInitializationService is no longer initalized automatically, till EXT:solr supports DI'
                 . ' the QueueInitializationService has to be set manually, fallback will be removed in v13.',
-                E_USER_DEPRECATED
+                E_USER_DEPRECATED,
             );
             $this->queueInitializationService = GeneralUtility::makeInstance(QueueInitializationService::class);
         }
@@ -140,7 +140,7 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
         trigger_error(
             'Queue->getInitializationService is deprecated and will be removed in v13.'
             . ' Use Queue->getQueueInitializationService instead or create a fresh instance.',
-            E_USER_DEPRECATED
+            E_USER_DEPRECATED,
         );
 
         return $this->getQueueInitializationService();
@@ -359,7 +359,7 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
             $itemChangedTime,
             $pageChangedTime,
             $localizationsChangedTime,
-            $startTime
+            $startTime,
         );
     }
 
@@ -515,7 +515,7 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
         return $this->queueStatisticsRepository
             ->findOneByRootPidAndOptionalIndexingConfigurationName(
                 $site->getRootPageId(),
-                $indexingConfigurationName
+                $indexingConfigurationName,
             );
     }
 

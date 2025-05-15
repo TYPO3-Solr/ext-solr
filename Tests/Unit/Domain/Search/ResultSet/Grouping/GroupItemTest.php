@@ -39,7 +39,7 @@ class GroupItemTest extends SetUpUnitTestCase
             12,
             1,
             99,
-            $this->createMock(SearchRequest::class)
+            $this->createMock(SearchRequest::class),
         );
         parent::setUp();
     }

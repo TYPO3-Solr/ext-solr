@@ -144,16 +144,16 @@ class IndexQueueModuleController extends AbstractModuleController
                         sprintf(
                             LocalizationUtility::translate(
                                 'solr.backend.index_queue_module.flashmessage.initialize_failure',
-                                'Solr'
+                                'Solr',
                             ),
                             $e->getMessage(),
-                            $e->getCode()
+                            $e->getCode(),
                         ),
                         LocalizationUtility::translate(
                             'solr.backend.index_queue_module.flashmessage.initialize_failure.title',
-                            'Solr'
+                            'Solr',
                         ),
-                        ContextualFeedbackSeverity::ERROR
+                        ContextualFeedbackSeverity::ERROR,
                     );
                 }
             }
@@ -163,7 +163,7 @@ class IndexQueueModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 LocalizationUtility::translate($messageLabel, 'Solr'),
                 LocalizationUtility::translate($titleLabel, 'Solr'),
-                ContextualFeedbackSeverity::WARNING
+                ContextualFeedbackSeverity::WARNING,
             );
         }
 
@@ -176,16 +176,16 @@ class IndexQueueModuleController extends AbstractModuleController
                     sprintf(
                         LocalizationUtility::translate(
                             'solr.backend.index_queue_module.flashmessage.initialize_failure',
-                            'Solr'
+                            'Solr',
                         ),
                         $indexingConfigurationName,
-                        1662117020
+                        1662117020,
                     ),
                     LocalizationUtility::translate(
                         'solr.backend.index_queue_module.flashmessage.initialize_failure.title',
-                        'Solr'
+                        'Solr',
                     ),
-                    ContextualFeedbackSeverity::ERROR
+                    ContextualFeedbackSeverity::ERROR,
                 );
             }
         }
@@ -196,7 +196,7 @@ class IndexQueueModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 LocalizationUtility::translate($messageLabel, 'Solr', [implode(', ', $messagesForConfigurations)]),
                 LocalizationUtility::translate($titleLabel, 'Solr'),
-                ContextualFeedbackSeverity::OK
+                ContextualFeedbackSeverity::OK,
             );
         }
 
@@ -295,7 +295,7 @@ class IndexQueueModuleController extends AbstractModuleController
         $this->addFlashMessage(
             LocalizationUtility::translate($label, 'Solr'),
             LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.index_manual', 'Solr'),
-            $severity
+            $severity,
         );
 
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);

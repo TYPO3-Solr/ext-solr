@@ -37,7 +37,7 @@ class GroupingTest extends SetUpUnitTestCase
                         ],
                     ],
                 ],
-            ]
+            ],
         );
         $grouping = Grouping::fromTypoScriptConfiguration($typoScriptConfiguration);
         self::assertSame(['title desc'], $grouping->getSortings(), 'Could not set sortings from TypoScriptConfiguration');

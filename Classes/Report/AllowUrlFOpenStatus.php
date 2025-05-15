@@ -51,7 +51,7 @@ class AllowUrlFOpenStatus extends AbstractSolrStatus
             'allow_url_fopen',
             $value,
             $message,
-            $severity
+            $severity,
         );
 
         return $reports;

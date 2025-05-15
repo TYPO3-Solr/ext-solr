@@ -140,7 +140,7 @@ abstract class SetUpUnitTestCase extends UnitTestCase
         } else {
             throw new RuntimeException(
                 'Could not inject ' . $name . ' into object of type ' . get_class($target),
-                1476107339
+                1476107339,
             );
         }
     }

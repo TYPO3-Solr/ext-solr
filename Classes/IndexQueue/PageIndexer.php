@@ -173,7 +173,7 @@ class PageIndexer extends Indexer
                         'request' => (array)$request,
                         'response' => (array)$response,
                         'groups' => $groups,
-                    ]
+                    ],
                 );
             }
         }
@@ -195,7 +195,7 @@ class PageIndexer extends Indexer
         if (!empty($this->options['authorization.'])) {
             $request->setAuthorizationCredentials(
                 $this->options['authorization.']['username'],
-                $this->options['authorization.']['password']
+                $this->options['authorization.']['password'],
             );
         }
 
@@ -315,7 +315,7 @@ class PageIndexer extends Indexer
                     'request' => (array)$request,
                     'request headers' => $request->getHeaders(),
                     'response' => (array)$response,
-                ]
+                ],
             );
         }
 

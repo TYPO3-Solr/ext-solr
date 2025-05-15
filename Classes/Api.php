@@ -40,7 +40,7 @@ class Api
     {
         return sha1(
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
-            'tx_solr_api'
+            'tx_solr_api',
         );
     }
 }

@@ -37,7 +37,7 @@ class PostEnhancedUriProcessor
         $routingService = GeneralUtility::makeInstance(
             RoutingService::class,
             $configuration['solr'] ?? [],
-            (string)$configuration['extensionKey']
+            (string)$configuration['extensionKey'],
         );
 
         $routingService->fromRoutingConfiguration($configuration);

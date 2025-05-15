@@ -46,7 +46,7 @@ class SystemTemplateRepository extends AbstractRepository
             ->select('uid', 'pid')
             ->from($this->table)
             ->where(
-                $queryBuilder->expr()->in('pid', $rootLinePageIds)
+                $queryBuilder->expr()->in('pid', $rootLinePageIds),
             )
             ->executeQuery()
             ->fetchAssociative();

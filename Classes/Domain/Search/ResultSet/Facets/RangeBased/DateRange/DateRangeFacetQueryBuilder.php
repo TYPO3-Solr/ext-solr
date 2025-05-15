@@ -46,7 +46,7 @@ class DateRangeFacetQueryBuilder implements FacetQueryBuilderInterface
             $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $start = $cObj->stdWrap(
                 $facetConfiguration['dateRange.']['start'],
-                $facetConfiguration['dateRange.']['start.']
+                $facetConfiguration['dateRange.']['start.'],
             );
         }
         $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.start'] = $start;
@@ -59,7 +59,7 @@ class DateRangeFacetQueryBuilder implements FacetQueryBuilderInterface
             $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $end = $cObj->stdWrap(
                 $facetConfiguration['dateRange.']['end'],
-                $facetConfiguration['dateRange.']['end.']
+                $facetConfiguration['dateRange.']['end.'],
             );
         }
         $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.end'] = $end;
@@ -72,7 +72,7 @@ class DateRangeFacetQueryBuilder implements FacetQueryBuilderInterface
             $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $gap = $cObj->stdWrap(
                 $facetConfiguration['dateRange.']['gap'],
-                $facetConfiguration['dateRange.']['gap.']
+                $facetConfiguration['dateRange.']['gap.'],
             );
         }
         $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.gap'] = $gap;

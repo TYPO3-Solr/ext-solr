@@ -80,7 +80,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
         $additionalFields['site'] = [
             'code' => $siteSelectorField->getAvailableSitesSelector(
                 'tx_scheduler[site]',
-                $taskInfo['site']
+                $taskInfo['site'],
             ),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
         ];
@@ -158,7 +158,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
             throw new LogicException(
                 '$task must be an instance of IndexQueueWorkerTask, '
                 . 'other instances are not supported.',
-                1487499814
+                1487499814,
             );
         }
         return true;

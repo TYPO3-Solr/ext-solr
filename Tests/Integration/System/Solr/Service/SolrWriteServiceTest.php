@@ -48,7 +48,7 @@ class SolrWriteServiceTest extends IntegrationTestBase
         $adapter = new Psr18Adapter(
             $psr7Client,
             $requestFactory,
-            $streamFactory
+            $streamFactory,
         );
         $client = new Client($adapter, $eventDispatcher);
 

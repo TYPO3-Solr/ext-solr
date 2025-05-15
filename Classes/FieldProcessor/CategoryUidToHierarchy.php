@@ -73,7 +73,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
         foreach ($values as $value) {
             $results = array_merge(
                 $results,
-                $this->getSolrRootlineForCategoryId((int)$value)
+                $this->getSolrRootlineForCategoryId((int)$value),
             );
         }
 

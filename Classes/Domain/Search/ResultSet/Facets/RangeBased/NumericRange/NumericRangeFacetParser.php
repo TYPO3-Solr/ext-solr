@@ -43,7 +43,7 @@ class NumericRangeFacetParser extends AbstractRangeFacetParser
             $facetConfiguration,
             $this->facetClass,
             $this->facetItemClass,
-            $this->facetRangeCountClass
+            $this->facetRangeCountClass,
         );
     }
 

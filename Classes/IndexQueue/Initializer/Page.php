@@ -97,7 +97,7 @@ class Page extends AbstractInitializer
         $mountPoints = $this->pagesRepository->findAllMountPagesByWhereClause(
             $this->buildPagesClause()
             . $this->buildTcaWhereClause()
-            . ' AND doktype = 7 AND no_search = 0'
+            . ' AND doktype = 7 AND no_search = 0',
         );
 
         if (empty($mountPoints)) {
@@ -106,7 +106,7 @@ class Page extends AbstractInitializer
 
         $databaseConnection = $this->queueItemRepository->getConnectionForAllInTransactionInvolvedTables(
             'tx_solr_indexqueue_item',
-            'tx_solr_indexqueue_indexing_property'
+            'tx_solr_indexqueue_indexing_property',
         );
 
         foreach ($mountPoints as $mountPoint) {
@@ -145,7 +145,7 @@ class Page extends AbstractInitializer
                     'Index Queue initialization failed for mount pages',
                     [
                         $e->__toString(),
-                    ]
+                    ],
                 );
                 break;
             }
@@ -168,7 +168,7 @@ class Page extends AbstractInitializer
                 FlashMessage::class,
                 'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPoint['uid'] . '.',
                 'Failed to initialize Mount Page tree. ',
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
             // @extensionScannerIgnoreLine
             $this->flashMessageQueue->addMessage($flashMessage);
@@ -185,7 +185,7 @@ class Page extends AbstractInitializer
                 . $mountPoint['mountPageSource']
                 . ' is not accessible in the frontend.',
                 'Failed to initialize Mount Page tree. ',
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
             // @extensionScannerIgnoreLine
             $this->flashMessageQueue->addMessage($flashMessage);
@@ -235,7 +235,7 @@ class Page extends AbstractInitializer
                 foreach ($items as $item) {
                     $this->queueItemRepository->updateChangedTimeByItem($item, $tstamp);
                 }
-            }
+            },
         );
 
         // add new items if necessary

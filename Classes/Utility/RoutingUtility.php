@@ -42,7 +42,7 @@ class RoutingUtility
             $hash[0] = str_replace(
                 range('0', '9'),
                 range('o', 'x'),
-                $hash[0]
+                $hash[0],
             );
         }
 
@@ -63,7 +63,7 @@ class RoutingUtility
         return str_replace(
             '/',
             '__',
-            $parameterName
+            $parameterName,
         );
     }
 }

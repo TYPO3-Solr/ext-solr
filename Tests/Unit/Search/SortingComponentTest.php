@@ -49,7 +49,7 @@ class SortingComponentTest extends SetUpUnitTestCase
         $queryBuilder = new QueryBuilder(
             $this->createMock(TypoScriptConfiguration::class),
             $this->createMock(SolrLogManager::class),
-            $this->createMock(SiteHashService::class)
+            $this->createMock(SiteHashService::class),
         );
 
         $this->sortingComponent = new SortingComponent($queryBuilder);

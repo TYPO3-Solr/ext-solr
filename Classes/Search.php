@@ -127,7 +127,7 @@ class Search
                         'query string' => $query->getQuery(),
                         'query parameters' => $query->getRequestBuilder()->build($query)->getParams(),
                         'response' => json_decode($response->getRawResponse(), true),
-                    ]
+                    ],
                 );
             }
         } catch (SolrCommunicationException $e) {
@@ -139,7 +139,7 @@ class Search
                         'query' => (array)$query,
                         'offset' => $offset,
                         'limit' => $query->getRows(),
-                    ]
+                    ],
                 );
             }
 
@@ -170,7 +170,7 @@ class Search
                     'Exception while trying to ping the solr server',
                     [
                         $e->__toString(),
-                    ]
+                    ],
                 );
             }
         }

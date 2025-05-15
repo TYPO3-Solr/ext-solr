@@ -61,7 +61,7 @@ class SchemaStatus extends AbstractSolrStatus
                 'Apache Solr Version / Schema Version',
                 'No Solr connections configured',
                 '',
-                ContextualFeedbackSeverity::WARNING
+                ContextualFeedbackSeverity::WARNING,
             );
 
             return $reports;
@@ -78,7 +78,7 @@ class SchemaStatus extends AbstractSolrStatus
                     'Apache Solr Version',
                     'Not accessible',
                     $pingFailedMsg,
-                    ContextualFeedbackSeverity::ERROR
+                    ContextualFeedbackSeverity::ERROR,
                 );
                 $reports[] = $status;
                 continue;
@@ -93,7 +93,7 @@ class SchemaStatus extends AbstractSolrStatus
                     'Schema Version',
                     'Unsupported Schema',
                     $report,
-                    ContextualFeedbackSeverity::WARNING
+                    ContextualFeedbackSeverity::WARNING,
                 );
                 $reports[] = $status;
             }
@@ -105,7 +105,7 @@ class SchemaStatus extends AbstractSolrStatus
                 'Apache Solr Version / Schema Version',
                 'OK',
                 '',
-                ContextualFeedbackSeverity::OK
+                ContextualFeedbackSeverity::OK,
             );
         }
 

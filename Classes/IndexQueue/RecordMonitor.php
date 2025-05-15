@@ -67,7 +67,7 @@ class RecordMonitor
 
         if ($command === 'delete' && $table === 'tt_content') {
             $this->eventDispatcher->dispatch(
-                new ContentElementDeletedEvent($uid)
+                new ContentElementDeletedEvent($uid),
             );
         } elseif ($command === 'move' && $table === 'pages') {
             $pageRow = BackendUtility::getRecord('pages', $uid);
@@ -100,7 +100,7 @@ class RecordMonitor
         // command "version"
         if ($command === 'version' && $value['action'] === 'swap') {
             $this->eventDispatcher->dispatch(
-                new VersionSwappedEvent($uid, $table)
+                new VersionSwappedEvent($uid, $table),
             );
         }
 
@@ -165,7 +165,7 @@ class RecordMonitor
         }
 
         $this->eventDispatcher->dispatch(
-            new RecordUpdatedEvent((int)$recordUid, $table, $fields)
+            new RecordUpdatedEvent((int)$recordUid, $table, $fields),
         );
     }
 }

@@ -63,7 +63,7 @@ class SearchController extends AbstractBaseController
         $view->getRenderingContext()->setVariableProvider($variableProvider);
         $view->getRenderingContext()->getVariableProvider()->add(
             'typoScriptConfiguration',
-            $this->typoScriptConfiguration
+            $this->typoScriptConfiguration,
         );
 
         $customTemplate = $this->getCustomTemplateFromConfiguration();
@@ -133,8 +133,8 @@ class SearchController extends AbstractBaseController
                     $this->typoScriptConfiguration->getSearchPluginNamespace(),
                     $arguments,
                     $pagination,
-                    $currentPage
-                )
+                    $currentPage,
+                ),
             );
 
             $values = [
@@ -171,8 +171,8 @@ class SearchController extends AbstractBaseController
             new BeforeSearchFormIsShownEvent(
                 $this->searchService->getSearch(),
                 $this->getAdditionalFilters(),
-                $this->typoScriptConfiguration->getSearchPluginNamespace()
-            )
+                $this->typoScriptConfiguration->getSearchPluginNamespace(),
+            ),
         );
         $values = [
             'search' => $formEvent->getSearch(),
@@ -206,8 +206,8 @@ class SearchController extends AbstractBaseController
         $afterFrequentlySearchedEvent = $this->eventDispatcher->dispatch(
             new AfterFrequentlySearchHasBeenExecutedEvent(
                 $searchResultSet,
-                $this->getAdditionalFilters()
-            )
+                $this->getAdditionalFilters(),
+            ),
         );
         $values = [
             'additionalFilters' => $afterFrequentlySearchedEvent->getAdditionalFilters(),

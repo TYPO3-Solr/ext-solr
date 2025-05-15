@@ -51,7 +51,7 @@ class SuggestController extends AbstractBaseController
             $suggestService = GeneralUtility::makeInstance(
                 SuggestService::class,
                 $this->searchService,
-                $this->typoScriptConfiguration
+                $this->typoScriptConfiguration,
             );
 
             $additionalFilters = is_array($additionalFilters) ? array_map('htmlspecialchars', $additionalFilters) : [];

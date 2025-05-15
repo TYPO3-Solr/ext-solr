@@ -234,7 +234,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
             function ($name) {
                 return $name == 'myType' ? ['pages'] : [];
-            }
+            },
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
@@ -415,7 +415,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
             function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
-            }
+            },
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
@@ -465,7 +465,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
             function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
-            }
+            },
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
@@ -507,7 +507,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
             function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
-            }
+            },
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
@@ -544,7 +544,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
             function ($name) {
                 return $name == 'type' ? ['pages'] : [];
-            }
+            },
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
@@ -589,7 +589,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
                     return ['jpeg', 'kasper"s'];
                 }
                 return [];
-            }
+            },
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
@@ -1007,7 +1007,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $usedSearchRequest->expects(self::any())->method('getSortingName')->willReturn('title');
         $usedSearchRequest->expects(self::any())->method('getSortingDirection')->willReturn('desc');
         $usedSearchRequest->expects(self::any())->method('getSeperatedSortings')->willReturn(
-            ['title' => 'desc', 'relevance' => 'asc']
+            ['title' => 'desc', 'relevance' => 'asc'],
         );
 
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);

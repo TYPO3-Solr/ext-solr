@@ -68,7 +68,7 @@ class ReIndexTaskTest extends IntegrationTestBase
         self::assertGreaterThan(
             0,
             $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to be not empty.'
+            'Index queue is empty and was expected to be not empty.',
         );
     }
 
@@ -80,7 +80,7 @@ class ReIndexTaskTest extends IntegrationTestBase
         self::assertEquals(
             $amount,
             $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to contain ' . (int)$amount . ' items.'
+            'Index queue is empty and was expected to contain ' . (int)$amount . ' items.',
         );
     }
 

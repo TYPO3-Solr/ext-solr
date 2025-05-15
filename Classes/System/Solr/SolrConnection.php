@@ -145,7 +145,7 @@ class SolrConnection
             $this->logger,
             $this->synonymParser,
             $this->stopWordParser,
-            $this->schemaParser
+            $this->schemaParser,
         );
     }
 

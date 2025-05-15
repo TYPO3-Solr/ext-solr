@@ -72,7 +72,7 @@ class GarbageCollector implements SingletonInterface
 
         if ($command === 'delete') {
             $this->eventDispatcher->dispatch(
-                new RecordDeletedEvent((int)$uid, (string)$table)
+                new RecordDeletedEvent((int)$uid, (string)$table),
             );
         } elseif ($command === 'move' && $table === 'pages') {
             $pageRow = BackendUtility::getRecord('pages', $uid);
@@ -199,8 +199,8 @@ class GarbageCollector implements SingletonInterface
                 $uid,
                 $table,
                 $fields,
-                $this->hasFrontendGroupsRemoved($table, $updatedRecord)
-            )
+                $this->hasFrontendGroupsRemoved($table, $updatedRecord),
+            ),
         );
     }
 

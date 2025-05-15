@@ -72,7 +72,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
                 self::TITLE_SITE_HANDLING_CONFIGURATION,
                 'No sites found',
                 '',
-                ContextualFeedbackSeverity::WARNING
+                ContextualFeedbackSeverity::WARNING,
             );
 
             return $reports;
@@ -85,7 +85,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
                     self::TITLE_SITE_HANDLING_CONFIGURATION,
                     'Something went wrong',
                     vsprintf('The configured Site "%s" is not TYPO3 managed site. Please refer to TYPO3 site management docs and configure the site properly.', [$site->getLabel()]),
-                    ContextualFeedbackSeverity::ERROR
+                    ContextualFeedbackSeverity::ERROR,
                 );
                 continue;
             }
@@ -127,7 +127,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
             sprintf('Site Identifier: "%s"', $ypo3Site->getIdentifier()),
             '',
             $renderedReport,
-            $globalPassedStateForThisSite ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::ERROR
+            $globalPassedStateForThisSite ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::ERROR,
         );
     }
 
@@ -158,14 +158,14 @@ class SiteHandlingStatus extends AbstractSolrStatus
                     'Entry Point[base]="%s" is not valid URL.'
                     . ' Following parts of defined URL are empty or invalid: "%s"',
                     $siteLanguage->getBase()->__toString(),
-                    $this->fetchInvalidPartsOfUri($siteLanguage->getBase())
+                    $this->fetchInvalidPartsOfUri($siteLanguage->getBase()),
                 );
             $validationResult['passed'] = false;
             $validationResult['CSSClassesFor']['tr'] = self::CSS_STATUS_ERROR;
         } else {
             $validationResult['message'] = sprintf(
                 'Entry Point[base]="%s" is valid URL.',
-                $siteLanguage->getBase()->__toString()
+                $siteLanguage->getBase()->__toString(),
             );
         }
 

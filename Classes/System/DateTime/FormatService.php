@@ -72,7 +72,7 @@ class FormatService
     {
         $dateTime = DateTime::createFromFormat(
             self::SOLR_ISO_DATETIME_FORMAT,
-            $isoTime
+            $isoTime,
         );
         return $dateTime ? (int)$dateTime->format('U') : 0;
     }
@@ -100,7 +100,7 @@ class FormatService
         $dateTime = DateTime::createFromFormat(
             self::SOLR_ISO_DATETIME_FORMAT,
             $isoTime,
-            $utcTimeZone
+            $utcTimeZone,
         );
         return $dateTime ? (int)$dateTime->format('U') : 0;
     }

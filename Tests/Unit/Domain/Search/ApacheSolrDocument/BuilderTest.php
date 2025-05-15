@@ -61,7 +61,7 @@ class BuilderTest extends SetUpUnitTestCase
         $this->typo3PageExtractorMock = $this->createMock(Typo3PageContentExtractor::class);
 
         $this->documentBuilder = $this->getMockBuilder(Builder::class)->setConstructorArgs([$this->variantIdBuilderMock ])->onlyMethods(
-            ['getExtractorForPageContent', 'getSiteByPageId', 'getPageDocumentId', 'getDocumentId']
+            ['getExtractorForPageContent', 'getSiteByPageId', 'getPageDocumentId', 'getDocumentId'],
         )->getMock();
 
         $this->documentBuilder->expects(self::any())->method('getExtractorForPageContent')->willReturn($this->typo3PageExtractorMock);

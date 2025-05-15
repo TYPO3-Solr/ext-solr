@@ -63,7 +63,7 @@ class SolrConnectionTest extends IntegrationTestBase
 
         $messageOnNoSolrConnectionFoundException = vsprintf(
             'The SolrConnection for page with uid "%s" could not be found. Can\'t proceed with dependent tests.',
-            [$pageUid]
+            [$pageUid],
         );
         try {
             $solrConnection = $connectionManager->getConnectionByPageId($pageUid, 0);
@@ -84,7 +84,7 @@ class SolrConnectionTest extends IntegrationTestBase
         $httpClientAdapter = $solrConnection->getReadService()->getClient()->getAdapter();
         $httpClientObject = $this->getInaccessiblePropertyFromObject(
             $httpClientAdapter,
-            'httpClient'
+            'httpClient',
         );
 
         $guzzleConfig = $this->getInaccessiblePropertyFromObject($httpClientObject, 'config');
@@ -99,8 +99,8 @@ class SolrConnectionTest extends IntegrationTestBase
                 $httpSettingsIgnoredMessage,
                 [
                     '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'connect_timeout\']',
-                ]
-            )
+                ],
+            ),
         );
         self::assertEquals(
             $GLOBALS['TYPO3_CONF_VARS']['HTTP']['timeout'],
@@ -109,8 +109,8 @@ class SolrConnectionTest extends IntegrationTestBase
                 $httpSettingsIgnoredMessage,
                 [
                     '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'timeout\']',
-                ]
-            )
+                ],
+            ),
         );
         self::assertEquals(
             $GLOBALS['TYPO3_CONF_VARS']['HTTP']['headers']['User-Agent'],
@@ -119,8 +119,8 @@ class SolrConnectionTest extends IntegrationTestBase
                 $httpSettingsIgnoredMessage,
                 [
                     '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'headers\'][\'User-Agent\']',
-                ]
-            )
+                ],
+            ),
         );
     }
 }

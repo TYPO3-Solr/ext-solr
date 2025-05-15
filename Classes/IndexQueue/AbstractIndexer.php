@@ -92,7 +92,7 @@ abstract class AbstractIndexer
             if (!static::isAllowedToOverrideField($solrFieldName)) {
                 throw new InvalidFieldNameException(
                     'Must not overwrite field .' . $solrFieldName,
-                    1435441863
+                    1435441863,
                 );
             }
 
@@ -173,21 +173,21 @@ abstract class AbstractIndexer
                 $request = GeneralUtility::makeInstance(Tsfe::class)
                     ->getServerRequestForTsfeByPageIdAndLanguageId(
                         $tsfe->id,
-                        $language instanceof SiteLanguage ? $language->getLanguageId() : $language
+                        $language instanceof SiteLanguage ? $language->getLanguageId() : $language,
                     );
             }
             $cObject->setRequest($request);
             $cObject->start($data, $this->type);
             $fieldValue = $cObject->cObjGetSingle(
                 $indexingConfiguration[$solrFieldName],
-                $indexingConfiguration[$solrFieldName . '.']
+                $indexingConfiguration[$solrFieldName . '.'],
             );
 
             chdir($backupWorkingDirectory);
 
             if ($this->isSerializedValue(
                 $indexingConfiguration,
-                $solrFieldName
+                $solrFieldName,
             )
             ) {
                 $fieldValue = unserialize($fieldValue);
@@ -197,7 +197,7 @@ abstract class AbstractIndexer
         ) {
             $referencedTsPath = trim(substr(
                 $indexingConfiguration[$solrFieldName],
-                1
+                1,
             ));
 
             /** @var ?FrontendTypoScript $frontendTypoScript */
@@ -220,7 +220,7 @@ abstract class AbstractIndexer
                 $request = GeneralUtility::makeInstance(Tsfe::class)
                     ->getServerRequestForTsfeByPageIdAndLanguageId(
                         $tsfe->id,
-                        $language instanceof SiteLanguage ? $language->getLanguageId() : $language
+                        $language instanceof SiteLanguage ? $language->getLanguageId() : $language,
                     );
             }
             $cObject->setRequest($request);
@@ -231,7 +231,7 @@ abstract class AbstractIndexer
 
             if ($this->isSerializedValue(
                 $indexingConfiguration,
-                $solrFieldName
+                $solrFieldName,
             )
             ) {
                 $fieldValue = unserialize($fieldValue);
@@ -252,13 +252,13 @@ abstract class AbstractIndexer
         $fieldType = substr(
             $solrFieldName,
             strrpos($solrFieldName, '_') + 1,
-            -1
+            -1,
         );
         if (is_array($fieldValue)) {
             foreach ($fieldValue as $key => $value) {
                 $fieldValue[$key] = $this->ensureFieldValueType(
                     $value,
-                    $fieldType
+                    $fieldType,
                 );
             }
         } else {

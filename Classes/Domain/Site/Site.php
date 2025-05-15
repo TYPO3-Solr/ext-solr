@@ -140,7 +140,7 @@ class Site
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
                 'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',
-                1552491117
+                1552491117,
             );
             $noSolrConnectionException->setRootPageId($this->getRootPageId());
             $noSolrConnectionException->setLanguageId($language);

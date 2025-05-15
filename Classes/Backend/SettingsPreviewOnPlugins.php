@@ -60,7 +60,7 @@ class SettingsPreviewOnPlugins
         /** @var StandaloneView $standaloneView */
         $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
         $standaloneView->setTemplatePathAndFilename(
-            GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Backend/PageModule/Summary.html')
+            GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Backend/PageModule/Summary.html'),
         );
 
         $standaloneView->assignMultiple([
@@ -154,14 +154,14 @@ class SettingsPreviewOnPlugins
             'tt_content',
             'CType',
             $this->pluginsTtContentRecord['CType'],
-            $this->pluginsTtContentRecord
+            $this->pluginsTtContentRecord,
         );
         if (!empty($label)) {
             $label = $this->getLanguageService()->sL($label);
         } else {
             $label = sprintf(
                 $this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.noMatchingValue'),
-                $this->pluginsTtContentRecord['CType']
+                $this->pluginsTtContentRecord['CType'],
             );
         }
 

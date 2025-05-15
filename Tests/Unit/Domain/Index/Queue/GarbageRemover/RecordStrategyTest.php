@@ -30,7 +30,7 @@ class RecordStrategyTest extends AbstractStrategyTestBase
             null,
             [],
             '',
-            false
+            false,
         );
     }
 }

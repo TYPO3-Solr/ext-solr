@@ -137,7 +137,7 @@ class PageIndexerRequest
         if ($decodedResponse['requestId'] != $this->requestId) {
             throw new RuntimeException(
                 'Request ID mismatch. Request ID was ' . $this->requestId . ', received ' . $decodedResponse['requestId'] . '. Are requests cached?',
-                1351260655
+                1351260655,
             );
         }
 
@@ -177,7 +177,7 @@ class PageIndexerRequest
                     'request headers' => $headers,
                     'response headers' => $rawResponse->getHeaders(),
                     'raw response body' => $responseString,
-                ]
+                ],
             );
 
             throw new RuntimeException('Failed to execute Page Indexer Request. See log for details. Request ID: ' . $this->requestId, 1319116885);
@@ -205,7 +205,7 @@ class PageIndexerRequest
             'hash' => md5(
                 $itemId . '|' .
                 $pageId . '|' .
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']
+                $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'],
             ),
         ];
 
@@ -243,7 +243,7 @@ class PageIndexerRequest
         $calculatedHash = md5(
             $this->parameters['item'] . '|' .
             $this->parameters['page'] . '|' .
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'],
         );
 
         if ($this->parameters['hash'] === $calculatedHash) {
@@ -359,12 +359,12 @@ class PageIndexerRequest
                     $url,
                     $e->getCode(),
                     $e->getMessage(),
-                    $response->getStatusCode()
+                    $response->getStatusCode(),
                 ),
                 [
                     'HTTP headers' => $response->getHeaders(),
                     'options' => $options,
-                ]
+                ],
             );
         } /* @todo: fix that properly or remove */ /*finally {
             if (isset($originalBackendUser)) {

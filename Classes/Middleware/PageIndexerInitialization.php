@@ -53,7 +53,7 @@ class PageIndexerInitialization implements MiddlewareInterface
                     [
                         'page indexer request' => (array)$pageIndexerRequest,
                         'index queue header' => $jsonEncodedParameters,
-                    ]
+                    ],
                 );
                 return new JsonResponse(['error' => ['code' => 403, 'message' => 'Invalid Index Queue Request.']], 403);
             }

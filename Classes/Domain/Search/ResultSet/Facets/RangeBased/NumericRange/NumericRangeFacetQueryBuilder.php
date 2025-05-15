@@ -44,7 +44,7 @@ class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface
         if ($facetConfiguration['numericRange.']['start.'] ?? false) {
             $start = $cObj->stdWrap(
                 $facetConfiguration['numericRange.']['start'],
-                $facetConfiguration['numericRange.']['start.']
+                $facetConfiguration['numericRange.']['start.'],
             );
         }
 
@@ -52,7 +52,7 @@ class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface
         if ($facetConfiguration['numericRange.']['end.'] ?? false) {
             $end = $cObj->stdWrap(
                 $facetConfiguration['numericRange.']['end'],
-                $facetConfiguration['numericRange.']['end.']
+                $facetConfiguration['numericRange.']['end.'],
             );
         }
 
@@ -60,7 +60,7 @@ class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface
         if ($facetConfiguration['numericRange.']['gap.'] ?? false) {
             $gap = $cObj->stdWrap(
                 $facetConfiguration['numericRange.']['gap'],
-                $facetConfiguration['numericRange.']['gap.']
+                $facetConfiguration['numericRange.']['gap.'],
             );
         }
 

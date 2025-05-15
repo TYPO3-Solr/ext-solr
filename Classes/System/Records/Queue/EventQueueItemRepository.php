@@ -88,7 +88,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
         $queryBuilder
             ->update($this->table)
             ->where(
-                $queryBuilder->expr()->eq('uid', $uid)
+                $queryBuilder->expr()->eq('uid', $uid),
             );
 
         foreach ($data as $column => $value) {
@@ -113,7 +113,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
         $queryBuilder
             ->delete($this->table)
             ->where(
-                $queryBuilder->expr()->in('uid', array_map('intval', $uids))
+                $queryBuilder->expr()->in('uid', array_map('intval', $uids)),
             )
             ->executeStatement();
     }

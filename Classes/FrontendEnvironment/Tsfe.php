@@ -125,7 +125,7 @@ class Tsfe implements SingletonInterface
 
             $this->serverRequestCache[$cacheIdentifier] = $serverRequest = $serverRequest->withAttribute(
                 'frontend.typoscript',
-                $configurationManager->getCoreTypoScriptFrontendByRequest($serverRequest)
+                $configurationManager->getCoreTypoScriptFrontendByRequest($serverRequest),
             );
         }
 
@@ -140,8 +140,8 @@ class Tsfe implements SingletonInterface
                 GeneralUtility::makeInstance(
                     VisibilityAspect::class,
                     false,
-                    false
-                )
+                    false,
+                ),
             );
 
             /** @var FrontendUserAuthentication $feUser */
@@ -307,7 +307,7 @@ class Tsfe implements SingletonInterface
         if (!isset($pidToUse) && !isset($rootPageId)) {
             throw new Exception\Exception(
                 "The closest page with active template to page \"$askedPid\" could not be resolved and alternative rootPageId is not provided.",
-                1637339439
+                1637339439,
             );
         }
         if (isset($rootPageId)) {
@@ -318,7 +318,7 @@ class Tsfe implements SingletonInterface
         if ($pidToUse === $incomingPidToUse && $rootPageId === $incomingRootPageId) {
             throw new Exception\Exception(
                 "Infinite recursion detected while looking for the closest page with active template to page \"$askedPid\" . Please note that the page with active template (usually the root page of the current tree) MUST NOT be a sysfolder.",
-                1637339476
+                1637339476,
             );
         }
 

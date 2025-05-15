@@ -73,7 +73,7 @@ class IndexerTest extends SetUpUnitTestCase
             ],
             [],
             '',
-            false
+            false,
         );
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $eventDispatcher->expects(self::any())->method('dispatch')->willReturnArgument(0);
@@ -105,7 +105,7 @@ class IndexerTest extends SetUpUnitTestCase
             ->expects(self::any())
             ->method('getTsfeByItemAndLanguageId')
             ->willReturn(
-                $this->createMock(TypoScriptFrontendController::class)
+                $this->createMock(TypoScriptFrontendController::class),
             );
 
         $writeServiceMock
@@ -154,14 +154,14 @@ class IndexerTest extends SetUpUnitTestCase
             ],
             [],
             '',
-            false
+            false,
         );
 
         $indexer
             ->expects(self::any())
             ->method('getTsfeByItemAndLanguageId')
             ->willReturn(
-                $this->createMock(TypoScriptFrontendController::class)
+                $this->createMock(TypoScriptFrontendController::class),
             );
 
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
@@ -173,7 +173,7 @@ class IndexerTest extends SetUpUnitTestCase
             $eventDispatcher->expects(self::once())->method('dispatch')->willReturnCallback(
                 static function (object $event) {
                     return $event;
-                }
+                },
             );
         }
 

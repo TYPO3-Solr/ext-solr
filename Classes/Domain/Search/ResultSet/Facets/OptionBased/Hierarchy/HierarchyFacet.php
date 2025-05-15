@@ -75,7 +75,7 @@ class HierarchyFacet extends AbstractFacet
             $label,
             $value,
             $count,
-            $selected
+            $selected,
         );
         $this->nodesByKey[$key] = $node;
 

@@ -185,7 +185,7 @@ class Indexer extends AbstractIndexer
             $responseData = json_decode($response->getRawResponse() ?? '', true);
             throw new IndexingException(
                 $response->getHttpStatusMessage() . ': ' . ($responseData['error']['msg'] ?? $response->getHttpStatus()),
-                1678693955
+                1678693955,
             );
         }
 
@@ -402,7 +402,7 @@ class Indexer extends AbstractIndexer
             ->getTsfeByPageIdAndLanguageId(
                 $pidToUse,
                 $language,
-                $item->getRootPageUid()
+                $item->getRootPageUid(),
             );
     }
 
@@ -464,7 +464,7 @@ class Indexer extends AbstractIndexer
             $this->getTsfeByItemAndLanguageId(
                 $item,
                 $language,
-            )
+            ),
         );
         $event = $this->eventDispatcher->dispatch($event);
         return $event->getDocuments();
@@ -673,7 +673,7 @@ class Indexer extends AbstractIndexer
     {
         $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($item->getRootPageUid());
         $this->loggingEnabled = $solrConfiguration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack(
-            $item->getIndexingConfigurationName()
+            $item->getIndexingConfigurationName(),
         );
     }
 

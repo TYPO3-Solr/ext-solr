@@ -60,7 +60,7 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
         try {
             $hasAccessToModule = self::getModuleProvider()->accessGranted(
                 self::getModuleSignatureFromArguments($arguments),
-                $GLOBALS['BE_USER']
+                $GLOBALS['BE_USER'],
             );
         } catch (RuntimeException $exception) {
             return false;

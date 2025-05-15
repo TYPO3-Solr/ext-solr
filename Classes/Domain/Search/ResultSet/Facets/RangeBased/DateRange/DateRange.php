@@ -51,7 +51,7 @@ class DateRange extends AbstractRangeFacetItem
             $selected,
             [],
             $rangeCounts,
-            $gap
+            $gap,
         );
     }
 

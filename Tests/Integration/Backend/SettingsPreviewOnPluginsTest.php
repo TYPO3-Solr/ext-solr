@@ -67,7 +67,7 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
     public function printsPreviewOnExtSolrPluginsCorrectly(): void
     {
         $settingsPreviewOnPlugins = new SettingsPreviewOnPlugins(
-            $this->getMockOfFlexFormService($this->flexFormArray)
+            $this->getMockOfFlexFormService($this->flexFormArray),
         );
         $event = $this->getFakePageContentPreviewRenderingEvent(
             'tt_content',
@@ -76,7 +76,7 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
                 'pi_flexform' => 'provided via mock return value $this->flexFormArray',
                 'CType' => 'solr_pi_results',
                 'hidden' => 0,
-            ]
+            ],
         );
         $settingsPreviewOnPlugins->__invoke($event);
         $result = $event->getPreviewContent();
@@ -97,7 +97,7 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
             $table,
             (string)($record[(string)($GLOBALS['TCA'][$table]['ctrl']['type'] ?? '')] ?? ''),
             $record,
-            $this->createMock(PageLayoutContext::class)
+            $this->createMock(PageLayoutContext::class),
         );
     }
 

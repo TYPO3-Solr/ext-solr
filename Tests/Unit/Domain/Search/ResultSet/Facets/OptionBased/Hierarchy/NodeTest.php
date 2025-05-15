@@ -62,7 +62,7 @@ class NodeTest extends SetUpUnitTestCase
             '',
             '',
             0,
-            $data['selected'] ?? false
+            $data['selected'] ?? false,
         );
 
         foreach (array_map([$this, 'convertDataToNode'], $data['children'] ?? []) as $childNode) {

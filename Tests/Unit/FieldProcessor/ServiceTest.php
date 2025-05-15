@@ -45,7 +45,7 @@ class ServiceTest extends SetUpUnitTestCase
         self::assertEquals(
             $this->documentMock['stringField'],
             'STRINGVALUE',
-            'field was not processed with uppercase'
+            'field was not processed with uppercase',
         );
     }
 
@@ -60,7 +60,7 @@ class ServiceTest extends SetUpUnitTestCase
         self::assertEquals(
             $this->documentMock['stringField'],
             ['STRINGVALUE_1', 'STRINGVALUE_2'],
-            'field was not processed with uppercase'
+            'field was not processed with uppercase',
         );
     }
 
@@ -69,7 +69,7 @@ class ServiceTest extends SetUpUnitTestCase
     {
         $this->documentMock->setField(
             'dateField',
-            '1262343600'
+            '1262343600',
         ); // 2010-01-01 12:00
         $configuration = ['dateField' => 'timestampToIsoDate'];
 
@@ -77,7 +77,7 @@ class ServiceTest extends SetUpUnitTestCase
         self::assertEquals(
             $this->documentMock['dateField'],
             '2010-01-01T12:00:00Z',
-            'field was not processed with timestampToIsoDate'
+            'field was not processed with timestampToIsoDate',
         );
     }
 
@@ -86,11 +86,11 @@ class ServiceTest extends SetUpUnitTestCase
     {
         $this->documentMock->addField(
             'dateField',
-            '1262343600'
+            '1262343600',
         ); // 2010-01-01 12:00
         $this->documentMock->addField(
             'dateField',
-            '1262343601'
+            '1262343601',
         ); // 2010-01-01 12:01
         $configuration = ['dateField' => 'timestampToIsoDate'];
 
@@ -98,7 +98,7 @@ class ServiceTest extends SetUpUnitTestCase
         self::assertEquals(
             $this->documentMock['dateField'],
             ['2010-01-01T12:00:00Z', '2010-01-01T12:00:01Z'],
-            'field was not processed with timestampToIsoDate'
+            'field was not processed with timestampToIsoDate',
         );
     }
 
@@ -114,7 +114,7 @@ class ServiceTest extends SetUpUnitTestCase
         self::assertEquals(
             $this->documentMock['stringField'],
             'bar',
-            'field was not processed with TestFieldProcessor'
+            'field was not processed with TestFieldProcessor',
         );
     }
 }

@@ -74,7 +74,7 @@ final class EventQueueWorkerTask extends AbstractTask
                     throw new InvalidArgumentException(
                         'Unsupported event found: '
                             . (is_object($event) ? get_class($event) : (string)$event),
-                        1639747163
+                        1639747163,
                     );
                 }
 
@@ -84,7 +84,7 @@ final class EventQueueWorkerTask extends AbstractTask
 
                 // dispatch event processing finished event
                 $dispatcher->dispatch(
-                    new DelayedProcessingFinishedEvent($event)
+                    new DelayedProcessingFinishedEvent($event),
                 );
             } catch (Throwable $e) {
                 $this->getSolrLogManager()->error(
@@ -94,14 +94,14 @@ final class EventQueueWorkerTask extends AbstractTask
                         'error' => $e->getMessage(),
                         'errorCode' => $e->getCode(),
                         'errorFile' => $e->getFile() . ':' . $e->getLine(),
-                    ]
+                    ],
                 );
                 $itemRepository->updateEventQueueItem(
                     $queueItem['uid'],
                     [
                         'error' => 1,
                         'error_message' => $e->getMessage() . '[' . $e->getCode() . ']',
-                    ]
+                    ],
                 );
             }
         }
@@ -119,7 +119,7 @@ final class EventQueueWorkerTask extends AbstractTask
     public function getAdditionalInformation(): string
     {
         $message = LocalizationUtility::translate(
-            'LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:task.eventQueueWorkerTask.statusMsg'
+            'LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:task.eventQueueWorkerTask.statusMsg',
         );
 
         $fullItemCount = $this->getEventQueueItemRepository()->count(false);
@@ -128,7 +128,7 @@ final class EventQueueWorkerTask extends AbstractTask
             $message,
             $pendingItemsCount,
             ($fullItemCount - $pendingItemsCount),
-            $this->limit
+            $this->limit,
         );
     }
 

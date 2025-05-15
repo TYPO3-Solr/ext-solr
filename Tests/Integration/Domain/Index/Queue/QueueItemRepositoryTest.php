@@ -111,10 +111,10 @@ class QueueItemRepositoryTest extends IntegrationTestBase
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
             static function (
-                AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event
+                AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event,
             ): Object {
                 return $event;
-            }
+            },
         );
 
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class, null, $eventDispatcher);
@@ -127,13 +127,13 @@ class QueueItemRepositoryTest extends IntegrationTestBase
 
         $eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
             static function (
-                AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event
+                AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event,
             ): Object {
                 if ($event->getTable() === 'pages') {
                     $event->setRecords([]);
                 }
                 return $event;
-            }
+            },
         );
 
         $items = $queueItemRepository->findItems([], ['pages']);

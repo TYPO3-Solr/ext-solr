@@ -166,7 +166,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         if (!($tsfe->config['config']['index_enable'] ?? false)) {
             if ($logPageIndexed) {
                 $this->logger->error(
-                    'Indexing is disabled. Set config.index_enable = 1 .'
+                    'Indexing is disabled. Set config.index_enable = 1 .',
                 );
             }
             return;
@@ -185,7 +185,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
                     'Exception while trying to index page ' . $tsfe->id,
                     [
                         $e->__toString(),
-                    ]
+                    ],
                 );
             }
         }
@@ -197,7 +197,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             $this->logger->log(
                 $severity,
                 'Page indexed: ' . $success,
-                $this->responseData
+                $this->responseData,
             );
         }
     }
@@ -227,7 +227,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             $siteLanguage,
             $this->generatePageUrl($pageArguments, $pageInformation, $tsfe),
             $this->getAccessRootline(),
-            $pageInformation->getMountPoint()
+            $pageInformation->getMountPoint(),
         );
         $document = $this->substitutePageDocument(
             $document,
@@ -266,13 +266,13 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             if (!$solrConnection->getWriteService()->ping()) {
                 throw new SolrException(
                     'Could not connect to Solr server.',
-                    1323946472
+                    1323946472,
                 );
             }
             return $solrConnection;
         } catch (Throwable $e) {
             $this->logger->error(
-                $e->getMessage() . ' Error code: ' . $e->getCode()
+                $e->getMessage() . ' Error code: ' . $e->getCode(),
             );
 
             // TODO extract to a class "ExceptionLogger"
@@ -281,7 +281,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
                     'Exception while trying to index a page',
                     [
                         $e->__toString(),
-                    ]
+                    ],
                 );
             }
             throw $e;

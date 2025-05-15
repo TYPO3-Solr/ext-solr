@@ -60,14 +60,14 @@ class SearchResultSetTest extends SetUpUnitTestCase
         $queryBuilder = new QueryBuilder(
             $this->configurationMock,
             $this->solrLogManagerMock,
-            $this->createMock(SiteHashService::class)
+            $this->createMock(SiteHashService::class),
         );
 
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->eventDispatcher->expects(self::any())->method('dispatch')->willReturnCallback(
             static function (object $event) {
                 return $event;
-            }
+            },
         );
 
         $this->searchResultSetService = new SearchResultSetService(
@@ -76,7 +76,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
             $this->solrLogManagerMock,
             null,
             $queryBuilder,
-            $this->eventDispatcher
+            $this->eventDispatcher,
         );
 
         $container = new Container();
@@ -131,7 +131,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
                     $event->getTypoScriptConfiguration()->getSearchConfiguration();
                 }
                 return $event;
-            }
+            },
         );
         $fakeResponse = $this->createMock(ResponseAdapter::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 3. search', 0, $fakeResponse);
@@ -156,7 +156,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
                     }
                 }
                 return $event;
-            }
+            },
         );
 
         $fakedSolrResponse = self::getFixtureContentByName('fakeResponse.json');
@@ -183,7 +183,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
 
         $this->configurationMock->expects(self::once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
         $this->configurationMock->expects(self::any())->method('getSearchQueryFilterConfiguration')->willReturn(
-            ['type:pages']
+            ['type:pages'],
         );
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'test']]);
         $fakeRequest->setResultsPerPage(10);
@@ -230,7 +230,7 @@ class SearchResultSetTest extends SetUpUnitTestCase
                 self::assertSame($expectedQueryString, $query->getQuery(), 'Search was not triggered with an expected queryString');
                 self::assertSame($expectedOffset, $offset);
                 return $fakeResponse;
-            }
+            },
         );
     }
 }

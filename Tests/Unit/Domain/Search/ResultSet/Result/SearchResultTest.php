@@ -49,7 +49,7 @@ class SearchResultTest extends SetUpUnitTestCase
         self::assertSame(
             '4711',
             $this->searchResult->getId(),
-            'Could not get id from searchResult'
+            'Could not get id from searchResult',
         );
     }
 
@@ -59,7 +59,7 @@ class SearchResultTest extends SetUpUnitTestCase
         self::assertSame(
             0.55,
             $this->searchResult->getScore(),
-            'Could not get score from searchResult'
+            'Could not get score from searchResult',
         );
     }
 
@@ -69,7 +69,7 @@ class SearchResultTest extends SetUpUnitTestCase
         self::assertSame(
             'foobar',
             $this->searchResult->getContent(),
-            'Could not get content from searchResult'
+            'Could not get content from searchResult',
         );
     }
 
@@ -79,7 +79,7 @@ class SearchResultTest extends SetUpUnitTestCase
         self::assertSame(
             'pages',
             $this->searchResult->getType(),
-            'Could not get type from searchResult'
+            'Could not get type from searchResult',
         );
     }
 
@@ -89,7 +89,7 @@ class SearchResultTest extends SetUpUnitTestCase
         self::assertSame(
             'The title',
             $this->searchResult->getTitle(),
-            'Could not get title from searchResult'
+            'Could not get title from searchResult',
         );
     }
 
@@ -99,7 +99,7 @@ class SearchResultTest extends SetUpUnitTestCase
         self::assertSame(
             '://mytestdomain.com/test',
             $this->searchResult->getUrl(),
-            'Could not get url from searchResult'
+            'Could not get url from searchResult',
         );
     }
 
@@ -108,7 +108,7 @@ class SearchResultTest extends SetUpUnitTestCase
     {
         self::assertTrue(
             $this->searchResult->getIsElevated(),
-            'Could not get isElevated from searchResult'
+            'Could not get isElevated from searchResult',
         );
     }
 
@@ -118,7 +118,7 @@ class SearchResultTest extends SetUpUnitTestCase
         self::assertNull(
             /** @phpstan-ignore-next-line */
             $this->searchResult->getUnexistingField(),
-            'Calling getter for unexisting field does not return null'
+            'Calling getter for unexisting field does not return null',
         );
     }
 }

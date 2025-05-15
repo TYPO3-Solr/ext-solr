@@ -183,7 +183,7 @@ class UrlFacetContainer implements Countable
         if ($this->sort && !empty($pathValue)) {
             ParameterSortingUtility::sortByType(
                 $pathValue,
-                $this->parameterStyle
+                $this->parameterStyle,
             );
         }
 

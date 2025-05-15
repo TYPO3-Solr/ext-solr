@@ -281,7 +281,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
                 $this->recordUid,
                 '*',
                 '',
-                false
+                false,
             );
         }
 
@@ -410,7 +410,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
         if (!array_key_exists($propertyName, $this->indexingProperties)) {
             throw new InvalidArgumentException(
                 'No indexing property "' . $propertyName . '".',
-                1323174143
+                1323174143,
             );
         }
 

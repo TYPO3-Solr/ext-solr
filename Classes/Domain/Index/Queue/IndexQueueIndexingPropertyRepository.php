@@ -40,12 +40,12 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'root',
-                    $queryBuilder->createNamedParameter($rootPid, ParameterType::INTEGER)
+                    $queryBuilder->createNamedParameter($rootPid, ParameterType::INTEGER),
                 ),
                 $queryBuilder->expr()->eq(
                     'item_id',
-                    $queryBuilder->createNamedParameter($indexQueueUid, ParameterType::INTEGER)
-                )
+                    $queryBuilder->createNamedParameter($indexQueueUid, ParameterType::INTEGER),
+                ),
             )->executeStatement();
     }
 
@@ -71,8 +71,8 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'item_id',
-                    $queryBuilder->createNamedParameter($indexQueueUid, ParameterType::INTEGER)
-                )
+                    $queryBuilder->createNamedParameter($indexQueueUid, ParameterType::INTEGER),
+                ),
             )->executeQuery()
             ->fetchAllAssociative();
     }

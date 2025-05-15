@@ -402,11 +402,11 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         self::assertTrue(
             $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('pages'),
-            'Wrong logging state for pages index queue'
+            'Wrong logging state for pages index queue',
         );
         self::assertFalse(
             $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
-            'Wrong logging state for tt_content index queue'
+            'Wrong logging state for tt_content index queue',
         );
     }
 
@@ -427,11 +427,11 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         self::assertTrue(
             $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('pages'),
-            'Wrong logging state for pages index queue'
+            'Wrong logging state for pages index queue',
         );
         self::assertTrue(
             $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
-            'Wrong logging state for tt_content index queue'
+            'Wrong logging state for tt_content index queue',
         );
     }
 

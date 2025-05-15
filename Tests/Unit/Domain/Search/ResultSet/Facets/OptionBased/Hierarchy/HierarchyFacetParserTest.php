@@ -41,7 +41,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_hierarchy_facet.json',
-            $facetConfiguration
+            $facetConfiguration,
         );
 
         /** @var HierarchyFacetParser $parser */
@@ -90,7 +90,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             $fixtureFile,
-            $facetConfiguration
+            $facetConfiguration,
         );
 
         /** @var HierarchyFacetParser $parser */
@@ -130,7 +130,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_hierachy_facet_with_slash_in_title.json',
             $facetConfiguration,
-            ['categoryHierarchyByTitle:/folder2\/level1\//folder2\/level2\//']
+            ['categoryHierarchyByTitle:/folder2\/level1\//folder2\/level2\//'],
         );
 
         /** @var HierarchyFacetParser $parser */
@@ -148,7 +148,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_hierachy_facet_with_slash_in_title.json',
             $facetConfiguration,
-            ['categoryHierarchyByTitle:' . $optionValue]
+            ['categoryHierarchyByTitle:' . $optionValue],
         );
         $facet = $parser->parse($searchResultSet, 'categoryHierarchyByTitle', $facetConfiguration);
 
@@ -170,7 +170,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_hierarchy_facet.json',
-            $facetConfiguration
+            $facetConfiguration,
         );
 
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
@@ -192,7 +192,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_hierarchy_facet.json',
             $facetConfiguration,
-            ['pageHierarchy:/1/14/']
+            ['pageHierarchy:/1/14/'],
         );
 
         /** @var HierarchyFacetParser $parser */

@@ -15,7 +15,7 @@ $requestMiddlewares = [
 ];
 
 $extensionConfiguration = GeneralUtility::makeInstance(
-    ExtensionConfiguration::class
+    ExtensionConfiguration::class,
 );
 if ($extensionConfiguration->getIsRouteEnhancerEnabled()) {
     $requestMiddlewares['apache-solr-for-typo3/solr-route-enhancer'] = [

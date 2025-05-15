@@ -46,7 +46,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
         $this->frequentSearchesService = new FrequentSearchesService(
             $this->configurationMock,
             $this->cacheMock,
-            $this->statisticsRepositoryMock
+            $this->statisticsRepositoryMock,
         );
         parent::setUp();
     }

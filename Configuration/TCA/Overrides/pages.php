@@ -29,14 +29,14 @@ ExtensionManagementUtility::addTCAcolumns(
                 ],
             ],
         ],
-    ]
+    ],
 );
 
 ExtensionManagementUtility::addFieldsToPalette(
     'pages',
     'miscellaneous',
     'no_search_sub_entries',
-    'after:no_search'
+    'after:no_search',
 );
 
 // Enable no_search_sub_entries for storage folders.
@@ -49,5 +49,5 @@ ExtensionManagementUtility::addToAllTCAtypes(
     'pages',
     '--palette--;;slimmed_miscellaneous',
     (string)PageRepository::DOKTYPE_SYSFOLDER,
-    'after:module'
+    'after:module',
 );

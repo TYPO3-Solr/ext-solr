@@ -52,7 +52,7 @@ class SolrVersionStatus extends AbstractSolrStatus
                     'Apache Solr Version',
                     'Not accessible',
                     $pingFailedMsg,
-                    ContextualFeedbackSeverity::ERROR
+                    ContextualFeedbackSeverity::ERROR,
                 );
                 $reports[] = $status;
                 continue;
@@ -68,7 +68,7 @@ class SolrVersionStatus extends AbstractSolrStatus
                     'Apache Solr Version',
                     'OK',
                     'Version of ' . $coreAdmin->__toString() . ' is ok: ' . $solrVersion,
-                    ContextualFeedbackSeverity::OK
+                    ContextualFeedbackSeverity::OK,
                 );
                 continue;
             }
@@ -85,7 +85,7 @@ class SolrVersionStatus extends AbstractSolrStatus
                 'Apache Solr Version',
                 'Unsupported',
                 $report,
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
 
             $reports[] = $status;

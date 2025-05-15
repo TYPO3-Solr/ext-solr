@@ -57,26 +57,26 @@ class QueueStatisticsRepository extends AbstractRepository
                     $queryBuilder->expr()->notLike($this->columnErrors, $queryBuilder->createNamedParameter('')),
                     $queryBuilder->quoteIdentifier('failed'),
                 ]),
-                $queryBuilder->expr()->count('*', 'count')
+                $queryBuilder->expr()->count('*', 'count'),
             )
             ->from($this->table)
             ->where(
-                $queryBuilder->expr()->eq($this->columnRootpage, $queryBuilder->createNamedParameter($rootPid, \Doctrine\DBAL\ParameterType::INTEGER))
+                $queryBuilder->expr()->eq($this->columnRootpage, $queryBuilder->createNamedParameter($rootPid, \Doctrine\DBAL\ParameterType::INTEGER)),
             )->groupBy('pending', 'failed');
 
         if (!empty($indexingConfigurationName)) {
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->eq(
                     $this->columnIndexingConfiguration,
-                    $queryBuilder->createNamedParameter($indexingConfigurationName)
-                )
+                    $queryBuilder->createNamedParameter($indexingConfigurationName),
+                ),
             );
         }
 
         return $this->buildQueueStatisticFromResultSet(
             $queryBuilder
                 ->executeQuery()
-                ->fetchAllAssociative()
+                ->fetchAllAssociative(),
         );
     }
 
