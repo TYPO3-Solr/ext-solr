@@ -10,6 +10,12 @@
 	<div id="tx-solr-search" class="d-grid gap-3">
 
 		<div class="row">
+			<div class="col-12">
+				<f:render partial="Debug/Query" section="Query" arguments="{resultSet: resultSet}" />
+			</div>
+		</div>
+
+		<div class="row">
 			<div class="tx-solr-search-form col-lg-8">
 				<f:render partial="Search/Form" section="Form" arguments="{search:search, additionalFilters:additionalFilters, pluginNamespace: pluginNamespace, resultSet: resultSet}" />
 			</div>
