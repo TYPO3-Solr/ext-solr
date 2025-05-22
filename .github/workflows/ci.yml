@@ -214,6 +214,80 @@ jobs:
             ${{ env.CI_BUILD_DIRECTORY }}/data-mysql \
             ${{ env.CI_BUILD_DIRECTORY }}/data-solr
 
+  publish-docker-hub:
+    name: Publish docker-image to docker-hub
+    needs: tests
+    if: |
+      (
+        github.ref == 'refs/heads/main' ||
+        startsWith(github.ref, 'refs/heads/release-') ||
+        startsWith(github.ref, 'refs/tags/')
+      )
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_PLATFORMS:  "linux/amd64,linux/arm64,linux/ppc64le"
+      DOCKER_HUB_IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/ext-solr"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: enrich Environment Variables
+        id: env
+        run: |
+          echo "NOW=$(date +'%F %Z %T')" >> $GITHUB_ENV
+          echo "BRANCH_TAG=$(jq -r '.extra."branch-alias" | to_entries | .[0].key' composer.json)" >> $GITHUB_ENV
+          echo "BRANCH_ALIAS_TAG=$(jq -r '.extra."branch-alias" | to_entries | .[0].value' composer.json)" >> $GITHUB_ENV
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.DOCKER_HUB_IMAGE_NAME }}
+
+          tags: |
+            type=raw,value=${{ env.BRANCH_TAG }}
+            type=raw,value=${{ env.BRANCH_ALIAS_TAG }}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          labels: |
+            org.opencontainers.image.title=${{github.event.repository.name}}
+            org.opencontainers.image.description=Docker image for Apache Solr for TYPO3 CMS EXT:solr extension
+            org.opencontainers.image.vendor=${{github.repository_owner}}
+            org.opencontainers.image.licenses=GPL-3.0,APACHE
+            org.opencontainers.image.version=${{github.ref_name}}
+            org.opencontainers.image.created=${{ env.NOW }}
+            org.opencontainers.image.source=${{github.server_url}}/${{github.repository}}
+            org.opencontainers.image.revision=${{github.sha}}
+            org.opencontainers.image.url=https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/Appendix/DockerTweaks.html
+            org.opencontainers.image.documentation=https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/Index.html
+
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Docker/SolrServer/Dockerfile
+          platforms: ${{ env.DOCKER_PLATFORMS }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
   publish:
     name: Publish new version to TER
     needs: tests
