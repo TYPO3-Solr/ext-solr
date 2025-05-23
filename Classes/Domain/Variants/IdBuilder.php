@@ -57,7 +57,10 @@ class IdBuilder
     protected function getSystemHash(): string
     {
         if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'])) {
-            throw new InvalidArgumentException('No sitename set in TYPO3_CONF_VARS|SYS|sitename');
+            throw new InvalidArgumentException(
+                'No sitename set in TYPO3_CONF_VARS|SYS|sitename',
+                8666989008,
+            );
         }
 
         $siteName = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
