@@ -52,11 +52,6 @@ then
   exit 1
 fi
 
-# Use latest TYPO3 LTS stable version, if version number is compatible with get.typo3.org API
-if [[ $TYPO3_VERSION =~ ^[0-9]+$ ]] ; then
-  TYPO3_VERSION=$("${BASH_SOURCE%/*}/../Helpers/TYPO3_GET_LATEST_VERSION.sh" "$TYPO3_VERSION")
-fi
-
 echo "Using TYPO3 Version: $TYPO3_VERSION"
 echo "Using database host: $TYPO3_DATABASE_HOST"
 echo "Using database dbname: $TYPO3_DATABASE_NAME"
