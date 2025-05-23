@@ -204,12 +204,14 @@ class Site
      *
      * @param int|null $pageId Page ID from where to start collection sub-pages. Uses and includes the root page if none given.
      * @param string|null $indexQueueConfigurationName The name of index queue.
+     * @param string|null $additionalWhereClause
      *
      * @return array Array of pages (IDs) in this site
      */
     public function getPages(
         ?int $pageId = null,
         ?string $indexQueueConfigurationName = null,
+        ?string $additionalWhereClause = null
     ): array {
         $pageId = $pageId ?? (int)$this->rootPageRecord['uid'];
 
@@ -219,6 +221,13 @@ class Site
             $solrConfiguration = $this->getSolrConfiguration();
             $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
         }
+
+        if ($additionalWhereClause !== null) {
+            $initialPagesAdditionalWhereClause .=
+                ($initialPagesAdditionalWhereClause !== '' ? ' AND ' : '')
+                . '(' . $additionalWhereClause . ')';
+        }
+
         return $this->pagesRepository->findAllSubPageIdsByRootPage($pageId, $initialPagesAdditionalWhereClause);
     }
 
