@@ -19,22 +19,21 @@ namespace ApacheSolrForTypo3\Solr\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Boosting search component
  */
 class RelevanceComponent
 {
-    public function __construct(
-        protected readonly QueryBuilder $queryBuilder,
-    ) {}
-
     /**
      * Sets minimum match, boost function, boost query and tie-breaker.
      */
     public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
-        $query = $this->queryBuilder
+        $typoScriptConfiguration = $event->getTypoScriptConfiguration();
+        $queryBuilder = GeneralUtility::makeInstance(QueryBuilder::class, $typoScriptConfiguration);
+        $query = $queryBuilder
             ->startFrom($event->getQuery())
             ->useMinimumMatchFromTypoScript()
             ->useBoostFunctionFromTypoScript()
