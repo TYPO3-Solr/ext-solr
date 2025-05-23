@@ -44,7 +44,7 @@
 				</p>
 			</f:if>
 
-			<f:variable name="documentScoreAnalyze"><s:debug.documentScoreAnalyzer document="{document}" /></f:variable>
+			<f:variable name="documentScoreAnalyze"><f:render partial="Debug/Explain" section="Explain" arguments="{document: document, resultSet: resultSet}" /></f:variable>
 			<f:if condition="{documentScoreAnalyze}">
 				<div class="query-debug alert alert-info" role="alert"><f:format.raw>{documentScoreAnalyze}</f:format.raw></div>
 			</f:if>
