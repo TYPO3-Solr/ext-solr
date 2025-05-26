@@ -211,6 +211,7 @@ class ConfigurationManager implements SingletonInterface
         $pageUid = (int)(
             $request->getParsedBody()['id']
             ?? $request->getQueryParams()['id']
+            ?? $request->getAttribute('frontend.controller')?->id
             ?? $request->getAttribute('site')?->getRootPageId()
         );
 
