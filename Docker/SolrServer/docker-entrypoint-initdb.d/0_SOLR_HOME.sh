@@ -8,7 +8,7 @@ copy_to_volume() {
   exit 0
 }
 
-if [ "${SOLR_HOME}" != "/var/solr/data" ] && [ ! -f "${SOLR_HOME}/solr.xml" ]; then
+if [ "${SOLR_HOME:-/var/solr/data}" != "/var/solr/data" ] && [ ! -f "${SOLR_HOME}/solr.xml" ]; then
   _upstream_ext_solr_version="$(find /var/solr/data/configsets/ -maxdepth 1 -mindepth 1 -type d -name 'ext_solr_*')"
   _upstream_ext_solr_version="${_upstream_ext_solr_version##*/}"
   _solr_home_ext_solr_version="$(find "${SOLR_HOME}"/configsets/ -maxdepth 1 -mindepth 1 -type d -name 'ext_solr_*' >/dev/null 2>&1)"
