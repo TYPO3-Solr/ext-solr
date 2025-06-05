@@ -17,9 +17,9 @@ if [ "${SOLR_HOME}" != "/var/solr/data" ] && [ ! -f "${SOLR_HOME}/solr.xml" ]; t
     copy_to_volume
   fi
   if [ "${_upstream_ext_solr_version}" != "${_solr_home_ext_solr_version}" ]; then
-    echo "[Info] New EXT:solr version ${_upstream_ext_solr_version} detected."
+    echo "[INFO] New EXT:solr version ${_upstream_ext_solr_version} detected."
     if [[ -n "${ALLOW_SOLR_HOME_EXT_SOLR_VERSION_UPGRADE}" ]]; then
-      echo "[Error] ALLOW_SOLR_HOME_EXT_SOLR_VERSION_UPGRADE not set, exiting"
+      echo "[ERROR] ALLOW_SOLR_HOME_EXT_SOLR_VERSION_UPGRADE not set, exiting"
       exit 1
     else
       copy_to_volume
