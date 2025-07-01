@@ -135,7 +135,10 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             }
 
             if ($misspelledTerm === '') {
-                throw new UnexpectedValueException('No misspelled term before suggestion');
+                throw new UnexpectedValueException(
+                    'No misspelled term before suggestion',
+                    4271427727,
+                );
             }
 
             if (!is_object($suggestionData) && !is_array($suggestionData->suggestion)) {
