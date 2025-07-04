@@ -129,6 +129,10 @@ class ConfigurationManager implements SingletonInterface
      */
     public function getCoreTypoScriptFrontendByRequest(ServerRequestInterface $request): FrontendTypoScript
     {
+        if ($request->getAttribute('frontend.typoscript') instanceof FrontendTypoScript) {
+            return $request->getAttribute('frontend.typoscript');
+        }
+
         $typo3Site = $request->getAttribute('site');
         $sysTemplateRows = $this->getSysTemplateRowsForAssociatedContextPageId($request);
 
