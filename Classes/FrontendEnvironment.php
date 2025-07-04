@@ -19,7 +19,10 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use Doctrine\DBAL\Exception as DBALException;
+use JsonException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,6 +40,9 @@ class FrontendEnvironment implements SingletonInterface
      * Check whether the page record is within the configured allowed pages types(doktype) for indexing.
      * Uses TypoScript: plugin.tx_solr.index.queue.<queue name>.allowedPageTypes
      *
+     * @throws DBALException
+     * @throws JsonException
+     * @throws NoSuchCacheException
      * @throws SiteNotFoundException
      */
     public function isAllowedPageType(
@@ -74,6 +80,10 @@ class FrontendEnvironment implements SingletonInterface
     /**
      * Returns TypoScriptConfiguration for desired page ID and language id.
      *
+     *
+     * @throws DBALException
+     * @throws JsonException
+     * @throws NoSuchCacheException
      * @throws SiteNotFoundException
      *
      * @todo: check when to use $rootPageId and if it can be removed.
