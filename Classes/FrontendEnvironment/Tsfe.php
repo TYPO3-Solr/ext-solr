@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use Doctrine\DBAL\Exception as DBALException;
+use JsonException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
@@ -66,12 +67,11 @@ class Tsfe implements SingletonInterface
     /**
      * Initializes the TSFE for a given page ID and language.
      *
-     *
-     *
+     * @throws AspectNotFoundException
+     * @throws DBALException
      * @throws Exception\Exception
      * @throws SiteNotFoundException
-     * @throws DBALException
-     *
+     * @throws JsonException
      *
      * @todo: Move whole caching stuff from this method and let return TSFE.
      */
@@ -179,6 +179,8 @@ class Tsfe implements SingletonInterface
      * @throws SiteNotFoundException
      * @throws Exception\Exception
      * @throws DBALException
+     * @throws JsonException
+     * @throws AspectNotFoundException
      */
     public function getTsfeByPageIdAndLanguageId(int $pageId, int $language = 0, ?int $rootPageId = null): ?TypoScriptFrontendController
     {
@@ -241,6 +243,8 @@ class Tsfe implements SingletonInterface
      * @throws SiteNotFoundException
      * @throws Exception\Exception
      * @throws DBALException
+     * @throws JsonException
+     * @throws AspectNotFoundException
      *
      * @noinspection PhpUnused
      */
@@ -258,13 +262,14 @@ class Tsfe implements SingletonInterface
      * @throws SiteNotFoundException
      * @throws Exception\Exception
      * @throws DBALException
+     * @throws JsonException
+     * @throws AspectNotFoundException
      */
     protected function assureIsInitialized(int $pageId, int $language, ?int $rootPageId = null): void
     {
         $cacheIdentifier = $this->getCacheIdentifier($pageId, $language, $rootPageId);
         if (!array_key_exists($cacheIdentifier, $this->tsfeCache)) {
             $this->initializeTsfe($pageId, $language, $rootPageId);
-            return;
         }
     }
 
