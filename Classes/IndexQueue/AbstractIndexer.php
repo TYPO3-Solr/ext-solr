@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\ContentObject\Classification;
 use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -122,19 +121,11 @@ abstract class AbstractIndexer
     ): mixed {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
-
-            // need to change directory to make IMAGE content objects work in BE context
-            // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
-            $backupWorkingDirectory = getcwd();
-            chdir(Environment::getPublicPath() . '/');
-
             $tsfe->cObj->start($data, $this->type);
             $fieldValue = $tsfe->cObj->cObjGetSingle(
                 $indexingConfiguration[$solrFieldName],
                 $indexingConfiguration[$solrFieldName . '.']
             );
-
-            chdir($backupWorkingDirectory);
 
             if ($this->isSerializedValue(
                 $indexingConfiguration,
@@ -154,15 +145,8 @@ abstract class AbstractIndexer
             // $name and $conf is loaded with the referenced values.
             [$name, $conf] = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')?->getSetupArray());
 
-            // need to change directory to make IMAGE content objects work in BE context
-            // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
-            $backupWorkingDirectory = getcwd();
-            chdir(Environment::getPublicPath() . '/');
-
             $tsfe->cObj->start($data, $this->type);
             $fieldValue = $tsfe->cObj->cObjGetSingle($name, $conf);
-
-            chdir($backupWorkingDirectory);
 
             if ($this->isSerializedValue(
                 $indexingConfiguration,
