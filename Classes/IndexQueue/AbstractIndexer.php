@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use Doctrine\DBAL\Exception as DBALException;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -160,11 +159,6 @@ abstract class AbstractIndexer
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
 
-            // need to change directory to make IMAGE content objects work in BE context
-            // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
-            $backupWorkingDirectory = getcwd();
-            chdir(Environment::getPublicPath() . '/');
-
             $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
             /** @noinspection PhpInternalEntityUsedInspection */
             if (($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('applicationType') === SystemEnvironmentBuilder::REQUESTTYPE_FE) {
@@ -182,8 +176,6 @@ abstract class AbstractIndexer
                 $indexingConfiguration[$solrFieldName],
                 $indexingConfiguration[$solrFieldName . '.'],
             );
-
-            chdir($backupWorkingDirectory);
 
             if ($this->isSerializedValue(
                 $indexingConfiguration,
@@ -207,11 +199,6 @@ abstract class AbstractIndexer
             $name = $configurationAccess->get($referencedTsPath);
             $conf = $configurationAccess->get($referencedTsPath . '.');
 
-            // need to change directory to make IMAGE content objects work in BE context
-            // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
-            $backupWorkingDirectory = getcwd();
-            chdir(Environment::getPublicPath() . '/');
-
             $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
             /** @noinspection PhpInternalEntityUsedInspection */
             if (($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('applicationType') === SystemEnvironmentBuilder::REQUESTTYPE_FE) {
@@ -226,8 +213,6 @@ abstract class AbstractIndexer
             $cObject->setRequest($request);
             $cObject->start($data, $this->type);
             $fieldValue = $cObject->cObjGetSingle($name, $conf);
-
-            chdir($backupWorkingDirectory);
 
             if ($this->isSerializedValue(
                 $indexingConfiguration,
