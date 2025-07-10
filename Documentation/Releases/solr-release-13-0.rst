@@ -4,6 +4,16 @@
 Releases 13.0
 =============
 
+Release 13.0.3
+==============
+
+This is a maintenance release for TYPO3 13.4 LTS.
+
+* [TASK] disable dependabot on release-11.6.x branch by Rafael Kähm `(b9771d029) <https://github.com/TYPO3-Solr/ext-solr/commit/b9771d029>`_
+* [BUGFIX] Fix mount point garbage collection by Markus Friedrich `(a48f23369) <https://github.com/TYPO3-Solr/ext-solr/commit/a48f23369>`_
+* [TASK] Drop workaround for cObj IMAGE by Markus Friedrich `(990046a10) <https://github.com/TYPO3-Solr/ext-solr/commit/990046a10>`_
+* [BUGFIX] Avoid PHP warning if related record was not found by Albrecht Köhnlein `(8ce468861) <https://github.com/TYPO3-Solr/ext-solr/commit/8ce468861>`_
+
 Release 13.0.2
 ==============
 
@@ -294,6 +304,7 @@ awesome community. Here are the contributors to this release.
 
 (patches, comments, bug reports, reviews, ... in alphabetical order)
 
+*  Albrecht Köhnlein
 *  Amir Arends
 *  Ayke Halder
 *  Bastien Lutz
@@ -321,6 +332,7 @@ awesome community. Here are the contributors to this release.
 Also a big thank you to our partners who have already concluded one of our development participation packages such
 as Apache Solr EB for TYPO3 13 LTS (Feature):
 
+*   +Pluswerk AG
 *   .hausformat
 *   711media websolutions GmbH
 *   Amt der Oö Landesregierung
@@ -331,6 +343,7 @@ as Apache Solr EB for TYPO3 13 LTS (Feature):
 *   F7 Media GmbH
 *   Fachhochschule Erfurt
 *   Getdesigned GmbH
+*   Groupe Toumoro inc
 *   KONVERTO AG
 *   Kassenärztliche Vereinigung Rheinland-Pfalz
 *   Kreis Euskirchen
@@ -339,6 +352,8 @@ as Apache Solr EB for TYPO3 13 LTS (Feature):
 *   LfdA - Labor für digitale Angelegenheiten GmbH
 *   MOSAIQ GmbH
 *   Marketing Factory Digital GmbH
+*   ProPotsdam GmbH
+*   SITE'NGO
 *   Snowflake Productions GmbH
 *   Stämpfli AG
 *   THE BRETTINGHAMS GmbH
@@ -352,6 +367,9 @@ as Apache Solr EB for TYPO3 13 LTS (Feature):
 *   jweiland.net e.K.
 *   mehrwert intermediale kommunikation GmbH
 *   network.publishing Möller-Westbunk GmbH
+*   plan2net GmbH
+*   queo GmbH
+*   visol digitale Dienstleistungen GmbH
 *   werkraum Digitalmanufaktur GmbH
 
 How to Get Involved
