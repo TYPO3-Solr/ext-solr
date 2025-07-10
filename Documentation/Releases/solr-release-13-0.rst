@@ -13,7 +13,7 @@ This is a maintenance release for TYPO3 13.4 LTS.
 * [BUGFIX] Fix mount point garbage collection by Markus Friedrich `(a48f23369) <https://github.com/TYPO3-Solr/ext-solr/commit/a48f23369>`_
 * [TASK] Drop workaround for cObj IMAGE by Markus Friedrich `(990046a10) <https://github.com/TYPO3-Solr/ext-solr/commit/990046a10>`_
 * [BUGFIX] Avoid PHP warning if related record was not found by Albrecht Köhnlein `(8ce468861) <https://github.com/TYPO3-Solr/ext-solr/commit/8ce468861>`_
-
+* [BUGFIX] Get current pageId by Julian Hofmann `(868d60a72) <https://github.com/TYPO3-Solr/ext-solr/commit/868d60a72>`_
 Release 13.0.2
 ==============
 
