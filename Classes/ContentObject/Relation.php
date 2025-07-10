@@ -330,7 +330,7 @@ class Relation extends AbstractContentObject
 
         $contentObject = clone $parentContentObject;
         $contentObject->start($relatedRecord, $foreignTableName);
-        $values = [$contentObject->stdWrapValue('foreignLabel', $this->configuration, $relatedRecord[$foreignTableLabelField])];
+        $values = [$contentObject->stdWrapValue('foreignLabel', $this->configuration, $relatedRecord[$foreignTableLabelField] ?? '')];
 
         if (
             !empty($foreignTableName)
