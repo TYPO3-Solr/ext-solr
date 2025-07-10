@@ -6,6 +6,161 @@ Releases 11.6
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 11.6.3 ELTS
+===================
+
+This is a non-public maintenance release for TYPO3 11.5 ELTS, containing:
+
+New in this release
+-------------------
+
+Apache Solr 9.8.1 support
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+EXT:solr 11.6.3 has been tested with Apache Solr 9.8.1, this version can be used without any update steps to consider.
+
+Full list of changes
+~~~~~~~~~~~~~~~~~~~~
+
+- [TASK] Allow Apache Solr 9.8.1 by @dkd-friedrich
+- [BUGFIX:P:11.6] Add check if generator is valid before traversing it by @jacobsenj and @dkd-friedrich
+- [FEATURE:P:11.6] Use PHP generator to prevent processing of all available site @sfroemkenjw and @dkd-friedrich
+
+
+Release 11.6.2 ELTS
+===================
+
+This is a non-public security release for TYPO3 11.5 ELTS, containing:
+
+!!![SECURITY] Update to Apache solr 9.8.0 : CVE-2025-24814
+----------------------------------------------------------
+
+Updates EXT:solr to Apache Solr 9.8.0.
+
+Apache Solr 9.8.0 disables the possibility to load the `jar` files with `lib` directive by default,
+which was used to load jar files within the EXT:solr configsets. Apache Solr 10.0.0 will drop that functionality.
+All Apache Solr libs, modules or plugins must be configured within the main server configuration files.
+See: https://issues.apache.org/jira/browse/SOLR-16781
+
+Impact:
+~~~~~~~
+
+Docker
+""""""
+
+You can wipe the volume and start the container with v. 11.6.2+ image, but that method will wipe the index as well.
+
+See the script `EXT:solr/Docker/SolrServer/docker-entrypoint-initdb.d-as-sudo/fix-CVE-2025-24814.sh`
+
+
+Other server setups
+"""""""""""""""""""
+
+You have 2 possibilities to fix that issue in your Apache Solr Server:
+
+
+(PREFERRED) Migrate the EXT:solr's Apache Solr configuration
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+Refer to https://github.com/TYPO3-Solr/ext-solr/pull/4290/files .
+
+Following 3 files are relevant:
+
+*   Changes in `<Apache-Solr data dir>/configsets/ext_solr_11_6_0_elts/conf/solrconfig.xml`
+*   Changes in `<Apache-Solr data dir>/solr.xml`
+*   Movement from `<Apache-Solr data dir>/configsets/ext_solr_11_6_0_elts/typo3lib/solr-typo3-plugin-6.0.0.jar`
+
+    *   to `<Apache-Solr data dir>/typo3lib/solr-typo3-plugin-6.0.0.jar`
+
+Steps:
+
+#.  Remove all occurrences of `<lib dir=".*` from `<Apache-Solr data dir>/configsets/ext_solr_11_6_0_elts/conf/solrconfig.xml` file.
+#.  Replace in `<Apache-Solr data dir>/solr.xml` file
+    the snipped
+
+    ..  code-block:: xml
+
+        <str name="modules">scripting</str>
+
+    by
+
+    ..  code-block:: xml
+
+         <str name="modules">scripting,analytics,analysis-extras,langid,clustering,extraction,${solr.modules:}</str>
+         <str name="allowPaths">${solr.allowPaths:}</str>
+         <str name="allowUrls">${solr.allowUrls:}</str>
+
+         <!-- TYPO3 Plugins -->
+         <str name="sharedLib">typo3lib/</str>
+#.  Move the directory from `<Apache-Solr data dir>/configsets/ext_solr_11_6_0_elts/typo3lib`
+
+    *   to `<Apache-Solr data dir>/typo3lib`
+
+
+(NOT-RECOMMENDED) Re-enable <lib> directives on Apache Solr >=9.8.0 <10.0.0
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+Add following to `/etc/default/solr.in.sh` file
+
+..  code-block:: shell
+
+      SOLR_OPTS="$SOLR_OPTS -Dsolr.config.lib.enabled=true"
+
+Or do that in other ways to set the `solr.config.lib.enabled=true` to sys-props of Apache Solr Server.
+
+!!![FIX] Docker execution order issue for as-sudo tweaks
+--------------------------------------------------------
+
+This change renames the file
+
+*   from `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`
+*   to `/docker-entrypoint-initdb.d/0_as-sudo-tweaks.sh`
+
+and moves the folder
+
+*   from `/docker-entrypoint-initdb.d/as-sudo/`
+*   to `/docker-entrypoint-initdb.d-as-sudo/`
+
+to fix the execution order issue when setting the correct file permissions
+when starting the docker container, leading to a `Operation not permitted` errors.
+
+More details see:
+
+*   https://github.com/TYPO3-Solr/ext-solr/issues/3837#issuecomment-2461668377.
+*   https://github.com/TYPO3-Solr/ext-solr/pull/4219#issuecomment-2622600937
+
+Impact:
+~~~~~~~
+
+This change requires adjustments in your Docker setup, only if you modified:
+
+*   files in folder `/docker-entrypoint-initdb.d/as-sudo/`
+*   file `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`.
+
+Make sure to use:
+"""""""""""""""""
+
+*   `/docker-entrypoint-initdb.d/0_as-sudo-tweaks.sh` instead of
+
+    *   `/docker-entrypoint-initdb.d/as-sudo-tweaks.sh`
+
+*   `/docker-entrypoint-initdb.d-as-sudo` instead of
+
+    *   `/docker-entrypoint-initdb.d/as-sudo/`
+
+
+Minor changes & bugfixes
+------------------------
+
+*   [DOCS] Improve Solr core creation via API and other deployment parts by @dkd-kaehm & @dkd-friedrich in #41
+*   [TASK] Use relative path to typo3lib in Apache Solr config by @dkd-kaehm & @dkd-friedrich in #41
+*   [BUGFIX] Docker twaks as-sudo do not preserve the Docker image ENV by @dkd-kaehm & @dkd-friedrich in #41
+*   [BUGFIX] Docker tests suite does not contain all logs by @dkd-kaehm & @dkd-friedrich in #41
+*   [BUGFIX] docker image tests do not fail if core can not start by @dkd-kaehm & @dkd-friedrich in #41
+*   [TASK] Replace "Publish to TER" to release by @dkd-kaehm in #38
+
 Release 11.6.1 ELTS
 ===================
 

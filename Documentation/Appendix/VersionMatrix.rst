@@ -11,8 +11,8 @@ List of EXT:solr versions and the matching versions of Apache Solr and TYPO3 tha
 =========  =============  =============  =================  ====================  =======================  ================================  ===============  =================
 TYPO3      EXT:solr (↻)   EXT:tika (↻)   EXT:solrfal ($)    EXT:solrconsole ($)   EXT:solrdebugtools ($)   EXT:solrfluidgrouping ($↺)        Apache Solr      Configset
 =========  =============  =============  =================  ====================  =======================  ================================  ===============  =================
-13.4       13.0           13.0           13.0               13.0 (Ø)              13.0                     N/A (integrated in EXT:solr)      9.8.1¹           ext_solr_13_0_0
-12.4       12.0           12.0           12.0               12.0                  12.0                     N/A (integrated in EXT:solr)      9.8.0¹           ext_solr_12_0_0
+13.4       13.0           13.0           13.0               13.0                  13.0                     N/A (integrated in EXT:solr)      9.8.1¹           ext_solr_13_0_0
+12.4       12.0           12.0           12.0               12.0                  12.0                     N/A (integrated in EXT:solr)      9.8.1¹           ext_solr_12_0_0
 =========  =============  =============  =================  ====================  =======================  ================================  ===============  =================
 
 | $ - Funding contribution extensions. See: https://www.typo3-solr.com/solr-for-typo3/open-source-version/
@@ -40,7 +40,7 @@ selected older versions. The following table illustrates the offers and availabl
 TYPO3 ELTS   EXT:solr ($)  EXT:tika    EXT:solrfal ($)  EXT:solrconsole ($)  EXT:solrdebugtools ($)  Apache Solr      Configset
 ===========  ============  ==========  ===============  ===================  ======================  ===============  ====================
 11.5         11.6.3+       11.0        11.0             11.0                 11.0                    9.8.1¹           ext_solr_11_6_0_elts
-10.4         11.2.5+       10.0        10.0             10.0                 10.0                    9.8.0¹           ext_solr_11_2_0_elts
+10.4         11.2.5+       10.0        10.0             10.0                 10.0                    9.8.1¹           ext_solr_11_2_0_elts
 ===========  ============  ==========  ===============  ===================  ======================  ===============  ====================
 
 Our Apache Solr for TYPO3 EB-partners newsletter will keep you updated!

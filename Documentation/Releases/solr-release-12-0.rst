@@ -6,6 +6,21 @@ Releases 12.0
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+
+Release 12.0.7
+==============
+
+This is a maintenance release for TYPO3 12.4.
+
+*   [BUGFIX] 404 on auto-suggest with enabled TYPO3 enforceValidation setting by Wolfgang Wagner | wow! solution [(0e77552e7)](https://github.com/TYPO3-Solr/ext-solr/commit/0e77552e7)
+*   [TASK] 12.0.x-dev Update solarium/solarium requirement by dependabot[bot] [(b35104231)](https://github.com/TYPO3-Solr/ext-solr/commit/b35104231)
+*   [BUGFIX] Update hardcoded legacy css resource filepath by Charlotte [(3dc73c26c)](https://github.com/TYPO3-Solr/ext-solr/commit/3dc73c26c)
+*   [FEATURE] Add arm64 and ppc64le platforms to docker-images by Rafael Kähm [(754155e74)](https://github.com/TYPO3-Solr/ext-solr/commit/754155e74)
+*   [BUGFIX] Fix mount point garbage collection by Markus Friedrich [(d16959d34)](https://github.com/TYPO3-Solr/ext-solr/commit/d16959d34)
+*   [TASK] Drop workaround for cObj IMAGE by Markus Friedrich [(da76a4ec3)](https://github.com/TYPO3-Solr/ext-solr/commit/da76a4ec3)
+*   [TASK] Allow Apache Solr 9.8.1 by Markus Friedrich [(a2b940ef4)](https://github.com/TYPO3-Solr/ext-solr/commit/a2b940ef4)
+*   [BUGFIX] Avoid PHP warning if related record was not found by Albrecht Köhnlein `(df427ba46) <https://github.com/TYPO3-Solr/ext-solr/commit/df427ba46>`_
+
 Release 12.0.6
 ==============
 
@@ -53,7 +68,7 @@ All Apache Solr libs, modules or plugins must be configured within the main serv
 See: https://issues.apache.org/jira/browse/SOLR-16781
 
 Impact:
-~~~~~~~~~
+~~~~~~~
 
 Docker
 """"""
@@ -100,12 +115,12 @@ Steps:
     by
 
     ..  code-block:: xml
-        	<str name="modules">scripting,analytics,analysis-extras,langid,clustering,extraction,${solr.modules:}</str>
-        	<str name="allowPaths">${solr.allowPaths:}</str>
-        	<str name="allowUrls">${solr.allowUrls:}</str>
+          <str name="modules">scripting,analytics,analysis-extras,langid,clustering,extraction,${solr.modules:}</str>
+          <str name="allowPaths">${solr.allowPaths:}</str>
+          <str name="allowUrls">${solr.allowUrls:}</str>
 
-        	<!-- TYPO3 Plugins -->
-        	<str name="sharedLib">typo3lib/</str>
+          <!-- TYPO3 Plugins -->
+          <str name="sharedLib">typo3lib/</str>
 #.  Move the directory from `<Apache-Solr data dir>/configsets/ext_solr_12_0_0/typo3lib`
 
     *   to `<Apache-Solr data dir>/typo3lib`
@@ -118,7 +133,7 @@ Steps:
 Add following to `/etc/default/solr.in.sh` file
 
 ..  code-block:: shell
-    	SOLR_OPTS="$SOLR_OPTS -Dsolr.config.lib.enabled=true"
+      SOLR_OPTS="$SOLR_OPTS -Dsolr.config.lib.enabled=true"
 
 Or do that in other ways to set the `solr.config.lib.enabled=true` to sys-props of Apache Solr Server.
 
@@ -750,6 +765,7 @@ awesome community. Here are the contributors to this release.
 - Benni Mack
 - Benoit Chenu
 - Christoph Lehmann
+- @chrrynobaka
 - Daniel Siepmann
 - `@derMatze82 <https://github.com/derMatze82>`_
 - Dmitry Dulepov
@@ -800,92 +816,133 @@ awesome community. Here are the contributors to this release.
 - Tobias Schmidt
 - Torben Hansen
 - `@twojtylak <https://github.com/twojtylak>`_
+- Wolfgang Wagner | wow! solution
 
 Also a big thank you to our partners who have already concluded one of our new development participation packages such
-as Apache Solr EB for TYPO3 12 LTS (Feature):
+as Apache Solr EB for TYPO3 12 LTS (Feature or Maintenance):
 
-- .hausformat
-- +Pluswerk AG
-- 711media websolutions GmbH
-- ACO Ahlmann SE & Co. KG
-- AVM Computersysteme Vertriebs GmbH
-- Ampack AG
-- Amt der Oö Landesregierung
-- Autorité des Marchés Financiers (Québec)
-- b13 GmbH
-- Beech IT
-- Bytebetrieb GmbH & Co. KG
-- CARL von CHIARI GmbH
-- clickstorm GmbH Apache Solr EB für TYPO3 12 LTS (Feature)
-- Connecta AG
-- cosmoblonde GmbH
-- cron IT GmbH
-- CS2 AG
-- cyperfection GmbH
-- digit.ly
-- DGB Rechtsschutz GmbH
-- DMK E-BUSINESS GmbH
-- DP-Medsystems AG
-- DSCHOY GmbH
-- Deutsches Literaturarchiv Marbach
-- EB-12LTS-FEATURE
-- F7 Media GmbH
-- Fachagentur Nachwachsende Rohstoffe fnr.de
-- Forte Digital Germany GmbH
-- FTI Touristik GmbH
-- gedacht
-- Getdesigned GmbH
-- GPM Deutsche Gesellschaft für Projektmanagement e. V.
-- Groupe Toumoro inc
-- HEAD acoustics GmbH
-- helhum.io
-- Hochschule Koblenz - Standort Remagen
-- in2code GmbH
-- Internezzo
-- IW Medien GmbH
-- jweiland.net
-- Kassenärztliche Vereinigung Rheinland-Pfalz
-- keeen GmbH
-- KONVERTO AG
-- Kreis Euskirchen
-- Kwintessens B.V.
-- L.N. Schaffrath DigitalMedien GmbH
-- LOUIS INTERNET GmbH
-- Leuchtfeuer Digital Marketing GmbH
-- Lingner Consulting New Media GmbH
-- Macaw Germany Cologne GmbH
-- Marketing Factory Consulting GmbH
-- mehrwert intermediale kommunikation GmbH
-- morbihan.fr - Commande  BDC_99143_202404081250
-- ochschule Furtwangen
-- pietzpluswild GmbH
-- plan2net GmbH
-- ProPotsdam GmbH
-- Québec.ca gouv.qc.ca Apache Solr EB für TYPO3 12 LTS (Feature)
-- Rechnungshof Österreich
-- Red Dot GmbH & Co. KG
-- rocket-media GmbH & Co KG
-- Sandstein Neue Medien GmbH
-- Schoene neue kinder GmbH
-- SIWA Online GmbH
-- Snowflake Productions GmbH Apache Solr EB für TYPO3 12 LTS (Feature)
-- Stadtverwaltung Villingen-Schwenningen
-- Stämpfli AG
-- Statistik Österreich
-- studio ahoi - Weitenauer Schwardt GbR
-- Südwestfalen IT
-- Systime/Gyldendal A/S
-- THE BRETTINGHAMS GmbH
-- Typoheads GmbH
-- UEBERBIT GmbH
-- Universität Regensburg
-- VisionConnect.de
-- WACON Internet GmbH
-- webconsulting business services gmbh
-- werkraum Digitalmanufaktur GmbH
-- WIND Internet BV
-- XIMA MEDIA GmbH
-- wow! solution
+*   +Pluswerk AG
+*   .hausformat
+*   3m5. Media GmbH
+*   4eyes GmbH
+*   711media websolutions GmbH
+*   ACO Ahlmann SE & Co. KG
+*   AVM Computersysteme Vertriebs GmbH
+*   AmedickSommer Neue Medien GmbH
+*   Ampack AG
+*   Amt der Oö Landesregierung
+*   Autorité des Marchés Financiers (Québec)
+*   Bandesinstitut für Schule und Medien Berlin-Brandenburg
+*   Beeeh IT
+*   Bytebetrieb GmbH & Co. KG
+*   CARL von CHIARI GmbH
+*   CDG 59
+*   CPS GmbH
+*   CS2 AG
+*   Columbus Interactive GmbH
+*   Connecta AG
+*   DGB Rechtsschutz GmbH
+*   DMK E-BUSINESS GmbH
+*   DP-Medsystems AG
+*   DSCHOY GmbH
+*   Davitec GmbH
+*   Deutsches Literaturarchiv Marbach
+*   Die Medialen GmbH
+*   Digitale Offensive GmbH
+*   EB-12LTS-FEATURE
+*   Eidg. Forschungsanstalt WSL
+*   F7 Media GmbH
+*   FTI Touristik GmbH
+*   Fachagentur Nachwachsende Rohstoffe fnr.de
+*   Forte Digital Germany GmbH
+*   GPM Deutsche Gesellschaft für Projektmanagement e. V.
+*   Gernot Leitgab
+*   Getdesigned GmbH
+*   Groupe Toumoro inc
+*   HEAD acoustics GmbH
+*   HSPV NRW
+*   Hochschule Koblenz Standort Remagen
+*   INOTEC Sicherheitstechnik GmbH
+*   IW Medien GmbH
+*   Internezzo
+*   Intersim AG
+*   KONVERTO AG
+*   Kassenzahnärztliche Vereinigung Bayerns (KZVB)
+*   Kassenärztliche Vereinigung Rheinland-Pfalz
+*   Kreis Euskirchen
+*   Kwintessens B.V.
+*   L.N. Schaffrath DigitalMedien GmbH
+*   LOUIS INTERNET GmbH
+*   La Financière agricole du Québec
+*   Land Tirol
+*   Landeskriminalamt Thüringen
+*   Leuchtfeuer Digital Marketing GmbH
+*   Lingner Consulting New Media GmbH
+*   MEDIENHAUS der Evangelischen Kirche in Hessen und Nassau GmbH
+*   Macaw Germany Cologne GmbH
+*   Marketing Factory Consulting GmbH
+*   NEW.EGO GmbH
+*   OST Ostschweizer Fachhochschule
+*   ProPotsdam GmbH
+*   Provitex GmbH Provitex GmbH
+*   Québec.ca gouv.qc.ca
+*   Randstad Digital
+*   Rechnungshof Österreich
+*   Red Dot GmbH & Co. KG
+*   SIWA Online GmbH
+*   SUNZINET GmbH
+*   Sandstein Neue Medien GmbH
+*   Schoene neue kinder GmbH
+*   Serviceplan Suisse AG
+*   Snowflake Productions GmbH
+*   Stadtverwaltung Villingen-Schwenningen
+*   Statistik Österreich
+*   Studio 9 GmbH
+*   Stämpfli AG
+*   Systime/Gyldendal A/S
+*   Südwestfalen IT
+*   THE BRETTINGHAMS GmbH
+*   Talleux & Zöllner GbR
+*   Typoheads GmbH
+*   UEBERBIT GmbH
+*   Universität Regensburg
+*   VisionConnect.de
+*   WACON Internet GmbH
+*   WIND Internet BV
+*   Webtech AG
+*   Werbeagentur netzpepper
+*   XIMA MEDIA GmbH
+*   b13 GmbH
+*   bgm websolutions GmbH & Co. KG
+*   chiliSCHARF GmbH
+*   clickstorm GmbH
+*   cosmoblonde GmbH
+*   cron IT GmbH
+*   cyperfection GmbH
+*   digit.ly
+*   gedacht
+*   graphodata GmbH
+*   grips IT GmbH
+*   helhum.io
+*   in2code GmbH
+*   jweiland.net
+*   keeen GmbH
+*   medien.de mde GmbH
+*   mehrwert intermediale kommunikation GmbH
+*   mellowmessage GmbH
+*   morbihan.fr
+*   ochschule Furtwangen
+*   pietzpluswild GmbH
+*   plan2net GmbH
+*   rms. relationship marketing solutions GmbH
+*   rocket-media GmbH & Co KG
+*   sgalinski Internet Services
+*   studio ahoi Weitenauer Schwardt GbR
+*   visuellverstehen GmbH
+*   webconsulting business services gmbh
+*   werkraum Digitalmanufaktur GmbH
+*   wow! solution
+*   zimmer7 GmbH
 
 How to Get Involved
 ===================
