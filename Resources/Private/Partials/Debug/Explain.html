@@ -1,0 +1,22 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+			xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+			xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+			data-namespace-typo3-fluid="true"
+>
+<f:comment><!--
+This file is a placeholder to allow EXT:solrdebugtools work as plug&play addon.
+
+Explain addon
+
+With Apache Solr you have the possibility get a detailed explain output, that explains how the score was calculated for a certain document.
+In the end this helps to understand why which document is on the first position of the results page.
+
+What does it do?
+
+Apache Solr's explain-output is very technical and detailed but also hard to understand.
+Inspired by explain.solr.pl we created a library to calculate the impact of each field.
+This data can be visualized e.g. in a chart to make it easier to understand that information.
+
+--></f:comment>
+<f:section name="Explain"><s:debug.documentScoreAnalyzer document="{document}" /></f:section>
+</html>
