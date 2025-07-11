@@ -46,7 +46,7 @@ abstract class AbstractBaseController extends ActionController
     private ?SolrConfigurationManager $solrConfigurationManager = null;
 
     /**
-     * The configuration is private if you need it please get it from the SolrVariableProvider of RenderingContext.
+     * The configuration is private if you need it, please get it from the SolrVariableProvider of RenderingContext.
      */
     protected ?TypoScriptConfiguration $typoScriptConfiguration = null;
 
@@ -91,7 +91,7 @@ abstract class AbstractBaseController extends ActionController
         /** @var TypoScriptService $typoScriptService */
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
 
-        // Merge settings done by typoscript with solrConfiguration plugin.tx_solr (obsolete when part of ext:solr)
+        // Merge settings done by TypoScript with solrConfiguration plugin.tx_solr (obsolete when part of ext:solr)
         $frameWorkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $pluginSettings = [];
         foreach (['search', 'settings', 'suggest', 'statistics', 'logging', 'general', 'solr', 'view'] as $key) {
@@ -100,7 +100,11 @@ abstract class AbstractBaseController extends ActionController
             }
         }
 
-        $this->typoScriptConfiguration = $this->solrConfigurationManager->getTypoScriptFromRequest($this->request);
+        $this->typoScriptConfiguration = GeneralUtility::makeInstance(
+            TypoScriptConfiguration::class,
+            $this->request->getAttribute('frontend.typoscript')->getSetupArray(),
+            $this->request->getAttribute('routing')->getPageId(),
+        );
         if ($pluginSettings !== []) {
             $this->typoScriptConfiguration->mergeSolrConfiguration(
                 $typoScriptService->convertPlainArrayToTypoScriptArray($pluginSettings),
