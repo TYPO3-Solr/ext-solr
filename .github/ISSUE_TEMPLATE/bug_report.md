@@ -24,10 +24,10 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Used versions (please complete the following information):**
- - TYPO3 Version: [e.g. 10.4.42]
+ - TYPO3 Version: [e.g. 10.4.52]
  - Browser: [e.g. chrome, safari]
  - EXT:solr Version: [e.g. 11.2.5]
- - Used Apache Solr Version: [e.g. 9.8.0]
+ - Used Apache Solr Version: [e.g. 9.8.1]
  - PHP Version: [e.g. 7.4.0]
  - MySQL Version: [e.g. 8.0.0]
 

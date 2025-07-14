@@ -7,6 +7,16 @@
 Apache Solr for TYPO3 11.2
 ==========================
 
+Apache Solr for TYPO3 11.2.6 ELTS
+=================================
+
+This is a non-public maintenance release for TYPO3 10.4 ELTS, containing:
+
+*   [FEATURE] Add arm64 platforms to docker-images and push to registry.dkd.de by Rafael Kähm (9a56f004a)
+*   [TASK] Allow Apache Solr 9.8.1 by Rafael Kähm (d6d6de2c7)
+*   [TASK] Set proper retention-days on actions/upload-artifact by Rafael Kähm (96b119381)
+*   Revert "[TASK] Integrate TYPO3 10.4 ELTS" by Rafael Kähm (20a596125)
+
 Apache Solr for TYPO3 11.2.5 ELTS
 =================================
 
