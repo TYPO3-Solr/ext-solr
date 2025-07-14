@@ -6,6 +6,14 @@
 Releases 11.6
 =============
 
+
+Release 11.6.4 ELTS
+===================
+
+This is a non-public maintenance release for TYPO3 11.5 ELTS, containing:
+
+*   [FEATURE] Add arm64 platforms to docker-images and push to registry.dkd.de by Rafael Kähm (a28d4a1)
+
 Release 11.6.3 ELTS
 ===================
 
@@ -230,7 +238,7 @@ awesome community. Here are the contributors to this release.
 * Rafael Kähm
 * Stefan Frömken
 
-Also a big thank you to our partners who have already concluded one of our new development participation packages such as Apache Solr EB for TYPO3 11 LTS:
+Also a big thank you to our partners who have already concluded one of our new development participation packages for Apache Solr EB for TYPO3 11 LTS (Feature, Maintenance, ELTS):
 
 * .hausformat GmbH
 * 3m5. Media GmbH
@@ -285,9 +293,11 @@ Also a big thank you to our partners who have already concluded one of our new d
 * INOTEC Sicherheitstechnik GmbH
 * Institut national d'excellence en santé et en services sociaux inesss.qc.ca
 * internezzo ag
+* Intersim AG
 * IW Medien GmbH
 * jweiland
 * Kassenärztliche Vereinigung Rheinland-Pfalz
+* Kunstuniversität Graz
 * Kreis Euskirchen
 * L.N. Schaffrath DigitalMedien GmbH
 * La Financière agricole du Québec
@@ -331,6 +341,7 @@ Also a big thank you to our partners who have already concluded one of our new d
 * tirol.gv.at
 * toumoro.com
 * Typoheads GmbH
+* UDG Rhein-Main GmbH
 * UEBERBIT GmbH
 * unternehmen online GmbH Co. KG (UO)
 * Verband der Vereine Creditreform e.V.
