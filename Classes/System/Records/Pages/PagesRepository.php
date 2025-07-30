@@ -324,10 +324,10 @@ class PagesRepository extends AbstractRepository
     /**
      * Returns a specific page
      *
-     * @return null|array{
+     * @return array{
      *    'uid': int,
      *    'pid': int
-     * }
+     * }|null
      */
     public function getPage(
         int $uid,
