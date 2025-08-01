@@ -25,15 +25,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SystemTemplateRepositoryTest extends IntegrationTestBase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_template.csv');
+    }
+
     #[Test]
     public function canFindOneClosestPageIdWithActiveTemplateByRootLine(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_template.csv');
-
         $fakeRootLine = [
-            ['uid' => 100],
-            ['uid' => 33],
-            ['uid' => 8657],
+            4 => ['uid' => 1],
+            3 => ['uid' => 100],
+            2 => ['uid' => 33],
+            1 => ['uid' => 8657],
         ];
 
         /** @var SystemTemplateRepository $repository */
