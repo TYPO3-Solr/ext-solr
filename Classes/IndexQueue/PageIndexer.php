@@ -69,6 +69,7 @@ class PageIndexer extends Indexer
 
         foreach ($systemLanguageUids as $systemLanguageUid) {
             $contentAccessGroups = $this->getAccessGroupsFromContent($item, $systemLanguageUid);
+            $contentAccessGroups = $this->filterContentAccessGroups($item, $contentAccessGroups);
             foreach ($contentAccessGroups as $userGroup) {
                 $this->indexPage($item, $systemLanguageUid, (int)$userGroup);
             }
@@ -436,5 +437,71 @@ class PageIndexer extends Indexer
     protected function getAccessRootlineByPageId(int $pageId, string $mountPointParameter): Rootline
     {
         return Rootline::getAccessRootlineByPageId($pageId, $mountPointParameter);
+    }
+
+    /**
+     * Filters content access groups so they are compatible with the page access groups
+     * according to TYPO3 frontend group visibility rules.
+     *
+     * @param int[] $contentAccessGroups Array of FE group IDs from the content element (may include 0, -1, -2, >0)
+     * @return int[]                     Validated content access groups
+     */
+    protected function filterContentAccessGroups(Item $item, array $contentAccessGroups): array
+    {
+        $validated = [];
+        $pageAccessGroups = Rootline::getAccessRootlineByPageId($item->getRecordUid(), $item->getMountPointIdentifier())->getGroups();
+        if (empty($pageAccessGroups)) {
+            $pageAccessGroups[] = 0;
+        }
+
+        foreach ($contentAccessGroups as $contentGroup) {
+            foreach ($pageAccessGroups as $pageGroup) {
+                if ($this->isCombinationAllowed($pageGroup, $contentGroup)) {
+                    $validated[] = $contentGroup;
+                    break; // Once allowed for at least one page group, keep it
+                }
+            }
+        }
+
+        return array_values(array_unique($validated));
+    }
+
+    /**
+     * Determines if a given content group is allowed on a page with a given page group restriction.
+     *
+     * @param int $pageGroup
+     * @param int $contentGroup
+     * @return bool
+     */
+    protected function isCombinationAllowed(int $pageGroup, int $contentGroup): bool
+    {
+        // Page hidden at login (-1)
+        if ($pageGroup === -1) {
+            // Only visible to anonymous users
+            return $contentGroup === -1 || $contentGroup === 0;
+        }
+
+        // Page visible only at login (-2)
+        if ($pageGroup === -2) {
+            // Visible to any logged-in user
+            return $contentGroup === -2 || $contentGroup > 0;
+        }
+
+        // Page public (0)
+        if ($pageGroup === 0) {
+            // Any content restriction is fine — content decides visibility
+            return true;
+        }
+
+        // Page restricted to specific FE group (>0)
+        if ($pageGroup > 0) {
+            // Allowed if content is:
+            // - same group as page
+            // - "any login" (-2) but only if it includes this group
+            // (note: "-2" alone means ANY login, which is still fine for a logged-in user of this group)
+            return $contentGroup === $pageGroup || $contentGroup === -2;
+        }
+
+        return false; // Should not happen
     }
 }
