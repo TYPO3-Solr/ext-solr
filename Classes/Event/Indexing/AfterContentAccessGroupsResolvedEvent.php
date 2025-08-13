@@ -24,6 +24,7 @@ final class AfterContentAccessGroupsResolvedEvent
     public function __construct(
         protected Item $item,
         protected array $contentAccessGroups,
+        protected int $systemLanguageUid,
     ) {}
 
     public function getItem(): Item
@@ -39,5 +40,10 @@ final class AfterContentAccessGroupsResolvedEvent
     public function setContentAccessGroups(array $contentAccessGroups): void
     {
         $this->contentAccessGroups = $contentAccessGroups;
+    }
+
+    public function getSystemLanguageUid(): int
+    {
+        return $this->systemLanguageUid;
     }
 }

@@ -71,7 +71,7 @@ class PageIndexer extends Indexer
         foreach ($systemLanguageUids as $systemLanguageUid) {
             $contentAccessGroups = $this->getAccessGroupsFromContent($item, $systemLanguageUid);
 
-            $event = new AfterContentAccessGroupsResolvedEvent($item, $contentAccessGroups);
+            $event = new AfterContentAccessGroupsResolvedEvent($item, $contentAccessGroups, $systemLanguageUid);
             $this->eventDispatcher->dispatch($event);
 
             foreach ($event->getContentAccessGroups() as $userGroup) {
