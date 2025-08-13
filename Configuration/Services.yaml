@@ -324,6 +324,12 @@ services:
       - name: event.listener
         identifier: 'solr.index.AdditionalFieldsForPageIndexing'
 
+  ApacheSolrForTypo3\Solr\EventListener\PageIndexer\AccessGroupsFilter:
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.AccessGroupsFilter'
+        event: ApacheSolrForTypo3\Solr\Event\Indexing\AfterContentAccessGroupsResolvedEvent
+
   ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer:
     autowire: true
     shared: false
