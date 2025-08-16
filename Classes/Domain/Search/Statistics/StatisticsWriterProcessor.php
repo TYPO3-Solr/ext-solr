@@ -107,7 +107,7 @@ class StatisticsWriterProcessor
         $keywords = $query->getQuery();
         $keywords = $this->sanitizeString($keywords);
         // Ensure string does not exceed database field length
-        $keywords = substr($keywords, 0, 128);
+        $keywords = mb_substr($keywords, 0, 128, 'UTF-8');
         if ($lowerCaseQuery) {
             $keywords = mb_strtolower($keywords);
         }
