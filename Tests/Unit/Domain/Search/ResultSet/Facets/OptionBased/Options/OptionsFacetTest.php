@@ -99,7 +99,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
     #[DataProvider('getIncludeInAvailableFacetsDataProvider')]
     #[Test]
     public function getIncludeInAvailableFacetsCastsSettingsToBoolProperly(
-        null|int|string $includeInAvailableFacetsConfiguration,
+        int|string|null $includeInAvailableFacetsConfiguration,
         bool $expectedResult,
     ): void {
         $resultSetMock = $this->createMock(SearchResultSet::class);

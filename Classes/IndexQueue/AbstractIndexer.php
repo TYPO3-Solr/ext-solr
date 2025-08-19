@@ -157,9 +157,9 @@ abstract class AbstractIndexer
             }
         } else {
             $indexingFieldName = $indexingConfiguration[$solrFieldName] ?? null;
-            if (empty($indexingFieldName) ||
-                !is_string($indexingFieldName) ||
-                !array_key_exists($indexingFieldName, $data)) {
+            if (empty($indexingFieldName)
+                || !is_string($indexingFieldName)
+                || !array_key_exists($indexingFieldName, $data)) {
                 return null;
             }
             $fieldValue = $data[$indexingFieldName];

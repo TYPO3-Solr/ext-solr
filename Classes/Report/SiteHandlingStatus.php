@@ -39,12 +39,11 @@ class SiteHandlingStatus extends AbstractSolrStatus
 {
     public const TITLE_SITE_HANDLING_CONFIGURATION = 'Site handling configuration';
 
-    public const
-        CSS_STATUS_NOTICE = 'notice',
-        CSS_STATUS_INFO = 'info',
-        CSS_STATUS_OK = 'success',
-        CSS_STATUS_WARNING = 'warning',
-        CSS_STATUS_ERROR = 'danger';
+    public const CSS_STATUS_NOTICE = 'notice';
+    public const CSS_STATUS_INFO = 'info';
+    public const CSS_STATUS_OK = 'success';
+    public const CSS_STATUS_WARNING = 'warning';
+    public const CSS_STATUS_ERROR = 'danger';
 
     protected SiteRepository $siteRepository;
 
@@ -153,8 +152,8 @@ class SiteHandlingStatus extends AbstractSolrStatus
         ];
 
         if (!GeneralUtility::isValidUrl((string)$siteLanguage->getBase())) {
-            $validationResult['message'] =
-                sprintf(
+            $validationResult['message']
+                = sprintf(
                     'Entry Point[base]="%s" is not valid URL.'
                     . ' Following parts of defined URL are empty or invalid: "%s"',
                     $siteLanguage->getBase()->__toString(),

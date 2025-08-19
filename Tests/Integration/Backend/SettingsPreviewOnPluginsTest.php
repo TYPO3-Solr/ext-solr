@@ -32,8 +32,8 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
                 'boostQuery' => 'boostQuery',
                 'filter' => [
                     '5947784b97b1e034174380' => [
-                        'field' =>
-                            [
+                        'field'
+                            => [
                                 'field' => 'appKey',
                                 'value' => 'test',
                             ],

@@ -66,8 +66,8 @@ class UrlFacetContainer implements Countable
     ) {
         // Take care that the url style matches in case and is one of the allowed values
         $parameterStyle = strtolower(trim($parameterStyle));
-        if (empty($parameterStyle) ||
-            (!in_array($parameterStyle, [self::PARAMETER_STYLE_INDEX, self::PARAMETER_STYLE_ASSOC]))) {
+        if (empty($parameterStyle)
+            || (!in_array($parameterStyle, [self::PARAMETER_STYLE_INDEX, self::PARAMETER_STYLE_ASSOC]))) {
             $parameterStyle = self::PARAMETER_STYLE_INDEX;
         }
         $this->argumentsAccessor = $argumentsAccessor;

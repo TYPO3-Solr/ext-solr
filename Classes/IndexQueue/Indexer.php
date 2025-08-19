@@ -298,8 +298,8 @@ class Indexer extends AbstractIndexer
         if (!$this->isRootPageIdPartOfRootLine($item) || count($fields) === 0) {
             $fields = $this->getFieldConfigurationFromItemRootPage($item, $language, $indexConfigurationName);
             if (count($fields) === 0) {
-                throw new RuntimeException('The item indexing configuration "' . $item->getIndexingConfigurationName() .
-                    '" on root page uid ' . $item->getRootPageUid() . ' could not be found!', 1455530112);
+                throw new RuntimeException('The item indexing configuration "' . $item->getIndexingConfigurationName()
+                    . '" on root page uid ' . $item->getRootPageUid() . ' could not be found!', 1455530112);
             }
         }
 

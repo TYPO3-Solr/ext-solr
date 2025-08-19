@@ -105,8 +105,8 @@ class SiteUtilityTest extends SetUpUnitTestCase
         self::assertEquals(
             $expectedSolrHost,
             $property,
-            'The setting "solr_use_write_connection" from sites config.yaml has no influence on system.' .
-            'The setting "solr_use_write_connection=true/false" must enable or disable the write connection respectively.'
+            'The setting "solr_use_write_connection" from sites config.yaml has no influence on system.'
+            . 'The setting "solr_use_write_connection=true/false" must enable or disable the write connection respectively.'
         );
     }
 

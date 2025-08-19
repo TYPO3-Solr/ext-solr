@@ -64,24 +64,24 @@ class TsfeTest extends IntegrationTestBase
         self::assertInstanceOf(
             TypoScriptFrontendController::class,
             $tsfeNotRestricted,
-            'The TSFE can not be initialized at all, nor for public page either for access restricted(fe_group) page. ' .
-                'Most probably nothing will work.'
+            'The TSFE can not be initialized at all, nor for public page either for access restricted(fe_group) page. '
+                . 'Most probably nothing will work.'
         );
 
         $tsfeRestrictedForExistingFeGroup = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdIgnoringLanguage(2);
         self::assertInstanceOf(
             TypoScriptFrontendController::class,
             $tsfeRestrictedForExistingFeGroup,
-            'The TSFE can not be initialized for existing fe_group. ' .
-                'This will lead to failures on editing the access restricted [sub]pages in BE.'
+            'The TSFE can not be initialized for existing fe_group. '
+                . 'This will lead to failures on editing the access restricted [sub]pages in BE.'
         );
 
         $tsfeForLoggedInUserOnly = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdIgnoringLanguage(3);
         self::assertInstanceOf(
             TypoScriptFrontendController::class,
             $tsfeForLoggedInUserOnly,
-            'The TSFE can not be initialized for page with fe_group="-2". ' .
-                'This will lead to failures on editing the [sub]pages in BE for pages with fe_group="-2".'
+            'The TSFE can not be initialized for page with fe_group="-2". '
+                . 'This will lead to failures on editing the [sub]pages in BE for pages with fe_group="-2".'
         );
     }
 }

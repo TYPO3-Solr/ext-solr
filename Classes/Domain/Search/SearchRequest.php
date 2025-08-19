@@ -562,9 +562,9 @@ class SearchRequest
         $this->activeFacetContainer = new UrlFacetContainer(
             $this->argumentsAccessor,
             $this->argumentNameSpace ?? self::DEFAULT_PLUGIN_NAMESPACE,
-            $this->contextTypoScriptConfiguration === null ?
-                UrlFacetContainer::PARAMETER_STYLE_INDEX :
-                $this->contextTypoScriptConfiguration->getSearchFacetingUrlParameterStyle()
+            $this->contextTypoScriptConfiguration === null
+                ? UrlFacetContainer::PARAMETER_STYLE_INDEX
+                : $this->contextTypoScriptConfiguration->getSearchFacetingUrlParameterStyle()
         );
 
         // If the default of sorting parameter should be true, a modification of this condition is needed.

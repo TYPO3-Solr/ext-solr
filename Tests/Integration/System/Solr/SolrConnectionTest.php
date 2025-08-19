@@ -89,8 +89,8 @@ class SolrConnectionTest extends IntegrationTestBase
 
         $guzzleConfig = $this->getInaccessiblePropertyFromObject($httpClientObject, 'config');
 
-        $httpSettingsIgnoredMessage = 'The client for solarium does not get TYPO3 system configuration for HTTP. ' . PHP_EOL .
-            'Please check why "%s" does not taken into account or are overridden.';
+        $httpSettingsIgnoredMessage = 'The client for solarium does not get TYPO3 system configuration for HTTP. ' . PHP_EOL
+            . 'Please check why "%s" does not taken into account or are overridden.';
 
         self::assertEquals(
             $GLOBALS['TYPO3_CONF_VARS']['HTTP']['connect_timeout'],

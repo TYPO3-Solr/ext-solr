@@ -235,8 +235,8 @@ abstract class AbstractStrategy
             if ($garbageCollectorPostProcessor instanceof GarbageCollectorPostProcessor) {
                 $garbageCollectorPostProcessor->postProcessGarbageCollector($table, $uid);
             } else {
-                $message = get_class($garbageCollectorPostProcessor) . ' must implement interface ' .
-                    GarbageCollectorPostProcessor::class;
+                $message = get_class($garbageCollectorPostProcessor) . ' must implement interface '
+                    . GarbageCollectorPostProcessor::class;
                 throw new UnexpectedValueException($message, 1345807460);
             }
         }

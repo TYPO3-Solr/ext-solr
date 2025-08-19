@@ -223,8 +223,8 @@ class Site
         }
 
         if ($additionalWhereClause !== null) {
-            $initialPagesAdditionalWhereClause .=
-                ($initialPagesAdditionalWhereClause !== '' ? ' AND ' : '')
+            $initialPagesAdditionalWhereClause
+                .= ($initialPagesAdditionalWhereClause !== '' ? ' AND ' : '')
                 . '(' . $additionalWhereClause . ')';
         }
 

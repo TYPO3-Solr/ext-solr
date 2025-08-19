@@ -113,8 +113,8 @@ class Tsfe implements SingletonInterface
         $serverRequest = $this->serverRequestCache[$cacheIdentifier] ?? null;
         if (!isset($this->serverRequestCache[$cacheIdentifier])) {
             $serverRequest = GeneralUtility::makeInstance(ServerRequest::class);
-            $this->serverRequestCache[$cacheIdentifier] = $serverRequest =
-                $serverRequest->withAttribute('site', $site)
+            $this->serverRequestCache[$cacheIdentifier] = $serverRequest
+                = $serverRequest->withAttribute('site', $site)
                 ->withAttribute('language', $siteLanguage)
                 ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
                 ->withUri($site->getBase());
@@ -366,9 +366,9 @@ class Tsfe implements SingletonInterface
     protected function isPageAvailableForTSFE(array $pageRecord): bool
     {
         $currentTime = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp');
-        return $pageRecord['hidden'] === 0 &&
-            $pageRecord['starttime'] <= $currentTime &&
-            ($pageRecord['endtime'] === 0 || $pageRecord['endtime'] > 0 && $pageRecord['endtime'] > $currentTime)
+        return $pageRecord['hidden'] === 0
+            && $pageRecord['starttime'] <= $currentTime
+            && ($pageRecord['endtime'] === 0 || $pageRecord['endtime'] > 0 && $pageRecord['endtime'] > $currentTime)
         ;
     }
 
