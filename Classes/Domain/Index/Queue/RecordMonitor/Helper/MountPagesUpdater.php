@@ -52,6 +52,10 @@ class MountPagesUpdater
             $rootLineArray = [];
         }
 
+        if (empty($rootLineArray)) {
+            return;
+        }
+
         $currentPage = array_shift($rootLineArray);
         $currentPageUid = (int)$currentPage['uid'];
 
