@@ -146,7 +146,7 @@ class IndexerTest extends SetUpUnitTestCase
 
     #[DataProvider('canGetAdditionalDocumentsDataProvider')]
     #[Test]
-    public function canGetAdditionalDocuments(Closure|null $listener, ?string $expectedException, int $expectedResultCount): void
+    public function canGetAdditionalDocuments(?Closure $listener, ?string $expectedException, int $expectedResultCount): void
     {
         $indexer = $this->getAccessibleMock(
             Indexer::class,

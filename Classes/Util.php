@@ -124,8 +124,8 @@ class Util
             // \TYPO3\CMS\Core\Versioning\VersionState for an explanation of the t3ver_state field
             // if it is >0, it is a draft record or
             // if it is "0" (DEFAULT_STATE), could also be draft if t3ver_oid points to any uid (modified record)
-            if ($record !== null &&
-                ($record['pid'] == '-1' || $record['t3ver_state'] > 0 || (int)$record['t3ver_oid'] > 0)
+            if ($record !== null
+                && ($record['pid'] == '-1' || $record['t3ver_state'] > 0 || (int)$record['t3ver_oid'] > 0)
             ) {
                 $isWorkspaceRecord = true;
             }

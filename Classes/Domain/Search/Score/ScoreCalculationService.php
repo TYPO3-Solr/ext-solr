@@ -42,8 +42,8 @@ class ScoreCalculationService
 
         foreach ($highScores as $highScore) {
             /** @var Score $highScore */
-            $scores[] =
-                '<td>+ ' . htmlspecialchars(number_format($highScore->getScore(), 9)) . '</td>'
+            $scores[]
+                = '<td>+ ' . htmlspecialchars(number_format($highScore->getScore(), 9)) . '</td>'
                 . '<td>' . htmlspecialchars($highScore->getFieldName()) . '</td>'
                 . '<td>' . htmlspecialchars(number_format($highScore->getBoost(), 9)) . '</td>';
             $totalScore += $highScore->getScore();

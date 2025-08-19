@@ -86,8 +86,8 @@ abstract class AbstractRepository
         if (!$this->isConnectionForAllTablesTheSame(...$tableNames)) {
             throw new RuntimeException(
                 vsprintf(
-                    'The tables "%s" using different database connections. Transaction needs same database connection ' .
-                    'for all tables, please reconfigure the database settings for involved tables properly.',
+                    'The tables "%s" using different database connections. Transaction needs same database connection '
+                    . 'for all tables, please reconfigure the database settings for involved tables properly.',
                     [implode('", "', $tableNames)]
                 ),
                 1504866142

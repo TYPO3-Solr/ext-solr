@@ -61,9 +61,9 @@ class DateRangeTest extends SetUpUnitTestCase
             $dateRangeCollectionKeyOpenEnd = $dateRangeOpenEnd->getCollectionKey();
         } catch (Error $error) {
             self::fail(
-                'Can\'t handle half open date ranges.' . PHP_EOL .
-                ' Please see: https://github.com/TYPO3-Solr/ext-solr/issues/2942 and error: ' . PHP_EOL .
-                $error->getMessage() . ' in ' . $error->getFile() . ':' . $error->getLine()
+                'Can\'t handle half open date ranges.' . PHP_EOL
+                . ' Please see: https://github.com/TYPO3-Solr/ext-solr/issues/2942 and error: ' . PHP_EOL
+                . $error->getMessage() . ' in ' . $error->getFile() . ':' . $error->getLine()
             );
         }
         self::assertEquals('-202107202359', $dateRangeCollectionKeyOpenStart);

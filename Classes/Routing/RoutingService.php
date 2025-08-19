@@ -118,9 +118,9 @@ class RoutingService implements LoggerAwareInterface
      */
     public function fromRoutingConfiguration(array $routingConfiguration): RoutingService
     {
-        if (empty($routingConfiguration) ||
-            empty($routingConfiguration['type']) ||
-            !$this->isRouteEnhancerForSolr((string)$routingConfiguration['type'])) {
+        if (empty($routingConfiguration)
+            || empty($routingConfiguration['type'])
+            || !$this->isRouteEnhancerForSolr((string)$routingConfiguration['type'])) {
             return $this;
         }
 
@@ -260,8 +260,8 @@ class RoutingService implements LoggerAwareInterface
      */
     public function shouldMaskQueryParameter(): bool
     {
-        if (!isset($this->settings['query']['mask']) ||
-            !$this->settings['query']['mask']) {
+        if (!isset($this->settings['query']['mask'])
+            || !$this->settings['query']['mask']) {
             return false;
         }
 
@@ -281,23 +281,20 @@ class RoutingService implements LoggerAwareInterface
 
         if (!isset($queryParams[$this->getPluginNamespace()])) {
             $this->logger
-                ->
-                error('Mask error: Query parameters has no entry for namespace ' . $this->getPluginNamespace());
+                -> error('Mask error: Query parameters has no entry for namespace ' . $this->getPluginNamespace());
             return $queryParams;
         }
 
-        if (!isset($queryParams[$this->getPluginNamespace()]['filter']) ||
-            empty($queryParams[$this->getPluginNamespace()]['filter'])) {
+        if (!isset($queryParams[$this->getPluginNamespace()]['filter'])
+            || empty($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->
-                info('Mask info: Query parameters has no filter in namespace ' . $this->getPluginNamespace());
+                -> info('Mask info: Query parameters has no filter in namespace ' . $this->getPluginNamespace());
             return $queryParams;
         }
 
         if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->
-                warning('Mask info: Filter within the Query parameters is not an array');
+                -> warning('Mask info: Filter within the Query parameters is not an array');
             return $queryParams;
         }
 
@@ -309,11 +306,11 @@ class RoutingService implements LoggerAwareInterface
             $defaultSeparator = $this->detectFacetAndValueSeparator((string)$queryParamValue);
             [$facetName, $facetValue] = explode($defaultSeparator, $queryParamValue, 2);
             $keep = false;
-            if (isset($queryParameterMap[$facetName]) &&
-                isset($newQueryParams[$queryParameterMap[$facetName]])) {
+            if (isset($queryParameterMap[$facetName])
+                && isset($newQueryParams[$queryParameterMap[$facetName]])) {
                 $this->logger->error(
-                    'Mask error: Facet "' . $facetName . '" as "' . $queryParameterMap[$facetName] .
-                    '" already in query!'
+                    'Mask error: Facet "' . $facetName . '" as "' . $queryParameterMap[$facetName]
+                    . '" already in query!'
                 );
                 $keep = true;
             }
@@ -370,8 +367,8 @@ class RoutingService implements LoggerAwareInterface
                 $newQueryParams[$this->getPluginNamespace()]['filter'] = [];
             }
 
-            $newQueryParams[$this->getPluginNamespace()]['filter'][] =
-                $queryParameterMapSwitched[$queryParamName] . ':' . $queryParamValue;
+            $newQueryParams[$this->getPluginNamespace()]['filter'][]
+                = $queryParameterMapSwitched[$queryParamName] . ':' . $queryParamValue;
         }
 
         return $this->cleanUpQueryParameters($newQueryParams);
@@ -404,9 +401,9 @@ class RoutingService implements LoggerAwareInterface
      */
     public function getQueryParameterMap(): array
     {
-        if (!isset($this->settings['query']['map']) ||
-            !is_array($this->settings['query']['map']) ||
-            empty($this->settings['query']['map'])) {
+        if (!isset($this->settings['query']['map'])
+            || !is_array($this->settings['query']['map'])
+            || empty($this->settings['query']['map'])) {
             return [];
         }
         // TODO: Test if there is more than one value!
@@ -454,8 +451,8 @@ class RoutingService implements LoggerAwareInterface
             return $queryParams;
         }
 
-        if (!isset($queryParams[$this->getPluginNamespace()]['filter']) ||
-            empty($queryParams[$this->getPluginNamespace()]['filter'])) {
+        if (!isset($queryParams[$this->getPluginNamespace()]['filter'])
+            || empty($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
                 ->info('Mask info: Query parameters has no filter in namespace ' . $this->getPluginNamespace());
             return $queryParams;
@@ -463,13 +460,12 @@ class RoutingService implements LoggerAwareInterface
 
         if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->
-                warning('Mask info: Filter within the Query parameters is not an array');
+                -> warning('Mask info: Filter within the Query parameters is not an array');
             return $queryParams;
         }
 
-        $queryParams[$this->getPluginNamespace()]['filter'] =
-            $this->concatFilterValues($queryParams[$this->getPluginNamespace()]['filter']);
+        $queryParams[$this->getPluginNamespace()]['filter']
+            = $this->concatFilterValues($queryParams[$this->getPluginNamespace()]['filter']);
 
         return $this->cleanUpQueryParameters($queryParams);
     }
@@ -540,15 +536,14 @@ class RoutingService implements LoggerAwareInterface
             $queryParams[$this->getPluginNamespace()] = [];
         }
 
-        if (!isset($queryParams[$this->getPluginNamespace()]['filter']) ||
-            is_null($queryParams[$this->getPluginNamespace()]['filter'])) {
+        if (!isset($queryParams[$this->getPluginNamespace()]['filter'])
+            || is_null($queryParams[$this->getPluginNamespace()]['filter'])) {
             $queryParams[$this->getPluginNamespace()]['filter'] = [];
         }
 
         if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->
-                warning('Inflate query: Expected filter to be an array. Replace it with an array structure!');
+                -> warning('Inflate query: Expected filter to be an array. Replace it with an array structure!');
             $queryParams[$this->getPluginNamespace()]['filter'] = [];
         }
 
@@ -727,14 +722,14 @@ class RoutingService implements LoggerAwareInterface
         $result = [];
         foreach ($configuration['routeEnhancers'] as $settings) {
             // Not the page we are looking for
-            if (isset($settings['limitToPages']) &&
-                is_array($settings['limitToPages']) &&
-                !in_array($pageUid, $settings['limitToPages'])) {
+            if (isset($settings['limitToPages'])
+                && is_array($settings['limitToPages'])
+                && !in_array($pageUid, $settings['limitToPages'])) {
                 continue;
             }
 
-            if (empty($settings) || !isset($settings['type']) ||
-                !$this->isRouteEnhancerForSolr((string)$settings['type'])
+            if (empty($settings) || !isset($settings['type'])
+                || !$this->isRouteEnhancerForSolr((string)$settings['type'])
             ) {
                 continue;
             }

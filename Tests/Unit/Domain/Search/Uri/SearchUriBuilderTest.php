@@ -377,9 +377,9 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
                 ],
             ],
         ];
-        $linkBuilderResult = '/index.php?id=42&color=' . urlencode('green,red,yellow') .
-            '&taste=' . urlencode('matcha,sour') .
-            '&product=' . urlencode('candy,sweets');
+        $linkBuilderResult = '/index.php?id=42&color=' . urlencode('green,red,yellow')
+            . '&taste=' . urlencode('matcha,sour')
+            . '&product=' . urlencode('candy,sweets');
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(42);
@@ -432,10 +432,10 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
                 ],
             ],
         ];
-        $linkBuilderResult = '/index.php?id=42&color=' . urlencode('green,red,yellow') .
-            '&taste=' . urlencode('matcha,sour') .
-            '&product=' . urlencode('candy,sweets') .
-            '&' . urlencode('tx_solr[filter][0]') . '=' . urlencode('quantity:20');
+        $linkBuilderResult = '/index.php?id=42&color=' . urlencode('green,red,yellow')
+            . '&taste=' . urlencode('matcha,sour')
+            . '&product=' . urlencode('candy,sweets')
+            . '&' . urlencode('tx_solr[filter][0]') . '=' . urlencode('quantity:20');
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(42);
@@ -488,10 +488,10 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
                 ],
             ],
         ];
-        $linkBuilderResult = '/index.php?id=42&color=' . urlencode('green,red,yellow') .
-            '&taste=' . urlencode('matcha,sour') .
-            '&product=' . urlencode('candy,sweets') .
-            '&' . urlencode('tx_solr[filter][0]') . '=' . urlencode('quantity:20');
+        $linkBuilderResult = '/index.php?id=42&color=' . urlencode('green,red,yellow')
+            . '&taste=' . urlencode('matcha,sour')
+            . '&product=' . urlencode('candy,sweets')
+            . '&' . urlencode('tx_solr[filter][0]') . '=' . urlencode('quantity:20');
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(42);

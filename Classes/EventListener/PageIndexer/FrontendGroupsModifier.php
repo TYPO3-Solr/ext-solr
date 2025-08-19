@@ -50,8 +50,7 @@ class FrontendGroupsModifier
         if ((int)$pageIndexerRequest->getParameter('userGroup') === 0
             && (
                 (int)$pageIndexerRequest->getParameter('pageUserGroup') !== -2
-                &&
-                (int)$pageIndexerRequest->getParameter('pageUserGroup') < 1
+                && (int)$pageIndexerRequest->getParameter('pageUserGroup') < 1
             )
             && $noRelevantFrontendUserGroupResolved
         ) {

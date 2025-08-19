@@ -71,8 +71,8 @@ class ConnectionManagerTest extends IntegrationTestBase
         foreach ([0, 1, 2] as $languageID) {
             $solrService = $connectionManager->getConnectionByRootPageId($rootPageId, $languageID);
             self::assertInstanceOf(SolrConnection::class, $solrService, vsprintf('Should find solr connection for root page "%s" and language "%s"', [$rootPageId, $languageID]));
-            self::assertEquals($expectedSolrHost, $solrService->getEndpoint('read')->getHost(), vsprintf('Apache Solr host must be the same as configured.' .
-                ' Wrong connection is used. I expected "%s" as Host for "%s" Site with Root-Page ID "%s".', [$expectedSolrHost, $siteName, $rootPageId]));
+            self::assertEquals($expectedSolrHost, $solrService->getEndpoint('read')->getHost(), vsprintf('Apache Solr host must be the same as configured.'
+                . ' Wrong connection is used. I expected "%s" as Host for "%s" Site with Root-Page ID "%s".', [$expectedSolrHost, $siteName, $rootPageId]));
         }
     }
 
@@ -115,8 +115,8 @@ class ConnectionManagerTest extends IntegrationTestBase
         foreach ([0, 1, 2] as $languageID) {
             $solrService = $connectionManager->getConnectionByPageId($pageId, $languageID);
             self::assertInstanceOf(SolrConnection::class, $solrService, vsprintf('Should find solr connection for page id "%s" and language "%s"', [$pageId, $languageID]));
-            self::assertEquals($expectedSolrHost, $solrService->getEndpoint('read')->getHost(), vsprintf('Apache Solr host must be the same as configured.' .
-                ' Wrong connection is used. I expected "%s" as Host for "%s" Site with Root-Page ID "%s".', [$expectedSolrHost, $siteName, $pageId]));
+            self::assertEquals($expectedSolrHost, $solrService->getEndpoint('read')->getHost(), vsprintf('Apache Solr host must be the same as configured.'
+                . ' Wrong connection is used. I expected "%s" as Host for "%s" Site with Root-Page ID "%s".', [$expectedSolrHost, $siteName, $pageId]));
         }
     }
 

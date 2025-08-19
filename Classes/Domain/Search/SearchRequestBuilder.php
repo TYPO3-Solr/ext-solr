@@ -87,11 +87,11 @@ class SearchRequestBuilder
      */
     protected function shouldHideResultsFromInitialSearch(SearchRequest $searchRequest): bool
     {
-        return ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() ||
-            $this->typoScriptConfiguration->getSearchInitializeWithQuery()) &&
-            !$this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery() &&
-            !$this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery() &&
-            $searchRequest->getRawUserQueryIsNull();
+        return ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery()
+            || $this->typoScriptConfiguration->getSearchInitializeWithQuery())
+            && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery()
+            && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery()
+            && $searchRequest->getRawUserQueryIsNull();
     }
 
     /**

@@ -110,9 +110,9 @@ class FrequentSearchesService
             $checkLanguageWhere = '';
         }
 
-        $frequentSearchConfiguration['select.']['ADD_WHERE'] = $checkRootPidWhere .
-            $checkLanguageWhere . ' ' .
-            $frequentSearchConfiguration['select.']['ADD_WHERE'];
+        $frequentSearchConfiguration['select.']['ADD_WHERE'] = $checkRootPidWhere
+            . $checkLanguageWhere . ' '
+            . $frequentSearchConfiguration['select.']['ADD_WHERE'];
 
         $frequentSearchTerms = $this->statisticsRepository
             ->getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration($frequentSearchConfiguration);

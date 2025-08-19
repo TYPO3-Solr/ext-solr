@@ -57,12 +57,9 @@ class TCAService
     public function isEnabledRecord(string $tableName, array $record): bool
     {
         return !((empty($record))
-            ||
-            (isset($this->tca[$tableName]['ctrl']['enablecolumns']['disabled']) && !empty($record[$this->tca[$tableName]['ctrl']['enablecolumns']['disabled']]))
-            ||
-            (isset($this->tca[$tableName]['ctrl']['delete']) && !empty($record[$this->tca[$tableName]['ctrl']['delete']]))
-            ||
-            ($tableName === 'pages' && !empty($record['no_search'])));
+            || (isset($this->tca[$tableName]['ctrl']['enablecolumns']['disabled']) && !empty($record[$this->tca[$tableName]['ctrl']['enablecolumns']['disabled']]))
+            || (isset($this->tca[$tableName]['ctrl']['delete']) && !empty($record[$this->tca[$tableName]['ctrl']['delete']]))
+            || ($tableName === 'pages' && !empty($record['no_search'])));
     }
 
     /**
@@ -101,8 +98,8 @@ class TCAService
     public function isEnableColumn(string $tableName, string $columnName): bool
     {
         return
-            isset($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']) &&
-            array_key_exists($columnName, $GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns'])
+            isset($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns'])
+            && array_key_exists($columnName, $GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns'])
         ;
     }
 
