@@ -268,7 +268,7 @@ abstract class AbstractUpdateHandler
                 return true;
             }
         }
-        
+
         $diff = array_diff_assoc($triggerConfiguration['changeSet'], $changedFields);
         return empty($diff);
     }
