@@ -832,7 +832,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         $configurationMock->expects(self::once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => 'site1.local']);
 
         $this->siteHashServiceMock->expects(self::once())->method('getAllowedSitesForPageIdAndAllowedSitesConfiguration')->willReturn('site1.local');
-        $this->siteHashServiceMock->expects(self::once())->method('getSiteHashForDomain')->willReturn('dsada43242342342');
+        $this->siteHashServiceMock->expects(self::once())->method('getSiteHashForSiteIdentifier')->willReturn('dsada43242342342');
 
         $builder = new QueryBuilder($configurationMock, $this->loggerMock, $this->siteHashServiceMock);
         $query = $builder->buildSearchQuery('');

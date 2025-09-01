@@ -158,6 +158,16 @@ class ExtensionConfiguration
         return (bool)$this->getConfigurationOrDefaultValue('enableRouteEnhancer', false);
     }
 
+    /**
+     * Returns the configured site-hash strategy.
+     *
+     * @deprecated The setting will be removed in EXT:solr 13.1.x+ and become Site-Identifier by default.
+     */
+    public function getSiteHashStrategy(): int
+    {
+        return (int)$this->getConfigurationOrDefaultValue('siteHashStrategy', 0);
+    }
+
     protected function getConfigurationOrDefaultValue(string $key, mixed $defaultValue = null): mixed
     {
         return $this->configuration[$key] ?? $defaultValue;

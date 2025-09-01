@@ -33,14 +33,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Testcase to check if the SiteHashService class works as expected.
  *
  * The unit test is used to make sure that the SiteHashService works as expected when the calls to Site:: are mocked
+ *
+ * @deprcated: Will be removed on EXT:solr 13.1.x+.
  */
-class SiteHashServiceTest extends SetUpUnitTestCase
+class SiteHashServiceByDomainTest extends SetUpUnitTestCase
 {
     protected EventDispatcherInterface|MockObject $eventDispatcherMock;
 
     protected function setUp(): void
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr']['siteHashStrategy'] = 1;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         $this->eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
         parent::setUp();
     }
@@ -48,10 +50,10 @@ class SiteHashServiceTest extends SetUpUnitTestCase
     public static function canResolveSiteHashAllowedSitesDataProvider(): Traversable
     {
         yield 'siteHashDisabled' => ['*', '*'];
-        yield 'allSitesInSystem' => ['__all', 'siteA,siteB'];
-        yield 'currentSiteOnly' => ['__current_site', 'siteA'];
-        yield 'emptyIsFallingBackToCurrentSiteOnly' => ['', 'siteA'];
-        yield 'nullIsFallingBackToCurrentSiteOnly' => [null, 'siteA'];
+        yield 'allSitesInSystem' => ['__all', 'solrtesta.local,solrtestb.local'];
+        yield 'currentSiteOnly' => ['__current_site', 'solrtesta.local'];
+        yield 'emptyIsFallingBackToCurrentSiteOnly' => ['', 'solrtesta.local'];
+        yield 'nullIsFallingBackToCurrentSiteOnly' => [null, 'solrtesta.local'];
     }
 
     #[DataProvider('canResolveSiteHashAllowedSitesDataProvider')]
@@ -61,14 +63,11 @@ class SiteHashServiceTest extends SetUpUnitTestCase
         $siteLanguageMock = $this->createMock(SiteLanguage::class);
         $siteLanguageMock->method('getLanguageId')->willReturn(0);
 
-        $siteConfiguration = [
-            'solr_enabled_read' => 1,
-            'solr_core_read' => 'core_en',
-        ];
+        $siteConfiguration = ['solr_enabled_read' => 1, 'solr_core_read' => 'core_en'];
 
         $baseAMock = $this->createMock(UriInterface::class);
+        $baseAMock->method('getHost')->willReturn('solrtesta.local');
         $siteA = $this->createMock(Site::class);
-        $siteA->method('getIdentifier')->willReturn('siteA');
         $siteA->method('getBase')->willReturn($baseAMock);
         $siteA->method('getLanguages')->willReturn([$siteLanguageMock]);
         $siteA->method('getConfiguration')->willReturn($siteConfiguration);
@@ -76,7 +75,6 @@ class SiteHashServiceTest extends SetUpUnitTestCase
         $baseBMock = $this->createMock(UriInterface::class);
         $baseBMock->method('getHost')->willReturn('solrtestb.local');
         $siteB = $this->createMock(Site::class);
-        $siteB->method('getIdentifier')->willReturn('siteB');
         $siteB->method('getBase')->willReturn($baseBMock);
         $siteB->method('getLanguages')->willReturn([$siteLanguageMock]);
         $siteB->method('getConfiguration')->willReturn($siteConfiguration);
@@ -98,7 +96,7 @@ class SiteHashServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getSiteHashForSiteIdentifierCanHashTheGivenString(): void
+    public function getSiteHashForDomain(): void
     {
         $oldKey = $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = 'testKey';
@@ -108,19 +106,11 @@ class SiteHashServiceTest extends SetUpUnitTestCase
             GeneralUtility::makeInstance(ExtensionConfiguration::class),
             $this->eventDispatcherMock,
         );
-        /**
-         * @todo: The method {@link SiteHashService::getSiteHashForSiteIdentifier()} uses static method variable `$siteHashes`,
-         *        which leads to collisions between the tests, because the variable is never reset between the tests.
-         *        Find the solution how to reset the $siteHashes in tearDown() or use proper caching implementation instead.
-         *        Maybe we want a static analysis rule to disallow the static method vars.
-         *
-         * Current solution: Use always different parameter-values on each call of {@link SiteHashService::getSiteHashForSiteIdentifier()}...
-         */
-        $hash1 = $service->getSiteHashForSiteIdentifier('test-site-01');
-        $hash2 = $service->getSiteHashForSiteIdentifier('www.example.com');
+        $hash1 = $service->getSiteHashForSiteIdentifier('0.example.com');
+        $hash2 = $service->getSiteHashForSiteIdentifier('1.example.com');
 
-        self::assertEquals('f0a405dab4884e0a141f7bc203e63ed79dd150b2', $hash1);
-        self::assertEquals('a8af88b144e020caf72a511c78e78fcdd378b2c9', $hash2);
+        self::assertEquals('f4670f66825591fabbf871317e2184222d61ee5f', $hash1);
+        self::assertEquals('ab12c47315851477fd577b9da3acece34bb1d680', $hash2);
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = $oldKey;
     }
 }

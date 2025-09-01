@@ -231,16 +231,14 @@ class Site
         return $this->pagesRepository->findAllSubPageIdsByRootPage($pageId, $initialPagesAdditionalWhereClause);
     }
 
-    /**
-     * Generates the site's unique Site Hash.
-     *
-     * The Site Hash is build from the site's main domain, the system encryption
-     * key, and the extension "tx_solr". These components are concatenated and
-     * sha1-hashed.
-     */
     public function getSiteHash(): string
     {
         return $this->siteHash;
+    }
+
+    public function getSiteIdentifier(): string
+    {
+        return $this->typo3SiteObject->getIdentifier();
     }
 
     /**

@@ -16,50 +16,32 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to check if the SiteHashService class works as expected.
  *
  * The integration test is used to check if we get the expected results with a defined database state.
+ *
+ * @deprecated The SiteHashServiceByDomainTest will be removed on 13.1.x+.
  */
-class SiteHashServiceTest extends IntegrationTestBase
+class SiteHashServiceByDomainTest extends IntegrationTestBase
 {
-    protected ExtensionConfiguration $extensionConfiguration;
-
-    protected array $defaultExtSolrConfig = [
-        'allowSelfSignedCertificates' => 0,
-        'enableRouteEnhancer' => 0,
-        'includeGlobalQParameterInCacheHash' => 0,
-        'monitoringType' => 0,
-        'pluginNamespaces' => 'tx_solr',
-        'siteHashStrategy' => 0,
-        'useConfigurationFromClosestTemplate' => 0,
-        'useConfigurationMonitorTables' => '',
-        'useConfigurationTrackRecordsOutsideSiteroot' => 1,
-    ];
-
     protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
-        // @todo: remove that hack incl. $this->defaultExtSolrConfig property, if https://github.com/TYPO3/testing-framework/issues/682 is solved or siteHashStrategy setting is removed.
-        $this->defaultExtSolrConfig['siteHashStrategy'] = 1;
-        $this->extensionConfiguration = new class ($this->defaultExtSolrConfig) extends ExtensionConfiguration implements SingletonInterface {};
-        GeneralUtility::setSingletonInstance(ExtensionConfiguration::class, $this->extensionConfiguration);
     }
 
     public static function canResolveSiteHashAllowedSitesDataProvider(): Traversable
     {
-        yield 'all sites accepted by wildcard' => ['*', '*'];
-        yield 'all sites accepted by __all' => ['__all', 'integration_tree_one,integration_tree_two'];
-        yield 'current site only accepted by __current_site' => ['__current_site', 'integration_tree_one'];
+        yield 'all sites accepted by wildcard | the hash strategy is set to domain' => ['*', '*'];
+        yield 'all sites accepted by __all | the hash strategy is set to domain' => ['__all', 'testone.site,testtwo.site'];
+        yield 'current site only accepted by __current_site | the hash strategy is set to domain' => ['__current_site', 'testone.site'];
     }
 
     #[DataProvider('canResolveSiteHashAllowedSitesDataProvider')]

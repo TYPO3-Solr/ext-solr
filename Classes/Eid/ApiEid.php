@@ -40,7 +40,7 @@ class ApiEid
         'siteHash' => [
             'params' => [
                 'required' => [
-                    'domain',
+                    'siteIdentifier',
                 ],
             ],
         ],
@@ -53,6 +53,12 @@ class ApiEid
      */
     public function main(ServerRequestInterface $request): ResponseInterface
     {
+        $queryParams = $request->getQueryParams();
+        // @todo, remove this backwards-compatibility-adjustment together with siteHashStrategy setting.
+        if (isset($queryParams['domain'])) {
+            $queryParams['siteIdentifier'] = $queryParams['domain'];
+            $request = $request->withQueryParams($queryParams);
+        }
         $this->validateRequest($request);
         return $this->{'get' . ucfirst($request->getQueryParams()['api']) . 'Response'}($request);
     }
@@ -64,13 +70,26 @@ class ApiEid
      */
     protected function getSiteHashResponse(ServerRequestInterface $request): JsonResponse
     {
-        $domain = $request->getQueryParams()['domain'];
+        $queryParams = $request->getQueryParams();
+        $siteIdentifier = $queryParams['siteIdentifier'];
 
         /** @var SiteHashService $siteHashService */
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
-        $siteHash = $siteHashService->getSiteHashForDomain($domain);
+        $siteHash = $siteHashService->getSiteHashForSiteIdentifier($siteIdentifier);
+        $jsonResponseContents = [
+            'sitehash' => $siteHash,
+        ];
+        // @todo, remove this backwards-compatibility-adjustment together with siteHashStrategy setting.
+        if (isset($queryParams['domain'])) {
+            $deprecationMessage = 'The domain parameter for eID=tx_solr_api - api=siteHash is deprecated, please use siteIdentifier instead.';
+            trigger_error(
+                $deprecationMessage,
+                E_USER_DEPRECATED,
+            );
+            $jsonResponseContents['deprecation notice'] = $deprecationMessage;
+        }
         return new JsonResponse(
-            ['sitehash' => $siteHash]
+            $jsonResponseContents,
         );
     }
 
@@ -106,6 +125,7 @@ class ApiEid
         }
 
         $requiredApiParams = $this->getApiMethodDefinitions()[$params['api']]['params']['required'] ?? [];
+
         $requiredApiParams[] = 'eID';
         $missingParams = array_values(array_diff($requiredApiParams, array_keys($request->getQueryParams())));
         if (!empty($missingParams)) {
