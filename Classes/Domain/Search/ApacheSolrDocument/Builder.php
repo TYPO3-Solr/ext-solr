@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
@@ -40,6 +41,7 @@ class Builder
 {
     public function __construct(
         protected readonly IdBuilder $variantIdBuilder,
+        protected ExtensionConfiguration $extensionConfiguration,
     ) {}
 
     /**
@@ -64,7 +66,10 @@ class Builder
         $documentId = $this->getPageDocumentId($pageInformation, $pageArguments, $siteLanguage, $accessGroups, $mountPointParameter);
 
         $document->setField('id', $documentId);
-        $document->setField('site', $site->getDomain());
+        $document->setField('site', $site->getSiteIdentifier());
+        if ($this->extensionConfiguration->getSiteHashStrategy() === 0) {
+            $document->setField('site', $site->getDomain());
+        }
         $document->setField('siteHash', $site->getSiteHash());
         $document->setField('appKey', 'EXT:solr');
         $document->setField('type', 'pages');

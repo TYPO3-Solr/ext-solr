@@ -22,6 +22,9 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 
 /**
  * This event is dispatched when determining which domain to use for a site
+ *
+ * @deprecated AfterDomainHasBeenDeterminedForSiteEvent is deprecated and will be removed in v13.1.x+.
+ *             Use AfterSiteHashHasBeenDeterminedForSiteEvent instead.
  */
 final class AfterDomainHasBeenDeterminedForSiteEvent
 {

@@ -45,11 +45,14 @@ class EventQueueWorkerTaskTest extends IntegrationTestBase
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
-        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
-        $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
 
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        $extConf->set('solr', ['monitoringType' => 1]);
+        $extSolrConfigArray = $extConf->get('solr');
+        $extSolrConfigArray['monitoringType'] = 1;
+        $extConf->set('solr', $extSolrConfigArray);
+
+        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
+        $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
     }
 
     #[Test]

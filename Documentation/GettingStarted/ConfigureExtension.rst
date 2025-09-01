@@ -13,7 +13,14 @@ Extension Configuration
 
 Underlying settings can be found in the extension configuration, though the default settings are appropriate for most sites you should check and adapt this settings if necessary:
 
-.. image:: /Images/GettingStarted/typo3-extension-manager.png
+.. image:: /Images/GettingStarted/typo3-extension-configuration_basic.png
+
+.. image:: /Images/GettingStarted/typo3-extension-configuration_monitoring.png
+
+.. image:: /Images/GettingStarted/typo3-extension-configuration_routing.png
+
+.. image:: /Images/GettingStarted/typo3-extension-configuration_advanced.png
+
 
 
 Static TypoScript

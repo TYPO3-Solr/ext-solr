@@ -68,3 +68,11 @@ Facets
 Currently EXT:solr provides following events for Facets-Component modification:
 
 - AfterFacetIsParsedEvent
+
+Site-Hash
+^^^^^^^^^
+
+The SiteHashService provides possibility to override the calculated SiteHash by following PSR-14 events:
+
+- AfterSiteHashHasBeenDeterminedForSiteEvent
+- AfterDomainHasBeenDeterminedForSiteEvent deprecated and will be removed on EXT:solr 13.1.x+

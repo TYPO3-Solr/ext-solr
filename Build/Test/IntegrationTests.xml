@@ -30,6 +30,6 @@
   </testsuites>
   <php>
     <ini name="display_errors" value="1"/>
-    <env name="TYPO3_CONTEXT" value="Testing"/>
+    <env name="TYPO3_CONTEXT" value="Testing" force="true"/>
   </php>
 </phpunit>
