@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
@@ -53,16 +54,25 @@ class BuilderTest extends SetUpUnitTestCase
     protected Site|MockObject $siteMock;
     protected Typo3PageContentExtractor|MockObject $typo3PageExtractorMock;
     protected Builder|MockObject $documentBuilder;
+    protected MockObject|ExtensionConfiguration $extensionConfigurationMock;
 
     protected function setUp(): void
     {
         $this->variantIdBuilderMock = $this->createMock(IdBuilder::class);
         $this->siteMock = $this->createMock(Site::class);
         $this->typo3PageExtractorMock = $this->createMock(Typo3PageContentExtractor::class);
+        $this->extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
 
-        $this->documentBuilder = $this->getMockBuilder(Builder::class)->setConstructorArgs([$this->variantIdBuilderMock ])->onlyMethods(
-            ['getExtractorForPageContent', 'getSiteByPageId', 'getPageDocumentId', 'getDocumentId'],
-        )->getMock();
+        $this->documentBuilder = $this->getMockBuilder(Builder::class)
+            ->setConstructorArgs([
+                $this->variantIdBuilderMock,
+                $this->extensionConfigurationMock,
+            ])->onlyMethods([
+                'getExtractorForPageContent',
+                'getSiteByPageId',
+                'getPageDocumentId',
+                'getDocumentId',
+            ])->getMock();
 
         $this->documentBuilder->expects(self::any())->method('getExtractorForPageContent')->willReturn($this->typo3PageExtractorMock);
         $this->documentBuilder->expects(self::any())->method('getSiteByPageId')->willReturn($this->siteMock);

@@ -251,13 +251,26 @@ class SiteRepository
     }
 
     /**
+     * Returns the site hash for given site.
+     */
+    protected function getSiteHash(CoreSite $site): string
+    {
+        /** @var SiteHashService $siteHashService */
+        $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
+        return $siteHashService->getSiteHash($site);
+    }
+
+    /**
      * Returns the site hash for given domain.
+     *
+     * @deprecated SiteRepository::getSiteHashForDomain() is soft deprecated and will be removed in v13.1.x+.
+     *             The SiteRepository::getSiteHash() will be used instead.
      */
     protected function getSiteHashForDomain(string $domain): string
     {
         /** @var SiteHashService $siteHashService */
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
-        return $siteHashService->getSiteHashForDomain($domain);
+        return $siteHashService->getSiteHashForSiteIdentifier($domain);
     }
 
     /**
@@ -302,7 +315,11 @@ class SiteRepository
         );
         $domain = $event->getDomain();
 
-        $siteHash = $this->getSiteHashForDomain($domain);
+        $siteHash = $this->getSiteHash($typo3Site);
+        if ($this->extensionConfiguration->getSiteHashStrategy() === 0) {
+            $siteHash = $this->getSiteHashForDomain($domain);
+        }
+
         $defaultLanguage = $typo3Site->getDefaultLanguage()->getLanguageId();
         $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
         $availableLanguageIds = array_map(static function ($language) {

@@ -114,3 +114,16 @@ allowSelfSignedCertificates
 
 Can be used to allow self signed certificates - when using the SSL protocol.
 
+siteHashStrategy
+~~~~~~~~~~~~~~~~
+
+:Type: Int
+:Since: 12.0
+:Default: 0
+
+Can be used to chose the strategy for site-hash calculation.
+The setting is deprecated by introduction: to be removed on EXT:solr 13.1.x+
+
+- 0: Domain(Deprecated): Legacy site hash strategy by domain used up to 13.0.x as default, will be removed on EXT:solr 13.1.x.
+- 1: Site Identifier(will be default on 13.1.x+): The new hash strategy by site-identifier.
+

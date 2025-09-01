@@ -24,3 +24,6 @@ enableRouteEnhancer = 0
 
 # cat=advanced/enable/e; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.allowSelfSignedCertificates
 allowSelfSignedCertificates = 0
+
+# cat=basic/enable/b2; type=options[Domain(Deprecated)=0,Site Identifier(will be default on 13.1.x+)=1]; label=SiteHash strategy
+siteHashStrategy = 0

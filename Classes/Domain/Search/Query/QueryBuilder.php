@@ -274,7 +274,7 @@ class QueryBuilder extends AbstractQueryBuilder
         $allowedSites = GeneralUtility::trimExplode(',', $allowedSites);
         $filters = [];
         foreach ($allowedSites as $site) {
-            $siteHash = $this->siteHashService->getSiteHashForDomain($site);
+            $siteHash = $this->siteHashService->getSiteHashForSiteIdentifier($site);
             $filters[] = 'siteHash:"' . $siteHash . '"';
         }
 
