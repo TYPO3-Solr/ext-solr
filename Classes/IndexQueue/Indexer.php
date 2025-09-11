@@ -380,7 +380,13 @@ class Indexer extends AbstractIndexer
             $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
             $document = $this->getBaseDocument($item, $itemRecord);
             $tsfe = $this->getTsfeByItemAndLanguageId($item, $language);
-            $document = $this->addDocumentFieldsFromTyposcript($document, $itemIndexingConfiguration, $itemRecord, $tsfe);
+            $document = $this->addDocumentFieldsFromTyposcript(
+                $document,
+                $itemIndexingConfiguration,
+                $itemRecord,
+                $tsfe,
+                $language
+            );
         }
 
         return $document;

@@ -105,7 +105,13 @@ class SolrWriteService extends AbstractSolrService
     {
         $update = $this->client->createUpdate();
         $update->addDocuments($documents);
-        return $this->createAndExecuteRequest($update);
+
+        $request = $this->createRequest($update);
+        if ($this->configuration->isVectorSearchEnabled()) {
+            $request->addParam('update.chain', 'textToVector');
+        }
+
+        return $this->executeRequest($request);
     }
 
     /**

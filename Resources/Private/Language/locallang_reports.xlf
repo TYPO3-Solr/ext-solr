@@ -27,6 +27,9 @@
 			<trans-unit id="status_solr_solrversion" resname="status_solr_solrversion">
 				<source>Solr Version</source>
 			</trans-unit>
+			<trans-unit id="status_solr_vector_support" resname="status_solr_vector_support">
+				<source>Solr Vector Support</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

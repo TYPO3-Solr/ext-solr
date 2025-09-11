@@ -16,10 +16,13 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Traversable;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
@@ -106,7 +109,8 @@ class AbstractIndexerTest extends SetUpUnitTestCase
                 $indexingConfiguration,
                 $solrFieldName,
                 $data,
-                $tsfe
+                $tsfe,
+                0,
             ),
             $expectedValue
         );
@@ -132,5 +136,62 @@ class AbstractIndexerTest extends SetUpUnitTestCase
             [],
             null,
         ];
+    }
+
+    #[Test]
+    #[DataProvider('vectorSearchDataProvider')]
+    public function canEnrichVectorContent(
+        bool $vectorSearchEnabled,
+        ?string $existingVectorContent = null,
+    ): void {
+        $subject = $this->getAccessibleMock(AbstractIndexer::class, ['getTypoScriptConfiguration']);
+
+        $configuration = new TypoScriptConfiguration([
+            'plugin.' => [
+                'tx_solr.' => [
+                    'search.' => [
+                        'query.' => [
+                            'type' => $vectorSearchEnabled ? 1 : 0,
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+        $subject->expects(self::once())->method('getTypoScriptConfiguration')->willReturn($configuration);
+
+        $tsfeMock = $this->createMock(TypoScriptFrontendController::class);
+        $tsfeMock->id = 123;
+
+        $data = [];
+        $indexingConfiguration = [];
+        if ($existingVectorContent !== null) {
+            $data['vectorFromField'] = $existingVectorContent;
+            $indexingConfiguration = ['vectorContent' => 'vectorFromField'];
+        }
+        $document = new Document(['content' => 'dummy content']);
+        $subject->_call(
+            'addDocumentFieldsFromTyposcript',
+            $document,
+            $indexingConfiguration,
+            $data,
+            $tsfeMock,
+            0
+        );
+
+        if ($vectorSearchEnabled) {
+            self::assertEquals(
+                $document['vectorContent'] ?? '',
+                $existingVectorContent === null ? 'dummy content' : $existingVectorContent,
+            );
+        } else {
+            self::assertArrayNotHasKey('vectorContent', $document->getFields());
+        }
+    }
+
+    public static function vectorSearchDataProvider(): Traversable
+    {
+        yield 'vector search disabled' => [ false ];
+        yield 'vector search enabled' => [ true ];
+        yield 'vector search enabled, with content' => [ true, 'vector content from field'];
     }
 }

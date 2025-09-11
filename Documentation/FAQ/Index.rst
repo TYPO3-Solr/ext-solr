@@ -720,3 +720,42 @@ The container log did not contain any output relevant to the container quitting.
 Changing to Docker Desktop as provider keep the container alive.
 
 Relevant DDEV link: https://ddev.readthedocs.io/en/latest/users/providers/
+
+I want to use the vector search, how can I define a large language model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To use the vector search introduced in 13.1 a large language model has to be connected and and is used to encode text to vectors.
+
+Details about the configuration can be found in the `Apache Solr Reference Guide 9.9: Text to Vector <https://solr.apache.org/guide/solr/latest/query-guide/text-to-vector.html>`_
+
+Uploading a model
+~~~~~~~~~~~~~~~~~
+
+Store the model details in a local JSON file, e.g. `llm.json`, and upload the definition using cURL:
+
+..  code-block:: shell
+
+    curl -XPUT 'http://solr-ddev-site.ddev.site:8983/solr/core_en/schema/text-to-vector-model-store' --data-binary "@llm.json" -H 'Content-type:application/json'
+
+
+The JSON file could look like this:
+
+..  code-block:: json
+
+    {
+      "class": "dev.langchain4j.model.openai.OpenAiEmbeddingModel",
+      "name": "llm",
+      "params": {
+        "baseUrl": "https://api.openai.com/v1",
+        "apiKey": "apiKey-openAI",
+        "modelName": "text-embedding-3-small",
+        "timeout": 5,
+        "logRequests": true,
+        "logResponses": true,
+        "maxRetries": 2
+      }
+    }
+
+..  note::
+    The number of dimensions depends on the selected model. The default in EXT:solr is 768, but you can adjust
+    the correct number of dimensions by setting environment variable SOLR_VECTOR_DIMENSION

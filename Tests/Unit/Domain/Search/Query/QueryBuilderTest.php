@@ -41,6 +41,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use Solarium\QueryType\Select\Query\FilterQuery;
 use Solarium\QueryType\Select\RequestBuilder;
 use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -84,6 +85,8 @@ class QueryBuilderTest extends SetUpUnitTestCase
     {
         $query = $this->builder->buildSearchQuery('one');
         self::assertSame('one', (string)$query->getQuery(), 'Query has unexpected value, when casted to string');
+        self::assertTrue($query instanceof SearchQuery);
+        self::assertSame('one', $query->getRawSearchTerm());
     }
 
     #[Test]
@@ -256,6 +259,38 @@ class QueryBuilderTest extends SetUpUnitTestCase
         $queryParameters = $this->getAllQueryParameters($query);
         self::assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
         self::assertSame(200, $queryParameters['hl.fragsize'], 'hl.fragsize was not set to the default value of 200');
+    }
+
+    #[Test]
+    public function canBuildSearchQueryForVectorSearch(): void
+    {
+        $this->configurationMock->method('isPureVectorSearchEnabled')->willReturn(true);
+        $this->configurationMock->method('getMinimumVectorSimilarity')->willReturn(85.0);
+        $this->configurationMock->method('getTopKClosestVectorLimit')->willReturn(10);
+        $this->configurationMock->method('getSearchQueryReturnFieldsAsArray')->willReturn(['content']);
+        $query = $this->builder->buildSearchQuery('vector search term', 22, ['type' => 'pages']);
+
+        self::assertSame('*:*', $query->getQuery());
+        self::assertTrue($query instanceof SearchQuery);
+        self::assertSame('vector search term', $query->getRawSearchTerm());
+        self::assertSame(['$q_vector' => 'DESC'], $query->getSorts());
+        self::assertSame(22, $query->getRows());
+
+        $vectorRangeFilter = $query->getFilterQuery('vectorRange');
+        self::assertTrue($vectorRangeFilter instanceof FilterQuery);
+        self::assertSame(
+            [
+                'key' => 'vectorRange',
+                'query' => '{!frange l=85}$q_vector',
+            ],
+            $vectorRangeFilter->getOptions(),
+        );
+        self::assertCount(2, $query->getFilterQueries());
+        self::assertSame(
+            '{!knn_text_to_vector model=llm f=vector topK=10}vector search term',
+            $query->getParams()['q_vector'],
+        );
+        self::assertSame(['content', '$q_vector'], $query->getFields());
     }
 
     #[Test]
@@ -456,7 +491,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         $query = $this->getInitializedTestSearchQuery();
 
         $queryParameters = $query->getParams();
-        foreach ($queryParameters as $queryParameter => $value) {
+        foreach (array_keys($queryParameters) as $queryParameter) {
             self::assertTrue(
                 !str_starts_with($queryParameter, 'group'),
                 'Query already contains grouping parameter "' . $queryParameter . '"'
@@ -492,7 +527,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         $grouping = new Grouping(false);
         $query = $this->builder->startFrom($query)->useGrouping($grouping)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        foreach ($queryParameters as $queryParameter => $value) {
+        foreach (array_keys($queryParameters) as $queryParameter) {
             self::assertTrue(
                 !str_starts_with($queryParameter, 'group'),
                 'Query contains grouping parameter "' . $queryParameter . '"'
