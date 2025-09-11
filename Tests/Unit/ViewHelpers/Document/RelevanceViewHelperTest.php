@@ -17,9 +17,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Document;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\RelevanceViewHelper;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 class RelevanceViewHelperTest extends SetUpUnitTestCase
@@ -27,7 +30,7 @@ class RelevanceViewHelperTest extends SetUpUnitTestCase
     #[Test]
     public function canCalculateRelevance(): void
     {
-        $resultSetMock = $this->createMock(SearchResultSet::class);
+        $resultSetMock = $this->getSearchResultSetMock();
         $resultSetMock->expects(self::any())->method('getMaximumScore')->willReturn(5.5);
 
         $documentMock = $this->createMock(SearchResult::class);
@@ -46,7 +49,7 @@ class RelevanceViewHelperTest extends SetUpUnitTestCase
     #[Test]
     public function canCalculateRelevanceFromPassedMaximumScore(): void
     {
-        $resultSetMock = $this->createMock(SearchResultSet::class);
+        $resultSetMock = $this->getSearchResultSetMock();
         $resultSetMock->expects(self::never())->method('getMaximumScore');
 
         $documentMock = $this->createMock(SearchResult::class);
@@ -61,5 +64,37 @@ class RelevanceViewHelperTest extends SetUpUnitTestCase
         $score = RelevanceViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
 
         self::assertEquals(5.0, $score, 'Unexpected score');
+    }
+
+    #[Test]
+    public function canCalculateRelevanceFromVectorSimilarityScore(): void
+    {
+        $resultSetMock = $this->getSearchResultSetMock(true);
+
+        $documentMock = $this->createMock(SearchResult::class);
+        $documentMock->expects(self::once())->method('getVectorSimilarityScore')->willReturn(0.85);
+        $documentMock->expects(self::never())->method('getScore');
+
+        $relevanceViewHelperTestable = new RelevanceViewHelper();
+        $relevanceViewHelperTestable->setRenderingContext($this->createMock(RenderingContextInterface::class));
+        $relevanceViewHelperTestable->setArguments([
+            'resultSet' => $resultSetMock,
+            'document' => $documentMock,
+        ]);
+
+        self::assertEquals(85.0, $relevanceViewHelperTestable->render());
+    }
+
+    protected function getSearchResultSetMock(bool $vectorSearchEnabled = false): MockObject&SearchResultSet
+    {
+        $typoscriptConfigurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $typoscriptConfigurationMock->method('isPureVectorSearchEnabled')->willReturn($vectorSearchEnabled);
+
+        $searchRequestMock = $this->createMock(SearchRequest::class);
+        $searchRequestMock->method('getContextTypoScriptConfiguration')->willReturn($typoscriptConfigurationMock);
+
+        $resultSetMock = $this->createMock(SearchResultSet::class);
+        $resultSetMock->expects(self::once())->method('getUsedSearchRequest')->willReturn($searchRequestMock);
+        return $resultSetMock;
     }
 }

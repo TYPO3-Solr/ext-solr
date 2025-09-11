@@ -198,6 +198,11 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         $this->solrConnection = $this->getSolrConnection($indexQueueItem, $tsfe->getLanguage(), $this->configuration->getLoggingExceptions());
 
         $document = $this->getPageDocument($tsfe, $this->generatePageUrl($tsfe), $this->getAccessRootline(), $tsfe->MP);
+
+        if ($this->configuration?->isVectorSearchEnabled()) {
+            $document->setField('vectorContent', $document['content']);
+        }
+
         $document = $this->substitutePageDocument($document, $tsfe->page, $indexQueueItem, $tsfe);
 
         $this->responseData['pageIndexed'] = (int)$this->indexPage($document, $indexQueueItem, $tsfe);

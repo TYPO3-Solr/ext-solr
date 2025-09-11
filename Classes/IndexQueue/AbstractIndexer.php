@@ -20,10 +20,16 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use ApacheSolrForTypo3\Solr\ContentObject\Classification;
 use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
@@ -56,8 +62,13 @@ abstract class AbstractIndexer
      * @param array $data Record data
      * @return Document Modified document with added fields
      */
-    protected function addDocumentFieldsFromTyposcript(Document $document, array $indexingConfiguration, array $data, TypoScriptFrontendController $tsfe): Document
-    {
+    protected function addDocumentFieldsFromTyposcript(
+        Document $document,
+        array $indexingConfiguration,
+        array $data,
+        TypoScriptFrontendController $tsfe,
+        int|SiteLanguage $language,
+    ): Document {
         $data = static::addVirtualContentFieldToRecord($document, $data);
 
         // mapping of record fields => solr document fields, resolving cObj
@@ -74,7 +85,7 @@ abstract class AbstractIndexer
                 );
             }
 
-            $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data, $tsfe);
+            $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data, $tsfe, $language);
             if ($fieldValue === null
                 || $fieldValue === ''
                 || (is_array($fieldValue) && empty($fieldValue))
@@ -83,6 +94,14 @@ abstract class AbstractIndexer
             }
 
             $document->setField($solrFieldName, $fieldValue);
+        }
+
+        $typoScriptConfiguration = $this->getTypoScriptConfiguration(
+            $tsfe->id,
+            ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
+        );
+        if ($typoScriptConfiguration->isVectorSearchEnabled() && !isset($document['vectorContent'])) {
+            $document->setField('vectorContent', $document['content']);
         }
 
         return $document;
@@ -118,11 +137,18 @@ abstract class AbstractIndexer
         string $solrFieldName,
         array $data,
         TypoScriptFrontendController $tsfe,
+        int|SiteLanguage $language,
     ): mixed {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
-            // configuration found => need to resolve a cObj
-            $tsfe->cObj->start($data, $this->type);
-            $fieldValue = $tsfe->cObj->cObjGetSingle(
+            $request = $this->getRequest(
+                $tsfe->id,
+                ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
+            );
+
+            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
+            $cObject->setRequest($request);
+            $cObject->start($data, $this->type);
+            $fieldValue = $cObject->cObjGetSingle(
                 $indexingConfiguration[$solrFieldName],
                 $indexingConfiguration[$solrFieldName . '.']
             );
@@ -141,12 +167,23 @@ abstract class AbstractIndexer
                 $indexingConfiguration[$solrFieldName],
                 1
             ));
-            $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
-            // $name and $conf is loaded with the referenced values.
-            [$name, $conf] = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')?->getSetupArray());
 
-            $tsfe->cObj->start($data, $this->type);
-            $fieldValue = $tsfe->cObj->cObjGetSingle($name, $conf);
+            $typoScriptConfiguration = $this->getTypoScriptConfiguration(
+                $tsfe->id,
+                ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
+            );
+            $name = $typoScriptConfiguration->getValueByPath($referencedTsPath);
+            $conf = $typoScriptConfiguration->getValueByPath($referencedTsPath . '.');
+
+            $request = $this->getRequest(
+                $tsfe->id,
+                ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
+            );
+
+            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
+            $cObject->setRequest($request);
+            $cObject->start($data, $this->type);
+            $fieldValue = $cObject->cObjGetSingle($name, $conf);
 
             if ($this->isSerializedValue(
                 $indexingConfiguration,
@@ -297,5 +334,36 @@ abstract class AbstractIndexer
         }
 
         return $value;
+    }
+
+    protected function getRequest(int $pageId, int $languageId): ?ServerRequest
+    {
+        /** @noinspection PhpInternalEntityUsedInspection */
+        if (($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('applicationType')
+              === SystemEnvironmentBuilder::REQUESTTYPE_FE) {
+            $request = $GLOBALS['TYPO3_REQUEST'];
+        } else {
+            $request = GeneralUtility::makeInstance(Tsfe::class)->getServerRequestForTsfeByPageIdAndLanguageId(
+                $pageId,
+                $languageId,
+            );
+        }
+
+        return $request;
+    }
+
+    protected function getFrontendTypoScript(int $pageId, int $languageId): ?FrontendTypoScript
+    {
+        $request = $this->getRequest($pageId, $languageId);
+        return $request?->getAttribute('frontend.typoscript');
+    }
+
+    protected function getTypoScriptConfiguration(int $pageId, int $languageId): TypoScriptConfiguration
+    {
+        $frontendTypoScript = $this->getFrontendTypoScript($pageId, $languageId);
+        return GeneralUtility::makeInstance(
+            TypoScriptConfiguration::class,
+            $frontendTypoScript?->getSetupArray() ?? [],
+        );
     }
 }

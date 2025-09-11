@@ -318,12 +318,17 @@ abstract class AbstractSolrService
         return round(microtime(true) * 1000);
     }
 
+    protected function createRequest(QueryInterface $query): Request
+    {
+        return $this->client->createRequest($query);
+    }
+
     /**
      * Creates and executes the request and returns the response
      */
     protected function createAndExecuteRequest(QueryInterface $query): ResponseAdapter
     {
-        $request = $this->client->createRequest($query);
+        $request = $this->createRequest($query);
         return $this->executeRequest($request);
     }
 

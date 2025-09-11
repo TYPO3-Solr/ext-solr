@@ -1088,6 +1088,46 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns the configured query type
+     *
+     * 0 = default
+     * 1 = vector (requires additional configuration)
+     */
+    public function getSearchQueryType(): int
+    {
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.type', 0);
+    }
+
+    /**
+     * Indicates if a vector based search is enabled
+     *
+     * If enabled e.g. the indexing of vectors using processor chain
+     * "textToVector" is enabled
+     */
+    public function isVectorSearchEnabled(): bool
+    {
+        return $this->getSearchQueryType() > 0;
+    }
+
+    /**
+     * Indicates if a pure vector based search is enabled
+     */
+    public function isPureVectorSearchEnabled(): bool
+    {
+        return $this->getSearchQueryType() === 1;
+    }
+
+    public function getMinimumVectorSimilarity(): float
+    {
+        return (float)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.vectorSearch.minimumSimilarity', 0.75);
+    }
+
+    public function getTopKClosestVectorLimit(): int
+    {
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.vectorSearch.topK', 1000);
+    }
+
+    /**
      * Returns if an empty query is allowed on the query level.
      *
      * plugin.tx_solr.search.query.allowEmptyQuery

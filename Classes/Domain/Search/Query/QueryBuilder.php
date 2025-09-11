@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\PhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Slops;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Spellchecking;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
@@ -92,22 +93,51 @@ class QueryBuilder extends AbstractQueryBuilder
             $this->logger->info('Received search query', [$rawQuery]);
         }
 
-        return $this->newSearchQuery($rawQuery)
-                ->useResultsPerPage($resultsPerPage)
+        if ($this->typoScriptConfiguration->isPureVectorSearchEnabled()) {
+            $this->preparePureVectorSearch($rawQuery);
+        } else {
+            $this->newSearchQuery($rawQuery)
                 ->useReturnFieldsFromTypoScript()
                 ->useQueryFieldsFromTypoScript()
                 ->useInitialQueryFromTypoScript()
                 ->useFiltersFromTypoScript()
+                ->usePhraseFieldsFromTypoScript()
+                ->useBigramPhraseFieldsFromTypoScript()
+                ->useTrigramPhraseFieldsFromTypoScript();
+        }
+
+        return $this
+                ->setRawQueryTerm($rawQuery)
+                ->useResultsPerPage($resultsPerPage)
                 ->useFilterArray($additionalFiltersFromRequest)
                 ->useFacetingFromTypoScript()
                 ->useVariantsFromTypoScript()
                 ->useGroupingFromTypoScript()
                 ->useHighlightingFromTypoScript()
-                ->usePhraseFieldsFromTypoScript()
-                ->useBigramPhraseFieldsFromTypoScript()
-                ->useTrigramPhraseFieldsFromTypoScript()
                 ->useOmitHeader(false)
                 ->getQuery();
+    }
+
+    protected function preparePureVectorSearch(string $rawQuery): self
+    {
+        $minSimiliarity = $this->typoScriptConfiguration->getMinimumVectorSimilarity();
+        $topK = $this->typoScriptConfiguration->getTopKClosestVectorLimit();
+
+        $this->newSearchQuery('*:*')
+            ->useFiltersFromTypoScript()
+            ->useFilter('{!frange l=' . $minSimiliarity . '}$q_vector', 'vectorRange')
+            ->useSorting(new Sorting(true, '$q_vector', Sorting::SORT_DESC));
+
+        $returnFieldsArray = $this->typoScriptConfiguration->getSearchQueryReturnFieldsAsArray(['*', 'score']);
+        $returnFieldsArray[] = '$q_vector';
+        $this->useReturnFields(ReturnFields::fromArray($returnFieldsArray));
+
+        $this->queryToBuild->addParam(
+            'q_vector',
+            '{!knn_text_to_vector model=llm f=vector topK=' . $topK . '}' . $rawQuery,
+        );
+
+        return $this;
     }
 
     /**
@@ -479,6 +509,16 @@ class QueryBuilder extends AbstractQueryBuilder
         }
 
         return $this->additionalFilters;
+    }
+
+    protected function setRawQueryTerm(string $rawSearchTerm): self
+    {
+        if (!$this->queryToBuild instanceof SearchQuery) {
+            return $this;
+        }
+
+        $this->queryToBuild->setRawSearchTerm($rawSearchTerm);
+        return $this;
     }
 
     protected function getSearchQueryInstance(string $rawQuery): SearchQuery
