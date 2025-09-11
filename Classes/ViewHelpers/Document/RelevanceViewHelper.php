@@ -51,16 +51,21 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
         /** @var SearchResultSet $resultSet */
         $resultSet = $this->arguments['resultSet'];
 
-        $maximumScore = $this->arguments['maximumScore'] ?? $resultSet->getMaximumScore();
-        $content = 0;
+        $configuration = $resultSet->getUsedSearchRequest()?->getContextTypoScriptConfiguration();
+        if ($configuration?->isPureVectorSearchEnabled()) {
+            $maximumScore = 1;
+            $documentScore = $document->getVectorSimilarityScore();
+        } else {
+            $maximumScore = $this->arguments['maximumScore'] ?? $resultSet->getMaximumScore();
+            $documentScore = $document->getScore();
+        }
 
+        $content = 0;
         if ($maximumScore <= 0) {
             return $content;
         }
 
-        $documentScore = $document->getScore();
-        $score = $documentScore;
         $multiplier = 100 / $maximumScore;
-        return (string)round($score * $multiplier);
+        return (string)round($documentScore * $multiplier);
     }
 }

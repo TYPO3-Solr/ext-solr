@@ -17,4 +17,19 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
-class SearchQuery extends Query {}
+class SearchQuery extends Query
+{
+    protected string $rawSearchTerm = '';
+
+    public function setRawSearchTerm(string $rawSearchTerm): self
+    {
+        $this->rawSearchTerm = $rawSearchTerm;
+        return $this;
+    }
+
+    public function getRawSearchTerm(): string
+    {
+        return $this->rawSearchTerm;
+    }
+
+}

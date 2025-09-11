@@ -86,7 +86,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             $field = $sortingOptions['field'];
             $label = $sortingOptions['label'] ?? '';
 
-            $isResetOption = $field === 'relevance';
+            $isResetOption = $field === 'relevance' || $field === '$q_vector';
 
             // Allow stdWrap on label:
             $labelHasSubConfiguration = is_array($sortingOptions['label.'] ?? null);
