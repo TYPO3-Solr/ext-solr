@@ -72,6 +72,7 @@ plugin.tx_solr {
     ignoreGlobalQParameter = 0
 
     query {
+      type = 0
       allowEmptyQuery = 0
 
       allowedSites = __solr_current_site
@@ -160,6 +161,11 @@ plugin.tx_solr {
         fields = content^10.0, title^10.0, tagsH1^10.0, tagsH2H3^10.0, tagsH4H5H6^10.0, tagsInline^10.0, description^10.0, abstract^10.0, subtitle^10.0, navtitle^10.0
         slop = 0
       }
+    }
+
+    vectorSearch {
+      minimumSimilarity = 0.75
+      topK = 1000
     }
 
     grouping = 0

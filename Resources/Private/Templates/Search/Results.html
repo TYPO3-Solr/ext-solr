@@ -59,9 +59,9 @@
 					</f:then>
 
 					<f:else>
-						<f:if condition="{resultSet.usedQuery.query}">
+						<f:if condition="{resultSet.usedQuery.rawSearchTerm}">
 						<span class="searched-for">
-							<f:translate key="results_searched_for" arguments="{0: resultSet.usedQuery.query}" extensionName="solr">Searched for "%s"</f:translate>
+							<f:translate key="results_searched_for" arguments="{0: resultSet.usedQuery.rawSearchTerm}" extensionName="solr">Searched for "%s"</f:translate>
 						</span>
 						</f:if>
 					</f:else>

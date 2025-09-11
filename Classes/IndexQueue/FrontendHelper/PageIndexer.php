@@ -229,6 +229,10 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             $this->getAccessRootline(),
             $pageInformation->getMountPoint(),
         );
+        if ($this->configuration?->isVectorSearchEnabled()) {
+            $document->setField('vectorContent', $document['content']);
+        }
+
         $document = $this->substitutePageDocument(
             $document,
             $pageInformation->getPageRecord(),

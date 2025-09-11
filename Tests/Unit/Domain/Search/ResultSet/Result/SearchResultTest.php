@@ -121,4 +121,18 @@ class SearchResultTest extends SetUpUnitTestCase
             'Calling getter for unexisting field does not return null',
         );
     }
+
+    #[Test]
+    public function canGetVectorSimilarityScore(): void
+    {
+        self::assertSame(
+            0.0,
+            $this->searchResult->getVectorSimilarityScore(),
+        );
+
+        self::assertSame(
+            85.0,
+            (new SearchResult(['$q_vector' => 85]))->getVectorSimilarityScore(),
+        );
+    }
 }

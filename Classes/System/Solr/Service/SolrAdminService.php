@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Parser\VectorStoreParser;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use Solarium\Client;
@@ -44,6 +45,7 @@ class SolrAdminService extends AbstractSolrService
     public const SCHEMA_SERVLET = 'schema';
     public const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
     public const STOPWORDS_SERVLET = 'schema/analysis/stopwords/';
+    public const VECTOR_STORAGE_SERVLET = 'schema/text-to-vector-model-store/';
 
     protected array $lukeData = [];
 
@@ -61,9 +63,13 @@ class SolrAdminService extends AbstractSolrService
 
     protected string $_stopWordsUrl = '';
 
+    protected string $_vectorStoreUrl = '';
+
     protected SynonymParser $synonymParser;
 
     protected StopWordParser $stopWordParser;
+
+    protected VectorStoreParser $vectorStoreParser;
 
     public function __construct(
         Client $client,
@@ -72,12 +78,14 @@ class SolrAdminService extends AbstractSolrService
         ?SynonymParser $synonymParser = null,
         ?StopWordParser $stopWordParser = null,
         ?SchemaParser $schemaParser = null,
+        ?VectorStoreParser $vectorStoreParser = null,
     ) {
         parent::__construct($client, $typoScriptConfiguration, $logManager);
 
         $this->synonymParser = $synonymParser ?? GeneralUtility::makeInstance(SynonymParser::class);
         $this->stopWordParser = $stopWordParser ?? GeneralUtility::makeInstance(StopWordParser::class);
         $this->schemaParser = $schemaParser ?? GeneralUtility::makeInstance(SchemaParser::class);
+        $this->vectorStoreParser = $vectorStoreParser ?? GeneralUtility::makeInstance(VectorStoreParser::class);
     }
 
     /**
@@ -318,5 +326,21 @@ class SolrAdminService extends AbstractSolrService
         }
 
         $this->_stopWordsUrl = $this->_constructUrl(self::STOPWORDS_SERVLET) . $this->getSchema()->getManagedResourceId();
+    }
+
+    public function getVectorModelStore(): array
+    {
+        $this->initializeVectorStorageUrl();
+        $response = $this->_sendRawGet($this->_vectorStoreUrl);
+        return $this->vectorStoreParser->parseJson($response->getRawResponse());
+    }
+
+    protected function initializeVectorStorageUrl(): void
+    {
+        if (trim($this->_vectorStoreUrl ?? '') !== '') {
+            return;
+        }
+
+        $this->_vectorStoreUrl = $this->_constructUrl(self::VECTOR_STORAGE_SERVLET) . $this->getSchema()->getManagedResourceId();
     }
 }

@@ -22,11 +22,12 @@ use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Exception\Exception as FrontendEnvironmentException;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -112,6 +113,14 @@ abstract class AbstractIndexer
             $document->setField($solrFieldName, $fieldValue);
         }
 
+        $typoScriptConfiguration = $this->getTypoScriptConfiguration(
+            $tsfe->id,
+            ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
+        );
+        if ($typoScriptConfiguration->isVectorSearchEnabled() && !isset($document['vectorContent'])) {
+            $document->setField('vectorContent', $document['content']);
+        }
+
         return $document;
     }
 
@@ -159,17 +168,12 @@ abstract class AbstractIndexer
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
 
+            $request = $this->getRequest(
+                $tsfe->id,
+                ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
+            );
+
             $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
-            /** @noinspection PhpInternalEntityUsedInspection */
-            if (($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('applicationType') === SystemEnvironmentBuilder::REQUESTTYPE_FE) {
-                $request = $GLOBALS['TYPO3_REQUEST'];
-            } else {
-                $request = GeneralUtility::makeInstance(Tsfe::class)
-                    ->getServerRequestForTsfeByPageIdAndLanguageId(
-                        $tsfe->id,
-                        $language instanceof SiteLanguage ? $language->getLanguageId() : $language,
-                    );
-            }
             $cObject->setRequest($request);
             $cObject->start($data, $this->type);
             $fieldValue = $cObject->cObjGetSingle(
@@ -192,24 +196,20 @@ abstract class AbstractIndexer
                 1,
             ));
 
-            /** @var ?FrontendTypoScript $frontendTypoScript */
-            $frontendTypoScript = $tsfe->cObj->getRequest()->getAttribute('frontend.typoscript');
-            $configurationAccess = new ArrayAccessor($frontendTypoScript?->getSetupArray(), '.', true);
             // $name and $conf is loaded with the referenced values.
-            $name = $configurationAccess->get($referencedTsPath);
-            $conf = $configurationAccess->get($referencedTsPath . '.');
+            $typoScriptConfiguration = $this->getTypoScriptConfiguration(
+                $tsfe->id,
+                ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
+            );
+            $name = $typoScriptConfiguration->getValueByPath($referencedTsPath);
+            $conf = $typoScriptConfiguration->getValueByPath($referencedTsPath . '.');
+
+            $request = $this->getRequest(
+                $tsfe->id,
+                ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
+            );
 
             $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
-            /** @noinspection PhpInternalEntityUsedInspection */
-            if (($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('applicationType') === SystemEnvironmentBuilder::REQUESTTYPE_FE) {
-                $request = $GLOBALS['TYPO3_REQUEST'];
-            } else {
-                $request = GeneralUtility::makeInstance(Tsfe::class)
-                    ->getServerRequestForTsfeByPageIdAndLanguageId(
-                        $tsfe->id,
-                        $language instanceof SiteLanguage ? $language->getLanguageId() : $language,
-                    );
-            }
             $cObject->setRequest($request);
             $cObject->start($data, $this->type);
             $fieldValue = $cObject->cObjGetSingle($name, $conf);
@@ -363,5 +363,36 @@ abstract class AbstractIndexer
         }
 
         return $value;
+    }
+
+    protected function getRequest(int $pageId, int $languageId): ?ServerRequest
+    {
+        /** @noinspection PhpInternalEntityUsedInspection */
+        if (($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('applicationType')
+            === SystemEnvironmentBuilder::REQUESTTYPE_FE) {
+            $request = $GLOBALS['TYPO3_REQUEST'];
+        } else {
+            $request = GeneralUtility::makeInstance(Tsfe::class)->getServerRequestForTsfeByPageIdAndLanguageId(
+                $pageId,
+                $languageId,
+            );
+        }
+
+        return $request;
+    }
+
+    protected function getFrontendTypoScript(int $pageId, int $languageId): ?FrontendTypoScript
+    {
+        $request = $this->getRequest($pageId, $languageId);
+        return $request?->getAttribute('frontend.typoscript');
+    }
+
+    protected function getTypoScriptConfiguration(int $pageId, int $languageId): TypoScriptConfiguration
+    {
+        $frontendTypoScript = $this->getFrontendTypoScript($pageId, $languageId);
+        return GeneralUtility::makeInstance(
+            TypoScriptConfiguration::class,
+            $frontendTypoScript?->getSetupArray() ?? [],
+        );
     }
 }
