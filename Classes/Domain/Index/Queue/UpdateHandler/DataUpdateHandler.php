@@ -92,6 +92,11 @@ class DataUpdateHandler extends AbstractUpdateHandler
         'no_search_sub_entriesFlagWasAdded' => [
             'changeSet' => ['no_search_sub_entries' => '0'],
         ],
+        // the current page has the field "extendToSubpages" enabled and the field "fe_group" was changed
+        'extendToSubpageEnabledAndFeGroupWasChanged' => [
+            'currentState' =>  ['extendToSubpages' => '1'],
+            'changeSet' => ['fe_group' => '*'],
+        ],
     ];
 
     protected MountPagesUpdater $mountPageUpdater;
