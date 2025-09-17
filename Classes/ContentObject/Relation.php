@@ -325,7 +325,12 @@ class Relation extends AbstractContentObject
         string $foreignTableName = '',
     ): array {
         if ($this->getLanguageUid($parentContentObject) > 0 && !empty($foreignTableName)) {
-            $relatedRecord = $this->getFrontendOverlayService($parentContentObject)->getOverlay($foreignTableName, $relatedRecord);
+            $overlayRelatedRecord = $this->getFrontendOverlayService($parentContentObject)->getOverlay($foreignTableName, $relatedRecord);
+            // sys_page->getLanguageOverlay() may return NULL if overlays were activated but no overlay
+            // was found and LanguageAspect was NOT set to MIXED
+            //
+            // If so rely on original record data
+            $relatedRecord = is_array($overlayRelatedRecord) ? $overlayRelatedRecord : $relatedRecord;
         }
 
         $contentObject = clone $parentContentObject;
