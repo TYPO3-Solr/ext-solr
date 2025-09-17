@@ -51,7 +51,10 @@ class Classification extends AbstractContentObject
     public function render($conf = [])
     {
         if (!is_array($conf['classes.'])) {
-            throw new InvalidArgumentException('No class configuration configured for SOLR_CLASSIFICATION object. Given configuration: ' . serialize($conf));
+            throw new InvalidArgumentException(
+                'No class configuration configured for SOLR_CLASSIFICATION object. Given configuration: ' . serialize($conf),
+                8365879715,
+            );
         }
 
         $configuredMappedClasses = $conf['classes.'];
@@ -83,7 +86,10 @@ class Classification extends AbstractContentObject
         $classifications = [];
         foreach ($configuredMappedClasses as $class) {
             if ((empty($class['patterns']) && empty($class['matchPatterns'])) || empty($class['class'])) {
-                throw new InvalidArgumentException('A class configuration in SOLR_CLASSIFCATION needs to have a pattern and a class configured. Given configuration: ' . serialize($class));
+                throw new InvalidArgumentException(
+                    'A class configuration in SOLR_CLASSIFCATION needs to have a pattern and a class configured. Given configuration: ' . serialize($class),
+                    8715165614,
+                );
             }
 
             // @todo deprecate patterns configuration

@@ -51,7 +51,10 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
         } elseif (isset($arguments['facetItemValue'])) {
             $facetValue = $arguments['facetItemValue'];
         } else {
-            throw new InvalidArgumentException('No facetItem was passed, please pass either facetItem or facetItemValue');
+            throw new InvalidArgumentException(
+                'No facetItem was passed, please pass either facetItem or facetItemValue',
+                9637361100,
+            );
         }
 
         return $facetValue;
@@ -69,7 +72,10 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
         } elseif (isset($arguments['facetName'])) {
             $facetName = $arguments['facetName'];
         } else {
-            throw new InvalidArgumentException('No facet was passed, please pass either facet or facetName', 1680615971);
+            throw new InvalidArgumentException(
+                'No facet was passed, please pass either facet or facetName',
+                1680615971,
+            );
         }
 
         return $facetName;
@@ -87,7 +93,10 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
         } elseif (isset($arguments['facetName'])) {
             $resultSet = $arguments['resultSet'];
         } else {
-            throw new InvalidArgumentException('No facet was passed, please pass either facet or resultSet');
+            throw new InvalidArgumentException(
+                'No facet was passed, please pass either facet or resultSet',
+                6037735115,
+            );
         }
 
         return $resultSet;

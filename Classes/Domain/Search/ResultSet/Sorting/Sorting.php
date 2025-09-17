@@ -53,7 +53,10 @@ class Sorting
         bool $isResetOption = false,
     ) {
         if (!self::getIsValidDirection($direction)) {
-            throw new InvalidArgumentException('Invalid sorting direction');
+            throw new InvalidArgumentException(
+                'Invalid sorting direction',
+                8919514853,
+            );
         }
         $this->name = $name;
         $this->direction = $direction;
