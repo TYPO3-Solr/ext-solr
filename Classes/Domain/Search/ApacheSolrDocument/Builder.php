@@ -130,8 +130,10 @@ class Builder
         $document->setField('type', $type);
         $document->setField('appKey', 'EXT:solr');
 
-        // site, siteHash
-        $document->setField('site', $site->getDomain());
+        $document->setField('site', $site->getSiteIdentifier());
+        if ($this->extensionConfiguration->getSiteHashStrategy() === 0) {
+            $document->setField('site', $site->getDomain());
+        }
         $document->setField('siteHash', $site->getSiteHash());
 
         // uid, pid
