@@ -54,7 +54,9 @@
 		specific sites.
 	-->
 	<field name="site"     type="string" indexed="true" stored="true" docValues="true" />
+	<field name="typo3context" type="string" indexed="true" stored="true" docValues="true" />
 	<field name="siteHash" type="string" indexed="true" stored="true" docValues="true" />
+	<field name="domain" type="string" indexed="true" stored="true" docValues="true" />
 
 	<!--
 		The application key which will come in handy as soon as other
