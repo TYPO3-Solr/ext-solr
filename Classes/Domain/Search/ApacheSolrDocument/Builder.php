@@ -26,6 +26,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -67,10 +68,12 @@ class Builder
 
         $document->setField('id', $documentId);
         $document->setField('site', $site->getSiteIdentifier());
+        $document->setField('typo3Context_stringS', (string)Environment::getContext());
         if ($this->extensionConfiguration->getSiteHashStrategy() === 0) {
             $document->setField('site', $site->getDomain());
         }
         $document->setField('siteHash', $site->getSiteHash());
+        $document->setField('domain_stringS', $site->getDomain());
         $document->setField('appKey', 'EXT:solr');
         $document->setField('type', 'pages');
 
@@ -131,10 +134,12 @@ class Builder
         $document->setField('appKey', 'EXT:solr');
 
         $document->setField('site', $site->getSiteIdentifier());
+        $document->setField('typo3Context_stringS', (string)Environment::getContext());
         if ($this->extensionConfiguration->getSiteHashStrategy() === 0) {
             $document->setField('site', $site->getDomain());
         }
         $document->setField('siteHash', $site->getSiteHash());
+        $document->setField('domain_stringS', $site->getDomain());
 
         // uid, pid
         $document->setField('uid', $itemRecord['uid']);
