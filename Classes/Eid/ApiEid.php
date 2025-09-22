@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -78,6 +79,7 @@ class ApiEid
         $siteHash = $siteHashService->getSiteHashForSiteIdentifier($siteIdentifier);
         $jsonResponseContents = [
             'sitehash' => $siteHash,
+            'typo3Context' => (string)Environment::getContext(),
         ];
         // @todo, remove this backwards-compatibility-adjustment together with siteHashStrategy setting.
         if (isset($queryParams['domain'])) {
