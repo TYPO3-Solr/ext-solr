@@ -67,12 +67,9 @@ class Tsfe implements SingletonInterface
     /**
      * Initializes the TSFE for a given page ID and language.
      *
-     *
-     *
      * @throws Exception\Exception
      * @throws SiteNotFoundException
      * @throws DBALException
-     *
      *
      * @todo: Move whole caching stuff from this method and let return TSFE.
      */
@@ -310,7 +307,7 @@ class Tsfe implements SingletonInterface
 
         // Copy&Paste from SysTemplateTreeBuilder::getTreeBySysTemplateRowsAndSite()
         // TYPO3 core also checks site config before sys_template handling
-        $siteIsTypoScriptRoot = $site instanceof Site ? $site->isTypoScriptRoot() : false;
+        $siteIsTypoScriptRoot = $site instanceof Site && $site->isTypoScriptRoot();
         if ($siteIsTypoScriptRoot) {
             return $site->getRootPageId();
         }
@@ -329,7 +326,7 @@ class Tsfe implements SingletonInterface
         // Check for recursion that can happen if the root page is a sysfolder with a typoscript template
         if ($pidWithActiveTemplate === $pidToUse && $site->getRootPageId() === $rootPageId) {
             throw new Exception\Exception(
-                "Infinite recursion detected while looking for the closest page with active template to page \"$askedPid\" . Please note that the page with active template (usually the root page of the current tree) MUST NOT be a sysfolder.",
+                "Infinite recursion detected while looking for the closest page with active template to page \"$pidToUse\" . Please note that the page with active template (usually the root page of the current tree) MUST NOT be a sysfolder.",
                 1637339476,
             );
         }
