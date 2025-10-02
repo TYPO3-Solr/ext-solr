@@ -323,7 +323,7 @@ class Tsfe implements SingletonInterface
         $incomingRootPageId = $rootPageId;
 
         // handle plugin.tx_solr.index.queue.[indexConfig].additionalPageIds
-        if (isset($rootPageId) && !$this->isRequestedPageAPartOfRequestedSite($pidToUse)) {
+        if (isset($rootPageId) && !$this->isRequestedPageAPartOfRequestedSite($pidToUse, $rootPageId)) {
             return $rootPageId;
         }
         $pageRecord = BackendUtility::getRecord('pages', $pidToUse);
