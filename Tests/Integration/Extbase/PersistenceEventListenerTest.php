@@ -21,8 +21,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use Doctrine\DBAL\Exception as DBALException;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -106,7 +105,6 @@ class PersistenceEventListenerTest extends IntegrationTestBase
     }
 
     /**
-     * @throws AspectNotFoundException
      * @throws UnknownObjectException
      * @throws IllegalObjectTypeException
      * @throws DBALException
@@ -115,21 +113,20 @@ class PersistenceEventListenerTest extends IntegrationTestBase
     public function updatedEntityIsUpdatedInIndexQueue(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/update_items.csv');
+
         /** @var Foo $object */
         $object = $this->repository->findByUid(2);
         $object->setTitle('Updated');
         $this->repository->update($object);
         $this->persistenceManager->persistAll();
 
-        /** @var Context $context */
-        $context = GeneralUtility::makeInstance(Context::class);
-        $currentTimestamp = $context->getPropertyFromAspect('date', 'timestamp');
-
         self::assertTrue($this->indexQueue->containsItem('tx_fakeextension_domain_model_foo', 2));
 
         $item = $this->indexQueue->getItem(1);
         self::assertSame(2, $item->getRecordUid());
         self::assertSame('foo', $item->getIndexingConfigurationName());
+        // the times must be identical on `..._foo`.`tstamp` and `Item`::`changed`
+        $currentTimestamp = BackendUtility::getRecord('tx_fakeextension_domain_model_foo', 2)['tstamp'];
         self::assertSame($currentTimestamp, $item->getChanged());
     }
 

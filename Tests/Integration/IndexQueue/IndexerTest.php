@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -107,48 +108,153 @@ class IndexerTest extends IntegrationTestBase
     {
         yield 'with_l_parameter' => [
             'fixture' => 'can_index_custom_translated_record_with_l_param.csv',
+            'queueItems' => [
+                ['tx_fakeextension_domain_model_bar' => 7],
+                ['tx_fakeextension_domain_model_bar' => 8],
+            ],
+            'assertions' => [
+                'core_en' => [
+                    '"numFound":2',
+                    '"title":"original"',
+                    '"title":"original2"',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=7',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=8',
+                ],
+                'core_de' => [
+                    '"numFound":2',
+                    '"title":"translation"',
+                    '"title":"translation2"',
+                    '"url":"http://testone.site/de/?tx_foo%5Buid%5D=7',
+                    '"url":"http://testone.site/de/?tx_foo%5Buid%5D=8',
+                ],
+            ],
         ];
         yield 'without_l_parameter' => [
             'fixture' => 'can_index_custom_translated_record_without_l_param.csv',
+            'queueItems' => [
+                ['tx_fakeextension_domain_model_bar' => 7],
+                ['tx_fakeextension_domain_model_bar' => 8],
+            ],
+            'assertions' => [
+                'core_en' => [
+                    '"numFound":2',
+                    '"title":"original"',
+                    '"title":"original2"',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=7',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=8',
+                ],
+                'core_de' => [
+                    '"numFound":2',
+                    '"title":"translation"',
+                    '"title":"translation2"',
+                    '"url":"http://testone.site/de/?tx_foo%5Buid%5D=7',
+                    '"url":"http://testone.site/de/?tx_foo%5Buid%5D=8',
+                ],
+            ],
         ];
         yield 'without_l_parameter_and_content_fallback' => [
             'fixture' => 'can_index_custom_translated_record_without_l_param_and_content_fallback.csv',
+            'queueItems' => [
+                ['tx_fakeextension_domain_model_bar' => 7],
+                ['tx_fakeextension_domain_model_bar' => 8],
+            ],
+            'assertions' => [
+                'core_en' => [
+                    '"numFound":2',
+                    '"title":"original"',
+                    '"title":"original2"',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=7',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=8',
+                ],
+                'core_de' => [
+                    '"numFound":2',
+                    '"title":"original"',
+                    '"title":"original2"',
+                    '"url":"http://testone.site/de/?tx_foo%5Buid%5D=7',
+                    '"url":"http://testone.site/de/?tx_foo%5Buid%5D=8',
+                ],
+            ],
+        ];
+        yield 'visible_and_hidden_translation_in_content_fallback' => [
+            'fixture' => 'can_index_visible_and_hidden_translated_record_in_content_fallback_mode.csv',
+            'queueItems' => [
+                ['tx_fakeextension_domain_model_bar' => 7],
+                ['tx_fakeextension_domain_model_bar' => 8],
+                ['tx_fakeextension_domain_model_bar' => 9],
+            ],
+            'assertions' => [
+                'core_en' => [
+                    '"numFound":3',
+                    '"title":"original"',
+                    '"title":"original2"',
+                    '"title":"original3"',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=7',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=8',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=9',
+                ],
+                'core_de' => [
+                    '"numFound":3',
+                    '"title":"translated"',
+                    '"title":"original2"', // in content-fallback mode, the hidden translation must be visible in FE in original language.
+                    '"title":"original3"', // in content-fallback mode, the record without translation must be visible in FE in original language.
+                    '"url":"http://testone.site/de/?tx_foo%5Buid%5D=7',
+                    '"url":"http://testone.site/de/?tx_foo%5Buid%5D=8',
+                    '"url":"http://testone.site/de/?tx_foo%5Buid%5D=9',
+                ],
+            ],
+        ];
+        yield 'visible_and_hidden_translation_in_strict' => [
+            'fixture' => 'can_index_visible_and_hidden_translated_record_in_strict_mode.csv',
+            'queueItems' => [
+                ['tx_fakeextension_domain_model_bar' => 7],
+                ['tx_fakeextension_domain_model_bar' => 8],
+                ['tx_fakeextension_domain_model_bar' => 9],
+            ],
+            'assertions' => [
+                'core_en' => [
+                    '"numFound":3',
+                    '"title":"original"',
+                    '"title":"original2"',
+                    '"title":"original3"',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=7',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=8',
+                    '"url":"http://testone.site/en/?tx_foo%5Buid%5D=9',
+                ],
+                'core_da' => [
+                    '"numFound":1',
+                    '"title":"translated"',
+                    '"url":"http://testone.site/da/?tx_foo%5Buid%5D=7',
+                ],
+            ],
         ];
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     #[DataProvider('getTranslatedRecordDataProvider')]
     #[Test]
-    public function testCanIndexTranslatedCustomRecord(string $fixture): void
-    {
+    public function testCanIndexTranslatedCustomRecord(
+        string $fixture,
+        array $queueItems,
+        array $assertions,
+    ): void {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture);
 
-        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
-        self::assertTrue($result, 'Indexing was not indicated to be successful');
-
-        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 777);
-        self::assertTrue($result, 'Indexing was not indicated to be successful');
-
-        // do we have the record in the index with the value from the mm relation?
-        $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        self::assertStringContainsString('"numFound":2', $solrContent, 'Could not index document into solr');
-        self::assertStringContainsString('"title":"original"', $solrContent, 'Could not index document into solr');
-        self::assertStringContainsString('"title":"original2"', $solrContent, 'Could not index document into solr');
-        self::assertStringContainsString('"url":"http://testone.site/en/?tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
-        self::assertStringContainsString('"url":"http://testone.site/en/?tx_foo%5Buid%5D=777', $solrContent, 'Can not build typolink as expected');
-
-        $this->waitToBeVisibleInSolr('core_de');
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_de/select?q=*:*');
-        self::assertStringContainsString('"numFound":2', $solrContent, 'Could not find translated record in solr document into solr');
-        if ($fixture === 'can_index_custom_translated_record_without_l_param_and_content_fallback.csv') {
-            self::assertStringContainsString('"title":"original"', $solrContent, 'Could not index  translated document into solr');
-            self::assertStringContainsString('"title":"original2"', $solrContent, 'Could not index  translated document into solr');
-        } else {
-            self::assertStringContainsString('"title":"translation"', $solrContent, 'Could not index  translated document into solr');
-            self::assertStringContainsString('"title":"translation2"', $solrContent, 'Could not index  translated document into solr');
+        foreach ($queueItems as $queueItemDef) {
+            $tableName = key($queueItemDef);
+            $recordUid = current($queueItemDef);
+            $result = $this->addToQueueAndIndexRecord($tableName, $recordUid);
+            self::assertTrue($result, "Indexing of $tableName:$recordUid was not indicated to be successful");
         }
-        self::assertStringContainsString('"url":"http://testone.site/de/?tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
-        self::assertStringContainsString('"url":"http://testone.site/de/?tx_foo%5Buid%5D=777', $solrContent, 'Can not build typolink as expected');
+
+        foreach ($assertions as $coreName => $containsAssertions) {
+            $this->waitToBeVisibleInSolr($coreName);
+            $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . "/solr/$coreName/select?q=*:*");
+            foreach ($containsAssertions as $assertion) {
+                self::assertStringContainsString($assertion, $solrContent);
+            }
+        }
     }
 
     /**
