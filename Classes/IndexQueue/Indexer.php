@@ -24,6 +24,8 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent;
 use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentsAreIndexedEvent;
 use ApacheSolrForTypo3\Solr\Exception as EXTSolrException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Exception\Exception as FrontendEnvironmentException;
@@ -40,12 +42,15 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use Throwable;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
+use TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -109,6 +114,7 @@ class Indexer extends AbstractIndexer
      * @throws NoSolrConnectionFoundException
      * @throws SiteNotFoundException
      * @throws IndexingException
+     * @throws ContentRenderingException
      */
     public function index(Item $item): bool
     {
@@ -128,7 +134,7 @@ class Indexer extends AbstractIndexer
                  * indexed.
                  * If there is no translation for a single language, this item counts
                  * as TRUE since it's not an error which that should make the item
-                 * being reindexed during another index run.
+                 * being re-indexed during another index run.
                  */
                 $indexed = false;
             }
@@ -150,6 +156,7 @@ class Indexer extends AbstractIndexer
      * @throws FrontendEnvironmentException
      * @throws IndexingException
      * @throws SiteNotFoundException
+     * @throws ContentRenderingException
      */
     protected function indexItem(Item $item, int $language = 0): bool
     {
@@ -202,13 +209,12 @@ class Indexer extends AbstractIndexer
      * types.
      *
      * @param Item $item The item to be indexed
-     * @param int $language Language Id (sys_language.uid)
+     * @param int $language Language ID (sys_language.uid)
      *
      * @return array|null The full record with fields of data to be used for indexing or NULL to prevent an item from being indexed
      *
      * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws SiteNotFoundException
+     * @throws InvalidArgumentException
      */
     protected function getFullItemRecord(Item $item, int $language = 0): ?array
     {
@@ -225,8 +231,7 @@ class Indexer extends AbstractIndexer
      * Returns the overlaid item record.
      *
      * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws SiteNotFoundException
+     * @throws InvalidArgumentException
      */
     protected function getItemRecordOverlayed(Item $item, int $language): ?array
     {
@@ -258,12 +263,33 @@ class Indexer extends AbstractIndexer
         $typo3site = $item->getSite()->getTypo3SiteObject();
         $typo3siteLanguage = $typo3site->getLanguageById($language);
 
+        /** @var Context $coreContext */
+        $coreContext = clone GeneralUtility::makeInstance(Context::class);
+        // TYPO3 by default enables a preview mode if a backend user is logged in,
+        // the VisibilityAspect is configured to show hidden elements.
+        // Due to this setting hidden relations/translations might be indexed
+        // when running the Solr indexer via the TYPO3 backend.
+        // To avoid this, the VisibilityAspect is adapted for indexing.
+        $coreContext->setAspect(
+            'visibility',
+            GeneralUtility::makeInstance(
+                VisibilityAspect::class,
+                false,
+                false,
+            ),
+        );
+        $languageAspect = LanguageAspectFactory::createFromSiteLanguage($typo3siteLanguage);
+        $coreContext->setAspect('language', $languageAspect);
         /** @var PageRepository $pageRepository */
-        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+        $pageRepository = GeneralUtility::makeInstance(
+            PageRepository::class,
+            $coreContext,
+        );
+
         return $pageRepository->getLanguageOverlay(
             $item->getType(),
             $itemRecord,
-            LanguageAspectFactory::createFromSiteLanguage($typo3siteLanguage),
+            $languageAspect,
         );
     }
 
@@ -291,6 +317,7 @@ class Indexer extends AbstractIndexer
      * @return array Configuration array from TypoScript
      *
      * @throws DBALException
+     * @throws SiteNotFoundException
      */
     protected function getItemTypeConfiguration(Item $item, int $language = 0): array
     {
@@ -332,7 +359,7 @@ class Indexer extends AbstractIndexer
     /**
      * The method returns the field configuration of the items root page id (uid of the related root page).
      *
-     * @throws DBALException
+     * @throws SiteNotFoundException
      */
     protected function getFieldConfigurationFromItemRootPage(Item $item, int $language, string $indexConfigurationName): array
     {
@@ -344,6 +371,8 @@ class Indexer extends AbstractIndexer
     /**
      * In case of additionalStoragePid config recordPageId can be outside siteroot.
      * In that case we should not read TS config of foreign siteroot.
+     *
+     * @throws DBALException
      */
     protected function isRootPageIdPartOfRootLine(Item $item): bool
     {
@@ -364,19 +393,22 @@ class Indexer extends AbstractIndexer
      * record's fields onto Solr document fields as configured in TypoScript.
      *
      * @param Item $item An index queue item
-     * @param int $language Language Id
+     * @param int $language Language ID
      *
      * @return Document|null The Solr document converted from the record
      *
      * @throws FrontendEnvironmentException
      * @throws SiteNotFoundException
      * @throws DBALException
+     * @throws ContentRenderingException
+     * @throws InvalidArgumentException
      */
     protected function itemToDocument(Item $item, int $language = 0): ?Document
     {
         $document = null;
 
         $itemRecord = $this->getFullItemRecord($item, $language);
+
         if (!is_null($itemRecord)) {
             $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
             $document = $this->getBaseDocument($item, $itemRecord);
@@ -393,6 +425,11 @@ class Indexer extends AbstractIndexer
         return $document;
     }
 
+    /**
+     * @throws SiteNotFoundException
+     * @throws FrontendEnvironmentException
+     * @throws DBALException
+     */
     protected function getTsfeByItemAndLanguageId(
         Item $item,
         int $language = 0,
@@ -455,6 +492,10 @@ class Indexer extends AbstractIndexer
      * and allows to add more documents before processing all of them.
      *
      * @return Document[]
+     *
+     * @throws DBALException
+     * @throws FrontendEnvironmentException
+     * @throws SiteNotFoundException
      */
     protected function getAdditionalDocuments(Document $itemDocument, Item $item, int $language): array
     {
@@ -481,6 +522,7 @@ class Indexer extends AbstractIndexer
      *
      * @throws DBALException
      * @throws EXTSolrException
+     * @throws SiteNotFoundException
      */
     protected function processDocuments(Item $item, array $documents): array
     {
@@ -510,8 +552,11 @@ class Indexer extends AbstractIndexer
      *
      * @return SolrConnection[] An array of connections, the array's keys are the sys_language_uid of the language of the connection
      *
-     * @throws NoSolrConnectionFoundException
      * @throws DBALException
+     * @throws InvalidArgumentException
+     * @throws InvalidConnectionException
+     * @throws NoSolrConnectionFoundException
+     * @throws SiteNotFoundException
      */
     protected function getSolrConnectionsByItem(Item $item): array
     {
@@ -634,11 +679,10 @@ class Indexer extends AbstractIndexer
     /**
      * Checks for which languages connections have been configured for translation overlays and returns these connections.
      *
-     * @param array $translationOverlays
-     * @param int $rootPageId
      * @return SolrConnection[]
      *
-     * @throws DBALException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
      */
     protected function getConnectionsForIndexableLanguages(array $translationOverlays, int $rootPageId): array
     {
@@ -667,7 +711,7 @@ class Indexer extends AbstractIndexer
     /**
      * Enables logging dependent on the configuration of the item's site
      *
-     * @throws DBALException
+     * @throws SiteNotFoundException
      */
     protected function setLogging(Item $item): void
     {
@@ -718,6 +762,7 @@ class Indexer extends AbstractIndexer
      * Checks the given language, if it is in "free" mode.
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
      */
     protected function isLanguageInAFreeContentMode(Item $item, int $language): bool
     {

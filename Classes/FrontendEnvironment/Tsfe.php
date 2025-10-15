@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use Doctrine\DBAL\Exception as DBALException;
 use JsonException;
+use ReflectionClass;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
@@ -162,6 +163,10 @@ class Tsfe implements SingletonInterface
             $serverRequest = $serverRequest->withAttribute('frontend.user', $feUser);
             /** @var TypoScriptFrontendController $tsfe */
             $tsfe = GeneralUtility::makeInstance(TypoScriptFrontendController::class);
+            $this->setCoreContextOnTsfeObjectAndDependencies(
+                $tsfe,
+                $context,
+            );
             $tsfe->id = $pageId;
             $tsfe->newCObj($serverRequest);
 
@@ -360,5 +365,18 @@ class Tsfe implements SingletonInterface
             return false;
         }
         return $rootPageId === $site->getRootPageId();
+    }
+
+    protected function setCoreContextOnTsfeObjectAndDependencies(
+        TypoScriptFrontendController $tsfe,
+        Context $context,
+    ): void {
+        $tsfeReflection = new ReflectionClass($tsfe);
+        $tsfeReflectionContextProperty = $tsfeReflection->getProperty('context');
+        $tsfeReflectionContextProperty->setValue($tsfe, $context);
+        $tsfe->sys_page = GeneralUtility::makeInstance(
+            PageRepository::class,
+            $context,
+        );
     }
 }
