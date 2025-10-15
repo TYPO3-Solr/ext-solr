@@ -20,7 +20,10 @@ use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -50,6 +53,7 @@ class ConfigurationManager implements SingletonInterface
     /**
      * @throws DBALException
      * @throws JsonException
+     * @throws NoSuchCacheException
      */
     public function getTypoScriptFromRequest(ServerRequestInterface $request): TypoScriptConfiguration
     {
@@ -68,7 +72,22 @@ class ConfigurationManager implements SingletonInterface
                 }
             }
         }
-        $fullConfig = $this->getCoreTypoScriptFrontendByRequest($request)->getSetupArray();
+        try {
+            $fullConfig = $request->getAttribute('frontend.typoscript')?->getSetupArray();
+        } catch (RuntimeException) {
+            $fullConfig = null;
+        }
+        if ($fullConfig === null) {
+            $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('hash');
+            $cacheIdentifier = $pageId . '_' . ($request->getAttribute('language')?->getLanguageId() ?? 0);
+            if (!$cache->has($cacheIdentifier)) {
+                // Fallback to full TypoScript configuration
+                $fullConfig = $this->getCoreTypoScriptFrontendByRequest($request)->getSetupArray();
+                $cache->set($cacheIdentifier, $fullConfig);
+            } else {
+                $fullConfig = $cache->get($cacheIdentifier);
+            }
+        }
         return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $fullConfig, $pageId);
     }
 
@@ -79,6 +98,7 @@ class ConfigurationManager implements SingletonInterface
      * @throws DBALException
      * @throws JsonException
      * @throws SiteNotFoundException
+     * @throws NoSuchCacheException
      */
     public function getTypoScriptConfiguration(?int $contextPageId = null, int $contextLanguageId = 0): TypoScriptConfiguration
     {
@@ -129,6 +149,10 @@ class ConfigurationManager implements SingletonInterface
      */
     public function getCoreTypoScriptFrontendByRequest(ServerRequestInterface $request): FrontendTypoScript
     {
+        if ($request->getAttribute('frontend.typoscript') instanceof FrontendTypoScript) {
+            return $request->getAttribute('frontend.typoscript');
+        }
+
         $typo3Site = $request->getAttribute('site');
         $sysTemplateRows = $this->getSysTemplateRowsForAssociatedContextPageId($request);
 
