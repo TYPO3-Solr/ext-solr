@@ -27,7 +27,7 @@
     "ext-libxml": "*",
     "ext-pdo": "*",
     "ext-simplexml": "*",
-    "solarium/solarium": "6.3.7",
+    "solarium/solarium": "6.4.1",
     "typo3/cms-backend": "*",
     "typo3/cms-core": "^v13.4.2",
     "typo3/cms-extbase": "*",
