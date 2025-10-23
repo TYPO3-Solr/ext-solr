@@ -13,7 +13,7 @@
 		<int name="connTimeout">${connTimeout:0}</int>
 	</shardHandlerFactory>
 
-	<str name="modules">scripting,analytics,analysis-extras,langid,clustering,extraction,${solr.modules:}</str>
+	<str name="modules">scripting,analytics,analysis-extras,langid,clustering,extraction,llm,${solr.modules:}</str>
 	<str name="allowPaths">${solr.allowPaths:}</str>
 	<str name="allowUrls">${solr.allowUrls:}</str>
 
