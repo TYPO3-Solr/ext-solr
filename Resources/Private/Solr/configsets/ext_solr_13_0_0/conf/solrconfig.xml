@@ -470,6 +470,16 @@
 		<processor class="solr.RunUpdateProcessorFactory"/>
 	</updateRequestProcessorChain>
 
+	<queryParser name="knn_text_to_vector" class="org.apache.solr.llm.textvectorisation.search.TextToVectorQParserPlugin"/>
+	<updateRequestProcessorChain name="textToVector">
+		<processor class="solr.llm.textvectorisation.update.processor.TextToVectorUpdateProcessorFactory">
+			<str name="inputField">vectorContent</str>
+			<str name="outputField">vector</str>
+			<str name="model">llm</str>
+		</processor>
+		<processor class="solr.LogUpdateProcessorFactory"/>
+		<processor class="solr.RunUpdateProcessorFactory"/>
+	</updateRequestProcessorChain>
 
 	<queryResponseWriter name="json" class="solr.JSONResponseWriter" default="true"/>
 	<queryResponseWriter name="php" class="org.apache.solr.response.PHPResponseWriter"/>
