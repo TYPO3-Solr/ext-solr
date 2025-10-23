@@ -272,6 +272,9 @@
 
 	<dynamicField name="*_currency"  type="currency"  indexed="true" stored="true" multiValued="false" />
 
+	<field name="vectorContent" type="string" indexed="false" stored="false"/>
+	<field name="vector" type="knn_vector" indexed="true" stored="false"/>
+
 	<!--
 		The following causes solr to ignore any fields that don't already
 		match an existing field name or dynamic field, rather than
