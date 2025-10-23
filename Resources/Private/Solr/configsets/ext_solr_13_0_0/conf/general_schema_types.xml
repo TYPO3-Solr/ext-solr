@@ -218,6 +218,7 @@
 
 	<fieldType name="currency" class="solr.CurrencyFieldType" amountLongSuffix="_longS" codeStrSuffix="_stringS" defaultCurrency="USD" currencyConfig="currency.xml" />
 
+	<fieldType name="knn_vector" class="solr.DenseVectorField" vectorDimension="${solr.vector.dimension:768}" similarityFunction="cosine"/>
 
 	<!-- since fields of this type are by default not stored or indexed, any data added to
 		them will be ignored outright
