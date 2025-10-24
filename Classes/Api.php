@@ -38,7 +38,8 @@ class Api
      */
     public static function getApiKey(): string
     {
-        return sha1(
+        return hash(
+            'sha1',
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
             'tx_solr_api',
         );
