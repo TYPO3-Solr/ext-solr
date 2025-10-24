@@ -2,11 +2,11 @@ name: build
 
 on:
   push:
-    branches: [ main, release-13.0.x, release-12.0.x, task/*_compatibility ]
+    branches: [ release-13.0.x ]
     tags:
       - "**"
   pull_request:
-    branches: [ main, release-13.0.x, release-12.0.x, task/*_compatibility ]
+    branches: [ release-13.0.x ]
 
   # Run tests daily at 19:23 to get TYPO3 changes and fix them immediately.
   # @todo:
@@ -17,14 +17,14 @@ on:
 
 env:
   IS_ON_GITHUB_ACTIONS: 'true'
-  IS_LATEST_VERSION: 'true'
+  IS_LATEST_VERSION: 'false'
   CI_BUILD_DIRECTORY: '/home/runner/work/ext-solr/ext-solr/.Build'
   LOCAL_IMAGE_NAME: 'solrci-image:latest'
   LOCAL_CONTAINER_NAME: 'solrci-container'
   TESTING_SOLR_PORT: 8983
   LOCAL_VOLUME_NAME: 'solrci-volume'
   LOCAL_VOLUME_PATH: '/home/runner/work/ext-solr/ext-solr/.Build/data-solr'
-  BRANCH_NAME: 'main'
+  BRANCH_NAME: 'release-13.0.x'
 
 jobs:
   ci_bootstrapping:
@@ -239,7 +239,6 @@ jobs:
             type=raw,value=${{ env.BRANCH_ALIAS_TAG }}
             # Only the newest major EXT:solr branch can become the latest tag.
             # So if main branch becomes dev state for next TYPO3 LTS, the latest tag must be commented there.
-            type=raw,value=latest,enable=${{ (startsWith(github.ref, 'refs/tags/')) && (env.IS_LATEST_VERSION == true) }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
           labels: |
