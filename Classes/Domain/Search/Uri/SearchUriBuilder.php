@@ -268,7 +268,7 @@ class SearchUriBuilder
         $values = [];
         $structure = $arguments;
         $this->getSubstitution($structure, $values);
-        $hash = md5($pageUid . json_encode($structure));
+        $hash = hash('md5', $pageUid . json_encode($structure));
         if (isset(self::$preCompiledLinks[$hash])) {
             self::$hitCount++;
             $uriCacheTemplate = self::$preCompiledLinks[$hash];
@@ -284,7 +284,7 @@ class SearchUriBuilder
             } catch (InvalidParameterException $exception) {
                 // the placeholders may result in an exception when route enhancers with requirements are active
                 // In this case, try to build the URL with original arguments
-                $hash = md5($pageUid . json_encode($arguments));
+                $hash = hash('md5', $pageUid . json_encode($arguments));
                 if (isset(self::$preCompiledLinks[$hash])) {
                     self::$hitCount++;
                     $uriCacheTemplate = self::$preCompiledLinks[$hash];

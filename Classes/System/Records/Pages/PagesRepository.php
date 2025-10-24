@@ -156,7 +156,7 @@ class PagesRepository extends AbstractRepository
         int $rootPageId,
         string $initialPagesAdditionalWhereClause = '',
     ): array {
-        $cacheIdentifier = sha1('getPages' . $rootPageId . $initialPagesAdditionalWhereClause);
+        $cacheIdentifier = hash('sha1', 'getPages' . $rootPageId . $initialPagesAdditionalWhereClause);
         if ($this->transientVariableCache->get($cacheIdentifier) !== false) {
             return $this->transientVariableCache->get($cacheIdentifier);
         }

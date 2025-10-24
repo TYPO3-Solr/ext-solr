@@ -95,7 +95,7 @@ class ConnectionManager implements SingletonInterface
         array $writeEndpointConfiguration,
         TypoScriptConfiguration $typoScriptConfiguration,
     ): SolrConnection {
-        $connectionHash = md5(json_encode($readEndpointConfiguration) . json_encode($writeEndpointConfiguration));
+        $connectionHash = hash('md5', json_encode($readEndpointConfiguration) . json_encode($writeEndpointConfiguration));
         if (!isset(self::$connections[$connectionHash])) {
             $readEndpoint = new Endpoint($readEndpointConfiguration);
             if (!$this->isValidEndpoint($readEndpoint)) {

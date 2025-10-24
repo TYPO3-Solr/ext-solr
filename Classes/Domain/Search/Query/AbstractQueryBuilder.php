@@ -176,10 +176,10 @@ abstract class AbstractQueryBuilder
         $boostQueryArray = [];
         if (is_array($boostQueries)) {
             foreach ($boostQueries as $boostQuery) {
-                $boostQueryArray[] = ['key' => md5($boostQuery), 'query' => $boostQuery];
+                $boostQueryArray[] = ['key' => hash('md5', $boostQuery), 'query' => $boostQuery];
             }
         } else {
-            $boostQueryArray[] = ['key' => md5($boostQueries), 'query' => $boostQueries];
+            $boostQueryArray[] = ['key' => hash('md5', $boostQueries), 'query' => $boostQueries];
         }
 
         $this->queryToBuild->getEDisMax()->setBoostQueries($boostQueryArray);
