@@ -136,7 +136,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-release-12.0.x": "12.0.x-dev"
+      "dev-release-12.1.x": "12.1.x-dev"
     },
     "typo3/cms": {
       "extension-key": "solr",
@@ -161,7 +161,7 @@
           "9.4.0",
           "9.3.0"
         ],
-        "configset": "ext_solr_12_0_0"
+        "configset": "ext_solr_12_1_0"
       },
       "ext-solrfal": {
       },
