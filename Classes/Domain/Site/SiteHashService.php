@@ -127,7 +127,7 @@ class SiteHashService
         if ($this->extensionConfiguration->getSiteHashStrategy() === 0) {
             $applicationContext = '';
         }
-        $siteHashes[$siteIdentifier] = sha1($applicationContext . $siteIdentifier . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] . 'tx_solr');
+        $siteHashes[$siteIdentifier] = hash('sha1', $applicationContext . $siteIdentifier . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] . 'tx_solr');
         return $siteHashes[$siteIdentifier];
     }
 

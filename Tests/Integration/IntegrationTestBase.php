@@ -236,7 +236,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         ?int $port = 8983,
         ?bool $disableDefaultLanguage = false,
     ): void {
-        $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage);
+        $siteCreatedHash = hash('md5', $scheme . $host . $port . $disableDefaultLanguage);
         if (self::$lastSiteCreated === $siteCreatedHash) {
             return;
         }

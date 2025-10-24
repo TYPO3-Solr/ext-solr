@@ -36,7 +36,7 @@ class RoutingUtility
             return $value;
         }
         // removing one bit, e.g. for enforced route prefix `{!value}`
-        $hash = substr(md5($value), 0, -1);
+        $hash = substr(hash('md5', $value), 0, -1);
         // Symfony Route Compiler requires first literal to be non-integer
         if ($hash[0] === (string)(int)$hash[0]) {
             $hash[0] = str_replace(
