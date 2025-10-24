@@ -137,7 +137,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-main": "13.0.x-dev"
+      "dev-main": "13.1.x-dev"
     },
     "typo3/cms": {
       "extension-key": "solr",
@@ -150,12 +150,9 @@
         "ext-solrconsole": "^13.0",
         "ext-solrdebugtools": "^13.0",
         "Apache-Solr": [
-          "9.9.0",
-          "9.8.1",
-          "9.8.0",
-          "9.7.0"
+          "9.9.0"
         ],
-        "configset": "ext_solr_13_0_0"
+        "configset": "ext_solr_13_1_0"
       },
       "ext-solrfal": {
       },

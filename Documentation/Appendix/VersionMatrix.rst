@@ -11,8 +11,8 @@ List of EXT:solr versions and the matching versions of Apache Solr and TYPO3 tha
 =========  =============  =============  =================  ====================  =======================  ================================  ===============  =================
 TYPO3      EXT:solr (↻)   EXT:tika (↻)   EXT:solrfal ($)    EXT:solrconsole ($)   EXT:solrdebugtools ($)   EXT:solrfluidgrouping ($↺)        Apache Solr      Configset
 =========  =============  =============  =================  ====================  =======================  ================================  ===============  =================
-13.4       13.0           13.0           13.0               13.0                  13.0                     N/A (integrated in EXT:solr)      9.9.0¹           ext_solr_13_0_0
-12.4       12.0           12.0           12.0               12.0                  12.0                     N/A (integrated in EXT:solr)      9.9.0¹           ext_solr_12_0_0
+13.4       13.1           13.0           13.0               13.0                  13.0                     N/A (integrated in EXT:solr)      9.9.0¹           ext_solr_13_1_0
+12.4       12.1           12.0           12.0               12.0                  12.0                     N/A (integrated in EXT:solr)      9.9.0¹           ext_solr_12_0_0
 =========  =============  =============  =================  ====================  =======================  ================================  ===============  =================
 
 | $ - Funding contribution extensions. See: https://www.typo3-solr.com/solr-for-typo3/open-source-version/
@@ -56,6 +56,8 @@ No longer supported versions
 =========  ==========  =========  ===========  ===============  ==================  ===========  ===========  ======================================
 TYPO3      EXT:solr    EXT:tika   EXT:solrfal  EXT:solrconsole  EXT:solrdebugtools  EXT:solrmlt  Apache Solr  Configset
 =========  ==========  =========  ===========  ===============  ==================  ===========  ===========  ======================================
+13.4       13.0        -          -            -                -                   -            9.8.1        ext_solr_13_0_0
+12.4       12.0        -          -            -                -                   -            9.8.1        ext_solr_13_0_0
 11.5       11.6.0      11.0       11.0         11.0             11.0                N/A          9.7          ext_solr_11_6_0
 11.5       11.5.0-7    11.0       11.0         11.0             11.0                N/A          8.11         ext_solr_11_5_0
 10.4       11.2.0-3    10.0       10.0         10.0             10.0                10.0         8.11         ext_solr_11_2_0
