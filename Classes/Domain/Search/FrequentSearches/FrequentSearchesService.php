@@ -136,7 +136,7 @@ class FrequentSearchesService
             $identifier .= '_L' . $serverRequest->getAttribute('language')?->getLanguageId();
         }
 
-        $identifier .= '_' . md5(serialize($frequentSearchConfiguration));
+        $identifier .= '_' . hash('md5', serialize($frequentSearchConfiguration));
         return $identifier;
     }
 

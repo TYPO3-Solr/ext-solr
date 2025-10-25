@@ -202,7 +202,8 @@ class PageIndexerRequest
             'item' => $itemId,
             'page' => $pageId,
             'actions' => implode(',', $this->actions),
-            'hash' => md5(
+            'hash' => hash(
+                'md5',
                 $itemId . '|' .
                 $pageId . '|' .
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'],
@@ -240,7 +241,8 @@ class PageIndexerRequest
             return false;
         }
 
-        $calculatedHash = md5(
+        $calculatedHash = hash(
+            'md5',
             $this->parameters['item'] . '|' .
             $this->parameters['page'] . '|' .
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'],

@@ -295,7 +295,7 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
         string $additionalRecordFields,
     ): ?array {
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
-        $cacheId = md5('Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . (string)$itemUid . ':' . 'pid' . $additionalRecordFields);
+        $cacheId = hash('md5', 'Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . (string)$itemUid . ':' . 'pid' . $additionalRecordFields);
 
         $record = $cache->get($cacheId);
         if (empty($record)) {
