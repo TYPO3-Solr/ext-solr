@@ -400,7 +400,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
 
         // We need to get the full record to find out if this is a page translation
         $fullRecord = $this->getRecord('pages', $uid);
-        if (($fullRecord['sys_language_uid'] ?? null) > 0) {
+        if (($fullRecord['sys_language_uid'] ?? null) > 0 && (int)($fullRecord['l10n_parent']) > 0) {
             $uid = (int)$fullRecord['l10n_parent'];
         }
 
