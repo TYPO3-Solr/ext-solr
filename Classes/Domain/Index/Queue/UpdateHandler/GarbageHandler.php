@@ -131,7 +131,7 @@ class GarbageHandler extends AbstractUpdateHandler
             // We need to get the full record to find out if this is a page translation
             $fullRecord = $this->getRecord('pages', $uid);
             $uidForRecursiveTriggers = $uid;
-            if (($fullRecord['sys_language_uid'] ?? null) > 0) {
+            if (($fullRecord['sys_language_uid'] ?? null) > 0 && (int)($fullRecord['l10n_parent']) > 0) {
                 $uidForRecursiveTriggers = (int)$fullRecord['l10n_parent'];
             }
             $this->deleteSubEntriesWhenRecursiveTriggerIsRecognized($table, $uidForRecursiveTriggers, $updatedFields);
