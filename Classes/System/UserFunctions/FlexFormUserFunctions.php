@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -189,6 +190,9 @@ class FlexFormUserFunctions
         }
 
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+
+        $request = (new ServerRequest())->withQueryParams(['id' => $pid]);
+        $configurationManager->setRequest($request);
         $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 
         return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $typoScript);
