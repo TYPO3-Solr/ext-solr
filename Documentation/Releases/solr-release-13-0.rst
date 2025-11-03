@@ -4,16 +4,51 @@
 Releases 13.0
 =============
 
+..  include:: HintAboutOutdatedChangelog.rst.txt
+
+Release 13.0.4
+==============
+
+Announcing the last 13.0.x maintenance release for TYPO3 12 LTS.
+The release-13.0.x branch is now closed—no further 13.0.x releases will be issued.
+Next up: TYPO3 13.1.0, arriving with integrated AI features.
+
+- Fix bug for phrase search with slops, bigram and trigram by Florian Rival `3f52d30ff <https://github.com/TYPO3-Solr/ext-solr/commit/3f52d30ff>`_
+- [TASK] 13.0.x-dev Bump solr from 9.9.0 to 9.10.0 in /Docker/SolrServer by Dependabot `d7f338627 <https://github.com/TYPO3-Solr/ext-solr/commit/d7f338627>`_
+- [BUGFIX] Fix CS issues by Markus Friedrich `a4f3330c8 <https://github.com/TYPO3-Solr/ext-solr/commit/a4f3330c8>`_
+- [TASK] Allow Apache Solr 9.9.0 by Markus Friedrich `7deb9ea1e <https://github.com/TYPO3-Solr/ext-solr/commit/7deb9ea1e>`_
+- [BUGFIX] PageFieldMappingIndexer: avoid undefined array key via null coalescing (refs #4395) by David Retzer `b788000c9 <https://github.com/TYPO3-Solr/ext-solr/commit/b788000c9>`_
+- [BUGFIX] Unicode characters vs. statistics feature by Philipp Kitzberger `5df9deacf <https://github.com/TYPO3-Solr/ext-solr/commit/5df9deacf>`_
+- [BUGFIX] Allow initializer interface in event by Markus Friedrich `56493ee4d <https://github.com/TYPO3-Solr/ext-solr/commit/56493ee4d>`_
+- [FEATURE] calculate site hash by site-identifier strategy by setting by Rafael Kähm `6860df955 <https://github.com/TYPO3-Solr/ext-solr/commit/6860df955>`_
+- [BUGFIX] set site field on record documents in same way as on pages by Rafael Kähm `1a7d1ff68 <https://github.com/TYPO3-Solr/ext-solr/commit/1a7d1ff68>`_
+- [FEATURE] add typo3Context[_stringS] and domain[_stringS] fields to documents by Rafael Kähm `a75d237d1 <https://github.com/TYPO3-Solr/ext-solr/commit/a75d237d1>`_
+- [BUGFIX] Site check fails in Tsfe fails by Markus Friedrich `ca4cf26ae <https://github.com/TYPO3-Solr/ext-solr/commit/ca4cf26ae>`_
+- [FEATURE] Make EXT:solrdebogtools plug-and-play installable by Rafael Kähm `816877a99 <https://github.com/TYPO3-Solr/ext-solr/commit/816877a99>`_
+- [BUGFIX] Unable to register a custom facet package with FacetRegistry by Benoit Chenu `7aea09a10 <https://github.com/TYPO3-Solr/ext-solr/commit/7aea09a10>`_
+- [BUGFIX] Don't re-instantiate TypoScript in FE/Search context by Rafael Kähm `9cd2ddc95 <https://github.com/TYPO3-Solr/ext-solr/commit/9cd2ddc95>`_
+- [TASK] add test case for hidden translation in content-fallback and strict mode by Rafael Kähm `337967213 <https://github.com/TYPO3-Solr/ext-solr/commit/337967213>`_
+- [BUGFIX] Delegate and adjust TYPO3 core context within indexing stack by Rafael Kähm `a5aefa8a4 <https://github.com/TYPO3-Solr/ext-solr/commit/a5aefa8a4>`_
+- [TASK] add missing codes to thrown exceptions by Rafael Kähm `ea5bb914c <https://github.com/TYPO3-Solr/ext-solr/commit/ea5bb914c>`_
+- [TASK] Prepare release-13.0.x branch by Rafael Kähm `040a47427 <https://github.com/TYPO3-Solr/ext-solr/commit/040a47427>`_
+- [BUGFIX] don't use pages uid 0 via l10n_parent by Rafael Kähm `20be06666 <https://github.com/TYPO3-Solr/ext-solr/commit/20be06666>`_
+- [TASK] 13.0.x-dev Update solarium/solarium requirement by dependabot[bot] `87429a673 <https://github.com/TYPO3-Solr/ext-solr/commit/87429a673>`_
+- Remove OpenSearch profile link by Ingo Fabbri `c9b711756 <https://github.com/TYPO3-Solr/ext-solr/commit/c9b711756>`_
+- [BUGFIX] Initialize the localRootLine property before usage by David Lemaitre `3f7d44def <https://github.com/TYPO3-Solr/ext-solr/commit/3f7d44def>`_
+- Adjust resource identifier in PageRenderer asset registration by Charlotte `b695abe6c <https://github.com/TYPO3-Solr/ext-solr/commit/b695abe6c>`_
+
+
 Release 13.0.3
 ==============
 
 This is a maintenance release for TYPO3 13.4 LTS.
 
-* [TASK] disable dependabot on release-11.6.x branch by Rafael Kähm `(b9771d029) <https://github.com/TYPO3-Solr/ext-solr/commit/b9771d029>`_
-* [BUGFIX] Fix mount point garbage collection by Markus Friedrich `(a48f23369) <https://github.com/TYPO3-Solr/ext-solr/commit/a48f23369>`_
-* [TASK] Drop workaround for cObj IMAGE by Markus Friedrich `(990046a10) <https://github.com/TYPO3-Solr/ext-solr/commit/990046a10>`_
-* [BUGFIX] Avoid PHP warning if related record was not found by Albrecht Köhnlein `(8ce468861) <https://github.com/TYPO3-Solr/ext-solr/commit/8ce468861>`_
-* [BUGFIX] Get current pageId by Julian Hofmann `(868d60a72) <https://github.com/TYPO3-Solr/ext-solr/commit/868d60a72>`_
+- [TASK] disable dependabot on release-11.6.x branch by Rafael Kähm `(b9771d029) <https://github.com/TYPO3-Solr/ext-solr/commit/b9771d029>`_
+- [BUGFIX] Fix mount point garbage collection by Markus Friedrich `(a48f23369) <https://github.com/TYPO3-Solr/ext-solr/commit/a48f23369>`_
+- [TASK] Drop workaround for cObj IMAGE by Markus Friedrich `(990046a10) <https://github.com/TYPO3-Solr/ext-solr/commit/990046a10>`_
+- [BUGFIX] Avoid PHP warning if related record was not found by Albrecht Köhnlein `(8ce468861) <https://github.com/TYPO3-Solr/ext-solr/commit/8ce468861>`_
+- [BUGFIX] Get current pageId by Julian Hofmann `(868d60a72) <https://github.com/TYPO3-Solr/ext-solr/commit/868d60a72>`_
+
 Release 13.0.2
 ==============
 
@@ -21,22 +56,22 @@ This is a maintenance release for TYPO3 13.4 LTS.
 
 List of all changes:
 
-* [BUGFIX] 404 on auto-suggest with enabled TYPO3 enforceValidation setting by Wolfgang Wagner | wow! solution [(901743e85)](https://github.com/TYPO3-Solr/ext-solr/commit/901743e85)
-* [TASK] 13.0.x-dev Update solarium/solarium requirement by dependabot[bot] [(e21bef00f)](https://github.com/TYPO3-Solr/ext-solr/commit/e21bef00f)
-* [BUGFIX] provide some expression matcher variables by Achim Fritz [(c810d8986)](https://github.com/TYPO3-Solr/ext-solr/commit/c810d8986)
-* [TASK] Remove solrmlt by Markus Friedrich [(9aba2dff3)](https://github.com/TYPO3-Solr/ext-solr/commit/9aba2dff3)
-* [TASK] Update version matrix by Markus Friedrich [(f1e8cf03a)](https://github.com/TYPO3-Solr/ext-solr/commit/f1e8cf03a)
-* [TASK] Allow Apache Solr 9.8.1 by Markus Friedrich [(35a774de0)](https://github.com/TYPO3-Solr/ext-solr/commit/35a774de0)
-* [DOCS] Add section on how to optimize page index runtimes (#4334) by Philipp Kitzberger [(27cbd7612)](https://github.com/TYPO3-Solr/ext-solr/commit/27cbd7612)
-* [DOCS] Fix typo in ConfigureExtension.rst by Jon Echeveste González [(3245c1370)](https://github.com/TYPO3-Solr/ext-solr/commit/3245c1370)
-* [BUGFIX] PhpUnit IsStringViewHelperTest for typo3fluid/fluid v 4.1.+ by Rafael Kähm [(ca41f0fbc)](https://github.com/TYPO3-Solr/ext-solr/commit/ca41f0fbc)
-* [BUGFIX] Update hardcoded legacy css resource filepath by Charlotte [(b2bdbbb7c)](https://github.com/TYPO3-Solr/ext-solr/commit/b2bdbbb7c)
-* [TASK] fix integration tests for TYPO3 13.4.10+ by Rafael Kähm [(5fe6eb107)](https://github.com/TYPO3-Solr/ext-solr/commit/5fe6eb107)
-* [FEATURE] Add arm64 and ppc64le platforms to docker-images by Rafael Kähm [(253a0a327)](https://github.com/TYPO3-Solr/ext-solr/commit/253a0a327)
-* [TASK] bump dg/bypass-finals to 1.9+ by Rafael Kähm [(33b02aaca)](https://github.com/TYPO3-Solr/ext-solr/commit/33b02aaca)
-* [TASK] Form.html: maxlength for search text input field by Bernd Wilke [(650b9439e)](https://github.com/TYPO3-Solr/ext-solr/commit/650b9439e)
-* [TASK] Enable rule trailing_comma_in_multiline by Markus Friedrich [(4afd0b5f5)](https://github.com/TYPO3-Solr/ext-solr/commit/4afd0b5f5)
-* [TASK] Extend RecordUpdatedEvent to indicate creations by Markus Friedrich [(c64c4ac81)](https://github.com/TYPO3-Solr/ext-solr/commit/c64c4ac81)
+- [BUGFIX] 404 on auto-suggest with enabled TYPO3 enforceValidation setting by Wolfgang Wagner | wow! solution `901743e85 <https://github.com/TYPO3-Solr/ext-solr/commit/901743e85>`_
+- [TASK] 13.0.x-dev Update solarium/solarium requirement by dependabot[bot] `e21bef00f <https://github.com/TYPO3-Solr/ext-solr/commit/e21bef00f>`_
+- [BUGFIX] provide some expression matcher variables by Achim Fritz `c810d8986 <https://github.com/TYPO3-Solr/ext-solr/commit/c810d8986>`_
+- [TASK] Remove solrmlt by Markus Friedrich `9aba2dff3 <https://github.com/TYPO3-Solr/ext-solr/commit/9aba2dff3>`_
+- [TASK] Update version matrix by Markus Friedrich `f1e8cf03a <https://github.com/TYPO3-Solr/ext-solr/commit/f1e8cf03a>`_
+- [TASK] Allow Apache Solr 9.8.1 by Markus Friedrich `35a774de0 <https://github.com/TYPO3-Solr/ext-solr/commit/35a774de0>`_
+- [DOCS] Add section on how to optimize page index runtimes (#4334) by Philipp Kitzberger `27cbd7612 <https://github.com/TYPO3-Solr/ext-solr/commit/27cbd7612>`_
+- [DOCS] Fix typo in ConfigureExtension.rst by Jon Echeveste González `3245c1370 <https://github.com/TYPO3-Solr/ext-solr/commit/3245c1370>`_
+- [BUGFIX] PhpUnit IsStringViewHelperTest for typo3fluid/fluid v 4.1.+ by Rafael Kähm `ca41f0fbc <https://github.com/TYPO3-Solr/ext-solr/commit/ca41f0fbc>`_
+- [BUGFIX] Update hardcoded legacy css resource filepath by Charlotte `b2bdbbb7c <https://github.com/TYPO3-Solr/ext-solr/commit/b2bdbbb7c>`_
+- [TASK] fix integration tests for TYPO3 13.4.10+ by Rafael Kähm `5fe6eb107 <https://github.com/TYPO3-Solr/ext-solr/commit/5fe6eb107>`_
+- [FEATURE] Add arm64 and ppc64le platforms to docker-images by Rafael Kähm `253a0a327 <https://github.com/TYPO3-Solr/ext-solr/commit/253a0a327>`_
+- [TASK] bump dg/bypass-finals to 1.9+ by Rafael Kähm `33b02aaca <https://github.com/TYPO3-Solr/ext-solr/commit/33b02aaca>`_
+- [TASK] Form.html: maxlength for search text input field by Bernd Wilke `650b9439e <https://github.com/TYPO3-Solr/ext-solr/commit/650b9439e>`_
+- [TASK] Enable rule trailing_comma_in_multiline by Markus Friedrich `4afd0b5f5 <https://github.com/TYPO3-Solr/ext-solr/commit/4afd0b5f5>`_
+- [TASK] Extend RecordUpdatedEvent to indicate creations by Markus Friedrich `c64c4ac81 <https://github.com/TYPO3-Solr/ext-solr/commit/c64c4ac81>`_
 
 Release 13.0.1
 ==============
