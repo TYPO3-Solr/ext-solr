@@ -9,7 +9,7 @@ updates:
       - dependency-name: "solarium/solarium"
     target-branch: "main"
     commit-message:
-      prefix: "[TASK] 13.0.x-dev "
+      prefix: "[TASK] 13.1.x-dev "
   -
     package-ecosystem: "docker"
     directory: "/Docker/SolrServer"
@@ -17,9 +17,9 @@ updates:
       interval: "daily"
     target-branch: "main"
     commit-message:
-      prefix: "[TASK] 13.0.x-dev "
+      prefix: "[TASK] 13.1.x-dev "
 
-  # For release-12.0.x
+  # For release-12.1.x
   -
     package-ecosystem: "composer"
     directory: "/"
@@ -27,14 +27,14 @@ updates:
       interval: "daily"
     allow:
       - dependency-name: "solarium/solarium"
-    target-branch: "release-12.0.x"
+    target-branch: "release-12.1.x"
     commit-message:
-      prefix: "[TASK] 12.0.x-dev "
+      prefix: "[TASK] 12.1.x-dev "
   -
     package-ecosystem: "docker"
     directory: "/Docker/SolrServer"
     schedule:
       interval: "daily"
-    target-branch: "release-12.0.x"
+    target-branch: "release-12.1.x"
     commit-message:
-      prefix: "[TASK] 12.0.x-dev "
+      prefix: "[TASK] 12.1.x-dev "
