@@ -59,7 +59,7 @@ OpenSearch {
 	20.value (
 	<Url type="application/opensearchdescription+xml"
 		 rel="self"
-		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?type={TSFE:type}&amp;L={siteLanguage:languageId}" />
+		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?type={request:routing|pageType}&amp;L={siteLanguage:languageId}" />
 	)
 
 
