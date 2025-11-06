@@ -203,16 +203,18 @@
 	<!--
 		Numeric point fields
 	-->
-	<dynamicField name="*_intS"      type="integer"   indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_intM"      type="integer"   indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_longS"     type="long"      indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_longM"     type="long"      indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_floatS"    type="float"     indexed="true" stored="true" docValues="true" multiValued="false"/>
-	<dynamicField name="*_floatM"    type="float"     indexed="true" stored="true" docValues="true" multiValued="true"/>
-	<dynamicField name="*_doubleS"   type="double"    indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_doubleM"   type="double"    indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_dateS"     type="date"      indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_dateM"     type="date"      indexed="true" stored="true" docValues="true" multiValued="true" />
+	<dynamicField name="*_intS"       type="integer"   indexed="true" stored="true" docValues="true"  multiValued="false" />
+	<dynamicField name="*_intM"       type="integer"   indexed="true" stored="true" docValues="true"  multiValued="true" />
+	<dynamicField name="*_longS"      type="long"      indexed="true" stored="true" docValues="true"  multiValued="false" />
+	<dynamicField name="*_longM"      type="long"      indexed="true" stored="true" docValues="true"  multiValued="true" />
+	<dynamicField name="*_floatS"     type="float"     indexed="true" stored="true" docValues="true"  multiValued="false"/>
+	<dynamicField name="*_floatM"     type="float"     indexed="true" stored="true" docValues="true"  multiValued="true"/>
+	<dynamicField name="*_doubleS"    type="double"    indexed="true" stored="true" docValues="true"  multiValued="false" />
+	<dynamicField name="*_doubleM"    type="double"    indexed="true" stored="true" docValues="true"  multiValued="true" />
+	<dynamicField name="*_dateS"      type="date"      indexed="true" stored="true" docValues="true"  multiValued="false" />
+	<dynamicField name="*_dateM"      type="date"      indexed="true" stored="true" docValues="true"  multiValued="true" />
+	<dynamicField name="*_dateRangeS" type="dateRange" indexed="true" stored="true" docValues="false" multiValued="false" />
+	<dynamicField name="*_dateRangeM" type="dateRange" indexed="true" stored="true" docValues="false" multiValued="true" />
 
 
 	<!--
