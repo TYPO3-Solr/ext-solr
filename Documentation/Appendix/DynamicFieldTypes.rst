@@ -47,6 +47,8 @@ Extension               Type                                 Multivalue  Comment
 \*_dateM                Date                                 Yes
 \*_tDateS               Date                                 No          Deprecated use _dateS removed in EXT:solr 10
 \*_tDateM               Date                                 Yes         Deprecated use _dateM removed in EXT:solr 10
+\*_dateRangeS           DateRange                            No
+\*_dateRangeM           DateRange                            Yes
 \*_random               Random                               No
 \*_textS                Text                                 No
 \*_textM                Text                                 Yes
