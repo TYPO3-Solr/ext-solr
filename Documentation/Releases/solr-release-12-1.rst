@@ -22,10 +22,10 @@ TBD
 
 With EXT:solr 12.1 we provide the AI capabilities.
 
-!!! Upgrade to Apache Solr 9.9.0+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!!! Upgrade to Apache Solr 9.10.0+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This release requires Apache Solr v 9.9.0+.
+This release requires Apache Solr v 9.10.0+.
 
 
 Contributors

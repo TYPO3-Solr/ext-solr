@@ -150,7 +150,7 @@
         "ext-solrdebugtools": "^12.0",
         "ext-solrmlt": "^12.0",
         "Apache-Solr": [
-          "9.9.0"
+          "9.10.0"
         ],
         "configset": "ext_solr_12_1_0"
       },
