@@ -119,6 +119,10 @@ class Faceting implements Modifier, SearchRequestAware
         foreach ($allFacets as $facetName => $facetConfiguration) {
             $facetName = substr($facetName, 0, -1);
             $type = $facetConfiguration['type'] ?? 'options';
+            $enabled = isset($facetConfiguration['enabled']) ? boolval($facetConfiguration['enabled']) : true;
+            if ($enabled === false) {
+                continue;
+            }
             $facetParameterBuilder = $this->facetRegistry->getPackage($type)->getQueryBuilder();
 
             if (is_null($facetParameterBuilder)) {

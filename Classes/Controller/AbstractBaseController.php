@@ -179,7 +179,7 @@ abstract class AbstractBaseController extends ActionController
             $this->typoScriptConfiguration->mergeSolrConfiguration(
                 $typoScriptService->convertPlainArrayToTypoScriptArray($pluginSettings),
                 true,
-                false
+                true
             );
         }
 
