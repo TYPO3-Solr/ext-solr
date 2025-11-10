@@ -102,7 +102,7 @@ class ConfigurationManager implements SingletonInterface
      */
     public function getTypoScriptConfiguration(?int $contextPageId = null, int $contextLanguageId = 0): TypoScriptConfiguration
     {
-        if ($contextPageId !== null) {
+        if ($contextPageId !== null && BackendUtility::getRecord('pages', $contextPageId) !== null) {
             $site = GeneralUtility::makeInstance(SiteFinder::class)
                 ->getSiteByPageId($contextPageId);
             $language = $site->getLanguageById($contextLanguageId);
