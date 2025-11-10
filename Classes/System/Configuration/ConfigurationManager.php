@@ -102,7 +102,8 @@ class ConfigurationManager implements SingletonInterface
      */
     public function getTypoScriptConfiguration(?int $contextPageId = null, int $contextLanguageId = 0): TypoScriptConfiguration
     {
-        if ($contextPageId !== null) {
+        $contextPageRecord = $contextPageId !== null ? $this->fetchPageRecord($contextPageId) : null;
+        if ($contextPageRecord !== null) {
             $site = GeneralUtility::makeInstance(SiteFinder::class)
                 ->getSiteByPageId($contextPageId);
             $language = $site->getLanguageById($contextLanguageId);
@@ -110,7 +111,7 @@ class ConfigurationManager implements SingletonInterface
             $uri = $site->getRouter()->generateUri($contextPageId, ['_language' => $language]);
             $pageInformation = new PageInformation();
             $pageInformation->setId($contextPageId);
-            $pageInformation->setPageRecord(BackendUtility::getRecord('pages', $contextPageId));
+            $pageInformation->setPageRecord($contextPageRecord);
             $pageInformation->setContentFromPid($contextPageId);
             $request = (new ServerRequest($uri, 'GET'))
                 ->withAttribute('site', $site)
@@ -202,6 +203,11 @@ class ConfigurationManager implements SingletonInterface
             null,
             null,
         );
+    }
+
+    protected function fetchPageRecord(int $pageId): ?array
+    {
+        return BackendUtility::getRecord('pages', $pageId);
     }
 
     /**
