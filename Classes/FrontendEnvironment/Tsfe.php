@@ -20,6 +20,7 @@
 namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -198,7 +199,17 @@ class Tsfe implements SingletonInterface
                 $tsfe->absRefPrefix = self::getAbsRefPrefixFromTSFE($tsfe);
                 $tsfe->calculateLinkVars([]);
             } catch (Throwable $exception) {
-                // @todo: logging
+                $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+                $logger->log(
+                    SolrLogManager::WARNING,
+                    'TSFE initialization failed',
+                    [
+                        'pageId' => $pageId,
+                        'language' => $language,
+                        'exception' => $exception->getMessage(),
+                        'trace' => $exception->getTraceAsString()
+                    ]
+                );
                 $this->serverRequestCache[$cacheIdentifier] = null;
                 $this->tsfeCache[$cacheIdentifier] = null;
                 // Restore backend user, happens when initializeTsfe() is called from Backend context
