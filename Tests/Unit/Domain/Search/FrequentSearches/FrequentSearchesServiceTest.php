@@ -55,7 +55,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
     public function cachedResultIsUsedWhenIdentifierIsPresent(): void
     {
         $fakeConfiguration = [];
-        $expectedCacheIdentifier = 'frequentSearchesTags_' . md5(serialize($fakeConfiguration));
+        $expectedCacheIdentifier = 'frequentSearchesTags_' . hash('md5', serialize($fakeConfiguration));
         $this->configurationMock->expects(self::once())->method('getSearchFrequentSearchesConfiguration')->willReturn($fakeConfiguration);
 
         $this->fakeCacheResult($expectedCacheIdentifier, ['term a']);
