@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesRepositoryAtExtSolr;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
@@ -29,7 +30,6 @@ use Doctrine\DBAL\Exception as DBALException;
 use Solarium\Core\Client\Endpoint;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
-
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 use function json_encode;
@@ -61,8 +61,11 @@ class ConnectionManager implements SingletonInterface
      *
      * @throw InvalidConnectionException
      */
-    public function getSolrConnectionForEndpoints(array $readEndpointConfiguration, array $writeEndpointConfiguration): SolrConnection
-    {
+    public function getSolrConnectionForEndpoints(
+        array $readEndpointConfiguration,
+        array $writeEndpointConfiguration,
+        ?TypoScriptConfiguration $typoScriptConfiguration = null,
+    ): SolrConnection {
         $connectionHash = md5(json_encode($readEndpointConfiguration) . json_encode($writeEndpointConfiguration));
         if (!isset(self::$connections[$connectionHash])) {
             $readEndpoint = new Endpoint($readEndpointConfiguration);
@@ -75,7 +78,12 @@ class ConnectionManager implements SingletonInterface
                 throw new InvalidConnectionException('Invalid write endpoint');
             }
 
-            self::$connections[$connectionHash] = GeneralUtility::makeInstance(SolrConnection::class, $readEndpoint, $writeEndpoint);
+            self::$connections[$connectionHash] = GeneralUtility::makeInstance(
+                SolrConnection::class,
+                $readEndpoint,
+                $writeEndpoint,
+                $typoScriptConfiguration
+            );
         }
 
         return self::$connections[$connectionHash];
@@ -96,9 +104,15 @@ class ConnectionManager implements SingletonInterface
     /**
      * Creates a solr configuration from the configuration array and returns it.
      */
-    public function getConnectionFromConfiguration(array $solrConfiguration): SolrConnection
-    {
-        return $this->getSolrConnectionForEndpoints($solrConfiguration['read'], $solrConfiguration['write']);
+    public function getConnectionFromConfiguration(
+        array $solrConfiguration,
+        ?TypoScriptConfiguration $typoScriptConfiguration = null,
+    ): SolrConnection {
+        return $this->getSolrConnectionForEndpoints(
+            $solrConfiguration['read'],
+            $solrConfiguration['write'],
+            $typoScriptConfiguration
+        );
     }
 
     /**
@@ -113,7 +127,10 @@ class ConnectionManager implements SingletonInterface
             $site = $this->siteRepository->getSiteByPageId($pageId, $mountPointParametersList);
             $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
             $config = $site->getSolrConnectionConfiguration($language);
-            return $this->getConnectionFromConfiguration($config);
+            return $this->getConnectionFromConfiguration(
+                $config,
+                $site->getSolrConfiguration()
+            );
         } catch (InvalidArgumentException) {
             throw $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
         }
@@ -156,7 +173,10 @@ class ConnectionManager implements SingletonInterface
             $site = $this->siteRepository->getSiteByRootPageId($pageId);
             $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
             $config = $site->getSolrConnectionConfiguration($language ?? 0);
-            return $this->getConnectionFromConfiguration($config);
+            return $this->getConnectionFromConfiguration(
+                $config,
+                $site->getSolrConfiguration()
+            );
         } catch (InvalidArgumentException) {
             throw $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
         }
