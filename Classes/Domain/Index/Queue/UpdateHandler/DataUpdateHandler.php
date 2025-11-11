@@ -224,7 +224,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
             $this->applyPageChangesToQueue($uid);
         } else {
             $recordPageId = $this->getValidatedPid($table, $uid);
-            if ($recordPageId === null) {
+            if (empty($recordPageId)) {
                 return;
             }
             $this->applyRecordChangesToQueue($table, $uid, $recordPageId);
