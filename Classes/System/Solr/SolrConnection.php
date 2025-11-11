@@ -166,7 +166,7 @@ class SolrConnection
         $endpointKey = 'read';
         $client = $this->getClient($endpointKey);
         $this->initializeClient($client, $endpointKey);
-        return GeneralUtility::makeInstance(SolrReadService::class, $client);
+        return GeneralUtility::makeInstance(SolrReadService::class, $client, $this->configuration);
     }
 
     /**
@@ -189,7 +189,7 @@ class SolrConnection
         $endpointKey = 'write';
         $client = $this->getClient($endpointKey);
         $this->initializeClient($client, $endpointKey);
-        return GeneralUtility::makeInstance(SolrWriteService::class, $client);
+        return GeneralUtility::makeInstance(SolrWriteService::class, $client, $this->configuration);
     }
 
     /**
