@@ -76,7 +76,18 @@ class FrontendEnvironment implements SingletonInterface
 
         $tsfe = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdIgnoringLanguage($rootPageRecordUid);
         if (!$tsfe instanceof TypoScriptFrontendController) {
-            return false;
+            // TSFE initialization failed - try to get configuration from parent page
+            // This can happen for access-protected pages where TSFE setup fails
+            $parentPageId = $pageRecord['pid'] ?? 0;
+            if ($parentPageId > 0) {
+                $tsfe = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdIgnoringLanguage($parentPageId);
+            }
+            if (!$tsfe instanceof TypoScriptFrontendController) {
+                // Still failed - use default allowed page types from EXT:solr
+                // Default: 1 (Standard), 4 (Shortcut), 7 (Mount Point)
+                // This matches the default configuration in Configuration/TypoScript/Solr/setup.typoscript
+                return in_array($pageRecord['doktype'], [1, 4, 7]);
+            }
         }
         $configuration = $this->getConfigurationFromPageId($rootPageRecordUid, '', $tsfe->getLanguage()->getLanguageId());
         if ($configurationName !== null) {
