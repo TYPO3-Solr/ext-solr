@@ -3,15 +3,30 @@
   <file source-language="en" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_be.xlf" date="2021-12-15T13:10:00Z" product-name="solr" target-language="de">
     <header/>
     <body>
-			
-			
-			
-			
-
-			
-			
-			
-			
-		</body>
+      <trans-unit id="extConf.monitoringType" xml:space="preserve" approved="yes">
+				<source>Monitoring: Define how data updates should be monitored</source>
+			<target state="final">Monotoring: Lege fest, wie Datenupdates kontrolliert werden sollen</target></trans-unit>
+      <trans-unit id="extConf.monitoringType.I.0" xml:space="preserve" approved="yes">
+				<source>Immediate</source>
+			<target state="final">Sofort</target></trans-unit>
+      <trans-unit id="extConf.monitoringType.I.1" xml:space="preserve" approved="yes">
+				<source>Delayed (Scheduler task)</source>
+			<target state="final">Verzögert (Scheduler Task)</target></trans-unit>
+      <trans-unit id="extConf.monitoringType.I.2" xml:space="preserve" approved="yes">
+				<source>No monitoring at all</source>
+			<target state="final">Kein Monitoring</target></trans-unit>
+      <trans-unit id="task.eventQueueWorkerTask.title" xml:space="preserve" approved="yes">
+				<source>Event Queue Worker</source>
+			<target state="final">Event Queue Worker</target></trans-unit>
+      <trans-unit id="task.eventQueueWorkerTask.description" xml:space="preserve" approved="yes">
+				<source>Task handling the queue data update events. Required if monitoringType is set to "Delayed".</source>
+			<target state="final">Task, um die Aktualisierungsereignisse der Queue Daten abzuarbeiten. Erforderlich, wenn monitoringType auf „Verzögert“ gesetzt ist.</target></trans-unit>
+      <trans-unit id="task.eventQueueWorkerTask.limit" xml:space="preserve" approved="yes">
+				<source>Processing limit, the number of events to process</source>
+			<target state="final">Bearbeitungslimit, Anzahl der zu verarbeitenden Ereignisse</target></trans-unit>
+      <trans-unit id="task.eventQueueWorkerTask.statusMsg" xml:space="preserve" approved="yes">
+				<source>Data update events to process: %1$d, Errors: %2$d. %3$d events will be processed per run.</source>
+			<target state="final">Zu verarbeitende Datenaktualisierungen: %1$d, Fehler: %2$d. %3$d Ereignisse werden pro Ausführung verarbeitet.</target></trans-unit>
+    </body>
   </file>
 </xliff>
