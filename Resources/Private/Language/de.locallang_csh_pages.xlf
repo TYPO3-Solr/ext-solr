@@ -3,7 +3,10 @@
   <file t3:id="1415814793" source-language="en" datatype="plaintext" original="EXT:core/Resources/Private/Language/locallang_csh_pages.xlf" date="2020-12-1T15:22:32Z" product-name="context_help" target-language="de">
     <header/>
     <body>
-			
-		</body>
+      <trans-unit id="no_search_sub_entries.description" resname="no_search_sub_entries.description" approved="yes">
+        <source>If enabled, this option includes the sub entries of this page in Solr index. (NOTE: Value=0 means enabled in this view.)</source>
+        <target state="final">Wenn aktiviert, enthält diese Option die Untereinträge dieser Seite im Solr-Index. (Anmerkung: Wert=0 bedeutet in dieser Ansicht aktiviert.)</target>
+      </trans-unit>
+    </body>
   </file>
 </xliff>
