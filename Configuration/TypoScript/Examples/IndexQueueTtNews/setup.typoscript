@@ -55,6 +55,8 @@ plugin.tx_solr.index.queue {
 				typolink.returnLast = url
 				typolink.useCacheHash = 1
 			}
+
+			rootline = {$plugin.tt_news.singlePid}
 		}
 
 		attachments {

@@ -85,6 +85,8 @@ plugin.tx_solr.index.queue {
 					typolink.linkAccessRestrictedPages = 1
 				}
 			}
+
+			rootline = {$plugin.tx_news.settings.detailPid}
 		}
 
 		attachments = 1
