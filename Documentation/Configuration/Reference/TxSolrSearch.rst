@@ -326,6 +326,16 @@ Example:
         __pageSections.data = leveluid:0
     }
 
+**Note:** For this magic filter to work properly all documents require the hierarchical field `rootline`!
+
+Examples of how to fill `rootline` for news and files:
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.index.queue {
+        news.fields.rootline = {$plugin.tx_news.settings.detailPid}
+        _FILES.pageContext.__RecordContext.rootline = pid
+    }
 
 query.sortBy
 ~~~~~~~~~~~~
