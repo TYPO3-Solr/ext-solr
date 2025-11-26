@@ -178,6 +178,7 @@ class SearchController extends AbstractBaseController
             'search' => $formEvent->getSearch(),
             'additionalFilters' => $formEvent->getAdditionalFilters(),
             'pluginNamespace' => $formEvent->getPluginNamespace(),
+            'additionalVariables' => $formEvent->getAdditionalVariables(),
             'contentObjectData' => $this->request->getAttribute('currentContentObject')?->data,
         ];
 
