@@ -232,11 +232,11 @@ class PagesRepository extends AbstractRepository
     /**
      * Finds translation overlays by given page Id.
      *
-     * @return array{array{
+     * @return array<int, array{
      *    'pid': int,
      *    'l10n_parent': int,
      *    'sys_language_uid': int,
-     * }}
+     * }>
      *
      * @throws DBALException
      */
