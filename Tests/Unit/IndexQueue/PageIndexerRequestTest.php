@@ -38,7 +38,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
         $jsonEncodedParameters = json_encode([
             'item' => 1,
             'page' => 1,
-            'hash' => md5('1|1|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']),
+            'hash' => hash('md5', '1|1|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']),
         ]);
 
         $request = $this->getPageIndexerRequest($jsonEncodedParameters);
@@ -51,7 +51,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
         $jsonEncodedParameters = json_encode([
             'item' => 1,
             'page' => 1,
-            'hash' => md5('invalid|invalid|invalid'),
+            'hash' => hash('md5', 'invalid|invalid|invalid'),
         ]);
 
         $request = $this->getPageIndexerRequest($jsonEncodedParameters);
