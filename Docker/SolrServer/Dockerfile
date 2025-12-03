@@ -19,3 +19,10 @@ USER solr
 
 COPY --chown=solr:solr Resources/Private/Solr/ /var/solr/data
 RUN mkdir -p /var/solr/data/data
+
+# Copy the healthcheck script
+COPY --chown=solr:solr Docker/SolrServer/healthcheck.sh /usr/local/bin/healthcheck.sh
+
+# Add HEALTHCHECK instruction
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD /usr/local/bin/healthcheck.sh
