@@ -22,16 +22,51 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\DependencyInjection\Container;
 use Traversable;
+use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectFactory;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
 class AbstractIndexerTest extends SetUpUnitTestCase
 {
+    protected ContentObjectFactory|MockObject $contentObjectFactoryMock;
+    protected ContentObjectRenderer $contentObjectRenderer;
+    protected MockObject|AbstractContentObject $contentObjectMock;
+
     protected function setUp(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] = [];
         parent::setUp();
+
+        $container = new Container();
+        $tsfe = $this->getMockBuilder(TypoScriptFrontendController::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $request = new ServerRequest();
+        $this->contentObjectRenderer = new ContentObjectRenderer($tsfe);
+        $this->contentObjectRenderer->setRequest($request);
+        $this->contentObjectFactoryMock = $this->getMockBuilder(ContentObjectFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->contentObjectMock = $this->createMock(AbstractContentObject::class);
+
+        $this->contentObjectFactoryMock
+            ->expects(self::any())
+            ->method('getContentObject')
+            ->willReturn($this->contentObjectMock);
+
+        $container->set(ContentObjectFactory::class, $this->contentObjectFactoryMock);
+        $container->set(EventDispatcherInterface::class, new NoopEventDispatcher());
+        GeneralUtility::setContainer($container);
     }
 
     #[Test]
@@ -51,8 +86,8 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'csv_stringM'), 'Response of SOLR_MULTIVALUE is expected to be serialized');
         self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'categories_stringM'), 'Response of SOLR_MULTIVALUE is expected to be serialized');
 
-        self::assertFalse(AbstractIndexer::isSerializedValue($indexingConfiguration, 'category_stringM'), 'Non configured fields should allways be unserialized');
-        self::assertFalse(AbstractIndexer::isSerializedValue($indexingConfiguration, 'notConfigured_stringM'), 'Non configured fields should allways be unserialized');
+        self::assertFalse(AbstractIndexer::isSerializedValue($indexingConfiguration, 'category_stringM'), 'Non configured fields should always be unserialized');
+        self::assertFalse(AbstractIndexer::isSerializedValue($indexingConfiguration, 'notConfigured_stringM'), 'Non configured fields should always be unserialized');
     }
 
     #[Test]
@@ -98,11 +133,37 @@ class AbstractIndexerTest extends SetUpUnitTestCase
      */
     #[DataProvider('indexingDataProvider')]
     #[Test]
-    public function resolveFieldValue(array $indexingConfiguration, string $solrFieldName, array $data, $expectedValue): void
-    {
-        $subject = new class () extends AbstractIndexer {};
+    public function resolveFieldValue(
+        array $indexingConfiguration,
+        string $solrFieldName,
+        array $data,
+        array $mockSettings,
+        mixed $expectedValue,
+    ): void {
+
+        $subject = $this->getAccessibleMock(
+            AbstractIndexer::class,
+            array_merge(
+                [
+                    'getTypoScriptConfiguration',
+                    'getRequest',
+                ],
+                $mockSettings[AbstractIndexer::class]['methods'] ?? [],
+            ),
+        );
+        $subject->expects(self::any())
+            ->method('getTypoScriptConfiguration')
+            ->willReturn(new TypoScriptConfiguration($indexingConfiguration));
+        $subject->expects(self::any())
+            ->method('getRequest')
+            ->willReturn($this->createMock(ServerRequest::class));
         $tsfe = $this->createMock(TypoScriptFrontendController::class);
-        self::assertEquals(
+        $tsfe->id = 0;
+        if (is_callable($mockSettings['modsCallable'] ?? null)) {
+            $mockSettings['modsCallable']();
+        }
+        self::assertSame(
+            $expectedValue,
             $this->callInaccessibleMethod(
                 $subject,
                 'resolveFieldValue',
@@ -112,29 +173,67 @@ class AbstractIndexerTest extends SetUpUnitTestCase
                 $tsfe,
                 0,
             ),
-            $expectedValue,
         );
     }
 
     public static function indexingDataProvider(): Generator
     {
         yield 'solr field defined as string' => [
-            ['solrFieldName_stringS' => 'solrFieldName'],
-            'solrFieldName_stringS',
-            ['solrFieldName' => 'test'],
-            'test',
+            'indexingConfiguration' => ['solrFieldName_stringS' => 'solrFieldName'],
+            'solrFieldName' => 'solrFieldName_stringS',
+            'data' => ['solrFieldName' => 'test'],
+            'mockSettings' => [],
+            'expectedValue' => 'test',
         ];
         yield 'solr field defined as int' => [
-            ['solrFieldName_intS' => 'solrFieldName'],
-            'solrFieldName_intS',
-            ['solrFieldName' => 123],
-            123,
+            'indexingConfiguration' => ['solrFieldName_intS' => 'solrFieldName'],
+            'solrFieldName' => 'solrFieldName_intS',
+            'data' => ['solrFieldName' => 123],
+            'mockSettings' => [],
+            'expectedValue' => 123,
         ];
         yield 'solr field not defined' => [
-            ['solrFieldName_stringS' => 'solrFieldName'],
-            'solrFieldName_stringS',
-            [],
-            null,
+            'indexingConfiguration' => ['solrFieldName_stringS' => 'solrFieldName'],
+            'solrFieldName' => 'solrFieldName_stringS',
+            'data' => [],
+            'mockSettings' => [],
+            'expectedValue' => null,
+        ];
+        yield 'empty SOLR_RELATION/multiValue value must be resolved to null' => [
+            'indexingConfiguration' => [
+                'solrFieldName_stringM' => 'SOLR_RELATION',
+                'solrFieldName_stringM.' => [
+                    'localField' => 'fake_field',
+                    'multiValue' => 1,
+                ],
+            ],
+            'solrFieldName' => 'solrFieldName_stringM',
+            'data' => [],
+            'mockSettings' => [],
+            'expectedValue' => null,
+        ];
+        yield 'multiValued field within nested TypoScript with empty value must be resolved to null' => [
+            'indexingConfiguration' => [
+                'nestedTypoScriptDefField_stringM' => 'CASE',
+                'nestedTypoScriptDefField_stringM.' => [
+                    'key.field' => 'fake_case_variant',
+                    '1' => 'SOLR_RELATION',
+                    '1.' => [
+                        'localField' => 'fake_field',
+                        'multiValue' => 1,
+                    ],
+                ],
+            ],
+            'solrFieldName' => 'nestedTypoScriptDefField_stringM',
+            'data' => [
+                'fake_case_variant' => 1,
+            ],
+            'mockSettings' => [
+                'modsCallable' => (static function (): void {
+                    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'][] = ValidSerializedValueDetector::class;
+                }),
+            ],
+            'expectedValue' => null,
         ];
     }
 

@@ -98,10 +98,13 @@ class PageFieldMappingIndexer
      * Otherwise, the plain page record field value is used.
      *
      * @param string $solrFieldName The Solr field name to resolve the value from the item's record
-     * @return string|array The resolved value to be indexed
+     * @return array|float|int|string|null The resolved value to be indexed
      */
-    protected function resolveFieldValue(string $solrFieldName, Document $pageDocument, array $pageRecord): mixed
-    {
+    protected function resolveFieldValue(
+        string $solrFieldName,
+        Document $pageDocument,
+        array $pageRecord,
+    ): mixed {
         $pageIndexingConfiguration = $this->configuration->getIndexQueueFieldsConfigurationByConfigurationName($this->pageIndexingConfigurationName);
 
         if (isset($pageIndexingConfiguration[$solrFieldName . '.'])) {
@@ -117,7 +120,7 @@ class PageFieldMappingIndexer
             );
 
             if (AbstractIndexer::isSerializedValue($pageIndexingConfiguration, $solrFieldName)) {
-                $fieldValue = unserialize($fieldValue);
+                $fieldValue = unserialize($fieldValue) ?: null;
             }
         } else {
             $fieldValue = $pageRecord[$pageIndexingConfiguration[$solrFieldName]] ?? null;
