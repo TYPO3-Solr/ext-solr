@@ -50,6 +50,7 @@ abstract class AbstractIndexer
 
     /**
      * Holds field names that are denied to overwrite in thy indexing configuration.
+     * @var string[]
      */
     protected static array $unAllowedOverrideFields = ['type'];
 
@@ -186,40 +187,7 @@ abstract class AbstractIndexer
                 $solrFieldName,
             )
             ) {
-                $fieldValue = unserialize($fieldValue);
-            }
-        } elseif (
-            str_starts_with($indexingConfiguration[$solrFieldName], '<')
-        ) {
-            $referencedTsPath = trim(substr(
-                $indexingConfiguration[$solrFieldName],
-                1,
-            ));
-
-            // $name and $conf is loaded with the referenced values.
-            $typoScriptConfiguration = $this->getTypoScriptConfiguration(
-                $tsfe->id,
-                ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
-            );
-            $name = $typoScriptConfiguration->getValueByPath($referencedTsPath);
-            $conf = $typoScriptConfiguration->getValueByPath($referencedTsPath . '.');
-
-            $request = $this->getRequest(
-                $tsfe->id,
-                ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
-            );
-
-            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
-            $cObject->setRequest($request);
-            $cObject->start($data, $this->type);
-            $fieldValue = $cObject->cObjGetSingle($name, $conf);
-
-            if ($this->isSerializedValue(
-                $indexingConfiguration,
-                $solrFieldName,
-            )
-            ) {
-                $fieldValue = unserialize($fieldValue);
+                $fieldValue = unserialize($fieldValue) ?: null;
             }
         } else {
             $indexingFieldName = $indexingConfiguration[$solrFieldName] ?? null;
