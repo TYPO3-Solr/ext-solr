@@ -119,8 +119,9 @@ class PageFieldMappingIndexer
                 $pageIndexingConfiguration[$solrFieldName . '.'],
             );
 
-            if (AbstractIndexer::isSerializedValue($pageIndexingConfiguration, $solrFieldName)) {
-                $fieldValue = unserialize($fieldValue) ?: null;
+            $unserializedFieldValue = unserialize($fieldValue);
+            if (is_array($unserializedFieldValue) || is_object($unserializedFieldValue)) {
+                $fieldValue = $unserializedFieldValue;
             }
         } else {
             $fieldValue = $pageRecord[$pageIndexingConfiguration[$solrFieldName]] ?? null;
