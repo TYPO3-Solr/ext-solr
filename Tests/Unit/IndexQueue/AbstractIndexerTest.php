@@ -33,7 +33,6 @@ use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectFactory;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use UnexpectedValueException;
 
 class AbstractIndexerTest extends SetUpUnitTestCase
 {
@@ -67,65 +66,6 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         $container->set(ContentObjectFactory::class, $this->contentObjectFactoryMock);
         $container->set(EventDispatcherInterface::class, new NoopEventDispatcher());
         GeneralUtility::setContainer($container);
-    }
-
-    #[Test]
-    public function isSerializedValueCanHandleCustomContentElements(): void
-    {
-        $indexingConfiguration = [
-            'topic_stringM' => 'SOLR_CLASSIFICATION',
-            'categories_stringM' => 'SOLR_RELATION',
-            'categories_stringM.' => [
-                'multiValue' => true,
-            ],
-            'csv_stringM' => 'SOLR_MULTIVALUE',
-            'category_stringM' => 'SOLR_RELATION',
-        ];
-
-        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'topic_stringM'), 'Response of SOLR_CLASSIFICATION is expected to be serialized');
-        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'csv_stringM'), 'Response of SOLR_MULTIVALUE is expected to be serialized');
-        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'categories_stringM'), 'Response of SOLR_MULTIVALUE is expected to be serialized');
-
-        self::assertFalse(AbstractIndexer::isSerializedValue($indexingConfiguration, 'category_stringM'), 'Non configured fields should always be unserialized');
-        self::assertFalse(AbstractIndexer::isSerializedValue($indexingConfiguration, 'notConfigured_stringM'), 'Non configured fields should always be unserialized');
-    }
-
-    #[Test]
-    public function isSerializedValueCanHandleCustomInvalidSerializedValueDetector(): void
-    {
-        // register invalid detector
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'][] = InvalidSerializedValueDetector::class;
-        $this->expectException(UnexpectedValueException::class);
-        $this->expectExceptionMessageMatches('/.*InvalidSerializedValueDetector must implement interface.*/');
-
-        $indexingConfiguration = [
-            'topic_stringM' => 'SOLR_CLASSIFICATION',
-        ];
-
-        // when an invalid detector is registered we expect that an exception is thrown
-        AbstractIndexer::isSerializedValue($indexingConfiguration, 'topic_stringM');
-    }
-
-    #[Test]
-    public function isSerializedValueCanHandleCustomValidSerializedValueDetector(): void
-    {
-        // register invalid detector
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'][] = ValidSerializedValueDetector::class;
-
-        $indexingConfiguration = [
-            'topic_stringM' => 'SOLR_CLASSIFICATION',
-            'categories_stringM' => 'SOLR_RELATION',
-            'categories_stringM.' => [
-                'multiValue' => true,
-            ],
-            'csv_stringM' => 'SOLR_MULTIVALUE',
-            'category_stringM' => 'SOLR_RELATION',
-        ];
-        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'topic_stringM'), 'Every value should be treated as serialized by custom detector');
-        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'csv_stringM'), 'Every value should be treated as serialized by custom detector');
-        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'categories_stringM'), 'Every value should be treated as serialized by custom detector');
-        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'category_stringM'), 'Every value should be treated as serialized by custom detector');
-        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'notConfigured_stringM'), 'Every value should be treated as serialized by custom detector');
     }
 
     /**
@@ -178,28 +118,38 @@ class AbstractIndexerTest extends SetUpUnitTestCase
 
     public static function indexingDataProvider(): Generator
     {
-        yield 'solr field defined as string' => [
-            'indexingConfiguration' => ['solrFieldName_stringS' => 'solrFieldName'],
+        yield 'solr field mapped to a string TCA/record column' => [
+            'indexingConfiguration' => [
+                'solrFieldName_stringS' => 'record_column_string',
+            ],
             'solrFieldName' => 'solrFieldName_stringS',
-            'data' => ['solrFieldName' => 'test'],
+            'data' => [
+                'record_column_string' => 'test',
+            ],
             'mockSettings' => [],
             'expectedValue' => 'test',
         ];
-        yield 'solr field defined as int' => [
-            'indexingConfiguration' => ['solrFieldName_intS' => 'solrFieldName'],
+        yield 'solr field mapped to a int TCA/record column' => [
+            'indexingConfiguration' => [
+                'solrFieldName_intS' => 'record_column_int',
+            ],
             'solrFieldName' => 'solrFieldName_intS',
-            'data' => ['solrFieldName' => 123],
+            'data' => [
+                'record_column_int' => 123,
+            ],
             'mockSettings' => [],
             'expectedValue' => 123,
         ];
-        yield 'solr field not defined' => [
-            'indexingConfiguration' => ['solrFieldName_stringS' => 'solrFieldName'],
+        yield 'solr field mapped to not defined TCA/record column' => [
+            'indexingConfiguration' => [
+                'solrFieldName_stringS' => 'undefined_record_column',
+            ],
             'solrFieldName' => 'solrFieldName_stringS',
             'data' => [],
             'mockSettings' => [],
             'expectedValue' => null,
         ];
-        yield 'empty SOLR_RELATION/multiValue value must be resolved to null' => [
+        yield 'empty SOLR_RELATION/multiValue value must be resolved to empty string' => [
             'indexingConfiguration' => [
                 'solrFieldName_stringM' => 'SOLR_RELATION',
                 'solrFieldName_stringM.' => [
@@ -210,9 +160,9 @@ class AbstractIndexerTest extends SetUpUnitTestCase
             'solrFieldName' => 'solrFieldName_stringM',
             'data' => [],
             'mockSettings' => [],
-            'expectedValue' => null,
+            'expectedValue' => '',
         ];
-        yield 'multiValued field within nested TypoScript with empty value must be resolved to null' => [
+        yield 'multiValued field within nested TypoScript with empty value must be resolved to empty string' => [
             'indexingConfiguration' => [
                 'nestedTypoScriptDefField_stringM' => 'CASE',
                 'nestedTypoScriptDefField_stringM.' => [
@@ -229,11 +179,9 @@ class AbstractIndexerTest extends SetUpUnitTestCase
                 'fake_case_variant' => 1,
             ],
             'mockSettings' => [
-                'modsCallable' => (static function (): void {
-                    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'][] = ValidSerializedValueDetector::class;
-                }),
+                'modsCallable' => (static function (): void {}),
             ],
-            'expectedValue' => null,
+            'expectedValue' => '',
         ];
     }
 

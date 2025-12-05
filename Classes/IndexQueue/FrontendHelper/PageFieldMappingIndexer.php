@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\InvalidFieldNameException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -119,8 +120,14 @@ class PageFieldMappingIndexer
                 $pageIndexingConfiguration[$solrFieldName . '.'],
             );
 
-            if (AbstractIndexer::isSerializedValue($pageIndexingConfiguration, $solrFieldName)) {
-                $fieldValue = unserialize($fieldValue) ?: null;
+            try {
+                $unserializedFieldValue = @unserialize($fieldValue);
+                if (is_array($unserializedFieldValue) || is_object($unserializedFieldValue)) {
+                    $fieldValue = $unserializedFieldValue;
+                }
+            } catch (Throwable) {
+                // Evil catch, but anyway do nothing to prevent fluting the logs on indexing.
+                // If the cObject implementation do not provide data the fields are not present in index, which will be noticed and fixed by devs/integrators.
             }
         } else {
             $fieldValue = $pageRecord[$pageIndexingConfiguration[$solrFieldName]] ?? null;
