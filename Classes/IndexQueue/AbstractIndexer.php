@@ -17,9 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
-use ApacheSolrForTypo3\Solr\ContentObject\Classification;
-use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
-use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Exception\Exception as FrontendEnvironmentException;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -35,7 +32,6 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use UnexpectedValueException;
 
 /**
  * An abstract indexer class to collect a few common methods shared with other
@@ -50,6 +46,7 @@ abstract class AbstractIndexer
 
     /**
      * Holds field names that are denied to overwrite in thy indexing configuration.
+     * @var string[]
      */
     protected static array $unAllowedOverrideFields = ['type'];
 
@@ -181,45 +178,9 @@ abstract class AbstractIndexer
                 $indexingConfiguration[$solrFieldName . '.'],
             );
 
-            if ($this->isSerializedValue(
-                $indexingConfiguration,
-                $solrFieldName,
-            )
-            ) {
-                $fieldValue = unserialize($fieldValue);
-            }
-        } elseif (
-            str_starts_with($indexingConfiguration[$solrFieldName], '<')
-        ) {
-            $referencedTsPath = trim(substr(
-                $indexingConfiguration[$solrFieldName],
-                1,
-            ));
-
-            // $name and $conf is loaded with the referenced values.
-            $typoScriptConfiguration = $this->getTypoScriptConfiguration(
-                $tsfe->id,
-                ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
-            );
-            $name = $typoScriptConfiguration->getValueByPath($referencedTsPath);
-            $conf = $typoScriptConfiguration->getValueByPath($referencedTsPath . '.');
-
-            $request = $this->getRequest(
-                $tsfe->id,
-                ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
-            );
-
-            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
-            $cObject->setRequest($request);
-            $cObject->start($data, $this->type);
-            $fieldValue = $cObject->cObjGetSingle($name, $conf);
-
-            if ($this->isSerializedValue(
-                $indexingConfiguration,
-                $solrFieldName,
-            )
-            ) {
-                $fieldValue = unserialize($fieldValue);
+            $unserializedFieldValue = unserialize($fieldValue);
+            if (is_array($unserializedFieldValue) || is_object($unserializedFieldValue)) {
+                $fieldValue = $unserializedFieldValue;
             }
         } else {
             $indexingFieldName = $indexingConfiguration[$solrFieldName] ?? null;
@@ -254,70 +215,6 @@ abstract class AbstractIndexer
     }
 
     // Utility methods
-
-    /**
-     * Uses a field's configuration to detect whether its value returned by a
-     * content object is expected to be serialized and thus needs to be
-     * unserialized.
-     *
-     * @param array $indexingConfiguration Current item's indexing configuration
-     * @param string $solrFieldName Current field being indexed
-     * @return bool TRUE if the value is expected to be serialized, FALSE otherwise
-     */
-    public static function isSerializedValue(array $indexingConfiguration, string $solrFieldName): bool
-    {
-        return static::isSerializedResultFromRegisteredHook($indexingConfiguration, $solrFieldName)
-            || static::isSerializedResultFromCustomContentElement($indexingConfiguration, $solrFieldName);
-    }
-
-    /**
-     * Checks if the response comes from a custom content element that returns a serialized value.
-     */
-    protected static function isSerializedResultFromCustomContentElement(array $indexingConfiguration, string $solrFieldName): bool
-    {
-        $isSerialized = false;
-
-        // SOLR_CLASSIFICATION - always returns serialized array
-        if (($indexingConfiguration[$solrFieldName] ?? null) == Classification::CONTENT_OBJECT_NAME) {
-            $isSerialized = true;
-        }
-
-        // SOLR_MULTIVALUE - always returns serialized array
-        if (($indexingConfiguration[$solrFieldName] ?? null) == Multivalue::CONTENT_OBJECT_NAME) {
-            $isSerialized = true;
-        }
-
-        // SOLR_RELATION - returns serialized array if multiValue option is set
-        if (($indexingConfiguration[$solrFieldName] ?? null) == Relation::CONTENT_OBJECT_NAME && !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])) {
-            $isSerialized = true;
-        }
-
-        return $isSerialized;
-    }
-
-    /**
-     * Checks registered hooks if a SerializedValueDetector detects a serialized response.
-     */
-    protected static function isSerializedResultFromRegisteredHook(array $indexingConfiguration, string $solrFieldName): bool
-    {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] ?? null)) {
-            return false;
-        }
-
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] as $classReference) {
-            $serializedValueDetector = GeneralUtility::makeInstance($classReference);
-            if (!$serializedValueDetector instanceof SerializedValueDetector) {
-                $message = get_class($serializedValueDetector) . ' must implement interface ' . SerializedValueDetector::class;
-                throw new UnexpectedValueException($message, 1404471741);
-            }
-
-            $isSerialized = (bool)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
-            if ($isSerialized) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Makes sure a field's value matches a (dynamic) field's type.

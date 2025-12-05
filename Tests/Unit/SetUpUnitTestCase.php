@@ -59,32 +59,24 @@ abstract class SetUpUnitTestCase extends UnitTestCase
 
     /**
      * Returns the absolute path to a fixture file.
-     *
-     * @param $fixtureName
-     * @return string
      */
-    protected static function getFixturePathByName($fixtureName): string
+    protected static function getFixturePathByName(string $fixtureName): string
     {
         return self::getFixtureRootPath() . $fixtureName;
     }
 
     /**
      * Returns the content of a fixture file.
-     *
-     * @param string $fixtureName
-     * @return string
      */
-    protected static function getFixtureContentByName($fixtureName): string
+    protected static function getFixtureContentByName(string $fixtureName): string
     {
         return file_get_contents(self::getFixturePathByName($fixtureName));
     }
 
     /**
      * Returns the directory on runtime.
-     *
-     * @return string
      */
-    protected static function getRuntimeDirectory()
+    protected static function getRuntimeDirectory(): string
     {
         $rc = new ReflectionClass(static::class);
         return dirname($rc->getFileName());
@@ -99,11 +91,10 @@ abstract class SetUpUnitTestCase extends UnitTestCase
      * @return mixed
      * @throws ReflectionException
      */
-    protected function callInaccessibleMethod($object, $name, ...$arguments)
+    protected function callInaccessibleMethod(object $object, string $name, ...$arguments): mixed
     {
         $reflectionObject = new ReflectionObject($object);
         $reflectionMethod = $reflectionObject->getMethod($name);
-        $reflectionMethod->setAccessible(true);
         return $reflectionMethod->invokeArgs($object, $arguments);
     }
 
@@ -119,8 +110,11 @@ abstract class SetUpUnitTestCase extends UnitTestCase
      * @throws RuntimeException
      * @throws InvalidArgumentException
      */
-    protected function inject($target, $name, $dependency)
-    {
+    protected function inject(
+        object $target,
+        string $name,
+        mixed $dependency,
+    ): void {
         if (!is_object($target)) {
             throw new InvalidArgumentException('Wrong type for argument $target, must be object.', 1476107338);
         }
@@ -135,7 +129,6 @@ abstract class SetUpUnitTestCase extends UnitTestCase
             $target->$methodName($dependency);
         } elseif ($objectReflection->hasProperty($name)) {
             $property = $objectReflection->getProperty($name);
-            $property->setAccessible(true);
             $property->setValue($target, $dependency);
         } else {
             throw new RuntimeException(
