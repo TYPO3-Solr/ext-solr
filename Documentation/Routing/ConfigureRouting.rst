@@ -12,15 +12,15 @@ Locate the section of route enhancer `routeEnhancers`. If section available, add
 
 Use enhancer `SolrFacetMaskAndCombineEnhancer` as type of your route, and limit it to pages where the route should apply.
 
-The extension key have to be set to `tx_solr`.
+The extension key has to be set to `tx_solr`.
 
-Solr specific configuration will placed inside of key `solr`.
+Solr specific configuration will be placed inside the key `solr`.
 
 ..  note::
-    To use the EXT:solr possibility to create speaking URLs for Solr facets, activate option enableRouteEnhancer in the
+    To use the EXT:solr possibility to create speaking URLs for Solr facets, activate the option enableRouteEnhancer in the
     Extension Configuration.
 
-The following example shows a the basement of the enhancer configuration.
+The following example shows the basic enhancer configuration.
 
 .. code-block:: yaml
 
@@ -32,7 +32,7 @@ The following example shows a the basement of the enhancer configuration.
         extensionKey: tx_solr
         solr:
 
-If you use something else as *tx_solr* for the plugin namespace (see :ref:`conf-tx-solr-view`) you need additional configuration.
+If you use something else than *tx_solr* for the plugin namespace (see :ref:`conf-tx-solr-view`) you need additional configuration.
 
 Change the *extensionKey* from *tx_solr* to your plugin namespace.
 
@@ -45,4 +45,4 @@ Change the *extensionKey* from *tx_solr* to your plugin namespace.
           - 42
         extensionKey: search
 
-The next step is to configure a path segment or to mask the facets inside of the query.
+The next step is to configure a path segment or to mask the facets inside the query.
