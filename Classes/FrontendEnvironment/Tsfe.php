@@ -34,6 +34,7 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
@@ -297,47 +298,58 @@ class Tsfe implements SingletonInterface
      *
      * Note: The requested $pidToUse can be one of configured plugin.tx_solr.index.queue.[indexConfig].additionalPageIds.
      *
+     * @param int $pidToUse The page UID to start searching for a TS template
+     * @param ?int $rootPageId The root page UID is a fallback to detect TS template. That's the case, if $pidToUse is outside the current tree.
      * @throws AspectNotFoundException
      * @throws Exception\Exception
      * @throws DBALException
      */
     protected function getPidToUseForTsfeInitialization(int $pidToUse, ?int $rootPageId = null): ?int
     {
-        $incomingPidToUse = $pidToUse;
-        $incomingRootPageId = $rootPageId;
-
         // handle plugin.tx_solr.index.queue.[indexConfig].additionalPageIds
         if (isset($rootPageId) && !$this->isRequestedPageAPartOfRequestedSite($pidToUse, $rootPageId)) {
             return $rootPageId;
         }
+
         $pageRecord = BackendUtility::getRecord('pages', $pidToUse);
         $isSpacerOrSysfolder = ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SPACER || ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SYSFOLDER;
         if ($isSpacerOrSysfolder === false && $this->isPageAvailableForTSFE($pageRecord)) {
             return $pidToUse;
         }
+
+        try {
+            $site = $this->siteFinder->getSiteByPageId($pidToUse);
+        } catch (SiteNotFoundException $e) {
+            return $pidToUse;
+        }
+
+        // Copy&Paste from SysTemplateTreeBuilder::getTreeBySysTemplateRowsAndSite()
+        // TYPO3 core also checks site config before sys_template handling
+        $siteIsTypoScriptRoot = $site instanceof Site && $site->isTypoScriptRoot();
+        if ($siteIsTypoScriptRoot) {
+            return $site->getRootPageId();
+        }
+
+        // No site configuration found, so we need to find the closest page with active template
         /** @var ConfigurationPageResolver $configurationPageResolver */
         $configurationPageResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
-        $askedPid = $pidToUse;
-        $pidToUse = $configurationPageResolver->getClosestPageIdWithActiveTemplate($pidToUse);
-        if (!isset($pidToUse) && !isset($rootPageId)) {
+        $pidWithActiveTemplate = $configurationPageResolver->getClosestPageIdWithActiveTemplate($pidToUse);
+        if (!isset($pidWithActiveTemplate) && !isset($rootPageId)) {
             throw new Exception\Exception(
-                "The closest page with active template to page \"$askedPid\" could not be resolved and alternative rootPageId is not provided.",
+                "The closest page with active template to page \"$pidToUse\" could not be resolved and alternative rootPageId is not provided.",
                 1637339439,
             );
         }
-        if (isset($rootPageId)) {
-            return $rootPageId;
-        }
 
         // Check for recursion that can happen if the root page is a sysfolder with a typoscript template
-        if ($pidToUse === $incomingPidToUse && $rootPageId === $incomingRootPageId) {
+        if ($pidWithActiveTemplate === $pidToUse && $site->getRootPageId() === $rootPageId) {
             throw new Exception\Exception(
-                "Infinite recursion detected while looking for the closest page with active template to page \"$askedPid\" . Please note that the page with active template (usually the root page of the current tree) MUST NOT be a sysfolder.",
+                "Infinite recursion detected while looking for the closest page with active template to page \"$pidToUse\" . Please note that the page with active template (usually the root page of the current tree) MUST NOT be a sysfolder.",
                 1637339476,
             );
         }
 
-        return $this->getPidToUseForTsfeInitialization($pidToUse, $rootPageId);
+        return $this->getPidToUseForTsfeInitialization($pidWithActiveTemplate, $rootPageId);
     }
 
     /**
