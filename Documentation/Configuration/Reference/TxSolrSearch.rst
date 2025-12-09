@@ -115,6 +115,29 @@ Allows to configure the query type that should be configured
 ..  note::
     As no classic search term is used/available for the pure vector search, the highlighting component will not work. Using the siteHighlighting and an adjusted JavaScript could be an alternative approach.
 
+..  note::
+    Field `vectorContent` is used as a basis for vector generation, by default the contents of the `content` field are used, but you can define the contents via TypoScript
+
+   ..  code-block:: typoscript
+       :caption: How to define the contents of the vector field
+
+       plugin.tx_solr.index.queue.news.fields {
+         vectorContent = SOLR_CONTENT
+         vectorContent.cObject = COA
+         vectorContent.cObject {
+           10 = TEXT
+           10 {
+             field = name
+           }
+
+           15 = TEXT
+           15 {
+             field = bodytext
+           }
+         }
+       }
+
+
 query.allowEmptyQuery
 ~~~~~~~~~~~~~~~~~~~~~
 
