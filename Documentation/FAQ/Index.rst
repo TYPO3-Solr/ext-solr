@@ -770,3 +770,6 @@ The JSON file could look like this:
 ..  note::
     The number of dimensions depends on the selected model. The default in EXT:solr is 768, but you can adjust
     the correct number of dimensions by setting environment variable SOLR_VECTOR_DIMENSION
+
+..  tip::
+    `vector` and `vectorContent` are not `stored` and thus not included in the search results, but for debugging purposes, it may be helpful to set to `stored="true"` to verify the stored content.
