@@ -42,7 +42,6 @@ class AbstractIndexerTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] = [];
         parent::setUp();
 
         $container = new Container();
