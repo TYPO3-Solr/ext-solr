@@ -6,20 +6,41 @@ Releases 12.0
 
 ..  include:: ../HintAboutOutdatedChangelog.rst.txt
 
+Release 12.0.8
+==============
+
+Announcing the last 12.0.x maintenance release for TYPO3 12 LTS.
+The release-12.0.x branch is now closed—no further 12.0.x releases will be issued.
+Next up: TYPO3 12.1.0, arriving with integrated AI features.
+
+*   [TASK] Fix bug for phrase search with slops, bigram and trigram by Florian Rival `6d6a3f656 <https://github.com/TYPO3-Solr/ext-solr/commit/6d6a3f656>`_
+*   [TASK] 12.0.x-dev Bump solr from 9.9.0 to 9.10.0 in /Docker/SolrServer by Dependabot `690386fbf <https://github.com/TYPO3-Solr/ext-solr/commit/690386fbf>`_
+*   [TASK] Allow Apache Solr 9.9.0 by Markus Friedrich `cc4ed103d <https://github.com/TYPO3-Solr/ext-solr/commit/cc4ed103d>`_
+*   [BUGFIX] Fix CS issues by Markus Friedrich `f6eac9efa <https://github.com/TYPO3-Solr/ext-solr/commit/f6eac9efa>`_
+*   [BUGFIX] Allow initializer interface in event by Markus Friedrich `0b4a9da51 <https://github.com/TYPO3-Solr/ext-solr/commit/0b4a9da51>`_
+*   [FEATURE] calculate site hash by site-identifier strategy by setting by Rafael Kähm `e6f695d33 <https://github.com/TYPO3-Solr/ext-solr/commit/e6f695d33>`_
+*   [BUGFIX] set site field on record documents in same way as on pages by Rafael Kähm `1855d1430 <https://github.com/TYPO3-Solr/ext-solr/commit/1855d1430>`_
+*   [FEATURE] add typo3Context[_stringS] and domain[_stringS] fields to documents by Rafael Kähm `d177bd6d9 <https://github.com/TYPO3-Solr/ext-solr/commit/d177bd6d9>`_
+*   [BUGFIX] Site check fails in Tsfe fails by Markus Friedrich `ce9162012 <https://github.com/TYPO3-Solr/ext-solr/commit/ce9162012>`_
+*   [BUGFIX] Unable to register a custom facet package with FacetRegistry by Benoit Chenu `2fed45653 <https://github.com/TYPO3-Solr/ext-solr/commit/2fed45653>`_
+*   [TASK] 12.0.x-dev Update solarium/solarium requirement by dependabot[bot] `96f5978aa <https://github.com/TYPO3-Solr/ext-solr/commit/96f5978aa>`_
+*   [BUGFIX] Add checks for flexParentDatabaseRow key in methods by Myrmod `8dab2e159 <https://github.com/TYPO3-Solr/ext-solr/commit/8dab2e159>`_
+*   [BUGFIX] pass a request with page id to Configuration manager by Bernhard Sirlinger `2fb598216 <https://github.com/TYPO3-Solr/ext-solr/commit/2fb598216>`_
+
 
 Release 12.0.7
 ==============
 
 This is a maintenance release for TYPO3 12.4.
 
-*   [BUGFIX] 404 on auto-suggest with enabled TYPO3 enforceValidation setting by Wolfgang Wagner | wow! solution [(0e77552e7)](https://github.com/TYPO3-Solr/ext-solr/commit/0e77552e7)
-*   [TASK] 12.0.x-dev Update solarium/solarium requirement by dependabot[bot] [(b35104231)](https://github.com/TYPO3-Solr/ext-solr/commit/b35104231)
-*   [BUGFIX] Update hardcoded legacy css resource filepath by Charlotte [(3dc73c26c)](https://github.com/TYPO3-Solr/ext-solr/commit/3dc73c26c)
-*   [FEATURE] Add arm64 and ppc64le platforms to docker-images by Rafael Kähm [(754155e74)](https://github.com/TYPO3-Solr/ext-solr/commit/754155e74)
-*   [BUGFIX] Fix mount point garbage collection by Markus Friedrich [(d16959d34)](https://github.com/TYPO3-Solr/ext-solr/commit/d16959d34)
-*   [TASK] Drop workaround for cObj IMAGE by Markus Friedrich [(da76a4ec3)](https://github.com/TYPO3-Solr/ext-solr/commit/da76a4ec3)
-*   [TASK] Allow Apache Solr 9.8.1 by Markus Friedrich [(a2b940ef4)](https://github.com/TYPO3-Solr/ext-solr/commit/a2b940ef4)
-*   [BUGFIX] Avoid PHP warning if related record was not found by Albrecht Köhnlein `(df427ba46) <https://github.com/TYPO3-Solr/ext-solr/commit/df427ba46>`_
+*   [BUGFIX] 404 on auto-suggest with enabled TYPO3 enforceValidation setting by Wolfgang Wagner | wow! solution `0e77552e7 <https://github.com/TYPO3-Solr/ext-solr/commit/0e77552e7>`_
+*   [TASK] 12.0.x-dev Update solarium/solarium requirement by dependabot[bot] `b35104231 <https://github.com/TYPO3-Solr/ext-solr/commit/b35104231>`_
+*   [BUGFIX] Update hardcoded legacy css resource filepath by Charlotte `3dc73c26c <https://github.com/TYPO3-Solr/ext-solr/commit/3dc73c26c>`_
+*   [FEATURE] Add arm64 and ppc64le platforms to docker-images by Rafael Kähm `754155e74 <https://github.com/TYPO3-Solr/ext-solr/commit/754155e74>`_
+*   [BUGFIX] Fix mount point garbage collection by Markus Friedrich `d16959d34 <https://github.com/TYPO3-Solr/ext-solr/commit/d16959d34>`_
+*   [TASK] Drop workaround for cObj IMAGE by Markus Friedrich `da76a4ec3 <https://github.com/TYPO3-Solr/ext-solr/commit/da76a4ec3>`_
+*   [TASK] Allow Apache Solr 9.8.1 by Markus Friedrich `a2b940ef4 <https://github.com/TYPO3-Solr/ext-solr/commit/a2b940ef4>`_
+*   [BUGFIX] Avoid PHP warning if related record was not found by Albrecht Köhnlein `df427ba46 <https://github.com/TYPO3-Solr/ext-solr/commit/df427ba46>`_
 
 Release 12.0.6
 ==============

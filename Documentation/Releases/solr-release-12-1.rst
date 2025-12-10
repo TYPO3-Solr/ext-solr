@@ -13,19 +13,148 @@ Release 12.1.0
 We are happy to release EXT:solr 12.1.0.
 The focus of this release has been on AI integrations.
 
-
 New in this release
 -------------------
 
-TBD
-~~~
+Initial vector search
+~~~~~~~~~~~~~~~~~~~~~
 
-With EXT:solr 12.1 we provide the AI capabilities.
+In 12.1 and 13.1 a first step towards vector and AI support has been taken, focusing on enhancing search capabilities through vector search technology.
+This feature allows more sophisticated and semantically enriched search functionalities by utilizing vector representation of text data.
 
-!!! Upgrade to Apache Solr 9.9.0+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The current vector integration is very initial and intended as a starting point. We encourage users to test this feature and provide feedback to help improve its further development.
 
-This release requires Apache Solr v 9.9.0+.
+Key Highlights
+""""""""""""""
+
+1. **Initial Vector Search Introduction:**
+
+   - The EXT:solr version 12.1 and 13.1 introduces an initial vector search option as a new search variant.
+   - Activating this feature automatically generates vectors during indexing and frontend search.
+   - A connected large language model (LLM) is required for operation, though it is not directly related to EXT:solr.
+
+2. **Handling and Limitations of Vector Search:**
+
+   - Current implementation includes limitations, especially in error handling when required LLMs are not defined, leading to potential impairments in indexing or search.
+   - Indexing without vector calculation results in documents not being found despite successful index status.
+   - A missing or unavailable LLM during search attempts can lead to a `SolrInternalServerErrorException`, returning an HTTP status 500.
+
+3. **Configuring a Large Language Model:**
+
+   - To use vector search, a large language model must be connected to encode text into vectors.
+   - Configuration details are available in the Apache Solr Reference Guide 9.9.
+   - Models can be uploaded using a JSON file and cURL command.
+
+     ..  code-block:: json
+         :caption: Example configuration for the JSON file
+
+         {
+           "class": "dev.langchain4j.model.openai.OpenAiEmbeddingModel",
+           "name": "llm",
+           "params": {
+             "baseUrl": "https://api.openai.com/v1",
+             "apiKey": "apiKey-openAI",
+             "modelName": "text-embedding-3-small",
+             "timeout": 5,
+             "logRequests": true,
+             "logResponses": true,
+             "maxRetries": 2
+           }
+         }
+   - The number of dimensions for vectors defaults to 768 but can be adjusted via the `SOLR_VECTOR_DIMENSION` environment variable.
+
+Future Developments
+"""""""""""""""""""
+
+- **Improved Error Handling:**
+  Future versions plan to enhance error handling during vector indexing and search to increase robustness and reliability.
+
+- **Additional Query Types:**
+  New query types such as vector sorting and vector re-ranking are planned, allowing for more advanced search result manipulation.
+
+- **Backend Module for LLM Management:**
+  A backend module for managing large language models is anticipated, simplifying maintenance and configuration for developers.
+
+This introduction marks a significant advancement for TYPO3's search capabilities by integrating AI technologies, with ongoing improvements and features planned for future releases.
+
+For more detailed technical implementation and setup instructions, users should refer to the version 12.1 or 13.1 release notes and the associated documentation sections.
+
+Technical insights
+""""""""""""""""""
+
+As soon as vector search is enabled, EXT:solr will use the connected LLM to generate vectors during indexing and for each search in the frontend. During indexing vectors are generated based on field
+`vectorContent` which is by default filled with the contents of the `content` field. TypoScript indexing configurations can be used to customize the contents of the `vectorContent` field, e.g.:
+
+..  code-block:: typoscript
+    :caption: How to define the contents of the vector field
+
+    plugin.tx_solr.index.queue.news.fields {
+      vectorContent = SOLR_CONTENT
+      vectorContent.cObject = COA
+      vectorContent.cObject {
+        10 = TEXT
+        10 {
+          field = name
+        }
+
+        15 = TEXT
+        15 {
+          field = bodytext
+        }
+      }
+    }
+
+During indexing vectors will be created and stored in field `vector`.
+
+..  tip::
+    `vector` and `vectorContent` are not `stored` and thus not included in the search results, but for debugging purposes, it may be helpful to set to `stored="true"` to verify the stored content.
+
+!!! Upgrade to Apache Solr 9.10.0+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This release requires Apache Solr at least v9.10.0.
+
+
+!!! Allow nested TypoScript on multiValue fields
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This breaking change allows nested TypoScript index configurations for multi-value/array fields like:
+
+..  code-block:: typoscript
+    :caption: How to define the contents of the vector field
+
+    plugin.tx_solr.index.queue.pages.fields.someDoktypeSpecificCategory_stringM = CASE
+    plugin.tx_solr.index.queue.pages.fields.someDoktypeSpecificCategory_stringM {
+      key.field = doktype
+      80 = SOLR_RELATION
+      80 {
+        localField = some_doktype_specific_sys_category
+        multiValue = 1
+      }
+    }
+
+This feature removes the SerializedValueDetector hook without any replacements, due of `new TypoScript parser in Frontend on TYPO3 12 <https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Breaking-97816-NewTypoScriptParserInFrontend.html>`_,
+which does not require any manual stdWrap by EXT:solr.
+Each custom cObect implementation returning the array/object as PHP serialized string will be used without registration or check.
+Note: Empty arrays/objects will not be written to the documents.
+Check if your system uses the SerializedValueDetector hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue']`
+remove it and check the desired fields are properly indexed.
+
+All Changes
+-----------
+
+*   [FEATURE] Add DenseVectorField in schemas by @dkd-kaehm in `#4440 <https://github.com/TYPO3-Solr/ext-solr/pull/4440>`_
+*   [TASK] Prepare release-12.1.x branch by @dkd-kaehm in `#4445 <https://github.com/TYPO3-Solr/ext-solr/pull/4445>`_
+*   [TASK] 12.1.x-dev Update solarium/solarium requirement from 6.3.7 to 6.4.1 by @dependabot[bot] in `#4434 <https://github.com/TYPO3-Solr/ext-solr/pull/4434>`_
+*   [FEATURE] Initial vector search by @dkd-friedrich in `#4447 <https://github.com/TYPO3-Solr/ext-solr/pull/4447>`_
+*   [TASK] 12.1.x-dev Bump solr from 9.9.0 to 9.10.0 in /Docker/SolrServer by @dependabot[bot] in `#4463 <https://github.com/TYPO3-Solr/ext-solr/pull/4463>`_
+*   Fix bug for phrase search with slops, bigram and trigram by Florian Rival in `#4472 <https://github.com/TYPO3-Solr/ext-solr/pull/4472>`_
+*   [BUGFIX] Pass TypoScript configuration to SolrWriteService by @dkd-friedrich in `#4475 <https://github.com/TYPO3-Solr/ext-solr/pull/4475>`_
+*   [FEATURE] Add dateRange field type in schema by @tillhoerner in `#4487 <https://github.com/TYPO3-Solr/ext-solr/pull/4487>`_
+*   [BUGFIX] Replace TSFE call for page type by Sebastian Klein in `#4488 <https://github.com/TYPO3-Solr/ext-solr/pull/4488>`_
+*   [FEATURE] Improve BeforeSearchFormIsShownEvent by Simon Schaufelberger in `#4486 <https://github.com/TYPO3-Solr/ext-solr/pull/4486>`_
+*   [FEATURE] Add HEALTHCHECK to Dockerfile by @dkd-kaehm in `#4489 <https://github.com/TYPO3-Solr/ext-solr/pull/4489>`_
+*   !!![FEATURE] allow nested TypoScript on multiValue fields by @dkd-kaehm in `#4496 <https://github.com/TYPO3-Solr/ext-solr/pull/4496>`_
 
 
 Contributors
@@ -36,12 +165,193 @@ awesome community. Here are the contributors to this release.
 
 (patches, comments, bug reports, reviews, ... in alphabetical order)
 
-- TBD
+- Achim Fritz
+- Albrecht Köhnlein
+- Alexander Nitsche
+- Andreas Kießling
+- André Buchmann
+- Bastien Lutz
+- Benni Mack
+- Benoit Chenu
+- Christoph Lehmann
+- @chrrynobaka
+- Daniel Siepmann
+- `@derMatze82 <https://github.com/derMatze82>`_
+- Dmitry Dulepov
+- Elias Häußler
+- Eric Chavaillaz
+- Ernesto Baschny
+- Fabio Norbutat
+- Felix Ranesberger
+- ferfrost
+- Florian Rival
+- Georg Ringer
+- Harald Witt
+- `Hendrik vom Lehn <https://github.com/hvomlehn-sds>`_
+- `@hnadler <https://github.com/hnadler>`_
+- Henrik Elsner
+- Ingo Fabbri
+- Jennifer Geiß
+- Julian Hofmann
+- Kai Lochbaum
+- Lars Tode
+- Lukas Niestroj
+- Marc Hirdes
+- Mario Lubenka
+- `Markus Friedrich <https://github.com/dkd-friedrich>`_
+- Matthias Vogel
+- `@n3amil / Cypelt <https://github.com/n3amil>`_
+- Oliver Bartsch
+- Patrick Schriner
+- Philipp Kitzberger
+- Pierrick Caillon
+- `Rafael Kähm <https://github.com/dkd-kaehm>`_
+- René Maas
+- Roman Schilter
+- Sascha Nowak
+- Sascha Schieferdecker
+- Sebastian Schreiber
+- Silvia Bigler
+- Søren Malling
+- Stefan Frömken
+- Steve Lenz
+- Stämpfli Kommunikation
+- Sven Erens
+- Sven Teuber
+- Thomas Löffler
+- Till Hörner
+- Tim Dreier
+- Tobias Hövelborn
+- Tobias Schmidt
+- Torben Hansen
+- `@twojtylak <https://github.com/twojtylak>`_
+- Wolfgang Wagner | wow! solution
 
 Also a big thank you to our partners who have already concluded one of our new development participation packages such
 as Apache Solr EB for TYPO3 12 LTS (Maintenance):
 
-* TBD
+*   +Pluswerk AG
+*   .hausformat
+*   3m5. Media GmbH
+*   4eyes GmbH
+*   711media websolutions GmbH
+*   ACO Ahlmann SE & Co. KG
+*   AVM Computersysteme Vertriebs GmbH
+*   AmedickSommer Neue Medien GmbH
+*   Ampack AG
+*   Amt der Oö Landesregierung
+*   Autorité des Marchés Financiers (Québec)
+*   Bandesinstitut für Schule und Medien Berlin-Brandenburg
+*   Beeeh IT
+*   Bytebetrieb GmbH & Co. KG
+*   CARL von CHIARI GmbH
+*   CDG 59
+*   CPS GmbH
+*   CS2 AG
+*   Columbus Interactive GmbH
+*   Connecta AG
+*   DGB Rechtsschutz GmbH
+*   DMK E-BUSINESS GmbH
+*   DP-Medsystems AG
+*   DSCHOY GmbH
+*   Davitec GmbH
+*   Deutsches Literaturarchiv Marbach
+*   Die Medialen GmbH
+*   Digitale Offensive GmbH
+*   EB-12LTS-FEATURE
+*   Eidg. Forschungsanstalt WSL
+*   F7 Media GmbH
+*   FTI Touristik GmbH
+*   Fachagentur Nachwachsende Rohstoffe fnr.de
+*   Forte Digital Germany GmbH
+*   GPM Deutsche Gesellschaft für Projektmanagement e. V.
+*   Gernot Leitgab
+*   Getdesigned GmbH
+*   Groupe Toumoro inc
+*   HEAD acoustics GmbH
+*   HSPV NRW
+*   Hochschule Koblenz Standort Remagen
+*   INOTEC Sicherheitstechnik GmbH
+*   IW Medien GmbH
+*   Internezzo
+*   Intersim AG
+*   KONVERTO AG
+*   Kassenzahnärztliche Vereinigung Bayerns (KZVB)
+*   Kassenärztliche Vereinigung Rheinland-Pfalz
+*   Kreis Euskirchen
+*   Kwintessens B.V.
+*   L.N. Schaffrath DigitalMedien GmbH
+*   LOUIS INTERNET GmbH
+*   La Financière agricole du Québec
+*   Land Tirol
+*   Landeskriminalamt Thüringen
+*   Leuchtfeuer Digital Marketing GmbH
+*   Lingner Consulting New Media GmbH
+*   MEDIENHAUS der Evangelischen Kirche in Hessen und Nassau GmbH
+*   Macaw Germany Cologne GmbH
+*   Marketing Factory Consulting GmbH
+*   NEW.EGO GmbH
+*   OST Ostschweizer Fachhochschule
+*   ProPotsdam GmbH
+*   Provitex GmbH Provitex GmbH
+*   Québec.ca gouv.qc.ca
+*   Randstad Digital
+*   Rechnungshof Österreich
+*   Red Dot GmbH & Co. KG
+*   SIWA Online GmbH
+*   SUNZINET GmbH
+*   Sandstein Neue Medien GmbH
+*   Schoene neue kinder GmbH
+*   Serviceplan Suisse AG
+*   Snowflake Productions GmbH
+*   Stadtverwaltung Villingen-Schwenningen
+*   Statistik Österreich
+*   Studio 9 GmbH
+*   Stämpfli AG
+*   Systime/Gyldendal A/S
+*   Südwestfalen IT
+*   THE BRETTINGHAMS GmbH
+*   Talleux & Zöllner GbR
+*   Typoheads GmbH
+*   UEBERBIT GmbH
+*   Universität Regensburg
+*   VisionConnect.de
+*   WACON Internet GmbH
+*   WIND Internet BV
+*   Webtech AG
+*   Werbeagentur netzpepper
+*   XIMA MEDIA GmbH
+*   b13 GmbH
+*   bgm websolutions GmbH & Co. KG
+*   chiliSCHARF GmbH
+*   clickstorm GmbH
+*   cosmoblonde GmbH
+*   cron IT GmbH
+*   cyperfection GmbH
+*   digit.ly
+*   gedacht
+*   graphodata GmbH
+*   grips IT GmbH
+*   helhum.io
+*   in2code GmbH
+*   jweiland.net
+*   keeen GmbH
+*   medien.de mde GmbH
+*   mehrwert intermediale kommunikation GmbH
+*   mellowmessage GmbH
+*   morbihan.fr
+*   ochschule Furtwangen
+*   pietzpluswild GmbH
+*   plan2net GmbH
+*   rms. relationship marketing solutions GmbH
+*   rocket-media GmbH & Co KG
+*   sgalinski Internet Services
+*   studio ahoi Weitenauer Schwardt GbR
+*   visuellverstehen GmbH
+*   webconsulting business services gmbh
+*   werkraum Digitalmanufaktur GmbH
+*   wow! solution
+*   zimmer7 GmbH
 
 How to Get Involved
 ===================
