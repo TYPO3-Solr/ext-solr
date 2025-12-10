@@ -2,18 +2,11 @@ name: build
 
 on:
   push:
-    branches: [ main, release-13.0.x, release-12.1.x, release-12.0.x, task/*_compatibility ]
+    branches: [ main, release-13.1.x ]
     tags:
       - "**"
   pull_request:
-    branches: [ main, release-13.0.x, release-12.1.x, release-12.0.x, task/*_compatibility ]
-
-  # Run tests daily at 19:23 to get TYPO3 changes and fix them immediately.
-  # @todo:
-  #   * run only on dev-<TYPO3-LTS-branch/alias>
-  #   * create issue on GH or message via TYPO3 Slack bot, if tests failed
-  schedule:
-    - cron:  '23 19 * * *'
+    branches: [ main, release-13.1.x ]
 
 env:
   IS_ON_GITHUB_ACTIONS: 'true'
@@ -24,7 +17,7 @@ env:
   TESTING_SOLR_PORT: 8983
   LOCAL_VOLUME_NAME: 'solrci-volume'
   LOCAL_VOLUME_PATH: '/home/runner/work/ext-solr/ext-solr/.Build/data-solr'
-  BRANCH_NAME: 'main'
+  BRANCH_NAME: 'release-13.1.x'
 
 jobs:
   ci_bootstrapping:
@@ -208,7 +201,6 @@ jobs:
     needs: tests
     if: |
       (
-        github.ref == 'refs/heads/main' ||
         startsWith(github.ref, 'refs/heads/release-') ||
         startsWith(github.ref, 'refs/tags/')
       )
@@ -251,8 +243,8 @@ jobs:
             org.opencontainers.image.created=${{ env.NOW }}
             org.opencontainers.image.source=${{github.server_url}}/${{github.repository}}
             org.opencontainers.image.revision=${{github.sha}}
-            org.opencontainers.image.url=https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/Appendix/DockerTweaks.html
-            org.opencontainers.image.documentation=https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/Index.html
+            org.opencontainers.image.url=https://docs.typo3.org/p/apache-solr-for-typo3/solr/13.1/en-us/Appendix/DockerTweaks.html
+            org.opencontainers.image.documentation=https://docs.typo3.org/p/apache-solr-for-typo3/solr/13.1/en-us/Index.html
 
       -
         name: Set up QEMU
