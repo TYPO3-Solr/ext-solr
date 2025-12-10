@@ -98,7 +98,7 @@ class RecordMonitor
 
         // track publish / swap events for records (workspace support)
         // command "version"
-        if ($command === 'version' && $value['action'] === 'swap') {
+        if ($command === 'version' && ($value['action'] === 'publish' || $value['action'] === 'swap')) {
             $this->eventDispatcher->dispatch(
                 new VersionSwappedEvent($uid, $table),
             );
