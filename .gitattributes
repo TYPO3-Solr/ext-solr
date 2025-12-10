@@ -8,6 +8,4 @@
 /Build/ export-ignore
 /CONTRIBUTING.md export-ignore
 /dependabot.yml export-ignore
-/Dockerfile export-ignore
-/PULL_REQUEST_TEMPLATE.md export-ignore
 /Tests/ export-ignore
