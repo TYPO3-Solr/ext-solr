@@ -11,14 +11,14 @@
 	  project-contact="https://typo3.slack.com/archives/C02FF05Q4"
 	  project-repository="https://github.com/TYPO3-Solr/ext-solr"
 	  project-issues="https://github.com/TYPO3-Solr/ext-solr/issues"
-	  edit-on-github-branch="release-12.0.x"
+	  edit-on-github-branch="release-12.1.x"
 	  edit-on-github="TYPO3-Solr/ext-solr"
 	  typo3-core-preferred="stable"
   />
   <project
 	  title="Apache Solr for TYPO3"
-	  release="12.0.6"
-	  version="12.0"
+	  release="12.1.0"
+	  version="12.1"
 	  copyright="since 2009 by dkd &amp; contributors"
   />
 </guides>

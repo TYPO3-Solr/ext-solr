@@ -3,7 +3,7 @@
 [![TYPO3 12](https://img.shields.io/badge/TYPO3-12-orange.svg?style=flat-square)](https://get.typo3.org/version/12)
 [![Total Downloads](http://poser.pugx.org/apache-solr-for-typo3/solr/downloads)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 [![Monthly Downloads](https://poser.pugx.org/apache-solr-for-typo3/solr/d/monthly)](https://packagist.org/packages/apache-solr-for-typo3/solr)
-[![Build Status](https://github.com/TYPO3-Solr/ext-solr/actions/workflows/ci.yml/badge.svg?branch=release-12.0.x)](https://github.com/TYPO3-Solr/ext-solr/actions?query=branch:release-12.0.x)
+[![Build Status](https://github.com/TYPO3-Solr/ext-solr/actions/workflows/ci.yml/badge.svg?branch=release-12.1.x)](https://github.com/TYPO3-Solr/ext-solr/actions?query=branch:release-12.1.x)
 
 # Apache Solr for TYPO3 CMS
 
@@ -25,7 +25,7 @@ Further details including a comparison chart are provided at the program homepag
 |                  | URL                                                             |
 |------------------|-----------------------------------------------------------------|
 | **Repository:**  | https://github.com/TYPO3-Solr/ext-solr                          |
-| **Read online:** | https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/ |
+| **Read online:** | https://docs.typo3.org/p/apache-solr-for-typo3/solr/12.1/en-us/ |
 | **TER:**         | https://extensions.typo3.org/extension/solr                     |
 | **Homepage:**    | https://www.typo3-solr.com/                                     |
 | **Fund:**        | https://shop.dkd.de/Produkte/Apache-Solr-fuer-TYPO3/            |
