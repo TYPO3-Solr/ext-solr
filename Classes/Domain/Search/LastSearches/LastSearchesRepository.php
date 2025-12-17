@@ -139,8 +139,6 @@ class LastSearchesRepository extends AbstractRepository
             ->set('keywords', $lastSearchesRow['keywords'])
             ->executeStatement();
 
-        if ($affectedRows === false) {
-            throw new InvalidArgumentException(vsprintf('By trying to update last searches row with values "%s" nothing was updated, make sure the given "sequence_id" exists in database.', [json_encode($lastSearchesRow)]), 1502717923);
-        }
+
     }
 }
