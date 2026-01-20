@@ -161,10 +161,10 @@ class PageIndexer extends Indexer
 
             $site = $siteFinder->getSiteByPageId($page['uid']);
 
-            foreach($solrConnections as $languageId => $solrConnection){
+            foreach ($solrConnections as $languageId => $solrConnection) {
                 $language = $site->getLanguageById($languageId);
 
-                if($language->getFallbackLanguageIds() === [0]){
+                if ($language->getFallbackLanguageIds() === [0]) {
                     // this language falls back to default language only -> remove Solr connection
                     unset($solrConnections[$languageId]);
                 }
