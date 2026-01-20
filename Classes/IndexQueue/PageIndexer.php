@@ -28,6 +28,7 @@ use Exception;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -155,6 +156,19 @@ class PageIndexer extends Indexer
         if ($pageTranslationVisibility->shouldBeHiddenInDefaultLanguage()) {
             // page is configured to hide the default translation -> remove Solr connection for default language
             unset($solrConnections[0]);
+
+            $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+
+            $site = $siteFinder->getSiteByPageId($page['uid']);
+
+            foreach($solrConnections as $languageId => $solrConnection){
+                $language = $site->getLanguageById($languageId);
+
+                if($language->getFallbackLanguageIds() === [0]){
+                    // this language falls back to default language only -> remove Solr connection
+                    unset($solrConnections[$languageId]);
+                }
+            }
         }
 
         if ($forceHideTranslationIfNoTranslatedRecordExists
