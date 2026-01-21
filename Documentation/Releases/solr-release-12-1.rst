@@ -6,6 +6,26 @@ Releases 12.1
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 12.1.1
+==============
+
+This is a security release for TYPO3 12 LTS.
+
+!!! Upgrade to Apache Solr 9.10.1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Apache Solr 9.10.1 fixes several security issues, please upgrade your Apache Solr instance!
+
+*   CVE-2025-54988: Apache Solr extraction module vulnerable to XXE attacks via XFA content in PDFs
+*   CVE-2026-22444: Apache Solr: Insufficient file-access checking in standalone core-creation requests
+*   CVE-2026-22022: Apache Solr: Unauthorized bypass of certain "predefined permission" rules in the RuleBasedAuthorizationPlugin
+
+
+All Changes
+-----------
+
+*   [DOCS] Update version matrix in main for current versions by @dkd-kaehm in `#4506 <https://github.com/TYPO3-Solr/ext-solr/pull/4506>`_
+*   [SECURITY] Update to Apache Solr 9.10.1 by @dkd-friedrich in `#4517 <https://github.com/TYPO3-Solr/ext-solr/pull/4517>`_
 
 Release 12.1.0
 ==============
@@ -165,193 +185,57 @@ awesome community. Here are the contributors to this release.
 
 (patches, comments, bug reports, reviews, ... in alphabetical order)
 
-- Achim Fritz
-- Albrecht Köhnlein
-- Alexander Nitsche
-- Andreas Kießling
-- André Buchmann
-- Bastien Lutz
-- Benni Mack
-- Benoit Chenu
-- Christoph Lehmann
-- @chrrynobaka
-- Daniel Siepmann
-- `@derMatze82 <https://github.com/derMatze82>`_
-- Dmitry Dulepov
-- Elias Häußler
-- Eric Chavaillaz
-- Ernesto Baschny
-- Fabio Norbutat
-- Felix Ranesberger
-- ferfrost
-- Florian Rival
-- Georg Ringer
-- Harald Witt
-- `Hendrik vom Lehn <https://github.com/hvomlehn-sds>`_
-- `@hnadler <https://github.com/hnadler>`_
-- Henrik Elsner
-- Ingo Fabbri
-- Jennifer Geiß
-- Julian Hofmann
-- Kai Lochbaum
-- Lars Tode
-- Lukas Niestroj
-- Marc Hirdes
-- Mario Lubenka
-- `Markus Friedrich <https://github.com/dkd-friedrich>`_
-- Matthias Vogel
-- `@n3amil / Cypelt <https://github.com/n3amil>`_
-- Oliver Bartsch
-- Patrick Schriner
-- Philipp Kitzberger
-- Pierrick Caillon
-- `Rafael Kähm <https://github.com/dkd-kaehm>`_
-- René Maas
-- Roman Schilter
-- Sascha Nowak
-- Sascha Schieferdecker
-- Sebastian Schreiber
-- Silvia Bigler
-- Søren Malling
-- Stefan Frömken
-- Steve Lenz
-- Stämpfli Kommunikation
-- Sven Erens
-- Sven Teuber
-- Thomas Löffler
-- Till Hörner
-- Tim Dreier
-- Tobias Hövelborn
-- Tobias Schmidt
-- Torben Hansen
-- `@twojtylak <https://github.com/twojtylak>`_
-- Wolfgang Wagner | wow! solution
+*   `Markus Friedrich <https://github.com/dkd-friedrich>`_
+*   `Rafael Kähm <https://github.com/dkd-kaehm>`_
+
 
 Also a big thank you to our partners who have already concluded one of our new development participation packages such
 as Apache Solr EB for TYPO3 12 LTS (Maintenance):
 
-*   +Pluswerk AG
-*   .hausformat
 *   3m5. Media GmbH
-*   4eyes GmbH
-*   711media websolutions GmbH
 *   ACO Ahlmann SE & Co. KG
-*   AVM Computersysteme Vertriebs GmbH
 *   AmedickSommer Neue Medien GmbH
-*   Ampack AG
-*   Amt der Oö Landesregierung
-*   Autorité des Marchés Financiers (Québec)
-*   Bandesinstitut für Schule und Medien Berlin-Brandenburg
-*   Beeeh IT
-*   Bytebetrieb GmbH & Co. KG
-*   CARL von CHIARI GmbH
 *   CDG 59
-*   CPS GmbH
-*   CS2 AG
+*   chiliSCHARF GmbH
 *   Columbus Interactive GmbH
-*   Connecta AG
-*   DGB Rechtsschutz GmbH
-*   DMK E-BUSINESS GmbH
-*   DP-Medsystems AG
-*   DSCHOY GmbH
+*   cosmoblonde GmbH
+*   CPS GmbH
 *   Davitec GmbH
 *   Deutsches Literaturarchiv Marbach
 *   Die Medialen GmbH
 *   Digitale Offensive GmbH
-*   EB-12LTS-FEATURE
 *   Eidg. Forschungsanstalt WSL
-*   F7 Media GmbH
-*   FTI Touristik GmbH
-*   Fachagentur Nachwachsende Rohstoffe fnr.de
-*   Forte Digital Germany GmbH
-*   GPM Deutsche Gesellschaft für Projektmanagement e. V.
+*   GAYA
 *   Gernot Leitgab
-*   Getdesigned GmbH
-*   Groupe Toumoro inc
-*   HEAD acoustics GmbH
+*   grips IT GmbH
+*   Gyldendal A/S
 *   HSPV NRW
-*   Hochschule Koblenz Standort Remagen
 *   INOTEC Sicherheitstechnik GmbH
-*   IW Medien GmbH
-*   Internezzo
 *   Intersim AG
-*   KONVERTO AG
 *   Kassenzahnärztliche Vereinigung Bayerns (KZVB)
-*   Kassenärztliche Vereinigung Rheinland-Pfalz
-*   Kreis Euskirchen
-*   Kwintessens B.V.
-*   L.N. Schaffrath DigitalMedien GmbH
-*   LOUIS INTERNET GmbH
 *   La Financière agricole du Québec
-*   Land Tirol
+*   Landesinstitut für Schule und Medien Berlin-Brandenburg
 *   Landeskriminalamt Thüringen
-*   Leuchtfeuer Digital Marketing GmbH
 *   Lingner Consulting New Media GmbH
+*   LST AG
+*   medien.de mde GmbH
 *   MEDIENHAUS der Evangelischen Kirche in Hessen und Nassau GmbH
-*   Macaw Germany Cologne GmbH
-*   Marketing Factory Consulting GmbH
+*   mellowmessage GmbH
 *   NEW.EGO GmbH
 *   OST Ostschweizer Fachhochschule
-*   ProPotsdam GmbH
 *   Provitex GmbH Provitex GmbH
-*   Québec.ca gouv.qc.ca
 *   Randstad Digital
-*   Rechnungshof Österreich
-*   Red Dot GmbH & Co. KG
-*   SIWA Online GmbH
-*   SUNZINET GmbH
-*   Sandstein Neue Medien GmbH
-*   Schoene neue kinder GmbH
+*   rms. relationship marketing solutions GmbH
 *   Serviceplan Suisse AG
-*   Snowflake Productions GmbH
-*   Stadtverwaltung Villingen-Schwenningen
-*   Statistik Österreich
+*   sgalinski Internet Services
+*   Stratis
 *   Studio 9 GmbH
-*   Stämpfli AG
-*   Systime/Gyldendal A/S
-*   Südwestfalen IT
-*   THE BRETTINGHAMS GmbH
-*   Talleux & Zöllner GbR
-*   Typoheads GmbH
-*   UEBERBIT GmbH
-*   Universität Regensburg
-*   VisionConnect.de
-*   WACON Internet GmbH
-*   WIND Internet BV
+*   SUNZINET GmbH
 *   Webtech AG
 *   Werbeagentur netzpepper
-*   XIMA MEDIA GmbH
-*   b13 GmbH
-*   bgm websolutions GmbH & Co. KG
-*   chiliSCHARF GmbH
-*   clickstorm GmbH
-*   cosmoblonde GmbH
-*   cron IT GmbH
-*   cyperfection GmbH
-*   digit.ly
-*   gedacht
-*   graphodata GmbH
-*   grips IT GmbH
-*   helhum.io
-*   in2code GmbH
-*   jweiland.net
-*   keeen GmbH
-*   medien.de mde GmbH
-*   mehrwert intermediale kommunikation GmbH
-*   mellowmessage GmbH
-*   morbihan.fr
-*   ochschule Furtwangen
-*   pietzpluswild GmbH
-*   plan2net GmbH
-*   rms. relationship marketing solutions GmbH
-*   rocket-media GmbH & Co KG
-*   sgalinski Internet Services
-*   studio ahoi Weitenauer Schwardt GbR
-*   visuellverstehen GmbH
-*   webconsulting business services gmbh
-*   werkraum Digitalmanufaktur GmbH
-*   wow! solution
 *   zimmer7 GmbH
+
+
 
 How to Get Involved
 ===================

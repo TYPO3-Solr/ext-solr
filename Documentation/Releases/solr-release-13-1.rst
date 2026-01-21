@@ -6,6 +6,25 @@ Releases 13.1
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 13.1.1
+==============
+
+This is a security release for TYPO3 13 LTS.
+
+!!! Upgrade to Apache Solr 9.10.1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Apache Solr 9.10.1 fixes several security issues, please upgrade your Apache Solr instance!
+
+*   CVE-2025-54988: Apache Solr extraction module vulnerable to XXE attacks via XFA content in PDFs
+*   CVE-2026-22444: Apache Solr: Insufficient file-access checking in standalone core-creation requests
+*   CVE-2026-22022: Apache Solr: Unauthorized bypass of certain "predefined permission" rules in the RuleBasedAuthorizationPlugin
+
+All Changes
+-----------
+
+*   [DOCS] Update version matrix in main for current versions by @dkd-kaehm in `#4506 <https://github.com/TYPO3-Solr/ext-solr/pull/4506>`_
+*   [SECURITY] Update to Apache Solr 9.10.1 by @dkd-friedrich in `#4516 <https://github.com/TYPO3-Solr/ext-solr/pull/4516>`_
 
 Release 13.1.0
 ==============
@@ -250,42 +269,81 @@ as Apache Solr EB for TYPO3 13 LTS (Feature):
 *   +Pluswerk AG
 *   .hausformat
 *   711media websolutions GmbH
+*   Agentur Koch
 *   Amt der Oö Landesregierung
 *   Autorité des marchés financiers
+*   b13 GmbH
 *   Berlin-Brandenburgische Akademie der Wissenschaften
-*   Bestellung EB13 SOS Software GmbH für Telekom
+*   bgm websolutions GmbH & Co. KG
+*   Brain Appeal GmbH
+*   BRETTINGHAMS GmbH
+*   Bytebetrieb GmbH & Co. KG
+*   CARL von CHIARI GmbH
+*   chiliSCHARF GmbH
+*   clickstorm GmbH
+*   coding. powerful. systems. CPS GmbH
+*   Columbus Interactive GmbH
+*   cosmoblonde GmbH
+*   cron IT GmbH
 *   CS2 AG
+*   cyperfection GmbH
+*   Die Medialen GmbH
+*   DMK E-BUSINESS GmbH
+*   DSCHOY GmbH
+*   Eidg. Forschungsanstalt WSL
+*   Eulenblick GmbH
 *   F7 Media GmbH
 *   Fachhochschule Erfurt
 *   Getdesigned GmbH
-*   Groupe Toumoro inc
-*   KONVERTO AG
-*   Kassenärztliche Vereinigung Rheinland-Pfalz
-*   Kreis Euskirchen
-*   LOUIS INTERNET GmbH
-*   Leuchtfeuer Digital Marketing GmbH
-*   LfdA - Labor für digitale Angelegenheiten GmbH
-*   MOSAIQ GmbH
-*   Marketing Factory Digital GmbH
-*   ProPotsdam GmbH
-*   SITE'NGO
-*   Snowflake Productions GmbH
-*   Stämpfli AG
-*   THE BRETTINGHAMS GmbH
-*   b13 GmbH
-*   clickstorm GmbH
-*   cron IT GmbH
 *   graphodata GmbH
+*   Groupe Toumoro inc
+*   Gyldendal A/S
+*   Hirsch & Wölfl GmbH
 *   i-kiu motion
 *   in2code GmbH
+*   INESSS Institut national d'excellence en santé et en services sociaux
 *   internezzo ag
+*   IW Medien GmbH
 *   jweiland.net e.K.
+*   Kassenärztliche Vereinigung Rheinland-Pfalz
+*   KONVERTO AG
+*   Kreis Euskirchen
+*   Kwintessens B.V.
+*   L.N. Schaffrath DigitalMedien GmbH
+*   Land Tirol - DVT - Daten-Verarbeitung-Tirol GmbH
+*   Leuchtfeuer Digital Marketing GmbH
+*   LfdA - Labor für digitale Angelegenheiten GmbH
+*   Lingner Consulting New Media GmbH
+*   LOUIS INTERNET GmbH
+*   Marketing Factory Digital GmbH
+*   mce.gouv.qc.ca
 *   mehrwert intermediale kommunikation GmbH
+*   mellowmessage GmbH
+*   Metropole de Lyon
+*   MOSAIQ GmbH
 *   network.publishing Möller-Westbunk GmbH
+*   pick2webServices Magdalena Rybak
+*   pietzpluswild GmbH
 *   plan2net GmbH
+*   ProPotsdam GmbH
+*   punkt.de GmbH
 *   queo GmbH
+*   Sandstein Neue Medien GmbH
+*   SITE'NGO
+*   Snowflake Productions GmbH
+*   SOS Software GmbH für Telekom
+*   Statistik Austria
+*   Stratis
+*   Stämpfli AG
+*   Südwestfalen IT
+*   TWT Group GmbH
 *   visol digitale Dienstleistungen GmbH
 *   werkraum Digitalmanufaktur GmbH
+*   WIND Internet BV
+*   wow! solution
+*   WTL InnoHub GmbH
+*   XIMA MEDIA GmbH
+
 
 How to Get Involved
 ===================
