@@ -836,7 +836,7 @@ The following example shows how to keep all options of all facets by keeping the
 plugin.tx_solr.search.faceting.keepAllFacetsOnSelection = 1
 plugin.tx_solr.search.faceting.countAllFacetsForSelection = 1
 plugin.tx_solr.search.faceting.minimumCount = 0
-```
+```````````````````````````````````````````````
 
 faceting.showAllLink.wrap
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -874,7 +874,7 @@ Index style: tx_solr[filter][0]=type:pages
 Associative style: tx_solr[filter][type:pages]=1
 
 faceting.urlParameterSort
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Boolean
 :TS Path: plugin.tx_solr.search.faceting.urlParameterSort
@@ -1083,7 +1083,7 @@ faceting.facets.[facetName].sortBy
 :Type: String
 :TS Path: plugin.tx_solr.search.faceting.facets.[facetName].sortBy
 :Since: 1.2
-:Default: -
+:Default: \-
 :Options: alpha (aliases: index, lex)
 
 Sets how a single facet's options are sorted, by default they are sorted by number of results, highest on top.

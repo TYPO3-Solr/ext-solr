@@ -7,6 +7,21 @@
 Apache Solr for TYPO3 11.2
 ==========================
 
+Apache Solr for TYPO3 11.2.7 ELTS
+=================================
+
+This is a non-public a security release for TYPO3 10.4 ELTS.
+
+!!! Upgrade to Apache Solr 9.10.1
+---------------------------------
+
+Apache Solr 9.10.1 fixes several security issues, please upgrade your Apache Solr instance!
+
+*   CVE-2025-54988: Apache Solr extraction module vulnerable to XXE attacks via XFA content in PDFs
+*   CVE-2026-22444: Apache Solr: Insufficient file-access checking in standalone core-creation requests
+*   CVE-2026-22022: Apache Solr: Unauthorized bypass of certain "predefined permission" rules in the RuleBasedAuthorizationPlugin
+
+
 Apache Solr for TYPO3 11.2.6 ELTS
 =================================
 
@@ -211,7 +226,7 @@ This release contains:
 - [BUGFIX:BP:11.2] Use plugin namespace as label for flexforms by @dkd-friedrich in #3553
 - [BUGFIX:BP:11.2] Respect indexingPriority in QueueItemRepository by @dkd-friedrich in #3557
 - [BUGFIX:BP:11.2] use siteLanguage TypoScript object to get language id by @dkd-friedrich in #3555
-- [TASK:11.2] equalize CI/Github-Actions for release-11.0|2|5 and main by @dkd-kaehm in #3467
+- [TASK:11.2] equalize CI/Github-Actions for release-11.0\|2\|5 and main by @dkd-kaehm in #3467
 - [BUGFIX:BP:11.2] Sanitize frequent and last searches output by @dkd-friedrich in #3592
 - [BUGFIX:BP:11.2] changed from always picking the 0 array value to pic… by @dkd-friedrich in #3594
 - [BUGFIX] Enforce visibility context in Tsfe by @saitho in #3050
@@ -312,19 +327,47 @@ awesome community. Here are the contributors to this release.
 * Michael Wagner
 * Rafael Kähm
 
-Also a big thank you to our partners who have already concluded one of our new development participation packages for Apache Solr EB for TYPO3 10 LTS (Feature, Maintenance, ELTS):
+Also a big thank you to our partners who have already concluded one of our new development participation packages for Apache Solr EB for TYPO3 10 LTS (Maintenance, ELTS):
 
-* ACO Ahlmann SE & Co. KG
-* avenit AG
-* b13 GmbH
-* cyperfection GmbH
-* in2code GmbH
-* Leitgab Gernot
-* medien.de mde GmbH
-* TOUMORØ
-* visuellverstehen GmbH
-* WE DO communication GmbH GWA
-* WIND Internet
+*   ACO Ahlmann SE & Co. KG
+*   AmedickSommer Neue Medien GmbH
+*   Causal Sarl
+*   Cobytes
+*   Columbus Interactive GmbH
+*   Connetation Web Engineering GmbH
+*   cyperfection GmbH
+*   FONDA GmbH
+*   Hochschule Niederrhein
+*   i-fabrik GmbH
+*   i-kiu motion, graphic, backend gmbh
+*   in2code
+*   Intersim AG
+*   jweiland
+*   Landeskriminalamtes Thüringen
+*   Leitgab Gernot
+*   medien.de mde GmbH
+*   MOSAIQ GmbH Glenn Kusardi
+*   NEW.EGO GmbH
+*   novotegra
+*   Pädagogische Hochschule Karlsruhe
+*   ProPotsdam GmbH
+*   proudnerds.com
+*   Provitex GmbH
+*   PSV NEO GmbH
+*   Québec.ca gouv.qc.ca
+*   Shopseam media group gmbh
+*   Shopwegewerk GmbH
+*   SOS Software Service GmbH
+*   Studio 9 GmbH
+*   techniconcept.ch
+*   tirol.gv.at Land Tirol, p.A. DVT-Daten-Verarbeitung-Tirol GmbH
+*   TOUMORØ
+*   visuellverstehen GmbH
+*   WACON Internet GmbH
+*   WE DO communication GmbH GWA
+*   we.byte GmbH
+*   webschuppen GmbH
+*   WIND Internet BV
 
 How to Get Involved
 ===================
