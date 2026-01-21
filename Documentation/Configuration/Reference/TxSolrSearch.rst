@@ -1,4 +1,3 @@
-.. include:: /Includes.rst.txt
 .. _configuration.reference.solrsearch:
 
 tx_solr.search
@@ -89,7 +88,7 @@ additionalPersistentArgumentNames
 
 Comma-separated list of additional argument names, that should be added to the persistent arguments that are kept for sub request, like the facet and sorting urls. Hard coded argument names are q, filter and sort.
 
-Till solr version 6.5.x all parameters of the plugin namespace was added to the url again. With this setting you could enable this behavior again, but only with a whitelist of argument names.
+Till Solr version 6.5.x all parameters of the plugin namespace was added to the url again. With this setting you could enable this behavior again, but only with a whitelist of argument names.
 
 query
 -----
@@ -115,7 +114,7 @@ query.allowedSites
 :Since: 2.2
 :Default: __solr_current_site
 
-When indexing documents (pages, records, files, ...) into the Solr index, the solr extension adds a "siteHash". The siteHash is used to allow indexing multiple sites into one index and still have each site only find its own documents. This is achieved by adding a filter on the siteHash.
+When indexing documents (pages, records, files, ...) into the Solr index, the Solr extension adds a "siteHash". The siteHash is used to allow indexing multiple sites into one index and still have each site only find its own documents. This is achieved by adding a filter on the siteHash.
 
 Sometimes though, you want to search across multiple domains, then the siteHash is a blocker. Using the allowedSites setting you can set a comma-separated list of domains who's documents are allowed to be included in the current domain's search results. The default value is **__solr_current_site** which is a magic string/variable that is replaced with the current site's domain when querying the Solr server.
 
@@ -199,7 +198,7 @@ query.boostFunction
 :Example: recip(ms(NOW,created),3.16e-11,1,1)
 
 A boost function can be useful to influence the relevance calculation and boost some documents to appear more at the beginning of the result list.
-Technically the parameter will be mapped to the **"bf"** parameter in the solr query.
+Technically the parameter will be mapped to the **"bf"** parameter in the Solr query.
 
 Use cases for example could be:
 
@@ -241,7 +240,7 @@ Example (boosts tt_news documents by factor 10):
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.search.query.boostQuery.boostNews = (type:tt_news)^10
+    plugin.tx_solr.search.query.boostQuery.boostNews = type:tt_news^10
 
 
 query.tieParameter
@@ -483,7 +482,7 @@ results.resultsHighlighting.highlightFields
 
 A comma-separated list of fields to highlight.
 
-Note: The highlighting in solr (based on FastVectorHighlighter requires a field datatype with **termVectors=on**, **termPositions=on** and **termOffsets=on** which is the case for the content field).
+Note: The highlighting in Solr (based on FastVectorHighlighter requires a field datatype with **termVectors=on**, **termPositions=on** and **termOffsets=on** which is the case for the content field).
 If you add other fields here, make sure that you are using a datatype where this is configured.
 
 results.resultsHighlighting.fragmentSize
@@ -853,11 +852,12 @@ When ```keepAllFacetsOnSelection``` is active the count of a facet do not get re
 
 The following example shows how to keep all options of all facets by keeping the real document count, even when it has zero options:
 
-```
-plugin.tx_solr.search.faceting.keepAllFacetsOnSelection = 1
-plugin.tx_solr.search.faceting.countAllFacetsForSelection = 1
-plugin.tx_solr.search.faceting.minimumCount = 0
-```
+..  code-block:: typoscript
+
+    plugin.tx_solr.search.faceting.keepAllFacetsOnSelection = 1
+    plugin.tx_solr.search.faceting.countAllFacetsForSelection = 1
+    plugin.tx_solr.search.faceting.minimumCount = 0
+
 
 faceting.showAllLink.wrap
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -878,7 +878,7 @@ faceting.showEmptyFacets
 :Default: 0
 :Options: 0, 1
 
-By setting this option to 1, you will allow rendering of empty facets. Usually, if a facet does not offer any options to filter a resultset of documents, the facet header will not be shown. Using this option allows the header still to be rendered when no filter options are provided.
+By setting this option to 1, you will allow rendering of empty facets. Usually, if a facet does not offer any options to filter a result-set of documents, the facet header will not be shown. Using this option allows the header still to be rendered when no filter options are provided.
 
 faceting.urlParameterStyle
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -889,7 +889,7 @@ faceting.urlParameterStyle
 :Default: index
 
 
-Allows to change the URL style of facets. 
+Allows to change the URL style of facets.
 
 Possible values:
 
@@ -910,7 +910,7 @@ Example:
     }
 
 faceting.urlParameterSort
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Boolean
 :TS Path: plugin.tx_solr.search.faceting.urlParameterSort
@@ -983,10 +983,10 @@ faceting.facets.[facetName].additionalExcludeTags
 :Since: 9.0
 :Required: no
 
-The settings ``keepAllOptionsOnSelection``` and ``keepAllFacetsOnSelection``` are used internally to build exclude tags for facets in order to exclude the filters from the facet counts.
-This helps to keep the counts of a facet as expected by the user, in some usecases (Read also: http://yonik.com/multi-select-faceting/).
+The settings ```keepAllOptionsOnSelection``` and ```keepAllFacetsOnSelection``` are used internally to build exclude tags for facets in order to exclude the filters from the facet counts.
+This helps to keep the counts of a facet as expected by the user, in some use-cases (Read also: http://yonik.com/multi-select-faceting/).
 
-With the setting ``additionalExcludeTags``` you can add tags of factes that should be excluded from the counts as well.
+With the setting ```additionalExcludeTags``` you can add tags of facets that should be excluded from the counts as well.
 
 **Note:** This setting is only available for option facets by now.
 
@@ -999,7 +999,7 @@ faceting.facets.[facetName].addFieldAsTag
 :Required: no
 :Default: false
 
-When you want to add fields as ```additionalExcludeTags``` for a facet a tag for this facet needs to exist. You can use this setting to force the creation of a tag for this facet in the solr query.
+When you want to add fields as ```additionalExcludeTags``` for a facet a tag for this facet needs to exist. You can use this setting to force the creation of a tag for this facet in the Solr query.
 
 faceting.facets.[facetName].field
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1032,7 +1032,7 @@ faceting.facets.[facetName].excludeValues
 
 Defines a comma separated list of options that are excluded (The value needs to match the value in solr)
 
-Important: This setting only makes sence for option based facets (option, query, hierarchy)
+Important: This setting only makes sense for option based facets (option, query, hierarchy)
 
 
 faceting.facets.[facetName].facetLimit
@@ -1119,7 +1119,7 @@ faceting.facets.[facetName].sortBy
 :Type: String
 :TS Path: plugin.tx_solr.search.faceting.facets.[facetName].sortBy
 :Since: 1.2
-:Default: -
+:Default: by count of results
 :Options: alpha (aliases: index, lex)
 
 Sets how a single facet's options are sorted, by default they are sorted by number of results, highest on top.
@@ -1139,7 +1139,6 @@ Example:
         }
         sortBy = metrics_newest desc
     }
-
 
 
 faceting.facets.[facetName].manualSortOrder
@@ -1192,11 +1191,11 @@ faceting.facets.[facetName].minimumCount
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Integer
-:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].minumumCount
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].minimumCount
 :Since: 8.0
 :Default: 1
 
-Set's the minimumCount for a single facet. This can be usefull e.g. to set the minimumCount of a single facet to 0,
+Set's the minimumCount for a single facet. This can be useful e.g. to set the minimumCount of a single facet to 0,
 to have the options available even when there is result available.
 
 **Note**: This setting is only available for facets that are using the json faceting API of solr. By now this
@@ -1394,7 +1393,7 @@ EXT:solr provides the following renderingInstructions that you can use in your p
 **FormatDate**:
 
 This rendering instruction can be used in combination with a date field or an integer field that hold a timestamp. You can use this rendering instruction to format the facet value on rendering.
-A common usecase for this is, when the datatype in solr needs to be sortable (date or int) but you need to render the date as readable date option in the frontend:
+A common use-case for this is, when the datatype in Solr needs to be sortable (date or int) but you need to render the date as readable date option in the frontend:
 
 
 .. code-block:: typoscript
@@ -1457,6 +1456,11 @@ To use the different variants of the documents you can access "document.variants
 This can be used for example for de-duplication to list variants of the same document below a certain document.
 
 Note: Internally this is implemented with Solr field collapsing
+
+..  warning::
+
+    If you're additionally using the `grouping` feature, the `variants`
+    feature will be deactivated completely.
 
 :Type: Boolean
 :TS Path: plugin.tx_solr.search.variants
