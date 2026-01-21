@@ -1,6 +1,3 @@
-.. include:: /Includes.rst.txt
-
-
 .. _conf-frontend:
 
 
@@ -14,13 +11,13 @@ This part describes the frontend part of EXT:solr. Since version 7.0.0 the templ
 	:titlesonly:
 	:glob:
 
-	Concepts.rst
-	Structure.rst
-	Results.rst
-	Facets.rst
-	Autosuggest.rst
-	Sorting.rst
-	PerPage.rst
-	Ajax.rst
-	Customize.rst
-	Languages.rst
+	Concepts
+	Structure
+	Results
+	Facets
+	Autosuggest
+	Sorting
+	PerPage
+	Ajax
+	Customize
+	Languages
