@@ -1,6 +1,6 @@
-FROM solr:9.8.1
-MAINTAINER dkd Internet Service GmbH <solr-eb-support@dkd.de>
-ENV TERM linux
+FROM solr:9.10.1
+LABEL org.opencontainers.image.authors="dkd Internet Service GmbH solr-eb-support@dkd.de"
+ENV TERM=linux
 
 ARG SOLR_UNIX_UID="8983"
 ARG SOLR_UNIX_GID="8983"
