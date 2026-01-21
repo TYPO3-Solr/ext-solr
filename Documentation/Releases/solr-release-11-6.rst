@@ -6,6 +6,27 @@ Releases 11.6
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 11.6.5 ELTS
+===================
+
+This is a non-public security release for TYPO3 11.5 ELTS.
+
+!!! Upgrade to Apache Solr 9.10.1
+---------------------------------
+
+Apache Solr 9.10.1 fixes several security issues, please upgrade your Apache Solr instance!
+
+*   CVE-2025-54988: Apache Solr extraction module vulnerable to XXE attacks via XFA content in PDFs
+*   CVE-2026-22444: Apache Solr: Insufficient file-access checking in standalone core-creation requests
+*   CVE-2026-22022: Apache Solr: Unauthorized bypass of certain "predefined permission" rules in the RuleBasedAuthorizationPlugin
+
+Release 11.6.4 ELTS
+===================
+
+This is a non-public maintenance release for TYPO3 11.5 ELTS, containing:
+
+*   [FEATURE] Add arm64 platforms to docker-images and push to registry.dkd.de by Rafael Kähm (a28d4a1)
+
 Release 11.6.3 ELTS
 ===================
 
@@ -224,118 +245,131 @@ awesome community. Here are the contributors to this release.
 * Adam Koppe
 * @BastiLu
 * Christoph Lehmann
+* @itzonban
+* Jens Jacobsen
 * Markus Friedrich
 * Rafael Kähm
+* Stefan Frömken
 
-Also a big thank you to our partners who have already concluded one of our new development participation packages such as Apache Solr EB for TYPO3 11 LTS:
+Also a big thank you to our partners who have already concluded one of our new development participation packages for Apache Solr EB for TYPO3 11 LTS (Feature, Maintenance, ELTS):
 
-* .hausformat GmbH
-* 3m5. Media GmbH
-* abteilung_digital GmbH
-* ACO Ahlmann SE & Co. KG
-* Agence E-magineurs
-* Agenda d.o.o.
-* AgenturWebfox GmbH
-* Amedick & Sommer Neue Medien GmbH
-* Ampack AG
-* Atol CD
-* Autorité des Marchés Financiers (Québec)
-* avenit AG
-* b13 GmbH
-* brandung GmbH Oliver Krause
-* Bundesanstalt Statistik Österreich
-* Bytebetrieb GmbH & Co. KG
-* Canton de Neuchâtel - SIEN
-* CARL von CHIARI GmbH
-* chiliSCHARF GmbH
-* clickstorm GmbH
-* co-operate Wegener & Rieke GmbH
-* Columbus Interactive GmbH
-* cosmoblonde GmbH
-* creativ clicks GmbH
-* cyperfection GmbH
-* digit.ly
-* DMK E-BUSINESS GmbH
-* Earlybird GmbH & Co KG
-* elancer-team GmbH
-* eulenblick Kommunikation und Werbung
-* Fa. .hausformat
-* Fa. Ausy
-* Fachagentur Nachwachsende Rohstoffe fnr.de
-* Fachhochschule Erfurt
-* Fourdegrees GbR
-* FTI Touristik GmbH
-* für novotegra GmbH (BayWa r.e. AG)
-* Getdesigned GmbH
-* GFE Media GmbH
-* graphodata GmbH
-* gressourcenmangel integral gmbh
-* grips IT GmbH
-* hiroki digital GmbH
-* Hirsch & Wölfl GmbH
-* Hochschule Furtwangen
-* Hochschule Koblenz - Standort Remagen
-* HSPV NRW
-* in2code
-* INOTEC Sicherheitstechnik GmbH
-* Institut national d'excellence en santé et en services sociaux inesss.qc.ca
-* internezzo ag
-* IW Medien GmbH
-* jweiland
-* Kassenärztliche Vereinigung Rheinland-Pfalz
-* Kreis Euskirchen
-* L.N. Schaffrath DigitalMedien GmbH
-* La Financière agricole du Québec
-* Landeskriminalamt Thüringen
-* Leuchtfeuer Digital Marketing GmbH
-* Lingner Consulting New Media GmbH
-* LOUIS INTERNET GmbH
-* Marketing Factory
-* media::essenz
-* medien.de mde GmbH
-* mehrwert intermediale kommunikation GmbH
-* Meridium Technologies
-* MOSAIQ GmbH
-* NEW.EGO GmbH
-* Overlap GmbH & Co KG
-* Patrick Gaumond Québec.ca gouv.qc.ca
-* peytz.dk
-* pietzpluswild GmbH
-* Pixelant / Resultify
-* Plan Software GmbH
-* Plan.Net France
-* ProPotsdam GmbH
-* Provitex GmbH
-* queo GmbH
-* rms. relationship marketing solutions GmbH
-* RR Anwendungsentwicklung
-* Sandstein Neue Medien GmbH
-* Schoene neue kinder GmbH
-* seam media group gmbh
-* Shop F7 Media GmbH
-* SITE'NGO
-* Snowflake Productions GmbH
-* SOS Software Service GmbH
-* Stadtverwaltung Villingen-Schwenningen
-* Stämpfli AG
-* systime.dk
-* Talleux & Zöllner GbR
-* tirol.gv.at
-* toumoro.com
-* Typoheads GmbH
-* UEBERBIT GmbH
-* unternehmen online GmbH Co. KG (UO)
-* Verband der Vereine Creditreform e.V.
-* VisionConnect.de
-* visol digitale Dienstleistungen GmbH
-* visuellverstehen GmbH
-* WACON Internet GmbH
-* webconsulting business services gmbh
-* Webtech AG
-* Werbeagentur netzpepper
-* werkraum Digitalmanufaktur GmbH
-* wow! solution
-* zimmer7 GmbH
+*   .hausformat
+*   3m5. Media GmbH
+*   3m5. Media GmbH 3m5. Media GmbH
+*   abteilung_digital GmbH
+*   ACO Ahlmann SE & Co. KG
+*   Agence E-magineurs
+*   Agenda d.o.o.
+*   AgenturWebfox GmbH
+*   Amedick & Sommer Neue Medien GmbH
+*   Ampack AG
+*   Atol CD
+*   Ausy
+*   Autorité des Marchés Financiers (Québec)
+*   avenit AG
+*   b13 GmbH
+*   bei Intersim AG
+*   brandung GmbH Oliver Krause
+*   Bytebetrieb GmbH & Co. KG
+*   Canton de Neuchâtel - SIEN
+*   CARL von CHIARI GmbH
+*   chiliSCHARF GmbH
+*   clickstorm GmbH
+*   clickstorm GmbH
+*   co-operate Wegener & Rieke GmbH
+*   Columbus Interactive GmbH
+*   cosmoblonde GmbH
+*   creativ clicks GmbH
+*   cyperfection GmbH
+*   digit.ly
+*   DMK E-BUSINESS GmbH
+*   dörler engineering services e.U.
+*   Earlybird GmbH & Co KG
+*   elancer-team GmbH
+*   eulenblick Kommunikation und Werbung
+*   F7 Media GmbH
+*   Fachagentur Nachwachsende Rohstoffe fnr.de
+*   Fachhochschule Erfurt
+*   Fourdegrees GbR
+*   FTI Touristik GmbH
+*   Getdesigned GmbH
+*   GFE Media GmbH
+*   graphodata GmbH
+*   grips IT GmbH
+*   hiroki digital GmbH
+*   Hirsch & Wölfl GmbH
+*   Hob by Horse GmbH
+*   Hochschule Furtwangen
+*   Hochschule Koblenz - Standort Remagen
+*   HSPV NRW
+*   in2code
+*   INOTEC Sicherheitstechnik GmbH
+*   internezzo ag
+*   IW Medien GmbH
+*   jweiland
+*   Kassenärztliche Vereinigung Rheinland-Pfalz
+*   kraftwerk Agentur für neue Kommunikation GmbH
+*   Kreis Euskirchen
+*   Kunstuniversität Graz
+*   L.N. Schaffrath DigitalMedien GmbH
+*   La Financière agricole du Québec
+*   Landeskriminalamt Thüringen
+*   Leitgab Gernot
+*   Leuchtfeuer Digital Marketing GmbH
+*   Lingner Consulting New Media GmbH
+*   LOUIS INTERNET GmbH
+*   Marketing Factory
+*   media::essenz
+*   medien.de mde GmbH
+*   MEDIENHAUS der Evangelischen Kirche in Hessen und Nassau GmbH
+*   mehrwert intermediale kommunikation GmbH
+*   Meridium Technologies
+*   MOSAIQ GmbH
+*   NEW.EGO GmbH
+*   novotegra GmbH (BayWa r.e. AG)
+*   Overlap GmbH & Co KG
+*   peytz.dk
+*   pick2webServices Magdalena Rybak
+*   pietzpluswild GmbH
+*   Pixelant
+*   Plan Software GmbH
+*   Plan.Net France
+*   ProPotsdam GmbH
+*   Provitex GmbH
+*   queo GmbH
+*   Québec.ca gouv.qc.ca
+*   ressourcenmangel integral gmbh
+*   rms. relationship marketing solutions GmbH
+*   RR Anwendungsentwicklung Hr. Roskothen
+*   Sandstein Neue Medien GmbH
+*   Schoene neue kinder GmbH
+*   seam media group gmbh
+*   SITE'NGO
+*   Snowflake Productions GmbH
+*   SOS Software Service GmbH
+*   Stadtverwaltung Villingen-Schwenningen
+*   statistik.gv.at Bundesanstalt Statistik Österreich
+*   Stämpfli AG
+*   systime.dk
+*   Talleux & Zöllner GbR
+*   tirol.gv.at
+*   toumoro.com
+*   TWT reality bytes GmbH
+*   Typoheads GmbH
+*   UDG Rhein-Main GmbH
+*   UEBERBIT GmbH
+*   unternehmen online GmbH Co. KG (UO)
+*   Verband der Vereine Creditreform e.V.
+*   VisionConnect.de
+*   visol digitale Dienstleistungen GmbH
+*   visuellverstehen GmbH
+*   WACON Internet GmbH
+*   webconsulting business services gmbh
+*   Webtech AG
+*   Werbeagentur netzpepper
+*   werkraum Digitalmanufaktur GmbH
+*   wow! solution
+*   zimmer7 GmbH
 
 How to Get Involved
 ===================
@@ -354,5 +388,3 @@ https://shop.dkd.de/Produkte/Apache-Solr-fuer-TYPO3/
 or call:
 
 +49 (0)69 - 2475218 0
-
-
