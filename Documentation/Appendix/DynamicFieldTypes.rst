@@ -63,8 +63,8 @@ Extension               Type                                 Multivalue  Comment
 \*_textNgramS           Ngram (hello => he,ll,lo,hel,llo)    No
 \*_textNgramM           Ngram (hello => he,ll,lo,hel,llo)    Yes
 \*_textPath             textPath                             No
-\*_textExactS           textExact                            No
-\*_textExactM           textExact                            Yes
+\*_textExactS           textExact                            No          for wildcard searches
+\*_textExactM           textExact                            Yes         for wildcard searches
 \*_textSpellS           textSpell                            No
 \*_textSpellM           textSpell                            Yes
 \*_textSpellExactS      textSpellExact                       No
