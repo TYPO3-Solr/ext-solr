@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\StrategyFactory;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use Doctrine\DBAL\Exception as DBALException;
-use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -268,18 +267,14 @@ class GarbageHandler extends AbstractUpdateHandler
     public function getRecordWithFieldRelevantForGarbageCollection(string $table, int $uid): ?array
     {
         $garbageCollectionRelevantFields = $this->tcaService->getVisibilityAffectingFieldsByTable($table);
-        try {
-            $queryBuilder = $this->getQueryBuilderForTable($table);
-            $queryBuilder->getRestrictions()->removeAll();
-            $row = $queryBuilder
-                ->select(...GeneralUtility::trimExplode(',', $garbageCollectionRelevantFields, true))
-                ->from($table)
-                ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \Doctrine\DBAL\ParameterType::INTEGER)))
-                ->executeQuery()
-                ->fetchAssociative();
-        } catch (Throwable) {
-            $row = false;
-        }
+        $queryBuilder = $this->getQueryBuilderForTable($table);
+        $queryBuilder->getRestrictions()->removeAll();
+        $row = $queryBuilder
+            ->select(...GeneralUtility::trimExplode(',', $garbageCollectionRelevantFields, true))
+            ->from($table)
+            ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \Doctrine\DBAL\ParameterType::INTEGER)))
+            ->executeQuery()
+            ->fetchAssociative();
 
         return is_array($row) ? $row : null;
     }
