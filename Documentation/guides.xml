@@ -15,12 +15,12 @@
 	  project-discussions="https://typo3.slack.com/archives/C02FF05Q4"
 	  edit-on-github-branch="main"
 	  edit-on-github="TYPO3-Solr/ext-solr"
-	  typo3-core-preferred="13.4"
+	  typo3-core-preferred="main"
   />
   <project
 	  title="Apache Solr for TYPO3"
-	  release="13.0.0"
-	  version="13.1"
+	  release="14.0.0"
+	  version="14.0"
 	  copyright="since 2009 by dkd &amp; contributors"
   />
 </guides>
