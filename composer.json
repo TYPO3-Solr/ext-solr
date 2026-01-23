@@ -29,7 +29,7 @@
     "ext-simplexml": "*",
     "solarium/solarium": "6.4.1",
     "typo3/cms-backend": "*",
-    "typo3/cms-core": "^v13.4.2",
+    "typo3/cms-core": "14.*.*@dev",
     "typo3/cms-extbase": "*",
     "typo3/cms-fluid": "*",
     "typo3/cms-frontend": "*",
@@ -40,10 +40,10 @@
   },
   "require-dev": {
     "dg/bypass-finals": "^1.9",
-    "phpunit/phpunit": "^11.4",
+    "phpunit/phpunit": "^11.5.48",
     "typo3/cms-fluid-styled-content": "*",
     "typo3/coding-standards": "v0.8.0",
-    "typo3/testing-framework": "^9.0.1",
+    "typo3/testing-framework": "^9.3.0",
     "phpstan/phpstan": "^1.11",
     "phpstan/phpstan-phpunit": "^1.3"
   },
@@ -145,14 +145,14 @@
     },
     "TYPO3-Solr": {
       "version-matrix": {
-        "ext-tika": "^13.0",
-        "ext-solrfal": "^13.0",
-        "ext-solrconsole": "^13.0",
-        "ext-solrdebugtools": "^13.0",
+        "ext-tika": "^14.0",
+        "ext-solrfal": "^14.0",
+        "ext-solrconsole": "^14.0",
+        "ext-solrdebugtools": "^14.0",
         "Apache-Solr": [
           "9.10.1"
         ],
-        "configset": "ext_solr_13_1_0"
+        "configset": "ext_solr_14_0_0"
       },
       "ext-solrfal": {
       },
