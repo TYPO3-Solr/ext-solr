@@ -82,9 +82,8 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      * Renders search form-tag
      *
      * @throws AspectNotFoundException
-     * @noinspection PhpMissingReturnTypeInspection
      */
-    public function render()
+    public function render(): string
     {
         /** @var RequestInterface $request */
         $request = $this->renderingContext->getAttribute(ServerRequestInterface::class);
