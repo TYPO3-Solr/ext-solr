@@ -1,7 +1,7 @@
 {
   "name": "apache-solr-for-typo3/solr",
   "type": "typo3-cms-extension",
-  "description": "Apache Solr for TYPO3",
+  "description": "Apache Solr for TYPO3 - Apache Solr for TYPO3 is the enterprise search server you were looking for with special features such as Faceted Search or Synonym Support and incredibly fast response times of results within milliseconds.",
   "license": "GPL-3.0-or-later",
   "keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
   "homepage": "https://www.typo3-solr.com",
