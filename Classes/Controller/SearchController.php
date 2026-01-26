@@ -27,8 +27,10 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\View\FluidViewAdapter;
+use TYPO3\CMS\Core\View\ViewInterface;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3Fluid\Fluid\View\AbstractTemplateView;
+use TYPO3Fluid\Fluid\View\ViewInterface as FluidStandaloneViewInterface;
 
 /**
  * Class SearchController
@@ -56,8 +58,12 @@ class SearchController extends AbstractBaseController
         }
     }
 
-    public function initializeView(FluidViewAdapter $view): void
+    public function initializeView(FluidStandaloneViewInterface|ViewInterface $view): void
     {
+        if (!$view instanceof FluidViewAdapter) {
+            return;
+        }
+
         $variableProvider = GeneralUtility::makeInstance(SolrVariableProvider::class);
         $variableProvider->setSource($view->getRenderingContext()->getVariableProvider()->getSource());
         $view->getRenderingContext()->setVariableProvider($variableProvider);
