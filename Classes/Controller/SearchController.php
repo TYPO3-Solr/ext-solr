@@ -117,7 +117,9 @@ class SearchController extends AbstractBaseController
 
             // we pass the search result set to the controller context, to have the possibility
             // to access it without passing it from partial to partial
-            $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
+            if ($this->view instanceof FluidViewAdapter) {
+                $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
+            }
 
             $currentPage = $this->request->hasArgument('page') ? (int)$this->request->getArgument('page') : 1;
 
