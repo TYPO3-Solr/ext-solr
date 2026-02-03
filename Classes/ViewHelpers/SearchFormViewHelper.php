@@ -56,12 +56,9 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        $this->registerTagAttribute('enctype', 'string', 'MIME type with which the form is submitted');
-        $this->registerTagAttribute('method', 'string', 'Transfer type (GET or POST)', false, 'get');
-        $this->registerTagAttribute('name', 'string', 'Name of form');
-        $this->registerTagAttribute('onreset', 'string', 'JavaScript: On reset of the form');
-        $this->registerTagAttribute('onsubmit', 'string', 'JavaScript: On submit of the form');
-        $this->registerUniversalTagAttributes();
+        // Note: Tag attributes are now handled via additionalArguments in Fluid v4
+        // Only register 'method' as argument since it has a default value
+        $this->registerArgument('method', 'string', 'Transfer type (GET or POST)', false, 'get');
 
         $this->registerArgument('pageUid', 'integer', 'When not set current page is used');
         $this->registerArgument('additionalFilters', 'array', 'Additional filters');
@@ -99,6 +96,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $uri = $this->buildUriFromPageUidAndArguments($pageUid);
 
         $this->tag->addAttribute('action', trim($uri));
+        $this->tag->addAttribute('method', $this->arguments['method'] ?? 'get');
         if (($this->arguments['addSuggestUrl'] ?? null)) {
             $this->tag->addAttribute('data-suggest', $this->getSuggestUrl($this->arguments['additionalFilters'], $pageUid));
         }
