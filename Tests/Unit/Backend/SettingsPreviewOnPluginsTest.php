@@ -21,8 +21,10 @@ use ApacheSolrForTypo3\Solr\Backend\SettingsPreviewOnPlugins;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Backend\View\BackendViewFactory;
 use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
+use TYPO3\CMS\Core\Domain\RecordInterface;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Service\FlexFormService;
 
@@ -61,6 +63,7 @@ class SettingsPreviewOnPluginsTest extends SetUpUnitTestCase
         return $this->getMockBuilder(SettingsPreviewOnPlugins::class)
             ->setConstructorArgs([
                 'flexFormService' => $this->getMockOfFlexFormService(),
+                'backendViewFactory' => $this->createMock(BackendViewFactory::class),
             ])
             ->onlyMethods($methods)
             ->getMock();
@@ -70,12 +73,15 @@ class SettingsPreviewOnPluginsTest extends SetUpUnitTestCase
         string $table = 'tt_content',
         array $record = [],
     ): PageContentPreviewRenderingEvent {
+        $recordMock = $this->createMock(RecordInterface::class);
+        $recordMock->method('toArray')->willReturn($record);
+
         /** @var PageLayoutContext|MockObject $pageLayoutContextMock */
-        $pageLayoutContextMock =  $this->createMock(PageLayoutContext::class);
+        $pageLayoutContextMock = $this->createMock(PageLayoutContext::class);
         return new PageContentPreviewRenderingEvent(
             $table,
             (string)($record[(string)($GLOBALS['TCA'][$table]['ctrl']['type'] ?? '')] ?? ''),
-            $record,
+            $recordMock,
             $pageLayoutContextMock,
         );
     }

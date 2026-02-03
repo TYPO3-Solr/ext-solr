@@ -6,11 +6,15 @@ use ApacheSolrForTypo3\Solr\Backend\SettingsPreviewOnPlugins;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\View\BackendViewFactory;
 use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
+use TYPO3\CMS\Core\Domain\RecordInterface;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\View\ViewInterface;
 
 /**
  * EXT:solr offers a summary in the BE on search plugins, that summarizes the extension
@@ -68,6 +72,7 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
     {
         $settingsPreviewOnPlugins = new SettingsPreviewOnPlugins(
             $this->getMockOfFlexFormService($this->flexFormArray),
+            $this->getMockOfBackendViewFactory(),
         );
         $event = $this->getFakePageContentPreviewRenderingEvent(
             'tt_content',
@@ -93,12 +98,30 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
 
     protected function getFakePageContentPreviewRenderingEvent(string $table = 'tt_content', array $record = []): PageContentPreviewRenderingEvent
     {
+        $recordMock = $this->createMock(RecordInterface::class);
+        $recordMock->method('toArray')->willReturn($record);
+
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $pageLayoutContextMock = $this->createMock(PageLayoutContext::class);
+        $pageLayoutContextMock->method('getCurrentRequest')->willReturn($requestMock);
+
         return new PageContentPreviewRenderingEvent(
             $table,
             (string)($record[(string)($GLOBALS['TCA'][$table]['ctrl']['type'] ?? '')] ?? ''),
-            $record,
-            $this->createMock(PageLayoutContext::class),
+            $recordMock,
+            $pageLayoutContextMock,
         );
+    }
+
+    protected function getMockOfBackendViewFactory(): MockObject|BackendViewFactory
+    {
+        $viewMock = $this->createMock(ViewInterface::class);
+        $viewMock->method('render')->willReturn('<table><tr><td>ERROR: page is gone</td></tr><tr><td>>Filter appKey</td><td>test</td></tr><tr><td>sorting</td></tr><tr><td>boostFunction</td></tr><tr><td>boostQuery</td></tr><tr><td>10</td></tr><tr><td>myTemplateFile.html</td></tr></table>');
+
+        $backendViewFactoryMock = $this->createMock(BackendViewFactory::class);
+        $backendViewFactoryMock->method('create')->willReturn($viewMock);
+
+        return $backendViewFactoryMock;
     }
 
     protected function getMockOfFlexFormService(array $expectedFlexFormArray = []): MockObject|FlexFormService
