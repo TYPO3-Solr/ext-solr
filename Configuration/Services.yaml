@@ -378,6 +378,7 @@ services:
   ApacheSolrForTypo3\Solr\Report\:
     resource: '../Classes/Report/*'
     autoconfigure: true
+    autowire: true
 
   # Upgrade wizards
   ApacheSolrForTypo3\Solr\Updates\:
