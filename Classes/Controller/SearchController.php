@@ -26,7 +26,7 @@ use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\View\FluidViewAdapter;
+use TYPO3\CMS\Fluid\View\FluidViewAdapter;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3Fluid\Fluid\View\AbstractTemplateView;
 
