@@ -63,7 +63,10 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     private $previousErrorHandler;
 
     protected array $coreExtensionsToLoad = [
+        'typo3/cms-install',
+        'typo3/cms-reports',
         'typo3/cms-scheduler',
+        'typo3/cms-tstemplate',
         'typo3/cms-fluid-styled-content',
     ];
 
