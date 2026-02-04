@@ -1,6 +1,5 @@
 <?php
 
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 defined('TYPO3') or die('Access denied.');
@@ -15,11 +14,8 @@ $pluginSearchSignature = ExtensionUtility::registerPlugin(
     'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:tt_content.CType_pi_search',
     'extensions-solr-plugin-contentelement',
     'search',
-);
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:solr/Configuration/FlexForms/Form.xml',
-    $pluginSearchSignature,
+    '',
+    'FILE:EXT:solr/Configuration/FlexForms/Form.xml'
 );
 $GLOBALS['TCA']['tt_content']['types'][$pluginSearchSignature]['showitem'] = '
     --palette--;;headers,
@@ -43,11 +39,8 @@ $pluginResultsSignature = ExtensionUtility::registerPlugin(
     'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:tt_content.CType_pi_results',
     'extensions-solr-plugin-contentelement',
     'search',
-);
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:solr/Configuration/FlexForms/Results.xml',
-    $pluginResultsSignature,
+    'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:plugin_results_description',
+    'FILE:EXT:solr/Configuration/FlexForms/Results.xml'
 );
 $GLOBALS['TCA']['tt_content']['types'][$pluginResultsSignature]['showitem'] = '
     --palette--;;headers,
