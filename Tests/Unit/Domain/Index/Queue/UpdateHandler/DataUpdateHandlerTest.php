@@ -59,6 +59,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             DataUpdateHandler::class,
             [
                 'getRecord',
+                'getValidatedPid',
             ],
             [
                 $this->recordServiceMock,
@@ -81,10 +82,10 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
                 'sys_language_uid' => 0,
                 'doktype' => 1,
             ]);
-
-        $this->dataHandlerMock
+        // Mock getValidatedPid to return the dummy page ID (BackendUtility::getRecord is static and can't be mocked)
+        $this->dataUpdateHandler
             ->expects(self::any())
-            ->method('getPID')
+            ->method('getValidatedPid')
             ->willReturn(self::DUMMY_PAGE_ID);
     }
 
