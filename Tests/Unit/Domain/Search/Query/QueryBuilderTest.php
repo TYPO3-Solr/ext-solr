@@ -61,6 +61,16 @@ class QueryBuilderTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
+        // Register ContentObjectService mock for tests that create TypoScriptConfiguration instances
+        // Multiple instances needed as many tests create new TypoScriptConfiguration objects
+        $this->setUpTypoScriptConfigurationMocks(contentObjectServiceCount: 50);
+
+        // Register ContentObjectRenderer mocks for QueryBuilder methods that use stdWrap
+        // (QueryBuilder::getQueryFieldsFromConfiguration and QueryBuilder::applyPageSectionFilters)
+        $this->setUpContentObjectRenderer(instanceCount: 10);
+
         $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $this->loggerMock = $this->createMock(SolrLogManager::class);
         $this->siteHashServiceMock = $this->createMock(SiteHashService::class);
@@ -68,8 +78,12 @@ class QueryBuilderTest extends SetUpUnitTestCase
         $container = new Container();
         $container->set(EventDispatcherInterface::class, new NoopEventDispatcher());
         GeneralUtility::setContainer($container);
+    }
 
-        parent::setUp();
+    protected function tearDown(): void
+    {
+        GeneralUtility::purgeInstances();
+        parent::tearDown();
     }
 
     protected function getAllQueryParameters(Query $searchQuery): array
