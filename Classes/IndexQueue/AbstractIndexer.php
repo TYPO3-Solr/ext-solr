@@ -17,13 +17,14 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Exception\Exception as FrontendEnvironmentException;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
+use ApacheSolrForTypo3\Solr\FrontendSimulation\Exception\Exception as FrontendSimulationException;
+use ApacheSolrForTypo3\Solr\FrontendSimulation\FrontendAwareEnvironment;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use Doctrine\DBAL\Exception as DBALException;
 use JsonException;
 use Throwable;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -33,7 +34,7 @@ use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
  * An abstract indexer class to collect a few common methods shared with other
@@ -63,13 +64,13 @@ abstract class AbstractIndexer
      * @param Document $document base document to add fields to
      * @param array $indexingConfiguration Indexing configuration / mapping
      * @param array $data Record data
-     * @param TypoScriptFrontendController $tsfe The context-bound TSFE object
+     * @param ServerRequest $request The simulated frontend request
      * @param int|SiteLanguage $language The site language object or UID as int
      * @return Document Modified document with added fields
      *
      * @throws AspectNotFoundException
      * @throws DBALException
-     * @throws FrontendEnvironmentException
+     * @throws FrontendSimulationException
      * @throws JsonException
      * @throws SiteNotFoundException
      */
@@ -77,7 +78,7 @@ abstract class AbstractIndexer
         Document $document,
         array $indexingConfiguration,
         array $data,
-        TypoScriptFrontendController $tsfe,
+        ServerRequest $request,
         int|SiteLanguage $language,
     ): Document {
         $data = static::addVirtualContentFieldToRecord($document, $data);
@@ -100,7 +101,7 @@ abstract class AbstractIndexer
                 $indexingConfiguration,
                 $solrFieldName,
                 $data,
-                $tsfe,
+                $request,
                 $language,
             );
             if ($fieldValue === null
@@ -113,8 +114,12 @@ abstract class AbstractIndexer
             $document->setField($solrFieldName, $fieldValue);
         }
 
+        /** @var PageInformation|null $pageInformation */
+        $pageInformation = $request->getAttribute('frontend.page.information');
+        $pageId = $pageInformation?->getId() ?? 0;
+
         $typoScriptConfiguration = $this->getTypoScriptConfiguration(
-            $tsfe->id,
+            $pageId,
             ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
         );
         if ($typoScriptConfiguration->isVectorSearchEnabled() && !isset($document['vectorContent'])) {
@@ -147,33 +152,24 @@ abstract class AbstractIndexer
      * @param array $indexingConfiguration Indexing configuration as defined in plugin.tx_solr_index.queue.[indexingConfigurationName].fields
      * @param string $solrFieldName A Solr field name that is configured in the indexing configuration
      * @param array $data A record or item's data
-     * @param TypoScriptFrontendController $tsfe
-     * @param int|SiteLanguage $language The language to use in TSFE stack
+     * @param ServerRequest $request The simulated frontend request
+     * @param int|SiteLanguage $language The language to use
      *
      * @return array|float|int|string|null The resolved string value to be indexed; null if value could not be resolved
-     *
-     * @throws AspectNotFoundException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws JsonException
-     * @throws SiteNotFoundException
      */
     protected function resolveFieldValue(
         array $indexingConfiguration,
         string $solrFieldName,
         array $data,
-        TypoScriptFrontendController $tsfe,
+        ServerRequest $request,
         int|SiteLanguage $language,
     ): mixed {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
-
-            $request = $this->getRequest(
-                $tsfe->id,
-                ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
-            );
-
-            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
+            // Use the frontend context from the simulated request
+            /** @var Context $context */
+            $context = $request->getAttribute('solr.frontend.context');
+            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, null, $context);
             $cObject->setRequest($request);
             $cObject->start($data, $this->type);
             $fieldValue = $cObject->cObjGetSingle(
@@ -187,8 +183,8 @@ abstract class AbstractIndexer
                     $fieldValue = $unserializedFieldValue;
                 }
             } catch (Throwable) {
-                // Evil catch, but anyway do nothing to prevent fluting the logs on indexing.
-                // If the cObject implementation do not provide data the fields are not present in index, which will be noticed and fixed by devs/integrators.
+                // Evil catch, but anyway do nothing to prevent flooding the logs on indexing.
+                // If the cObject implementation does not provide data the fields are not present in index, which will be noticed and fixed by devs/integrators.
             }
         } else {
             $indexingFieldName = $indexingConfiguration[$solrFieldName] ?? null;
@@ -273,7 +269,7 @@ abstract class AbstractIndexer
     /**
      * @throws SiteNotFoundException
      * @throws AspectNotFoundException
-     * @throws FrontendEnvironmentException
+     * @throws FrontendSimulationException
      * @throws JsonException
      * @throws DBALException
      */
@@ -284,10 +280,8 @@ abstract class AbstractIndexer
             === SystemEnvironmentBuilder::REQUESTTYPE_FE) {
             $request = $GLOBALS['TYPO3_REQUEST'];
         } else {
-            $request = GeneralUtility::makeInstance(Tsfe::class)->getServerRequestForTsfeByPageIdAndLanguageId(
-                $pageId,
-                $languageId,
-            );
+            $request = GeneralUtility::makeInstance(FrontendAwareEnvironment::class)
+                ->getServerRequestByPageIdAndLanguageId($pageId, $languageId);
         }
 
         return $request;
@@ -296,7 +290,7 @@ abstract class AbstractIndexer
     /**
      * @throws AspectNotFoundException
      * @throws SiteNotFoundException
-     * @throws FrontendEnvironmentException
+     * @throws FrontendSimulationException
      * @throws JsonException
      * @throws DBALException
      */
@@ -309,7 +303,7 @@ abstract class AbstractIndexer
     /**
      * @throws AspectNotFoundException
      * @throws SiteNotFoundException
-     * @throws FrontendEnvironmentException
+     * @throws FrontendSimulationException
      * @throws JsonException
      * @throws DBALException
      */
