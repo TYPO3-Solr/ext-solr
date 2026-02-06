@@ -29,8 +29,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use Doctrine\DBAL\Exception as DBALException;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Test class to perform a search on a real solr server
@@ -47,7 +47,7 @@ class SearchTest extends IntegrationTestBase
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->queryBuilder = new QueryBuilder(new TypoScriptConfiguration([]));
 
-        $this->getConfiguredTSFE();
+        $this->getConfiguredRequest();
         $this->searchInstance = GeneralUtility::makeInstance(Search::class);
     }
 
@@ -508,7 +508,7 @@ class SearchTest extends IntegrationTestBase
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
     }
 
-    protected function getConfiguredTSFE(int $id = 1): TypoScriptFrontendController
+    protected function getConfiguredRequest(int $id = 1): ServerRequest
     {
         $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
         return $bootstrapper->bootstrap($id);

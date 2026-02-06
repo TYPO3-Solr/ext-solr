@@ -7,15 +7,14 @@ use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
- * Helper class to set up a TSFE object
+ * Helper class to set up a ServerRequest for testing frontend scenarios
  */
 class TSFETestBootstrapper
 {
-    public function bootstrap(int $pageId): TypoScriptFrontendController
+    public function bootstrap(int $pageId): ServerRequest
     {
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
 
@@ -34,12 +33,6 @@ class TSFETestBootstrapper
         $request = $request->withAttribute('frontend.page.information', $pageInformation);
         $GLOBALS['TYPO3_REQUEST'] = $request;
 
-        /** @var TypoScriptFrontendController $TSFE */
-        $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class);
-        $TSFE->set_no_cache();
-        $TSFE->id = $pageId;
-        $GLOBALS['TSFE'] = $TSFE;
-        $TSFE->newCObj($request);
-        return $TSFE;
+        return $request;
     }
 }
