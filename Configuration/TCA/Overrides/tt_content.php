@@ -15,7 +15,7 @@ $pluginSearchSignature = ExtensionUtility::registerPlugin(
     'extensions-solr-plugin-contentelement',
     'search',
     '',
-    'FILE:EXT:solr/Configuration/FlexForms/Form.xml'
+    'FILE:EXT:solr/Configuration/FlexForms/Form.xml',
 );
 $GLOBALS['TCA']['tt_content']['types'][$pluginSearchSignature]['showitem'] = '
     --palette--;;headers,
@@ -40,7 +40,7 @@ $pluginResultsSignature = ExtensionUtility::registerPlugin(
     'extensions-solr-plugin-contentelement',
     'search',
     'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:plugin_results_description',
-    'FILE:EXT:solr/Configuration/FlexForms/Results.xml'
+    'FILE:EXT:solr/Configuration/FlexForms/Results.xml',
 );
 $GLOBALS['TCA']['tt_content']['types'][$pluginResultsSignature]['showitem'] = '
     --palette--;;headers,
