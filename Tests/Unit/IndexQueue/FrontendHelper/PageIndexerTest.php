@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 
 class PageIndexerTest extends SetUpUnitTestCase
@@ -63,8 +61,9 @@ class PageIndexerTest extends SetUpUnitTestCase
             'abstract' => '',
         ]);
         $requestMock = $requestMock->withAttribute('frontend.page.information', $pageInformationMock);
-        $tsfeMock = $this->createMock(TypoScriptFrontendController::class);
-        $tsfeMock->cObj = $this->createMock(ContentObjectRenderer::class);
+
+        // Page content as string (replaces TSFE->content)
+        $pageContent = '<html><body>indexible page content</body></html>';
 
         $contentExtractorMock = $this->createMock(Typo3PageContentExtractor::class);
         $contentExtractorMock->method('getIndexableContent')->willReturn('indexible page content');
@@ -87,7 +86,7 @@ class PageIndexerTest extends SetUpUnitTestCase
         $configurationMock->expects(self::once())->method('isVectorSearchEnabled')->willReturn($vectorSearchEnabled);
         $subject->_set('configuration', $configurationMock);
 
-        $subject->_call('index', $this->createMock(Item::class), $requestMock, $tsfeMock);
+        $subject->_call('index', $this->createMock(Item::class), $requestMock, $pageContent);
         if ($vectorSearchEnabled) {
             self::assertNotEmpty($document['vectorContent']);
             self::assertEquals($document['vectorContent'], $document['content']);
