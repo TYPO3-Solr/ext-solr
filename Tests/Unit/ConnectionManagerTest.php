@@ -33,7 +33,6 @@ use Symfony\Component\DependencyInjection\Container;
 use Traversable;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * PHP Unit test for connection manager
@@ -51,9 +50,6 @@ class ConnectionManagerTest extends SetUpUnitTestCase
      */
     protected function setUp(): void
     {
-        $TSFE = $this->createMock(TypoScriptFrontendController::class);
-        $GLOBALS['TSFE'] = $TSFE;
-
         $this->logManagerMock = $this->createMock(SolrLogManager::class);
         $this->pageRepositoryMock = $this->createMock(PagesRepository::class);
         $this->siteRepositoryMock = $this->createMock(SiteRepository::class);

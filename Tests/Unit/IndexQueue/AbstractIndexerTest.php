@@ -26,13 +26,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Traversable;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectFactory;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 
 class AbstractIndexerTest extends SetUpUnitTestCase
 {
@@ -46,12 +47,9 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         parent::setUp();
 
         $container = new Container();
-        $tsfe = $this->getMockBuilder(TypoScriptFrontendController::class)
-            ->disableOriginalConstructor()
-            ->getMock();
 
         $request = new ServerRequest();
-        $this->contentObjectRenderer = new ContentObjectRenderer($tsfe);
+        $this->contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $this->contentObjectRenderer->setRequest($request);
         $this->contentObjectFactoryMock = $this->getMockBuilder(ContentObjectFactory::class)
             ->disableOriginalConstructor()
@@ -94,11 +92,18 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         $subject->expects(self::any())
             ->method('getTypoScriptConfiguration')
             ->willReturn(new TypoScriptConfiguration($indexingConfiguration));
+
+        $pageInformation = new PageInformation();
+        $pageInformation->setId(0);
+        $context = GeneralUtility::makeInstance(Context::class);
+        $request = (new ServerRequest())
+            ->withAttribute('frontend.page.information', $pageInformation)
+            ->withAttribute('solr.frontend.context', $context);
+
         $subject->expects(self::any())
             ->method('getRequest')
-            ->willReturn($this->createMock(ServerRequest::class));
-        $tsfe = $this->createMock(TypoScriptFrontendController::class);
-        $tsfe->id = 0;
+            ->willReturn($request);
+
         if (is_callable($mockSettings['modsCallable'] ?? null)) {
             $mockSettings['modsCallable']();
         }
@@ -110,7 +115,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
                 $indexingConfiguration,
                 $solrFieldName,
                 $data,
-                $tsfe,
+                $request,
                 0,
             ),
         );
@@ -149,7 +154,9 @@ class AbstractIndexerTest extends SetUpUnitTestCase
             'mockSettings' => [],
             'expectedValue' => null,
         ];
-        yield 'empty SOLR_RELATION/multiValue value must be resolved to empty string' => [
+        // Empty multiValue fields return empty array, which is then skipped by the caller
+        // (see AbstractIndexer::addDocumentFieldsFromTyposcript lines 107-112)
+        yield 'empty SOLR_RELATION/multiValue value must be resolved to empty array' => [
             'indexingConfiguration' => [
                 'solrFieldName_stringM' => 'SOLR_RELATION',
                 'solrFieldName_stringM.' => [
@@ -160,8 +167,10 @@ class AbstractIndexerTest extends SetUpUnitTestCase
             'solrFieldName' => 'solrFieldName_stringM',
             'data' => [],
             'mockSettings' => [],
-            'expectedValue' => '',
+            'expectedValue' => [],
         ];
+        // Nested CASE TypoScript with SOLR_RELATION returns empty string when no data
+        // (CASE cObject returns empty string, not serialized array)
         yield 'multiValued field within nested TypoScript with empty value must be resolved to empty string' => [
             'indexingConfiguration' => [
                 'nestedTypoScriptDefField_stringM' => 'CASE',
@@ -206,8 +215,12 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         ]);
         $subject->expects(self::once())->method('getTypoScriptConfiguration')->willReturn($configuration);
 
-        $tsfeMock = $this->createMock(TypoScriptFrontendController::class);
-        $tsfeMock->id = 123;
+        $pageInformation = new PageInformation();
+        $pageInformation->setId(123);
+        $context = GeneralUtility::makeInstance(Context::class);
+        $request = (new ServerRequest())
+            ->withAttribute('frontend.page.information', $pageInformation)
+            ->withAttribute('solr.frontend.context', $context);
 
         $data = [];
         $indexingConfiguration = [];
@@ -221,7 +234,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
             $document,
             $indexingConfiguration,
             $data,
-            $tsfeMock,
+            $request,
             0,
         );
 

@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectFactory;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 
 class PageFieldMappingIndexerTest extends SetUpUnitTestCase
 {
@@ -33,12 +33,9 @@ class PageFieldMappingIndexerTest extends SetUpUnitTestCase
         parent::setUp();
 
         $container = new Container();
-        $tsfe = $GLOBALS['TSFE'] = $this->getMockBuilder(TypoScriptFrontendController::class)
-            ->disableOriginalConstructor()
-            ->getMock();
 
         $request = $GLOBALS['TYPO3_REQUEST'] = new ServerRequest();
-        $this->contentObjectRenderer = new ContentObjectRenderer($tsfe);
+        $this->contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $this->contentObjectRenderer->setRequest($request);
         $this->contentObjectFactoryMock = $this->getMockBuilder(ContentObjectFactory::class)
             ->disableOriginalConstructor()
@@ -96,8 +93,13 @@ class PageFieldMappingIndexerTest extends SetUpUnitTestCase
             'configuration',
             $typoScriptConfiguration,
         );
-        $tsfe = $this->createMock(TypoScriptFrontendController::class);
-        $tsfe->id = 0;
+
+        $pageInformation = new PageInformation();
+        $pageInformation->setId(0);
+        $request = (new ServerRequest())
+            ->withAttribute('frontend.page.information', $pageInformation);
+        $GLOBALS['TYPO3_REQUEST'] = $request;
+
         if (is_callable($mockSettings['modsCallable'] ?? null)) {
             $mockSettings['modsCallable']();
         }
