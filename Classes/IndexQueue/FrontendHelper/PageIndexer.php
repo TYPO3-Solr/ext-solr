@@ -46,7 +46,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 use UnexpectedValueException;
@@ -126,9 +126,9 @@ class PageIndexer implements FrontendHelper, SingletonInterface
 
     /**
      * Generates the current page's URL as string.
-     * Uses the provided parameters from TSFE, page id and language id.
+     * Uses the provided parameters from the request, page id and language id.
      */
-    protected function generatePageUrl(PageArguments $pageArguments, PageInformation $pageInformation, TypoScriptFrontendController $controller): string
+    protected function generatePageUrl(PageArguments $pageArguments, PageInformation $pageInformation, ServerRequestInterface $request): string
     {
         if ($this->request?->getParameter('overridePageUrl')) {
             return $this->request->getParameter('overridePageUrl');
@@ -139,7 +139,9 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         if ($type && MathUtility::canBeInterpretedAsInteger($type)) {
             $parameter .= ',' . $type;
         }
-        return $controller->cObj->createUrl([
+        $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+        $contentObjectRenderer->setRequest($request);
+        return $contentObjectRenderer->createUrl([
             'parameter' => $parameter,
             'linkAccessRestrictedPages' => '1',
         ]);
@@ -160,10 +162,13 @@ class PageIndexer implements FrontendHelper, SingletonInterface
 
         $typo3Request = $event->getRequest();
         $GLOBALS['TYPO3_REQUEST'] = $typo3Request;
-        $tsfe = $event->getController();
+
+        /** @var PageInformation|null $pageInformation */
+        $pageInformation = $typo3Request->getAttribute('frontend.page.information');
+        $pageId = $pageInformation?->getId() ?? 0;
 
         $logPageIndexed = $this->configuration->getLoggingIndexingPageIndexed();
-        if (!($tsfe->config['config']['index_enable'] ?? false)) {
+        if (!$this->isIndexingEnabled($typo3Request)) {
             if ($logPageIndexed) {
                 $this->logger->error(
                     'Indexing is disabled. Set config.index_enable = 1 .',
@@ -172,17 +177,20 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             return;
         }
 
+        // Get the rendered page content from the event
+        $pageContent = $event->getContent();
+
         try {
             $indexQueueItem = $this->getIndexQueueItem();
             if ($indexQueueItem === null) {
                 throw new UnexpectedValueException('Can not get index queue item', 1482162337);
             }
-            $this->index($indexQueueItem, $typo3Request, $tsfe);
+            $this->index($indexQueueItem, $typo3Request, $pageContent);
         } catch (Throwable $e) {
             $this->responseData['pageIndexed'] = false;
             if ($this->configuration->getLoggingExceptions()) {
                 $this->logger->error(
-                    'Exception while trying to index page ' . $tsfe->id,
+                    'Exception while trying to index page ' . $pageId,
                     [
                         $e->__toString(),
                     ],
@@ -203,6 +211,19 @@ class PageIndexer implements FrontendHelper, SingletonInterface
     }
 
     /**
+     * Checks if indexing is enabled via TypoScript config.index_enable
+     */
+    protected function isIndexingEnabled(ServerRequestInterface $request): bool
+    {
+        $frontendTypoScript = $request->getAttribute('frontend.typoscript');
+        if ($frontendTypoScript === null) {
+            return false;
+        }
+        $configArray = $frontendTypoScript->getConfigArray();
+        return (bool)($configArray['index_enable'] ?? false);
+    }
+
+    /**
      * Index item
      *
      * @throws DBALException
@@ -212,7 +233,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
     protected function index(
         Item $indexQueueItem,
         ServerRequestInterface $request,
-        TypoScriptFrontendController $tsfe,
+        string $pageContent,
     ): void {
         /** @var PageArguments $pageArguments */
         $pageArguments = $request->getAttribute('routing');
@@ -221,11 +242,11 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         $this->solrConnection = $this->getSolrConnection($indexQueueItem, $siteLanguage, $this->configuration->getLoggingExceptions());
 
         $document = $this->getPageDocument(
-            $tsfe,
+            $pageContent,
             $pageInformation,
             $pageArguments,
             $siteLanguage,
-            $this->generatePageUrl($pageArguments, $pageInformation, $tsfe),
+            $this->generatePageUrl($pageArguments, $pageInformation, $request),
             $this->getAccessRootline(),
             $pageInformation->getMountPoint(),
         );
@@ -237,10 +258,10 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             $document,
             $pageInformation->getPageRecord(),
             $indexQueueItem,
-            $tsfe,
+            $request,
         );
 
-        $this->responseData['pageIndexed'] = (int)$this->indexPage($document, $indexQueueItem, $tsfe);
+        $this->responseData['pageIndexed'] = (int)$this->indexPage($document, $indexQueueItem, $request);
         $this->responseData['originalPageDocument'] = (array)$document;
         $this->responseData['solrConnection'] = [
             'rootPage' => $indexQueueItem->getRootPageUid(),
@@ -315,13 +336,13 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         Document $pageDocument,
         array $pageRecord,
         Item $indexQueueItem,
-        TypoScriptFrontendController $tsfe,
+        ServerRequestInterface $request,
     ): Document {
         $event = new AfterPageDocumentIsCreatedForIndexingEvent(
             $pageDocument,
             $indexQueueItem,
             $pageRecord,
-            $tsfe,
+            $request,
             $this->configuration,
         );
         $event = $this->getEventDispatcher()->dispatch($event);
@@ -333,10 +354,10 @@ class PageIndexer implements FrontendHelper, SingletonInterface
      *
      * @return Document A document representing the page
      */
-    protected function getPageDocument(TypoScriptFrontendController $tsfe, PageInformation $pageInformation, PageArguments $pageArguments, SiteLanguage $siteLanguage, string $url, Rootline $pageAccessRootline, string $mountPointParameter): Document
+    protected function getPageDocument(string $pageContent, PageInformation $pageInformation, PageArguments $pageArguments, SiteLanguage $siteLanguage, string $url, Rootline $pageAccessRootline, string $mountPointParameter): Document
     {
         $documentBuilder = GeneralUtility::makeInstance(Builder::class);
-        return $documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $tsfe, $url, $pageAccessRootline, $mountPointParameter);
+        return $documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $pageContent, $url, $pageAccessRootline, $mountPointParameter);
     }
 
     /**
@@ -350,15 +371,15 @@ class PageIndexer implements FrontendHelper, SingletonInterface
     protected function indexPage(
         Document $pageDocument,
         Item $indexQueueItem,
-        TypoScriptFrontendController $tsfe,
+        ServerRequestInterface $request,
     ): bool {
-        $event = new BeforePageDocumentIsProcessedForIndexingEvent($pageDocument, $indexQueueItem, $tsfe);
+        $event = new BeforePageDocumentIsProcessedForIndexingEvent($pageDocument, $indexQueueItem, $request);
         $event = $this->getEventDispatcher()->dispatch($event);
         $documents = $event->getDocuments();
 
         $this->processDocuments($documents);
 
-        $event = new BeforeDocumentsAreIndexedEvent($pageDocument, $indexQueueItem, $documents, $tsfe);
+        $event = new BeforeDocumentsAreIndexedEvent($pageDocument, $indexQueueItem, $documents, $request);
         $event = $this->getEventDispatcher()->dispatch($event);
         $documents = $event->getDocuments();
 

@@ -28,8 +28,8 @@ use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Exception\Exception as FrontendEnvironmentException;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
+use ApacheSolrForTypo3\Solr\FrontendSimulation\Exception\Exception as FrontendSimulationException;
+use ApacheSolrForTypo3\Solr\FrontendSimulation\FrontendAwareEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Exception\IndexingException;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -47,11 +47,11 @@ use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * A general purpose indexer to be used for indexing of any kind of regular
@@ -110,7 +110,7 @@ class Indexer extends AbstractIndexer
      *
      * @throws DBALException
      * @throws EXTSolrException
-     * @throws FrontendEnvironmentException
+     * @throws FrontendSimulationException
      * @throws NoSolrConnectionFoundException
      * @throws SiteNotFoundException
      * @throws IndexingException
@@ -153,7 +153,7 @@ class Indexer extends AbstractIndexer
      *
      * @throws DBALException
      * @throws EXTSolrException
-     * @throws FrontendEnvironmentException
+     * @throws FrontendSimulationException
      * @throws IndexingException
      * @throws SiteNotFoundException
      * @throws ContentRenderingException
@@ -179,7 +179,7 @@ class Indexer extends AbstractIndexer
             $itemDocument,
             $item,
             $documents,
-            $this->getTsfeByItemAndLanguageId(
+            $this->getRequestByItemAndLanguageId(
                 $item,
                 $language,
             ),
@@ -397,7 +397,7 @@ class Indexer extends AbstractIndexer
      *
      * @return Document|null The Solr document converted from the record
      *
-     * @throws FrontendEnvironmentException
+     * @throws FrontendSimulationException
      * @throws SiteNotFoundException
      * @throws DBALException
      * @throws ContentRenderingException
@@ -412,12 +412,12 @@ class Indexer extends AbstractIndexer
         if (!is_null($itemRecord)) {
             $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
             $document = $this->getBaseDocument($item, $itemRecord);
-            $tsfe = $this->getTsfeByItemAndLanguageId($item, $language);
+            $request = $this->getRequestByItemAndLanguageId($item, $language);
             $document = $this->addDocumentFieldsFromTyposcript(
                 $document,
                 $itemIndexingConfiguration,
                 $itemRecord,
-                $tsfe,
+                $request,
                 $language,
             );
         }
@@ -427,16 +427,16 @@ class Indexer extends AbstractIndexer
 
     /**
      * @throws SiteNotFoundException
-     * @throws FrontendEnvironmentException
+     * @throws FrontendSimulationException
      * @throws DBALException
      */
-    protected function getTsfeByItemAndLanguageId(
+    protected function getRequestByItemAndLanguageId(
         Item $item,
         int $language = 0,
-    ): TypoScriptFrontendController {
+    ): ServerRequest {
         $pidToUse = $this->getPageIdOfItem($item);
-        return GeneralUtility::makeInstance(Tsfe::class)
-            ->getTsfeByPageIdAndLanguageId(
+        return GeneralUtility::makeInstance(FrontendAwareEnvironment::class)
+            ->getServerRequestByPageIdAndLanguageId(
                 $pidToUse,
                 $language,
                 $item->getRootPageUid(),
@@ -494,7 +494,7 @@ class Indexer extends AbstractIndexer
      * @return Document[]
      *
      * @throws DBALException
-     * @throws FrontendEnvironmentException
+     * @throws FrontendSimulationException
      * @throws SiteNotFoundException
      */
     protected function getAdditionalDocuments(Document $itemDocument, Item $item, int $language): array
@@ -502,7 +502,7 @@ class Indexer extends AbstractIndexer
         $event = new BeforeDocumentIsProcessedForIndexingEvent(
             $itemDocument,
             $item,
-            $this->getTsfeByItemAndLanguageId(
+            $this->getRequestByItemAndLanguageId(
                 $item,
                 $language,
             ),

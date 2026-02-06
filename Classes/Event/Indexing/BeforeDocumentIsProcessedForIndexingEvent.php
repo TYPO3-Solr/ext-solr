@@ -19,10 +19,9 @@ namespace ApacheSolrForTypo3\Solr\Event\Indexing;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
-use TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Allows third party extensions to provide additional documents which
@@ -41,25 +40,19 @@ class BeforeDocumentIsProcessedForIndexingEvent
     public function __construct(
         private readonly Document $document,
         private readonly Item $indexQueueItem,
-        private readonly TypoScriptFrontendController $tsfe,
+        private readonly ServerRequestInterface $request,
     ) {
         $this->documents[] = $this->document;
     }
 
-    /**
-     * @throws ContentRenderingException
-     */
     public function getSite(): Site
     {
-        return clone $this->tsfe->cObj->getRequest()->getAttribute('site');
+        return $this->request->getAttribute('site');
     }
 
-    /**
-     * @throws ContentRenderingException
-     */
     public function getSiteLanguage(): SiteLanguage
     {
-        return clone $this->tsfe->cObj->getRequest()->getAttribute('language');
+        return $this->request->getAttribute('language');
     }
 
     public function getIndexQueueItem(): Item
@@ -88,8 +81,8 @@ class BeforeDocumentIsProcessedForIndexingEvent
         return $this->documents;
     }
 
-    public function getTsfe(): TypoScriptFrontendController
+    public function getRequest(): ServerRequestInterface
     {
-        return clone $this->tsfe;
+        return $this->request;
     }
 }
