@@ -18,22 +18,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Configuration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class TypoScriptConfigurationTest extends IntegrationTestBase
 {
-    protected function setUp(): void
-    {
-        /** @var TypoScriptFrontendController|MockObject $tsfe */
-        $tsfe = $this->getMockBuilder(TypoScriptFrontendController::class)
-            ->onlyMethods([])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $GLOBALS['TSFE'] = $tsfe;
-        parent::setUp();
-    }
+    protected bool $initializeDatabase = false;
 
     #[Test]
     public function testCanUsePlainValuesFromConfiguration(): void
