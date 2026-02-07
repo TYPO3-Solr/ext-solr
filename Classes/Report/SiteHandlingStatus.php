@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Reports\Status;
 
 /**
@@ -51,9 +52,11 @@ class SiteHandlingStatus extends AbstractSolrStatus
     protected ExtensionConfiguration $extensionConfiguration;
 
     public function __construct(
+        ViewFactoryInterface $viewFactory,
         ?ExtensionConfiguration $extensionConfiguration = null,
         ?SiteRepository $siteRepository = null,
     ) {
+        parent::__construct($viewFactory);
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
     }

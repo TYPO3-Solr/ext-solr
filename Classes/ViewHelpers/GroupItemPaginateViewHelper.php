@@ -21,11 +21,13 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
+use TYPO3\CMS\Core\View\ViewInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Class GroupItemPaginateViewHelper
@@ -90,7 +92,7 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
         return implode('', $contents);
     }
 
-    protected function getTemplateObject(): StandaloneView
+    protected function getTemplateObject(): ViewInterface
     {
         /** @var SearchResultSet $resultSet */
         $resultSet = $this->arguments['resultSet'];
@@ -119,16 +121,16 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
             }
         }
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        if ($this->renderingContext instanceof RenderingContext) {
-            $view->setRequest($this->renderingContext->getRequest());
-        }
-        $view->setLayoutRootPaths($layoutRootPaths);
-        $view->setPartialRootPaths($partialRootPaths);
-        $view->setTemplateRootPaths($templateRootPaths);
-        $view->setTemplate('GroupItemPaginate/Index');
-
-        return $view;
+        $request = $this->renderingContext->getAttribute(ServerRequestInterface::class);
+        $viewFactory = GeneralUtility::makeInstance(ViewFactoryInterface::class);
+        return $viewFactory->create(new ViewFactoryData(
+            templateRootPaths: $templateRootPaths,
+            partialRootPaths: $partialRootPaths,
+            layoutRootPaths: $layoutRootPaths,
+            request: $request,
+            format: 'html',
+            templatePathAndFilename: GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/ViewHelpers/GroupItemPaginate/Index.html'),
+        ));
     }
 
     /**

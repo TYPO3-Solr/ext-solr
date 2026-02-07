@@ -21,7 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment;
+use ApacheSolrForTypo3\Solr\FrontendSimulation\FrontendAwareEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Exception\IndexingException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
@@ -38,8 +38,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class IndexerTest
@@ -69,7 +69,7 @@ class IndexerTest extends SetUpUnitTestCase
             [
                 'itemToDocument',
                 'processDocuments',
-                'getTsfeByItemAndLanguageId',
+                'getRequestByItemAndLanguageId',
             ],
             [],
             '',
@@ -103,9 +103,9 @@ class IndexerTest extends SetUpUnitTestCase
             ->willReturnArgument(1);
         $indexer
             ->expects(self::any())
-            ->method('getTsfeByItemAndLanguageId')
+            ->method('getRequestByItemAndLanguageId')
             ->willReturn(
-                $this->createMock(TypoScriptFrontendController::class),
+                $this->createMock(ServerRequest::class),
             );
 
         $writeServiceMock
@@ -150,7 +150,7 @@ class IndexerTest extends SetUpUnitTestCase
         $indexer = $this->getAccessibleMock(
             Indexer::class,
             [
-                'getTsfeByItemAndLanguageId',
+                'getRequestByItemAndLanguageId',
             ],
             [],
             '',
@@ -159,9 +159,9 @@ class IndexerTest extends SetUpUnitTestCase
 
         $indexer
             ->expects(self::any())
-            ->method('getTsfeByItemAndLanguageId')
+            ->method('getRequestByItemAndLanguageId')
             ->willReturn(
-                $this->createMock(TypoScriptFrontendController::class),
+                $this->createMock(ServerRequest::class),
             );
 
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
@@ -241,7 +241,7 @@ class IndexerTest extends SetUpUnitTestCase
      * @skip
      */
     #[Test]
-    public function indexerAlwaysInitializesTSFE(): void
+    public function indexerAlwaysInitializesRequest(): void
     {
         self::markTestIncomplete('API has been changed, the test case must be moved, since it is still relevant.');
         $item =  $this->createMock(Item::class);
@@ -250,8 +250,8 @@ class IndexerTest extends SetUpUnitTestCase
         $item->expects(self::any())->method('getRootPageUid')->willReturn(1);
         $item->expects(self::any())->method('getIndexingConfigurationName')->willReturn('fakeIndexingConfigurationName');
 
-        $frontendEnvironment = $this->createMock(FrontendEnvironment::class);
-        $frontendEnvironment->expects(self::atLeastOnce())->method('getSolrConfigurationFromPageId')->with(12, 0);
+        $frontendAwareEnvironment = $this->createMock(FrontendAwareEnvironment::class);
+        $frontendAwareEnvironment->expects(self::atLeastOnce())->method('getServerRequestByPageIdAndLanguageId')->with(12, 0);
 
         $indexer = $this->getMockBuilder(Indexer::class)
             ->setConstructorArgs([
@@ -259,7 +259,7 @@ class IndexerTest extends SetUpUnitTestCase
                 $this->createMock(PagesRepository::class),
                 $this->createMock(Builder::class),
                 $this->createMock(ConnectionManager::class),
-                $frontendEnvironment,
+                $frontendAwareEnvironment,
                 $this->createMock(SolrLogManager::class),
             ])
             ->onlyMethods([

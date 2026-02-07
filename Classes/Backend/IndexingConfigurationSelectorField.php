@@ -207,6 +207,7 @@ class IndexingConfigurationSelectorField
         $formResultCompiler->mergeResult($selectCheckboxResult);
 
         $formHtml = $selectCheckboxResult['html'] ?? '';
-        return $formResultCompiler->addCssFiles() . $formHtml . $formResultCompiler->printNeededJSFunctions();
+        $formResultCompiler->addCssFiles();
+        return $formHtml . $formResultCompiler->printNeededJSFunctions();
     }
 }
