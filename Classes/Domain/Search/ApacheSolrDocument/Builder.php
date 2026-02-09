@@ -61,7 +61,7 @@ class Builder
         $pageRecord = $pageInformation->getPageRecord();
 
         $document = GeneralUtility::makeInstance(Document::class);
-        $site = $this->getSiteByPageId($pageId);
+        $site = $this->getSiteByPageId($tsfe->rootLine[0]['uid'] ?? $pageId);
 
         $accessGroups = $this->getDocumentIdGroups($pageAccessRootline);
         $documentId = $this->getPageDocumentId($pageInformation, $pageArguments, $siteLanguage, $accessGroups, $mountPointParameter);
