@@ -23,7 +23,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -287,8 +286,7 @@ class RelationTest extends IntegrationTestBase
      */
     protected function getSolrRelation(string $table, int $uid): Relation
     {
-        $context = GeneralUtility::makeInstance(Context::class);
-        $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class, null, $context);
+        $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $serverRequest = (new ServerRequest('http://testone.site/'))
             ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
             ->withAttribute(
