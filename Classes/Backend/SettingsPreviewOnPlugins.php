@@ -18,9 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Backend;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendViewFactory;
 use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
+use TYPO3\CMS\Core\Domain\FlexFormFieldValues;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Service\FlexFormService;
-use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 use function str_starts_with;
 
@@ -31,14 +30,13 @@ class SettingsPreviewOnPlugins
 {
     protected array $pluginsTtContentRecord;
 
-    protected array $flexformData;
+    protected FlexFormFieldValues $flexformData;
 
     protected array $settings = [];
 
     protected PageContentPreviewRenderingEvent $event;
 
     public function __construct(
-        protected FlexFormService $flexFormService,
         protected BackendViewFactory $backendViewFactory,
     ) {}
 
@@ -52,7 +50,7 @@ class SettingsPreviewOnPlugins
             return;
         }
         $this->event = $event;
-        $this->flexformData = $this->flexFormService->convertFlexFormContentToArray($this->pluginsTtContentRecord['pi_flexform'] ?? '');
+        $this->flexformData = $this->pluginsTtContentRecord['pi_flexform'];
         $event->setPreviewContent($this->getPreviewContent());
     }
 
@@ -91,11 +89,11 @@ class SettingsPreviewOnPlugins
      */
     protected function addTargetPage(): void
     {
-        $targetPageId = $this->getFieldFromFlexform('search.targetPage');
-        if (!empty($targetPageId)) {
+        $targetPageId = (int)(string)$this->getFieldFromFlexform('search.targetPage');
+        if ($targetPageId > 0) {
             $page = BackendUtility::getRecord('pages', $targetPageId, 'title')
                 ?? ['title' => 'ERROR: page is gone'];
-            $this->settings['Target Page'] = '[' . (int)$targetPageId . '] ' . $page['title'];
+            $this->settings['Target Page'] = '[' . $targetPageId . '] ' . $page['title'];
         }
     }
 
@@ -141,7 +139,10 @@ class SettingsPreviewOnPlugins
      */
     protected function getFieldFromFlexform(string $path): mixed
     {
-        return ObjectAccess::getPropertyPath($this->flexformData, $path);
+        if ($this->flexformData->has($path)) {
+            return $this->flexformData->get($path);
+        }
+        return null;
     }
 
     /**

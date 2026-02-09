@@ -58,7 +58,6 @@ services:
   # BE modules, plugins
   ApacheSolrForTypo3\Solr\Backend\SettingsPreviewOnPlugins:
     arguments:
-      $flexFormService: '@TYPO3\CMS\Core\Service\FlexFormService'
       $backendViewFactory: '@TYPO3\CMS\Backend\View\BackendViewFactory'
     tags:
       - name: event.listener
