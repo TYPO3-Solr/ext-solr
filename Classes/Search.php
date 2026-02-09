@@ -241,7 +241,7 @@ class Search
     public function getResultOffset(): int
     {
         // @extensionScannerIgnoreLine
-        return $this->response->response->start;
+        return (int)$this->response->response->start;
     }
 
     /**
