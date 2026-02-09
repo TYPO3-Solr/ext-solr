@@ -26,7 +26,6 @@ use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
 use TYPO3\CMS\Core\Domain\RecordInterface;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Service\FlexFormService;
 
 /**
  * EXT:solr offers a summary in the BE on search plugins, that summarizes the extension
@@ -62,7 +61,6 @@ class SettingsPreviewOnPluginsTest extends SetUpUnitTestCase
     {
         return $this->getMockBuilder(SettingsPreviewOnPlugins::class)
             ->setConstructorArgs([
-                'flexFormService' => $this->getMockOfFlexFormService(),
                 'backendViewFactory' => $this->createMock(BackendViewFactory::class),
             ])
             ->onlyMethods($methods)
@@ -84,22 +82,5 @@ class SettingsPreviewOnPluginsTest extends SetUpUnitTestCase
             $recordMock,
             $pageLayoutContextMock,
         );
-    }
-
-    protected function getMockOfFlexFormService(
-        array $expectedFlexFormArray = [],
-    ): MockObject|FlexFormService {
-        $flexFormServiceMock =  $this->getMockBuilder(FlexFormService::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([
-                'convertFlexFormContentToArray',
-            ])
-            ->getMock();
-        $flexFormServiceMock
-            ->expects(self::any())
-            ->method('convertFlexFormContentToArray')
-            ->willReturn($expectedFlexFormArray);
-
-        return $flexFormServiceMock;
     }
 }

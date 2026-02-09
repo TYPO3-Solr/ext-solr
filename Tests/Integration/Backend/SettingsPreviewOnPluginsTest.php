@@ -10,9 +10,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\View\BackendViewFactory;
 use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
+use TYPO3\CMS\Core\Domain\FlexFormFieldValues;
 use TYPO3\CMS\Core\Domain\RecordInterface;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
-use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\View\ViewInterface;
 
@@ -71,14 +71,13 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
     public function printsPreviewOnExtSolrPluginsCorrectly(): void
     {
         $settingsPreviewOnPlugins = new SettingsPreviewOnPlugins(
-            $this->getMockOfFlexFormService($this->flexFormArray),
             $this->getMockOfBackendViewFactory(),
         );
         $event = $this->getFakePageContentPreviewRenderingEvent(
             'tt_content',
             [
                 'pid' => 11,
-                'pi_flexform' => 'provided via mock return value $this->flexFormArray',
+                'pi_flexform' => new FlexFormFieldValues(['sDEF' => $this->flexFormArray]),
                 'CType' => 'solr_pi_results',
                 'hidden' => 0,
             ],
@@ -122,21 +121,5 @@ class SettingsPreviewOnPluginsTest extends IntegrationTestBase
         $backendViewFactoryMock->method('create')->willReturn($viewMock);
 
         return $backendViewFactoryMock;
-    }
-
-    protected function getMockOfFlexFormService(array $expectedFlexFormArray = []): MockObject|FlexFormService
-    {
-        $flexFormServiceMock =  $this->getMockBuilder(FlexFormService::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([
-                'convertFlexFormContentToArray',
-            ])
-            ->getMock();
-        $flexFormServiceMock
-            ->expects(self::any())
-            ->method('convertFlexFormContentToArray')
-            ->willReturn($expectedFlexFormArray);
-
-        return $flexFormServiceMock;
     }
 }
