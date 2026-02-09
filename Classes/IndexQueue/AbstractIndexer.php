@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use Doctrine\DBAL\Exception as DBALException;
 use JsonException;
 use Throwable;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -166,10 +165,7 @@ abstract class AbstractIndexer
     ): mixed {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
-            // Use the frontend context from the simulated request
-            /** @var Context $context */
-            $context = $request->getAttribute('solr.frontend.context');
-            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, null, $context);
+            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $cObject->setRequest($request);
             $cObject->start($data, $this->type);
             $fieldValue = $cObject->cObjGetSingle(
