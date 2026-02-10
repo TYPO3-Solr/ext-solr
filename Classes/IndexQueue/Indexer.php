@@ -580,7 +580,7 @@ class Indexer extends AbstractIndexer
         $defaultLanguageUid = $this->getDefaultLanguageUid($item, $site->getRootPageRecord(), $siteLanguages);
         $translationOverlays = $this->getTranslationOverlaysWithConfiguredSite((int)$pageId, $site, $siteLanguages);
 
-        $mountPointIdentifier = $item->getMountPointIdentifier() ?? '';
+        $mountPointIdentifier = $item->getMountPointIdentifier();
         if ($mountPointIdentifier !== '') {
             $defaultConnection = $this->connectionManager->getConnectionByPageId($rootPageId, $defaultLanguageUid, $mountPointIdentifier);
         } else {

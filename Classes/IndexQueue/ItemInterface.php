@@ -30,17 +30,13 @@ interface ItemInterface
 
     /**
      * Returns the uid of the index queue entry itself
-     *
-     * @return int|null
      */
-    public function getIndexQueueUid(): ?int;
+    public function getIndexQueueUid(): int;
 
     /**
      * Returns the root page uid of the item
-     *
-     * @return int|null root page ID
      */
-    public function getRootPageUid(): ?int;
+    public function getRootPageUid(): int;
 
     /**
      * Returns the error message
@@ -72,10 +68,8 @@ interface ItemInterface
 
     /**
      * Returns the item type i.e. pages
-     *
-     * @return string|null
      */
-    public function getType(): ?string;
+    public function getType(): string;
 
     /**
      * Returns the index configuration or calculate it based on the item provider
@@ -86,17 +80,13 @@ interface ItemInterface
 
     /**
      * Returns the timestamp of last changed
-     *
-     * @return int|null
      */
-    public function getChanged(): ?int;
+    public function getChanged(): int;
 
     /**
      * Returns the timestamp of last indexing
-     *
-     * @return int|null
      */
-    public function getIndexed(): ?int;
+    public function getIndexed(): int;
 
     /**
      * Returns the uid of related record (item_uid).
