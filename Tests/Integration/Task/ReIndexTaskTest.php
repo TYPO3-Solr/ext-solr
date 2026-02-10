@@ -40,10 +40,6 @@ class ReIndexTaskTest extends IntegrationTestBase
     protected ReIndexTask $task;
     protected Queue $indexQueue;
 
-    protected array $coreExtensionsToLoad = [
-        'typo3/cms-scheduler',
-    ];
-
     protected function setUp(): void
     {
         parent::setUp();

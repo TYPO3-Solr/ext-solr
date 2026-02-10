@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title","fe_group"
-,2,1,0,1,"/","Access protected page",2
+,"uid","pid","is_siteroot","doktype","slug","title","fe_group","tstamp"
+,2,1,0,1,"/","Access protected page",2,1007007007
 "fe_groups",
 ,"uid","pid","title",
 ,2,1,"dummy group"

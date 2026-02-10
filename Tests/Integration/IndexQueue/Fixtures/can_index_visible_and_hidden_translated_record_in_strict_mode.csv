@@ -1,7 +1,7 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title"
-,1,0,1,1,0,0,"/","hello solr"
-,2,0,1,1,2,1,"/","hej solr"
+,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title","tstamp"
+,1,0,1,1,0,0,"/","hello solr",1007007007
+,2,0,1,1,2,1,"/","hej solr",1007007007
 "tx_fakeextension_domain_model_bar",
 ,"uid","pid","title","sys_language_uid","l10n_parent","hidden"
 ,7,1,"original",0,0,0

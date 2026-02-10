@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","hidden","slug","title"
-,1,0,1,1,0,"/","Root of Testpage testone.site aka integration_tree_one"
+,"uid","pid","is_siteroot","doktype","hidden","slug","title","tstamp"
+,1,0,1,1,0,"/","Root of Testpage testone.site aka integration_tree_one",1007007007
 "sys_category",
 ,"uid","pid","title","description","sys_language_uid","parent"
 ,1,1,"Category with uid 1","This is a dummy category with uid 1",0,0

@@ -18,12 +18,12 @@
 #       |
 #       |—[34] Mount Point 2 (to [24] to show contents from)
 "pages",
-,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title"
+,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title","tstamp"
 # Shared Pages tree
-,24,211,0,1,0,0,"/first-shared","FirstShared (Not root)"
-,25,24,0,1,0,0,"/first-shared/first-subpage","first sub page from FirstShared (Not root)"
-,26,24,0,1,0,0,"/first-shared/second-subpage","second sub page from FirstShared (Not root)"
+,24,211,0,1,0,0,"/first-shared","FirstShared (Not root)",1007007007
+,25,24,0,1,0,0,"/first-shared/first-subpage","first sub page from FirstShared (Not root)",1007007007
+,26,24,0,1,0,0,"/first-shared/second-subpage","second sub page from FirstShared (Not root)",1007007007
 # Site tree
-,14,1,0,7,24,1,"/mount-point-1","Mount Point 1"
+,14,1,0,7,24,1,"/mount-point-1","Mount Point 1",1007007007
 # Second Site tree
-,34,111,0,7,24,1,"/mount-point-2","Mount Point 2"
+,34,111,0,7,24,1,"/mount-point-2","Mount Point 2",1007007007

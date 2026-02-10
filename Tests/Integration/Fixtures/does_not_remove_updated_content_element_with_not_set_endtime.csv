@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","hidden","slug","title"
-,2,1,0,1,0,"/testpage","Testpage"
+,"uid","pid","is_siteroot","doktype","hidden","slug","title","tstamp"
+,2,1,0,1,0,"/testpage","Testpage",1007007007
 "tt_content",
 ,"uid","pid","colPos","CType","bodytext"
 ,88,2,0,"text","will stay! still present after update!"

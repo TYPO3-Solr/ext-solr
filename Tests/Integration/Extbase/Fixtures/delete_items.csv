@@ -3,4 +3,4 @@
 ,3,1,"delete me",0,0
 "tx_solr_indexqueue_item",
 ,"uid","root","item_type","item_uid","changed","errors","indexing_configuration"
-,3,1,"tx_fakeextension_domain_model_foo",3,0,0,"foo"
+,3,1,"tx_fakeextension_domain_model_foo",3,1007007007,0,"foo"

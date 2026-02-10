@@ -1,7 +1,7 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title"
-,1,0,1,1,0,0,"/","hello solr"
-,111,0,0,254,0,0,"/storage-folder","storage folder outside siteroot"
+,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title","tstamp"
+,1,0,1,1,0,0,"/","hello solr",1007007007
+,111,0,0,254,0,0,"/storage-folder","storage folder outside siteroot",1007007007
 "tx_fakeextension_domain_model_bar",
 ,"uid","pid","title","sys_language_uid","l10n_parent","category"
 ,111,111,"external testnews",0,0,"4711"

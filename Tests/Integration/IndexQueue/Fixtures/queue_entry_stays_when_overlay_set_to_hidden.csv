@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title"
-,2,0,1,1,1,1,"/","Translated Rootpage"
+,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title","tstamp"
+,2,0,1,1,1,1,"/","Translated Rootpage",1007007007
 "tx_solr_indexqueue_item",
 ,"uid","root","item_type","item_uid","indexing_configuration","has_indexing_properties","indexing_priority","changed","indexed","errors"
 ,1,1,"pages",1,"pages",0,0,1449151778,0,""

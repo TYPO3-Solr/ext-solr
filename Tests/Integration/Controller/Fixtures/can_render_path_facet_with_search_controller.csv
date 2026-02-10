@@ -1,8 +1,8 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title","subtitle"
-,2,1,0,1,"/products","Products",""
-,3,2,0,1,"/shoes-and-socks","Shoes and Socks","Men"
-,4,2,0,1,"/men/sweatshirts-and-jeans","Sweatshirts and Jeans","Men"
+,"uid","pid","is_siteroot","doktype","slug","title","subtitle","tstamp"
+,2,1,0,1,"/products","Products","",1007007007
+,3,2,0,1,"/shoes-and-socks","Shoes and Socks","Men",1007007007
+,4,2,0,1,"/men/sweatshirts-and-jeans","Sweatshirts and Jeans","Men",1007007007
 "tt_content",
 ,"uid","pid","colPos","CType","bodytext"
 ,1,3,0,"text","Our awesome new shoes and socks products prices starting at 10 euro"

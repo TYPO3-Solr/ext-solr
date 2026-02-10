@@ -1,4 +1,4 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","hidden","sys_language_uid","l10n_parent","slug","title"
-,17,1,0,1,1,0,0,"/sub-page","Sub page"
-,2,1,0,1,0,1,17,"/translated-sub-page","Translated Sub page"
+,"uid","pid","is_siteroot","doktype","hidden","sys_language_uid","l10n_parent","slug","title","tstamp"
+,17,1,0,1,1,0,0,"/sub-page","Sub page",1007007007
+,2,1,0,1,0,1,17,"/translated-sub-page","Translated Sub page",1007007007

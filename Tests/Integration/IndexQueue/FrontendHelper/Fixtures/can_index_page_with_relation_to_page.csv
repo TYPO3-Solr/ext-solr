@@ -1,9 +1,9 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","hidden","deleted","slug","title","relations"
-,2,1,1,1,0,0,0,0,"/page","Page",0
-,3,1,1,1,1,2,0,0,"/seite","Seite",1
-,10,1,0,1,0,0,0,0,"/related-page","Related page",1
-,11,1,0,1,1,10,0,0,"/verwandte-seite","Verwandte Seite",1
+,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","hidden","deleted","slug","title","relations","tstamp"
+,2,1,1,1,0,0,0,0,"/page","Page",0,1007007007
+,3,1,1,1,1,2,0,0,"/seite","Seite",1,1007007007
+,10,1,0,1,0,0,0,0,"/related-page","Related page",1,1007007007
+,11,1,0,1,1,10,0,0,"/verwandte-seite","Verwandte Seite",1,1007007007
 "tx_fakeextension3_pages_mm",
 ,"uid_local","uid_foreign","tablenames","fieldname","sorting","sorting_foreign"
 ,10,3,"pages","page_relations",0,0

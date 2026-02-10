@@ -1,7 +1,7 @@
 "pages",
-,"uid","pid","doktype","slug","title"
-,3,111,1,"/subpage","Sub page in site 2"
-,4,3,1,"/subpage/subsubpage","Subsubpage in site 2"
+,"uid","pid","doktype","slug","title","tstamp"
+,3,111,1,"/subpage","Sub page in site 2",1007007007
+,4,3,1,"/subpage/subsubpage","Subsubpage in site 2",1007007007
 "tx_solr_indexqueue_item",
 ,"uid","root","item_type","item_uid","indexing_configuration","errors","indexed","changed"
 # scheduled site 1

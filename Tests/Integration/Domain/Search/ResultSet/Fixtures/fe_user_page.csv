@@ -1,8 +1,8 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title","fe_group","module"
-,2,1,0,1,"/public","Public page",,""
-,3,1,0,1,"/restricted","Private page","1",""
-,4,1,0,254,"/folder","FE Users",,"fe_users"
+,"uid","pid","is_siteroot","doktype","slug","title","fe_group","module","tstamp"
+,2,1,0,1,"/public","Public page",,"",1007007007
+,3,1,0,1,"/restricted","Private page","1","",1007007007
+,4,1,0,254,"/folder","FE Users",,"fe_users",1007007007
 "tt_content",
 ,"uid","pid","colPos","CType","bodytext"
 ,1,3,0,"text","Top secret content"

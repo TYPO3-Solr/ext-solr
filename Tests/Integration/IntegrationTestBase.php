@@ -479,7 +479,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      */
     protected function addPageToIndexQueue(int $pageId, Site $site): Item
     {
-        $queueItem = [
+        $queueItemSearchCriteria = [
             'root' => $site->getRootPageId(),
             'item_type' => 'pages',
             'item_uid' => $pageId,
@@ -487,12 +487,32 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         ];
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
         // Check if item (type + Page ID) is already in index, if so update it
-        $row = $connection->select(['*'], 'tx_solr_indexqueue_item', $queueItem)->fetchAssociative();
+        $row = $connection->select(['*'], 'tx_solr_indexqueue_item', $queueItemSearchCriteria)->fetchAssociative();
         if (is_array($row)) {
-            $connection->update('tx_solr_indexqueue_item', $queueItem + ['errors' => ''], ['uid' => $row['uid']]);
-            $queueItem['uid'] = $row['uid'];
+            $connection->update(
+                'tx_solr_indexqueue_item',
+                [
+                    'changed' => 1007007007,
+                    'errors' => '',
+                ],
+                [
+                    'uid' => $row['uid'],
+                ],
+            );
+            $queueItem = array_merge(
+                $row,
+                [
+                    'changed' => 1007007007,
+                    'errors' => '',
+                ],
+            );
         } else {
-            $connection->insert('tx_solr_indexqueue_item', $queueItem + ['errors' => '']);
+            $queueItem = $queueItemSearchCriteria
+                + [
+                    'changed' => 1007007007,
+                    'errors' => '',
+                ];
+            $connection->insert('tx_solr_indexqueue_item', $queueItem);
             $queueItem['uid'] = (int)$connection->lastInsertId();
             $queueItem = $connection->select(['*'], 'tx_solr_indexqueue_item', ['uid' => $queueItem['uid']])->fetchAssociative();
         }

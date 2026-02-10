@@ -1,4 +1,4 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","hidden","slug","extendToSubpages","title","fe_group"
-,1,0,1,1,0,"/",1,"Root page visible but extended to subpages",
-,10,1,0,1,0,"/protected",0,"Protected",4711
+,"uid","pid","is_siteroot","doktype","hidden","slug","extendToSubpages","title","fe_group","tstamp"
+,1,0,1,1,0,"/",1,"Root page visible but extended to subpages",,1007007007
+,10,1,0,1,0,"/protected",0,"Protected",4711,1007007007
