@@ -474,7 +474,13 @@ class IndexerTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/01_integration_tree_one.csv');
         $document = new Document();
         $document->setField('original-document', true);
-        $metaData = ['item_type' => 'pages', 'root' => 1];
+        $metaData = [
+            'uid' => 1,
+            'item_type' => 'pages',
+            'root' => 1,
+            'item_uid' => 1,
+            'changed' => 1007007007,
+        ];
         $record = ['uid' => 1, 'pid' => 0, 'activate-event-listener' => true];
         $item = new Item($metaData, $record);
 
@@ -547,6 +553,7 @@ class IndexerTest extends IntegrationTestBase
             'item_uid' => 1,
             'indexing_configuration' => '',
             'has_indexing_properties' => false,
+            'changed' => 1007007007,
         ];
         $item = new Item($itemMetaData);
 
@@ -569,6 +576,7 @@ class IndexerTest extends IntegrationTestBase
             'item_uid' => 1,
             'indexing_configuration' => '',
             'has_indexing_properties' => false,
+            'changed' => 1007007007,
         ];
         $item = new Item($itemMetaData);
 

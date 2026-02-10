@@ -43,10 +43,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GarbageCollectorTest extends IntegrationTestBase
 {
-    protected array $coreExtensionsToLoad = [
-        'typo3/cms-scheduler',
-    ];
-
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/solr',
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',

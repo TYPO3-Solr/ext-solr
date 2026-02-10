@@ -1,6 +1,6 @@
 "tx_solr_indexqueue_item",
-,"uid","root","item_type","errors","indexed"
-,4711,1,"pages","",1489507500
-,4712,1,"pages","something very bad happenend on site 1",0
-,4713,111,"pages","something bad happpend on site 2",1489507800
-,4714,1,"pages","another error in site 1",1489507800
+,"uid","root","item_type","item_uid","indexing_configuration","changed","errors","indexed"
+,4711,1,"pages",4711,"pages",1489507500,"",1489507500
+,4712,1,"pages",4712,"pages",1489469550,"something very bad happenend on site 1",0
+,4713,111,"pages",4713,"pages",1489507800,"something bad happpend on site 2",1489507800
+,4714,1,"pages",4714,"pages",1489507800,"another error in site 1",1489507800

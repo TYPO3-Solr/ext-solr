@@ -183,8 +183,20 @@ class IndexerTest extends SetUpUnitTestCase
             self::expectException($expectedException);
         }
 
-        $itemMock = new class ([], [], $this->createMock(IndexQueueIndexingPropertyRepository::class), $this->createMock(QueueItemRepository::class)) extends Item {
-            protected $site;
+        $validMetaData = [
+            'uid' => 1,
+            'root' => 1,
+            'item_type' => 'pages',
+            'item_uid' => 1,
+            'changed' => 1007007007,
+        ];
+        $itemMock = new class (
+            $validMetaData,
+            [],
+            $this->createMock(IndexQueueIndexingPropertyRepository::class),
+            $this->createMock(QueueItemRepository::class),
+        ) extends Item {
+            protected Site $site;
             public function setSite(Site $site): void
             {
                 $this->site = $site;

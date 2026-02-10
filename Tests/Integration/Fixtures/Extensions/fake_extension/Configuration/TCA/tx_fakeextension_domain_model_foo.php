@@ -66,12 +66,6 @@ return [
                 'type' => 'passthrough',
             ],
         ],
-        'tstamp' => [
-            'label' => 'tstamp',
-            'config' => [
-                'type' => 'passthrough',
-            ],
-        ],
         'sorting' => [
             'label' => 'sorting',
             'config' => [
