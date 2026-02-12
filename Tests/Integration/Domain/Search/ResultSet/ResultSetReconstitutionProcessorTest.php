@@ -25,6 +25,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
 
 class ResultSetReconstitutionProcessorTest extends IntegrationTestBase
@@ -33,7 +34,8 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTestBase
     public function canApplyRenderingInstructionsOnOptions(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
-        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest('https://example.com');
+        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('https://example.com'))
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 
@@ -81,7 +83,8 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTestBase
     public function labelCanBeUsedAsCObject(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
-        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest('https://example.com');
+        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('https://example.com'))
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 
         // before the reconstitution of the domain object from the response we expect that no facets

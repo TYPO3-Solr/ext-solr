@@ -62,7 +62,7 @@ class IndexServiceTest extends IntegrationTestBase
     {
         yield 'absRefPrefixIsFoo' => [
             'absRefPrefix' => 'foo',
-            'expectedUrl' => '/foo/en/?tx_ttnews%5Btt_news%5D=111&cHash=a14e458509b71459d1edaafd1d5a84a1',
+            'expectedUrl' => '/foo/en/?tx_ttnews%5Btt_news%5D=111&cHash=c3abc77c306e40ad619c3defe2f15950352874798840d7ff2bd8d341dd4291d7',
         ];
     }
 

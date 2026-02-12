@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Report\SolrConfigStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Integration test for the config status report
@@ -38,7 +37,7 @@ class SolrConfigStatusTest extends IntegrationTestBase
     public function canGetAGreenSolrConfigStatusAgainstTestServer(): void
     {
         /** @var SolrConfigStatus $schemaStatus */
-        $schemaStatus = GeneralUtility::makeInstance(SolrConfigStatus::class);
+        $schemaStatus = $this->get(SolrConfigStatus::class);
         $results = $schemaStatus->getStatus();
         self::assertCount(1, $results);
         self::assertEquals(

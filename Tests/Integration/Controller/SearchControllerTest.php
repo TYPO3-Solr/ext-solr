@@ -539,7 +539,7 @@ class SearchControllerTest extends IntegrationTestBase
         // we expected that an exception will be thrown when a facet is rendered
         // where an unknown partialName is referenced
         $this->expectException(InvalidTemplateResourceException::class);
-        $this->expectExceptionMessageMatches('#(.*The partial files.*NotFound.*|.*The Fluid template files .*NotFound.*)#');
+        $this->expectExceptionMessageMatches('#(.*The partial files?.*NotFound.*|.*The Fluid template files? .*NotFound.*)#');
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
