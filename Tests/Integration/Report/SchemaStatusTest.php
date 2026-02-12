@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Report\SchemaStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Integration test for the schema status report
@@ -38,7 +37,7 @@ class SchemaStatusTest extends IntegrationTestBase
     public function canGetAGreenSchemaStatusAgainstTestServer(): void
     {
         /** @var SchemaStatus $schemaStatus */
-        $schemaStatus = GeneralUtility::makeInstance(SchemaStatus::class);
+        $schemaStatus = $this->get(SchemaStatus::class);
         $results = $schemaStatus->getStatus();
 
         self::assertCount(1, $results);

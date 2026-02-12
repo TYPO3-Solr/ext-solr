@@ -36,7 +36,7 @@ class SiteHandlingStatusTest extends IntegrationTestBase
         $this->writeDefaultSolrTestSiteConfiguration();
 
         /** @var SiteHandlingStatus $siteHandlingStatus */
-        $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
+        $siteHandlingStatus = $this->get(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
@@ -57,7 +57,7 @@ class SiteHandlingStatusTest extends IntegrationTestBase
         ]);
 
         /** @var SiteHandlingStatus $siteHandlingStatus */
-        $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
+        $siteHandlingStatus = $this->get(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
@@ -79,7 +79,7 @@ class SiteHandlingStatusTest extends IntegrationTestBase
         ]);
 
         /** @var SiteHandlingStatus $siteHandlingStatus */
-        $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
+        $siteHandlingStatus = $this->get(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
@@ -108,7 +108,7 @@ class SiteHandlingStatusTest extends IntegrationTestBase
         $this->mergeSiteConfiguration('integration_tree_two', $configuration2);
 
         /** @var SiteHandlingStatus $siteHandlingStatus */
-        $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
+        $siteHandlingStatus = $this->get(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
