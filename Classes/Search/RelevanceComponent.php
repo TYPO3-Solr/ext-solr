@@ -35,6 +35,7 @@ class RelevanceComponent
     public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
         $query = $this->queryBuilder
+            ->useTypoScriptConfiguration($event->getTypoScriptConfiguration())
             ->startFrom($event->getQuery())
             ->useMinimumMatchFromTypoScript()
             ->useBoostFunctionFromTypoScript()
