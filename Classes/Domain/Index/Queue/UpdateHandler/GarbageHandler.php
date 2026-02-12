@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\StrategyFactory;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use Doctrine\DBAL\Exception as DBALException;
+use InvalidArgumentException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -198,7 +199,7 @@ class GarbageHandler extends AbstractUpdateHandler
     {
         try {
             $isAllowedPageType = $this->frontendEnvironment->isAllowedPageType($record);
-        } catch (SiteNotFoundException $e) {
+        } catch (SiteNotFoundException | InvalidArgumentException $e) {
             $this->logger->log(
                 LogLevel::WARNING,
                 'Couldn\t determine site for page ' . $record['uid'],
