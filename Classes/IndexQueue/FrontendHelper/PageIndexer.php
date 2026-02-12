@@ -98,7 +98,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
      *
      * @noinspection PhpUnused
      */
-    public function activate(): void
+    public function activate(PageIndexerRequest $request): void
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->activated = true;

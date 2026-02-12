@@ -24,6 +24,7 @@ use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Domain\Access\RecordAccessGrantedEvent;
 use TYPO3\CMS\Core\Domain\Event\BeforePageIsRetrievedEvent;
 use TYPO3\CMS\Core\Domain\Event\BeforeRecordLanguageOverlayEvent;
+use TYPO3\CMS\Core\Domain\Event\ModifyDefaultConstraintsForDatabaseQueryEvent;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\Event\AfterContentObjectRendererInitializedEvent;
@@ -31,45 +32,36 @@ use TYPO3\CMS\Frontend\Event\ModifyTypoScriptConfigEvent;
 
 /**
  * The UserGroupDetector is responsible to identify the fe_group references on records that are visible on the page (not the page itself).
+ *
+ * TYPO3 14 compatibility: The fe_group access check uses TcaSchemaFactory which caches
+ * schemas at boot time. We handle this by listening to ModifyDefaultConstraintsForDatabaseQueryEvent
+ * to remove the fe_group constraint from content queries during page indexing.
  */
 class UserGroupDetector implements FrontendHelper, SingletonInterface
 {
     public const ACTION_NAME = 'findUserGroups';
 
-    /**
-     * Index Queue page indexer request.
-     */
-    protected ?PageIndexerRequest $request = null;
+    protected const PARAM_ORIGINAL_TCA = '_solr_userGroupDetector_originalTca';
+    protected const PARAM_FRONTEND_GROUPS = '_solr_userGroupDetector_frontendGroups';
 
     /**
      * This frontend helper's executed action.
      */
     protected string $action = self::ACTION_NAME;
 
-    /**
-     * Holds the original, unmodified TCA during user group detection
-     */
-    protected array $originalTca = [];
+    protected bool $activated = false;
 
-    /**
-     * Collects the usergroups used on a page.
-     */
-    protected array $frontendGroups = [];
+    protected ?PageIndexerRequest $request = null;
 
     protected ?SolrLogManager $logger = null;
-    // activation
-
-    /**
-     * All event listeners are only triggered if this flag is enabled.
-     */
-    protected bool $activated = false;
 
     /**
      * Activates a frontend helper by registering for hooks and other
      * resources required by the frontend helper to work.
      */
-    public function activate(): void
+    public function activate(PageIndexerRequest $request): void
     {
+        $this->request = $request;
         $this->activated = true;
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
@@ -90,6 +82,10 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
     /**
      * Deactivates the frontend user group fields in TCA so that no access
      * restrictions apply during page rendering.
+     *
+     * Note: In TYPO3 14, this TCA modification no longer affects content queries
+     * because FrontendGroupRestriction uses cached TcaSchema instead of runtime TCA.
+     * The removeFeGroupConstraintFromDatabaseQuery() listener handles that case.
      */
     #[AsEventListener]
     public function deactivateTcaFrontendGroupEnableFields(ModifyTypoScriptConfigEvent $event): void
@@ -97,8 +93,9 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
         if (!$this->activated) {
             return;
         }
-        if (empty($this->originalTca)) {
-            $this->originalTca = $GLOBALS['TCA'];
+
+        if ($this->request->getParameter(self::PARAM_ORIGINAL_TCA) === null) {
+            $this->request->setParameter(self::PARAM_ORIGINAL_TCA, $GLOBALS['TCA']);
         }
 
         foreach ($GLOBALS['TCA'] as $tableName => $tableConfiguration) {
@@ -106,6 +103,30 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
                 unset($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['fe_group']);
             }
         }
+    }
+
+    /**
+     * Removes the fe_group constraint from database queries during page indexing.
+     *
+     * In TYPO3 14, the FrontendGroupRestriction uses TcaSchemaFactory which caches
+     * schemas at boot time, so runtime TCA modifications have no effect. This event
+     * listener directly removes the fe_group constraint from the query constraints.
+     */
+    #[AsEventListener]
+    public function removeFeGroupConstraintFromDatabaseQuery(ModifyDefaultConstraintsForDatabaseQueryEvent $event): void
+    {
+        $constraints = $event->getConstraints();
+
+        if (!isset($constraints['fe_group'])) {
+            return;
+        }
+
+        if (!$this->activated) {
+            return;
+        }
+
+        unset($constraints['fe_group']);
+        $event->setConstraints($constraints);
     }
 
     // manipulation
@@ -153,7 +174,6 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
             return;
         }
         $cObject = $event->getContentObjectRenderer();
-        $this->request = $cObject->getRequest()->getAttribute('solr.pageIndexingInstructions');
         if (!empty($cObject->currentRecord)) {
             [$table] = explode(':', $cObject->currentRecord);
 
@@ -165,20 +185,19 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
 
     /**
      * Tracks user groups access restriction applied to the records.
-     *
-     * @param array $record A record as an array of fieldname => fieldvalue mappings
-     * @param string $table Table name the record belongs to
      */
     protected function findFrontendGroups(array $record, string $table): void
     {
-        if (isset($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group'])) {
-            $frontendGroups = $record[$this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']] ?? null;
+        $originalTca = $this->request->getParameter(self::PARAM_ORIGINAL_TCA) ?? [];
+
+        if (isset($originalTca[$table]['ctrl']['enablecolumns']['fe_group'])) {
+            $frontendGroups = $record[$originalTca[$table]['ctrl']['enablecolumns']['fe_group']] ?? null;
 
             if (empty($frontendGroups) || $frontendGroups === '-1') {
                 // default = public access
                 $frontendGroups = 0;
             } elseif ($this->request->getParameter('loggingEnabled')) {
-                $this->logger->info(
+                $this->logger?->info(
                     'Access restriction found',
                     [
                         'groups' => $frontendGroups,
@@ -188,7 +207,9 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
                 );
             }
 
-            $this->frontendGroups[] = $frontendGroups;
+            $collectedGroups = $this->request->getParameter(self::PARAM_FRONTEND_GROUPS) ?? [];
+            $collectedGroups[] = $frontendGroups;
+            $this->request->setParameter(self::PARAM_FRONTEND_GROUPS, $collectedGroups);
         }
     }
 
@@ -197,7 +218,8 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
      */
     protected function getFrontendGroups(): array
     {
-        $frontendGroupsList = implode(',', $this->frontendGroups);
+        $collectedGroups = $this->request->getParameter(self::PARAM_FRONTEND_GROUPS) ?? [];
+        $frontendGroupsList = implode(',', $collectedGroups);
         $frontendGroups = GeneralUtility::intExplode(
             ',',
             $frontendGroupsList,
@@ -226,8 +248,20 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
      */
     public function deactivate(PageIndexerResponse $response): void
     {
-        $this->activated = false;
-        $GLOBALS['TCA'] = $this->originalTca;
+        if ($this->request === null) {
+            $response->addActionResult($this->action, [0]);
+            $this->activated = false;
+            return;
+        }
+
+        // Restore original TCA
+        $originalTca = $this->request->getParameter(self::PARAM_ORIGINAL_TCA);
+        if ($originalTca !== null) {
+            $GLOBALS['TCA'] = $originalTca;
+        }
+
         $response->addActionResult($this->action, $this->getFrontendGroups());
+        $this->activated = false;
+        $this->request = null;
     }
 }

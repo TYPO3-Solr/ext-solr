@@ -58,7 +58,7 @@ class PageIndexerRequestHandler
 
         foreach ($actions as $action) {
             $frontendHelper = $this->frontendHelperManager->resolveAction($action);
-            $frontendHelper->activate();
+            $frontendHelper->activate($request);
             $this->frontendHelpers[] = $frontendHelper;
 
             if ($request->getParameter('loggingEnabled')) {

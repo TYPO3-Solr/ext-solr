@@ -337,6 +337,11 @@ services:
     # Only once usable in same request. No usage in other contexts.
     shared: true
     autoconfigure: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.UserGroupDetector.removeFeGroupConstraint'
+        event: TYPO3\CMS\Core\Domain\Event\ModifyDefaultConstraintsForDatabaseQueryEvent
+        method: 'removeFeGroupConstraintFromDatabaseQuery'
 
   ApacheSolrForTypo3\Solr\EventListener\Extbase\PersistenceEventListener:
     autowire: true
