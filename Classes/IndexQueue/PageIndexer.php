@@ -199,6 +199,13 @@ class PageIndexer extends Indexer
             $request->setIndexQueueItem($item);
             $request->addAction('findUserGroups');
 
+            // Pass the page's fe_group so FrontendGroupsModifier can grant access
+            $pageRecord = $item->getRecord();
+            $feGroupColumn = $GLOBALS['TCA']['pages']['ctrl']['enablecolumns']['fe_group'] ?? '';
+            if (!empty($feGroupColumn) && !empty($pageRecord[$feGroupColumn])) {
+                $request->setParameter('pageUserGroup', (int)$pageRecord[$feGroupColumn]);
+            }
+
             $indexRequestUrl = $this->getDataUrl($item, $language);
             $response = $request->send($indexRequestUrl);
 

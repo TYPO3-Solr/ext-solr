@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\EventListener\PageIndexer;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Http\JsonResponse;
@@ -43,23 +44,15 @@ class FrontendGroupsModifier
     public function __invoke(ModifyResolvedFrontendGroupsEvent $event): void
     {
         $pageIndexerRequest = $event->getRequest()->getAttribute('solr.pageIndexingInstructions');
-        if (
-            !$pageIndexerRequest instanceof PageIndexerRequest
-            || !in_array(PageIndexer::ACTION_NAME, $pageIndexerRequest->getActions())) {
+        if (!$pageIndexerRequest instanceof PageIndexerRequest) {
             return;
         }
 
-        $groups = $this->resolveFrontendUserGroups($pageIndexerRequest);
+        $actions = $pageIndexerRequest->getActions();
+        $isFindUserGroups = in_array(UserGroupDetector::ACTION_NAME, $actions, true);
+        $isIndexPage = in_array(PageIndexer::ACTION_NAME, $actions, true);
 
-        $noRelevantFrontendUserGroupResolved = empty($groups) || (count($groups) === 1 && $groups[0] === 0);
-        if ((int)$pageIndexerRequest->getParameter('userGroup') === 0
-            && (
-                (int)$pageIndexerRequest->getParameter('pageUserGroup') !== -2
-                &&
-                (int)$pageIndexerRequest->getParameter('pageUserGroup') < 1
-            )
-            && $noRelevantFrontendUserGroupResolved
-        ) {
+        if (!$isFindUserGroups && !$isIndexPage) {
             return;
         }
 
@@ -84,6 +77,41 @@ class FrontendGroupsModifier
                 ),
                 1646655622,
             );
+        }
+
+        // For findUserGroups: grant access to the page by faking membership in the page's user group
+        // This allows the UserGroupDetector to render the page and detect all content fe_groups
+        if ($isFindUserGroups) {
+            $pageFeGroup = (int)($pageIndexerRequest->getParameter('pageUserGroup') ?? 0);
+
+            // Only need to fake group membership if the page is protected
+            if ($pageFeGroup > 0) {
+                $groupData = [
+                    [
+                        'title' => 'group_(' . $pageFeGroup . ')',
+                        'uid' => $pageFeGroup,
+                        'pid' => 0,
+                    ],
+                ];
+                $event->getUser()->user[$event->getUser()->username_column] = AuthorizationService::SOLR_INDEXER_USERNAME;
+                $event->setGroups($groupData);
+            }
+            return;
+        }
+
+        // For indexPage: use the access rootline to determine required groups
+        $groups = $this->resolveFrontendUserGroups($pageIndexerRequest);
+
+        $noRelevantFrontendUserGroupResolved = empty($groups) || (count($groups) === 1 && $groups[0] === 0);
+        if ((int)$pageIndexerRequest->getParameter('userGroup') === 0
+            && (
+                (int)$pageIndexerRequest->getParameter('pageUserGroup') !== -2
+                &&
+                (int)$pageIndexerRequest->getParameter('pageUserGroup') < 1
+            )
+            && $noRelevantFrontendUserGroupResolved
+        ) {
+            return;
         }
 
         if ((int)$pageIndexerRequest->getParameter('pageUserGroup') > 0) {

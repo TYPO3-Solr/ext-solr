@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
+use Psr\Container\ContainerInterface;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,6 +35,13 @@ class Manager
      * Instances of activated frontend helpers.
      */
     protected array $activatedFrontendHelpers = [];
+
+    protected ContainerInterface $container;
+
+    public function __construct(?ContainerInterface $container = null)
+    {
+        $this->container = $container ?? GeneralUtility::getContainer();
+    }
 
     /**
      * Registers a frontend helper class for a certain action.
@@ -59,9 +67,10 @@ class Manager
             return null;
         }
 
-        $frontendHelper = GeneralUtility::makeInstance(self::$frontendHelperRegistry[$action]);
+        $frontendHelperClass = self::$frontendHelperRegistry[$action];
+        $frontendHelper = $this->container->get($frontendHelperClass);
         if (!$frontendHelper instanceof FrontendHelper) {
-            $message = self::$frontendHelperRegistry[$action] . ' is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper';
+            $message = $frontendHelperClass . ' is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper';
             throw new RuntimeException($message, 1292497896);
         }
 
