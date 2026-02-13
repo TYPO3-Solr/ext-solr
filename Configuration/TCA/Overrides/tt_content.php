@@ -16,12 +16,15 @@ $pluginSearchSignature = ExtensionUtility::registerPlugin(
     'extensions-solr-plugin-contentelement',
     'search',
 );
-$GLOBALS['TCA']['tt_content']['types'][$pluginSearchSignature]['showitem'] = 'pi_flexform';
 ExtensionManagementUtility::addPiFlexFormValue(
     '*',
     'FILE:EXT:solr/Configuration/FlexForms/Form.xml',
     $pluginSearchSignature,
 );
+$GLOBALS['TCA']['tt_content']['types'][$pluginSearchSignature]['showitem'] = '
+    --palette--;;headers,
+    pi_flexform,
+';
 
 $pluginFrequentlySearchedSignature = ExtensionUtility::registerPlugin(
     'solr',
@@ -30,7 +33,9 @@ $pluginFrequentlySearchedSignature = ExtensionUtility::registerPlugin(
     'extensions-solr-plugin-contentelement',
     'search',
 );
-$GLOBALS['TCA']['tt_content']['types'][$pluginFrequentlySearchedSignature]['showitem'] = '';
+$GLOBALS['TCA']['tt_content']['types'][$pluginFrequentlySearchedSignature]['showitem'] = '
+    --palette--;;headers,
+';
 
 $pluginResultsSignature = ExtensionUtility::registerPlugin(
     'solr',
@@ -39,9 +44,12 @@ $pluginResultsSignature = ExtensionUtility::registerPlugin(
     'extensions-solr-plugin-contentelement',
     'search',
 );
-$GLOBALS['TCA']['tt_content']['types'][$pluginResultsSignature]['showitem'] = 'pi_flexform';
 ExtensionManagementUtility::addPiFlexFormValue(
     '*',
     'FILE:EXT:solr/Configuration/FlexForms/Results.xml',
     $pluginResultsSignature,
 );
+$GLOBALS['TCA']['tt_content']['types'][$pluginResultsSignature]['showitem'] = '
+    --palette--;;headers,
+    pi_flexform,
+';
