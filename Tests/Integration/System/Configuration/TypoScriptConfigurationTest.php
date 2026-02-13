@@ -22,6 +22,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TypoScriptConfigurationTest extends IntegrationTestBase
 {
+    protected bool $initializeDatabase = false;
+
     protected function setUp(): void
     {
         parent::setUp();

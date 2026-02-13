@@ -30,6 +30,8 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 
 class ResultSetReconstitutionProcessorTest extends IntegrationTestBase
 {
+    protected bool $initializeDatabase = false;
+
     #[Test]
     public function canApplyRenderingInstructionsOnOptions(): void
     {
