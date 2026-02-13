@@ -34,6 +34,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrWriteServiceTest extends IntegrationTestBase
 {
+    protected bool $initializeDatabase = false;
+
     protected SolrWriteService|MockObject $solrWriteService;
 
     protected function setUp(): void

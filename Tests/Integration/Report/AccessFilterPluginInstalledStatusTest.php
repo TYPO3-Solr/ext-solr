@@ -27,6 +27,8 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
  */
 class AccessFilterPluginInstalledStatusTest extends IntegrationTestBase
 {
+    protected bool $initializeDatabase = false;
+
     protected function setUp(): void
     {
         parent::setUp();
