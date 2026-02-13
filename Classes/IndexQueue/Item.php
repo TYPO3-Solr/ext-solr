@@ -37,17 +37,17 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     /**
      * The item's uid in the index queue (tx_solr_indexqueue_item.uid)
      */
-    protected ?int $indexQueueUid = null;
+    protected int $indexQueueUid;
 
     /**
      * The root page uid of the tree the item is located in (tx_solr_indexqueue_item.root)
      */
-    protected ?int $rootPageUid;
+    protected int $rootPageUid;
 
     /**
      * The record's type, usually a table name, but could also be a file type (tx_solr_indexqueue_item.item_type)
      */
-    protected ?string $type;
+    protected string $type;
 
     /**
      * The name of the indexing configuration that should be used when indexing (tx_solr_indexqueue_item.indexing_configuration)
@@ -58,12 +58,12 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     /**
      * The unix timestamp when the record was last changed (tx_solr_indexqueue_item.changed)
      */
-    protected ?int $changed = null;
+    protected int $changed;
 
     /**
      * The unix timestamp when the record was last indexed (tx_solr_indexqueue_item.indexed)
      */
-    protected ?int $indexed = null;
+    protected int $indexed;
 
     /**
      * Indexing properties to provide additional information for the item's
@@ -84,7 +84,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     /**
      * The record's uid.
      */
-    protected ?int $recordUid = null;
+    protected int $recordUid;
 
     /**
      * The indexing priority
@@ -101,7 +101,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     /**
      * Mount point identifier.
      */
-    protected ?string $mountPointIdentifier = null;
+    protected string $mountPointIdentifier;
 
     /**
      * The Items errors
@@ -117,6 +117,8 @@ class Item implements ItemInterface, MountPointAwareItemInterface
      *
      * @param array $itemMetaData Metadata describing the item to index using the index queue. Is expected to contain a record from table tx_solr_indexqueue_item
      * @param array $fullRecord Optional full record for the item. If provided, can save some SQL queries.
+     *
+     * @throws InvalidArgumentException
      */
     public function __construct(
         array $itemMetaData,
@@ -124,13 +126,43 @@ class Item implements ItemInterface, MountPointAwareItemInterface
         ?IndexQueueIndexingPropertyRepository $indexQueueIndexingPropertyRepository = null,
         ?QueueItemRepository $queueItemRepository = null,
     ) {
-        $this->indexQueueUid = $itemMetaData['uid'] ?? null;
-        $this->rootPageUid = $itemMetaData['root'] ?? null;
-        $this->type = $itemMetaData['item_type'] ?? null;
-        $this->recordUid = $itemMetaData['item_uid'] ?? null;
+        if (!isset($itemMetaData['uid']) || (int)$itemMetaData['uid'] <= 0) {
+            throw new InvalidArgumentException(
+                'Index-Queue-Item must contain "uid" key with value > 0.',
+                1770719565,
+            );
+        }
+        if (!isset($itemMetaData['root']) || (int)$itemMetaData['root'] <= 0) {
+            throw new InvalidArgumentException(
+                'Index-Queue-Item with UID: ' . $itemMetaData['uid'] . ' must contain "root" key with value > 0.',
+                1770719566,
+            );
+        }
+        if (!isset($itemMetaData['item_type']) || trim($itemMetaData['item_type']) === '') {
+            throw new InvalidArgumentException(
+                'Index-Queue-Item with UID: ' . $itemMetaData['uid'] . ' must contain "item_type" key with non-empty value.',
+                1770719567,
+            );
+        }
+        if (!isset($itemMetaData['item_uid']) || (int)$itemMetaData['item_uid'] <= 0) {
+            throw new InvalidArgumentException(
+                'Index-Queue-Item with UID: ' . $itemMetaData['uid'] . ' must contain "item_uid" key with value > 0.',
+                1770719568,
+            );
+        }
+        if (!isset($itemMetaData['changed']) || (int)$itemMetaData['changed'] <= 0) {
+            throw new InvalidArgumentException(
+                'Index-Queue-Item with UID: ' . $itemMetaData['uid'] . ' must contain "changed" key with value > 0.',
+                1770719569,
+            );
+        }
+        $this->indexQueueUid = (int)$itemMetaData['uid'];
+        $this->rootPageUid = (int)$itemMetaData['root'];
+        $this->type = $itemMetaData['item_type'];
+        $this->recordUid = (int)$itemMetaData['item_uid'];
         $this->mountPointIdentifier = (string)empty($itemMetaData['pages_mountidentifier']) ? '' : $itemMetaData['pages_mountidentifier'];
-        $this->changed = $itemMetaData['changed'] ?? null;
-        $this->indexed = $itemMetaData['indexed'] ?? null;
+        $this->changed = (int)$itemMetaData['changed'];
+        $this->indexed = (int)($itemMetaData['indexed'] ?? 0);
         $this->errors = (string)empty($itemMetaData['errors']) ? '' : $itemMetaData['errors'];
 
         $this->indexingConfigurationName = $itemMetaData['indexing_configuration'] ?? '';
@@ -148,7 +180,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     /**
      * Getter for Index Queue UID
      */
-    public function getIndexQueueUid(): ?int
+    public function getIndexQueueUid(): int
     {
         return $this->indexQueueUid;
     }
@@ -156,7 +188,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     /**
      * Gets the item's root page ID (uid)
      */
-    public function getRootPageUid(): ?int
+    public function getRootPageUid(): int
     {
         return $this->rootPageUid;
     }
@@ -164,7 +196,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     /**
      * Returns mount point identifier
      */
-    public function getMountPointIdentifier(): ?string
+    public function getMountPointIdentifier(): string
     {
         return $this->mountPointIdentifier;
     }
@@ -212,7 +244,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     /**
      * Returns the type/tablename of the queue record.
      */
-    public function getType(): ?string
+    public function getType(): string
     {
         return $this->type;
     }
@@ -238,7 +270,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     /**
      * Returns the timestamp when this queue item was changed.
      */
-    public function getChanged(): ?int
+    public function getChanged(): int
     {
         return $this->changed;
     }
@@ -246,7 +278,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     /**
      * Returns the timestamp when this queue item was indexed.
      */
-    public function getIndexed(): ?int
+    public function getIndexed(): int
     {
         return $this->indexed;
     }
@@ -312,7 +344,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
      */
     public function storeIndexingProperties(): void
     {
-        $this->indexQueueIndexingPropertyRepository->removeByRootPidAndIndexQueueUid((int)($this->rootPageUid), (int)($this->indexQueueUid));
+        $this->indexQueueIndexingPropertyRepository->removeByRootPidAndIndexQueueUid($this->rootPageUid, $this->indexQueueUid);
 
         if ($this->hasIndexingProperties()) {
             $this->writeIndexingProperties();
@@ -372,7 +404,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
             return;
         }
 
-        $indexingProperties = $this->indexQueueIndexingPropertyRepository->findAllByIndexQueueUid((int)($this->indexQueueUid));
+        $indexingProperties = $this->indexQueueIndexingPropertyRepository->findAllByIndexQueueUid($this->indexQueueUid);
         $this->indexingPropertiesLoaded = true;
         if (empty($indexingProperties)) {
             return;

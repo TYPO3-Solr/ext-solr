@@ -63,7 +63,10 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     private $previousErrorHandler;
 
     protected array $coreExtensionsToLoad = [
+        'typo3/cms-install',
+        'typo3/cms-reports',
         'typo3/cms-scheduler',
+        'typo3/cms-tstemplate',
         'typo3/cms-fluid-styled-content',
     ];
 
@@ -109,6 +112,44 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         chdir(Environment::getPublicPath() . '/');
         $this->instancePath = $this->getInstancePath();
         $this->previousErrorHandler = $this->failWhenSolrDeprecationIsCreated();
+    }
+
+    /**
+     * Override to automatically normalize tx_solr_indexqueue_item records after import.
+     * This ensures that records with changed=0 get a valid timestamp, which is required
+     * by the Item constructor validation.
+     */
+    public function importCSVDataSet(string $path): void
+    {
+        parent::importCSVDataSet($path);
+        $this->normalizeImportedRecordsTimestamps();
+    }
+
+    /**
+     * Normalizes records that have tstamp=0 by setting a valid timestamp.
+     *
+     * This is needed because the Index-Queue-Item constructor requires
+     * changed > 0 for data integrity validation.
+     *
+     * All records observed by Index-Queue-Item must have the tstamp.
+     *
+     * Note: All tstamp default values in fake extensions ext_tables.sql are set to 1007007007
+     *
+     * @throws DBALException
+     */
+    protected function normalizeImportedRecordsTimestamps(): void
+    {
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
+        $connection->update(
+            'tx_solr_indexqueue_item',
+            ['changed' => 1007007007],
+            ['changed' => 0],
+        );
+        $connection->update(
+            'pages',
+            ['tstamp' => 1007007007],
+            ['tstamp' => 0],
+        );
     }
 
     protected function tearDown(): void
@@ -307,6 +348,10 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      */
     private function importRootPagesAndTemplatesForConfiguredSites(): void
     {
+        if ($this->initializeDatabase === false) {
+            $this->skipImportRootPagesAndTemplatesForConfiguredSites = true;
+            return;
+        }
         if ($this->skipImportRootPagesAndTemplatesForConfiguredSites === true) {
             return;
         }
@@ -476,7 +521,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      */
     protected function addPageToIndexQueue(int $pageId, Site $site): Item
     {
-        $queueItem = [
+        $queueItemSearchCriteria = [
             'root' => $site->getRootPageId(),
             'item_type' => 'pages',
             'item_uid' => $pageId,
@@ -484,12 +529,32 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         ];
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
         // Check if item (type + Page ID) is already in index, if so update it
-        $row = $connection->select(['*'], 'tx_solr_indexqueue_item', $queueItem)->fetchAssociative();
+        $row = $connection->select(['*'], 'tx_solr_indexqueue_item', $queueItemSearchCriteria)->fetchAssociative();
         if (is_array($row)) {
-            $connection->update('tx_solr_indexqueue_item', $queueItem + ['errors' => ''], ['uid' => $row['uid']]);
-            $queueItem['uid'] = $row['uid'];
+            $connection->update(
+                'tx_solr_indexqueue_item',
+                [
+                    'changed' => 1007007007,
+                    'errors' => '',
+                ],
+                [
+                    'uid' => $row['uid'],
+                ],
+            );
+            $queueItem = array_merge(
+                $row,
+                [
+                    'changed' => 1007007007,
+                    'errors' => '',
+                ],
+            );
         } else {
-            $connection->insert('tx_solr_indexqueue_item', $queueItem + ['errors' => '']);
+            $queueItem = $queueItemSearchCriteria
+                + [
+                    'changed' => 1007007007,
+                    'errors' => '',
+                ];
+            $connection->insert('tx_solr_indexqueue_item', $queueItem);
             $queueItem['uid'] = (int)$connection->lastInsertId();
             $queueItem = $connection->select(['*'], 'tx_solr_indexqueue_item', ['uid' => $queueItem['uid']])->fetchAssociative();
         }
@@ -611,7 +676,6 @@ page.10 {
         $this->typo3CoreContext->setAspect('date', new DateTimeAspect(DateTimeFactory::createFromTimestamp(time())));
         switch ($this->typo3CoreContextApplicationType) {
             case CommandApplication::class:
-
                 $this->typo3CoreContext->setAspect('visibility', new VisibilityAspect(true, true, false, true));
                 $this->typo3CoreContext->setAspect('workspace', new WorkspaceAspect(0));
                 $this->typo3CoreContext->setAspect('backend.user', new UserAspect(null));

@@ -167,7 +167,6 @@ class GarbageCollectorTest extends SetUpUnitTestCase
 
         $objectReflection = new ReflectionObject($this->garbageCollector);
         $property = $objectReflection->getProperty('trackedRecords');
-        $property->setAccessible(true);
         $trackedRecords = $property->getValue($this->garbageCollector);
 
         self::assertEquals($dummyRecord, $trackedRecords['tx_foo_bar'][123]);

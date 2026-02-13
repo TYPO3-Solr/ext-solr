@@ -557,8 +557,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
      */
     protected function getValidatedPid(string $table, int $uid): ?int
     {
-        $pid = $this->dataHandler->getPID($table, $uid);
-        if ($pid === false) {
+        $pid = (int)(BackendUtility::getRecord($table, $uid, 'pid', '', false)['pid'] ?? 0);
+        if ($pid === 0) {
             $message = 'Record without valid pid was processed ' . $table . ':' . $uid;
             $this->logger->warning($message);
             return null;

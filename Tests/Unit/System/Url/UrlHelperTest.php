@@ -26,32 +26,39 @@ use Traversable;
  */
 class UrlHelperTest extends SetUpUnitTestCase
 {
+    /**
+     * Note: TYPO3 14.0 Breaking Change #108084 changed URI behavior - rootless paths
+     * (paths without a preceding slash) are no longer prefixed with a slash when no
+     * authority (host) is present. This is RFC 3986 compliant behavior.
+     *
+     * @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108084-UrlRepresenttionRootlessPaths.html
+     */
     public static function withoutQueryParameter(): Traversable
     {
         yield 'cHash at the end' => [
             'input' => 'index.php?id=1&cHash=ddd',
             'queryParameterToRemove' => 'cHash',
-            'expectedUrl' => '/index.php?id=1',
+            'expectedUrl' => 'index.php?id=1',
         ];
         yield 'cHash at the beginning' => [
             'input' => 'index.php?cHash=ddd&id=1',
             'queryParameterToRemove' => 'cHash',
-            'expectedUrl' => '/index.php?id=1',
+            'expectedUrl' => 'index.php?id=1',
         ];
         yield 'cHash in the middle' => [
             'input' => 'index.php?foo=bar&cHash=ddd&id=1',
             'queryParameterToRemove' => 'cHash',
-            'expectedUrl' => '/index.php?foo=bar&id=1',
+            'expectedUrl' => 'index.php?foo=bar&id=1',
         ];
         yield 'result is urlencoded' => [
             'input' => 'index.php?foo[1]=bar&cHash=ddd&id=1',
             'queryParameterToRemove' => 'cHash',
-            'expectedUrl' => '/index.php?foo%5B1%5D=bar&id=1',
+            'expectedUrl' => 'index.php?foo%5B1%5D=bar&id=1',
         ];
         yield 'result is urlencoded with unexisting remove param' => [
             'input' => 'index.php?foo[1]=bar&cHash=ddd&id=1',
             'queryParameterToRemove' => 'notExisting',
-            'expectedUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
+            'expectedUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
         ];
     }
     #[DataProvider('withoutQueryParameter')]
@@ -63,15 +70,22 @@ class UrlHelperTest extends SetUpUnitTestCase
         self::assertSame($expectedUrl, (string)$urlHelper, 'Can not remove query parameter as expected');
     }
 
+    /**
+     * Note: TYPO3 14.0 Breaking Change #108084 changed URI behavior - rootless paths
+     * (paths without a preceding slash) are no longer prefixed with a slash when no
+     * authority (host) is present. This is RFC 3986 compliant behavior.
+     *
+     * @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/14.0/Breaking-108084-UrlRepresenttionRootlessPaths.html
+     */
     public static function getUrl(): Traversable
     {
         yield 'nothing should be changed' => [
             'inputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
-            'expectedOutputUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
+            'expectedOutputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
         ];
         yield 'url should be encoded' => [
             'inputUrl' => 'index.php?foo[1]=bar&cHash=ddd&id=1',
-            'expectedOutputUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
+            'expectedOutputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1',
         ];
         yield 'url with https protocol' => [
             'inputUrl' => 'https://www.google.de/index.php',

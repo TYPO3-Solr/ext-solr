@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -41,6 +42,8 @@ abstract class SetUpUpdateHandler extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->recordServiceMock = $this->createMock(ConfigurationAwareRecordService::class);
         $this->frontendEnvironmentMock = $this->createMock(FrontendEnvironment::class);
         $this->tcaServiceMock = $this->createMock(TCAService::class);
@@ -55,7 +58,9 @@ abstract class SetUpUpdateHandler extends SetUpUnitTestCase
             ->method('getSolrConfigurationFromPageId')
             ->willReturn($this->typoScriptConfigurationMock);
 
-        parent::setUp();
+        // Note: GarbageHandler mock is NOT pre-registered here because some tests need
+        // specific expectations on it. Tests that call code using GarbageHandler should
+        // register their own mock via GeneralUtility::addInstance(GarbageHandler::class, $mock)
     }
 
     protected function tearDown(): void

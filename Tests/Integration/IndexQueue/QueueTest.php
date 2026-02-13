@@ -207,10 +207,16 @@ class QueueTest extends IntegrationTestBase
         $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
         self::assertSame(1, $itemCount, 'Unexpected remaining item count for the first site');
 
-        // when we update the item, no remaining item should be left
+        // after updating the item it should still be pending (changed > indexed)
         $this->indexQueue->updateItem('pages', 1);
         $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
-        self::assertSame(0, $itemCount, 'After updating a remaining item no remaining item should be left');
+        self::assertSame(1, $itemCount, 'After updating a remaining item it should still be pending');
+
+        // after marking the item as indexed, no remaining item should be left
+        $items = $this->indexQueue->getItems('pages', 1);
+        $this->indexQueue->updateIndexTimeByItem($items[0]);
+        $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
+        self::assertSame(0, $itemCount, 'After indexing the item no remaining item should be left');
     }
 
     #[Test]

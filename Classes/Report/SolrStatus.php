@@ -26,6 +26,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use Throwable;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Reports\Status;
 
 /**
@@ -45,6 +46,11 @@ class SolrStatus extends AbstractSolrStatus
     protected ConnectionManager $connectionManager;
 
     /**
+     * Access Filter Plugin Status
+     */
+    protected AccessFilterPluginInstalledStatus $accessFilterPluginInstalledStatus;
+
+    /**
      * Holds the response status
      */
     protected ContextualFeedbackSeverity $responseStatus = ContextualFeedbackSeverity::OK;
@@ -57,10 +63,16 @@ class SolrStatus extends AbstractSolrStatus
     /**
      * SolrStatus constructor.
      */
-    public function __construct(?SiteRepository $siteRepository = null, ?ConnectionManager $connectionManager = null)
-    {
+    public function __construct(
+        ViewFactoryInterface $viewFactory,
+        ?SiteRepository $siteRepository = null,
+        ?ConnectionManager $connectionManager = null,
+        ?AccessFilterPluginInstalledStatus $accessFilterPluginInstalledStatus = null,
+    ) {
+        parent::__construct($viewFactory);
         $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
         $this->connectionManager = $connectionManager ?? GeneralUtility::makeInstance(ConnectionManager::class);
+        $this->accessFilterPluginInstalledStatus = $accessFilterPluginInstalledStatus ?? GeneralUtility::makeInstance(AccessFilterPluginInstalledStatus::class, $viewFactory);
     }
 
     /**
@@ -174,8 +186,7 @@ class SolrStatus extends AbstractSolrStatus
     protected function checkAccessFilter(SolrAdminService $solrAdminService): string
     {
         try {
-            $accessFilterPluginStatus = GeneralUtility::makeInstance(AccessFilterPluginInstalledStatus::class);
-            $accessFilterPluginVersion = $accessFilterPluginStatus->getInstalledPluginVersion($solrAdminService);
+            $accessFilterPluginVersion = $this->accessFilterPluginInstalledStatus->getInstalledPluginVersion($solrAdminService);
             $accessFilterMessage = $accessFilterPluginVersion;
         } catch (Throwable $e) {
             $this->responseStatus = ContextualFeedbackSeverity::ERROR;

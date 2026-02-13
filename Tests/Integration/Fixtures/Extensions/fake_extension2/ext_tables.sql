@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS tx_fakeextension_domain_model_bar;
 CREATE TABLE tx_fakeextension_domain_model_bar (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
-	tstamp int(11) DEFAULT '0' NOT NULL,
+	tstamp int(11) DEFAULT 1007007007 NOT NULL,
 	crdate int(11) DEFAULT '0' NOT NULL,
 	cruser_id int(11) DEFAULT '0' NOT NULL,
 	t3ver_oid int(11) DEFAULT '0' NOT NULL,
@@ -48,7 +48,7 @@ DROP TABLE IF EXISTS tx_fakeextension_domain_model_mmrelated;
 CREATE TABLE tx_fakeextension_domain_model_mmrelated (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
-	tstamp int(11) DEFAULT '0' NOT NULL,
+	tstamp int(11) DEFAULT 1007007007 NOT NULL,
 	crdate int(11) DEFAULT '0' NOT NULL,
 	cruser_id int(11) DEFAULT '0' NOT NULL,
 	t3ver_oid int(11) DEFAULT '0' NOT NULL,
@@ -80,7 +80,7 @@ DROP TABLE IF EXISTS tx_fakeextension_domain_model_directrelated;
 CREATE TABLE tx_fakeextension_domain_model_directrelated (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
-	tstamp int(11) DEFAULT '0' NOT NULL,
+	tstamp int(11) DEFAULT 1007007007 NOT NULL,
 	crdate int(11) DEFAULT '0' NOT NULL,
 	cruser_id int(11) DEFAULT '0' NOT NULL,
 	t3ver_oid int(11) DEFAULT '0' NOT NULL,
