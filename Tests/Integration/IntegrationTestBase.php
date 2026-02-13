@@ -310,6 +310,10 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      */
     private function importRootPagesAndTemplatesForConfiguredSites(): void
     {
+        if ($this->initializeDatabase === false) {
+            $this->skipImportRootPagesAndTemplatesForConfiguredSites = true;
+            return;
+        }
         if ($this->skipImportRootPagesAndTemplatesForConfiguredSites === true) {
             return;
         }
@@ -634,7 +638,6 @@ page.10 {
         $this->typo3CoreContext->setAspect('date', new DateTimeAspect(DateTimeFactory::createFromTimestamp(time())));
         switch ($this->typo3CoreContextApplicationType) {
             case CommandApplication::class:
-
                 $this->typo3CoreContext->setAspect('visibility', new VisibilityAspect(true, true, false, true));
                 $this->typo3CoreContext->setAspect('workspace', new WorkspaceAspect(0));
                 $this->typo3CoreContext->setAspect('backend.user', new UserAspect(null));
