@@ -3,14 +3,42 @@
   <file source-language="en" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_reports.xlf" date="2023-06-01T10:07:00Z" product-name="solr" target-language="de">
     <header/>
     <body>
-			
-			
-			
-			
-			
-			
-			
-			
-		</body>
+      <trans-unit id="status_solr_access-filter" resname="status_solr_access-filter" approved="yes">
+        <source>Solr Access Filter Plugin</source>
+        <target state="final">Solr Zugriffsfilter-Plugin</target>
+      </trans-unit>
+      <trans-unit id="status_solr_allow-url-open" resname="status_solr_allow-url-open" approved="yes">
+        <source>URL-aware fopen wrappers</source>
+        <target state="final">URL-bewusste Fopen-Wrapper</target>
+      </trans-unit>
+      <trans-unit id="status_solr_connectionstatus" resname="status_solr_connectionstatus" approved="yes">
+        <source>Solr Connection Status</source>
+        <target state="final">Solr Verbindungsstatus</target>
+      </trans-unit>
+      <trans-unit id="status_solr_configuration" resname="status_solr_configuration" approved="yes">
+        <source>Solr Configuration</source>
+        <target state="final">Solr Konfiguration</target>
+      </trans-unit>
+      <trans-unit id="status_solr_schema" resname="status_solr_schema" approved="yes">
+        <source>Solr Schema Version</source>
+        <target state="final">Solr-Schema-Version</target>
+      </trans-unit>
+      <trans-unit id="status_solr_site-handling" resname="status_solr_site-handling" approved="yes">
+        <source>Solr Site Handling Status</source>
+        <target state="final">Solr Site-Bearbeitungsstatus</target>
+      </trans-unit>
+      <trans-unit id="status_solr_solrconfig" resname="status_solr_solrconfig" approved="yes">
+        <source>Solrconfig Version</source>
+        <target state="final">Solr config Version</target>
+      </trans-unit>
+      <trans-unit id="status_solr_solrversion" resname="status_solr_solrversion" approved="yes">
+        <source>Solr Version</source>
+        <target state="final">Solr Version</target>
+      </trans-unit>
+      <trans-unit id="status_solr_vector_support" resname="status_solr_vector_support" approved="yes">
+        <source>Solr Vector Support</source>
+        <target state="final">Solr Vector Support</target>
+      </trans-unit>
+    </body>
   </file>
 </xliff>

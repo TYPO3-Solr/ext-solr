@@ -3,25 +3,74 @@
   <file source-language="en" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_be.xlf" date="2021-12-15T13:10:00Z" product-name="solr" target-language="de">
     <header/>
     <body>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-
-
-			
-			
-			
-			
-		</body>
+      <trans-unit id="extConf.category.monitoring" resname="extConf.category.monitoring" approved="yes">
+        <source>Monitoring</source>
+        <target state="final">Monitoring</target>
+      </trans-unit>
+      <trans-unit id="extConf.category.routeEnhancer" resname="extConf.category.routeEnhancer" approved="yes">
+        <source>Route Enhancer</source>
+        <target state="final">Routenoptimierer</target>
+      </trans-unit>
+      <trans-unit id="extConf.allowSelfSignedCertificates" resname="extConf.allowSelfSignedCertificates" approved="yes">
+        <source>Allow self signed certificates</source>
+        <target state="final">Selbst signierte Zertifikate zulassen</target>
+      </trans-unit>
+      <trans-unit id="extConf.enableRouteEnhancer" resname="extConf.enableRouteEnhancer" approved="yes">
+        <source>Enable route enhancer: If you want to use speaking URLs for Solr facets, you have to enable this option, otherwise the required Middleware is not active and the route enhancer has no effect.</source>
+        <target state="final">Routenoptimierer aktivieren: Wenn du sprechende URLs für Solr-Facetten verwenden möchtest, musst du diese Option aktivieren, da sonst die erforderliche Middleware nicht aktiv ist und der Routenoptimierer keine Wirkung hat.</target>
+      </trans-unit>
+      <trans-unit id="extConf.includeGlobalQParameterInCacheHash" resname="extConf.includeGlobalQParameterInCacheHash" approved="yes">
+        <source>Include/Exclude global q parameter in/from cacheHash.</source>
+        <target state="final">Globalen q-Parameter in/aus cacheHash einschließen/ausschließen.</target>
+      </trans-unit>
+      <trans-unit id="extConf.monitoringType" resname="extConf.monitoringType" approved="yes">
+        <source>Monitoring type: Define how data updates should be monitored.</source>
+        <target state="final">Monotoring Typ: Lege fest, wie Datenupdates kontrolliert werden sollen.</target>
+      </trans-unit>
+      <trans-unit id="extConf.monitoringType.I.0" resname="extConf.monitoringType.I.0" approved="yes">
+        <source>Immediate</source>
+        <target state="final">Sofort</target>
+      </trans-unit>
+      <trans-unit id="extConf.monitoringType.I.1" resname="extConf.monitoringType.I.1" approved="yes">
+        <source>Delayed (Scheduler task)</source>
+        <target state="final">Verzögert (Scheduler Task)</target>
+      </trans-unit>
+      <trans-unit id="extConf.monitoringType.I.2" resname="extConf.monitoringType.I.2" approved="yes">
+        <source>No monitoring at all</source>
+        <target state="final">Kein Monitoring</target>
+      </trans-unit>
+      <trans-unit id="extConf.pluginNamespaces" resname="extConf.pluginNamespaces" approved="yes">
+        <source>A list of white listed plugin namespaces: Required by cacheHash/excludedParameters and plugin flex form. Note: This list only is available in Plugin -&gt; Options -&gt; Plugin Namespace</source>
+        <target state="final">Eine Liste von „white listed“ Plugin-Namespaces: Erforderlich für cacheHash/excludedParameters und plugin flex form. Hinweis: Diese Liste ist nur in Plugin -&gt; Options -&gt; Plugin Namespace verfügbar</target>
+      </trans-unit>
+      <trans-unit id="extConf.useConfigurationFromClosestTemplate" resname="extConf.useConfigurationFromClosestTemplate" approved="yes">
+        <source>Use closest rootpage for configuration: Performance improvement</source>
+        <target state="final">Nächstgelegene Rootpage für die Konfiguration verwenden: Leistungssteigerung</target>
+      </trans-unit>
+      <trans-unit id="extConf.useConfigurationTrackRecordsOutsideSiteroot" resname="extConf.useConfigurationTrackRecordsOutsideSiteroot" approved="yes">
+        <source>Enable/Disable record tracking outside siteroot</source>
+        <target state="final">Aktivieren/Deaktivieren von Datensatz-Tracking außerhalb der Siteroot</target>
+      </trans-unit>
+      <trans-unit id="extConf.useConfigurationMonitorTables" resname="extConf.useConfigurationMonitorTables" approved="yes">
+        <source>Monitor tables - explicitly monitor these: Still requires TypoScript configuration!</source>
+        <target state="final">Tabellen Monitoring - explizit diese überwachen: TypoScript muss dennoch konfiguriert werden!</target>
+      </trans-unit>
+      <trans-unit id="task.eventQueueWorkerTask.title" resname="task.eventQueueWorkerTask.title" approved="yes">
+        <source>Event Queue Worker</source>
+        <target state="final">Event Queue Worker</target>
+      </trans-unit>
+      <trans-unit id="task.eventQueueWorkerTask.description" resname="task.eventQueueWorkerTask.description" approved="yes">
+        <source>Task handling the queue data update events. Required if monitoringType is set to "Delayed".</source>
+        <target state="final">Task, um die Aktualisierungsereignisse der Queue Daten abzuarbeiten. Erforderlich, wenn monitoringType auf „Verzögert“ gesetzt ist.</target>
+      </trans-unit>
+      <trans-unit id="task.eventQueueWorkerTask.limit" resname="task.eventQueueWorkerTask.limit" approved="yes">
+        <source>Processing limit, the number of events to process</source>
+        <target state="final">Bearbeitungslimit, Anzahl der zu verarbeitenden Ereignisse</target>
+      </trans-unit>
+      <trans-unit id="task.eventQueueWorkerTask.statusMsg" resname="task.eventQueueWorkerTask.statusMsg" approved="yes">
+        <source>Data update events to process: %1$d, Errors: %2$d. %3$d events will be processed per run.</source>
+        <target state="final">Zu verarbeitende Datenaktualisierungen: %1$d, Fehler: %2$d. %3$d Ereignisse werden pro Ausführung verarbeitet.</target>
+      </trans-unit>
+    </body>
   </file>
 </xliff>
