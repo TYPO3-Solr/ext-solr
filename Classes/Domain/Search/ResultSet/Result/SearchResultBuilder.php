@@ -45,6 +45,6 @@ class SearchResultBuilder
 
     protected function getResultClassName(): string
     {
-        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] ?? SearchResult::class;
+        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName'] ?? SearchResult::class;
     }
 }
