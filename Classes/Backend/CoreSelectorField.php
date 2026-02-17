@@ -182,7 +182,8 @@ class CoreSelectorField
         $formResultCompiler->mergeResult($selectCheckboxResult);
 
         $formHtml = $selectCheckboxResult['html'] ?? '';
-        return $formResultCompiler->addCssFiles() . $formHtml . $formResultCompiler->printNeededJSFunctions();
+        $formResultCompiler->addCssFiles();
+        return $formHtml . $formResultCompiler->printNeededJSFunctions();
     }
 
     protected function getFlagIdentifierForSystemLanguageId(int|string $systemLanguageId): string

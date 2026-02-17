@@ -23,7 +23,6 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'uid,tag',
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -90,6 +89,7 @@ return [
             'config' => [
                 'type' => 'datetime',
                 'format' => 'datetime',
+                'searchable' => false,
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
@@ -99,6 +99,7 @@ return [
             'config' => [
                 'type' => 'datetime',
                 'format' => 'datetime',
+                'searchable' => false,
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],

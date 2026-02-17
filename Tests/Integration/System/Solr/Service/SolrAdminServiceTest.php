@@ -33,6 +33,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrAdminServiceTest extends IntegrationTestBase
 {
+    protected bool $initializeDatabase = false;
+
     protected SolrAdminService $solrAdminService;
 
     /**

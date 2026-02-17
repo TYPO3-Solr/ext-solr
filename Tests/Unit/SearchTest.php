@@ -37,6 +37,8 @@ class SearchTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $container = new Container();
         $container->set(SiteFinder::class, $this->createMock(SiteFinder::class));
         GeneralUtility::setContainer($container);
@@ -53,7 +55,6 @@ class SearchTest extends SetUpUnitTestCase
         $this->solrConnectionMock = $this->createMock(SolrConnection::class);
         $this->solrConnectionMock->expects(self::any())->method('getReadService')->willReturn($this->solrReadServiceMock);
         $this->search = new Search($this->solrConnectionMock);
-        parent::setUp();
     }
 
     #[Test]

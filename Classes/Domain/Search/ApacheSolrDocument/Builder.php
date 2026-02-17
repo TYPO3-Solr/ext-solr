@@ -30,7 +30,6 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
@@ -52,7 +51,7 @@ class Builder
         PageInformation $pageInformation,
         PageArguments $pageArguments,
         SiteLanguage $siteLanguage,
-        TypoScriptFrontendController $tsfe,
+        string $pageContent,
         string $url,
         Rootline $pageAccessRootline,
         string $mountPointParameter = '',
@@ -97,8 +96,7 @@ class Builder
         $this->addEndtimeField($document, $pageRecord);
 
         // content
-        // @extensionScannerIgnoreLine
-        $contentExtractor = $this->getExtractorForPageContent($tsfe->content);
+        $contentExtractor = $this->getExtractorForPageContent($pageContent);
         $document->setField('title', $contentExtractor->getPageTitle());
         $document->setField('subTitle', $pageRecord['subtitle']);
         $document->setField('navTitle', $pageRecord['nav_title']);

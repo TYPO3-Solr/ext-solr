@@ -33,11 +33,11 @@ class ContentObjectServiceTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->contentObjectRendererMock = $this->getMockBuilder(ContentObjectRenderer::class)
-            ->onlyMethods(['cObjGetSingle'])
-            ->getMock();
-        $this->contentObjectService = new ContentObjectService($this->contentObjectRendererMock);
         parent::setUp();
+        // Use createMock() instead of getMockBuilder() to avoid calling the constructor
+        // which requires 26 dependencies in TYPO3 14
+        $this->contentObjectRendererMock = $this->createMock(ContentObjectRenderer::class);
+        $this->contentObjectService = new ContentObjectService($this->contentObjectRendererMock);
     }
 
     #[Test]

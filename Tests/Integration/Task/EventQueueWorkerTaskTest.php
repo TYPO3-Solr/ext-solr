@@ -34,10 +34,6 @@ use TYPO3\CMS\Scheduler\Task\TaskSerializer;
  */
 class EventQueueWorkerTaskTest extends IntegrationTestBase
 {
-    protected array $coreExtensionsToLoad = [
-        'typo3/cms-scheduler',
-    ];
-
     protected EventQueueItemRepository $eventQueue;
     protected Queue $indexQueue;
 

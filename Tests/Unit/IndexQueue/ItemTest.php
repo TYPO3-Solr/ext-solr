@@ -24,10 +24,24 @@ use Traversable;
 
 class ItemTest extends SetUpUnitTestCase
 {
+    /**
+     * Returns minimal valid metadata for creating an Item
+     */
+    protected static function getValidMetaData(array $overrides = []): array
+    {
+        return array_merge([
+            'uid' => 1,
+            'root' => 1,
+            'item_type' => 'pages',
+            'item_uid' => 1,
+            'changed' => 1007007007,
+        ], $overrides);
+    }
+
     #[Test]
     public function canGetErrors(): void
     {
-        $metaData = ['errors' => 'error during index'];
+        $metaData = self::getValidMetaData(['errors' => 'error during index']);
         $record = [];
         $item = new Item($metaData, $record, null, $this->createMock(QueueItemRepository::class));
 
@@ -38,7 +52,7 @@ class ItemTest extends SetUpUnitTestCase
     #[Test]
     public function canGetType(): void
     {
-        $metaData = ['item_type' => 'pages'];
+        $metaData = self::getValidMetaData(['item_type' => 'pages']);
         $record = [];
         $item = new Item($metaData, $record, null, $this->createMock(QueueItemRepository::class));
 
@@ -48,9 +62,28 @@ class ItemTest extends SetUpUnitTestCase
 
     public static function getStateDataProvider(): Traversable
     {
-        yield 'pending item' => [['item_type' => 'pages', 'indexed' => 3, 'changed' => 4], Item::STATE_PENDING];
-        yield 'indexed item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => 4], Item::STATE_INDEXED];
-        yield 'blocked item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => 4, 'errors' => 'Something bad happened'], Item::STATE_BLOCKED];
+        yield 'pending item' => [
+            self::getValidMetaData([
+                'indexed' => 3,
+                'changed' => 4,
+            ]),
+            Item::STATE_PENDING,
+        ];
+        yield 'indexed item' => [
+            self::getValidMetaData([
+                'indexed' => 5,
+                'changed' => 1,
+            ]),
+            Item::STATE_INDEXED,
+        ];
+        yield 'blocked item' => [
+            self::getValidMetaData([
+                'indexed' => 5,
+                'changed' => 1,
+                'errors' => 'Something bad happened',
+            ]),
+            Item::STATE_BLOCKED,
+        ];
     }
 
     #[DataProvider('getStateDataProvider')]
@@ -64,20 +97,20 @@ class ItemTest extends SetUpUnitTestCase
     #[Test]
     public function testHasErrors(): void
     {
-        $item = new Item([], [], null, $this->createMock(QueueItemRepository::class));
+        $item = new Item(self::getValidMetaData(), [], null, $this->createMock(QueueItemRepository::class));
         self::assertFalse($item->getHasErrors(), 'Expected that item without any data has no errors');
 
-        $item = new Item(['errors' => 'something is broken'], [], null, $this->createMock(QueueItemRepository::class));
+        $item = new Item(self::getValidMetaData(['errors' => 'something is broken']), [], null, $this->createMock(QueueItemRepository::class));
         self::assertTrue($item->getHasErrors(), 'Item with errors was not indicated to have errors');
     }
 
     #[Test]
     public function testHasIndexingProperties(): void
     {
-        $item = new Item([], [], null, $this->createMock(QueueItemRepository::class));
+        $item = new Item(self::getValidMetaData(), [], null, $this->createMock(QueueItemRepository::class));
         self::assertFalse($item->hasIndexingProperties(), 'Expected that empty item should not have any indexing properties');
 
-        $item = new Item(['has_indexing_properties' => true], [], null, $this->createMock(QueueItemRepository::class));
+        $item = new Item(self::getValidMetaData(['has_indexing_properties' => true]), [], null, $this->createMock(QueueItemRepository::class));
         self::assertTrue($item->hasIndexingProperties(), 'Item with proper meta data should have indexing properties');
     }
 }

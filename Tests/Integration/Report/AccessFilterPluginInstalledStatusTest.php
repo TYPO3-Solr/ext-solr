@@ -21,13 +21,14 @@ use ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Integration test for the Solr Access Filter status report
  */
 class AccessFilterPluginInstalledStatusTest extends IntegrationTestBase
 {
+    protected bool $initializeDatabase = false;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,7 +39,7 @@ class AccessFilterPluginInstalledStatusTest extends IntegrationTestBase
     public function canGetGreenAccessFilterStatus(): void
     {
         /** @var AccessFilterPluginInstalledStatus $accessFilterStatus */
-        $accessFilterStatus = GeneralUtility::makeInstance(AccessFilterPluginInstalledStatus::class);
+        $accessFilterStatus = $this->get(AccessFilterPluginInstalledStatus::class);
         $results = $accessFilterStatus->getStatus();
 
         self::assertCount(1, $results);

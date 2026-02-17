@@ -45,6 +45,8 @@ class SolrReadServiceTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->responseMock = $this->createMock(Response::class);
         $this->requestMock = $this->createMock(Request::class);
         $this->clientMock = $this->createMock(Client::class);
@@ -52,7 +54,6 @@ class SolrReadServiceTest extends SetUpUnitTestCase
         $this->clientMock->expects(self::any())->method('executeRequest')->willReturn($this->responseMock);
 
         $this->service = new SolrReadService($this->clientMock);
-        parent::setUp();
     }
 
     #[Test]

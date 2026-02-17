@@ -37,6 +37,8 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->endpointMock = $this->createMock(Endpoint::class);
         $this->endpointMock->expects(self::any())->method('getScheme')->willReturn('http');
         $this->endpointMock->expects(self::any())->method('getHost')->willReturn('localhost');
@@ -48,7 +50,6 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
         $this->clientMock = $this->createMock(Client::class);
         $this->clientMock->expects(self::any())->method('getEndpoint')->willReturn($this->endpointMock);
         $this->adminService = $this->getMockBuilder(SolrAdminService::class)->setConstructorArgs([$this->clientMock])->onlyMethods(['_sendRawGet'])->getMock();
-        parent::setUp();
     }
     #[Test]
     public function getLukeMetaDataIsSendingRequestToExpectedUrl(): void

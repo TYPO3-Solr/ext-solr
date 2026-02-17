@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.4/phpunit.xsd"
+	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
 	backupGlobals="true"
 	beStrictAboutTestsThatDoNotTestAnything="false"
-	bootstrap="../../.Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTestsBootstrap.php"
+	bootstrap="./FunctionalTestsBootstrap.php"
 	cacheDirectory=".phpunit.cache"
 	cacheResult="false"
 	colors="true"

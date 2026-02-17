@@ -24,10 +24,8 @@ interface MountPointAwareItemInterface
 {
     /**
      * Returns mount point identifier
-     *
-     * @return string|null
      */
-    public function getMountPointIdentifier(): ?string;
+    public function getMountPointIdentifier(): string;
 
     /**
      * Stores the indexing properties.

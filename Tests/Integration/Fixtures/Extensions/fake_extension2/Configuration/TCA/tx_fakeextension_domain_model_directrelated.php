@@ -23,7 +23,6 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'uid,category',
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -90,6 +89,7 @@ return [
             'config' => [
                 'type' => 'datetime',
                 'format' => 'datetime',
+                'searchable' => false,
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
@@ -99,6 +99,7 @@ return [
             'config' => [
                 'type' => 'datetime',
                 'format' => 'datetime',
+                'searchable' => false,
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
@@ -120,6 +121,7 @@ return [
                 'type' => 'input',
                 'size' => 60,
                 'required' => true,
+                'searchable' => false,
             ],
         ],
         'editlock' => [

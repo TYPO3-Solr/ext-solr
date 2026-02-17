@@ -45,10 +45,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class RecordMonitorTest extends IntegrationTestBase
 {
-    protected array $coreExtensionsToLoad = [
-        'typo3/cms-scheduler',
-    ];
-
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/solr',
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
@@ -253,7 +249,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'pid' => 1,
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
         ];
         $this->dataHandler->substNEWwithIDs = ['NEW566a9eac309d8193936351' => 8];
 
@@ -509,7 +505,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'title' => 'testce',
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
         ];
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/exception_is_triggered_without_pid.csv');
@@ -581,7 +577,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'title' => 'testpage',
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
             'pid' => 1,
         ];
 
@@ -643,7 +639,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'doktype' => 130,
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
         ];
         $this->dataHandler->substNEWwithIDs = ['NEW566a9eac309d8193936351' => 8];
         // $this->importDataSetFromFixture('new_pages_record_is_using_correct_configuration_name_for_custom_page_type.xml');
@@ -866,7 +862,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 'title' => 'testpage',
                 'starttime' => 1000000,
                 'endtime' => 1100000,
-                'tsstamp' => 1000000,
+                'tstamp' => 1000000,
                 'pid' => 4,
             ],
         ];
@@ -1862,7 +1858,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'title' => 'i am outside the site root',
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
             'pid' => 2,
         ];
 
@@ -1938,7 +1934,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'title' => 'i am outside the site root and referenced in two sites',
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
             'pid' => 3,
         ];
 
@@ -1986,7 +1982,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'title' => 'i am in siteroot b but references also in siteroot a',
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
             'pid' => 3,
         ];
 

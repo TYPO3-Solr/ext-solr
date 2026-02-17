@@ -171,7 +171,7 @@
           ],
           "access": "c:0",
           "title": "Congratulations",
-          "subTitle": "you have succesfully installed TYPO3",
+          "subTitle": "you have successfully installed TYPO3",
           "navTitle": "",
           "author": "",
           "description": "This website is a default website setup for TYPO3. You can use it to demonstrate the basic features of the TYPO3 Content Management System, but you are also welcome to use it as a basis for your own website projects. Please have a look at how it works and how it is structured. In building this package, we have tried to combine a lot of best practices. Feel free to use these structures and use elements of it for your own way of working.",
@@ -185,7 +185,7 @@
             "install",
             "example setup"
           ],
-          "sortSubTitle_stringS": "you have succesfully installed TYPO3",
+          "sortSubTitle_stringS": "you have successfully installed TYPO3",
           "_version_": 1541020923363065856,
           "indexed": "2016-07-27T15:07:55Z",
           "score": 0.66356677

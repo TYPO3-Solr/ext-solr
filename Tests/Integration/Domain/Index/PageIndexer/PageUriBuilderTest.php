@@ -43,7 +43,15 @@ class PageUriBuilderTest extends IntegrationTestBase
     public function pageIndexingUriCanBeModifiedViaEventListener(): void
     {
         $subject = GeneralUtility::makeInstance(PageUriBuilder::class);
-        $item = new Item(['item_uid' => 1, 'root' => 1, 'item_type' => 'pages']);
+        $item = new Item(
+            [
+                'uid' => 1,
+                'item_uid' => 1,
+                'root' => 1,
+                'item_type' => 'pages',
+                'changed' => time(),
+            ],
+        );
         $url = $subject->getPageIndexingUriFromPageItemAndLanguageId($item);
         self::assertEquals('http://testone.site/en/', (string)$url);
         $item->setIndexingProperty('size', 'enorme');

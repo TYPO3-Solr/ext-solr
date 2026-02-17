@@ -16,12 +16,10 @@
 namespace ApacheSolrForTypo3\Solr\Backend;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\View\BackendViewFactory;
 use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
+use TYPO3\CMS\Core\Domain\FlexFormFieldValues;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Service\FlexFormService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 
 use function str_starts_with;
 
@@ -32,24 +30,27 @@ class SettingsPreviewOnPlugins
 {
     protected array $pluginsTtContentRecord;
 
-    private array $flexformData;
+    protected FlexFormFieldValues $flexformData;
 
     protected array $settings = [];
 
+    protected PageContentPreviewRenderingEvent $event;
+
     public function __construct(
-        protected FlexFormService $flexFormService,
+        protected BackendViewFactory $backendViewFactory,
     ) {}
 
     public function __invoke(PageContentPreviewRenderingEvent $event): void
     {
-        $this->pluginsTtContentRecord = $event->getRecord();
+        $this->pluginsTtContentRecord = $event->getRecord()->toArray();
         if (
             $event->getTable() !== 'tt_content'
             || !str_starts_with($this->pluginsTtContentRecord['CType'], 'solr_pi_')
         ) {
             return;
         }
-        $this->flexformData = $this->flexFormService->convertFlexFormContentToArray($this->pluginsTtContentRecord['pi_flexform'] ?? '');
+        $this->event = $event;
+        $this->flexformData = $this->pluginsTtContentRecord['pi_flexform'];
         $event->setPreviewContent($this->getPreviewContent());
     }
 
@@ -57,18 +58,15 @@ class SettingsPreviewOnPlugins
     {
         $this->collectSummary();
 
-        /** @var StandaloneView $standaloneView */
-        $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
-        $standaloneView->setTemplatePathAndFilename(
-            GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Backend/PageModule/Summary.html'),
-        );
-
-        $standaloneView->assignMultiple([
+        $request = $this->event->getPageLayoutContext()->getCurrentRequest();
+        $view = $this->backendViewFactory->create($request, ['apache-solr-for-typo3/solr']);
+        $view->assignMultiple([
             'pluginLabel' => $this->getPluginLabel(),
             'hidden' => $this->pluginsTtContentRecord['hidden'] ?? 0,
             'settings' => $this->settings,
         ]);
-        return $standaloneView->render();
+
+        return $view->render('Backend/PageModule/Summary');
     }
 
     /**
@@ -91,11 +89,11 @@ class SettingsPreviewOnPlugins
      */
     protected function addTargetPage(): void
     {
-        $targetPageId = $this->getFieldFromFlexform('search.targetPage');
-        if (!empty($targetPageId)) {
+        $targetPageId = (int)(string)$this->getFieldFromFlexform('search.targetPage');
+        if ($targetPageId > 0) {
             $page = BackendUtility::getRecord('pages', $targetPageId, 'title')
                 ?? ['title' => 'ERROR: page is gone'];
-            $this->settings['Target Page'] = '[' . (int)$targetPageId . '] ' . $page['title'];
+            $this->settings['Target Page'] = '[' . $targetPageId . '] ' . $page['title'];
         }
     }
 
@@ -141,7 +139,10 @@ class SettingsPreviewOnPlugins
      */
     protected function getFieldFromFlexform(string $path): mixed
     {
-        return ObjectAccess::getPropertyPath($this->flexformData, $path);
+        if ($this->flexformData->has($path)) {
+            return $this->flexformData->get($path);
+        }
+        return null;
     }
 
     /**

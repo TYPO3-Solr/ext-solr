@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Report\SolrStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Integration test for the Solr status report
@@ -33,7 +32,7 @@ class SolrStatusTest extends IntegrationTestBase
     {
         $this->writeDefaultSolrTestSiteConfiguration();
 
-        $solrStatus = GeneralUtility::makeInstance(SolrStatus::class);
+        $solrStatus = $this->get(SolrStatus::class);
         $statusCollection = $solrStatus->getStatus();
 
         foreach ($statusCollection as $status) {
@@ -46,7 +45,7 @@ class SolrStatusTest extends IntegrationTestBase
     {
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort(null, 'invalid', 4711);
 
-        $solrStatus = GeneralUtility::makeInstance(SolrStatus::class);
+        $solrStatus = $this->get(SolrStatus::class);
         $statusCollection = $solrStatus->getStatus();
 
         foreach ($statusCollection as $status) {

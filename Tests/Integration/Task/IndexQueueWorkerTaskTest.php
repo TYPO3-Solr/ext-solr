@@ -33,11 +33,7 @@ class IndexQueueWorkerTaskTest extends IntegrationTestBase
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
-    protected $indexQueue;
-
-    protected array $coreExtensionsToLoad = [
-        'typo3/cms-scheduler',
-    ];
+    protected Queue $indexQueue;
 
     protected function setUp(): void
     {
