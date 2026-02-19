@@ -68,6 +68,12 @@ class QueryBuilder extends AbstractQueryBuilder
         $this->siteHashService = $siteHashService ?? GeneralUtility::makeInstance(SiteHashService::class);
     }
 
+    public function useTypoScriptConfiguration(TypoScriptConfiguration $typoScriptConfiguration): self
+    {
+        $this->typoScriptConfiguration = $typoScriptConfiguration;
+        return $this;
+    }
+
     public function newSearchQuery(string $queryString): QueryBuilder
     {
         $this->queryToBuild = $this->getSearchQueryInstance($queryString);
