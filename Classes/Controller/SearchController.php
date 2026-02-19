@@ -27,8 +27,10 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\View\FluidViewAdapter;
+use TYPO3\CMS\Core\View\ViewInterface;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3Fluid\Fluid\View\AbstractTemplateView;
+use TYPO3Fluid\Fluid\View\ViewInterface as FluidStandaloneViewInterface;
 
 /**
  * Class SearchController
@@ -56,8 +58,12 @@ class SearchController extends AbstractBaseController
         }
     }
 
-    public function initializeView(FluidViewAdapter $view): void
+    public function initializeView(FluidStandaloneViewInterface|ViewInterface $view): void
     {
+        if (!$view instanceof FluidViewAdapter) {
+            return;
+        }
+
         $variableProvider = GeneralUtility::makeInstance(SolrVariableProvider::class);
         $variableProvider->setSource($view->getRenderingContext()->getVariableProvider()->getSource());
         $view->getRenderingContext()->setVariableProvider($variableProvider);
@@ -111,7 +117,9 @@ class SearchController extends AbstractBaseController
 
             // we pass the search result set to the controller context, to have the possibility
             // to access it without passing it from partial to partial
-            $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
+            if ($this->view instanceof FluidViewAdapter) {
+                $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
+            }
 
             $currentPage = $this->request->hasArgument('page') ? (int)$this->request->getArgument('page') : 1;
 
