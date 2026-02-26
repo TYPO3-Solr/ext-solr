@@ -75,7 +75,7 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
             ],
         );
 
-        $paginationRendered = $paginationView->render();
+        $paginationRendered = $paginationView->render('GroupItemPaginate/Index');
 
         $variableProvider = $this->renderingContext->getVariableProvider();
         $variableProvider->add('paginator', $paginator);
@@ -129,7 +129,6 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
             layoutRootPaths: $layoutRootPaths,
             request: $request,
             format: 'html',
-            templatePathAndFilename: GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/ViewHelpers/GroupItemPaginate/Index.html'),
         ));
     }
 
