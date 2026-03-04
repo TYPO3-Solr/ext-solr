@@ -255,17 +255,11 @@ class SearchResultSetServiceTest extends IntegrationTestBase
             $search,
         );
 
-        $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 0, 0, $typoScriptConfiguration);
+        $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 1, 0, $typoScriptConfiguration);
         $searchRequest->setRawQueryString($queryString);
         $searchRequest->setResultsPerPage(10);
         $searchRequest->setPage(1);
 
-        // Simulate something as we still have some $GLOBALS[TSFE] dependency
-        $GLOBALS['TSFE'] = new stdClass();
-        $GLOBALS['TSFE']->id = 1;
-        $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
-        $GLOBALS['TSFE']->fe_user->initializeUserSessionManager();
-        $GLOBALS['TSFE']->fe_user->createUserSession([]);
         $searchResultSet = $searchResultSetService->search($searchRequest);
 
         $searchResults = $searchResultSet->getSearchResults();

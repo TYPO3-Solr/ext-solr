@@ -38,6 +38,10 @@ class AccessComponent
      */
     public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
+        if ($event->getSearchRequest()->getContextPageUid() < 1) {
+            return;
+        }
+
         $query = $this->queryBuilder
             ->startFrom($event->getQuery())
             ->useSiteHashFromTypoScript($event->getSearchRequest()->getContextPageUid())
