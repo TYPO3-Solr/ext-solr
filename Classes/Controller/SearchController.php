@@ -209,7 +209,9 @@ class SearchController extends AbstractBaseController
         $searchRequest = $this->getSearchRequestBuilder()->buildForFrequentSearches($pageId, $languageId);
         $searchResultSet->setUsedSearchRequest($searchRequest);
 
-        $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
+        if ($this->view instanceof FluidViewAdapter) {
+            $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
+        }
 
         /** @var AfterFrequentlySearchHasBeenExecutedEvent $afterFrequentlySearchedEvent*/
         $afterFrequentlySearchedEvent = $this->eventDispatcher->dispatch(
