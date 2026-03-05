@@ -27,7 +27,6 @@ use Traversable;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to check if the SiteHashService class works as expected.
@@ -88,7 +87,7 @@ class SiteHashServiceTest extends SetUpUnitTestCase
 
         $siteHashService = new SiteHashService(
             $siteFinderMock,
-            GeneralUtility::makeInstance(ExtensionConfiguration::class),
+            new ExtensionConfiguration(['example' => 1]),
             $this->eventDispatcherMock,
         );
 
@@ -104,17 +103,9 @@ class SiteHashServiceTest extends SetUpUnitTestCase
 
         $service = new SiteHashService(
             $this->createMock(SiteFinder::class),
-            GeneralUtility::makeInstance(ExtensionConfiguration::class),
+            new ExtensionConfiguration(['example' => 1]),
             $this->eventDispatcherMock,
         );
-        /**
-         * @todo: The method {@link SiteHashService::getSiteHashForSiteIdentifier()} uses static method variable `$siteHashes`,
-         *        which leads to collisions between the tests, because the variable is never reset between the tests.
-         *        Find the solution how to reset the $siteHashes in tearDown() or use proper caching implementation instead.
-         *        Maybe we want a static analysis rule to disallow the static method vars.
-         *
-         * Current solution: Use always different parameter-values on each call of {@link SiteHashService::getSiteHashForSiteIdentifier()}...
-         */
         $hash1 = $service->getSiteHashForSiteIdentifier('test-site-01');
         $hash2 = $service->getSiteHashForSiteIdentifier('www.example.com');
 
