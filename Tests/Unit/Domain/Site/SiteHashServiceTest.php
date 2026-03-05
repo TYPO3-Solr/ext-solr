@@ -40,7 +40,6 @@ class SiteHashServiceTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr']['siteHashStrategy'] = 1;
         $this->eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
         parent::setUp();
     }

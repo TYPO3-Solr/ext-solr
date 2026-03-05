@@ -54,12 +54,6 @@ class ApiEid
      */
     public function main(ServerRequestInterface $request): ResponseInterface
     {
-        $queryParams = $request->getQueryParams();
-        // @todo, remove this backwards-compatibility-adjustment together with siteHashStrategy setting.
-        if (isset($queryParams['domain'])) {
-            $queryParams['siteIdentifier'] = $queryParams['domain'];
-            $request = $request->withQueryParams($queryParams);
-        }
         $this->validateRequest($request);
         return $this->{'get' . ucfirst($request->getQueryParams()['api']) . 'Response'}($request);
     }
@@ -71,28 +65,13 @@ class ApiEid
      */
     protected function getSiteHashResponse(ServerRequestInterface $request): JsonResponse
     {
-        $queryParams = $request->getQueryParams();
-        $siteIdentifier = $queryParams['siteIdentifier'];
-
         /** @var SiteHashService $siteHashService */
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
-        $siteHash = $siteHashService->getSiteHashForSiteIdentifier($siteIdentifier);
-        $jsonResponseContents = [
+        $siteHash = $siteHashService->getSiteHashForSiteIdentifier($request->getQueryParams()['siteIdentifier'] ?? []);
+        return new JsonResponse([
             'sitehash' => $siteHash,
             'typo3Context' => (string)Environment::getContext(),
-        ];
-        // @todo, remove this backwards-compatibility-adjustment together with siteHashStrategy setting.
-        if (isset($queryParams['domain'])) {
-            $deprecationMessage = 'The domain parameter for eID=tx_solr_api - api=siteHash is deprecated, please use siteIdentifier instead.';
-            trigger_error(
-                $deprecationMessage,
-                E_USER_DEPRECATED,
-            );
-            $jsonResponseContents['deprecation notice'] = $deprecationMessage;
-        }
-        return new JsonResponse(
-            $jsonResponseContents,
-        );
+        ]);
     }
 
     /**

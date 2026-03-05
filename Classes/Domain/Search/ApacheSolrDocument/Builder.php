@@ -68,9 +68,6 @@ class Builder
         $document->setField('id', $documentId);
         $document->setField('site', $site->getSiteIdentifier());
         $document->setField('typo3Context_stringS', (string)Environment::getContext());
-        if ($this->extensionConfiguration->getSiteHashStrategy() === 0) {
-            $document->setField('site', $site->getDomain());
-        }
         $document->setField('siteHash', $site->getSiteHash());
         $document->setField('domain_stringS', $site->getDomain());
         $document->setField('appKey', 'EXT:solr');
@@ -133,9 +130,6 @@ class Builder
 
         $document->setField('site', $site->getSiteIdentifier());
         $document->setField('typo3Context_stringS', (string)Environment::getContext());
-        if ($this->extensionConfiguration->getSiteHashStrategy() === 0) {
-            $document->setField('site', $site->getDomain());
-        }
         $document->setField('siteHash', $site->getSiteHash());
         $document->setField('domain_stringS', $site->getDomain());
 
