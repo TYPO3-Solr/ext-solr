@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use Doctrine\DBAL\Exception as DBALException;
+use JsonException;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
@@ -133,7 +134,7 @@ class FrequentSearchesService
     {
         try {
             $typoScriptConfiguration = $this->configurationManager->getTypoScriptConfiguration();
-        } catch (DBALException|\JsonException|NoSuchCacheException|SiteNotFoundException) {
+        } catch (DBALException|JsonException|NoSuchCacheException|SiteNotFoundException) {
             return [];
         }
 
