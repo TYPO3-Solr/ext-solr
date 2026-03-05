@@ -62,6 +62,21 @@ only called in tests – never in production code. The pattern was obsolete.
 >>>>>>> ee5cc83d7 ([!!!][TASK] Remove QueueInitializationServiceAwareInterface and related Queue API)
 
 
+!!! PageIndexer::isPageIndexable() removed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The deprecated method :php:`PageIndexer::isPageIndexable(Item $item): bool` has been removed.
+Use :php:`PageIndexer::isPageEnabled(array $record): bool` instead.
+
+Impact
+""""""
+
+**Code overriding** :php:`isPageIndexable()` in a custom :php:`PageIndexer` subclass
+
+Rename method :php:`isPageIndexable` to :php:`isPageEnabled()` and adjust the signature to accept an array
+(the page record) instead of an :php:`Item` object:
+
+
 All Changes
 -----------
 

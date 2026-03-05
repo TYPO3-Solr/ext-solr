@@ -77,25 +77,6 @@ class PageIndexer extends Indexer
         return true;
     }
 
-    /**
-     * Checks whether we can index this page.
-     *
-     * @param Item $item The page we want to index encapsulated in an index queue item
-     *
-     * @return bool True if we can index this page, FALSE otherwise
-     * @deprecated PageIndexer->isPageIndexable is deprecated and will be removed in v14.
-     *             Use PageIndexer->isPageEnabled() instead.
-     */
-    protected function isPageIndexable(Item $item): bool
-    {
-        trigger_error(
-            'PageIndexer->isPageIndexable is deprecated and will be removed in v14.'
-            . ' Use PageIndexer->isPageEnabled instead.',
-            E_USER_DEPRECATED,
-        );
-        return $this->isPageEnabled($item->getRecord());
-    }
-
     protected function isPageEnabled(array $record): bool
     {
         $isIndexable = true;
