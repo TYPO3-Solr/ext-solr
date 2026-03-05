@@ -261,19 +261,6 @@ class SiteRepository
     }
 
     /**
-     * Returns the site hash for given domain.
-     *
-     * @deprecated SiteRepository::getSiteHashForDomain() is soft deprecated and will be removed in v13.1.x+.
-     *             The SiteRepository::getSiteHash() will be used instead.
-     */
-    protected function getSiteHashForDomain(string $domain): string
-    {
-        /** @var SiteHashService $siteHashService */
-        $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
-        return $siteHashService->getSiteHashForSiteIdentifier($domain);
-    }
-
-    /**
      * Validates given root page record, if it fits requirements.
      *
      * @param array{
@@ -304,8 +291,9 @@ class SiteRepository
      */
     protected function buildTypo3ManagedSite(array $rootPageRecord): ?Site
     {
-        $typo3Site = $this->getTypo3Site($rootPageRecord['uid']);
-        if (!$typo3Site instanceof CoreSite) {
+        try {
+            $typo3Site = $this->siteFinder->getSiteByPageId((int)$rootPageRecord['uid']);
+        } catch (Throwable) {
             return null;
         }
 
@@ -316,10 +304,6 @@ class SiteRepository
         $domain = $event->getDomain();
 
         $siteHash = $this->getSiteHash($typo3Site);
-        if ($this->extensionConfiguration->getSiteHashStrategy() === 0) {
-            $siteHash = $this->getSiteHashForDomain($domain);
-        }
-
         $defaultLanguage = $typo3Site->getDefaultLanguage()->getLanguageId();
         $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
         $availableLanguageIds = array_map(static function ($language) {
@@ -361,17 +345,5 @@ class SiteRepository
             $solrConnectionConfigurations,
             $typo3Site,
         );
-    }
-
-    /**
-     * Returns {@link CoreSite}.
-     */
-    protected function getTypo3Site(int $pageUid): ?CoreSite
-    {
-        try {
-            return $this->siteFinder->getSiteByPageId($pageUid);
-        } catch (Throwable) {
-        }
-        return null;
     }
 }

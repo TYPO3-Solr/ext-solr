@@ -25,24 +25,19 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site as TYPO3Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * SiteHashService
  *
  * Responsible to provide site-hash related service methods.
  */
-class SiteHashService
+readonly class SiteHashService
 {
-    protected EventDispatcherInterface $eventDispatcher;
-
     public function __construct(
         protected SiteFinder $siteFinder,
         protected ExtensionConfiguration $extensionConfiguration,
-        ?EventDispatcherInterface $eventDispatcherInterface = null,
-    ) {
-        $this->eventDispatcher = $eventDispatcherInterface ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
-    }
+        protected EventDispatcherInterface $eventDispatcher,
+    ) {}
 
     /**
      * Resolves magic keywords in allowed sites configuration.
@@ -61,9 +56,7 @@ class SiteHashService
         ?string $allowedSitesConfiguration = '',
     ): string {
         if ($allowedSitesConfiguration === '__all') {
-            return $this->extensionConfiguration->getSiteHashStrategy() === 1
-                ? $this->getIdentifiersOfAllSites()
-                : $this->getDomainListOfAllSites();
+            return $this->getIdentifiersOfAllSites();
         }
         if ($allowedSitesConfiguration === '*') {
             return '*';
@@ -71,19 +64,11 @@ class SiteHashService
         // we thread empty allowed site configurations as __solr_current_site since this is the default behaviour
         $allowedSitesConfiguration = empty($allowedSitesConfiguration) ? '__solr_current_site' : $allowedSitesConfiguration;
 
-        if ($this->extensionConfiguration->getSiteHashStrategy() === 0) {
-            return $this->getDomainByPageIdAndReplaceMarkers($pageId, $allowedSitesConfiguration);
-        }
         return $this->getSiteIdentifierByPageIdAndReplaceMarkers($pageId, $allowedSitesConfiguration);
     }
 
     public function getSiteHash(TYPO3Site $site): string
     {
-        static $siteHashes = [];
-        if (isset($siteHashes[$site->getIdentifier()])) {
-            return $siteHashes[$site->getIdentifier()];
-        }
-
         $siteHash = $this->getSiteHashForSiteIdentifier($site->getIdentifier());
 
         $event = $this->eventDispatcher->dispatch(
@@ -93,24 +78,7 @@ class SiteHashService
                 $this->extensionConfiguration,
             ),
         );
-        $siteHashes[$site->getIdentifier()] = $event->getSiteHash();
-        return $siteHashes[$site->getIdentifier()];
-    }
-
-    /**
-     * Gets the site hash for a given domain
-     *
-     * @deprecated The method SiteHashService::getSiteHashForDomain() is deprecated and will be removed in version 13.1.x+.
-     *             Use SiteHashService::getSiteHashForSiteIdentifier() or SiteHashService::getSiteHash() instead.
-     */
-    public function getSiteHashForDomain(string $domain): string
-    {
-        trigger_error(
-            'The method SiteHashService::getSiteHashForDomain() is deprecated and will be removed in version 13.1.x+.' .
-            'Use SiteHashService::getSiteHashForSiteIdentifier() or SiteHashService::getSiteHash() instead.',
-            E_USER_DEPRECATED,
-        );
-        return $this->getSiteHashForSiteIdentifier($domain);
+        return $event->getSiteHash();
     }
 
     /**
@@ -118,17 +86,8 @@ class SiteHashService
      */
     public function getSiteHashForSiteIdentifier(string $siteIdentifier): string
     {
-        static $siteHashes = [];
-        if (isset($siteHashes[$siteIdentifier])) {
-            return $siteHashes[$siteIdentifier];
-        }
-
         $applicationContext = (string)Environment::getContext();
-        if ($this->extensionConfiguration->getSiteHashStrategy() === 0) {
-            $applicationContext = '';
-        }
-        $siteHashes[$siteIdentifier] = hash('sha1', $applicationContext . $siteIdentifier . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] . 'tx_solr');
-        return $siteHashes[$siteIdentifier];
+        return hash('sha1', $applicationContext . $siteIdentifier . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] . 'tx_solr');
     }
 
     /**
@@ -149,26 +108,6 @@ class SiteHashService
     }
 
     /**
-     * Returns a comma separated list of all domains from all sites.
-     *
-     * @deprecated SiteHashService::getDomainListOfAllSites() is deprecated and will be removed in v14.
-     *             Use SiteHashService::getIdentifiersOfAllSites() instead.
-     */
-    protected function getDomainListOfAllSites(): string
-    {
-        $sites = $this->siteFinder->getAllSites();
-        $domains = [];
-        foreach ($sites as $typo3Site) {
-            $connections = SiteUtility::getAllSolrConnectionConfigurations($typo3Site);
-            if (!empty($connections)) {
-                $domains[] = $typo3Site->getBase()->getHost();
-            }
-        }
-
-        return implode(',', $domains);
-    }
-
-    /**
      * Retrieves the site identifier of the site that belongs to the passed pageId and replaces their markers __solr_current_site
      * and __current_site.
      */
@@ -182,26 +121,6 @@ class SiteHashService
         }
 
         $allowedSites = str_replace(['__solr_current_site', '__current_site'], $siteIdentifierOfPage, $allowedSitesConfiguration);
-        return (string)$allowedSites;
-    }
-
-    /**
-     * Retrieves the domain of the site that belongs to the passed pageId and replaces their markers __solr_current_site
-     * and __current_site.
-     *
-     * @deprecated SiteHashService::getDomainByPageIdAndReplaceMarkers() is deprecated and will be removed in v14.
-     *             Use SiteHashService::getSiteIdentifierByPageIdAndReplaceMarkers() instead.
-     */
-    protected function getDomainByPageIdAndReplaceMarkers(int $pageId, string $allowedSitesConfiguration): string
-    {
-        try {
-            $typo3Site = $this->siteFinder->getSiteByPageId($pageId);
-            $domainOfPage = $typo3Site->getBase()->getHost();
-        } catch (SiteNotFoundException) {
-            return '';
-        }
-
-        $allowedSites = str_replace(['__solr_current_site', '__current_site'], $domainOfPage, $allowedSitesConfiguration);
         return (string)$allowedSites;
     }
 }
