@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,9 +13,15 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler\Events;
+
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordInsertedEvent;
 
 /**
- * Event fired if a record is updated
+ * Testcase for the RecordInsertedEvent
  */
-class RecordUpdatedEvent extends AbstractDataUpdateEvent {}
+class RecordInsertedEventTest extends SetUpDataUpdateEvent
+{
+    protected const EVENT_CLASS = RecordInsertedEvent::class;
+    protected const EVENT_TEST_TABLE = 'tx_foo_bar';
+}

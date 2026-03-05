@@ -24,6 +24,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEv
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordInsertedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
@@ -107,6 +108,26 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
             $this->getDataUpdateHandler()->handleMovedPage($event->getUid(), $event->getPreviousParentId());
         } else {
             $this->getDataUpdateHandler()->handleMovedRecord($event->getUid(), $event->getTable());
+        }
+    }
+
+    /**
+     * Handles record insertions
+     *
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
+     *
+     * @noinspection PhpUnused
+     */
+    protected function handleRecordInsertedEvent(RecordInsertedEvent $event): void
+    {
+        if ($event->isContentElementUpdate()) {
+            $this->getDataUpdateHandler()->handleContentElementUpdate($event->getUid(), $event->getFields());
+        } elseif ($event->isPageUpdate()) {
+            $this->getDataUpdateHandler()->handlePageUpdate($event->getUid(), $event->getFields());
+        } else {
+            $this->getDataUpdateHandler()->handleRecordUpdate($event->getUid(), $event->getTable());
         }
     }
 

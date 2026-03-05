@@ -16,8 +16,8 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordInsertedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
@@ -191,7 +191,7 @@ class RecordMonitorTest extends SetUpUnitTestCase
             });
         $this->recordMonitor->processDatamap_afterDatabaseOperations('new', 'tt_content', 4711, ['pid' => 1], $dataHandlerMock);
 
-        self::assertTrue($dispatchedEvent instanceof RecordUpdatedEvent);
+        self::assertTrue($dispatchedEvent instanceof RecordInsertedEvent);
         self::assertEquals('tt_content', $dispatchedEvent->getTable());
         self::assertEquals(4711, $dispatchedEvent->getUid());
     }
@@ -213,7 +213,7 @@ class RecordMonitorTest extends SetUpUnitTestCase
 
         $this->recordMonitor->processDatamap_afterDatabaseOperations('new', 'tt_content', $newId, ['pid' => 1], $dataHandlerMock);
 
-        self::assertTrue($dispatchedEvent instanceof RecordUpdatedEvent);
+        self::assertTrue($dispatchedEvent instanceof RecordInsertedEvent);
         self::assertEquals('tt_content', $dispatchedEvent->getTable());
         self::assertEquals(123, $dispatchedEvent->getUid());
     }
