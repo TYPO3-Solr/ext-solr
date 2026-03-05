@@ -21,12 +21,12 @@ use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesServi
 use ApacheSolrForTypo3\Solr\Exception as SolrException;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException as AspectNotFoundExceptionAlias;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 
 /**
  * Class LastSearchesViewHelper
@@ -66,14 +66,8 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
             $cache,
         );
 
-        if (!$this->renderingContext instanceof RenderingContext) {
-            throw new SolrException(
-                'Solr rendering context must be an instance of RenderingContext',
-                1717760054,
-            );
-        }
-
-        $frequentSearches = $frequentSearchesService->getFrequentSearchTerms($this->renderingContext->getRequest());
+        $request = $this->renderingContext->getAttribute(ServerRequestInterface::class);
+        $frequentSearches = $frequentSearchesService->getFrequentSearchTerms($request);
         $minimumSize = $typoScriptConfiguration->getSearchFrequentSearchesMinSize();
         $maximumSize = $typoScriptConfiguration->getSearchFrequentSearchesMaxSize();
 

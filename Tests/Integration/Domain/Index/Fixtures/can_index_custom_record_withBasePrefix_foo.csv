@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title"
-,1,0,1,1,"/","Root page"
+,"uid","pid","is_siteroot","doktype","slug","title","tstamp"
+,1,0,1,1,"/","Root page",1007007007
 "tx_fakeextension_domain_model_bar",
 ,"uid","pid","title","category","tstamp"
 ,111,1,"testnews",4711,111111

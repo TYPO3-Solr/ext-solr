@@ -18,7 +18,8 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Report;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
@@ -26,26 +27,21 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  */
 abstract class AbstractSolrStatus implements StatusProviderInterface
 {
+    public function __construct(
+        protected readonly ViewFactoryInterface $viewFactory,
+    ) {}
+
     /**
      * Assigns variables to the fluid StandaloneView and renders the view.
      */
     protected function getRenderedReport(string $templateFilename = '', array $variables = []): string
     {
         $templatePath = 'EXT:solr/Resources/Private/Templates/Backend/Reports/' . $templateFilename;
-        $standaloneView = $this->getFluidStandaloneViewWithTemplate($templatePath);
-        $standaloneView->assignMultiple($variables);
+        $view = $this->viewFactory->create(new ViewFactoryData(
+            templatePathAndFilename: GeneralUtility::getFileAbsFileName($templatePath),
+        ));
+        $view->assignMultiple($variables);
 
-        return $standaloneView->render();
-    }
-
-    /**
-     * Initializes a StandaloneView with a template and returns it.
-     */
-    private function getFluidStandaloneViewWithTemplate(string $templatePath = ''): StandaloneView
-    {
-        $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
-        $standaloneView->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName($templatePath));
-
-        return $standaloneView;
+        return $view->render();
     }
 }

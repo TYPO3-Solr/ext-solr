@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","doktype","hidden","extendToSubpages","slug","title"
-,17,1,1,1,1,"/a-page","A Page"
-,10,17,1,0,0,"/a-page/subpage","Subpage"
-,100,10,1,0,0,"/a-page/subpage/subsubpage","Subsubpage"
-,11,17,1,1,0,"/a-page/subpage-2","Subpage 2"
+,"uid","pid","doktype","hidden","extendToSubpages","slug","title","tstamp"
+,17,1,1,1,1,"/a-page","A Page",1007007007
+,10,17,1,0,0,"/a-page/subpage","Subpage",1007007007
+,100,10,1,0,0,"/a-page/subpage/subsubpage","Subsubpage",1007007007
+,11,17,1,1,0,"/a-page/subpage-2","Subpage 2",1007007007

@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 
 /**
@@ -28,7 +29,7 @@ interface FrontendHelper
      * Activates a frontend helper by registering for hooks and other
      * resources required by the frontend helper to work.
      */
-    public function activate(): void;
+    public function activate(PageIndexerRequest $request): void;
 
     /**
      * Deactivates a frontend helper by unregistering from hooks and releasing

@@ -1,8 +1,8 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title"
-,1,0,1,1,0,0,"/","Outer Site"
-,111,1,1,1,0,0,"/","Inner Site"
-,120,111,1,1,0,0,"/subpage","Subpage of Inner Site"
+,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title","tstamp"
+,1,0,1,1,0,0,"/","Outer Site",1007007007
+,111,1,1,1,0,0,"/","Inner Site",1007007007
+,120,111,1,1,0,0,"/subpage","Subpage of Inner Site",1007007007
 "tx_fakeextension_domain_model_bar",
 ,"uid","pid","title","sys_language_uid","l10n_parent","category"
 ,111,111,"external testnews",0,0,"4711"

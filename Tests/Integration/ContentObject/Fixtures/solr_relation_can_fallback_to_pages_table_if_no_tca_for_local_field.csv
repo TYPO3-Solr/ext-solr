@@ -1,7 +1,7 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title"
-,1,0,1,1,"/","Page"
-,7,1,0,1,"/subpage-with-category","Sub page with assigned category"
+,"uid","pid","is_siteroot","doktype","slug","title","tstamp"
+,1,0,1,1,"/","Page",1007007007
+,7,1,0,1,"/subpage-with-category","Sub page with assigned category",1007007007
 "sys_category",
 ,"uid","pid","title","sys_language_uid"
 ,123,0,"Some Category",0

@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\FrontendHelper;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\Container\ContainerInterface;
 use RuntimeException;
 
 class ManagerTest extends SetUpUnitTestCase
@@ -26,7 +27,11 @@ class ManagerTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->manager = new Manager();
+        $containerMock = $this->createMock(ContainerInterface::class);
+        $containerMock->method('get')->willReturnCallback(
+            fn(string $class) => new $class(),
+        );
+        $this->manager = new Manager($containerMock);
         parent::setUp();
     }
 

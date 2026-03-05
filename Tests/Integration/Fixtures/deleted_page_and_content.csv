@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","deleted","slug","title"
-,123,1,0,1,1,"/deleted","Already deleted page"
+,"uid","pid","is_siteroot","doktype","deleted","slug","title","tstamp"
+,123,1,0,1,1,"/deleted","Already deleted page",1007007007
 "tt_content",
 ,"uid","pid","colPos","CType","bodytext"
 ,321,123,0,"text","content element on an already deleted page 123"

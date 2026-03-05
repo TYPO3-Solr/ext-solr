@@ -16,8 +16,8 @@
 ,24,22,"ce on another mounted page",0
 ,25,22,"hidden ce on another mounted page",1
 "tx_solr_indexqueue_item"
-,"uid","root","item_type","item_uid","indexing_configuration","has_indexing_properties","pages_mountidentifier","errors"
-,1,1,"pages",22,"pages",1,"22-32-1",""
+,"uid","root","item_type","item_uid","indexing_configuration","has_indexing_properties","pages_mountidentifier","errors","changed"
+,1,1,"pages",22,"pages",1,"22-32-1","",1007007007
 "tx_solr_indexqueue_indexing_property"
 ,"uid","root","item_id","property_key","property_value"
 ,1,1,1,"mountPageSource",22

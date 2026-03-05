@@ -34,14 +34,16 @@ class SolrConfigurationStatusTest extends SetUpUnitTestCase
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         // we mock the methods to external dependencies.
 
-        $this->report = $this->getMockBuilder(SolrConfigurationStatus::class)->onlyMethods(
-            [
-                'getRootPages',
-                'getIsSolrEnabled',
-                'getIsIndexingEnabled',
-                'getRenderedReport',
-            ],
-        )->getMock();
+        $this->report = $this->getMockBuilder(SolrConfigurationStatus::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(
+                [
+                    'getRootPages',
+                    'getIsSolrEnabled',
+                    'getIsIndexingEnabled',
+                    'getRenderedReport',
+                ],
+            )->getMock();
         parent::setUp();
     }
 

@@ -32,11 +32,13 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
+        // Must call parent::setUp() first to register ContentObjectService mock
+        parent::setUp();
+
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content'] = 'SOLR_CONTENT';
         $fakeConfigurationArray['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content.']['field'] = 'bodytext';
         $this->configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        parent::setUp();
     }
 
     #[Test]

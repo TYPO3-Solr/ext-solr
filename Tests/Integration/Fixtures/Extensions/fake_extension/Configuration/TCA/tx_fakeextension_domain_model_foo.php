@@ -18,7 +18,6 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'uid',
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -67,12 +66,6 @@ return [
                 'type' => 'passthrough',
             ],
         ],
-        'tstamp' => [
-            'label' => 'tstamp',
-            'config' => [
-                'type' => 'passthrough',
-            ],
-        ],
         'sorting' => [
             'label' => 'sorting',
             'config' => [
@@ -85,6 +78,7 @@ return [
             'config' => [
                 'type' => 'datetime',
                 'format' => 'datetime',
+                'searchable' => false,
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
@@ -94,6 +88,7 @@ return [
             'config' => [
                 'type' => 'datetime',
                 'format' => 'datetime',
+                'searchable' => false,
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
@@ -105,6 +100,7 @@ return [
                 'type' => 'input',
                 'size' => 60,
                 'required' => true,
+                'searchable' => false,
             ],
         ],
         'main_category' => [

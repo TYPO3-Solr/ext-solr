@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchHasBeenExecutedEvent;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -40,7 +41,7 @@ class LastSearchesComponent
             return;
         }
 
-        if (!isset($GLOBALS['TSFE'])) {
+        if (!$this->isFrontendRequest()) {
             return;
         }
 
@@ -60,5 +61,11 @@ class LastSearchesComponent
             LastSearchesService::class,
             $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration(),
         );
+    }
+
+    protected function isFrontendRequest(): bool
+    {
+        return ($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('applicationType')
+            === SystemEnvironmentBuilder::REQUESTTYPE_FE;
     }
 }

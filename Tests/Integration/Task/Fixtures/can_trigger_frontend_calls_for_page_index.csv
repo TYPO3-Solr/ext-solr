@@ -1,6 +1,6 @@
 "pages",
-,"uid","is_siteroot","doktype","hidden","slug","title"
-,1,1,1,0,"/","page for testing"
+,"uid","is_siteroot","doktype","hidden","slug","title","tstamp"
+,1,1,1,0,"/","page for testing",1007007007
 "tx_solr_indexqueue_item",
 ,"uid","root","item_type","item_uid","indexing_configuration","has_indexing_properties","indexing_priority","changed","indexed","errors","pages_mountidentifier"
 ,4711,1,"pages",1,"pages",0,0,1449151778,0,"",""

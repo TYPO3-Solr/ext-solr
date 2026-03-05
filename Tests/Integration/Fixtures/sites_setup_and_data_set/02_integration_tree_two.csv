@@ -1,6 +1,6 @@
 "pages",
-,"uid","is_siteroot","doktype","hidden","title","slug"
-,111,1,1,0,"Root of Testpage testtwo.site aka integration_tree_two","/"
+,"uid","is_siteroot","doktype","hidden","title","slug","tstamp"
+,111,1,1,0,"Root of Testpage testtwo.site aka integration_tree_two","/",1007007007
 "sys_template",
 ,"uid","pid","root","clear","config","constants","sorting"
 ,111,111,1,3,"@import 'EXT:solr/Tests/Integration/Fixtures/sites_setup_and_data_set/Integration.setup.typoscript'","@import 'EXT:solr/Tests/Integration/Fixtures/sites_setup_and_data_set/Integration.constants.typoscript'",100

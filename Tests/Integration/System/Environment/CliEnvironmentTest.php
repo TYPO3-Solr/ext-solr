@@ -27,6 +27,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CliEnvironmentTest extends IntegrationTestBase
 {
+    protected bool $initializeDatabase = false;
+
     #[Test]
     public function canInitialize(): void
     {

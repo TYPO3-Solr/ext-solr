@@ -10,9 +10,9 @@
 #       |
 #       |—[14] Mount Point (to [24] to show contents from)
 "pages",
-,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title"
-,14,1,0,7,24,1,"/mount-point","Mount Point"
-,24,111,0,1,0,0,"/first-shared","FirstShared"
+,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title","tstamp"
+,14,1,0,7,24,1,"/mount-point","Mount Point",1007007007
+,24,111,0,1,0,0,"/first-shared","FirstShared",1007007007
 "tt_content",
 ,"uid","pid","colPos","CType","bodytext"
 ,99,24,0,"text","Some Lorem Ipsum conteint!"

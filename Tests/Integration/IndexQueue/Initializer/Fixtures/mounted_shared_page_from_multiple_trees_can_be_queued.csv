@@ -15,13 +15,13 @@
 #      ——[34] Mount Point 2 (to [24] to show contents from)
 #
 "pages",
-,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title"
+,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title","tstamp"
 # Shared Pages tree
-,20,0,0,254,0,0,"/shared","Shared-Pages"
-,24,20,0,1,0,0,"/first-shared","FirstShared (Not root)"
+,20,0,0,254,0,0,"/shared","Shared-Pages",1007007007
+,24,20,0,1,0,0,"/first-shared","FirstShared (Not root)",1007007007
 # Site tree
 # Uses the root pages from default tests setup See: Ext:solr/Tests/Integration/Fixtures/sites_setup_and_data_set/01_integration_tree_one.csv
-,14,1,0,7,24,1,"/mount-point-1","Mount Point 1"
+,14,1,0,7,24,1,"/mount-point-1","Mount Point 1",1007007007
 # Second Site tree
 # Uses the root pages from default tests setup See: Ext:solr/Tests/Integration/Fixtures/sites_setup_and_data_set/02_integration_tree_two.csv
-,34,111,0,7,24,1,"/mount-point-2","Mount Point 2"
+,34,111,0,7,24,1,"/mount-point-2","Mount Point 2",1007007007

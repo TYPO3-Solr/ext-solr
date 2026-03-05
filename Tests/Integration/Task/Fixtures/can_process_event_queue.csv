@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","doktype","hidden","slug","title"
-,10,1,1,0,"/childpage","Childpage"
+,"uid","pid","doktype","hidden","slug","title","tstamp"
+,10,1,1,0,"/childpage","Childpage",1007007007
 "tt_content",
 ,"uid","pid","CType","bodytext","colPos"
 ,1,10,"text","Lorem ipsum dolor sit amet, consetetur sadipscing elitr.",0

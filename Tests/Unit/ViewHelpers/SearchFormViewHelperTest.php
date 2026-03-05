@@ -31,6 +31,7 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\ViewHelperResolver;
 use TYPO3\CMS\Fluid\View\TemplatePaths;
 use TYPO3Fluid\Fluid\Core\Cache\FluidCacheInterface;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\ArgumentProcessorInterface;
 
 class SearchFormViewHelperTest extends SetUpUnitTestCase
 {
@@ -62,6 +63,7 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
             [],
             [],
             new TemplatePaths(),
+            $this->createMock(ArgumentProcessorInterface::class),
         );
         $request = new Request((new ServerRequest())->withAttribute('extbase', new ExtbaseRequestParameters(SearchController::class)));
         $renderingContext->setAttribute(ServerRequestInterface::class, $request);

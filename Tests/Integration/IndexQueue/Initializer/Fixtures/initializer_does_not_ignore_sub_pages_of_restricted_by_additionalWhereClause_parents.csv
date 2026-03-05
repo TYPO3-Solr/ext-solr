@@ -1,5 +1,5 @@
 # Uses the root pages from default tests setup See: Ext:solr/Tests/Integration/Fixtures/sites_setup_and_data_set/01_integration_tree_one.csv
 "pages",
-,"uid","pid","doktype","slug","title","no_search"
-,2,1,1,"/no-search","No Search",1
-,3,2,1,"/2-nd-level-subpage","2-nd level Subpage",0
+,"uid","pid","doktype","slug","title","no_search","tstamp"
+,2,1,1,"/no-search","No Search",1,1007007007
+,3,2,1,"/2-nd-level-subpage","2-nd level Subpage",0,1007007007

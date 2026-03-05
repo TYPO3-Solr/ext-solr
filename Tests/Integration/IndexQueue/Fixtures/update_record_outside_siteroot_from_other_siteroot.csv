@@ -1,7 +1,7 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title",
+,"uid","pid","is_siteroot","doktype","slug","title",,"tstamp"
 # sysfolder below site 2
-,3,111,0,254,"/folder","Sys Folder"
+,3,111,0,254,"/folder","Sys Folder",1007007007
 "tx_fakeextension_domain_model_foo",
 ,"uid","pid","title"
 ,8,3,"testnews"

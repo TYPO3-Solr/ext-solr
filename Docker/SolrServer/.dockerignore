@@ -1,7 +1,6 @@
 .git
 .gitignore
 .idea
-.travis.yml
 Build
 Configuration
 composer.json
@@ -14,11 +13,7 @@ ext_localconf.php
 workflow
 Classes
 README.md
-ext_emconf.php
 ext_tables.php
-Ressources/Css
-Ressources/Images
-Ressources/JavaScript
 Ressources/Private/Install
 Ressources/Private/Language
 Ressources/Private/Layouts
@@ -26,4 +21,3 @@ Ressources/Private/Partials
 Ressources/Private/Php
 Ressources/Private/Templates
 Ressources/Public
-Ressources/Templates

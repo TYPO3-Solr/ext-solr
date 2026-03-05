@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use ApacheSolrForTypo3\Solr\Util;
 use PHPUnit\Framework\Attributes\Test;
-use stdClass;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -255,17 +254,11 @@ class SearchResultSetServiceTest extends IntegrationTestBase
             $search,
         );
 
-        $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 0, 0, $typoScriptConfiguration);
+        $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 1, 0, $typoScriptConfiguration);
         $searchRequest->setRawQueryString($queryString);
         $searchRequest->setResultsPerPage(10);
         $searchRequest->setPage(1);
 
-        // Simulate something as we still have some $GLOBALS[TSFE] dependency
-        $GLOBALS['TSFE'] = new stdClass();
-        $GLOBALS['TSFE']->id = 1;
-        $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
-        $GLOBALS['TSFE']->fe_user->initializeUserSessionManager();
-        $GLOBALS['TSFE']->fe_user->createUserSession([]);
         $searchResultSet = $searchResultSetService->search($searchRequest);
 
         $searchResults = $searchResultSet->getSearchResults();
