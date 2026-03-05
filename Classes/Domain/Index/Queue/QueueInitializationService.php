@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterIndexQueueHasBeenInitializedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
-use ApacheSolrForTypo3\Solr\IndexQueue\QueueInitializationServiceAwareInterface;
 use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
@@ -121,9 +120,6 @@ class QueueInitializationService
         $queue = GeneralUtility::makeInstance(
             $solrConfiguration->getIndexQueueClassByConfigurationName($indexingConfigurationName),
         );
-        if ($queue instanceof QueueInitializationServiceAwareInterface) {
-            $queue->setQueueInitializationService($this);
-        }
 
         // clear queue
         if ($this->clearQueueOnInitialization) {

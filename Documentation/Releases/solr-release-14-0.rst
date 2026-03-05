@@ -37,6 +37,31 @@ If you upgrade from < 13.1, it is recommended to re-index all solr cores
 completely.
 
 
+!!! QueueInitializationServiceAwareInterface and related Queue methods removed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The interface
+:php:`ApacheSolrForTypo3\Solr\IndexQueue\QueueInitializationServiceAwareInterface`
+and its implementation in :php:`ApacheSolrForTypo3\Solr\IndexQueue\Queue` have been
+removed entirely. The following public API is gone:
+
+*   :php:`Queue::setQueueInitializationService(QueueInitializationService $service): void`
+*   :php:`Queue::getQueueInitializationService(): QueueInitializationService`
+*   :php:`Queue::getInitializationService(): QueueInitializationService` (was already deprecated since v12)
+
+The :php:`QueueInitializationService` itself is not affected and continues to exist.
+
+Background
+""""""""""
+
+The interface was introduced as a workaround for a circular dependency: the
+:php:`QueueInitializationService` created :php:`Queue` instances and then injected itself
+back via :php:`setQueueInitializationService()`. In practice, the injected service was
+never used by :php:`Queue` internally, and :php:`getQueueInitializationService()` was
+only called in tests – never in production code. The pattern was obsolete.
+>>>>>>> ee5cc83d7 ([!!!][TASK] Remove QueueInitializationServiceAwareInterface and related Queue API)
+
+
 All Changes
 -----------
 
