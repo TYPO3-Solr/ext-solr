@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Backend;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
-use TYPO3\CMS\Backend\Form\FormResultFactory;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
@@ -203,17 +202,16 @@ class IndexingConfigurationSelectorField
         $options['parameterArray']['fieldConf']['config']['items'] = $items;
         $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
 
-        $selectCheckboxResult = $nodeFactory->create($options)->render();
-        $formResult = GeneralUtility::makeInstance(FormResultFactory::class)->create($selectCheckboxResult);
+        $formResult = $nodeFactory->create($options)->render();
 
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        foreach ($formResult->stylesheetFiles as $stylesheetFile) {
+        foreach ($formResult['stylesheetFiles'] as $stylesheetFile) {
             $pageRenderer->addCssFile($stylesheetFile);
         }
-        foreach ($formResult->javaScriptModules as $module) {
+        foreach ($formResult['javaScriptModules'] as $module) {
             $pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction($module);
         }
 
-        return $formResult->html;
+        return $formResult['html'];
     }
 }
