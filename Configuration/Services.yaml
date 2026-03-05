@@ -7,6 +7,13 @@ services:
     resource: '../Classes/*'
     exclude: '../Classes/Eid/*'
 
+  backend_controller:
+    namespace: ApacheSolrForTypo3\Solr\Controller\Backend\Search\
+    resource: '../Classes/Controller/Backend/Search/*'
+    public: true
+    autowire: true
+    tags: ['backend.controller']
+
   controller:
     namespace: ApacheSolrForTypo3\Solr\Controller\
     resource: '../Classes/Controller/*'
@@ -33,17 +40,20 @@ services:
     autowire: true
     shared: false
 
-  backend_controller:
-    namespace: ApacheSolrForTypo3\Solr\Controller\Backend\Search\
-    resource: '../Classes/Controller/Backend/Search/*'
-    public: true
-    autowire: true
-    tags: ['backend.controller']
+  cache.solr:
+    class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
+    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
+    arguments: ['tx_solr']
 
   ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder:
     public: true
     autowire: true
     shared: false
+
+  ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService:
+    autowire: true
+    arguments:
+      $cache: '@cache.solr'
 
   ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder:
     public: true

@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\FrequentSearches;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -34,6 +35,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
 {
     protected FrequentSearchesService|MockObject $frequentSearchesService;
     protected AbstractFrontend|MockObject $cacheMock;
+    protected ConfigurationManager|MockObject $configurationManagerMock;
     protected TypoScriptConfiguration|MockObject $configurationMock;
     protected StatisticsRepository|MockObject $statisticsRepositoryMock;
 
@@ -42,9 +44,14 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
         $this->statisticsRepositoryMock = $this->createMock(StatisticsRepository::class);
         $this->cacheMock = $this->createMock(AbstractFrontend::class);
         $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $this->configurationManagerMock = $this->createMock(ConfigurationManager::class);
+        $this->configurationManagerMock
+            ->expects(self::atLeastOnce())
+            ->method('getTypoScriptConfiguration')
+            ->willReturn($this->configurationMock);
 
         $this->frequentSearchesService = new FrequentSearchesService(
-            $this->configurationMock,
+            $this->configurationManagerMock,
             $this->cacheMock,
             $this->statisticsRepositoryMock,
         );
