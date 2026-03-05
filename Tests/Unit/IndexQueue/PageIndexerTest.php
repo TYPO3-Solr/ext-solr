@@ -46,6 +46,7 @@ class PageIndexerTest extends SetUpUnitTestCase
     protected function setUp(): void
     {
         $this->pagesRepositoryMock = $this->createMock(PagesRepository::class);
+        $this->pagesRepositoryMock->method('filterSolrConnectionsByPageVisibility')->willReturnArgument(0);
         $this->documentBuilderMock = $this->createMock(Builder::class);
         $this->solrLogManagerMock = $this->createMock(SolrLogManager::class);
         $this->connectionManagerMock = $this->createMock(ConnectionManager::class);

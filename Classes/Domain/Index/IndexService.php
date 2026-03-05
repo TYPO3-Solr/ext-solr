@@ -21,22 +21,26 @@ use ApacheSolrForTypo3\Solr\Event\Indexing\AfterItemHasBeenIndexedEvent;
 use ApacheSolrForTypo3\Solr\Event\Indexing\AfterItemsHaveBeenIndexedEvent;
 use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeItemIsIndexedEvent;
 use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeItemsAreIndexedEvent;
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
-use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Service to perform indexing operations
+ * Service to perform indexing operations.
+ *
+ * This is the top-level orchestration layer. It fetches items from the queue,
+ * groups them by item_pid for batched processing, dispatches before/after events,
+ * and delegates the actual indexing to IndexingService via sub-requests.
  */
 class IndexService
 {
@@ -49,8 +53,6 @@ class IndexService
     protected EventDispatcherInterface $eventDispatcher;
 
     protected SolrLogManager $logger;
-
-    protected array $httpHosts = [];
 
     public function __construct(
         Site $site,
@@ -77,12 +79,18 @@ class IndexService
     /**
      * Indexes items from the Index Queue.
      *
-     * @throws ConnectionException
+     * Groups items by item_pid for batched sub-request processing.
+     * Pages are processed individually (one sub-request per page).
+     * Records sharing the same pid are batched into a single sub-request.
+     *
+     * @throws ContainerExceptionInterface
      * @throws DBALException
+     * @throws InvalidConnectionException
+     * @throws NotFoundExceptionInterface
      */
     public function indexItems(int $limit): bool
     {
-        $errors     = 0;
+        $errors = 0;
         $indexRunId = uniqid();
         $configurationToUse = $this->site->getSolrConfiguration();
         $enableCommitsSetting = $configurationToUse->getEnableCommits();
@@ -94,19 +102,37 @@ class IndexService
         $beforeIndexItemsEvent = $this->eventDispatcher->dispatch($beforeIndexItemsEvent);
         $itemsToIndex = $beforeIndexItemsEvent->getItems();
 
-        foreach ($itemsToIndex as $itemToIndex) {
-            try {
-                // try indexing
-                $beforeIndexItemEvent = new BeforeItemIsIndexedEvent($itemToIndex, $this->getContextTask(), $indexRunId);
-                $beforeIndexItemEvent = $this->eventDispatcher->dispatch($beforeIndexItemEvent);
-                $itemToIndex = $beforeIndexItemEvent->getItem();
-                $this->indexItem($itemToIndex, $configurationToUse);
-                $afterIndexItemEvent = new AfterItemHasBeenIndexedEvent($itemToIndex, $this->getContextTask(), $indexRunId);
-                $this->eventDispatcher->dispatch($afterIndexItemEvent);
-            } catch (Throwable $e) {
-                $errors++;
-                $this->indexQueue->markItemAsFailed($itemToIndex, $e->getCode() . ': ' . $e->__toString());
-                $this->generateIndexingErrorLog($itemToIndex, $e);
+        // Group items by item_pid for batched processing
+        $groupedItems = $this->groupItemsByPid($itemsToIndex);
+
+        /** @var IndexingService $indexingService */
+        $indexingService = GeneralUtility::getContainer()->get(IndexingService::class);
+
+        foreach ($groupedItems as $groupKey => $groupItems) {
+            foreach ($groupItems as $itemToIndex) {
+                try {
+                    // Dispatch per-item event
+                    $beforeIndexItemEvent = new BeforeItemIsIndexedEvent($itemToIndex, $this->getContextTask(), $indexRunId);
+                    $beforeIndexItemEvent = $this->eventDispatcher->dispatch($beforeIndexItemEvent);
+                    $itemToIndex = $beforeIndexItemEvent->getItem();
+
+                    $itemIndexed = $indexingService->indexItems([$itemToIndex]);
+
+                    if ($itemIndexed) {
+                        $this->indexQueue->updateIndexTimeByItem($itemToIndex);
+                        $itemChangedDateAfterIndex = $itemToIndex->getChanged();
+                        if ($itemChangedDateAfterIndex > $itemToIndex->getChanged() && $itemChangedDateAfterIndex > time()) {
+                            $this->indexQueue->setForcedChangeTimeByItem($itemToIndex, $itemChangedDateAfterIndex);
+                        }
+                    }
+
+                    $afterIndexItemEvent = new AfterItemHasBeenIndexedEvent($itemToIndex, $this->getContextTask(), $indexRunId);
+                    $this->eventDispatcher->dispatch($afterIndexItemEvent);
+                } catch (Throwable $e) {
+                    $errors++;
+                    $this->indexQueue->markItemAsFailed($itemToIndex, $e->getCode() . ': ' . $e->__toString());
+                    $this->generateIndexingErrorLog($itemToIndex, $e);
+                }
             }
         }
 
@@ -127,6 +153,35 @@ class IndexService
     }
 
     /**
+     * Groups items by their item_pid value for batched processing.
+     * Pages are grouped by their own uid (one per group).
+     * Records are grouped by their pid.
+     *
+     * @param Item[] $items
+     * @return array<string, Item[]> Items grouped by a key based on type and pid
+     */
+    protected function groupItemsByPid(array $items): array
+    {
+        $groups = [];
+        foreach ($items as $item) {
+            if ($item->getType() === 'pages') {
+                // Pages are always processed individually
+                $key = 'pages:' . $item->getRecordUid();
+            } else {
+                // Records are grouped by their item_pid
+                $pid = $item->getItemPid();
+                if ($pid === 0) {
+                    // Fallback for items without item_pid set
+                    $pid = $item->getRecordPageId() ?? 0;
+                }
+                $key = $item->getType() . ':pid:' . $pid;
+            }
+            $groups[$key][] = $item;
+        }
+        return $groups;
+    }
+
+    /**
      * Generates a message in the error log when an error occurred.
      */
     protected function generateIndexingErrorLog(Item $itemToIndex, Throwable $e): void
@@ -135,72 +190,6 @@ class IndexService
         $data = ['code' => $e->getCode(), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString(), 'item' => (array)$itemToIndex];
 
         $this->logger->error($message, $data);
-    }
-
-    /**
-     * Indexes an item from the Index Queue.
-     *
-     * @return bool TRUE if the item was successfully indexed, FALSE otherwise
-     *
-     * @throws Throwable
-     */
-    protected function indexItem(Item $item, TypoScriptConfiguration $configuration): bool
-    {
-        $indexer = $this->getIndexerByItem($item->getIndexingConfigurationName(), $configuration);
-        // Remember original http host value
-        $originalHttpHost = $_SERVER['HTTP_HOST'] ?? null;
-
-        $itemChangedDate = $item->getChanged();
-        $itemChangedDateAfterIndex = 0;
-
-        try {
-            $this->initializeHttpServerEnvironment($item);
-            $itemIndexed = $indexer->index($item);
-
-            // update IQ item so that the IQ can determine what's been indexed already
-            if ($itemIndexed) {
-                $this->indexQueue->updateIndexTimeByItem($item);
-                $itemChangedDateAfterIndex = $item->getChanged();
-            }
-
-            if ($itemChangedDateAfterIndex > $itemChangedDate && $itemChangedDateAfterIndex > time()) {
-                $this->indexQueue->setForcedChangeTimeByItem($item, $itemChangedDateAfterIndex);
-            }
-        } catch (Throwable $e) { // @todo: wrap with EX:solr exception
-            $this->restoreOriginalHttpHost($originalHttpHost);
-            throw $e;
-        }
-
-        $this->restoreOriginalHttpHost($originalHttpHost);
-
-        return $itemIndexed;
-    }
-
-    /**
-     * A factory method to get an indexer depending on an item's configuration.
-     *
-     * By default, all items are indexed using the default indexer
-     * (ApacheSolrForTypo3\Solr\IndexQueue\Indexer) coming with EXT:solr. Pages by default are
-     * configured to be indexed through a dedicated indexer
-     * (ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer). In all other cases a dedicated indexer
-     * can be specified through TypoScript if needed.
-     */
-    protected function getIndexerByItem(
-        string $indexingConfigurationName,
-        TypoScriptConfiguration $configuration,
-    ): Indexer {
-        $indexerClass = $configuration->getIndexQueueIndexerByConfigurationName($indexingConfigurationName);
-        $indexerConfiguration = $configuration->getIndexQueueIndexerConfigurationByConfigurationName($indexingConfigurationName);
-
-        $indexer = GeneralUtility::makeInstance($indexerClass, $indexerConfiguration);
-        if (!($indexer instanceof Indexer)) {
-            throw new RuntimeException(
-                'The indexer class "' . $indexerClass . '" for indexing configuration "' . $indexingConfigurationName . '" is not a valid indexer. Must be a subclass of ApacheSolrForTypo3\Solr\IndexQueue\Indexer.',
-                1260463206,
-            );
-        }
-
-        return $indexer;
     }
 
     /**
@@ -221,44 +210,5 @@ class IndexService
     public function getFailCount(): int
     {
         return $this->indexQueue->getStatisticsBySite($this->site)->getFailedCount();
-    }
-
-    /**
-     * Initializes the $_SERVER['HTTP_HOST'] environment variable in CLI
-     * environments dependent on the Index Queue item's root page.
-     *
-     * When the Index Queue Worker task is executed by a cron job there is no
-     * HTTP_HOST since we are in a CLI environment. RealURL needs the host
-     * information to generate a proper URL though. Using the Index Queue item's
-     * root page information we can determine the correct host although being
-     * in a CLI environment.
-     *
-     * @throws DBALException
-     */
-    protected function initializeHttpServerEnvironment(Item $item): void
-    {
-        $rootPageId = $item->getRootPageUid();
-        $hostFound = !empty($this->httpHosts[$rootPageId]);
-
-        if (!$hostFound) {
-            $this->httpHosts[$rootPageId] = $item->getSite()->getDomain();
-        }
-
-        $_SERVER['HTTP_HOST'] = $this->httpHosts[$rootPageId];
-
-        // needed since TYPO3 7.5
-        GeneralUtility::flushInternalRuntimeCaches();
-    }
-
-    protected function restoreOriginalHttpHost(?string $originalHttpHost): void
-    {
-        if (!is_null($originalHttpHost)) {
-            $_SERVER['HTTP_HOST'] = $originalHttpHost;
-        } else {
-            unset($_SERVER['HTTP_HOST']);
-        }
-
-        // needed since TYPO3 7.5
-        GeneralUtility::flushInternalRuntimeCaches();
     }
 }

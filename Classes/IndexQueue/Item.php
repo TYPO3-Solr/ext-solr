@@ -24,6 +24,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -85,6 +86,12 @@ class Item implements ItemInterface, MountPointAwareItemInterface
      * The record's uid.
      */
     protected int $recordUid;
+
+    /**
+     * The page ID where the record lives (tx_solr_indexqueue_item.item_pid).
+     * For pages: same as item_uid. For records: the record's pid.
+     */
+    protected int $itemPid = 0;
 
     /**
      * The indexing priority
@@ -160,6 +167,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
         $this->rootPageUid = (int)$itemMetaData['root'];
         $this->type = $itemMetaData['item_type'];
         $this->recordUid = (int)$itemMetaData['item_uid'];
+        $this->itemPid = (int)($itemMetaData['item_pid'] ?? 0);
         $this->mountPointIdentifier = (string)empty($itemMetaData['pages_mountidentifier']) ? '' : $itemMetaData['pages_mountidentifier'];
         $this->changed = (int)$itemMetaData['changed'];
         $this->indexed = (int)($itemMetaData['indexed'] ?? 0);
@@ -232,8 +240,8 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     /**
      * Gets the site the item belongs to.
      *
-     * @throws DBALException
      * @throws InvalidArgumentException
+     * @throws SiteNotFoundException
      */
     public function getSite(): ?Site
     {
@@ -242,7 +250,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     }
 
     /**
-     * Returns the type/tablename of the queue record.
+     * Returns the type / table-name of the queue record.
      */
     public function getType(): string
     {
@@ -337,6 +345,15 @@ class Item implements ItemInterface, MountPointAwareItemInterface
             return null;
         }
         return $this->record['pid'];
+    }
+
+    /**
+     * Returns the item_pid value (page ID for grouping).
+     * For pages: same as item_uid. For records: the record's pid.
+     */
+    public function getItemPid(): int
+    {
+        return $this->itemPid;
     }
 
     /**
