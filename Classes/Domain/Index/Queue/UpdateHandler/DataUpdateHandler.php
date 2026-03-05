@@ -325,28 +325,6 @@ class DataUpdateHandler extends AbstractUpdateHandler
     }
 
     /**
-     * Removes record from the index queue and from the solr index when the item is in the queue.
-     *
-     * @throws DBALException
-     * @deprecated DataUpdateHandler->removeFromIndexAndQueueWhenItemInQueue is deprecated and will be removed in v13.
-                   Use DataUpdateHandler->removeFromIndexAndQueue instead.
-     */
-    protected function removeFromIndexAndQueueWhenItemInQueue(string $recordTable, int $recordUid): void
-    {
-        trigger_error(
-            'DataUpdateHandler->removeFromIndexAndQueueWhenItemInQueue is deprecated and will be removed in v13.'
-            . ' Use DataUpdateHandler->removeFromIndexAndQueue instead.',
-            E_USER_DEPRECATED,
-        );
-
-        if (!$this->indexQueue->containsItem($recordTable, $recordUid)) {
-            return;
-        }
-
-        $this->removeFromIndexAndQueue($recordTable, $recordUid);
-    }
-
-    /**
      * @throws DBALException
      */
     protected function getSolrConfigurationFromPageId(int $pageId): TypoScriptConfiguration
