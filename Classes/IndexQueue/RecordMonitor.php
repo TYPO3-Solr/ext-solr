@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordInsertedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
@@ -164,12 +165,12 @@ class RecordMonitor
             return;
         }
 
+        $eventClass = $status === 'new' ? RecordInsertedEvent::class : RecordUpdatedEvent::class;
         $this->eventDispatcher->dispatch(
-            new RecordUpdatedEvent(
+            new $eventClass(
                 (int)$recordUid,
                 $table,
                 $fields,
-                isNewRecord: ($status === 'new' ? true : false),
             ),
         );
     }

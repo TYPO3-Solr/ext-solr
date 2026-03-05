@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEv
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordInsertedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
@@ -131,6 +132,7 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
         yield [ContentElementDeletedEvent::class, DataUpdateHandler::class, [1], true];
         yield [VersionSwappedEvent::class, DataUpdateHandler::class, [1, 'pages'], true];
         yield [RecordMovedEvent::class, DataUpdateHandler::class, [1, 'pages'], true];
+        yield [RecordInsertedEvent::class, DataUpdateHandler::class, [1, 'pages'], true];
         yield [RecordUpdatedEvent::class, DataUpdateHandler::class, [1, 'pages'], true];
         yield [RecordDeletedEvent::class, GarbageHandler::class, [1, 'pages'], true];
         yield [PageMovedEvent::class, GarbageHandler::class, [1], true];

@@ -149,6 +149,10 @@ services:
       - name: event.listener
         identifier: 'solr.index.updatehandler.noprocessingeventlistener'
         before: 'solr.index.updatehandler.immediateprocessingeventlistener,solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordInsertedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.noprocessingeventlistener'
+        before: 'solr.index.updatehandler.immediateprocessingeventlistener,solr.index.updatehandler.delayedprocessingeventlistener'
         event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent
       - name: event.listener
         identifier: 'solr.index.updatehandler.noprocessingeventlistener'
@@ -183,6 +187,10 @@ services:
       - name: event.listener
         identifier: 'solr.index.updatehandler.immediateprocessingeventlistener'
         before: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordInsertedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.immediateprocessingeventlistener'
+        before: 'solr.index.updatehandler.delayedprocessingeventlistener'
         event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent
       - name: event.listener
         identifier: 'solr.index.updatehandler.immediateprocessingeventlistener'
@@ -212,6 +220,9 @@ services:
       - name: event.listener
         identifier: 'solr.index.updatehandler.delayedprocessingeventlistener'
         event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordInsertedEvent
       - name: event.listener
         identifier: 'solr.index.updatehandler.delayedprocessingeventlistener'
         event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent

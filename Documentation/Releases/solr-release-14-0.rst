@@ -94,6 +94,45 @@ Rename method :php:`isPageIndexable` to :php:`isPageEnabled()` and adjust the si
 (the page record) instead of an :php:`Item` object:
 
 
+!!! RecordUpdatedEvent no longer covers record insertions – use RecordInsertedEvent
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A dedicated :php:`RecordInsertedEvent` has been introduced for record creations.
+The :php:`RecordUpdatedEvent` now only fires for updates; the deprecated
+:php:`$isNewRecord` property, its constructor parameter, and the :php:`isNewRecord()`
+method have been removed from :php:`RecordUpdatedEvent`.
+
+Previously :php:`RecordUpdatedEvent` was dispatched for both new records and updates,
+with :php:`isNewRecord()` acting as a flag to distinguish the two cases.
+In v14 these are two distinct events.
+
+Impact
+""""""
+
+**Listeners checking** :php:`$event->isNewRecord()`
+
+Register your listener for :php:`RecordInsertedEvent` to handle creations, and for
+:php:`RecordUpdatedEvent` to handle updates. Remove any :php:`isNewRecord()` checks:
+
+..  code-block:: yaml
+
+    # Before – one listener covering both cases
+    tags:
+      - name: event.listener
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent
+
+    # After – separate registrations
+    tags:
+      - name: event.listener
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordInsertedEvent
+      - name: event.listener
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent
+
+**Code instantiating** :php:`new RecordUpdatedEvent(..., isNewRecord: true)`
+
+Replace with :php:`new RecordInsertedEvent($uid, $table, $fields)`.
+
+
 All Changes
 -----------
 
