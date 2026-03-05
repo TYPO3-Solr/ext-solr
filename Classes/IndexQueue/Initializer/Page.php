@@ -260,7 +260,7 @@ class Page extends AbstractInitializer
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
 
         $mountIdentifier = $this->getMountPointIdentifier($mountProperties);
-        $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier, errors) '
+        $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, item_pid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier, errors) '
             . $this->buildSelectStatement() . ', 1, ' . $connection->quote($mountIdentifier) . ',""'
             . 'FROM pages '
             . 'WHERE '

@@ -50,7 +50,8 @@ defined('TYPO3') or die('Access denied.');
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['solr/recordmonitor'] = RecordMonitor::class;
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-    // registering Index Queue page indexer helpers
+    // Legacy Index Queue page indexer helpers (kept for backwards compatibility)
+    // The new unified indexing pipeline uses SolrIndexingMiddleware + IndexingService
     Manager::registerFrontendHelper('findUserGroups', UserGroupDetector::class);
 
     Manager::registerFrontendHelper('indexPage', PageIndexer::class);

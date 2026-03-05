@@ -314,7 +314,36 @@ services:
         identifier: 'solr.search-component.statistics-writer'
         method: 'writeStatisticsAfterSearch'
 
-  ### Indexing
+  ### Indexing - Unified sub-request pipeline
+  ApacheSolrForTypo3\Solr\IndexQueue\IndexingService:
+    public: true
+    autowire: true
+    shared: false
+    arguments:
+      $frontendApplication: '@TYPO3\CMS\Frontend\Http\Application'
+      $connectionManager: '@ApacheSolrForTypo3\Solr\ConnectionManager'
+      $pagesRepository: '@ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository'
+      $logger: !service
+        class: ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+        arguments:
+          $className: 'ApacheSolrForTypo3\Solr\IndexQueue\IndexingService'
+      $resultCollector: '@ApacheSolrForTypo3\Solr\IndexQueue\IndexingResultCollector'
+      $siteFinder: '@TYPO3\CMS\Core\Site\SiteFinder'
+
+  ApacheSolrForTypo3\Solr\IndexQueue\IndexingResultCollector:
+    public: true
+    shared: true
+
+  ApacheSolrForTypo3\Solr\Middleware\SolrIndexingMiddleware:
+    public: true
+    autowire: true
+    shared: false
+    arguments:
+      $logger: !service
+        class: ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+        arguments:
+          $className: 'ApacheSolrForTypo3\Solr\Middleware\SolrIndexingMiddleware'
+
   ApacheSolrForTypo3\Solr\EventListener\PageIndexer\FrontendGroupsModifier:
     autowire: true
     shared: false
