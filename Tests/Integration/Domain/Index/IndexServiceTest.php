@@ -17,8 +17,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
+use ApacheSolrForTypo3\Solr\Tests\Integration\Fixtures\IndexingServiceForTesting;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -50,6 +52,16 @@ class IndexServiceTest extends IntegrationTestBase
 
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
+
+        // Replace IndexingService with a test subclass that provides the
+        // typo3.testing.context attribute required by the testing-framework's
+        // FrontendUserHandler middleware (which doesn't null-check the attribute).
+        /** @var \Symfony\Component\DependencyInjection\Container $container */
+        $container = GeneralUtility::getContainer();
+        $container->set(
+            IndexingService::class,
+            IndexingServiceForTesting::fromProductionService($container->get(IndexingService::class)),
+        );
     }
 
     protected function addToIndexQueue(string $table, int $uid): void
@@ -74,7 +86,7 @@ class IndexServiceTest extends IntegrationTestBase
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_withBasePrefix_' . $absRefPrefix . '.csv');
 
-        $this->mergeSiteConfiguration('integration_tree_one', ['base' => '/' . $absRefPrefix . '/']);
+        $this->mergeSiteConfiguration('integration_tree_one', ['base' => 'http://testone.site/' . $absRefPrefix . '/']);
 
         $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
 

@@ -282,8 +282,9 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
         }
 
         $changedTime = $this->getItemChangedTime($itemType, (int)$itemUid);
+        $itemPid = ($itemType === 'pages') ? (int)$itemUid : (int)($record['pid'] ?? 0);
 
-        return $this->queueItemRepository->add($itemType, (int)$itemUid, $rootPageId, $changedTime, $indexingConfiguration, $indexingPriority);
+        return $this->queueItemRepository->add($itemType, (int)$itemUid, $rootPageId, $changedTime, $indexingConfiguration, $indexingPriority, $itemPid);
     }
 
     /**
