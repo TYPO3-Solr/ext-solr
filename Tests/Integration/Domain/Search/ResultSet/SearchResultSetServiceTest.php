@@ -56,7 +56,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         $this->indexPages([1, 2, 3, 4, 5]);
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        self::assertStringContainsString('002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0', $solrContent);
+        self::assertStringContainsString('0213998bdee4e7dcc8ba05a598cabdadff322ad3/pages/1/0/0/0', $solrContent);
 
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1);
 
@@ -64,7 +64,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
 
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
         $searchResultsSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $typoScriptConfiguration, $search);
-        $document = $searchResultsSetService->getDocumentById('002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0');
+        $document = $searchResultsSetService->getDocumentById('0213998bdee4e7dcc8ba05a598cabdadff322ad3/pages/1/0/0/0');
 
         self::assertSame($document->getTitle(), 'Root of Testpage testone.site aka integration_tree_one', 'Could not get document from solr by id');
     }

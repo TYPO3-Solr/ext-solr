@@ -1281,7 +1281,7 @@ class SearchControllerTest extends IntegrationTestBase
         $resultPage = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
                 ->withQueryParameter('tx_solr[action]', 'detail')
-                ->withQueryParameter('tx_solr[documentId]', '002de2729efa650191f82900ea02a0a3189dfabb/pages/2/0/0/0'),
+                ->withQueryParameter('tx_solr[documentId]', '0213998bdee4e7dcc8ba05a598cabdadff322ad3/pages/2/0/0/0'),
         )->getBody();
 
         self::assertStringContainsString('<h1>Socks</h1>', $resultPage);

@@ -168,6 +168,7 @@ class BuilderTest extends SetUpUnitTestCase
 
         $this->siteMock->expects(self::any())->method('getRootPageId')->willReturn(99);
         $this->siteMock->expects(self::any())->method('getDomain')->willReturn('test.typo3.org');
+        $this->siteMock->expects(self::any())->method('getSiteIdentifier')->willReturn('test.typo3.org');
         $this->siteMock->expects(self::any())->method('getSiteHash')->willReturn('testSiteHash');
         $this->variantIdBuilderMock->expects(self::once())->method('buildFromTypeAndUid')->with($type, 4711, $fakeRecord, $this->siteMock)->willReturn('testVariantId');
 

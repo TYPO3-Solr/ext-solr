@@ -522,7 +522,7 @@ class IndexerTest extends IntegrationTestBase
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         self::assertStringContainsString('"numFound":2', $solrContent, 'Could not index document into solr');
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*&fq=site:testone.site');
+        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*&fq=site:integration_tree_one');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"url":"http://testone.site/en/"', $solrContent, 'Item was indexed with false site UID');
     }
@@ -609,8 +609,8 @@ class IndexerTest extends IntegrationTestBase
         self::assertCount(3, $solrDocs, 'Could not found index document into solr');
 
         $sites = array_column($solrDocs, 'site');
-        self::assertEquals('testone.site', $sites[0]);
-        self::assertEquals('testtwo.site', $sites[1]);
-        self::assertEquals('testtwo.site', $sites[2]);
+        self::assertEquals('integration_tree_one', $sites[0]);
+        self::assertEquals('integration_tree_two', $sites[1]);
+        self::assertEquals('integration_tree_two', $sites[2]);
     }
 }
