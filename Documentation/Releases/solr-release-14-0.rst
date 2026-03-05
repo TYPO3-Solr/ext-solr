@@ -62,6 +62,23 @@ only called in tests – never in production code. The pattern was obsolete.
 >>>>>>> ee5cc83d7 ([!!!][TASK] Remove QueueInitializationServiceAwareInterface and related Queue API)
 
 
+!!! DataUpdateHandler::removeFromIndexAndQueueWhenItemInQueue() removed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The deprecated method :php:`DataUpdateHandler::removeFromIndexAndQueueWhenItemInQueue(string $recordTable, int $recordUid): void`
+has been removed. Use :php:`DataUpdateHandler::removeFromIndexAndQueue()` directly instead.
+
+Impact
+""""""
+
+**Code overriding** :php:`removeFromIndexAndQueueWhenItemInQueue()` or calling it from a subclass
+
+Replace every call to :php:`removeFromIndexAndQueueWhenItemInQueue()` with a direct call to :php:`removeFromIndexAndQueue()`.
+
+The queue-containment check that was part of the old method is not needed:
+:php:`removeFromIndexAndQueue()` / :php:`GarbageHandler::collectGarbage()` handle that case gracefully.
+
+
 !!! PageIndexer::isPageIndexable() removed
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
