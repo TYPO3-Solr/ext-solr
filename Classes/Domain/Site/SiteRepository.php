@@ -19,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
-use ApacheSolrForTypo3\Solr\Event\Site\AfterDomainHasBeenDeterminedForSiteEvent;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
@@ -297,18 +296,11 @@ class SiteRepository
             return null;
         }
 
-        $domain = $typo3Site->getBase()->getHost();
-        $event = $this->eventDispatcher->dispatch(
-            new AfterDomainHasBeenDeterminedForSiteEvent($domain, $rootPageRecord, $typo3Site, $this->extensionConfiguration),
-        );
-        $domain = $event->getDomain();
-
         $siteHash = $this->getSiteHash($typo3Site);
-        $defaultLanguage = $typo3Site->getDefaultLanguage()->getLanguageId();
+        $availableLanguages = $typo3Site->getLanguages();
+        $defaultLanguage = reset($availableLanguages)->getLanguageId();
+        $availableLanguageIds = array_keys($availableLanguages);
         $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
-        $availableLanguageIds = array_map(static function ($language) {
-            return $language->getLanguageId();
-        }, $typo3Site->getLanguages());
 
         // Try to get first instantiable TSFE for one of site languages, to get TypoScript with `plugin.tx_solr.index.*`,
         // to be able to collect indexing configuration,
@@ -337,7 +329,7 @@ class SiteRepository
             Site::class,
             $solrConfiguration,
             $rootPageRecord,
-            $domain,
+            $typo3Site->getBase()->getHost(),
             $siteHash,
             $pageRepository,
             $defaultLanguage,

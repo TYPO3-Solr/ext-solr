@@ -19,6 +19,22 @@ New in this release
 Breaking Changes
 ----------------
 
+Unified Site Hash Strategy
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Introduced in solr v13.1, and now implemented as default, the site hash
+strategy is now based on the site identifier and not on the domain anymore,
+making the site hash calculation more robust across sites with multiple domains.
+
+The extension configuration setting: `siteHashStrategy` has been removed
+without substitution.
+
+The PSR-14 event :php:`AfterDomainHasBeenDeterminedForSiteEvent` has been
+removed, as it has been superseded by
+:php:`AfterSiteHashHasBeenDeterminedForSiteEvent`.
+
+If you upgrade from < 13.1, it is recommended to re-index all solr cores
+completely.
 
 
 All Changes
