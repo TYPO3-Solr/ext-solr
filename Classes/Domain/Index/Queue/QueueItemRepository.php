@@ -182,6 +182,7 @@ class QueueItemRepository extends AbstractRepository
         int $changedTime,
         string $indexingConfiguration,
         int $indexingPriority = 0,
+        int $itemPid = 0,
     ): int {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder
@@ -190,6 +191,7 @@ class QueueItemRepository extends AbstractRepository
                 'root' => $rootPageId,
                 'item_type' => $itemType,
                 'item_uid' => $itemUid,
+                'item_pid' => $itemPid,
                 'changed' => $changedTime,
                 'errors' => '',
                 'indexing_configuration' => $indexingConfiguration,
