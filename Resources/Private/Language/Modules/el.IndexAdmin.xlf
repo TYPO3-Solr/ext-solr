@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="el">
+  <file id="f1" original="EXT:solr/Resources/Private/Language/Modules/IndexAdmin.xlf">
+    <unit id="title">
+      <segment state="final">
+        <source>Index Administration</source>
+        <target>Index Administration</target>
+      </segment>
+    </unit>
+    <unit id="short_description">
+      <segment state="final">
+        <source>Administrate your solr system</source>
+        <target>Administrate your solr system</target>
+      </segment>
+    </unit>
+    <unit id="description">
+      <segment state="final">
+        <source>This module allows you to do admin operations on the index (e.g. clear the index queue or clean the solr server).</source>
+        <target>This module allows you to do admin operations on the index (e.g. clear the index queue or clean the solr server).</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
