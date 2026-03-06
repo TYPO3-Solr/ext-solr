@@ -80,7 +80,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     ];
 
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/solr',
+        'apache-solr-for-typo3/solr',
     ];
 
     protected array $testSolrCores = [
