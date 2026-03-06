@@ -22,18 +22,18 @@ EXT:solr has been fully adapted for TYPO3 14 LTS, including Fluid v5 ViewHelper
 compatibility, TCA changes, deprecation removals, and testing framework updates.
 
 XLIFF 2.0 Migration
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 All language files have been migrated from XLIFF 1.2 to XLIFF 2.0 format.
 
 Parallel Solr Worker Cores for Integration Tests
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Integration tests now use parallel Solr worker cores via paratest, significantly
 improving test execution speed.
 
 Event Listener Migration to PHP Attributes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Event listeners have been refactored to use the ``#[AsEventListener]`` PHP
 attribute instead of ``Services.yaml`` tag registration, following TYPO3 14
@@ -63,7 +63,7 @@ See `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_ and
 `#4598 <https://github.com/TYPO3-Solr/ext-solr/issues/4598>`_ for details.
 
 Bugfix: No ``c:0`` Variant on fe_group-restricted Pages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Two interrelated bugs in the new sub-request indexing pipeline caused
 access-protected pages to be indexed with incorrect Solr documents.
@@ -257,6 +257,13 @@ should check the ``solr.indexingInstructions`` request attribute instead.
 
 **Code using** :php:`CliEnvironment` for web root initialization should remove
 those calls — the sub-request pipeline handles CWD automatically.
+
+
+!!! Upgrade to Apache Solr 10.0.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Latest Apache Solr Release 10.0.0 required, EXT:solr 14 won't support older Apache Solr versions. Along with the switch to Apache Solr 10, Apache Lucene 10 is being used.
+A full reindexing is recommended. Please refer to the Apache Solr documentation to find out what major changes Solr 10 brings.
 
 
 All Changes
