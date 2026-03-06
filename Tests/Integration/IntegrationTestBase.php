@@ -27,26 +27,17 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
 use Throwable;
-use TYPO3\CMS\Backend\Http\Application as BackendApplication;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
-use TYPO3\CMS\Core\Console\CommandApplication;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\DateTimeAspect;
-use TYPO3\CMS\Core\Context\UserAspect;
-use TYPO3\CMS\Core\Context\VisibilityAspect;
-use TYPO3\CMS\Core\Context\WorkspaceAspect;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Domain\DateTimeFactory;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Http\Application as FrontendApplication;
 use TYPO3\CMS\Scheduler\Domain\Repository\SchedulerTaskRepository;
 use TYPO3\CMS\Scheduler\Scheduler;
 use TYPO3\CMS\Scheduler\Task\TaskSerializer;
@@ -100,14 +91,10 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = false;
 
-    protected ?string $typo3CoreContextApplicationType = CommandApplication::class;
-
-    protected ?Context $typo3CoreContext = null;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->initializeTypo3CoreContextForApplication();
+
         //this is needed by the TYPO3 core.
         chdir(Environment::getPublicPath() . '/');
         $this->instancePath = $this->getInstancePath();
@@ -117,7 +104,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     protected function tearDown(): void
     {
         set_error_handler($this->previousErrorHandler);
-        unset($this->typo3CoreContext);
+
         parent::tearDown();
     }
 
@@ -611,48 +598,5 @@ page.10 {
   }
 }
 ' . $additionalContent);
-    }
-
-    /**
-     * EXT:solr runs in multiple TYPO3 application types:
-     * * Frontend for search only
-     * * Backend for indexing
-     * * Command for indexing and/or EXT:solrconsole
-     *
-     * The EXT:solr stack for integration-tests has multiple issues, due to shortage booting real TYPO3 environment.
-     * The tests do not fail on integration-tests or behave different as on real TYPO3 system.
-     *
-     * If you want own TYPO3 core context state: unset {@link self::$typo3CoreContextApplicationType} on test class property
-     * and figure it in `setUp()` method as you want.
-     */
-    protected function initializeTypo3CoreContextForApplication(): void
-    {
-        if (empty($this->typo3CoreContextApplicationType)) {
-            return;
-        }
-
-        if ($this->typo3CoreContext === null) {
-            $this->typo3CoreContext = GeneralUtility::makeInstance(Context::class);
-        }
-
-        $this->typo3CoreContext->setAspect('date', new DateTimeAspect(DateTimeFactory::createFromTimestamp(time())));
-        switch ($this->typo3CoreContextApplicationType) {
-            case CommandApplication::class:
-                $this->typo3CoreContext->setAspect('visibility', new VisibilityAspect(true, true, false, true));
-                $this->typo3CoreContext->setAspect('workspace', new WorkspaceAspect(0));
-                $this->typo3CoreContext->setAspect('backend.user', new UserAspect(null));
-                break;
-            case BackendApplication::class:
-                $this->typo3CoreContext->setAspect('visibility', new VisibilityAspect(true, true, false, true));
-                break;
-            case FrontendApplication::class:
-                $this->typo3CoreContext->setAspect('visibility', new VisibilityAspect());
-                $this->typo3CoreContext->setAspect('workspace', new WorkspaceAspect(0));
-                $this->typo3CoreContext->setAspect('backend.user', new UserAspect(null));
-                $this->typo3CoreContext->setAspect('frontend.user', new UserAspect(null, [0, -1]));
-                break;
-            default:
-                break;
-        }
     }
 }
