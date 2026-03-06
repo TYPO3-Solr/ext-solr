@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="nl">
+  <file id="f1" original="EXT:solr/Resources/Private/Language/Modules/IndexQueue.xlf">
+    <unit id="title">
+      <segment state="final">
+        <source>Index Queue</source>
+        <target>Index Queue</target>
+      </segment>
+    </unit>
+    <unit id="short_description">
+      <segment state="final">
+        <source>Allows to check the status of the index queue</source>
+        <target>Allows to check the status of the index queue</target>
+      </segment>
+    </unit>
+    <unit id="description">
+      <segment state="final">
+        <source>This module allows you to check the state of the index queue and reQueue items.</source>
+        <target>This module allows you to check the state of the index queue and reQueue items.</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
