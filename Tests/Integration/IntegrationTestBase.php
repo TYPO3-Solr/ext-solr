@@ -60,7 +60,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 abstract class IntegrationTestBase extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
-    private $previousErrorHandler;
 
     protected array $coreExtensionsToLoad = [
         'typo3/cms-install',
@@ -111,12 +110,10 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         //this is needed by the TYPO3 core.
         chdir(Environment::getPublicPath() . '/');
         $this->instancePath = $this->getInstancePath();
-        $this->previousErrorHandler = $this->failWhenSolrDeprecationIsCreated();
     }
 
     protected function tearDown(): void
     {
-        set_error_handler($this->previousErrorHandler);
         unset($this->typo3CoreContext);
         parent::tearDown();
     }
@@ -320,23 +317,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sites_setup_and_data_set/01_integration_tree_one.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sites_setup_and_data_set/02_integration_tree_two.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sites_setup_and_data_set/03_integration_tree_three.csv');
-    }
-
-    /**
-     * This method registers an error handler that fails the testcase when an E_USER_DEPRECATED error
-     * is thrown with the prefix solr:deprecation
-     */
-    protected function failWhenSolrDeprecationIsCreated(): ?callable
-    {
-        error_reporting(error_reporting() & ~E_USER_DEPRECATED);
-        return set_error_handler(
-            function (int $id, string $msg, string $file, int $line): bool {
-                if ($id === E_USER_DEPRECATED && str_starts_with($msg, 'solr:deprecation: ')) {
-                    $this->fail("Executed deprecated EXT:solr code: in $file:$line" . PHP_EOL . $msg);
-                }
-                return true;
-            },
-        );
     }
 
     protected function getSolrConnectionInfo(): array

@@ -16,6 +16,7 @@
 		 failOnRisky="true"
 		 failOnWarning="false"
 		 failOnPhpunitDeprecation="true"
+		 processIsolation="true"
 >
 	<source>
 		<include>
@@ -24,10 +25,11 @@
 	</source>
 	<testsuites>
 		<testsuite name="ext-solr-integration-tests">
-			<directory>../../Tests/Integration/Access/</directory>
-			<directory>../../Tests/Integration/ContentObject/</directory>
-			<directory>../../Tests/Integration/FrontendEnvironment/</directory>
-			<directory>../../Tests/Integration/System/Records/</directory>
+			<directory>../../Tests/Integration/</directory>
+			<exclude>../../Tests/Integration/Access/</exclude>
+			<exclude>../../Tests/Integration/ContentObject/</exclude>
+			<exclude>../../Tests/Integration/FrontendEnvironment/</exclude>
+			<exclude>../../Tests/Integration/System/Records/</exclude>
 		</testsuite>
 	</testsuites>
 	<php>
