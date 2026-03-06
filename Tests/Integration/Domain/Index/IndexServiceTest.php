@@ -38,7 +38,7 @@ class IndexServiceTest extends IntegrationTestBase
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/solr',
+        'apache-solr-for-typo3/solr',
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension2',
     ];
 

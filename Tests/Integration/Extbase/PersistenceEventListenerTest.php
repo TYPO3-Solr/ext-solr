@@ -36,7 +36,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 class PersistenceEventListenerTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/solr',
+        'apache-solr-for-typo3/solr',
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
     ];
 

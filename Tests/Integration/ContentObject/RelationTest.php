@@ -35,7 +35,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class RelationTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/solr',
+        'apache-solr-for-typo3/solr',
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
     ];
 
