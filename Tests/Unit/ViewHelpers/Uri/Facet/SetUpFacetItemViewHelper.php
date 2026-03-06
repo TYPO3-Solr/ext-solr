@@ -24,29 +24,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class SetUpFacetItemViewHelper extends SetUpUnitTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        GeneralUtility::purgeInstances();
-        parent::tearDown();
-    }
-
-    /**
-     * @return OptionsFacet
-     */
-    protected function getTestColorFacet()
+    protected function getTestColorFacet(): OptionsFacet
     {
         $searchRequest = new SearchRequest();
+
         $searchResultSetMock = $this->createMock(SearchResultSet::class);
-        $searchResultSetMock->expects(self::any())->method('getUsedSearchRequest')->willReturn($searchRequest);
+        $searchResultSetMock
+            ->expects(self::any())
+            ->method('getUsedSearchRequest')
+            ->willReturn($searchRequest);
 
         $facet = new OptionsFacet($searchResultSetMock, 'Color', 'color');
-        $option = new Option($facet, 'Red', 'red', 4);
-        $facet->addOption($option);
+        $facet->addOption(
+            new Option($facet, 'Red', 'red', 4)
+        );
 
         return $facet;
     }
