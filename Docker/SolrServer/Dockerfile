@@ -1,4 +1,4 @@
-FROM solr:9.10.1
+FROM solr:10.0.0
 LABEL org.opencontainers.image.authors="dkd Internet Service GmbH info@dkd.de"
 ENV TERM=linux
 
@@ -24,5 +24,9 @@ RUN mkdir -p /var/solr/data/data
 COPY --chown=solr:solr Docker/SolrServer/healthcheck.sh /usr/local/bin/healthcheck.sh
 
 # Add HEALTHCHECK instruction
+ENV SOLR_MODULES=analysis-extras,langid,language-models,scripting,clustering,extraction
+
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD /usr/local/bin/healthcheck.sh
+
+CMD ["solr-foreground", "--user-managed"]
