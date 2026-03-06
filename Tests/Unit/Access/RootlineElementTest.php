@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Access;
 
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
+use ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -26,6 +27,15 @@ use Traversable;
  */
 class RootlineElementTest extends SetUpUnitTestCase
 {
+    /**
+     * @return Traversable<string, array{
+     *     stringRepresentation: string,
+     *     expectedType: int,
+     *     expectedGroups: list<int>,
+     *     expectedPageId: ?int,
+     *     expectedToString: string
+     * }>
+     */
     public static function validRootLineRePresentations(): Traversable
     {
         yield 'empty' => [
@@ -101,23 +111,27 @@ class RootlineElementTest extends SetUpUnitTestCase
     }
 
     /**
-     * @param string $stringRepresentation
-     * @param int $expectedType
-     * @param array $expectedGroups
-     * @param int|null $expectedPageId
-     * @param string $expectedToString
+     * @param list<int> $expectedGroups
+     * @throws RootlineElementFormatException
      */
-    #[DataProvider('validRootLineRePresentations')]
     #[Test]
-    public function canParse($stringRepresentation, $expectedType, $expectedGroups, $expectedPageId, $expectedToString): void
-    {
+    #[DataProvider(
+        methodName: 'validRootLineRePresentations',
+    )]
+    public function canParse(
+        string $stringRepresentation,
+        int $expectedType,
+        array $expectedGroups,
+        ?int $expectedPageId,
+        string $expectedToString,
+    ): void {
         $rootLine = new RootlineElement($stringRepresentation);
 
         self::assertSame($expectedType, $rootLine->getType(), 'Unexpected type after parsing the RootlineElement');
         self::assertSame($expectedGroups, $rootLine->getGroups(), 'Unexpected groups after parsing the RootlineElement');
         self::assertSame($expectedPageId, $rootLine->getPageId(), 'Unexpected pageId after parsing the RootlineElement field');
 
-        // most of the times the to string value is the same
+        // most of the time the string value is the same
         self::assertSame($expectedToString, (string)$rootLine, 'Conversion to string is not returning expected result');
     }
 }
