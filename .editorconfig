@@ -48,9 +48,9 @@ indent_style = space
 [*.{typoscript,tsconfig}]
 indent_size = 2
 
-# XLF/XML-Files
-[*.{xlf,xml}]
-indent_style = tab
+# XLF-Files
+[*.{xlf,xliff}]
+indent_size = 2
 
 # HTML-Files
 [*.html]

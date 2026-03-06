@@ -11,7 +11,7 @@ use ApacheSolrForTypo3\Solr\Controller\Backend\Search\InfoModuleController;
 
 return [
     'searchbackend' => [
-        'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod.xlf',
+        'labels' => 'solr.modules.messages',
         'iconIdentifier' => 'extensions-solr-module-main',
         'navigationComponent' => '@typo3/backend/tree/page-tree-element',
         'extensionName' => 'Solr',
@@ -21,7 +21,7 @@ return [
         'access' => 'user',
         'path' => '/module/searchbackend/info',
         'iconIdentifier' => 'extensions-solr-module-info',
-        'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_info.xlf',
+        'labels' => 'solr.modules.info',
         'extensionName' => 'Solr',
         'controllerActions' => [
             InfoModuleController::class => [
@@ -34,7 +34,7 @@ return [
         'access' => 'user',
         'path' => '/module/searchbackend/core-optimization',
         'iconIdentifier' => 'extensions-solr-module-solr-core-optimization',
-        'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_coreoptimize.xlf',
+        'labels' => 'solr.modules.core_optimization',
         'extensionName' => 'Solr',
         'controllerActions' => [
             CoreOptimizationModuleController::class => [
@@ -50,7 +50,7 @@ return [
         'access' => 'user',
         'path' => '/module/searchbackend/index-queue',
         'iconIdentifier' => 'extensions-solr-module-index-queue',
-        'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_indexqueue.xlf',
+        'labels' => 'solr.modules.index_queue',
         'extensionName' => 'Solr',
         'controllerActions' => [
             IndexQueueModuleController::class => [
@@ -64,7 +64,7 @@ return [
         'access' => 'user',
         'path' => '/module/searchbackend/index-administration',
         'iconIdentifier' => 'extensions-solr-module-index-administration',
-        'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_indexadmin.xlf',
+        'labels' => 'solr.modules.index_admin',
         'extensionName' => 'Solr',
         'controllerActions' => [
             IndexAdministrationModuleController::class => [
