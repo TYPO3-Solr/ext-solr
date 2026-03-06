@@ -34,10 +34,6 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
  */
 class PageIndexerTest extends IntegrationTestBase
 {
-    protected array $testExtensionsToLoad = [
-        'typo3conf/ext/solr',
-    ];
-
     protected function setUp(): void
     {
         parent::setUp();
