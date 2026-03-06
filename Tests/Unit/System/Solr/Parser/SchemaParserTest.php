@@ -38,7 +38,7 @@ class SchemaParserTest extends SetUpUnitTestCase
     {
         $parser = new SchemaParser();
         $schema = $parser->parseJson(self::getFixtureContentByName('schema.json'));
-        self::assertSame('tx_solr-6-0-0--20161122', $schema->getName(), 'Could not parser name from schema response');
+        self::assertSame('tx_solr-14-0-0--20260123', $schema->getName(), 'Could not parser name from schema response');
     }
 
     #[Test]

@@ -3,7 +3,7 @@
     "status":0,
     "QTime":0},
   "schema":{
-    "name":"tx_solr-6-0-0--20161122",
+    "name":"tx_solr-14-0-0--20260123",
     "version":1.6,
     "uniqueKey":"id",
     "fieldTypes":[{
@@ -16,32 +16,31 @@
         "sortMissingLast":true},
       {
         "name":"currency",
-        "class":"solr.CurrencyField",
+        "class":"solr.CurrencyFieldType",
         "currencyConfig":"currency.xml",
-        "defaultCurrency":"USD",
-        "precisionStep":"8"},
+        "amountLongSuffix":"_longS",
+        "codeStrSuffix":"_stringS",
+        "defaultCurrency":"USD"},
       {
         "name":"date",
-        "class":"solr.TrieDateField",
+        "class":"solr.DatePointField",
         "omitNorms":true,
-        "useDocValuesAsStored":false,
-        "positionIncrementGap":"0",
         "sortMissingLast":true,
-        "precisionStep":"0"},
+        "useDocValuesAsStored":false},
+      {
+        "name":"dateRange",
+        "class":"solr.DateRangeField",
+        "sortMissingLast":true},
       {
         "name":"double",
-        "class":"solr.TrieDoubleField",
+        "class":"solr.DoublePointField",
         "omitNorms":true,
-        "useDocValuesAsStored":false,
-        "positionIncrementGap":"0",
-        "precisionStep":"0"},
+        "useDocValuesAsStored":false},
       {
         "name":"float",
-        "class":"solr.TrieFloatField",
+        "class":"solr.FloatPointField",
         "omitNorms":true,
-        "useDocValuesAsStored":false,
-        "positionIncrementGap":"0",
-        "precisionStep":"0"},
+        "useDocValuesAsStored":false},
       {
         "name":"ignored",
         "class":"solr.StrField",
@@ -49,15 +48,17 @@
         "stored":false},
       {
         "name":"integer",
-        "class":"solr.TrieIntField",
+        "class":"solr.IntPointField",
         "omitNorms":true,
-        "useDocValuesAsStored":false,
-        "positionIncrementGap":"0",
-        "precisionStep":"0"},
+        "useDocValuesAsStored":false},
+      {
+        "name":"knn_vector",
+        "class":"solr.DenseVectorField",
+        "vectorDimension":"768",
+        "similarityFunction":"cosine"},
       {
         "name":"location",
-        "class":"solr.LatLonType",
-        "subFieldSuffix":"_coordinate"},
+        "class":"solr.LatLonPointSpatialField"},
       {
         "name":"locationRpt",
         "class":"solr.SpatialRecursivePrefixTreeFieldType",
@@ -67,11 +68,9 @@
         "distanceUnits":"degrees"},
       {
         "name":"long",
-        "class":"solr.TrieLongField",
+        "class":"solr.LongPointField",
         "omitNorms":true,
-        "useDocValuesAsStored":false,
-        "positionIncrementGap":"0",
-        "precisionStep":"0"},
+        "useDocValuesAsStored":false},
       {
         "name":"phonetic",
         "class":"solr.TextField",
@@ -86,8 +85,8 @@
       {
         "name":"point",
         "class":"solr.PointType",
-        "subFieldSuffix":"_doubleS",
-        "dimension":"2"},
+        "dimension":"2",
+        "subFieldSuffix":"_doubleS"},
       {
         "name":"random",
         "class":"solr.RandomSortField",
@@ -96,32 +95,32 @@
         "name":"string",
         "class":"solr.StrField",
         "omitNorms":true,
-        "useDocValuesAsStored":false,
-        "sortMissingLast":true},
+        "sortMissingLast":true,
+        "useDocValuesAsStored":false},
       {
-        "name":"tdate",
-        "class":"solr.TrieDateField",
-        "omitNorms":true,
-        "positionIncrementGap":"0",
-        "precisionStep":"6"},
+        "name":"stringEdgeNgram",
+        "class":"solr.TextField",
+        "positionIncrementGap":"100",
+        "indexAnalyzer":{
+          "tokenizer":{
+            "class":"solr.KeywordTokenizerFactory"},
+          "filters":[{
+              "class":"solr.LowerCaseFilterFactory"},
+            {
+              "class":"solr.EdgeNGramFilterFactory",
+              "maxGramSize":"32",
+              "minGramSize":"2",
+              "preserveOriginal":"true"}]},
+        "queryAnalyzer":{
+          "tokenizer":{
+            "class":"solr.KeywordTokenizerFactory"},
+          "filters":[{
+              "class":"solr.LowerCaseFilterFactory"}]}},
       {
-        "name":"tdouble",
-        "class":"solr.TrieDoubleField",
-        "omitNorms":true,
-        "indexed":true,
-        "stored":false,
-        "useDocValuesAsStored":false,
-        "positionIncrementGap":"0",
-        "precisionStep":"8"},
-      {
-        "name":"tdouble4",
-        "class":"solr.TrieDoubleField",
-        "omitNorms":true,
-        "indexed":true,
-        "stored":false,
-        "useDocValuesAsStored":false,
-        "positionIncrementGap":"0",
-        "precisionStep":"4"},
+        "name":"string_collated",
+        "class":"solr.ICUCollationField",
+        "strength":"primary",
+        "locale":"de"},
       {
         "name":"text",
         "class":"solr.TextField",
@@ -130,44 +129,55 @@
           "tokenizer":{
             "class":"solr.WhitespaceTokenizerFactory"},
           "filters":[{
-              "class":"solr.WordDelimiterFilterFactory",
-              "catenateNumbers":"1",
+              "class":"solr.WordDelimiterGraphFilterFactory",
+              "catenateWords":"1",
               "generateNumberParts":"1",
-              "protected":"german/protwords.txt",
-              "splitOnCaseChange":"1",
-              "generateWordParts":"1",
               "preserveOriginal":"1",
-              "catenateAll":"0",
-              "catenateWords":"1"},
+              "catenateNumbers":"1",
+              "generateWordParts":"1",
+              "splitOnCaseChange":"1",
+              "protected":"german/protwords.txt",
+              "catenateAll":"0"},
             {
               "class":"solr.LowerCaseFilterFactory"},
             {
               "class":"solr.ManagedSynonymGraphFilterFactory",
-              "managed":"german"},
+              "managed":"core_de"},
+            {
+              "class":"solr.FlattenGraphFilterFactory"},
+            {
+              "class":"solr.DictionaryCompoundWordTokenFilterFactory",
+              "minWordSize":"5",
+              "onlyLongestMatch":"false",
+              "maxSubwordSize":"15",
+              "dictionary":"german/german-common-nouns.txt",
+              "minSubwordSize":"4"},
             {
               "class":"solr.ManagedStopFilterFactory",
-              "managed":"german"},
+              "managed":"core_de"},
             {
-              "class":"solr.GermanPossessiveFilterFactory"},
+              "class":"solr.GermanNormalizationFilterFactory"},
             {
               "class":"solr.SnowballPorterFilterFactory",
-              "language":"German",
+              "language":"German2",
               "protected":"german/protwords.txt"},
+            {
+              "class":"solr.ASCIIFoldingFilterFactory"},
             {
               "class":"solr.RemoveDuplicatesTokenFilterFactory"}]},
         "queryAnalyzer":{
           "tokenizer":{
             "class":"solr.WhitespaceTokenizerFactory"},
           "filters":[{
-              "class":"solr.WordDelimiterFilterFactory",
-              "catenateNumbers":"0",
+              "class":"solr.WordDelimiterGraphFilterFactory",
+              "catenateWords":"0",
               "generateNumberParts":"1",
-              "protected":"german/protwords.txt",
-              "splitOnCaseChange":"1",
-              "generateWordParts":"1",
               "preserveOriginal":"1",
-              "catenateAll":"0",
-              "catenateWords":"0"},
+              "catenateNumbers":"0",
+              "generateWordParts":"1",
+              "splitOnCaseChange":"1",
+              "protected":"german/protwords.txt",
+              "catenateAll":"0"},
             {
               "class":"solr.LowerCaseFilterFactory"},
             {
@@ -177,11 +187,85 @@
               "class":"solr.ManagedStopFilterFactory",
               "managed":"core_de"},
             {
+              "class":"solr.GermanNormalizationFilterFactory"},
+            {
               "class":"solr.SnowballPorterFilterFactory",
-              "language":"German",
+              "language":"German2",
               "protected":"german/protwords.txt"},
             {
+              "class":"solr.ASCIIFoldingFilterFactory"},
+            {
               "class":"solr.RemoveDuplicatesTokenFilterFactory"}]}},
+      {
+        "name":"textEdgeNgram",
+        "class":"solr.TextField",
+        "positionIncrementGap":"100",
+        "indexAnalyzer":{
+          "tokenizer":{
+            "class":"solr.StandardTokenizerFactory"},
+          "filters":[{
+              "class":"solr.LowerCaseFilterFactory"},
+            {
+              "class":"solr.EdgeNGramFilterFactory",
+              "maxGramSize":"15",
+              "minGramSize":"3"}]},
+        "queryAnalyzer":{
+          "tokenizer":{
+            "class":"solr.StandardTokenizerFactory"},
+          "filters":[{
+              "class":"solr.LowerCaseFilterFactory"}]}},
+      {
+        "name":"textExact",
+        "class":"solr.TextField",
+        "positionIncrementGap":"100",
+        "indexAnalyzer":{
+          "tokenizer":{
+            "class":"solr.WhitespaceTokenizerFactory"},
+          "filters":[{
+              "class":"solr.LowerCaseFilterFactory"},
+            {
+              "class":"solr.ManagedSynonymGraphFilterFactory",
+              "managed":"core_de"},
+            {
+              "class":"solr.FlattenGraphFilterFactory"},
+            {
+              "class":"solr.ManagedStopFilterFactory",
+              "managed":"core_de"},
+            {
+              "class":"solr.ASCIIFoldingFilterFactory"},
+            {
+              "class":"solr.RemoveDuplicatesTokenFilterFactory"}]},
+        "queryAnalyzer":{
+          "tokenizer":{
+            "class":"solr.WhitespaceTokenizerFactory"},
+          "filters":[{
+              "class":"solr.LowerCaseFilterFactory"},
+            {
+              "class":"solr.ManagedSynonymGraphFilterFactory",
+              "managed":"core_de"},
+            {
+              "class":"solr.ManagedStopFilterFactory",
+              "managed":"core_de"},
+            {
+              "class":"solr.ASCIIFoldingFilterFactory"},
+            {
+              "class":"solr.RemoveDuplicatesTokenFilterFactory"}]}},
+      {
+        "name":"textNgram",
+        "class":"solr.TextField",
+        "positionIncrementGap":"100",
+        "indexAnalyzer":{
+          "tokenizer":{
+            "class":"solr.StandardTokenizerFactory"},
+          "filters":[{
+              "class":"solr.NGramFilterFactory",
+              "maxGramSize":"3",
+              "minGramSize":"2"}]},
+        "queryAnalyzer":{
+          "tokenizer":{
+            "class":"solr.StandardTokenizerFactory"},
+          "filters":[{
+              "class":"solr.LowerCaseFilterFactory"}]}},
       {
         "name":"textPath",
         "class":"solr.TextField",
@@ -202,18 +286,26 @@
       {
         "name":"textSpell",
         "class":"solr.TextField",
-        "omitNorms":true,
         "positionIncrementGap":"100",
+        "omitNorms":true,
         "indexAnalyzer":{
           "tokenizer":{
             "class":"solr.StandardTokenizerFactory"},
           "filters":[{
               "class":"solr.LowerCaseFilterFactory"},
             {
+              "class":"solr.DictionaryCompoundWordTokenFilterFactory",
+              "minWordSize":"5",
+              "onlyLongestMatch":"false",
+              "maxSubwordSize":"15",
+              "dictionary":"german/german-common-nouns.txt",
+              "minSubwordSize":"4"},
+            {
               "class":"solr.ManagedStopFilterFactory",
               "managed":"core_de"},
             {
-              "class":"solr.StandardFilterFactory"},
+              "class":"solr.ASCIIFoldingFilterFactory",
+              "preserveOriginal":"true"},
             {
               "class":"solr.RemoveDuplicatesTokenFilterFactory"}]},
         "queryAnalyzer":{
@@ -228,26 +320,36 @@
               "class":"solr.ManagedStopFilterFactory",
               "managed":"core_de"},
             {
-              "class":"solr.StandardFilterFactory"},
+              "class":"solr.ASCIIFoldingFilterFactory",
+              "preserveOriginal":"true"},
             {
               "class":"solr.RemoveDuplicatesTokenFilterFactory"}]}},
       {
-        "name":"textTight",
+        "name":"textSpellExact",
         "class":"solr.TextField",
         "positionIncrementGap":"100",
-        "analyzer":{
+        "omitNorms":true,
+        "indexAnalyzer":{
           "tokenizer":{
-            "class":"solr.WhitespaceTokenizerFactory"},
+            "class":"solr.StandardTokenizerFactory"},
           "filters":[{
-              "class":"solr.WordDelimiterFilterFactory",
-              "catenateNumbers":"1",
-              "generateNumberParts":"0",
-              "protected":"german/protwords.txt",
-              "generateWordParts":"0",
-              "preserveOriginal":"1",
-              "catenateAll":"0",
-              "catenateWords":"1"},
+              "class":"solr.LowerCaseFilterFactory"},
             {
+              "class":"solr.DictionaryCompoundWordTokenFilterFactory",
+              "minWordSize":"5",
+              "onlyLongestMatch":"false",
+              "maxSubwordSize":"15",
+              "dictionary":"german/german-common-nouns.txt",
+              "minSubwordSize":"4"},
+            {
+              "class":"solr.ManagedStopFilterFactory",
+              "managed":"core_de"},
+            {
+              "class":"solr.RemoveDuplicatesTokenFilterFactory"}]},
+        "queryAnalyzer":{
+          "tokenizer":{
+            "class":"solr.StandardTokenizerFactory"},
+          "filters":[{
               "class":"solr.LowerCaseFilterFactory"},
             {
               "class":"solr.ManagedSynonymGraphFilterFactory",
@@ -256,11 +358,87 @@
               "class":"solr.ManagedStopFilterFactory",
               "managed":"core_de"},
             {
-              "class":"solr.GermanPossessiveFilterFactory"},
+              "class":"solr.RemoveDuplicatesTokenFilterFactory"}]}},
+      {
+        "name":"textTight",
+        "class":"solr.TextField",
+        "positionIncrementGap":"100",
+        "indexAnalyzer":{
+          "tokenizer":{
+            "class":"solr.WhitespaceTokenizerFactory"},
+          "filters":[{
+              "class":"solr.LowerCaseFilterFactory"},
+            {
+              "class":"solr.ManagedSynonymGraphFilterFactory",
+              "managed":"core_de"},
+            {
+              "class":"solr.FlattenGraphFilterFactory"},
+            {
+              "class":"solr.DictionaryCompoundWordTokenFilterFactory",
+              "minWordSize":"5",
+              "onlyLongestMatch":"false",
+              "maxSubwordSize":"15",
+              "dictionary":"german/german-common-nouns.txt",
+              "minSubwordSize":"4"},
+            {
+              "class":"solr.ManagedStopFilterFactory",
+              "managed":"core_de"},
+            {
+              "class":"solr.WordDelimiterGraphFilterFactory",
+              "catenateNumbers":"1",
+              "generateNumberParts":"0",
+              "generateWordParts":"0",
+              "catenateAll":"0",
+              "catenateWords":"1",
+              "protected":"german/protwords.txt",
+              "preserveOriginal":"1"},
+            {
+              "class":"solr.FlattenGraphFilterFactory"},
+            {
+              "class":"solr.GermanNormalizationFilterFactory"},
             {
               "class":"solr.SnowballPorterFilterFactory",
-              "language":"German",
+              "language":"German2",
               "protected":"german/protwords.txt"},
+            {
+              "class":"solr.ASCIIFoldingFilterFactory"},
+            {
+              "class":"solr.RemoveDuplicatesTokenFilterFactory"}]},
+        "queryAnalyzer":{
+          "tokenizer":{
+            "class":"solr.WhitespaceTokenizerFactory"},
+          "filters":[{
+              "class":"solr.LowerCaseFilterFactory"},
+            {
+              "class":"solr.ManagedSynonymGraphFilterFactory",
+              "managed":"core_de"},
+            {
+              "class":"solr.DictionaryCompoundWordTokenFilterFactory",
+              "minWordSize":"5",
+              "onlyLongestMatch":"false",
+              "maxSubwordSize":"15",
+              "dictionary":"german/german-common-nouns.txt",
+              "minSubwordSize":"4"},
+            {
+              "class":"solr.ManagedStopFilterFactory",
+              "managed":"core_de"},
+            {
+              "class":"solr.WordDelimiterGraphFilterFactory",
+              "catenateNumbers":"1",
+              "generateNumberParts":"0",
+              "generateWordParts":"0",
+              "catenateAll":"0",
+              "catenateWords":"1",
+              "protected":"german/protwords.txt",
+              "preserveOriginal":"1"},
+            {
+              "class":"solr.GermanNormalizationFilterFactory"},
+            {
+              "class":"solr.SnowballPorterFilterFactory",
+              "language":"German2",
+              "protected":"german/protwords.txt"},
+            {
+              "class":"solr.ASCIIFoldingFilterFactory"},
             {
               "class":"solr.RemoveDuplicatesTokenFilterFactory"}]}},
       {
@@ -273,34 +451,7 @@
           "filters":[{
               "class":"solr.LowerCaseFilterFactory"},
             {
-              "class":"solr.RemoveDuplicatesTokenFilterFactory"}]}},
-      {
-        "name":"tfloat",
-        "class":"solr.TrieFloatField",
-        "omitNorms":true,
-        "indexed":true,
-        "stored":false,
-        "useDocValuesAsStored":false,
-        "positionIncrementGap":"0",
-        "precisionStep":"8"},
-      {
-        "name":"tint",
-        "class":"solr.TrieIntField",
-        "omitNorms":true,
-        "indexed":true,
-        "stored":false,
-        "useDocValuesAsStored":false,
-        "positionIncrementGap":"0",
-        "precisionStep":"8"},
-      {
-        "name":"tlong",
-        "class":"solr.TrieLongField",
-        "omitNorms":true,
-        "indexed":true,
-        "stored":false,
-        "useDocValuesAsStored":false,
-        "positionIncrementGap":"0",
-        "precisionStep":"8"}],
+              "class":"solr.RemoveDuplicatesTokenFilterFactory"}]}}],
     "fields":[{
         "name":"_root_",
         "type":"string",
@@ -314,8 +465,8 @@
       {
         "name":"abstract",
         "type":"text",
-        "termVectors":true,
         "indexed":true,
+        "termVectors":true,
         "stored":true},
       {
         "name":"access",
@@ -335,8 +486,8 @@
       {
         "name":"author",
         "type":"string",
-        "docValues":true,
         "indexed":true,
+        "docValues":true,
         "stored":true},
       {
         "name":"category",
@@ -349,8 +500,8 @@
       {
         "name":"changed",
         "type":"date",
-        "docValues":true,
         "indexed":true,
+        "docValues":true,
         "stored":true},
       {
         "name":"content",
@@ -361,6 +512,13 @@
         "termOffsets":true,
         "stored":true},
       {
+        "name":"contentExact",
+        "type":"textExact",
+        "omitNorms":true,
+        "termVectors":true,
+        "indexed":true,
+        "stored":true},
+      {
         "name":"contentHash",
         "type":"string",
         "indexed":false,
@@ -368,32 +526,32 @@
       {
         "name":"created",
         "type":"date",
-        "docValues":true,
         "indexed":true,
+        "docValues":true,
         "stored":true},
       {
         "name":"description",
         "type":"text",
-        "termVectors":true,
         "indexed":true,
+        "termVectors":true,
         "stored":true},
       {
         "name":"endtime",
         "type":"date",
-        "docValues":true,
         "indexed":true,
+        "docValues":true,
         "stored":true},
       {
         "name":"fileExtension",
         "type":"string",
-        "docValues":true,
         "indexed":true,
+        "docValues":true,
         "stored":true},
       {
         "name":"fileMimeType",
         "type":"string",
-        "docValues":true,
         "indexed":true,
+        "docValues":true,
         "stored":true},
       {
         "name":"fileName",
@@ -447,14 +605,14 @@
         "stored":true},
       {
         "name":"fileSize",
-        "type":"integer",
+        "type":"long",
         "indexed":true,
         "stored":true},
       {
         "name":"fileStorage",
         "type":"integer",
-        "docValues":true,
         "indexed":true,
+        "docValues":true,
         "stored":true},
       {
         "name":"fileUid",
@@ -468,10 +626,15 @@
         "required":true,
         "stored":true},
       {
+        "name":"image",
+        "type":"string",
+        "indexed":true,
+        "stored":true},
+      {
         "name":"indexed",
         "type":"date",
-        "default":"NOW/SECOND",
         "indexed":true,
+        "default":"NOW/SECOND",
         "stored":true},
       {
         "name":"keywords",
@@ -490,7 +653,12 @@
       {
         "name":"pid",
         "type":"integer",
+        "indexed":true,
         "docValues":true,
+        "stored":true},
+      {
+        "name":"price",
+        "type":"double",
         "indexed":true,
         "stored":true},
       {
@@ -503,30 +671,36 @@
       {
         "name":"site",
         "type":"string",
-        "docValues":true,
         "indexed":true,
+        "docValues":true,
         "stored":true},
       {
         "name":"siteHash",
         "type":"string",
-        "docValues":true,
         "indexed":true,
+        "docValues":true,
         "stored":true},
       {
         "name":"sortAuthor",
         "type":"string",
-        "docValues":true,
         "indexed":true,
+        "docValues":true,
         "stored":false},
       {
         "name":"sortTitle",
         "type":"string",
-        "docValues":true,
         "indexed":true,
+        "docValues":true,
         "stored":false},
       {
         "name":"spell",
         "type":"textSpell",
+        "multiValued":true,
+        "indexed":true,
+        "stored":false},
+      {
+        "name":"spellExact",
+        "type":"textSpellExact",
         "multiValued":true,
         "indexed":true,
         "stored":false},
@@ -540,32 +714,56 @@
       {
         "name":"tagsA",
         "type":"text",
-        "omitNorms":true,
         "indexed":true,
+        "omitNorms":true,
         "stored":false},
       {
         "name":"tagsH1",
         "type":"text",
-        "omitNorms":true,
         "indexed":true,
+        "omitNorms":true,
+        "stored":false},
+      {
+        "name":"tagsH1Exact",
+        "type":"textExact",
+        "indexed":true,
+        "omitNorms":true,
         "stored":false},
       {
         "name":"tagsH2H3",
         "type":"text",
-        "omitNorms":true,
         "indexed":true,
+        "omitNorms":true,
+        "stored":false},
+      {
+        "name":"tagsH2H3Exact",
+        "type":"textExact",
+        "indexed":true,
+        "omitNorms":true,
         "stored":false},
       {
         "name":"tagsH4H5H6",
         "type":"text",
-        "omitNorms":true,
         "indexed":true,
+        "omitNorms":true,
+        "stored":false},
+      {
+        "name":"tagsH4H5H6Exact",
+        "type":"textExact",
+        "indexed":true,
+        "omitNorms":true,
         "stored":false},
       {
         "name":"tagsInline",
         "type":"text",
-        "omitNorms":true,
         "indexed":true,
+        "omitNorms":true,
+        "stored":false},
+      {
+        "name":"tagsInlineExact",
+        "type":"textExact",
+        "indexed":true,
+        "omitNorms":true,
         "stored":false},
       {
         "name":"teaser",
@@ -575,6 +773,13 @@
       {
         "name":"title",
         "type":"text",
+        "omitNorms":true,
+        "termVectors":true,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"titleExact",
+        "type":"textExact",
         "omitNorms":true,
         "termVectors":true,
         "indexed":true,
@@ -605,11 +810,97 @@
         "name":"variantId",
         "type":"string",
         "indexed":true,
-        "stored":true}],
+        "stored":true},
+      {
+        "name":"vector",
+        "type":"knn_vector",
+        "indexed":true,
+        "stored":false},
+      {
+        "name":"vectorContent",
+        "type":"string",
+        "indexed":false,
+        "stored":false}],
     "dynamicFields":[{
+        "name":"*_stringEdgeNgramS",
+        "type":"stringEdgeNgram",
+        "multiValued":false,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_stringEdgeNgramM",
+        "type":"stringEdgeNgram",
+        "multiValued":true,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_stringCollatedS",
+        "type":"string_collated",
+        "docValues":true,
+        "multiValued":false,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_stringCollatedM",
+        "type":"string_collated",
+        "docValues":true,
+        "multiValued":true,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_textSpellExactS",
+        "type":"textSpellExact",
+        "multiValued":false,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_textSpellExactM",
+        "type":"textSpellExact",
+        "multiValued":true,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_textEdgeNgramS",
+        "type":"textEdgeNgram",
+        "multiValued":false,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_textEdgeNgramM",
+        "type":"textEdgeNgram",
+        "multiValued":true,
+        "indexed":true,
+        "stored":true},
+      {
         "name":"*_locationRpt",
         "type":"locationRpt",
         "multiValued":false,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_dateRangeS",
+        "type":"dateRange",
+        "docValues":false,
+        "multiValued":false,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_dateRangeM",
+        "type":"dateRange",
+        "docValues":false,
+        "multiValued":true,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_textExactS",
+        "type":"textExact",
+        "multiValued":false,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_textExactM",
+        "type":"textExact",
+        "multiValued":true,
         "indexed":true,
         "stored":true},
       {
@@ -625,20 +916,32 @@
         "indexed":true,
         "stored":true},
       {
+        "name":"*_textNgramS",
+        "type":"textNgram",
+        "multiValued":false,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_textNgramM",
+        "type":"textNgram",
+        "multiValued":true,
+        "indexed":true,
+        "stored":true},
+      {
         "name":"*_coordinate",
         "type":"double",
         "indexed":true,
         "stored":false},
       {
         "name":"*_tDouble4S",
-        "type":"tdouble4",
+        "type":"double",
         "docValues":true,
         "multiValued":false,
         "indexed":true,
         "stored":true},
       {
         "name":"*_tDouble4M",
-        "type":"tdouble4",
+        "type":"double",
         "docValues":true,
         "multiValued":true,
         "indexed":true,
@@ -669,14 +972,14 @@
         "stored":true},
       {
         "name":"*_tDoubleS",
-        "type":"tdouble",
+        "type":"double",
         "docValues":true,
         "multiValued":false,
         "indexed":true,
         "stored":true},
       {
         "name":"*_tDoubleM",
-        "type":"tdouble",
+        "type":"double",
         "docValues":true,
         "multiValued":true,
         "indexed":true,
@@ -702,6 +1005,7 @@
       {
         "name":"*_location",
         "type":"location",
+        "docValues":true,
         "multiValued":false,
         "indexed":true,
         "stored":true},
@@ -726,20 +1030,6 @@
         "indexed":true,
         "stored":true},
       {
-        "name":"*_tFloatS",
-        "type":"tfloat",
-        "docValues":true,
-        "multiValued":false,
-        "indexed":true,
-        "stored":true},
-      {
-        "name":"*_tFloatM",
-        "type":"tfloat",
-        "docValues":true,
-        "multiValued":true,
-        "indexed":true,
-        "stored":true},
-      {
         "name":"*_doubleS",
         "type":"double",
         "docValues":true,
@@ -754,15 +1044,15 @@
         "indexed":true,
         "stored":true},
       {
-        "name":"*_tLongS",
-        "type":"tlong",
+        "name":"*_tFloatS",
+        "type":"float",
         "docValues":true,
         "multiValued":false,
         "indexed":true,
         "stored":true},
       {
-        "name":"*_tLongM",
-        "type":"tlong",
+        "name":"*_tFloatM",
+        "type":"float",
         "docValues":true,
         "multiValued":true,
         "indexed":true,
@@ -782,15 +1072,29 @@
         "indexed":true,
         "stored":true},
       {
+        "name":"*_tLongS",
+        "type":"long",
+        "docValues":true,
+        "multiValued":false,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_tLongM",
+        "type":"long",
+        "docValues":true,
+        "multiValued":true,
+        "indexed":true,
+        "stored":true},
+      {
         "name":"*_tDateS",
-        "type":"tdate",
+        "type":"date",
         "docValues":true,
         "multiValued":false,
         "indexed":true,
         "stored":true},
       {
         "name":"*_tDateM",
-        "type":"tdate",
+        "type":"date",
         "docValues":true,
         "multiValued":true,
         "indexed":true,
@@ -826,20 +1130,6 @@
         "indexed":true,
         "stored":true},
       {
-        "name":"*_tIntS",
-        "type":"tint",
-        "docValues":true,
-        "multiValued":false,
-        "indexed":true,
-        "stored":true},
-      {
-        "name":"*_tIntM",
-        "type":"tint",
-        "docValues":true,
-        "multiValued":true,
-        "indexed":true,
-        "stored":true},
-      {
         "name":"*_longS",
         "type":"long",
         "docValues":true,
@@ -863,6 +1153,20 @@
       {
         "name":"*_dateM",
         "type":"date",
+        "docValues":true,
+        "multiValued":true,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_tIntS",
+        "type":"integer",
+        "docValues":true,
+        "multiValued":false,
+        "indexed":true,
+        "stored":true},
+      {
+        "name":"*_tIntM",
+        "type":"integer",
         "docValues":true,
         "multiValued":true,
         "indexed":true,
@@ -919,7 +1223,13 @@
         "dest":"sortAuthor"},
       {
         "source":"content",
+        "dest":"contentExact"},
+      {
+        "source":"content",
         "dest":"spell"},
+      {
+        "source":"content",
+        "dest":"spellExact"},
       {
         "source":"content",
         "dest":"teaser",
@@ -928,8 +1238,29 @@
         "source":"subTitle",
         "dest":"spell"},
       {
+        "source":"subTitle",
+        "dest":"spellExact"},
+      {
+        "source":"tagsH1",
+        "dest":"tagsH1Exact"},
+      {
+        "source":"tagsH2H3",
+        "dest":"tagsH2H3Exact"},
+      {
+        "source":"tagsH4H5H6",
+        "dest":"tagsH4H5H6Exact"},
+      {
+        "source":"tagsInline",
+        "dest":"tagsInlineExact"},
+      {
         "source":"title",
         "dest":"sortTitle"},
       {
         "source":"title",
-        "dest":"spell"}]}}
+        "dest":"spell"},
+      {
+        "source":"title",
+        "dest":"spellExact"},
+      {
+        "source":"title",
+        "dest":"titleExact"}]}}
