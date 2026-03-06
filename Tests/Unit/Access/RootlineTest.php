@@ -26,19 +26,43 @@ use Traversable;
  */
 class RootlineTest extends SetUpUnitTestCase
 {
+    /**
+     * @return Traversable<string, array{
+     *     rootLineString: string,
+     *     expectedGroups: list<int>
+     * }>
+     */
     public static function rootLineDataProvider(): Traversable
     {
-        yield 'simple' => ['rootLineString' => 'c:0', 'expectedGroups' => [0]];
-        yield 'simpleOneGroup' => ['rootLineString' => 'c:1', 'expectedGroups' => [1]];
-        yield 'mixed' => ['rootLineString' => '35:1/c:0', 'expectedGroups' => [0, 1]];
+        yield 'simple' => [
+            'rootLineString' => 'c:0',
+            'expectedGroups' => [0],
+        ];
+        yield 'simpleOneGroup' => [
+            'rootLineString' => 'c:1',
+            'expectedGroups' => [1],
+        ];
+        yield 'mixed' => [
+            'rootLineString' => '35:1/c:0',
+            'expectedGroups' => [0, 1],
+        ];
     }
 
-    #[DataProvider('rootLineDataProvider')]
+    /**
+     * @param list<int> $expectedGroups
+     */
     #[Test]
-    public function canParse(string $rootLineString, $expectedGroups): void
+    #[DataProvider(
+        methodName: 'rootLineDataProvider',
+    )]
+    public function canParse(string $rootLineString, array $expectedGroups): void
     {
-        $rootline = new Rootline($rootLineString);
-        $groups = $rootline->getGroups();
-        self::assertSame($expectedGroups, $groups);
+        $rootLine = new Rootline($rootLineString);
+        $groups = $rootLine->getGroups();
+
+        self::assertSame(
+            $expectedGroups,
+            $groups,
+        );
     }
 }
