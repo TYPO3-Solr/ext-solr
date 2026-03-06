@@ -5,8 +5,8 @@
 set -e
 
 # Use SOLR_PORT environment variable from Apache Solr (defaults to 8983)
-SOLR_PORT="${SOLR_PORT:-8983}"
-SOLR_URL="http://localhost:${SOLR_PORT}/solr"
+SOLR_PORT_LISTEN="${SOLR_PORT_LISTEN:-8983}"
+SOLR_URL="http://localhost:${SOLR_PORT_LISTEN}/solr"
 
 # Check if Solr is responding at all
 if ! curl -sf "${SOLR_URL}/admin/cores?action=STATUS" > /dev/null; then
