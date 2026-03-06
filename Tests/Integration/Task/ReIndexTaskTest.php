@@ -146,6 +146,6 @@ class ReIndexTaskTest extends IntegrationTestBase
         $this->assertSolrIsEmpty();
 
         // if not we cleanup now
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
+        $this->cleanUpSolrServerAndAssertEmpty();
     }
 }

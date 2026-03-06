@@ -45,7 +45,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTestBase
      */
     protected function tearDown(): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
+        $this->cleanUpSolrServerAndAssertEmpty();
         unset($this->apacheSolrDocumentRepository);
         parent::tearDown();
     }

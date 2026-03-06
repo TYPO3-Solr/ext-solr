@@ -120,7 +120,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         // cleanup the solr server
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $response = $requestFactory->request(
-            $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update',
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?commit=true',
             'POST',
             [
                 'headers' => ['Content-Type' => 'application/xml'],
@@ -132,9 +132,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         if (!str_contains($result, '<int name="QTime">')) {
             self::fail('Could not empty solr test index');
         }
-
-        // we wait to make sure the document will be deleted in solr
-        $this->waitToBeVisibleInSolr($coreName);
 
         $this->assertSolrIsEmpty($coreName);
     }
@@ -153,11 +150,18 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     /**
      * @throws InvalidArgumentException
      */
-    protected function waitToBeVisibleInSolr(string $coreName = 'core_en'): array|false
+    protected function waitToBeVisibleInSolr(string $coreName = 'core_en'): void
     {
         $this->validateTestCoreName($coreName);
-        $url = $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?softCommit=true';
-        return get_headers($url);
+        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        $requestFactory->request(
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?commit=true',
+            'POST',
+            [
+                'headers' => ['Content-Type' => 'application/xml'],
+                'body' => '<commit/>',
+            ],
+        );
     }
 
     /**
@@ -284,7 +288,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $this->importRootPagesAndTemplatesForConfiguredSites();
 
         clearstatcache();
-        usleep(500);
         self::$lastSiteCreated = $siteCreatedHash;
     }
 
@@ -450,7 +453,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         );
 
         $response = $this->executePageIndexer($frontendUrl, $item);
-        $this->waitToBeVisibleInSolr($coreName);
 
         $connection = $this->getConnectionPool()->getConnectionForTable('sys_template');
         $connection->update(
