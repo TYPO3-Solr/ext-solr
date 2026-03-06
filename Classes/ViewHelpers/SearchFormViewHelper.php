@@ -17,6 +17,8 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -24,35 +26,24 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
-/**
- * Class SearchFormViewHelper
- *
- *
- * @property RenderingContext $renderingContext
- */
-class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
+final class SearchFormViewHelper extends AbstractTagBasedViewHelper
 {
+    protected UriBuilder $uriBuilder;
+
     protected $tagName = 'form';
 
     protected $escapeChildren = true;
 
     protected $escapeOutput = false;
 
-    /**
-     * Constructor
-     */
-    public function __construct(
-        protected readonly UriBuilder $uriBuilder,
-    ) {
-        parent::__construct();
+    public function injectUriBuilder(UriBuilder $uriBuilder): void
+    {
+        $this->uriBuilder = $uriBuilder;
     }
 
-    /**
-     * Initialize arguments.
-     */
     public function initializeArguments(): void
     {
         parent::initializeArguments();
@@ -144,7 +135,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      * Get the existing search parameters in an array
      * Returns an empty array if search.keepExistingParametersForNewSearches is not set
      */
-    protected function getExistingSearchParameters(): array
+    private function getExistingSearchParameters(): array
     {
         $searchParameters = [];
         if ($this->getTypoScriptConfiguration()->getSearchKeepExistingParametersForNewSearches()) {
@@ -162,7 +153,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     /**
      * Translate the multidimensional array of existing arguments into a flat array of name-value pairs for the input tags
      */
-    protected function translateSearchParametersToInputTagAttributes(
+    private function translateSearchParametersToInputTagAttributes(
         array $arguments,
         string $nameAttributePrefix = '',
     ): array {
@@ -181,12 +172,12 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         return $attributes;
     }
 
-    protected function getTemplateVariableContainer(): ?VariableProviderInterface
+    private function getTemplateVariableContainer(): ?VariableProviderInterface
     {
         return $this->templateVariableContainer;
     }
 
-    protected function getQueryString(): string
+    private function getQueryString(): string
     {
         $resultSet = $this->getSearchResultSet();
         if ($resultSet === null) {
@@ -195,7 +186,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         return trim($this->getSearchResultSet()->getUsedSearchRequest()->getRawUserQuery());
     }
 
-    protected function getSuggestUrl(?array $additionalFilters, int $pageUid): string
+    private function getSuggestUrl(?array $additionalFilters, int $pageUid): string
     {
         $pluginNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
         $suggestUrl = $this->uriBuilder
@@ -210,7 +201,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         return $urlService->withoutQueryParameter('cHash')->__toString();
     }
 
-    protected function buildUriFromPageUidAndArguments(int $pageUid): string
+    private function buildUriFromPageUidAndArguments(int $pageUid): string
     {
         return $this->uriBuilder
             ->reset()
@@ -223,5 +214,15 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
             ->setArgumentsToBeExcludedFromQueryString($this->arguments['argumentsToBeExcludedFromQueryString'] ?? [])
             ->setSection($this->arguments['section'] ?? '')
             ->build();
+    }
+
+    private function getTypoScriptConfiguration(): TypoScriptConfiguration
+    {
+        return $this->renderingContext->getVariableProvider()->get('typoScriptConfiguration');
+    }
+
+    private function getSearchResultSet(): ?SearchResultSet
+    {
+        return $this->renderingContext->getVariableProvider()->get('searchResultSet');
     }
 }
