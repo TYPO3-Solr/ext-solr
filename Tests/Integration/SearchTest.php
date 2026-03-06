@@ -54,7 +54,7 @@ class SearchTest extends IntegrationTestBase
     protected function tearDown(): void
     {
         parent::tearDown();
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
+        $this->cleanUpSolrServerAndAssertEmpty();
     }
 
     /**
@@ -65,7 +65,6 @@ class SearchTest extends IntegrationTestBase
     #[Test]
     public function canSearchForADocument(): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/can_search.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 

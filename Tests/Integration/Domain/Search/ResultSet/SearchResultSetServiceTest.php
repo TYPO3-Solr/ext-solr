@@ -43,7 +43,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
      */
     protected function tearDown(): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
+        $this->cleanUpSolrServerAndAssertEmpty();
         parent::tearDown();
     }
 

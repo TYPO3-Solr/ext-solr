@@ -506,6 +506,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         foreach ($this->indexQueue->getAllItems() as $item) {
             self::assertTrue($this->indexPageQueueItem($item), 'Queue item failed to be indexed.');
         }
+        $this->waitToBeVisibleInSolr();
         self::assertSolrContainsDocumentCount(2, 'Initial number of documents in index not as expected');
 
         $this->dataHandler->start(
@@ -619,6 +620,8 @@ class GarbageCollectorTest extends IntegrationTestBase
                 'Queue item failed to be indexed in german translation.',
             );
         }
+        $this->waitToBeVisibleInSolr();
+        $this->waitToBeVisibleInSolr('core_de');
         self::assertSolrContainsDocumentCount(2, 'Initial number of documents in english index not as expected', 'core_en');
         self::assertSolrContainsDocumentCount(2, 'Initial number of documents in german index not as expected', 'core_de');
 
@@ -726,7 +729,7 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemoveDeletedContentElement(): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
+        $this->cleanUpSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexed_content.csv');
 
@@ -761,7 +764,6 @@ class GarbageCollectorTest extends IntegrationTestBase
 
         // we index this item
         $this->indexPages([1]);
-        $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
@@ -919,13 +921,12 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemoveContentElementTests(array $dataMap, string $fixture = 'indexed_content.csv', array $indexPageIds = [1]): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
+        $this->cleanUpSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture);
 
         // we index a page with two content elements and expect solr contains the content of both
         $this->indexPages($indexPageIds);
-        $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         if ($fixture === 'indexed_content.csv') {
@@ -958,7 +959,6 @@ class GarbageCollectorTest extends IntegrationTestBase
             $pages[] = $item->getRecordUid();
         }
         $this->indexPages($pages);
-        $this->waitToBeVisibleInSolr();
 
         // now only one document should be left with the content of the first content element
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
@@ -999,7 +999,6 @@ class GarbageCollectorTest extends IntegrationTestBase
             $pages[] = $item->getRecordUid();
         }
         $this->indexPages($pages);
-        $this->waitToBeVisibleInSolr();
 
         // now only one document should be left with the content of the first content element
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
@@ -1088,7 +1087,7 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemovePagesTests(array $dataMap, array $cmdMap = []): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
+        $this->cleanUpSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_remove_page.csv');
 
@@ -1160,7 +1159,7 @@ class GarbageCollectorTest extends IntegrationTestBase
             }',
         );
 
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
+        $this->cleanUpSolrServerAndAssertEmpty();
 
         $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_foo', 111);
         $this->waitToBeVisibleInSolr();
