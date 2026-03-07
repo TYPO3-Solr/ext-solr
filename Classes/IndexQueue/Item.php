@@ -87,6 +87,12 @@ class Item implements ItemInterface, MountPointAwareItemInterface
     protected int $recordUid;
 
     /**
+     * The page ID where the record lives (tx_solr_indexqueue_item.item_pid).
+     * For pages: same as item_uid. For records: the record's pid.
+     */
+    protected int $itemPid = 0;
+
+    /**
      * The indexing priority
      *
      * @var int
@@ -160,6 +166,7 @@ class Item implements ItemInterface, MountPointAwareItemInterface
         $this->rootPageUid = (int)$itemMetaData['root'];
         $this->type = $itemMetaData['item_type'];
         $this->recordUid = (int)$itemMetaData['item_uid'];
+        $this->itemPid = (int)($itemMetaData['item_pid'] ?? 0);
         $this->mountPointIdentifier = (string)empty($itemMetaData['pages_mountidentifier']) ? '' : $itemMetaData['pages_mountidentifier'];
         $this->changed = (int)$itemMetaData['changed'];
         $this->indexed = (int)($itemMetaData['indexed'] ?? 0);
@@ -337,6 +344,15 @@ class Item implements ItemInterface, MountPointAwareItemInterface
             return null;
         }
         return $this->record['pid'];
+    }
+
+    /**
+     * Returns the item_pid value (page ID for grouping).
+     * For pages: same as item_uid. For records: the record's pid.
+     */
+    public function getItemPid(): int
+    {
+        return $this->itemPid;
     }
 
     /**
