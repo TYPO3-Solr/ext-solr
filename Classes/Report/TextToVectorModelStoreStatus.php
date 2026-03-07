@@ -55,7 +55,7 @@ class TextToVectorModelStoreStatus extends AbstractSolrStatus
         foreach ($endpoints as $endpoint => $adminService) {
             if (!property_exists(
                 $adminService->getPluginsInformation()->plugins->QUERYPARSER,
-                'org.apache.solr.llm.textvectorisation.search.TextToVectorQParserPlugin',
+                'org.apache.solr.languagemodels.textvectorisation.search.TextToVectorQParserPlugin',
             )) {
                 $configuredEndpoints[] = [
                     'baseUrl' => $endpoint,

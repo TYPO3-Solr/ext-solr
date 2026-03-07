@@ -470,24 +470,20 @@
 		<processor class="solr.RunUpdateProcessorFactory"/>
 	</updateRequestProcessorChain>
 
-	<queryParser name="knn_text_to_vector" class="org.apache.solr.llm.textvectorisation.search.TextToVectorQParserPlugin"/>
+	<queryParser name="knn_text_to_vector" class="org.apache.solr.languagemodels.textvectorisation.search.TextToVectorQParserPlugin"/>
 	<updateRequestProcessorChain name="textToVector">
-		<processor class="solr.llm.textvectorisation.update.processor.TextToVectorUpdateProcessorFactory">
+		<processor class="solr.languagemodels.textvectorisation.update.processor.TextToVectorUpdateProcessorFactory">
 			<str name="inputField">vectorContent</str>
 			<str name="outputField">vector</str>
-			<str name="model">llm</str>
+			<str name="model">language-models</str>
 		</processor>
 		<processor class="solr.LogUpdateProcessorFactory"/>
 		<processor class="solr.RunUpdateProcessorFactory"/>
 	</updateRequestProcessorChain>
 
 	<queryResponseWriter name="json" class="solr.JSONResponseWriter" default="true"/>
-	<queryResponseWriter name="php" class="org.apache.solr.response.PHPResponseWriter"/>
-	<queryResponseWriter name="phps" class="org.apache.solr.response.PHPSerializedResponseWriter"/>
-	<queryResponseWriter name="xslt" class="solr.scripting.xslt.XSLTResponseWriter">
-		<int name="xsltCacheLifetimeSeconds">5</int>
-	</queryResponseWriter>
-	<queryResponseWriter name="javabin" class="org.apache.solr.response.BinaryResponseWriter"/>
+	<!-- Removed in Solr 10: PHPResponseWriter, PHPSerializedResponseWriter, XSLTResponseWriter -->
+	<!-- BinaryResponseWriter is now built-in in Solr 10, no explicit registration needed -->
 
 	<!-- http://wiki.apache.org/solr/DocTransformers -->
 	<!-- Document Transformer to mark elevated documents -->
