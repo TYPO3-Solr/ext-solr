@@ -5,9 +5,9 @@
       <generator>LFEditor</generator>
     </header>
     <body>
-
-			
-
-		</body>
+      <trans-unit id="pages.no_search_sub_entries" xml:space="preserve" approved="yes">
+				<source>Include sub entries in Search</source>
+			<target state="final">Untereinträge in Indexsuche einbeziehen</target></trans-unit>
+    </body>
   </file>
 </xliff>
