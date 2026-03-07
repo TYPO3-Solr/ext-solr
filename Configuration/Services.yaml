@@ -21,6 +21,12 @@ services:
     autowire: true
     shared: false
 
+  event_listener:
+    namespace: ApacheSolrForTypo3\Solr\EventListener\Backend\
+    resource: '../Classes/EventListener/Backend/*'
+    autowire: true
+    autoconfigure: true
+
   facets:
     namespace: ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\
     resource: '../Classes/Domain/Search/ResultSet/Facets/*'
@@ -64,17 +70,6 @@ services:
     public: true
     autowire: true
     shared: false
-
-  # BE modules, plugins
-  ApacheSolrForTypo3\Solr\Backend\SettingsPreviewOnPlugins:
-    arguments:
-      $backendViewFactory: '@TYPO3\CMS\Backend\View\BackendViewFactory'
-    tags:
-      - name: event.listener
-        identifier: 'solr.plugin.be.settings.preview'
-        event: TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent
-    shared: false
-  # END: BE modules
 
   viewhelpers_backend:
     namespace: ApacheSolrForTypo3\Solr\ViewHelpers\Backend\
