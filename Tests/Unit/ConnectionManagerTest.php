@@ -54,7 +54,6 @@ class ConnectionManagerTest extends SetUpUnitTestCase
         $this->pageRepositoryMock = $this->createMock(PagesRepository::class);
         $this->siteRepositoryMock = $this->createMock(SiteRepository::class);
 
-        $this->configurationManager = new ConfigurationManager();
         $this->connectionManager = new ConnectionManager(
             $this->pageRepositoryMock,
             $this->siteRepositoryMock,
@@ -67,6 +66,8 @@ class ConnectionManagerTest extends SetUpUnitTestCase
         $container->set(EventDispatcherInterface::class, $this->createMock(EventDispatcherInterface::class));
         $container->set(SiteFinder::class, $this->createMock(SiteFinder::class));
         GeneralUtility::setContainer($container);
+
+        $this->configurationManager = new ConfigurationManager();
 
         parent::setUp();
     }

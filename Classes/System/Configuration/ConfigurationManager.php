@@ -24,11 +24,13 @@ use RuntimeException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -45,11 +47,18 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
- * Configuration manager old the configuration instance.
- * Singleton
+ * Configuration manager that holds the configuration instance.
  */
-class ConfigurationManager implements SingletonInterface
+readonly class ConfigurationManager implements SingletonInterface
 {
+    protected SiteFinder $siteFinder;
+
+    public function __construct(
+        ?SiteFinder $siteFinder = null,
+    ) {
+        $this->siteFinder = $siteFinder ?? GeneralUtility::makeInstance(SiteFinder::class);
+    }
+
     /**
      * @throws DBALException
      * @throws JsonException
@@ -65,18 +74,20 @@ class ConfigurationManager implements SingletonInterface
             if ($routingAttribute instanceof PageArguments) {
                 $pageId = $routingAttribute->getPageId();
             } else {
-                // Fallback to root page
+                // Fallback to root-page
                 $site = $request->getAttribute('site');
                 if ($site instanceof Site) {
                     $pageId = $site->getRootPageId();
                 }
             }
         }
+
         try {
             $fullConfig = $request->getAttribute('frontend.typoscript')?->getSetupArray();
         } catch (RuntimeException) {
             $fullConfig = null;
         }
+
         if ($fullConfig === null) {
             $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('hash');
             $cacheIdentifier = $pageId . '_' . ($request->getAttribute('language')?->getLanguageId() ?? 0);
@@ -88,6 +99,7 @@ class ConfigurationManager implements SingletonInterface
                 $fullConfig = $cache->get($cacheIdentifier);
             }
         }
+
         return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $fullConfig, $pageId);
     }
 
@@ -97,49 +109,46 @@ class ConfigurationManager implements SingletonInterface
      *
      * @throws DBALException
      * @throws JsonException
-     * @throws SiteNotFoundException
      * @throws NoSuchCacheException
+     * @throws SiteNotFoundException
+     * @throws InvalidRouteArgumentsException
      */
     public function getTypoScriptConfiguration(?int $contextPageId = null, int $contextLanguageId = 0): TypoScriptConfiguration
     {
         if ($contextPageId !== null) {
-            $site = GeneralUtility::makeInstance(SiteFinder::class)
-                ->getSiteByPageId($contextPageId);
+            $site = $this->siteFinder->getSiteByPageId($contextPageId);
             $language = $site->getLanguageById($contextLanguageId);
             // @todo: Storage-Folder can not be used to get TypoScript Config!!!
             $uri = $site->getRouter()->generateUri($contextPageId, ['_language' => $language]);
-            $pageInformation = new PageInformation();
-            $pageInformation->setId($contextPageId);
-            $pageInformation->setPageRecord(BackendUtility::getRecord('pages', $contextPageId));
-            $pageInformation->setContentFromPid($contextPageId);
             $request = (new ServerRequest($uri, 'GET'))
                 ->withAttribute('site', $site)
-                ->withAttribute('frontend.page.information', $pageInformation)
+                ->withAttribute('frontend.page.information', $this->getPageInformation($contextPageId))
                 ->withQueryParams(['id' => $contextPageId])
                 ->withAttribute('language', $language);
             return $this->getTypoScriptFromRequest($request);
         }
+
         if (isset($GLOBALS['TYPO3_REQUEST'])) {
             return $this->getTypoScriptFromRequest($GLOBALS['TYPO3_REQUEST']);
         }
+
         // fallback: find the first site, use the first language, that's it
-        $allSites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites(false);
-        // No site found, lets return an empty configuration object
+        $allSites = $this->siteFinder->getAllSites(false);
+
+        // No site found, let's return an empty configuration object
         if ($allSites === []) {
             return new TypoScriptConfiguration([]);
         }
+
         $site = reset($allSites);
         $language = $site->getDefaultLanguage();
         $uri = $site->getRouter()->generateUri($site->getRootPageId(), ['_language' => $language]);
-        $pageInformation = new PageInformation();
-        $pageInformation->setId($site->getRootPageId());
-        $pageInformation->setPageRecord(BackendUtility::getRecord('pages', $site->getRootPageId()));
-        $pageInformation->setContentFromPid($site->getRootPageId());
         $request = (new ServerRequest($uri, 'GET'))
             ->withAttribute('site', $site)
-            ->withAttribute('frontend.page.information', $pageInformation)
+            ->withAttribute('frontend.page.information', $this->getPageInformation($site->getRootPageId()))
             ->withQueryParams(['id' => $site->getRootPageId()])
             ->withAttribute('language', $language);
+
         return $this->getTypoScriptFromRequest($request);
     }
 
@@ -155,16 +164,7 @@ class ConfigurationManager implements SingletonInterface
 
         $typo3Site = $request->getAttribute('site');
         $sysTemplateRows = $this->getSysTemplateRowsForAssociatedContextPageId($request);
-
-        $frontendTypoScriptFactory = GeneralUtility::makeInstance(
-            FrontendTypoScriptFactory::class,
-            GeneralUtility::makeInstance(ContainerInterface::class),
-            GeneralUtility::makeInstance(EventDispatcherInterface::class),
-            GeneralUtility::makeInstance(SysTemplateTreeBuilder::class),
-            GeneralUtility::makeInstance(LossyTokenizer::class),
-            GeneralUtility::makeInstance(IncludeTreeTraverser::class),
-            GeneralUtility::makeInstance(ConditionVerdictAwareIncludeTreeTraverser::class),
-        );
+        $frontendTypoScriptFactory = $this->getFrontendTypoScriptFactory();
 
         $expressionMatcherVariables = ['request' => $request];
         $pageInformation = $request->getAttribute('frontend.page.information');
@@ -175,23 +175,25 @@ class ConfigurationManager implements SingletonInterface
             $pageUid = (int)(
                 $request->getParsedBody()['id']
                 ?? $request->getQueryParams()['id']
-                ?? $request->getAttribute('site')?->getRootPageId()
+                ?? $typo3Site?->getRootPageId()
             );
             if ($pageUid !== 0) {
                 $expressionMatcherVariables['pageId'] = $pageUid;
                 $expressionMatcherVariables['page'] = BackendUtility::getRecord('pages', $pageUid);
             }
         }
-        $site = $request->getAttribute('site');
-        if ($site instanceof Site) {
-            $expressionMatcherVariables['site'] = $site;
+
+        if ($typo3Site instanceof Site) {
+            $expressionMatcherVariables['site'] = $typo3Site;
         }
+
         $frontendTypoScript = $frontendTypoScriptFactory->createSettingsAndSetupConditions(
             $typo3Site,
             $sysTemplateRows,
             $expressionMatcherVariables,
             null,
         );
+
         return $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
             true,
             $frontendTypoScript,
@@ -232,46 +234,84 @@ class ConfigurationManager implements SingletonInterface
      */
     protected function getSysTemplateRowsForAssociatedContextPageId(ServerRequestInterface $request): array
     {
-        $pageUid = (int)(
-            $request->getParsedBody()['id']
-            ?? $request->getQueryParams()['id']
-            ?? $request->getAttribute('frontend.controller')?->id
-            ?? $request->getAttribute('site')?->getRootPageId()
-        );
-
-        /** @var Context $coreContext */
-        $coreContext = clone GeneralUtility::makeInstance(Context::class);
-        $coreContext->setAspect(
-            'visibility',
-            GeneralUtility::makeInstance(
-                VisibilityAspect::class,
-                false,
-                false,
-            ),
-        );
-        /** @var RootLineUtility $rootlineUtility */
-        $rootlineUtility = GeneralUtility::makeInstance(
-            RootLineUtility::class,
-            $pageUid,
-            '', // @todo: tag: MountPoint,
-            $coreContext,
-        );
-        $rootline = $rootlineUtility->get();
-        if ($rootline === []) {
+        $coreContext = $this->getCoreContextWithIncludedHiddenRecords();
+        $rootLine = $this->getRootLineUtility($request, $coreContext)->get();
+        if ($rootLine === []) {
             return [];
         }
 
-        /** @var SysTemplateRepository $sysTemplateRepository */
-        $sysTemplateRepository = GeneralUtility::makeInstance(
+        return $this->getSysTemplateRepository($coreContext)->getSysTemplateRowsByRootline(
+            $rootLine,
+            $request,
+        );
+    }
+
+    protected function getSysTemplateRepository(Context $coreContext): SysTemplateRepository
+    {
+        return GeneralUtility::makeInstance(
             SysTemplateRepository::class,
             GeneralUtility::makeInstance(EventDispatcherInterface::class),
             GeneralUtility::makeInstance(ConnectionPool::class),
             $coreContext,
         );
+    }
 
-        return $sysTemplateRepository->getSysTemplateRowsByRootline(
-            $rootline,
-            $request,
+    protected function getPageUid(ServerRequestInterface $request): int
+    {
+        return (int)(
+            $request->getParsedBody()['id']
+            ?? $request->getQueryParams()['id']
+            ?? $request->getAttribute('frontend.controller')?->id
+            ?? $request->getAttribute('site')?->getRootPageId()
         );
+    }
+
+    protected function getFrontendTypoScriptFactory(): FrontendTypoScriptFactory
+    {
+        return GeneralUtility::makeInstance(
+            FrontendTypoScriptFactory::class,
+            GeneralUtility::makeInstance(ContainerInterface::class),
+            GeneralUtility::makeInstance(EventDispatcherInterface::class),
+            GeneralUtility::makeInstance(SysTemplateTreeBuilder::class),
+            GeneralUtility::makeInstance(LossyTokenizer::class),
+            GeneralUtility::makeInstance(IncludeTreeTraverser::class),
+            GeneralUtility::makeInstance(ConditionVerdictAwareIncludeTreeTraverser::class),
+        );
+    }
+
+    protected function getPageInformation(int $rootPageUid): PageInformation
+    {
+        $pageInformation = new PageInformation();
+        $pageInformation->setId($rootPageUid);
+        $pageInformation->setPageRecord(BackendUtility::getRecord('pages', $rootPageUid));
+        $pageInformation->setContentFromPid($rootPageUid);
+
+        return $pageInformation;
+    }
+
+    protected function getRootLineUtility(ServerRequestInterface $request, Context $coreContext): RootLineUtility
+    {
+        return GeneralUtility::makeInstance(
+            RootLineUtility::class,
+            $this->getPageUid($request),
+            '', // @todo: tag: MountPoint,
+            $coreContext,
+        );
+    }
+
+    protected function getCoreContextWithIncludedHiddenRecords(): Context
+    {
+        $coreContext = clone $this->getCoreContext();
+        $coreContext->setAspect(
+            'visibility',
+            new VisibilityAspect(false, false),
+        );
+
+        return $coreContext;
+    }
+
+    protected function getCoreContext(): Context
+    {
+        return GeneralUtility::makeInstance(Context::class);
     }
 }
