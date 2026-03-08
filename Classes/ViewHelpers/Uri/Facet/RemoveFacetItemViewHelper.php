@@ -15,21 +15,43 @@
 
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet;
 
-/**
- * Class RemoveFacetItemViewHelper
- */
-class RemoveFacetItemViewHelper extends AbstractValueViewHelper
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
+
+class RemoveFacetItemViewHelper extends AbstractUriViewHelper
 {
+    use ValueViewHelperArgumentTrait;
+
+    /**
+     * @inheritdoc
+     */
+    public function initializeArguments(): void
+    {
+        parent::initializeArguments();
+
+        $this->registerArgument('facet', AbstractFacet::class, 'The facet');
+        $this->registerArgument('facetName', 'string', 'The facet name');
+        $this->registerArgument('facetItem', AbstractFacetItem::class, 'The facet item');
+        $this->registerArgument('facetItemValue', 'string', 'The facet item');
+        $this->registerArgument('resultSet', SearchResultSet::class, 'The result set');
+    }
+
     /**
      * Renders URI for removing the facet item.
      */
-    public function render()
+    public function render(): string
     {
-        $name = self::getNameFromArguments($this->arguments);
-        $itemValue = self::getValueFromArguments($this->arguments);
-        $resultSet = self::getResultSetFromArguments($this->arguments);
+        $name = $this->getNameFromArguments($this->arguments);
+        $itemValue = $this->getValueFromArguments($this->arguments);
+        $resultSet = $this->getResultSetFromArguments($this->arguments);
         $previousRequest = $resultSet->getUsedSearchRequest();
 
-        return self::getSearchUriBuilder($this->renderingContext)->getRemoveFacetValueUri($previousRequest, $name, $itemValue);
+        return $this->getSearchUriBuilder($this->renderingContext)->getRemoveFacetValueUri(
+            $previousRequest,
+            $name,
+            $itemValue,
+        );
     }
 }
