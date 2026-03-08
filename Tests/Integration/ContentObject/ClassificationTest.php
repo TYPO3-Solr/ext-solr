@@ -15,21 +15,34 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Classification;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Tests for the SOLR_CLASSIFICATION cObj.
  */
-class ClassificationTest extends SetUpContentObject
+class ClassificationTest extends IntegrationTestBase
 {
-    protected function getTestableContentObjectClassName(): string
+    protected ContentObjectRenderer $contentObjectRenderer;
+
+    protected function setUp(): void
     {
-        return Classification::class;
+        parent::setUp();
+
+        $request = (new ServerRequest('https://example.com'))
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+
+        $this->contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+        $this->contentObjectRenderer->setRequest($request);
     }
 
     #[Test]
@@ -52,9 +65,15 @@ class ClassificationTest extends SetUpContentObject
             ],
         ];
 
-        $actual = $this->contentObjectRenderer->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
-        $expected = serialize(['cms']);
-        self::assertEquals($expected, $actual);
+        $actual = $this->contentObjectRenderer->cObjGetSingle(
+            Classification::CONTENT_OBJECT_NAME,
+            $configuration,
+        );
+
+        self::assertEquals(
+            serialize(['cms']),
+            $actual,
+        );
     }
 
     public static function excludePatternDataProvider(): Traversable
@@ -69,8 +88,10 @@ class ClassificationTest extends SetUpContentObject
         ];
     }
 
-    #[DataProvider('excludePatternDataProvider')]
     #[Test]
+    #[DataProvider(
+        methodName: 'excludePatternDataProvider',
+    )]
     public function canExcludePatterns($input, $expectedOutput): void
     {
         $this->contentObjectRenderer->start(['content' => $input]);
@@ -86,8 +107,14 @@ class ClassificationTest extends SetUpContentObject
             ],
         ];
 
-        $actual = $this->contentObjectRenderer->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
-        $expected = serialize($expectedOutput);
-        self::assertEquals($expected, $actual);
+        $actual = $this->contentObjectRenderer->cObjGetSingle(
+            Classification::CONTENT_OBJECT_NAME,
+            $configuration,
+        );
+
+        self::assertEquals(
+            serialize($expectedOutput),
+            $actual,
+        );
     }
 }

@@ -17,44 +17,17 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Classification;
 
-/**
- * Class Classification
- */
 class Classification
 {
-    /**
-     * Array of regular expressions
-     */
-    protected array $matchPatterns = [];
-
-    /**
-     * Array of regular expressions
-     */
-    protected array $unMatchPatterns = [];
-
-    protected string $mappedClass;
-
-    /**
-     * Classification constructor.
-     */
     public function __construct(
-        array $matchPatterns = [],
-        array $unMatchPatterns = [],
-        string $mappedClass = '',
-    ) {
-        $this->matchPatterns = $matchPatterns;
-        $this->unMatchPatterns = $unMatchPatterns;
-        $this->mappedClass = $mappedClass;
-    }
+        protected array $matchPatterns = [],
+        protected array $unMatchPatterns = [],
+        protected string $mappedClass = '',
+    ) {}
 
     public function getUnMatchPatterns(): array
     {
         return $this->unMatchPatterns;
-    }
-
-    public function setUnMatchPatterns(array $unMatchPatterns): void
-    {
-        $this->unMatchPatterns = $unMatchPatterns;
     }
 
     public function getMatchPatterns(): array
@@ -62,18 +35,8 @@ class Classification
         return $this->matchPatterns;
     }
 
-    public function setMatchPatterns(array $matchPatterns): void
-    {
-        $this->matchPatterns = $matchPatterns;
-    }
-
     public function getMappedClass(): string
     {
         return $this->mappedClass;
-    }
-
-    public function setMappedClass(string $mappedClass): void
-    {
-        $this->mappedClass = $mappedClass;
     }
 }
