@@ -23,8 +23,11 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 use function str_starts_with;
@@ -39,9 +42,15 @@ class FlexFormUserFunctions
      *
      * @throws NoSolrConnectionFoundException
      * @throws DBALException
+     * @throws InvalidConfigurationTypeException
      */
     public function getFacetFieldsFromSchema(array &$parentInformation): void
     {
+        if (!array_key_exists('flexParentDatabaseRow', $parentInformation)) {
+            $parentInformation['items'] = [];
+            return;
+        }
+
         $pageRecord = $parentInformation['flexParentDatabaseRow'];
         // @todo: Fix type hinting issue properly on whole call chain.
         $configuredFacets = $this->getConfiguredFacetsForPage($pageRecord['pid'] ?? null);
@@ -94,6 +103,8 @@ class FlexFormUserFunctions
 
     /**
      * Retrieves the configured facets for a page.
+     *
+     * @throws InvalidConfigurationTypeException
      */
     protected function getConfiguredFacetsForPage(?int $pid = null): ?array
     {
@@ -136,9 +147,16 @@ class FlexFormUserFunctions
 
     /**
      * Enriches the parents information with information from template
+     *
+     * @throws InvalidConfigurationTypeException
      */
     public function getAvailableTemplates(array &$parentInformation): void
     {
+        if (!array_key_exists('flexParentDatabaseRow', $parentInformation)) {
+            $parentInformation['items'] = [];
+            return;
+        }
+
         $pageRecord = $parentInformation['flexParentDatabaseRow'];
         if (!is_array($pageRecord) || !isset($pageRecord['pid'])) {
             $parentInformation['items'] = [];
@@ -181,6 +199,8 @@ class FlexFormUserFunctions
 
     /**
      * Returns TypoScriptConfiguration if is available or can be resolved for given pid
+     *
+     * @throws InvalidConfigurationTypeException
      */
     protected function getConfigurationFromPageId(?int $pid = null): ?TypoScriptConfiguration
     {
@@ -188,7 +208,12 @@ class FlexFormUserFunctions
             return null;
         }
 
+        /** @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+
+        $request = (new ServerRequest())->withQueryParams(['id' => $pid]);
+        /** @noinspection PhpInternalEntityUsedInspection */
+        $configurationManager->setRequest($request);
         $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 
         return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $typoScript);
@@ -196,6 +221,8 @@ class FlexFormUserFunctions
 
     /**
      * Retrieves the configured templates from TypoScript.
+     *
+     * @throws InvalidConfigurationTypeException
      */
     protected function getAvailableTemplateFromTypoScriptConfiguration(int $pageId, string $templateKey): array
     {
