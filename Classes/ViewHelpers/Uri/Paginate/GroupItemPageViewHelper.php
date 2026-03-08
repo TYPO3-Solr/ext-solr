@@ -42,7 +42,7 @@ class GroupItemPageViewHelper extends AbstractUriViewHelper
     {
         $page = $this->arguments['page'];
         $groupItem = $this->arguments['groupItem'];
-        $previousRequest = static::getUsedSearchRequestFromRenderingContext($this->renderingContext);
+        $previousRequest = $this->getUsedSearchRequestFromRenderingContext($this->renderingContext);
         return self::getSearchUriBuilder($this->renderingContext)->getResultGroupItemPageUri($previousRequest, $groupItem, (int)$page);
     }
 }

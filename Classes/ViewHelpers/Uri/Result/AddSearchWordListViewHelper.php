@@ -45,7 +45,7 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
     {
         $url = $this->arguments['url'];
 
-        $resultSet = self::getUsedSearchResultSetFromRenderingContext($this->renderingContext);
+        $resultSet = $this->getUsedSearchResultSetFromRenderingContext($this->renderingContext);
         if (!$resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsSiteHighlighting()) {
             return $url;
         }

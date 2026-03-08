@@ -63,7 +63,7 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
         $document = $this->arguments['document'];
 
         /** @var SearchResultSet $resultSet */
-        $resultSet = self::getUsedSearchResultSetFromRenderingContext($this->renderingContext);
+        $resultSet = $this->getUsedSearchResultSetFromRenderingContext($this->renderingContext);
         $debugData = '';
         if (
             $resultSet->getUsedSearch()->getDebugResponse() !== null
