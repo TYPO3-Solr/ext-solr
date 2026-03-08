@@ -30,8 +30,12 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
     {
         $arguments = [
             'value' => 'givenString',
-            '__then' => function () { return 'thenResult'; },
-            '__else' => function () { return 'elseResult'; },
+            '__then' => function () {
+                return 'thenResult';
+            },
+            '__else' => function () {
+                return 'elseResult';
+            },
         ];
 
         $renderingContextMock = $this->createMock(RenderingContextInterface::class);
@@ -44,8 +48,12 @@ class IsStringViewHelperTest extends SetUpUnitTestCase
     {
         $arguments = [
             'value' => ['givenStringInArray'],
-            '__then' => function () { return 'thenResult'; },
-            '__else' => function () { return 'elseResult'; },
+            '__then' => function () {
+                return 'thenResult';
+            },
+            '__else' => function () {
+                return 'elseResult';
+            },
         ];
 
         $renderingContextMock = $this->createMock(RenderingContextInterface::class);
