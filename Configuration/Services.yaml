@@ -377,7 +377,8 @@ services:
 
   ###  EXT:solr content objects
   ApacheSolrForTypo3\Solr\ContentObject\Classification:
-    shared: false
+    public: true
+    autowire: true
     tags:
       - name: frontend.contentobject
         identifier: 'SOLR_CLASSIFICATION'

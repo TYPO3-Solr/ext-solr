@@ -43,8 +43,13 @@ abstract class SetUpContentObject extends SetUpUnitTestCase
         parent::setUp();
 
         $request = new ServerRequest();
+
         $this->contentObjectRenderer = $this->createMock(ContentObjectRenderer::class);
-        $this->contentObjectRenderer->method('getRequest')->willReturn($request);
+        $this->contentObjectRenderer
+            ->expects(self::any())
+            ->method('getRequest')
+            ->willReturn($request);
+
         $cObjectFactoryMock = $this->getMockBuilder(ContentObjectFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -53,9 +58,12 @@ abstract class SetUpContentObject extends SetUpUnitTestCase
         $this->testableContentObject->setRequest($request);
         $this->testableContentObject->setContentObjectRenderer($this->contentObjectRenderer);
 
-        $cObjectFactoryMock->method('getContentObject')->willReturnMap([
-            [($this->getTestableContentObjectClassName())::CONTENT_OBJECT_NAME, $request, $this->contentObjectRenderer, $this->testableContentObject],
-        ]);
+        $cObjectFactoryMock
+            ->expects(self::any())
+            ->method('getContentObject')
+            ->willReturnMap([
+                [($this->getTestableContentObjectClassName())::CONTENT_OBJECT_NAME, $request, $this->contentObjectRenderer, $this->testableContentObject],
+            ]);
 
         $container = new Container();
         $container->set(ContentObjectFactory::class, $cObjectFactoryMock);
@@ -64,33 +72,43 @@ abstract class SetUpContentObject extends SetUpUnitTestCase
 
         // Track data set via start() for use in stdWrap
         $data = [];
-        $this->contentObjectRenderer->method('start')->willReturnCallback(
-            function (array $inputData) use (&$data) {
-                $data = $inputData;
-            },
-        );
+        $this->contentObjectRenderer
+            ->expects(self::any())
+            ->method('start')
+            ->willReturnCallback(
+                function (array $inputData) use (&$data) {
+                    $data = $inputData;
+                },
+            );
 
         // Configure stdWrap to return field values from data
-        $this->contentObjectRenderer->method('stdWrap')->willReturnCallback(
-            function (string $content, array $conf) use (&$data) {
-                if (isset($conf['field']) && isset($data[$conf['field']])) {
-                    return $data[$conf['field']];
-                }
-                return $content;
-            },
-        );
+        $this->contentObjectRenderer
+            ->expects(self::any())
+            ->method('stdWrap')
+            ->willReturnCallback(
+                function (string $content, array $conf) use (&$data) {
+                    if (isset($conf['field']) && isset($data[$conf['field']])) {
+                        return $data[$conf['field']];
+                    }
+                    return $content;
+                },
+            );
 
         // Configure the mock to call the actual content object's render method
         $testableContentObject = $this->testableContentObject;
-        $this->contentObjectRenderer->method('cObjGetSingle')->willReturnCallback(
-            function (string $name, array $conf) use ($testableContentObject) {
-                $contentObjectName = ($testableContentObject::class)::CONTENT_OBJECT_NAME;
-                if ($name === $contentObjectName) {
-                    return $testableContentObject->render($conf);
-                }
-                return '';
-            },
-        );
+
+        $this->contentObjectRenderer
+            ->expects(self::any())
+            ->method('cObjGetSingle')
+            ->willReturnCallback(
+                function (string $name, array $conf) use ($testableContentObject) {
+                    $contentObjectName = ($testableContentObject::class)::CONTENT_OBJECT_NAME;
+                    if ($name === $contentObjectName) {
+                        return $testableContentObject->render($conf);
+                    }
+                    return '';
+                },
+            );
     }
 
     abstract protected function getTestableContentObjectClassName(): string;

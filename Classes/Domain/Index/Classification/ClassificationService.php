@@ -17,9 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Classification;
 
-/**
- * Class ClassificationService
- */
 class ClassificationService
 {
     /**

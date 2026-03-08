@@ -41,6 +41,10 @@ class Classification extends AbstractContentObject
 {
     public const CONTENT_OBJECT_NAME = 'SOLR_CLASSIFICATION';
 
+    public function __construct(
+        protected ClassificationService $classificationService,
+    ) {}
+
     /**
      * Executes the SOLR_CLASSIFICATION content object.
      *
@@ -70,10 +74,8 @@ class Classification extends AbstractContentObject
             $data = $this->cObj->stdWrap($data, $conf);
         }
         $classifications = $this->buildClassificationsFromConfiguration($configuredMappedClasses);
-        /** @var ClassificationService $classificationService */
-        $classificationService = GeneralUtility::makeInstance(ClassificationService::class);
 
-        return serialize($classificationService->getMatchingClassNames((string)$data, $classifications));
+        return serialize($this->classificationService->getMatchingClassNames((string)$data, $classifications));
     }
 
     /**
@@ -84,6 +86,7 @@ class Classification extends AbstractContentObject
     protected function buildClassificationsFromConfiguration(array $configuredMappedClasses): array
     {
         $classifications = [];
+
         foreach ($configuredMappedClasses as $class) {
             if ((empty($class['patterns']) && empty($class['matchPatterns'])) || empty($class['class'])) {
                 throw new InvalidArgumentException(
@@ -99,12 +102,7 @@ class Classification extends AbstractContentObject
             $unMatchPatters = empty($class['unmatchPatterns']) ? [] : GeneralUtility::trimExplode(',', $class['unmatchPatterns']);
 
             $className = $class['class'];
-            $classifications[] = GeneralUtility::makeInstance(
-                ClassificationItem::class,
-                $matchPatterns,
-                $unMatchPatters,
-                $className,
-            );
+            $classifications[] = new ClassificationItem($matchPatterns, $unMatchPatters, $className);
         }
 
         return $classifications;
