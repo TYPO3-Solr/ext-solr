@@ -19,30 +19,13 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
-use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
 
-/**
- * Class AbstractValueViewHelper
- */
-abstract class AbstractValueViewHelper extends AbstractUriViewHelper
+trait ValueViewHelperArgumentTrait
 {
-    /**
-     * @inheritdoc
-     */
-    public function initializeArguments(): void
-    {
-        parent::initializeArguments();
-        $this->registerArgument('facet', AbstractFacet::class, 'The facet');
-        $this->registerArgument('facetName', 'string', 'The facet name');
-        $this->registerArgument('facetItem', AbstractFacetItem::class, 'The facet item');
-        $this->registerArgument('facetItemValue', 'string', 'The facet item');
-        $this->registerArgument('resultSet', SearchResultSet::class, 'The result set');
-    }
-
     /**
      * Extracts and Returns value from given arguments.
      */
-    protected static function getValueFromArguments(array $arguments = []): string
+    private function getValueFromArguments(array $arguments = []): string
     {
         if (isset($arguments['facetItem'])) {
             /** @var AbstractFacetItem $facetItem */
@@ -63,7 +46,7 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
     /**
      * Extracts and returns name from arguments.
      */
-    protected static function getNameFromArguments(array $arguments = []): string
+    private function getNameFromArguments(array $arguments = []): string
     {
         if (isset($arguments['facet'])) {
             /** @var AbstractFacet $facet */
@@ -84,7 +67,7 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
     /**
      * Extracts and returns result-set from arguments.
      */
-    protected static function getResultSetFromArguments(array $arguments = []): SearchResultSet
+    private function getResultSetFromArguments(array $arguments = []): SearchResultSet
     {
         if (isset($arguments['facet'])) {
             /** @var AbstractFacet $facet */
