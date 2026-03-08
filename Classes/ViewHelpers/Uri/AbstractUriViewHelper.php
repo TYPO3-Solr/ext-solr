@@ -82,9 +82,10 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
     /**
      * @throws InvalidArgumentException
      */
-    protected static function getUsedSearchRequestFromRenderingContext(RenderingContextInterface $renderingContext): ?SearchRequest
-    {
-        $resultSet = static::getUsedSearchResultSetFromRenderingContext($renderingContext);
+    protected function getUsedSearchRequestFromRenderingContext(
+        RenderingContextInterface $renderingContext,
+    ): ?SearchRequest {
+        $resultSet = $this->getUsedSearchResultSetFromRenderingContext($renderingContext);
         if (!$resultSet instanceof SearchResultSet) {
             throw new InvalidArgumentException('The variable resultSet need to be defined in the scope of ' . static::class, 1642765491);
         }

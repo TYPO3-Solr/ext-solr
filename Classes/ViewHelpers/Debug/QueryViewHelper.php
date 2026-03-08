@@ -42,7 +42,7 @@ class QueryViewHelper extends AbstractSolrFrontendViewHelper
     public function render()
     {
         $content = '';
-        $resultSet = self::getUsedSearchResultSetFromRenderingContext($this->renderingContext);
+        $resultSet = $this->getUsedSearchResultSetFromRenderingContext($this->renderingContext);
         $backendUserIsLoggedIn = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('backend.user', 'isLoggedIn');
         if (
             $backendUserIsLoggedIn === true
