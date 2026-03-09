@@ -19,7 +19,7 @@ namespace ApacheSolrForTypo3\Solr\EventListener\PageIndexer;
 
 use ApacheSolrForTypo3\Solr\Event\Indexing\AfterPageDocumentIsCreatedForIndexingEvent;
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 
 /**
  * Additional fields indexer.
@@ -29,30 +29,27 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Adds page document fields as configured in
  * plugin.tx_solr.index.additionalFields.
  */
-class AdditionalFieldsForPageIndexing
+final readonly class AdditionalFieldsForPageIndexing
 {
-    protected array $additionalIndexingFields = [];
-
-    protected array $additionalFieldNames = [];
-
-    protected ContentObjectService $contentObjectService;
-
-    public function __construct(?ContentObjectService $contentObjectService = null)
-    {
-        $this->contentObjectService = $contentObjectService ?? GeneralUtility::makeInstance(ContentObjectService::class);
-    }
+    public function __construct(
+        private ContentObjectService $contentObjectService,
+    ) {}
 
     /**
      * Returns a substituted document for the currently being indexed page.
      */
+    #[AsEventListener(
+        identifier: 'solr.index.AdditionalFieldsForPageIndexing',
+    )]
     public function __invoke(AfterPageDocumentIsCreatedForIndexingEvent $event): void
     {
-        $this->additionalIndexingFields = $event->getConfiguration()->getIndexAdditionalFieldsConfiguration();
-        $this->additionalFieldNames = $event->getConfiguration()->getIndexMappedAdditionalFieldNames();
-
         $originalPageDocument = $event->getDocument();
         $substitutePageDocument = clone $originalPageDocument;
-        $additionalFields = $this->getAdditionalFields();
+
+        $additionalFields = $this->getAdditionalFields(
+            $event->getConfiguration()->getIndexAdditionalFieldsConfiguration(),
+            $event->getConfiguration()->getIndexMappedAdditionalFieldNames(),
+        );
 
         foreach ($additionalFields as $fieldName => $fieldValue) {
             if (!isset($originalPageDocument->{$fieldName})) {
@@ -60,18 +57,22 @@ class AdditionalFieldsForPageIndexing
                 $substitutePageDocument->setField($fieldName, $fieldValue);
             }
         }
+
         $event->overrideDocument($substitutePageDocument);
     }
 
     /**
      * Gets the additional fields as an array mapping field names to values.
      */
-    protected function getAdditionalFields(): array
+    private function getAdditionalFields(array $additionalIndexingFields, array $additionalFieldNames): array
     {
         $additionalFields = [];
 
-        foreach ($this->additionalFieldNames as $additionalFieldName) {
-            $additionalFields[$additionalFieldName] = $this->getFieldValue($additionalFieldName);
+        foreach ($additionalFieldNames as $additionalFieldName) {
+            $additionalFields[$additionalFieldName] = $this->getFieldValue(
+                $additionalIndexingFields,
+                $additionalFieldName,
+            );
         }
 
         return $additionalFields;
@@ -80,8 +81,11 @@ class AdditionalFieldsForPageIndexing
     /**
      * Uses the page's cObj instance to resolve the additional field's value.
      */
-    protected function getFieldValue(string $fieldName): string
+    private function getFieldValue(array $additionalIndexingFields, string $fieldName): string
     {
-        return $this->contentObjectService->renderSingleContentObjectByArrayAndKey($this->additionalIndexingFields, $fieldName);
+        return $this->contentObjectService->renderSingleContentObjectByArrayAndKey(
+            $additionalIndexingFields,
+            $fieldName,
+        );
     }
 }

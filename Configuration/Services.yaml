@@ -22,8 +22,8 @@ services:
     shared: false
 
   event_listener:
-    namespace: ApacheSolrForTypo3\Solr\EventListener\Backend\
-    resource: '../Classes/EventListener/Backend/*'
+    namespace: ApacheSolrForTypo3\Solr\EventListener\
+    resource: '../Classes/EventListener/*'
     autowire: true
     autoconfigure: true
 
@@ -109,24 +109,6 @@ services:
     autowire: true
     shared: true
 
-  ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\CachedUrlModifier:
-    shared: true
-    tags:
-      - name: event.listener
-        identifier: 'solr.routing.cachedurl-modifier'
-        event: ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent
-  ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\CachedPathVariableModifier:
-    shared: true
-    tags:
-      - name: event.listener
-        identifier: 'solr.routing.cachedurl-modifier'
-        event: ApacheSolrForTypo3\Solr\Event\Routing\BeforeCachedVariablesAreProcessedEvent
-  ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\PostEnhancedUriProcessor:
-    shared: true
-    tags:
-      - name: event.listener
-        identifier: 'solr.routing.postenhanceduriprocessor-modifier'
-        event: ApacheSolrForTypo3\Solr\Event\Routing\AfterUriIsProcessedEvent
   ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\NoProcessingEventListener:
     shared: true
     arguments:
@@ -334,13 +316,6 @@ services:
     arguments:
       $siteRepository: '@ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository'
 
-  ApacheSolrForTypo3\Solr\EventListener\PageIndexer\AdditionalFieldsForPageIndexing:
-    autowire: true
-    shared: false
-    tags:
-      - name: event.listener
-        identifier: 'solr.index.AdditionalFieldsForPageIndexing'
-
   ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer:
     autowire: true
     shared: false
@@ -358,17 +333,6 @@ services:
         identifier: 'solr.index.UserGroupDetector.removeFeGroupConstraint'
         event: TYPO3\CMS\Core\Domain\Event\ModifyDefaultConstraintsForDatabaseQueryEvent
         method: 'removeFeGroupConstraintFromDatabaseQuery'
-
-  ApacheSolrForTypo3\Solr\EventListener\Extbase\PersistenceEventListener:
-    autowire: true
-    shared: true
-    tags:
-      - name: event.listener
-        identifier: 'solr.index.ExtbaseEntityPersisted'
-        method: 'entityPersisted'
-      - name: event.listener
-        identifier: 'solr.index.ExtbaseEntityRemoved'
-        method: 'entityRemoved'
 
   ###  EXT:solr content objects
   ApacheSolrForTypo3\Solr\ContentObject\Classification:

@@ -21,15 +21,16 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDelete
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Traits\SkipMonitoringTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Extbase\Event\Persistence\EntityPersistedEvent;
 use TYPO3\CMS\Extbase\Event\Persistence\EntityRemovedFromPersistenceEvent;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
 
 /**
- * Event listener that handle record changes by \TYPO3\CMS\Extbase\Persistence\Generic\Backend
+ * Event listener that handles record changes by \TYPO3\CMS\Extbase\Persistence\Generic\Backend
  */
-class PersistenceEventListener
+final readonly class PersistenceEventListener
 {
     use SkipMonitoringTrait;
 
@@ -38,6 +39,9 @@ class PersistenceEventListener
         protected EventDispatcher $eventDispatcher,
     ) {}
 
+    #[AsEventListener(
+        identifier: 'solr.index.ExtbaseEntityPersisted',
+    )]
     public function entityPersisted(EntityPersistedEvent $event): void
     {
         $object = $event->getObject();
@@ -50,6 +54,9 @@ class PersistenceEventListener
         }
     }
 
+    #[AsEventListener(
+        identifier: 'solr.index.ExtbaseEntityRemoved',
+    )]
     public function entityRemoved(EntityRemovedFromPersistenceEvent $event): void
     {
         $object = $event->getObject();
@@ -59,7 +66,7 @@ class PersistenceEventListener
         }
     }
 
-    protected function getTableName(object $object): string
+    private function getTableName(object $object): string
     {
         $dataMap = $this->dataMapFactory->buildDataMap(get_class($object));
         return $dataMap->getTableName();

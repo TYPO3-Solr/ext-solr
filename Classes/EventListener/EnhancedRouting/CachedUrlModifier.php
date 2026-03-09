@@ -18,20 +18,25 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting;
 
 use ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 
 /**
  * This modifier is in use if the URL processed by a route enhancer
  *
  * In this case some characters need to be replaced in order to do a placeholder replacement later
  */
-class CachedUrlModifier
+final readonly class CachedUrlModifier
 {
+    #[AsEventListener(
+        identifier: 'solr.routing.cachedurl-modifier',
+    )]
     public function __invoke(BeforeVariableInCachedUrlAreReplacedEvent $event): void
     {
-        // Do not react on routing events
+        // Do not react to routing events
         if (!$event->hasRouting()) {
             return;
         }
+
         $uri = $event->getUri();
         $path = $uri->getPath();
         $path = str_replace(':', '%3A', $path);
