@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -34,13 +35,16 @@ use TYPO3\CMS\Frontend\Authentication\ModifyResolvedFrontendGroupsEvent;
  *
  * This class is involved only on {@link PageIndexer} processing.
  */
-class FrontendGroupsModifier
+final readonly class FrontendGroupsModifier
 {
     /**
      * Modifies the fe_groups of a user on X-Tx-Solr-Iq requests.
      *
      * @throws PropagateResponseException
      */
+    #[AsEventListener(
+        identifier: 'solr.index.PageIndexer.FrontendUserAuthenticator',
+    )]
     public function __invoke(ModifyResolvedFrontendGroupsEvent $event): void
     {
         $pageIndexerRequest = $event->getRequest()->getAttribute('solr.pageIndexingInstructions');
@@ -106,8 +110,7 @@ class FrontendGroupsModifier
         if ((int)$pageIndexerRequest->getParameter('userGroup') === 0
             && (
                 (int)$pageIndexerRequest->getParameter('pageUserGroup') !== -2
-                &&
-                (int)$pageIndexerRequest->getParameter('pageUserGroup') < 1
+                && (int)$pageIndexerRequest->getParameter('pageUserGroup') < 1
             )
             && $noRelevantFrontendUserGroupResolved
         ) {
@@ -133,9 +136,9 @@ class FrontendGroupsModifier
     }
 
     /**
-     * Resolves a logged in fe_groups to retrieve access restricted content.
+     * Resolves a logged-in fe_groups to retrieve access restricted content.
      */
-    protected function resolveFrontendUserGroups(PageIndexerRequest $pageIndexerRequest): array
+    private function resolveFrontendUserGroups(PageIndexerRequest $pageIndexerRequest): array
     {
         $accessRootline = $this->getAccessRootline($pageIndexerRequest);
         $stringAccessRootline = (string)$accessRootline;
@@ -148,7 +151,7 @@ class FrontendGroupsModifier
     /**
      * Gets the access rootline as defined by the request.
      */
-    protected function getAccessRootline(PageIndexerRequest $pageIndexerRequest): Rootline
+    private function getAccessRootline(PageIndexerRequest $pageIndexerRequest): Rootline
     {
         $stringAccessRootline = '';
         if ($pageIndexerRequest->getParameter('accessRootline')) {
