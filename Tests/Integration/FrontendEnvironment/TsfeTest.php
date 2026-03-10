@@ -3,9 +3,11 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\FrontendEnvironment;
 
 use ApacheSolrForTypo3\Solr\FrontendSimulation\FrontendAwareEnvironment;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TsfeTest extends IntegrationTestBase
@@ -16,7 +18,12 @@ class TsfeTest extends IntegrationTestBase
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_initialize_tsfe_for_page_with_different_fe_groups_settings.csv');
 
-        $requestNotRestricted = GeneralUtility::makeInstance(FrontendAwareEnvironment::class)->getServerRequestByPageIdIgnoringLanguage(1);
+        $frontendAwareEnvironment = new FrontendAwareEnvironment(
+            GeneralUtility::makeInstance(SiteFinder::class),
+            GeneralUtility::makeInstance(ConfigurationManager::class),
+        );
+
+        $requestNotRestricted = $frontendAwareEnvironment->getServerRequestByPageIdIgnoringLanguage(1);
         self::assertInstanceOf(
             ServerRequest::class,
             $requestNotRestricted,
@@ -24,7 +31,7 @@ class TsfeTest extends IntegrationTestBase
                 'Most probably nothing will work.',
         );
 
-        $requestRestrictedForExistingFeGroup = GeneralUtility::makeInstance(FrontendAwareEnvironment::class)->getServerRequestByPageIdIgnoringLanguage(2);
+        $requestRestrictedForExistingFeGroup = $frontendAwareEnvironment->getServerRequestByPageIdIgnoringLanguage(2);
         self::assertInstanceOf(
             ServerRequest::class,
             $requestRestrictedForExistingFeGroup,
@@ -32,7 +39,7 @@ class TsfeTest extends IntegrationTestBase
                 'This will lead to failures on editing the access restricted [sub]pages in BE.',
         );
 
-        $requestForLoggedInUserOnly = GeneralUtility::makeInstance(FrontendAwareEnvironment::class)->getServerRequestByPageIdIgnoringLanguage(3);
+        $requestForLoggedInUserOnly = $frontendAwareEnvironment->getServerRequestByPageIdIgnoringLanguage(3);
         self::assertInstanceOf(
             ServerRequest::class,
             $requestForLoggedInUserOnly,

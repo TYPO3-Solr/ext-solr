@@ -27,6 +27,12 @@ services:
     autowire: true
     autoconfigure: true
 
+  frontend_simulation:
+    namespace: ApacheSolrForTypo3\Solr\FrontendSimulation\
+    resource: '../Classes/FrontendSimulation/*'
+    autowire: true
+    autoconfigure: true
+
   facets:
     namespace: ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\
     resource: '../Classes/Domain/Search/ResultSet/Facets/*'
