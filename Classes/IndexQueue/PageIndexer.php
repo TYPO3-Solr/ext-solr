@@ -19,7 +19,10 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
+use ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\PageUriBuilder;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Exception\IndexingException;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
@@ -28,7 +31,7 @@ use Exception;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -48,7 +51,11 @@ class PageIndexer extends Indexer
      * @return bool Whether indexing was successful
      *
      * @throws DBALException
+     * @throws IndexingException
+     * @throws InvalidArgumentException
+     * @throws InvalidConnectionException
      * @throws NoSolrConnectionFoundException
+     * @throws SiteNotFoundException
      */
     public function index(Item $item): bool
     {
@@ -98,13 +105,16 @@ class PageIndexer extends Indexer
      * @return SolrConnection[] An array of {@link SolrConnection} connections,
      *     the array's keys are the sys_language_uid of the language of the connection
      *
-     * @throws NoSolrConnectionFoundException
      * @throws DBALException
      * @throws IndexingException
+     * @throws InvalidArgumentException
+     * @throws NoSolrConnectionFoundException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
      */
     protected function getSolrConnectionsByItem(Item $item): array
     {
-        $solrConnections = $this->filterSolrConectionByPage(
+        $solrConnections = $this->filterSolrConnectionByPage(
             parent::getSolrConnectionsByItem($item),
             $item->getRecord(),
         );
@@ -121,43 +131,25 @@ class PageIndexer extends Indexer
                     1740383224,
                 );
             }
-            $solrConnections = $this->filterSolrConectionByPage($solrConnections, $mountPage, true);
+            $solrConnections = $this->filterSolrConnectionByPage($solrConnections, $mountPage, true);
         }
 
         return $solrConnections;
     }
 
-    protected function filterSolrConectionByPage(
+    /**
+     * @throws DBALException
+     */
+    protected function filterSolrConnectionByPage(
         array $solrConnections,
         array $page,
         bool $forceHideTranslationIfNoTranslatedRecordExists = false,
     ): array {
-        $pageTranslationVisibility = new PageTranslationVisibility((int)($page['l18n_cfg'] ?? 0));
-        if ($pageTranslationVisibility->shouldBeHiddenInDefaultLanguage()) {
-            // page is configured to hide the default translation -> remove Solr connection for default language
-            unset($solrConnections[0]);
-        }
-
-        if ($forceHideTranslationIfNoTranslatedRecordExists
-            || $pageTranslationVisibility->shouldHideTranslationIfNoTranslatedRecordExists()
-        ) {
-            $accessibleSolrConnections = [];
-            if (isset($solrConnections[0])) {
-                $accessibleSolrConnections[0] = $solrConnections[0];
-            }
-
-            $translationOverlays = $this->pagesRepository->findTranslationOverlaysByPageId((int)$page['uid']);
-            foreach ($translationOverlays as $overlay) {
-                $languageId = $overlay['sys_language_uid'];
-                if (array_key_exists($languageId, $solrConnections)) {
-                    $accessibleSolrConnections[$languageId] = $solrConnections[$languageId];
-                }
-            }
-
-            $solrConnections = $accessibleSolrConnections;
-        }
-
-        return $solrConnections;
+        return $this->pagesRepository->filterSolrConnectionsByPageVisibility(
+            $solrConnections,
+            $page,
+            $forceHideTranslationIfNoTranslatedRecordExists,
+        );
     }
 
     /**
@@ -165,7 +157,7 @@ class PageIndexer extends Indexer
      * elements and groups of records of extensions that have correctly been
      * pushed through ContentObjectRenderer during rendering.
      *
-     * @return int[] Array of user group IDs
+     * @return int[]|string[] Array of user group IDs
      *
      * @throws DBALException
      * @throws Exception
@@ -283,6 +275,7 @@ class PageIndexer extends Indexer
      * @return string 'MP' URL parameter if $item is a mounted page
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
      */
     protected function getMountPageDataUrlParameter(Item $item): string
     {
@@ -386,6 +379,8 @@ class PageIndexer extends Indexer
      * @return string An Access Rootline.
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
+     * @throws RootlineElementFormatException
      */
     protected function getAccessRootline(Item $item, int $language = 0, ?int $contentAccessGroup = null): string
     {

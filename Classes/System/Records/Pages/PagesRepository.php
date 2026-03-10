@@ -29,6 +29,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -262,7 +263,7 @@ class PagesRepository extends AbstractRepository
      * @param int $pageId UID of the page currently being updated
      * @return array{array{
      *    'uid': int
-     * }} with page Uids from pages, which are showing contents from given Page Id
+     * }} with page Uids from pages, which are showing contents from given Page ID
      *
      * @throws DBALException
      */
@@ -407,5 +408,48 @@ class PagesRepository extends AbstractRepository
             }
         }
         return (string)$theList;
+    }
+
+    /**
+     * Filters Solr connections based on page translation visibility settings (l18n_cfg).
+     *
+     * Removes connections for languages that should be hidden according to the
+     * page's l18n_cfg bitmask and available translation overlays.
+     *
+     * @param array $solrConnections Solr connections keyed by sys_language_uid
+     * @param array $page Page record with at least 'uid' and 'l18n_cfg'
+     * @param bool $forceHideTranslationIfNoTranslatedRecordExists Force filtering even without l18n_cfg flag
+     * @return array Filtered Solr connections
+     *
+     * @throws DBALException
+     */
+    public function filterSolrConnectionsByPageVisibility(
+        array $solrConnections,
+        array $page,
+        bool $forceHideTranslationIfNoTranslatedRecordExists = false,
+    ): array {
+        $pageTranslationVisibility = new PageTranslationVisibility((int)($page['l18n_cfg'] ?? 0));
+        if ($pageTranslationVisibility->shouldBeHiddenInDefaultLanguage()) {
+            unset($solrConnections[0]);
+        }
+
+        if ($forceHideTranslationIfNoTranslatedRecordExists
+            || $pageTranslationVisibility->shouldHideTranslationIfNoTranslatedRecordExists()
+        ) {
+            $accessibleConnections = [];
+            if (isset($solrConnections[0])) {
+                $accessibleConnections[0] = $solrConnections[0];
+            }
+            $translationOverlays = $this->findTranslationOverlaysByPageId((int)$page['uid']);
+            foreach ($translationOverlays as $overlay) {
+                $languageId = $overlay['sys_language_uid'];
+                if (array_key_exists($languageId, $solrConnections)) {
+                    $accessibleConnections[$languageId] = $solrConnections[$languageId];
+                }
+            }
+            $solrConnections = $accessibleConnections;
+        }
+
+        return $solrConnections;
     }
 }

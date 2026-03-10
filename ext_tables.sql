@@ -51,6 +51,7 @@ CREATE TABLE tx_solr_indexqueue_item (
 
 	item_type varchar(255) DEFAULT '' NOT NULL,
 	item_uid int(11) DEFAULT '0' NOT NULL,
+	item_pid int(11) DEFAULT '0' NOT NULL,
 	indexing_configuration varchar(255) DEFAULT '' NOT NULL,
 	has_indexing_properties tinyint(1) DEFAULT '0' NOT NULL,
 	indexing_priority int(11) DEFAULT '0' NOT NULL,
@@ -62,6 +63,7 @@ CREATE TABLE tx_solr_indexqueue_item (
 	PRIMARY KEY (uid),
 	KEY changed (changed),
 	KEY root (root),
+	KEY item_pid (item_pid),
 	KEY indexing_priority_changed (indexing_priority, changed),
 	KEY item_id (item_type(191),item_uid),
 	KEY site_statistics (root,indexing_configuration),
