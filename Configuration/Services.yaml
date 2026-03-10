@@ -41,6 +41,12 @@ services:
     autowire: true
     shared: false
 
+  middlewares:
+    namespace: ApacheSolrForTypo3\Solr\Middleware\
+    resource: '../Classes/Middleware/*'
+    autowire: true
+    autoconfigure: true
+
   viewhelper:
     namespace: ApacheSolrForTypo3\Solr\ViewHelpers\
     resource: '../Classes/ViewHelpers/*'
