@@ -122,7 +122,8 @@
     ],
     "tests:integration": [
       "Composer\\Config::disableProcessTimeout",
-      "phpunit --config=Build/Test/IntegrationTests.xml"
+      "phpunit --config=Build/Test/IntegrationTests.xml",
+      "phpunit --config=Build/Test/IntegrationTestsWithProcessIsolation.xml"
     ],
     "tests:phpstan": [
       "phpstan analyze -c Build/Test/phpstan.neon"
