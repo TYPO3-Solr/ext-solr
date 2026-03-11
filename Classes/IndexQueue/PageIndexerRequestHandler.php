@@ -35,17 +35,14 @@ class PageIndexerRequestHandler
      */
     protected PageIndexerRequest $request;
 
-    protected Manager $frontendHelperManager;
-
     /**
      * @var FrontendHelper[]
      */
     protected array $frontendHelpers = [];
 
-    public function __construct(Manager $manager)
-    {
-        $this->frontendHelperManager = $manager;
-    }
+    public function __construct(
+        protected Manager $frontendHelperManager,
+    ) {}
 
     /**
      * Authenticates the request, runs the frontend helpers defined by the

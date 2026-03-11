@@ -30,22 +30,22 @@ use TYPO3\CMS\Core\Http\Stream;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Cache\CacheInstruction;
 
-/**
- * Class PageIndexerInitialization
- */
-class PageIndexerInitialization implements MiddlewareInterface
+final readonly class PageIndexerInitialization implements MiddlewareInterface
 {
+    public function __construct(
+        private PageIndexerRequestHandler $pageIndexerRequestHandler,
+    ) {}
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $pageIndexerRequestHandler = null;
-        $pageIndexerRequest = null;
-        if ($request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
-            // disable Frontend Cache
-            $frontendCacheAttribute = new CacheInstruction();
-            $frontendCacheAttribute->disableCache('Apache Solr for TYPO3');
-            $request = $request->withAttribute('frontend.cache.instruction', $frontendCacheAttribute);
+        $hasRequestSolrIndexHeader = $request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER);
+
+        if ($hasRequestSolrIndexHeader) {
+            $request = $this->getRequestWithDisabledFrontendCache($request);
+
             $jsonEncodedParameters = $request->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0];
-            $pageIndexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class, $jsonEncodedParameters);
+
+            $pageIndexerRequest = $this->getPageIndexerRequest($jsonEncodedParameters);
             if (!$pageIndexerRequest->isAuthenticated()) {
                 $logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
                 $logger->error(
@@ -55,16 +55,25 @@ class PageIndexerInitialization implements MiddlewareInterface
                         'index queue header' => $jsonEncodedParameters,
                     ],
                 );
-                return new JsonResponse(['error' => ['code' => 403, 'message' => 'Invalid Index Queue Request.']], 403);
+                return new JsonResponse(
+                    [
+                        'error' => [
+                            'code' => 403,
+                            'message' => 'Invalid Index Queue Request.',
+                        ],
+                    ],
+                    403,
+                );
             }
+
             $request = $request->withAttribute('solr.pageIndexingInstructions', $pageIndexerRequest);
-            $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class);
-            $pageIndexerRequestHandler->initialize($pageIndexerRequest);
+            $this->pageIndexerRequestHandler->initialize($pageIndexerRequest);
         }
 
         $response = $handler->handle($request);
-        if ($pageIndexerRequestHandler instanceof PageIndexerRequestHandler && $pageIndexerRequest instanceof PageIndexerRequest) {
-            $pageIndexResponse = $pageIndexerRequestHandler->shutdown($pageIndexerRequest);
+
+        if ($hasRequestSolrIndexHeader) {
+            $pageIndexResponse = $this->pageIndexerRequestHandler->shutdown($pageIndexerRequest);
 
             $body = new Stream('php://temp', 'rw');
             $content = $pageIndexResponse->getContent();
@@ -74,6 +83,20 @@ class PageIndexerInitialization implements MiddlewareInterface
                 ->withHeader('Content-Length', (string)strlen($content))
                 ->withHeader('Content-Type', 'application/json');
         }
+
         return $response;
+    }
+
+    private function getRequestWithDisabledFrontendCache(ServerRequestInterface $request): ServerRequestInterface
+    {
+        $frontendCacheAttribute = new CacheInstruction();
+        $frontendCacheAttribute->disableCache('Apache Solr for TYPO3');
+
+        return $request->withAttribute('frontend.cache.instruction', $frontendCacheAttribute);
+    }
+
+    private function getPageIndexerRequest(?string $jsonEncodedParameters): PageIndexerRequest
+    {
+        return GeneralUtility::makeInstance(PageIndexerRequest::class, $jsonEncodedParameters);
     }
 }

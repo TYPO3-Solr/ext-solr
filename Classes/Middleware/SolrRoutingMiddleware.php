@@ -24,8 +24,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Routing\SiteRouteResult;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -35,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Middleware to create beautiful URLs for Solr
  *
  * How to use:
- * Inside your extension create following file
+ * Inside your extension create the following file
  * Configuration/RequestMiddlewares.php
  *
  * return [
@@ -51,95 +50,34 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @see https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/RequestHandling/Index.html
  */
-class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
+final readonly class SolrRoutingMiddleware implements MiddlewareInterface
 {
-    use LoggerAwareTrait;
+    private const DEFAULT_NAMESPACE = 'tx_solr';
 
-    /**
-     * Solr parameter key
-     */
-    protected string $namespace = 'tx_solr';
+    public function __construct(
+        private LoggerInterface $logger,
+    ) {}
 
-    /**
-     * Settings from enhancer configuration
-     */
-    protected array $settings = [];
-
-    protected ?SiteLanguage $language;
-
-    protected ?RoutingService $routingService = null;
-
-    /**
-     * Inject the routing service.
-     * Used in unit tests too
-     */
-    public function injectRoutingService(RoutingService $routingService): void
-    {
-        $this->routingService = $routingService;
-    }
-
-    /**
-     * Process the request
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if ($request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
+        $context = $this->resolveContext($request);
+        if ($context === null) {
             return $handler->handle($request);
         }
 
-        /** @var SiteRouteResult $routeResult */
-        $routeResult = $this->getRoutingService()
-            ->getSiteMatcher()
-            ->matchRequest($request);
-
-        $site = $routeResult->getSite();
-
-        if (!$site instanceof Site) {
-            return $handler->handle($request);
-        }
-
-        $this->language = $routeResult->getLanguage();
-
-        if (!($this->language instanceof SiteLanguage)) {
-            return $handler->handle($request);
-        }
-
-        $page = $this->retrievePageInformation(
-            $request->getUri(),
-            $site,
+        $routingService = $this->getRoutingService(
+            $context->getEnhancerConfiguration()['solr'] ?? [],
+            $context->getEnhancerConfiguration()['extensionKey'] ?? self::DEFAULT_NAMESPACE,
         );
 
-        if (empty($page['uid'])) {
-            return $handler->handle($request);
-        }
+        // Take slug path segments and argument from incoming URI
+        $parameters = $this->extractParametersFromUriPath($request->getUri(), $context, $routingService);
 
-        $enhancerConfiguration = $this->getEnhancerConfiguration(
-            $site,
-            $this->language->getLanguageId() === 0 ? (int)$page['uid'] : (int)$page['l10n_parent'],
-        );
-
-        if ($enhancerConfiguration === null) {
-            return $handler->handle($request);
-        }
-
-        $this->configure($enhancerConfiguration);
-
-        /*
-         * Take slug path segments and argument from incoming URI
-         */
-        [, $parameters] = $this->extractParametersFromUriPath(
-            $request->getUri(),
-            $enhancerConfiguration['routePath'],
-            $page['slug'],
-        );
-
-        /*
-         * Convert path arguments to query arguments
-         */
-        if (!empty($parameters)) {
-            $request = $this->getRoutingService()->addPathArgumentsToQuery(
+        // Convert path arguments to query arguments
+        if ($parameters !== []) {
+            $request = $routingService->addPathArgumentsToQuery(
                 $request,
-                $enhancerConfiguration['_arguments'],
+                $context->getEnhancerConfiguration()['_arguments'],
                 $parameters,
             );
         }
@@ -150,18 +88,18 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
          *
          * NOTE: TypoScript is not available at this point!
          */
-        if ($page['slug'] !== '/') {
+        if ($context->getPage()['slug'] !== '/') {
             $uri = $request->getUri()->withPath(
-                $this->getRoutingService()->cleanupHeadingSlash(
-                    $this->language->getBase()->getPath() . $page['slug'],
+                $routingService->cleanupHeadingSlash(
+                    $context->getSiteLanguage()->getBase()->getPath() . $context->getPage()['slug'],
                 ),
             );
             $request = $request->withUri($uri);
         }
 
         $queryParams = $request->getQueryParams();
-        $queryParams = $this->getRoutingService()->unmaskQueryParameters($queryParams);
-        $queryParams = $this->getRoutingService()->inflateQueryParameter($queryParams);
+        $queryParams = $routingService->unmaskQueryParameters($queryParams);
+        $queryParams = $routingService->inflateQueryParameter($queryParams);
 
         // @todo Drop cHash, but need to recalculate
         if (array_key_exists('cHash', $queryParams)) {
@@ -169,30 +107,74 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         $request = $request->withQueryParams($queryParams);
+
         return $handler->handle($request);
     }
 
-    /**
-     * Configures the middleware by enhancer configuration
-     */
-    protected function configure(array $enhancerConfiguration): void
+    private function resolveContext(ServerRequestInterface $request): ?SolrRoutingContext
     {
-        $this->settings = $enhancerConfiguration['solr'] ?? [];
-        $this->namespace = $enhancerConfiguration['extensionKey'] ?? $this->namespace;
-        $this->routingService = null;
+        if ($request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
+            return null;
+        }
+
+        $unconfiguredRoutingService = $this->getRoutingService([], self::DEFAULT_NAMESPACE);
+        $siteRouteResult = $unconfiguredRoutingService
+            ->getSiteMatcher()
+            ->matchRequest($request);
+
+        if (!$siteRouteResult instanceof SiteRouteResult) {
+            return null;
+        }
+
+        if (!$siteRouteResult->getSite() instanceof Site) {
+            return null;
+        }
+
+        $site = $siteRouteResult->getSite();
+        $siteLanguage = $siteRouteResult->getLanguage();
+
+        if (!$siteLanguage instanceof SiteLanguage) {
+            return null;
+        }
+
+        $page = $this->retrievePageInformation(
+            $request->getUri(),
+            $site,
+            $siteLanguage,
+            $unconfiguredRoutingService,
+        );
+
+        if (empty($page['uid'])) {
+            return null;
+        }
+
+        $enhancerConfiguration = $this->getEnhancerConfiguration(
+            $siteLanguage->getLanguageId() === 0 ? (int)$page['uid'] : (int)$page['l10n_parent'],
+            $site,
+            $unconfiguredRoutingService,
+        );
+
+        if ($enhancerConfiguration === null) {
+            return null;
+        }
+
+        return new SolrRoutingContext($site, $siteLanguage, $page, $enhancerConfiguration);
     }
 
     /**
-     * Retrieve the enhancer configuration for given site
+     * Retrieve the enhancer configuration for a given site
      */
-    protected function getEnhancerConfiguration(Site $site, int $pageUid): ?array
-    {
-        $enhancers = $this->getRoutingService()->fetchEnhancerInSiteConfigurationByPageUid(
+    private function getEnhancerConfiguration(
+        int $pageUid,
+        Site $site,
+        RoutingService $unconfiguredRoutingService,
+    ): ?array {
+        $enhancers = $unconfiguredRoutingService->fetchEnhancerInSiteConfigurationByPageUid(
             $site,
             $pageUid,
         );
 
-        if (empty($enhancers)) {
+        if ($enhancers === []) {
             return null;
         }
 
@@ -200,14 +182,20 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
     }
 
     /**
-     * Extract the slug and all arguments from path
+     * Extract the slug and all arguments from the path
      */
-    protected function extractParametersFromUriPath(UriInterface $uri, string $path, string $pageSlug): array
-    {
-        // URI get path returns the path with given language parameter
+    private function extractParametersFromUriPath(
+        UriInterface $uri,
+        SolrRoutingContext $context,
+        RoutingService $routingService,
+    ): array {
+        $path = $context->getEnhancerConfiguration()['routePath'];
+        $pageSlug = $context->getPage()['slug'];
+
+        // URI get path returns the path with a given language parameter
         // The parameter pageSlug itself does not contain the language parameter.
-        $uriPath = $this->getRoutingService()->stripLanguagePrefixFromPath(
-            $this->language,
+        $uriPath = $routingService->stripLanguagePrefixFromPath(
+            $context->getSiteLanguage(),
             $uri->getPath(),
         );
 
@@ -218,32 +206,20 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             ];
         }
 
-        // Remove slug from URI path in order to ensure only the arguments left
+        // Remove slug from URI path to ensure only the arguments left
         if (mb_substr($uriPath, 0, mb_strlen($pageSlug) + 1) === $pageSlug . '/') {
             $length = mb_strlen($pageSlug) + 1;
             $uriPath = mb_substr($uriPath, $length, mb_strlen($uriPath) - $length);
         }
 
-        // Take care the format of configuration and given slug equals
-        $uriPath = $this->getRoutingService()->removeHeadingSlash($uriPath);
-        $path = $this->getRoutingService()->removeHeadingSlash($path);
+        // Take care of the format of configuration and given slug equals
+        $uriPath = $routingService->removeHeadingSlash($uriPath);
+        $path = $routingService->removeHeadingSlash($path);
 
         // Remove begin
         $uriElements = explode('/', $uriPath);
         $routeElements = explode('/', $path);
-        $slugElements = [];
         $arguments = [];
-        $process = true;
-        /*
-         * Extract the slug elements, until the amount of route elements reached
-         */
-        do {
-            if (count($uriElements) > count($routeElements)) {
-                $slugElements[] = array_shift($uriElements);
-            } else {
-                $process = false;
-            }
-        } while ($process);
 
         if (empty($routeElements[0])) {
             array_shift($routeElements);
@@ -266,28 +242,30 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $arguments[$key] = $uriElements[$i];
         }
 
-        return [
-            implode('/', $slugElements),
-            $arguments,
-        ];
+        return $arguments;
     }
 
     /**
      * Retrieve the page uid to filter the route enhancer
      */
-    protected function retrievePageInformation(UriInterface $uri, Site $site): array
-    {
-        $path = $this->getRoutingService()->stripLanguagePrefixFromPath(
-            $this->language,
+    private function retrievePageInformation(
+        UriInterface $uri,
+        Site $site,
+        SiteLanguage $siteLanguage,
+        RoutingService $unconfiguredRoutingService,
+    ): array {
+        $path = $unconfiguredRoutingService->stripLanguagePrefixFromPath(
+            $siteLanguage,
             $uri->getPath(),
         );
-        $slugProvider = $this->getRoutingService()->getSlugCandidateProvider($site);
+
+        $slugProvider = $unconfiguredRoutingService->getSlugCandidateProvider($site);
         $scan = true;
         $page = [];
         do {
             $items = $slugProvider->getCandidatesForPath(
                 $path,
-                $this->language,
+                $siteLanguage,
             );
 
             if (empty($items)) {
@@ -301,7 +279,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                     sprintf(
                         $message,
                         $path,
-                        $this->language->getLocale()->getLanguageCode(),
+                        $siteLanguage->getLocale()->getLanguageCode(),
                         $uri->getPath(),
                     ),
                 );
@@ -344,20 +322,12 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 }
             }
         } while ($scan);
+
         return $page;
     }
 
-    protected function getRoutingService(): RoutingService
+    private function getRoutingService(array $settings, string $namespace): RoutingService
     {
-        if ($this->routingService === null) {
-            $this->routingService = GeneralUtility::makeInstance(
-                RoutingService::class,
-                $this->settings,
-                $this->namespace,
-            );
-        } else {
-            $this->routingService = $this->routingService->withSettings($this->settings);
-        }
-        return $this->routingService;
+        return GeneralUtility::makeInstance(RoutingService::class, $settings, $namespace);
     }
 }
