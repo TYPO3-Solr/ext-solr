@@ -45,7 +45,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
 {
     protected RoutingService|MockObject $routingServiceMock;
-    protected RequestHandlerInterface $responseOutputHandler;
+    protected $responseOutputHandler;
 
     protected function setUp(): void
     {
