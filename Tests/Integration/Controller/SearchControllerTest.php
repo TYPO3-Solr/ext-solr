@@ -539,7 +539,7 @@ class SearchControllerTest extends IntegrationTestBase
         // we expected that an exception will be thrown when a facet is rendered
         // where an unknown partialName is referenced
         $this->expectException(InvalidTemplateResourceException::class);
-        $this->expectExceptionMessageMatches('#(.*The partial files?.*NotFound.*|.*The Fluid template files? .*NotFound.*)#');
+        $this->expectExceptionMessageMatches('#(.*The partial files?.*NotFound.*|.*The Fluid template files? .*NotFound.*|.*Tried resolving a template file for partial "Facets/NotFound" in format.*)#');
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -867,7 +867,7 @@ class SearchControllerTest extends IntegrationTestBase
 
         $this->indexPages([2, 3, 4]);
         // we should have 3 documents in solr
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":3', $solrContent, 'Could not index document into solr');
 
         // but when we facet on the categoryPaths:/Men/Shoes \/ Socks/ we should only have one result since the others
