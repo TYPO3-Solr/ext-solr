@@ -52,7 +52,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
         );
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'], true);
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => $this->resolveCoreName('core_en'), 'key' => 'admin'], true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
     }
@@ -192,9 +192,10 @@ class SolrAdminServiceTest extends IntegrationTestBase
         );
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_de', 'key' => 'admin'], true);
+        $resolvedCoreName = $this->resolveCoreName('core_de');
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => $resolvedCoreName, 'key' => 'admin'], true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
-        self::assertSame('core_de', $this->solrAdminService->getSchema()->getManagedResourceId(), 'Could not get the id of managed resources from core.');
+        self::assertSame($resolvedCoreName, $this->solrAdminService->getSchema()->getManagedResourceId(), 'Could not get the id of managed resources from core.');
     }
 }

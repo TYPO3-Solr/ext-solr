@@ -55,7 +55,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->indexPages([1, 2, 3, 4, 5]);
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('0213998bdee4e7dcc8ba05a598cabdadff322ad3/pages/1/0/0/0', $solrContent);
 
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1);
@@ -239,7 +239,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/fe_user_page.csv');
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->indexPages([1, 2, 3], 1);
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":3', $solrContent);
     }
 
