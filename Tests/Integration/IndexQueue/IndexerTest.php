@@ -97,7 +97,7 @@ class IndexerTest extends IntegrationTestBase
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
 
         self::assertStringContainsString('"category_stringM":["the tag"]', $solrContent, 'Did not find MM related tag');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -250,7 +250,7 @@ class IndexerTest extends IntegrationTestBase
 
         foreach ($assertions as $coreName => $containsAssertions) {
             $this->waitToBeVisibleInSolr($coreName);
-            $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . "/solr/$coreName/select?q=*:*");
+            $solrContent = file_get_contents($this->getSolrCoreUrl($coreName) . '/select?q=*:*');
             foreach ($containsAssertions as $assertion) {
                 self::assertStringContainsString($assertion, $solrContent);
             }
@@ -271,7 +271,7 @@ class IndexerTest extends IntegrationTestBase
 
         // do we have the record in the index with the values from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContentJson = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContentJson = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         $solrContent = json_decode($solrContentJson, true);
         $solrContentResponse = $solrContent['response'];
 
@@ -302,7 +302,7 @@ class IndexerTest extends IntegrationTestBase
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr('core_de');
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_de/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_de') . '/select?q=*:*');
 
         self::assertStringContainsString('"category_stringM":["translated tag"]', $solrContent, 'Did not find MM related tag');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -322,7 +322,7 @@ class IndexerTest extends IntegrationTestBase
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
 
         $decodedSolrContent = json_decode($solrContent);
         $tags = $decodedSolrContent->response->docs[0]->tags_stringM;
@@ -345,7 +345,7 @@ class IndexerTest extends IntegrationTestBase
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
 
         self::assertStringContainsString('"category_stringM":["another tag"]', $solrContent, 'Did not find MM related tag');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -367,8 +367,8 @@ class IndexerTest extends IntegrationTestBase
         $this->waitToBeVisibleInSolr();
         $this->waitToBeVisibleInSolr('core_de');
 
-        $solrContentEn = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $solrContentDe = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_de/select?q=*:*');
+        $solrContentEn = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
+        $solrContentDe = file_get_contents($this->getSolrCoreUrl('core_de') . '/select?q=*:*');
 
         self::assertStringContainsString('"relatedPageTitles_stringM":["Related page"]', $solrContentEn, 'Can not find related page title');
         self::assertStringContainsString('"relatedPageTitles_stringM":["Translated related page"]', $solrContentDe, 'Can not find translated related page title');
@@ -387,7 +387,7 @@ class IndexerTest extends IntegrationTestBase
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
 
         self::assertStringContainsString('"category_stringM":["the category"]', $solrContent, 'Did not find direct related category');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -410,7 +410,7 @@ class IndexerTest extends IntegrationTestBase
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         $decodedSolrContent = json_decode($solrContent);
 
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -444,7 +444,7 @@ class IndexerTest extends IntegrationTestBase
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
 
         self::assertStringContainsString('"category_stringM":["another category"]', $solrContent, 'Did not find direct related category');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -461,7 +461,7 @@ class IndexerTest extends IntegrationTestBase
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
 
         self::assertStringContainsString('"fieldFromRootLine_stringS":"TESTNEWS"', $solrContent, 'Did not find field configured in rootline');
         self::assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
@@ -502,7 +502,7 @@ class IndexerTest extends IntegrationTestBase
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
 
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"title":"external testnews"', $solrContent, 'Could not index document into solr');
@@ -519,10 +519,10 @@ class IndexerTest extends IntegrationTestBase
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":2', $solrContent, 'Could not index document into solr');
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*&fq=site:integration_tree_one');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*&fq=site:integration_tree_one');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"url":"http://testone.site/en/"', $solrContent, 'Item was indexed with false site UID');
     }
@@ -600,7 +600,7 @@ class IndexerTest extends IntegrationTestBase
         $result = $this->addToQueueAndIndexRecord('pages', 120);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
         $this->waitToBeVisibleInSolr();
-        $solrContentJson = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContentJson = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         $solrContent = json_decode($solrContentJson, true);
         $solrContentResponse = $solrContent['response'];
         self::assertArrayHasKey('docs', $solrContentResponse, 'Did not find docs in solr response');

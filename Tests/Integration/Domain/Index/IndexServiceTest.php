@@ -93,7 +93,7 @@ class IndexServiceTest extends IntegrationTestBase
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"url":"' . $expectedUrl, $solrContent, 'Generated unexpected url with absRefPrefix = auto');
         $this->cleanUpSolrServerAndAssertEmpty();
