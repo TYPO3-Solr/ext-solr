@@ -72,7 +72,11 @@ class PageIndexerInitialization implements MiddlewareInterface
             return (new Response())
                 ->withBody($body)
                 ->withHeader('Content-Length', (string)strlen($content))
-                ->withHeader('Content-Type', 'application/json');
+                ->withHeader('Content-Type', 'application/json')
+                ->withHeader('Expires', '0')
+                ->withHeader('Last-Modified', gmdate('D, d M Y H:i:s') . ' GMT')
+                ->withHeader('Pragma', 'no-cache')
+                ->withHeader('Cache-Control', 'private, no-store');
         }
         return $response;
     }
