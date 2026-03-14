@@ -16,7 +16,6 @@
 	failOnRisky="true"
 	failOnWarning="true"
 	failOnPhpunitDeprecation="true"
-	processIsolation="true"
 >
   <source>
     <include>

@@ -27,9 +27,8 @@ trait SkipMonitoringTrait
      */
     protected function skipMonitoringOfTable(string $table): bool
     {
-        static $configurationMonitorTables;
-
-        if (empty($configurationMonitorTables)) {
+        static $configurationMonitorTables = null;
+        if ($configurationMonitorTables === null) {
             $configuration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
             $configurationMonitorTables = $configuration->getIsUseConfigurationMonitorTables();
         }
