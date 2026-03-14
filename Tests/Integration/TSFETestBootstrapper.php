@@ -2,6 +2,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -26,6 +27,7 @@ class TSFETestBootstrapper
         $pageInformation->setPageRecord(['uid' => $pageId]);
 
         $request = new ServerRequest($site->getRouter()->generateUri($site->getRootPageId()));
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
         $request = $request->withAttribute('site', $site);
         $request = $request->withAttribute('language', $siteLanguage);
         $request = $request->withAttribute('routing', $pageArguments);
