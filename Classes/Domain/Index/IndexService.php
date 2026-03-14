@@ -50,6 +50,8 @@ class IndexService
 
     protected SolrLogManager $logger;
 
+    protected array $httpHosts = [];
+
     public function __construct(
         Site $site,
         ?QueueInterface $queue = null,
@@ -235,15 +237,14 @@ class IndexService
      */
     protected function initializeHttpServerEnvironment(Item $item): void
     {
-        static $hosts = [];
         $rootPageId = $item->getRootPageUid();
-        $hostFound = !empty($hosts[$rootPageId]);
+        $hostFound = !empty($this->httpHosts[$rootPageId]);
 
         if (!$hostFound) {
-            $hosts[$rootPageId] = $item->getSite()->getDomain();
+            $this->httpHosts[$rootPageId] = $item->getSite()->getDomain();
         }
 
-        $_SERVER['HTTP_HOST'] = $hosts[$rootPageId];
+        $_SERVER['HTTP_HOST'] = $this->httpHosts[$rootPageId];
 
         // needed since TYPO3 7.5
         GeneralUtility::flushInternalRuntimeCaches();

@@ -40,6 +40,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageIndexer extends Indexer
 {
+    protected array $accessGroupsCache = [];
+    protected array $accessRootlineCache = [];
     /**
      * Indexes an item from the indexing queue.
      *
@@ -172,10 +174,8 @@ class PageIndexer extends Indexer
      */
     protected function getAccessGroupsFromContent(Item $item, int $language = 0): array
     {
-        static $accessGroupsCache;
-
         $accessGroupsCacheEntryId = $item->getRecordUid() . '|' . $language;
-        if (!isset($accessGroupsCache[$accessGroupsCacheEntryId])) {
+        if (!isset($this->accessGroupsCache[$accessGroupsCacheEntryId])) {
             $request = $this->buildBasePageIndexerRequest();
             $request->setIndexQueueItem($item);
             $request->addAction('findUserGroups');
@@ -192,7 +192,7 @@ class PageIndexer extends Indexer
 
             $groups = $response->getActionResult('findUserGroups');
             if (is_array($groups)) {
-                $accessGroupsCache[$accessGroupsCacheEntryId] = $groups;
+                $this->accessGroupsCache[$accessGroupsCacheEntryId] = $groups;
             }
 
             if ($this->loggingEnabled) {
@@ -210,7 +210,7 @@ class PageIndexer extends Indexer
             }
         }
 
-        return $accessGroupsCache[$accessGroupsCacheEntryId];
+        return $this->accessGroupsCache[$accessGroupsCacheEntryId];
     }
 
     // Utility methods
@@ -389,8 +389,6 @@ class PageIndexer extends Indexer
      */
     protected function getAccessRootline(Item $item, int $language = 0, ?int $contentAccessGroup = null): string
     {
-        static $accessRootlineCache;
-
         $mountPointParameter = $this->getMountPageDataUrlParameter($item);
 
         $accessRootlineCacheEntryId = $item->getType() . '|' . $item->getRecordUid() . '|' . $language;
@@ -401,7 +399,7 @@ class PageIndexer extends Indexer
             $accessRootlineCacheEntryId .= '|' . $contentAccessGroup;
         }
 
-        if (!isset($accessRootlineCache[$accessRootlineCacheEntryId])) {
+        if (!isset($this->accessRootlineCache[$accessRootlineCacheEntryId])) {
             $accessRootline = $this->getAccessRootlineByPageId($item->getRecordUid(), $mountPointParameter);
 
             // current page's content access groups
@@ -412,10 +410,10 @@ class PageIndexer extends Indexer
             $element = GeneralUtility::makeInstance(RootlineElement::class, 'c:' . implode(',', $contentAccessGroups));
             $accessRootline->push($element);
 
-            $accessRootlineCache[$accessRootlineCacheEntryId] = $accessRootline;
+            $this->accessRootlineCache[$accessRootlineCacheEntryId] = $accessRootline;
         }
 
-        return (string)$accessRootlineCache[$accessRootlineCacheEntryId];
+        return (string)$this->accessRootlineCache[$accessRootlineCacheEntryId];
     }
 
     /**

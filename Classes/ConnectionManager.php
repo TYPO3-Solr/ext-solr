@@ -46,6 +46,16 @@ class ConnectionManager implements SingletonInterface
      */
     protected static array $connections = [];
 
+    /**
+     * Resets the static connection cache.
+     *
+     * @internal Only for use in test tearDown methods.
+     */
+    public static function resetConnections(): void
+    {
+        self::$connections = [];
+    }
+
     protected PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr;
 
     protected SiteRepository $siteRepository;

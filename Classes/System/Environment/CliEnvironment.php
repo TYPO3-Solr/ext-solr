@@ -26,6 +26,8 @@ use TYPO3\CMS\Core\SingletonInterface;
  */
 class CliEnvironment implements SingletonInterface
 {
+    protected static ?string $webRoot = null;
+
     protected array $backupServerVariables = [];
 
     protected bool $isInitialized = false;
@@ -51,7 +53,7 @@ class CliEnvironment implements SingletonInterface
             return false;
         }
 
-        if (defined('TYPO3_PATH_WEB')) {
+        if (self::$webRoot !== null) {
             throw new WebRootAllReadyDefinedException(
                 'TYPO3_PATH_WEB is already defined',
                 7904456080,
@@ -62,13 +64,18 @@ class CliEnvironment implements SingletonInterface
             $scriptFileName = Environment::getPublicPath() . '/';
         }
 
-        define('TYPO3_PATH_WEB', $webRoot);
+        self::$webRoot = $webRoot;
         $_SERVER['SCRIPT_FILENAME'] = $scriptFileName;
         $_SERVER['PHP_SELF'] = $phpSelf;
         $_SERVER['SCRIPT_NAME'] = $scriptName;
 
         $this->isInitialized = true;
         return true;
+    }
+
+    public function getWebRoot(): ?string
+    {
+        return self::$webRoot;
     }
 
     public function getIsInitialized(): bool
@@ -79,5 +86,7 @@ class CliEnvironment implements SingletonInterface
     public function restore(): void
     {
         $_SERVER = $this->backupServerVariables;
+        self::$webRoot = null;
+        $this->isInitialized = false;
     }
 }

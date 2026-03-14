@@ -32,28 +32,30 @@ class CliEnvironmentTest extends IntegrationTestBase
     #[Test]
     public function canInitialize(): void
     {
-        self::assertFalse(defined('TYPO3_PATH_WEB'));
-
         $cliEnvironment = new CliEnvironment();
+        self::assertNull($cliEnvironment->getWebRoot());
+
         $cliEnvironment->initialize('/var/www');
 
-        self::assertTrue(defined('TYPO3_PATH_WEB'));
-        self::assertEquals('/var/www', TYPO3_PATH_WEB);
+        self::assertEquals('/var/www', $cliEnvironment->getWebRoot());
 
         $cliEnvironment->restore();
+        self::assertNull($cliEnvironment->getWebRoot());
     }
 
     #[Test]
     public function canNotInitializeTwiceWithTwoInstances(): void
     {
-        $this->expectException(WebRootAllReadyDefinedException::class);
-        self::assertFalse(defined('TYPO3_PATH_WEB'));
-
         $cliEnvironment = new CliEnvironment();
         $cliEnvironment->initialize('/var/www');
 
-        $cliEnvironment2 = new CliEnvironment();
-        $cliEnvironment2->initialize('/var/otherwww');
+        try {
+            $cliEnvironment2 = new CliEnvironment();
+            $this->expectException(WebRootAllReadyDefinedException::class);
+            $cliEnvironment2->initialize('/var/otherwww');
+        } finally {
+            $cliEnvironment->restore();
+        }
     }
 
     #[Test]
@@ -61,13 +63,15 @@ class CliEnvironmentTest extends IntegrationTestBase
     {
         $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
 
-        // the result should be true because the constant should have been set
+        // the result should be true because the web root should have been set
         $firstInit = $cliEnvironment->initialize('/var/www');
 
-        // the second init should return false because an initialization was allready done before
+        // the second init should return false because an initialization was already done before
         $secondInit = $cliEnvironment->initialize('/var/www2');
 
         self::assertTrue($firstInit);
         self::assertFalse($secondInit);
+
+        $cliEnvironment->restore();
     }
 }

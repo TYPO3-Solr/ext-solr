@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use ApacheSolrForTypo3\Solr\Tests\Integration\TSFETestBootstrapper;
 use ApacheSolrForTypo3\Solr\Util;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
@@ -36,6 +37,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
+        GeneralUtility::makeInstance(TSFETestBootstrapper::class)->bootstrap(1);
     }
 
     /**
