@@ -32,6 +32,16 @@ class TwoLevelCache
 
     protected static array $firstLevelCache = [];
 
+    /**
+     * Flushes all first-level caches across all cache instances.
+     *
+     * @internal Only for use in test tearDown methods.
+     */
+    public static function flushAllCaches(): void
+    {
+        self::$firstLevelCache = [];
+    }
+
     protected FrontendInterface $secondLevelCache;
 
     /**
