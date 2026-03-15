@@ -233,7 +233,13 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         ?int $port = 8983,
         ?bool $disableDefaultLanguage = false,
     ): void {
-        $siteCreatedHash = hash('md5', $scheme . $host . $port . $disableDefaultLanguage);
+        // Include resolved core names in hash to ensure different workers get different config
+        $coreHashPart = implode('_', [
+            $this->resolveCoreName('core_en'),
+            $this->resolveCoreName('core_de'),
+            $this->resolveCoreName('core_da'),
+        ]);
+        $siteCreatedHash = hash('md5', $scheme . $host . $port . $disableDefaultLanguage . $coreHashPart);
         if (self::$lastSiteCreated === $siteCreatedHash) {
             return;
         }
