@@ -48,17 +48,11 @@ class PageIndexerTest extends IntegrationTestBase
             page.10.stdWrap.dataWrap = <!--TYPO3SEARCH_begin-->|<!--TYPO3SEARCH_end-->
             ',
         );
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
 
     /**
      * Executed after each test. Empties solr and checks if the index is empty
      */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
     #[DataProvider('canIndexPageWithAccessProtectedContentIntoSolrDataProvider')]
     #[Test]
     public function canIndexPageWithAccessProtectedContentIntoSolr(

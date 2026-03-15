@@ -40,6 +40,7 @@
   },
   "require-dev": {
     "brianium/paratest": "^7.8",
+    "cweagans/composer-patches": "2.0.0",
     "dg/bypass-finals": "^1.9",
     "phpunit/phpunit": "^11.5.48",
     "typo3/cms-fluid-styled-content": "*",
@@ -137,6 +138,11 @@
     ]
   },
   "extra": {
+    "patches": {
+      "typo3/testing-framework": {
+        "Enable late static binding for getInstanceIdentifier/getInstancePath": "Build/Patches/typo3/testing-framework/0001-enable-late-static-binding-in-functional-testcase.patch"
+      }
+    },
     "branch-alias": {
       "dev-main": "14.0.x-dev"
     },

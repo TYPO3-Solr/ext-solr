@@ -147,7 +147,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
      * @throws PingFailedException
      */
     #[Test]
-    public function canGetPingRoundtrimRunTime(): void
+    public function canGetPingRoundtripRunTime(): void
     {
         $pingRuntime = $this->solrAdminService->getPingRoundTripRuntime();
         self::assertGreaterThan(0, $pingRuntime, 'Ping runtime should be larger then 0');

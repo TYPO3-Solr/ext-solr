@@ -35,7 +35,9 @@ $config
     )
     ->getFinder()
     ->exclude([
-        '.Build'
+        '.Build',
+        'Build/Patches',
+        'var',
     ])
     ->in(__DIR__);
 return $config;

@@ -40,15 +40,6 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         GeneralUtility::makeInstance(TSFETestBootstrapper::class)->bootstrap(1);
     }
 
-    /**
-     * Executed after each test. Emptys solr and checks if the index is empty
-     */
-    protected function tearDown(): void
-    {
-        $this->cleanUpSolrServerAndAssertEmpty();
-        parent::tearDown();
-    }
-
     #[Test]
     public function canGetDocumentById(): void
     {

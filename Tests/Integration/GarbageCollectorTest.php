@@ -405,7 +405,6 @@ class GarbageCollectorTest extends IntegrationTestBase
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/subpage.csv');
 
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->assertEmptyIndexQueue();
         $this->addToQueueAndIndexRecord('pages', 2);
         $this->assertIndexQueueContainsItemAmount(1);
@@ -453,7 +452,6 @@ class GarbageCollectorTest extends IntegrationTestBase
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/subpage.csv');
 
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->assertEmptyIndexQueue();
         $this->addToQueueAndIndexRecord('pages', 2);
         $this->assertIndexQueueContainsItemAmount(1);
@@ -499,7 +497,6 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->setExtensionsMonitoringType($monitoringType);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/mount_page_garbage.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->assertEmptyEventQueue();
 
         // index all queue items
@@ -608,8 +605,6 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->setExtensionsMonitoringType($monitoringType);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/translated_mount_page_garbage.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
-        $this->cleanUpSolrServerAndAssertEmpty('core_en');
-        $this->cleanUpSolrServerAndAssertEmpty('core_de');
         $this->assertEmptyEventQueue();
 
         // index all queue items
@@ -729,7 +724,6 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemoveDeletedContentElement(): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexed_content.csv');
 
@@ -921,7 +915,6 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemoveContentElementTests(array $dataMap, string $fixture = 'indexed_content.csv', array $indexPageIds = [1]): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture);
 
@@ -1087,7 +1080,6 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemovePagesTests(array $dataMap, array $cmdMap = []): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_remove_page.csv');
 
@@ -1158,8 +1150,6 @@ class GarbageCollectorTest extends IntegrationTestBase
                 }
             }',
         );
-
-        $this->cleanUpSolrServerAndAssertEmpty();
 
         $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_foo', 111);
         $this->waitToBeVisibleInSolr();

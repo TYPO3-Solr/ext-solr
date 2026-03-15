@@ -51,12 +51,6 @@ class SearchTest extends IntegrationTestBase
         $this->searchInstance = GeneralUtility::makeInstance(Search::class);
     }
 
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->cleanUpSolrServerAndAssertEmpty();
-    }
-
     /**
      * @throws DBALException
      * @throws InvalidArgumentException
