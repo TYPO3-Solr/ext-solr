@@ -71,7 +71,7 @@ class PageIndexerTest extends IntegrationTestBase
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"title":"hello solr"', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"sortSubTitle_stringS":"the subtitle"', $solrContent, 'Document does not contain subtitle');
@@ -103,7 +103,7 @@ class PageIndexerTest extends IntegrationTestBase
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"title":"hello solr"', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"custom_stringS":"my text from custom page type"', $solrContent, 'Document does not contains value build with typoscript');
@@ -136,11 +136,11 @@ class PageIndexerTest extends IntegrationTestBase
         $this->waitToBeVisibleInSolr('core_en');
         $this->waitToBeVisibleInSolr('core_de');
 
-        $solrContentEn = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContentEn = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"title":"Page"', $solrContentEn, 'Solr did not contain the english page');
         self::assertStringNotContainsString('relatedPageTitles_stringM', $solrContentEn, 'There is no relation for the original, so there should not be a related field');
 
-        $solrContentDe = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_de/select?q=*:*');
+        $solrContentDe = file_get_contents($this->getSolrCoreUrl('core_de') . '/select?q=*:*');
         self::assertStringContainsString('"title":"Seite"', $solrContentDe, 'Solr did not contain the translated page');
         self::assertStringContainsString('"relatedPageTitles_stringM":["Verwandte Seite"]', $solrContentDe, 'Did not get content of related field');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
@@ -170,7 +170,7 @@ class PageIndexerTest extends IntegrationTestBase
 
         $this->waitToBeVisibleInSolr('core_en');
 
-        $solrContentEn = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContentEn = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"title":"Sub page"', $solrContentEn, 'Solr did not contain the english page');
         self::assertStringContainsString('"categories_stringM":["Test"]', $solrContentEn, 'There is no relation for the original, so ther should not be a related field');
     }
@@ -195,7 +195,7 @@ class PageIndexerTest extends IntegrationTestBase
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
 
         // field values from index.queue.pages.fields.
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -225,7 +225,7 @@ class PageIndexerTest extends IntegrationTestBase
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
 
         // field values from index.queue.pages.fields.
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -243,7 +243,7 @@ class PageIndexerTest extends IntegrationTestBase
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"postProcessorField_stringS":"postprocessed"', $solrContent, 'Field from post processor was not added');
     }
@@ -267,7 +267,7 @@ class PageIndexerTest extends IntegrationTestBase
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":2', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"custom_stringS":"my text"', $solrContent, 'Field from post processor was not added');
         self::assertStringContainsString('"custom_stringS":"additional text"', $solrContent, 'Field from post processor was not added');
@@ -297,7 +297,7 @@ class PageIndexerTest extends IntegrationTestBase
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"title":"FirstShared"', $solrContent, 'Could not find content from mounted page in Solr');
     }
 
@@ -328,7 +328,7 @@ class PageIndexerTest extends IntegrationTestBase
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"title":"FirstShared"', $solrContent, 'Could not find content from mounted page in Solr');
     }
 
@@ -362,7 +362,7 @@ class PageIndexerTest extends IntegrationTestBase
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
 
         self::assertStringContainsString('"numFound":2', $solrContent, 'Unexpected amount of documents in the core');
 

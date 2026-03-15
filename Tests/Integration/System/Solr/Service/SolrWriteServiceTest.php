@@ -56,7 +56,7 @@ class SolrWriteServiceTest extends IntegrationTestBase
 
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'], true);
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => $this->resolveCoreName('core_en'), 'key' => 'admin'], true);
 
         $this->solrWriteService = GeneralUtility::makeInstance(SolrWriteService::class, $client, new TypoScriptConfiguration([]));
     }

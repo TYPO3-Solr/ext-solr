@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Exception\InvalidArgumentNameException;
 use TYPO3\CMS\Extbase\Mvc\Web\RequestBuilder;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -34,49 +33,42 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
 {
-    protected static SearchUriBuilder $searchUriBuilder;
+    protected SearchUriBuilder $searchUriBuilder;
 
-    protected static RequestBuilder $requestBuilder;
+    protected RequestBuilder $requestBuilder;
 
-    protected static UriBuilder $uriBuilder;
+    protected UriBuilder $uriBuilder;
 
     public function injectSearchUriBuilder(SearchUriBuilder $searchUriBuilder): void
     {
-        self::$searchUriBuilder = $searchUriBuilder;
+        $this->searchUriBuilder = $searchUriBuilder;
     }
 
     public function injectRequestBuilder(RequestBuilder $requestBuilder): void
     {
-        self::$requestBuilder = $requestBuilder;
+        $this->requestBuilder = $requestBuilder;
     }
 
     public function injectUriBuilder(UriBuilder $uriBuilder): void
     {
-        self::$uriBuilder = $uriBuilder;
+        $this->uriBuilder = $uriBuilder;
     }
 
     /**
      * @throws InvalidArgumentNameException
      */
-    protected static function getSearchUriBuilder(?RenderingContextInterface $renderingContext = null): SearchUriBuilder
+    protected function getSearchUriBuilder(?RenderingContextInterface $renderingContext = null): SearchUriBuilder
     {
-        if (!isset(self::$searchUriBuilder)) {
-            self::$searchUriBuilder = GeneralUtility::makeInstance(SearchUriBuilder::class);
-        }
-        if (!isset(self::$requestBuilder)) {
-            self::$requestBuilder = GeneralUtility::makeInstance(RequestBuilder::class);
-        }
-
-        if ($renderingContext !== null && isset(self::$uriBuilder)) {
+        if ($renderingContext !== null && isset($this->uriBuilder)) {
             $serverRequest = $renderingContext->getAttribute(ServerRequestInterface::class);
             if ($serverRequest instanceof ServerRequestInterface) {
-                $request = self::$requestBuilder->build($serverRequest);
-                self::$uriBuilder->reset()->setRequest($request);
-                self::$searchUriBuilder->injectUriBuilder(self::$uriBuilder);
+                $request = $this->requestBuilder->build($serverRequest);
+                $this->uriBuilder->reset()->setRequest($request);
+                $this->searchUriBuilder->injectUriBuilder($this->uriBuilder);
             }
         }
 
-        return self::$searchUriBuilder;
+        return $this->searchUriBuilder;
     }
 
     /**
