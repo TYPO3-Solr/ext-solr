@@ -41,15 +41,6 @@ class PageIndexerTest extends IntegrationTestBase
         $this->writeDefaultSolrTestSiteConfiguration();
     }
 
-    /**
-     * Executed after each test. Emptys solr and checks if the index is empty
-     */
-    protected function tearDown(): void
-    {
-        $this->cleanUpSolrServerAndAssertEmpty();
-        parent::tearDown();
-    }
-
     #[Test]
     public function canIndexPageIntoSolr(): void
     {
@@ -143,7 +134,6 @@ class PageIndexerTest extends IntegrationTestBase
         $solrContentDe = file_get_contents($this->getSolrCoreUrl('core_de') . '/select?q=*:*');
         self::assertStringContainsString('"title":"Seite"', $solrContentDe, 'Solr did not contain the translated page');
         self::assertStringContainsString('"relatedPageTitles_stringM":["Verwandte Seite"]', $solrContentDe, 'Did not get content of related field');
-        $this->cleanUpSolrServerAndAssertEmpty('core_de');
     }
 
     /**

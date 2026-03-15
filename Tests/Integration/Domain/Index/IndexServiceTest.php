@@ -70,8 +70,6 @@ class IndexServiceTest extends IntegrationTestBase
     #[Test]
     public function canResolveBaseAsPrefix(string $absRefPrefix, string $expectedUrl): void
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
-
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_withBasePrefix_' . $absRefPrefix . '.csv');
 
         $this->mergeSiteConfiguration('integration_tree_one', ['base' => '/' . $absRefPrefix . '/']);
@@ -96,6 +94,5 @@ class IndexServiceTest extends IntegrationTestBase
         $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"url":"' . $expectedUrl, $solrContent, 'Generated unexpected url with absRefPrefix = auto');
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 }

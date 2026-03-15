@@ -315,7 +315,7 @@ abstract class AbstractSolrService
      */
     protected function getMilliseconds(): float
     {
-        return round(microtime(true) * 1000);
+        return microtime(true) * 1000;
     }
 
     protected function createRequest(QueryInterface $query): Request

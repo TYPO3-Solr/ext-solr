@@ -53,15 +53,6 @@ class SearchControllerTest extends IntegrationTestBase
         $this->bootstrapSearchResultsPluginOnPage();
     }
 
-    /**
-     * Executed after each test. Empties solr and checks if the index is empty
-     */
-    protected function tearDown(): void
-    {
-        $this->cleanUpSolrServerAndAssertEmpty();
-        parent::tearDown();
-    }
-
     protected function bootstrapSearchResultsPluginOnPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/default_search_results_plugin.csv');

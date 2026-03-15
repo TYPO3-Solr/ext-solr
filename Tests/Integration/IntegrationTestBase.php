@@ -54,7 +54,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 abstract class IntegrationTestBase extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
-    private $previousErrorHandler;
     private int $previousErrorReporting;
 
     protected array $coreExtensionsToLoad = [
@@ -101,9 +100,11 @@ abstract class IntegrationTestBase extends FunctionalTestCase
 
         //this is needed by the TYPO3 core.
         chdir(Environment::getPublicPath() . '/');
-        $this->instancePath = $this->getInstancePath();
         $this->previousErrorReporting = error_reporting();
-        $this->previousErrorHandler = $this->failWhenSolrDeprecationIsCreated();
+        $this->failWhenSolrDeprecationIsCreated();
+
+        // Clean Solr cores at the START of each test to prevent cross-contamination from previous tests
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
 
     protected function tearDown(): void
@@ -120,9 +121,38 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     }
 
     /**
+     * Override getInstanceIdentifier to support paratest worker-specific test instances.
+     * Each worker gets its own test instance directory to prevent site config and Solr core sharing.
+     */
+    protected static function getInstanceIdentifier(): string
+    {
+        $baseIdentifier = parent::getInstanceIdentifier();
+        $token = getenv('TEST_TOKEN');
+        if ($token !== false && $token !== '') {
+            // Paratest uses 1-based numbering; convert to 0-based worker index
+            $workerIndex = (int)$token - 1;
+            return $baseIdentifier . '_w' . $workerIndex;
+        }
+        return $baseIdentifier;
+    }
+
+    /**
+     * Override getInstancePath to ensure worker-specific paths are used.
+     * Necessary to guarantee $this->getInstancePath() (line 315 of FunctionalTestCase::setUp)
+     * returns the worker-specific path.
+     */
+    protected static function getInstancePath(): string
+    {
+        $identifier = static::getInstanceIdentifier();
+        return ORIGINAL_ROOT . 'typo3temp/var/tests/functional-' . $identifier;
+    }
+
+    /**
      * @throws InvalidArgumentException
      *
      * Please don't use that method, except you really want to clean a single core.
+     *
+     * @internal
      */
     protected function cleanUpSolrServerAndAssertEmpty(string $coreName = 'core_en'): void
     {

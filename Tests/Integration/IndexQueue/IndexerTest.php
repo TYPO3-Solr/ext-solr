@@ -71,16 +71,6 @@ class IndexerTest extends IntegrationTestBase
         $handlerMock = $this->createMock(RequestHandlerInterface::class);
         $normalizer = new NormalizedParamsAttribute();
         $normalizer->process($request, $handlerMock);
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        unset(
-            $this->indexQueue,
-            $this->indexer,
-        );
     }
 
     /**
