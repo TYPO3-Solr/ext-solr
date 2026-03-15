@@ -48,17 +48,11 @@ class PageIndexerTest extends IntegrationTestBase
             page.10.stdWrap.dataWrap = <!--TYPO3SEARCH_begin-->|<!--TYPO3SEARCH_end-->
             ',
         );
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
 
     /**
      * Executed after each test. Empties solr and checks if the index is empty
      */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
     #[DataProvider('canIndexPageWithAccessProtectedContentIntoSolrDataProvider')]
     #[Test]
     public function canIndexPageWithAccessProtectedContentIntoSolr(
@@ -97,7 +91,7 @@ class PageIndexerTest extends IntegrationTestBase
         $this->waitToBeVisibleInSolr($core);
 
         $solrContent = json_decode(
-            file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $core . '/select?q=*:*&sort=access%20asc'),
+            file_get_contents($this->getSolrCoreUrl($core) . '/select?q=*:*&sort=access%20asc'),
             true,
         );
 
@@ -118,13 +112,13 @@ class PageIndexerTest extends IntegrationTestBase
         }
 
         $solrContent = json_decode(
-            file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $core . '/select?q=*:*&fl=uid&sort=access%20asc&fq={!typo3access}0'),
+            file_get_contents($this->getSolrCoreUrl($core) . '/select?q=*:*&fl=uid&sort=access%20asc&fq={!typo3access}0'),
             true,
         );
         self::assertEquals($expectedNumFoundAnonymousUser, $solrContent['response']['numFound'], 'Protected contents not filtered correctly');
 
         $solrContent = json_decode(
-            file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $core . '/select?q=*:*&fl=uid&sort=access%20asc&fq={!typo3access}' . $userGroupToCheckAccessFilter),
+            file_get_contents($this->getSolrCoreUrl($core) . '/select?q=*:*&fl=uid&sort=access%20asc&fq={!typo3access}' . $userGroupToCheckAccessFilter),
             true,
         );
         self::assertEquals($expectedNumFoundLoggedInUser, $solrContent['response']['numFound'], 'Protected contents not returned correctly');

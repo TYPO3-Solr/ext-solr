@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use ApacheSolrForTypo3\Solr\Tests\Integration\TSFETestBootstrapper;
 use ApacheSolrForTypo3\Solr\Util;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
@@ -36,15 +37,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
-    }
-
-    /**
-     * Executed after each test. Emptys solr and checks if the index is empty
-     */
-    protected function tearDown(): void
-    {
-        $this->cleanUpSolrServerAndAssertEmpty();
-        parent::tearDown();
+        GeneralUtility::makeInstance(TSFETestBootstrapper::class)->bootstrap(1);
     }
 
     #[Test]
@@ -55,7 +48,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->indexPages([1, 2, 3, 4, 5]);
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('0213998bdee4e7dcc8ba05a598cabdadff322ad3/pages/1/0/0/0', $solrContent);
 
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1);
@@ -239,7 +232,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/fe_user_page.csv');
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->indexPages([1, 2, 3], 1);
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":3', $solrContent);
     }
 

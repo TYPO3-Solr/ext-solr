@@ -16,9 +16,12 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
@@ -51,7 +54,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 abstract class IntegrationTestBase extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
-    private $previousErrorHandler;
+    private int $previousErrorReporting;
 
     protected array $coreExtensionsToLoad = [
         'typo3/cms-install',
@@ -97,30 +100,69 @@ abstract class IntegrationTestBase extends FunctionalTestCase
 
         //this is needed by the TYPO3 core.
         chdir(Environment::getPublicPath() . '/');
-        $this->instancePath = $this->getInstancePath();
-        $this->previousErrorHandler = $this->failWhenSolrDeprecationIsCreated();
+        $this->previousErrorReporting = error_reporting();
+        $this->failWhenSolrDeprecationIsCreated();
+
+        // Clean Solr cores at the START of each test to prevent cross-contamination from previous tests
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
 
     protected function tearDown(): void
     {
-        set_error_handler($this->previousErrorHandler);
+        restore_error_handler();
+        error_reporting($this->previousErrorReporting);
+
+        // Reset static caches that survive GeneralUtility::purgeInstances()
+        ConnectionManager::resetConnections();
+        SiteUtility::reset();
+        TwoLevelCache::flushAllCaches();
 
         parent::tearDown();
+    }
+
+    /**
+     * Override getInstanceIdentifier to support paratest worker-specific test instances.
+     * Each worker gets its own test instance directory to prevent site config and Solr core sharing.
+     */
+    protected static function getInstanceIdentifier(): string
+    {
+        $baseIdentifier = parent::getInstanceIdentifier();
+        $token = getenv('TEST_TOKEN');
+        if ($token !== false && $token !== '') {
+            // Paratest uses 1-based numbering; convert to 0-based worker index
+            $workerIndex = (int)$token - 1;
+            return $baseIdentifier . '_w' . $workerIndex;
+        }
+        return $baseIdentifier;
+    }
+
+    /**
+     * Override getInstancePath to ensure worker-specific paths are used.
+     * Necessary to guarantee $this->getInstancePath() (line 315 of FunctionalTestCase::setUp)
+     * returns the worker-specific path.
+     */
+    protected static function getInstancePath(): string
+    {
+        $identifier = static::getInstanceIdentifier();
+        return ORIGINAL_ROOT . 'typo3temp/var/tests/functional-' . $identifier;
     }
 
     /**
      * @throws InvalidArgumentException
      *
      * Please don't use that method, except you really want to clean a single core.
+     *
+     * @internal
      */
     protected function cleanUpSolrServerAndAssertEmpty(string $coreName = 'core_en'): void
     {
         $this->validateTestCoreName($coreName);
 
         // cleanup the solr server
+        $resolvedCoreName = $this->resolveCoreName($coreName);
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $response = $requestFactory->request(
-            $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?commit=true',
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $resolvedCoreName . '/update?commit=true',
             'POST',
             [
                 'headers' => ['Content-Type' => 'application/xml'],
@@ -153,9 +195,10 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     protected function waitToBeVisibleInSolr(string $coreName = 'core_en'): void
     {
         $this->validateTestCoreName($coreName);
+        $resolvedCoreName = $this->resolveCoreName($coreName);
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $requestFactory->request(
-            $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?commit=true',
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $resolvedCoreName . '/update?commit=true',
             'POST',
             [
                 'headers' => ['Content-Type' => 'application/xml'],
@@ -193,8 +236,9 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         ?string $message = null,
         string $coreName = 'core_en',
     ): void {
+        $resolvedCoreName = $this->resolveCoreName($coreName);
         $solrContent = file_get_contents(
-            $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/select?q=*:*',
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $resolvedCoreName . '/select?q=*:*',
         );
         self::assertStringContainsString(
             '"numFound":' . $documentCount,
@@ -219,8 +263,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort($solrConnectionInfo['scheme'], $solrConnectionInfo['host'], $solrConnectionInfo['port']);
     }
 
-    protected static string $lastSiteCreated = '';
-
     /**
      * @internal Don't use that method in tests, except you want to simulate the misconfiguration.
      */
@@ -230,23 +272,18 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         ?int $port = 8983,
         ?bool $disableDefaultLanguage = false,
     ): void {
-        $siteCreatedHash = hash('md5', $scheme . $host . $port . $disableDefaultLanguage);
-        if (self::$lastSiteCreated === $siteCreatedHash) {
-            return;
-        }
-
         $defaultLanguage = $this->buildDefaultLanguageConfiguration('EN', '/en/');
-        $defaultLanguage['solr_core_read'] = 'core_en';
+        $defaultLanguage['solr_core_read'] = $this->resolveCoreName('core_en');
 
         if ($disableDefaultLanguage === true) {
             $defaultLanguage['enabled'] = 0;
         }
 
         $german = $this->buildLanguageConfiguration('DE', '/de/', ['EN'], 'fallback');
-        $german['solr_core_read'] = 'core_de';
+        $german['solr_core_read'] = $this->resolveCoreName('core_de');
 
         $danish = $this->buildLanguageConfiguration('DA', '/da/');
-        $danish['solr_core_read'] = 'core_da';
+        $danish['solr_core_read'] = $this->resolveCoreName('core_da');
 
         $this->writeSiteConfiguration(
             'integration_tree_one',
@@ -288,7 +325,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $this->importRootPagesAndTemplatesForConfiguredSites();
 
         clearstatcache();
-        self::$lastSiteCreated = $siteCreatedHash;
     }
 
     /**
@@ -346,6 +382,49 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     {
         $solrConnectionInfo = $this->getSolrConnectionInfo();
         return $solrConnectionInfo['scheme'] . '://' . $solrConnectionInfo['host'] . ':' . $solrConnectionInfo['port'];
+    }
+
+    /**
+     * Returns the paratest worker token (0-indexed), or null when not running in parallel.
+     */
+    protected function getParatestWorkerToken(): ?int
+    {
+        $token = getenv('TEST_TOKEN');
+        if ($token === false || $token === '') {
+            return null;
+        }
+        return (int)$token;
+    }
+
+    /**
+     * Maps a logical core name (e.g. 'core_en') to its worker-specific variant
+     * (e.g. 'core_en_3') when running under paratest. Worker 0 uses the base core
+     * without suffix. Returns the name unchanged for sequential runs (no TEST_TOKEN).
+     *
+     * Note: Paratest uses 1-based worker numbering (TEST_TOKEN=1-8 for 8 workers),
+     * so we subtract 1 to match our 0-based core naming (core_en is base, core_en_1-7 are workers).
+     */
+    protected function resolveCoreName(string $coreName): string
+    {
+        $token = $this->getParatestWorkerToken();
+        if ($token === null) {
+            return $coreName;
+        }
+        // Paratest uses 1-based numbering; subtract 1 to get 0-based worker index
+        $token = $token - 1;
+        if ($token === 0) {
+            return $coreName;  // Worker 0 uses the base core
+        }
+        return $coreName . '_' . $token;
+    }
+
+    /**
+     * Returns the full Solr core base URL, resolved to the current worker's core.
+     * Example: http://solr-tests:8985/solr/core_en_3
+     */
+    protected function getSolrCoreUrl(string $coreName = 'core_en'): string
+    {
+        return $this->getSolrConnectionUriAuthority() . '/solr/' . $this->resolveCoreName($coreName);
     }
 
     /**

@@ -45,15 +45,6 @@ class SuggestControllerTest extends IntegrationTestBase
         );
     }
 
-    /**
-     * Executed after each test. Empties solr and checks if the index is empty
-     */
-    protected function tearDown(): void
-    {
-        $this->cleanUpSolrServerAndAssertEmpty();
-        parent::tearDown();
-    }
-
     #[Test]
     public function canDoABasicSuggest(): void
     {

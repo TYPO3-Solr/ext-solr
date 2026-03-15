@@ -40,16 +40,6 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTestBase
         $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
     }
 
-    /**
-     * Executed after each test. Empties solr and checks if the index is empty
-     */
-    protected function tearDown(): void
-    {
-        $this->cleanUpSolrServerAndAssertEmpty();
-        unset($this->apacheSolrDocumentRepository);
-        parent::tearDown();
-    }
-
     #[Test]
     public function canFindByPageIdAndByLanguageId(): void
     {

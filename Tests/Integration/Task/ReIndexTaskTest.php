@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use Doctrine\DBAL\Exception as DBALException;
 use Exception;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -54,12 +55,18 @@ class ReIndexTaskTest extends IntegrationTestBase
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
     }
 
-    protected function assertEmptyIndexQueue()
+    /**
+     * @throws DBALException
+     */
+    protected function assertEmptyIndexQueue(): void
     {
         self::assertEquals(0, $this->indexQueue->getAllItemsCount(), 'Index queue is not empty as expected');
     }
 
-    protected function assertNotEmptyIndexQueue()
+    /**
+     * @throws DBALException
+     */
+    protected function assertNotEmptyIndexQueue(): void
     {
         self::assertGreaterThan(
             0,
@@ -69,18 +76,19 @@ class ReIndexTaskTest extends IntegrationTestBase
     }
 
     /**
-     * @param $amount
+     * @throws DBALException
      */
-    protected function assertIndexQueryContainsItemAmount($amount)
+    protected function assertIndexQueryContainsItemAmount(int $amount): void
     {
         self::assertEquals(
             $amount,
             $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to contain ' . (int)$amount . ' items.',
+            'Index queue is empty and was expected to contain ' . $amount . ' items.',
         );
     }
 
     /**
+     * @throws DBALException
      * @throws Exception
      */
     #[Test]
@@ -99,6 +107,7 @@ class ReIndexTaskTest extends IntegrationTestBase
     }
 
     /**
+     * @throws DBALException
      * @throws Exception
      */
     #[Test]
@@ -118,6 +127,7 @@ class ReIndexTaskTest extends IntegrationTestBase
     }
 
     /**
+     * @throws DBALException
      * @throws Exception
      */
     #[Test]
@@ -144,8 +154,5 @@ class ReIndexTaskTest extends IntegrationTestBase
 
         // after the task was running the solr server should be empty
         $this->assertSolrIsEmpty();
-
-        // if not we cleanup now
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 }
