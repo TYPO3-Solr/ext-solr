@@ -237,6 +237,10 @@ class IndexService
     {
         static $hosts = [];
         $rootPageId = $item->getRootPageUid();
+        if ($rootPageId === null) {
+            return;
+        }
+
         $hostFound = !empty($hosts[$rootPageId]);
 
         if (!$hostFound) {

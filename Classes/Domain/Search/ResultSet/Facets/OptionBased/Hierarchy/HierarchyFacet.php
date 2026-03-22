@@ -65,7 +65,7 @@ class HierarchyFacet extends AbstractFacet
         bool $selected,
     ): void {
         /** @var Node|null $parentNode */
-        $parentNode = $this->nodesByKey[$parentKey] ?? null;
+        $parentNode = $parentKey !== null ? ($this->nodesByKey[$parentKey] ?? null) : null;
         /** @var Node $node */
         $node = GeneralUtility::makeInstance(
             Node::class,
