@@ -68,13 +68,11 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
         if ($schedulerModule->getCurrentAction() === SchedulerManagementAction::ADD) {
             $taskInfo['site'] = null;
             $taskInfo['documentsToIndexLimit'] = 50;
-            $taskInfo['forcedWebRoot'] = '';
         }
 
         if ($schedulerModule->getCurrentAction() === SchedulerManagementAction::EDIT) {
             $taskInfo['site'] = $this->siteRepository->getSiteByRootPageId((int)$task->getRootPageId());
             $taskInfo['documentsToIndexLimit'] = $task->getDocumentsToIndexLimit();
-            $taskInfo['forcedWebRoot'] = $task->getForcedWebRoot();
         }
 
         $additionalFields['site'] = [
@@ -88,11 +86,6 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
         $additionalFields['documentsToIndexLimit'] = [
             'code' => '<input type="number" class="form-control" name="tx_scheduler[documentsToIndexLimit]" value="' . htmlspecialchars((string)$taskInfo['documentsToIndexLimit']) . '" />',
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_documentsToIndexLimit',
-        ];
-
-        $additionalFields['forcedWebRoot'] = [
-            'code' => '<input type="text" class="form-control" name="tx_scheduler[forcedWebRoot]" value="' . htmlspecialchars($taskInfo['forcedWebRoot']) . '" />',
-            'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_forcedWebRoot',
         ];
 
         return $additionalFields;
@@ -144,7 +137,6 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
 
         $task->setRootPageId((int)$submittedData['site']);
         $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
-        $task->setForcedWebRoot($submittedData['forcedWebRoot']);
     }
 
     /**

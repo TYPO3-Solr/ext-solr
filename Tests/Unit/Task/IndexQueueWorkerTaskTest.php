@@ -18,33 +18,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Core\Environment;
 
 /**
  * Testcase for IndexQueueWorkerTask
  */
 class IndexQueueWorkerTaskTest extends SetUpUnitTestCase
 {
-    #[Test]
-    public function canGetWebRoot(): void
-    {
-        $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['execute'])
-            ->getMock();
-
-        // by default the webroot should be Environment::getPublicPath()
-        self::assertSame(Environment::getPublicPath() . '/', $indexQueuerWorker->getWebRoot(), 'Not using PATH_site as webroot');
-
-        // can we overwrite it?
-        $indexQueuerWorker->setForcedWebRoot('/var/www/foobar.de/subdir');
-        self::assertSame('/var/www/foobar.de/subdir', $indexQueuerWorker->getWebRoot(), 'Can not force a webroot');
-
-        // can we use a marker?
-        $indexQueuerWorker->setForcedWebRoot('###PATH_site###../test/');
-        self::assertSame(Environment::getPublicPath() . '/../test/', $indexQueuerWorker->getWebRoot(), 'Could not use a marker in forced webroot');
-    }
-
     #[Test]
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable(): void
     {
