@@ -35,6 +35,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -255,7 +256,16 @@ readonly class IndexingService
             $request = $this->buildServerRequest($item, $language);
             $request = $request->withAttribute('solr.indexingInstructions', $instructions);
 
-            $response = $this->frontendApplication->handle($request);
+            // Ensure CWD matches the document root so that third-party code
+            // relying on relative paths (e.g. cache file checks) works the
+            // same way as in a real web request served by the web server.
+            $previousWorkingDirectory = getcwd();
+            chdir(Environment::getPublicPath());
+            try {
+                $response = $this->frontendApplication->handle($request);
+            } finally {
+                chdir($previousWorkingDirectory);
+            }
 
             $statusCode = $response->getStatusCode();
             if ($statusCode >= 400) {

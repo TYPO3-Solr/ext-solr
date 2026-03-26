@@ -19,7 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\Tests\Integration\Fixtures\IndexingServiceForTesting;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -88,10 +87,6 @@ class IndexServiceTest extends IntegrationTestBase
 
         $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
 
-        $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
-        $cliEnvironment->backup();
-        $cliEnvironment->initialize(Environment::getPublicPath() . '/');
-
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
         $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
@@ -99,12 +94,41 @@ class IndexServiceTest extends IntegrationTestBase
         // run the indexer
         $indexService->indexItems(1);
 
-        $cliEnvironment->restore();
-
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"url":"' . $expectedUrl, $solrContent, 'Generated unexpected url with absRefPrefix = auto');
+    }
+
+    #[Test]
+    public function subRequestsRestoreWorkingDirectory(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_withBasePrefix_foo.csv');
+
+        $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
+
+        // Simulate CLI context: CWD is the project root, not the public directory.
+        $originalCwd = getcwd();
+        chdir(Environment::getProjectPath());
+
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
+
+        $indexService->indexItems(1);
+
+        self::assertSame(
+            Environment::getProjectPath(),
+            getcwd(),
+            'Working directory was not restored after sub-request indexing',
+        );
+
+        // Restore original CWD for test framework cleanup
+        chdir($originalCwd);
+
+        $this->waitToBeVisibleInSolr();
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Indexing failed when CWD was not the public directory');
     }
 }
