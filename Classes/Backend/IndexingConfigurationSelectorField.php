@@ -22,6 +22,7 @@ use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -151,7 +152,8 @@ class IndexingConfigurationSelectorField
 
         foreach ($tablesToIndex as $configurationName => $tableName) {
             if (isset($GLOBALS['TCA'][$tableName])) {
-                $icon = $iconFactory->mapRecordTypeToIconIdentifier($tableName, []);
+                $tcaSchemaFactory = GeneralUtility::makeInstance(TcaSchemaFactory::class);
+                $icon = $iconFactory->mapRecordTypeToIconIdentifier($tableName, [], $tcaSchemaFactory->get($tableName));
                 if ($icon === $iconRegistry->getDefaultIconIdentifier() || !$iconRegistry->isRegistered($icon)) {
                     $icon = $defaultIcon;
                 }
