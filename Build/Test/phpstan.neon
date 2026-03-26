@@ -17,7 +17,6 @@ parameters:
     - %currentWorkingDirectory%/Tests
 
   ignoreErrors:
-    - '#^Variable \$_EXTKEY might not be defined\.#'
     - '#^Method .*\\QueryBuilder::buildSuggestQuery\(\) should return .*\\SuggestQuery but returns .*\\Search\\Query\\Query\|null.#'
     - '#^Method .*\\QueryBuilder::use.*FromTypoScript\(\) should return .*\\QueryBuilder but returns .*\\AbstractQueryBuilder.#'
     - '#^Unreachable statement - code above always terminates.#'
