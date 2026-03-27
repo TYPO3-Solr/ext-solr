@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Singleton that bridges the middleware (inside sub-request) with the IndexingService (outside).
@@ -27,32 +28,26 @@ use TYPO3\CMS\Core\SingletonInterface;
  */
 class IndexingResultCollector implements SingletonInterface
 {
-    /** @var int[] User groups collected during findUserGroups action */
+    /**
+     * @var int[] Finalized user groups from findUserGroups action
+     */
     private array $userGroups = [];
 
-    /** @var string Page content captured during page rendering */
-    private string $pageContent = '';
-
-    /** @var array<string, mixed> Per-item indexing results (keyed by item uid) */
-    private array $itemResults = [];
-
-    /** @var bool Whether the last indexing operation succeeded overall */
-    private bool $success = false;
-
-    /** @var array Collected frontend groups from content elements */
+    /**
+     * @var array Raw frontend groups collected from content elements during rendering
+     */
     private array $frontendGroups = [];
 
-    /** @var array Original TCA backup for UserGroupDetector */
-    private ?array $originalTca = null;
+    /**
+     * @var bool Whether the findUserGroups detection phase is active
+     */
+    private bool $userGroupDetectionActive = false;
 
     public function reset(): void
     {
         $this->userGroups = [];
-        $this->pageContent = '';
-        $this->itemResults = [];
-        $this->success = false;
         $this->frontendGroups = [];
-        $this->originalTca = null;
+        $this->userGroupDetectionActive = false;
     }
 
     /**
@@ -63,66 +58,41 @@ class IndexingResultCollector implements SingletonInterface
         return $this->userGroups;
     }
 
-    /**
-     * @param int[] $userGroups
-     */
-    public function setUserGroups(array $userGroups): void
-    {
-        $this->userGroups = $userGroups;
-    }
-
-    public function getPageContent(): string
-    {
-        return $this->pageContent;
-    }
-
-    public function setPageContent(string $pageContent): void
-    {
-        $this->pageContent = $pageContent;
-    }
-
-    public function getItemResults(): array
-    {
-        return $this->itemResults;
-    }
-
-    public function setItemResult(string $key, mixed $value): void
-    {
-        $this->itemResults[$key] = $value;
-    }
-
-    public function isSuccess(): bool
-    {
-        return $this->success;
-    }
-
-    public function setSuccess(bool $success): void
-    {
-        $this->success = $success;
-    }
-
-    public function getFrontendGroups(): array
-    {
-        return $this->frontendGroups;
-    }
-
     public function addFrontendGroup(int|string $group): void
     {
         $this->frontendGroups[] = $group;
     }
 
-    public function setFrontendGroups(array $groups): void
+    public function isUserGroupDetectionActive(): bool
     {
-        $this->frontendGroups = $groups;
+        return $this->userGroupDetectionActive;
     }
 
-    public function getOriginalTca(): ?array
+    public function setUserGroupDetectionActive(bool $active): void
     {
-        return $this->originalTca;
+        $this->userGroupDetectionActive = $active;
     }
 
-    public function setOriginalTca(?array $tca): void
+    /**
+     * Finalizes collected frontend groups: deduplicates, sorts, and stores
+     * as the definitive userGroups result. Called by SolrIndexingMiddleware
+     * after page rendering in the findUserGroups flow.
+     */
+    public function finalizeUserGroups(): void
     {
-        $this->originalTca = $tca;
+        $groupsList = implode(',', $this->frontendGroups);
+        $groups = GeneralUtility::intExplode(',', $groupsList, true);
+        $groups = array_unique($groups);
+        $groups = array_filter(
+            array_values($groups),
+            static fn(int $val): bool => ($val !== -1),
+        );
+
+        if (empty($groups)) {
+            $groups = [0];
+        }
+
+        sort($groups, SORT_NUMERIC);
+        $this->userGroups = array_reverse($groups);
     }
 }

@@ -8,11 +8,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Eid\ApiEid;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+use ApacheSolrForTypo3\Solr\Middleware\AuthorizationService;
 use ApacheSolrForTypo3\Solr\Routing\Enhancer\SolrFacetMaskAndCombineEnhancer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
@@ -48,13 +45,6 @@ defined('TYPO3') or die('Access denied.');
     // hooking into TCE Main to monitor record updates that may require reindexing by the index queue
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['solr/recordmonitor'] = RecordMonitor::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['solr/recordmonitor'] = RecordMonitor::class;
-
-    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-    // Legacy Index Queue page indexer helpers (kept for backwards compatibility)
-    // The new unified indexing pipeline uses SolrIndexingMiddleware + IndexingService
-    Manager::registerFrontendHelper('findUserGroups', UserGroupDetector::class);
-
-    Manager::registerFrontendHelper('indexPage', PageIndexer::class);
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 

@@ -17,10 +17,9 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\System\Logging;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Util;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\ApplicationType;
-use TYPO3\CMS\Core\Http\Request;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
@@ -74,10 +73,10 @@ class DebugWriter
 
     protected function getIsPageIndexingRequest(): bool
     {
-        if (!($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof Request) {
+        if (!($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof ServerRequestInterface) {
             return false;
         }
-        return $GLOBALS['TYPO3_REQUEST']->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER);
+        return $GLOBALS['TYPO3_REQUEST']->getAttribute('solr.indexingInstructions') !== null;
     }
 
     /**

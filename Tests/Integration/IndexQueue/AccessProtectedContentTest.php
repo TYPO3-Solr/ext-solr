@@ -17,27 +17,32 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
+use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\Tests\Integration\Fixtures\IndexingServiceForTesting;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 /**
- * Testcase to check if we can index page documents using the PageIndexer
+ * Integration tests for indexing access-protected pages and content elements.
+ *
+ * Verifies that the unified sub-request pipeline (IndexingService + SolrIndexingMiddleware)
+ * correctly handles fe_group restrictions via UserGroupDetector and FrontendGroupsModifier.
  */
-class PageIndexerTest extends IntegrationTestBase
+class AccessProtectedContentTest extends IntegrationTestBase
 {
+    protected ?Queue $indexQueue = null;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
+        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
 
         $this->addSimpleFrontendRenderingToTypoScriptRendering(
             1,
@@ -48,11 +53,15 @@ class PageIndexerTest extends IntegrationTestBase
             page.10.stdWrap.dataWrap = <!--TYPO3SEARCH_begin-->|<!--TYPO3SEARCH_end-->
             ',
         );
+
+        /** @var \Symfony\Component\DependencyInjection\Container $container */
+        $container = GeneralUtility::getContainer();
+        $container->set(
+            IndexingService::class,
+            IndexingServiceForTesting::fromProductionService($container->get(IndexingService::class)),
+        );
     }
 
-    /**
-     * Executed after each test. Empties solr and checks if the index is empty
-     */
     #[DataProvider('canIndexPageWithAccessProtectedContentIntoSolrDataProvider')]
     #[Test]
     public function canIndexPageWithAccessProtectedContentIntoSolr(
@@ -67,27 +76,17 @@ class PageIndexerTest extends IntegrationTestBase
     ): void {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture . '.csv');
 
-        $createPageIndexerMock = function (): PageIndexerRequest {
-            $requestMock = $this->getMockBuilder(PageIndexerRequest::class)
-                ->onlyMethods(['send'])
-                ->getMock();
-            $sendCallback = function ($indexRequestUrl) use ($requestMock): PageIndexerResponse {
-                return $this->sendPageIndexerRequest($indexRequestUrl, $requestMock);
-            };
-            $requestMock->method('send')->willReturnCallback($sendCallback);
+        // Ensure the errors field is an empty string (CSV imports numeric 0, but the
+        // queue repository filters with errors = '' which is a text column)
+        $connection = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+            ->getConnectionForTable('tx_solr_indexqueue_item');
+        $connection->executeStatement("UPDATE tx_solr_indexqueue_item SET errors = ''");
 
-            return $requestMock;
-        };
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
+        $indexService->indexItems(10);
 
-        $pageIndexer = $this->getMockBuilder(PageIndexer::class)
-            ->onlyMethods(['getPageIndexerRequest'])
-            ->getMock();
-        $pageIndexer->method('getPageIndexerRequest')->willReturnCallback($createPageIndexerMock);
-
-        $item = $this->getIndexQueueItem(4711);
-        $pageIndexer->index($item);
-
-        // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr($core);
 
         $solrContent = json_decode(
@@ -124,9 +123,6 @@ class PageIndexerTest extends IntegrationTestBase
         self::assertEquals($expectedNumFoundLoggedInUser, $solrContent['response']['numFound'], 'Protected contents not returned correctly');
     }
 
-    /**
-     * Data provider for canIndexPageWithAccessProtectedContentIntoSolr
-     */
     public static function canIndexPageWithAccessProtectedContentIntoSolrDataProvider(): Traversable
     {
         yield 'protected page' => [
@@ -235,42 +231,5 @@ class PageIndexerTest extends IntegrationTestBase
             'userGroupToCheckAccessFilter' => '0,1',
             'expectedNumFoundLoggedInUser' => 1,
         ];
-    }
-
-    /**
-     * Sends a page indexer request
-     *
-     * In test environment we have to use an InternalRequest, this method
-     * is intended to replace PageIndexerRequest->send()
-     */
-    protected function sendPageIndexerRequest(string $url, PageIndexerRequest $request): PageIndexerResponse
-    {
-        $internalRequest = new InternalRequest($url);
-
-        foreach ($request->getHeaders() as $header) {
-            [$headerName, $headerValue] = GeneralUtility::trimExplode(':', $header, true, 2);
-            $internalRequest = $internalRequest->withAddedHeader($headerName, $headerValue);
-        }
-
-        $rawResponse = $this->executeFrontendSubRequest($internalRequest);
-        $rawResponse->getBody()->rewind();
-
-        $indexerResponse = GeneralUtility::makeInstance(PageIndexerResponse::class);
-        $decodedResponse = $indexerResponse->getResultsFromJson($rawResponse->getBody()->getContents());
-        $rawResponse->getBody()->rewind();
-
-        self::assertNotNull($decodedResponse, 'Failed to execute Page Indexer Request during integration test');
-
-        $requestId = $decodedResponse['requestId'] ?? null;
-        self::assertNotNull($requestId, 'Request id not set as expected');
-        $indexerResponse->setRequestId($requestId);
-        foreach (($decodedResponse['actionResults'] ?? []) as $action => $actionResult) {
-            $indexerResponse->addActionResult($action, $actionResult);
-        }
-
-        /** @var VariableFrontend $runtimeCache */
-        $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime');
-        $runtimeCache->flush();
-        return $indexerResponse;
     }
 }

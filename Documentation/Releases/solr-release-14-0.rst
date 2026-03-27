@@ -39,6 +39,29 @@ Event listeners have been refactored to use the ``#[AsEventListener]`` PHP
 attribute instead of ``Services.yaml`` tag registration, following TYPO3 14
 best practices.
 
+Unified Sub-Request Indexing Pipeline
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The page indexing system has been completely rewritten. The legacy HTTP-based
+``PageIndexer`` (which made real HTTP round-trips via ``X-Tx-Solr-Iq`` headers)
+has been replaced by a unified in-process sub-request pipeline using TYPO3's
+``Application::handle()``.
+
+Key changes:
+
+*  ``IndexingService`` orchestrates all indexing via ``Application::handle()``
+   sub-requests — no more HTTP round-trips
+*  ``SolrIndexingMiddleware`` handles page rendering, document creation, and
+   Solr submission within the standard TYPO3 middleware stack
+*  ``UserGroupDetectionMiddleware`` + ``UserGroupDetector`` detect frontend
+   user groups during page rendering without Singleton state or TCA manipulation
+*  ``CliEnvironment`` and ``forcedWebRoot`` scheduler option removed — sub-requests
+   use ``chdir(Environment::getPublicPath())`` to ensure correct working directory
+*  12.7% faster indexing (493.9s → 431.3s for 59 pages) with ~3,200 lines removed
+
+See `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_ and
+`#4598 <https://github.com/TYPO3-Solr/ext-solr/issues/4598>`_ for details.
+
 
 Breaking Changes
 ----------------
@@ -164,9 +187,50 @@ are now non-nullable and validated strictly. CSV fixtures for integration tests
 must include all required columns.
 
 
+!!! Legacy PageIndexer system removed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The HTTP-based page indexing system has been completely removed and replaced by
+the unified sub-request pipeline. The following classes no longer exist:
+
+*   :php:`IndexQueue\PageIndexer` — replaced by :php:`IndexQueue\IndexingService`
+*   :php:`IndexQueue\PageIndexerRequest` — replaced by :php:`IndexQueue\IndexingInstructions`
+*   :php:`IndexQueue\PageIndexerResponse` — replaced by ``JsonResponse``
+*   :php:`IndexQueue\PageIndexerRequestHandler`
+*   :php:`IndexQueue\PageIndexerDataUrlModifier` (interface)
+*   :php:`IndexQueue\FrontendHelper\Manager`
+*   :php:`IndexQueue\FrontendHelper\FrontendHelper` (interface)
+*   :php:`IndexQueue\FrontendHelper\PageIndexer` (event listener)
+*   :php:`Middleware\PageIndexerInitialization`
+*   :php:`System\Environment\CliEnvironment`
+*   :php:`System\Environment\WebRootAllReadyDefinedException`
+
+The ``UserGroupDetector`` and ``AuthorizationService`` have been moved from
+:php:`IndexQueue\FrontendHelper` to the :php:`Middleware` namespace.
+
+The ``forcedWebRoot`` scheduler task option has been removed from
+``IndexQueueWorkerTask`` and ``IndexQueueWorkerTaskAdditionalFieldProvider``.
+
+Impact
+""""""
+
+**Custom PageIndexer subclasses** must be rewritten to use the new pipeline.
+Register event listeners for :php:`AfterPageDocumentIsCreatedForIndexingEvent`
+or :php:`BeforeDocumentIsProcessedForIndexingEvent` instead.
+
+**Code referencing** :php:`PageIndexerRequest::SOLR_INDEX_HEADER` (``X-Tx-Solr-Iq``)
+should check the ``solr.indexingInstructions`` request attribute instead.
+
+**Code using** :php:`CliEnvironment` for web root initialization should remove
+those calls — the sub-request pipeline handles CWD automatically.
+
+
 All Changes
 -----------
 
+*   [!!!][TASK] Remove legacy PageIndexer system and migrate to IndexingInstructions by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
+*   [TASK] Set CWD to public path during sub-requests and remove CliEnvironment by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
+*   [!!!][TASK] Refactor indexing stack to unified TYPO3 core sub-requests by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
 *   [TASK] Upgrade to typo3/testing-framework 9.5.0 by @dkd-kaehm in `#4604 <https://github.com/TYPO3-Solr/ext-solr/pull/4604>`_
 *   [TASK] Fix IconFactory::mapRecordTypeToIconIdentifier() call for TYPO3 14 by @dkd-kaehm in `#4604 <https://github.com/TYPO3-Solr/ext-solr/pull/4604>`_
 *   [TASK] Upgrade GitHub Actions to latest versions by @dkd-kaehm in `#4601 <https://github.com/TYPO3-Solr/ext-solr/pull/4601>`_

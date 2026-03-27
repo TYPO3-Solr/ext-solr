@@ -251,12 +251,15 @@ readonly class SolrIndexingMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler,
         IndexingInstructions $instructions,
     ): ResponseInterface {
-        // The UserGroupDetector's event listeners will detect the
-        // solr.indexingInstructions attribute and activate automatically.
-        // Let the page render with access bypassed.
-        $response = $handler->handle($request);
+        // Let the page render. During rendering, the UserGroupDetector event
+        // listeners (activated by solr.userGroupDetection request attribute from
+        // UserGroupDetectionMiddleware) remove fe_group constraints and collect
+        // fe_group values from content elements into the resultCollector.
+        $handler->handle($request);
 
-        // Collect the groups from the result collector
+        // Finalize: deduplicate, sort, and store the collected groups
+        $this->resultCollector->finalizeUserGroups();
+
         $groups = $this->resultCollector->getUserGroups();
         if (empty($groups)) {
             $groups = [0]; // public access
