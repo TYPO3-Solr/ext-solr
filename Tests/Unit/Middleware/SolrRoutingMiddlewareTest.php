@@ -16,7 +16,8 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Middleware;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingInstructions;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Middleware\SolrRoutingMiddleware;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
@@ -131,13 +132,16 @@ class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
     #[Test]
     public function enhancerInactiveDuringIndexingTest(): void
     {
-        $serverRequest = new ServerRequest(
+        $itemMock = $this->createMock(Item::class);
+        $instructions = new IndexingInstructions(
+            items: [$itemMock],
+            action: IndexingInstructions::ACTION_INDEX_PAGE,
+            language: 0,
+        );
+        $serverRequest = (new ServerRequest(
             'GET',
             'https://domain.example/',
-            [
-                PageIndexerRequest::SOLR_INDEX_HEADER => '1',
-            ],
-        );
+        ))->withAttribute('solr.indexingInstructions', $instructions);
 
         $this->routingServiceMock->expects(self::never())->method('getSiteMatcher');
         $solrRoutingMiddleware = new SolrRoutingMiddleware();

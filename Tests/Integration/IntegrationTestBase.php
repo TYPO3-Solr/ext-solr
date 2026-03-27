@@ -18,8 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingInstructions;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
@@ -498,13 +498,12 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         array $importPageIds,
         ?int $frontendUserId = null,
     ): void {
-        // Mark the pages as items to index
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         foreach ($importPageIds as $importPageId) {
             $site = $siteFinder->getSiteByPageId($importPageId);
             $queueItem = $this->addPageToIndexQueue($importPageId, $site);
             $frontendUrl = $site->getRouter()->generateUri($importPageId);
-            $this->executePageIndexer($frontendUrl, $queueItem, $frontendUserId);
+            $this->executePageIndexer((string)$frontendUrl, $queueItem, $frontendUserId);
         }
         $this->waitToBeVisibleInSolr();
     }
@@ -512,7 +511,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     /**
      * @throws InvalidArgumentException
      * @throws DBALException
-     * @throws NoSuchCacheException
      */
     protected function indexPageQueueItem(Item $item, int $language = 0, string $coreName = 'core_en'): bool
     {
@@ -531,7 +529,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
             $parameters,
         );
 
-        $response = $this->executePageIndexer($frontendUrl, $item);
+        $response = $this->executePageIndexer((string)$frontendUrl, $item);
 
         $connection = $this->getConnectionPool()->getConnectionForTable('sys_template');
         $connection->update(
@@ -541,6 +539,38 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         );
 
         return $response->getStatusCode() === 200;
+    }
+
+    /**
+     * Executes a Frontend sub-request to trigger page indexing via the new
+     * IndexingInstructions pipeline (SolrIndexingMiddleware).
+     */
+    protected function executePageIndexer(string $url, Item $item, ?int $frontendUserId = null): ResponseInterface
+    {
+        $instructions = new IndexingInstructions(
+            items: [$item],
+            action: IndexingInstructions::ACTION_INDEX_PAGE,
+            language: 0,
+            accessRootline: (string)Rootline::getAccessRootlineByPageId($item->getRecordUid()),
+            parameters: ['item' => $item->getIndexQueueUid()],
+        );
+
+        $request = new InternalRequest($url);
+        $request = $request->withAttribute('solr.indexingInstructions', $instructions);
+
+        $requestContext = null;
+        if ($frontendUserId !== null) {
+            $requestContext = (new InternalRequestContext())->withFrontendUserId($frontendUserId);
+        }
+
+        $response = $this->executeFrontendSubRequest($request, $requestContext);
+
+        /** @var VariableFrontend $runtimeCache */
+        $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime');
+        $runtimeCache->flush();
+
+        $response->getBody()->rewind();
+        return $response;
     }
 
     /**
@@ -601,41 +631,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
         $itemData = $connection->select(['*'], 'tx_solr_indexqueue_item', ['uid' => $itemUid])->fetchAssociative();
         return new Item($itemData);
-    }
-
-    /**
-     * Executes a Frontend request within the same PHP process to trigger the indexing of a page.
-     *
-     * @throws NoSuchCacheException
-     */
-    protected function executePageIndexer(string $url, Item $item, ?int $frontendUserId = null): ResponseInterface
-    {
-        $request = new InternalRequest($url);
-        $requestContext = null;
-
-        // Now add the headers for item to the request
-        $indexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class);
-        $indexerRequest->setIndexQueueItem($item);
-        $accessRootline = Rootline::getAccessRootlineByPageId($item->getRecordUid());
-        $indexerRequest->setParameter('accessRootline', (string)$accessRootline);
-        $indexerRequest->setParameter('item', $item->getIndexQueueUid());
-        $indexerRequest->addAction('indexPage');
-        $headers = $indexerRequest->getHeaders();
-
-        foreach ($headers as $header) {
-            [$headerName, $headerValue] = GeneralUtility::trimExplode(':', $header, true, 2);
-            $request = $request->withAddedHeader($headerName, $headerValue);
-        }
-        if ($frontendUserId !== null) {
-            $requestContext = (new InternalRequestContext())->withFrontendUserId($frontendUserId);
-        }
-        $response = $this->executeFrontendSubRequest($request, $requestContext);
-        /** @var VariableFrontend $runtimeCache */
-        $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime');
-        $runtimeCache->flush();
-
-        $response->getBody()->rewind();
-        return $response;
     }
 
     /**

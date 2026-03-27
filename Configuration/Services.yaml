@@ -104,11 +104,6 @@ services:
     autowire: true
     shared: true
 
-  ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler:
-    public: true
-    autowire: true
-    shared: true
-
   ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\NoProcessingEventListener:
     shared: true
     arguments:
@@ -316,6 +311,11 @@ services:
     public: true
     shared: true
 
+  ApacheSolrForTypo3\Solr\Middleware\UserGroupDetectionMiddleware:
+    public: true
+    autowire: true
+    shared: false
+
   ApacheSolrForTypo3\Solr\Middleware\SolrIndexingMiddleware:
     public: true
     autowire: true
@@ -333,12 +333,6 @@ services:
       - name: event.listener
         identifier: 'solr.index.PageIndexer.FrontendUserAuthenticator'
 
-  ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer:
-    autowire: true
-    shared: true
-    tags:
-      - name: event.listener
-        identifier: 'solr.index.FrontendHelper.PageIndexer.indexPageContentAfterCacheableContentIsGenerated'
   ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider:
     public: true
     shared: true
@@ -352,16 +346,10 @@ services:
       - name: event.listener
         identifier: 'solr.index.PageFieldMappingIndexer'
 
-  ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector:
+  ApacheSolrForTypo3\Solr\Middleware\UserGroupDetector:
     autowire: true
-    # Only once usable in same request. No usage in other contexts.
-    shared: true
+    shared: false
     autoconfigure: true
-    tags:
-      - name: event.listener
-        identifier: 'solr.index.UserGroupDetector.removeFeGroupConstraint'
-        event: TYPO3\CMS\Core\Domain\Event\ModifyDefaultConstraintsForDatabaseQueryEvent
-        method: 'removeFeGroupConstraintFromDatabaseQuery'
 
   ###  EXT:solr content objects
   ApacheSolrForTypo3\Solr\ContentObject\Classification:

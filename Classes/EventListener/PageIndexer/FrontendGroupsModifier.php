@@ -18,77 +18,40 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\EventListener\PageIndexer;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingInstructions;
+use ApacheSolrForTypo3\Solr\Middleware\AuthorizationService;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
-use TYPO3\CMS\Core\Http\JsonResponse;
-use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\ModifyResolvedFrontendGroupsEvent;
 
 /**
- * Class FrontendGroupsModifier is responsible to fake the fe_groups to make
- * the indexing of access restricted pages and content elements.
- *
- * This class is involved only on {@link PageIndexer} processing.
+ * Fakes fe_group membership during indexing sub-requests to allow
+ * indexing of access-restricted pages and content elements.
  */
 final readonly class FrontendGroupsModifier
 {
-    /**
-     * Modifies the fe_groups of a user on X-Tx-Solr-Iq requests.
-     *
-     * @throws PropagateResponseException
-     */
     #[AsEventListener(
         identifier: 'solr.index.PageIndexer.FrontendUserAuthenticator',
     )]
     public function __invoke(ModifyResolvedFrontendGroupsEvent $event): void
     {
-        $pageIndexerRequest = $event->getRequest()->getAttribute('solr.pageIndexingInstructions');
-        if (!$pageIndexerRequest instanceof PageIndexerRequest) {
+        $instructions = $event->getRequest()->getAttribute('solr.indexingInstructions');
+        if (!$instructions instanceof IndexingInstructions) {
             return;
         }
 
-        $actions = $pageIndexerRequest->getActions();
-        $isFindUserGroups = in_array(UserGroupDetector::ACTION_NAME, $actions, true);
-        $isIndexPage = in_array(PageIndexer::ACTION_NAME, $actions, true);
+        $isFindUserGroups = $instructions->isFindUserGroups();
+        $isIndexPage = $instructions->isPageIndexing();
 
         if (!$isFindUserGroups && !$isIndexPage) {
             return;
         }
 
-        if (!$pageIndexerRequest->isAuthenticated()) {
-            $logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
-            $logger->error(
-                'Invalid Index Queue Frontend Request detected!',
-                [
-                    'page indexer request' => (array)$pageIndexerRequest,
-                    'index queue header' => $event->getRequest()->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0],
-                ],
-            );
-            throw new PropagateResponseException(
-                new JsonResponse(
-                    [
-                        'error' => [
-                            'code' => 403,
-                            'message' => 'Invalid Index Queue Request.',
-                        ],
-                    ],
-                    403,
-                ),
-                1646655622,
-            );
-        }
-
-        // For findUserGroups: grant access to the page by faking membership in the page's user group
-        // This allows the UserGroupDetector to render the page and detect all content fe_groups
+        // For findUserGroups: grant access to the page by faking membership in the page's user group.
+        // This allows the UserGroupDetector to render the page and detect all content fe_groups.
         if ($isFindUserGroups) {
-            $pageFeGroup = (int)($pageIndexerRequest->getParameter('pageUserGroup') ?? 0);
+            $pageFeGroup = (int)($instructions->getParameter('pageUserGroup') ?? 0);
 
-            // Only need to fake group membership if the page is protected
             if ($pageFeGroup > 0) {
                 $groupData = [
                     [
@@ -104,21 +67,21 @@ final readonly class FrontendGroupsModifier
         }
 
         // For indexPage: use the access rootline to determine required groups
-        $groups = $this->resolveFrontendUserGroups($pageIndexerRequest);
+        $groups = $this->resolveFrontendUserGroups($instructions);
 
         $noRelevantFrontendUserGroupResolved = empty($groups) || (count($groups) === 1 && $groups[0] === 0);
-        if ((int)$pageIndexerRequest->getParameter('userGroup') === 0
+        if ($instructions->getUserGroup() === 0
             && (
-                (int)$pageIndexerRequest->getParameter('pageUserGroup') !== -2
-                && (int)$pageIndexerRequest->getParameter('pageUserGroup') < 1
+                (int)($instructions->getParameter('pageUserGroup') ?? 0) !== -2
+                && (int)($instructions->getParameter('pageUserGroup') ?? 0) < 1
             )
             && $noRelevantFrontendUserGroupResolved
         ) {
             return;
         }
 
-        if ((int)$pageIndexerRequest->getParameter('pageUserGroup') > 0) {
-            $groups[] = (int)$pageIndexerRequest->getParameter('pageUserGroup');
+        if ((int)($instructions->getParameter('pageUserGroup') ?? 0) > 0) {
+            $groups[] = (int)$instructions->getParameter('pageUserGroup');
         }
         $groupData = [];
         foreach ($groups as $groupUid) {
@@ -135,12 +98,9 @@ final readonly class FrontendGroupsModifier
         $event->setGroups($groupData);
     }
 
-    /**
-     * Resolves a logged-in fe_groups to retrieve access restricted content.
-     */
-    private function resolveFrontendUserGroups(PageIndexerRequest $pageIndexerRequest): array
+    private function resolveFrontendUserGroups(IndexingInstructions $instructions): array
     {
-        $accessRootline = $this->getAccessRootline($pageIndexerRequest);
+        $accessRootline = $this->getAccessRootline($instructions);
         $stringAccessRootline = (string)$accessRootline;
         if (empty($stringAccessRootline)) {
             return [];
@@ -148,15 +108,9 @@ final readonly class FrontendGroupsModifier
         return $accessRootline->getGroups();
     }
 
-    /**
-     * Gets the access rootline as defined by the request.
-     */
-    private function getAccessRootline(PageIndexerRequest $pageIndexerRequest): Rootline
+    private function getAccessRootline(IndexingInstructions $instructions): Rootline
     {
-        $stringAccessRootline = '';
-        if ($pageIndexerRequest->getParameter('accessRootline')) {
-            $stringAccessRootline = $pageIndexerRequest->getParameter('accessRootline');
-        }
+        $stringAccessRootline = $instructions->getAccessRootline();
         return GeneralUtility::makeInstance(Rootline::class, $stringAccessRootline);
     }
 }
