@@ -35,9 +35,10 @@ use TYPO3\CMS\Core\Routing\SiteMatcher;
 use TYPO3\CMS\Core\Routing\SiteRouteResult;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Test case to validate the behaviour of the middle ware
+ * Test case to validate the behavior of the middleware
  */
 #[CoversClass(SolrRoutingMiddleware::class)]
 class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
@@ -112,9 +113,8 @@ class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
             ->method('fetchEnhancerInSiteConfigurationByPageUid')
             ->willReturn([]);
 
-        $solrRoutingMiddleware = new SolrRoutingMiddleware();
-        $solrRoutingMiddleware->setLogger(new NullLogger());
-        $solrRoutingMiddleware->injectRoutingService($this->routingServiceMock);
+        GeneralUtility::addInstance(RoutingService::class, $this->routingServiceMock);
+        $solrRoutingMiddleware = new SolrRoutingMiddleware(new NullLogger());
         $solrRoutingMiddleware->process(
             $serverRequest,
             $this->responseOutputHandler,
@@ -140,9 +140,9 @@ class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
         );
 
         $this->routingServiceMock->expects(self::never())->method('getSiteMatcher');
-        $solrRoutingMiddleware = new SolrRoutingMiddleware();
-        $solrRoutingMiddleware->setLogger(new NullLogger());
-        $solrRoutingMiddleware->injectRoutingService($this->routingServiceMock);
+
+        GeneralUtility::addInstance(RoutingService::class, $this->routingServiceMock);
+        $solrRoutingMiddleware = new SolrRoutingMiddleware(new NullLogger());
         $solrRoutingMiddleware->process(
             $serverRequest,
             $this->responseOutputHandler,

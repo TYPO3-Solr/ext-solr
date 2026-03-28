@@ -78,28 +78,16 @@ class RoutingService implements LoggerAwareInterface
 
     protected ?UrlFacetService $urlFacetQueryService = null;
 
-    /**
-     * RoutingService constructor.
-     */
     public function __construct(array $settings = [], string $pluginNamespace = self::PLUGIN_NAMESPACE)
     {
         $this->settings = $settings;
         $this->pluginNamespace = $pluginNamespace;
-        if (empty($this->pluginNamespace)) {
+
+        if ($this->pluginNamespace === '') {
             $this->pluginNamespace = self::PLUGIN_NAMESPACE;
         }
-        $this->initUrlFacetService();
-    }
 
-    /**
-     * Creates a clone of the current service and replace the settings inside
-     */
-    public function withSettings(array $settings): RoutingService
-    {
-        $service = clone $this;
-        $service->settings = $settings;
-        $service->initUrlFacetService();
-        return $service;
+        $this->initUrlFacetService();
     }
 
     /**
@@ -850,6 +838,7 @@ class RoutingService implements LoggerAwareInterface
         array $parameters,
     ): ServerRequestInterface {
         $queryParams = $request->getQueryParams();
+
         foreach ($arguments as $fieldName => $queryPath) {
             // Skip if there is no parameter
             if (!isset($parameters[$fieldName])) {
