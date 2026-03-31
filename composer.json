@@ -5,6 +5,7 @@
   "license": "GPL-3.0-or-later",
   "keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
   "homepage": "https://www.typo3-solr.com",
+  "version": "14.0.0-alpha1",
   "authors": [
     {
       "name": "dkd Internet Service GmbH",

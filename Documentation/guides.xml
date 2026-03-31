@@ -19,7 +19,7 @@
   />
   <project
 	  title="Apache Solr for TYPO3"
-	  release="14.0.0"
+	  release="14.0.0-alpha1"
 	  version="14.0"
 	  copyright="since 2009 by dkd &amp; contributors"
   />
