@@ -1,5 +1,14 @@
 <?php
 
+defined('TYPO3') or die('Access denied.');
+
+$isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
+if (!$isComposerMode) {
+    // we load the autoloader for our libraries
+    $dir = ExtensionManagementUtility::extPath('solr');
+    require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
+}
+
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\GroupedResultParser;
@@ -29,8 +38,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use TYPO3\CMS\Scheduler\Task\TableGarbageCollectionTask;
-
-defined('TYPO3') or die('Access denied.');
 
 // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -255,10 +262,3 @@ defined('TYPO3') or die('Access denied.');
         $parserRegistry->registerParser(GroupedResultParser::class, 200);
     }
 })();
-
-$isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
-if (!$isComposerMode) {
-    // we load the autoloader for our libraries
-    $dir = ExtensionManagementUtility::extPath('solr');
-    require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
-}
