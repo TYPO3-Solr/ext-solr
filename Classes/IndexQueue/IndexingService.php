@@ -120,8 +120,19 @@ readonly class IndexingService
         }
 
         $success = true;
+        $pageUserGroup = (int)($this->buildPageParameters($item)['pageUserGroup'] ?? 0);
         foreach ($solrConnections as $languageUid => $solrConnection) {
             $accessGroups = $this->findUserGroupsForPage($item, $languageUid);
+            if ($pageUserGroup > 0) {
+                // A page with fe_group restriction has no publicly-accessible content variants:
+                // remove group 0 (which may originate from global template CEs, not page content).
+                // Ensure the page's own group is in accessGroups so restricted-but-eligible users
+                // can still find the page in search results.
+                $accessGroups = array_values(array_filter($accessGroups, static fn(int $g): bool => $g !== 0));
+                if (!in_array($pageUserGroup, $accessGroups, true)) {
+                    $accessGroups[] = $pageUserGroup;
+                }
+            }
             foreach ($accessGroups as $userGroup) {
                 $accessRootline = $this->buildAccessRootline($item, $languageUid, $userGroup);
                 if (!$this->executePageIndexingSubRequest($item, $languageUid, $userGroup, $accessRootline)) {

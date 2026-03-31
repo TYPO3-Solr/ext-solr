@@ -80,7 +80,9 @@ final readonly class FrontendGroupsModifier
             return;
         }
 
-        if ((int)($instructions->getParameter('pageUserGroup') ?? 0) > 0) {
+        if ($instructions->getUserGroup() > 0
+            && (int)($instructions->getParameter('pageUserGroup') ?? 0) > 0
+        ) {
             $groups[] = (int)$instructions->getParameter('pageUserGroup');
         }
         $groupData = [];

@@ -62,6 +62,40 @@ Key changes:
 See `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_ and
 `#4598 <https://github.com/TYPO3-Solr/ext-solr/issues/4598>`_ for details.
 
+Bugfix: No ``c:0`` Variant on fe_group-restricted Pages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Two interrelated bugs in the new sub-request indexing pipeline caused
+access-protected pages to be indexed with incorrect Solr documents.
+
+**Bug 1 — Spurious ``c:0`` variant from global template content:**
+During the ``findUserGroups`` sub-request, TYPO3 renders the full page
+including global template content (footer, navigation) from other pages.
+Content elements without ``fe_group`` restriction in these template areas
+caused ``UserGroupDetector`` to collect group ``0``, which then triggered
+a ``c:0`` Solr variant even for pages where all actual page content is
+access-restricted. With ``fe_group=1`` on the page, the ``c:0`` variant
+was never meaningfully accessible (its access rootline already required
+group 1), but it polluted the index with empty or incorrect documents.
+
+Fix: When ``pageUserGroup > 0``, group ``0`` is removed from the detected
+access groups. The page's own group is added as a fallback so that users
+holding only the page group can still find the page in search results.
+
+**Bug 2 — Protected content leaking into the ``c:0`` variant:**
+When indexing the ``c:0`` variant (anonymous rendering), ``FrontendGroupsModifier``
+unconditionally added ``pageUserGroup`` to the faked frontend groups. This
+granted access to ``fe_group``-restricted content elements during the
+anonymous rendering sub-request, causing protected content to appear in
+the public Solr document — a potential content disclosure issue.
+
+Fix: ``pageUserGroup`` is now only added to the faked groups when
+``userGroup > 0`` (i.e. not during the anonymous ``c:0`` rendering).
+
+As a result, pages with ``fe_group`` restriction no longer produce a
+``c:0`` Solr document. Instead, the page's own group (e.g. ``c:1``) is
+used as the base content access variant.
+
 
 Breaking Changes
 ----------------
@@ -228,6 +262,7 @@ those calls — the sub-request pipeline handles CWD automatically.
 All Changes
 -----------
 
+*   [BUGFIX] Prevent c:0 variant and content leakage on fe_group-restricted pages by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
 *   [!!!][TASK] Remove legacy PageIndexer system and migrate to IndexingInstructions by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
 *   [TASK] Set CWD to public path during sub-requests and remove CliEnvironment by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
 *   [!!!][TASK] Refactor indexing stack to unified TYPO3 core sub-requests by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
