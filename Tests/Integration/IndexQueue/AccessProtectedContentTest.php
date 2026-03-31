@@ -129,7 +129,7 @@ class AccessProtectedContentTest extends IntegrationTestBase
             'fixture' => 'can_index_access_protected_page',
             'expectedNumFound' => 1,
             'expectedAccessFieldValues' => [
-                '2:1/c:0',
+                '2:1/c:1',
             ],
             'expectedContents' => [
                 'public content of protected page',
@@ -157,7 +157,7 @@ class AccessProtectedContentTest extends IntegrationTestBase
             'fixture' => 'can_index_access_protected_page_with_protected_contents',
             'expectedNumFound' => 2,
             'expectedAccessFieldValues' => [
-                '2:1/c:0',
+                '2:1/c:1',
                 '2:1/c:2',
             ],
             'expectedContents' => [
@@ -173,7 +173,7 @@ class AccessProtectedContentTest extends IntegrationTestBase
             'fixture' => 'can_index_access_protected_page_with_protected_contents',
             'expectedNumFound' => 2,
             'expectedAccessFieldValues' => [
-                '2:1/c:0',
+                '2:1/c:1',
                 '2:1/c:2',
             ],
             'expectedContents' => [
@@ -216,6 +216,21 @@ class AccessProtectedContentTest extends IntegrationTestBase
             'expectedNumFoundAnonymousUser' => 1,
             'userGroupToCheckAccessFilter' => '0,1',
             'expectedNumFoundLoggedInUser' => 2,
+        ];
+
+        yield 'protected page: c:0 must not contain same-group protected content (isolation bug)' => [
+            'fixture' => 'can_index_protected_page_with_public_and_same_group_protected_content',
+            'expectedNumFound' => 1,
+            'expectedAccessFieldValues' => [
+                '2:1/c:1',
+            ],
+            'expectedContents' => [
+                // c:1: only the group-1 CE (hide-at-login CE is hidden for logged-in users)
+                'protected ce protected bodytext',
+            ],
+            'expectedNumFoundAnonymousUser' => 0,
+            'userGroupToCheckAccessFilter' => '0,1',
+            'expectedNumFoundLoggedInUser' => 1,
         ];
 
         yield 'page protected by extend to subpages' => [
