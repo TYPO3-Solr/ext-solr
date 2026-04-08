@@ -337,7 +337,7 @@ class SearchUriBuilder
             if (!str_contains($value, '###')) {
                 return $value;
             }
-            return urlencode($value);
+            return rawurlencode($value);
         }, array_keys($values));
 
         $uri = str_replace($keys, $values, $uriCacheTemplate);
