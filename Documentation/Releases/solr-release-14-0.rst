@@ -265,6 +265,14 @@ those calls — the sub-request pipeline handles CWD automatically.
 Latest Apache Solr Release 10.0.0 required, EXT:solr 14 won't support older Apache Solr versions. Along with the switch to Apache Solr 10, Apache Lucene 10 is being used.
 A full reindexing is recommended. Please refer to the Apache Solr documentation to find out what major changes Solr 10 brings.
 
+Solr 10 bundles Jetty 12, which strictly rejects ambiguous URI path encoding (HTTP 400). A previous workaround using double rawurlencode() for the managed synonyms and stopwords
+API has been removed, as it is incompatible with Jetty 12. Synonym base words and stop words containing non-ASCII characters (e.g. umlauts) are now handled correctly.
+
+..  warning::
+    Synonym base words containing "%" or "/" remain unsupported. "%" is rejected by
+    Jetty 12 as potentially ambiguous, and "/" is interpreted as a URI path separator by Solr.
+    See: https://issues.apache.org/jira/browse/SOLR-6853
+
 
 !!! Deprecated dynamic Solr fields dropped
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

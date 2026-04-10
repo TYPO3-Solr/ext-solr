@@ -243,7 +243,7 @@ class SolrAdminService extends AbstractSolrService
         $this->initializeSynonymsUrl();
         $synonymsUrl = $this->_synonymsUrl;
         if (!empty($baseWord)) {
-            $synonymsUrl .= '/' . rawurlencode(rawurlencode($baseWord));
+            $synonymsUrl .= '/' . rawurlencode($baseWord);
         }
 
         $response = $this->_sendRawGet($synonymsUrl);
@@ -266,7 +266,7 @@ class SolrAdminService extends AbstractSolrService
     public function deleteSynonym(string $baseWord): ResponseAdapter
     {
         $this->initializeSynonymsUrl();
-        return $this->_sendRawDelete($this->_synonymsUrl . '/' . rawurlencode(rawurlencode($baseWord)));
+        return $this->_sendRawDelete($this->_synonymsUrl . '/' . rawurlencode($baseWord));
     }
 
     /**
@@ -308,7 +308,7 @@ class SolrAdminService extends AbstractSolrService
             );
         }
 
-        return $this->_sendRawDelete($this->_stopWordsUrl . '/' . rawurlencode(rawurlencode($stopWordToDelete)));
+        return $this->_sendRawDelete($this->_stopWordsUrl . '/' . rawurlencode($stopWordToDelete));
     }
 
     protected function initializeSynonymsUrl(): void

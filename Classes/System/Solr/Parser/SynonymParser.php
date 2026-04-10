@@ -43,6 +43,6 @@ class SynonymParser
      */
     public function toJson(string $baseWord, array $synonyms): string
     {
-        return json_encode([$baseWord => $synonyms]);
+        return json_encode([$baseWord => $synonyms], JSON_UNESCAPED_UNICODE);
     }
 }
