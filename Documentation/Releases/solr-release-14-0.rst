@@ -266,6 +266,25 @@ Latest Apache Solr Release 10.0.0 required, EXT:solr 14 won't support older Apac
 A full reindexing is recommended. Please refer to the Apache Solr documentation to find out what major changes Solr 10 brings.
 
 
+!!! Deprecated dynamic Solr fields dropped
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Since EXT:solr 9 and Apache Solr 7 dynamic fields based on trie fields are marked as deprecated, these fields are now removed:
+
+*   *_tIntS (-> *_intS)
+*   *_tInt (-> _intM)
+*   *_tLong (-> _longS)
+*   *_tLong (-> _longM)
+*   *_tFloat (-> _floatS)
+*   *_tFloat (-> _floatM)
+*   *_tDouble (-> _doubleS)
+*   *_tDouble (-> _doubleS)
+*   *_tDouble4 (-> _double4S)
+*   *_tDouble4 (-> _double4M)
+*   *_tDate (-> _dateS)
+*   *_tDate (-> _dateM)
+
+
 All Changes
 -----------
 

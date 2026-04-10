@@ -27,26 +27,14 @@ Extension               Type                                 Multivalue  Comment
 \*_boolM                Boolean                              Yes
 \*_intS                 Integer                              No
 \*_intM                 Integer                              Yes
-\*_tIntS                Integer                              No          Deprecated use _intS removed in EXT:solr 10
-\*_tIntM                Integer                              Yes         Deprecated use _intM removed in EXT:solr 10
 \*_longS                Long                                 No
 \*_longM                Long                                 Yes
-\*_tLongS               Long                                 No          Deprecated use _longS removed in EXT:solr 10
-\*_tLongM               Long                                 Yes         Deprecated use _longM removed in EXT:solr 10
 \*_floatS               Float                                No
 \*_floatM               Float                                Yes
-\*_tFloatS              Float                                No          Deprecated use _floatS removed in EXT:solr 10
-\*_tFloatM              Float                                Yes         Deprecated use _floatM removed in EXT:solr 10
 \*_doubleS              Double                               No
 \*_doubleM              Double                               Yes
-\*_tDoubleS             Double                               No          Deprecated use _doubleS removed in EXT:solr 10
-\*_tDoubleM             Double                               Yes         Deprecated use _doubleS removed in EXT:solr 10
-\*_tDouble4S            Double                               No          Deprecated use _double4S removed in EXT:solr 10
-\*_tDouble4M            Double                               Yes         Deprecated use _double4M removed in EXT:solr 10
 \*_dateS                Date                                 No
 \*_dateM                Date                                 Yes
-\*_tDateS               Date                                 No          Deprecated use _dateS removed in EXT:solr 10
-\*_tDateM               Date                                 Yes         Deprecated use _dateM removed in EXT:solr 10
 \*_dateRangeS           DateRange                            No
 \*_dateRangeM           DateRange                            Yes
 \*_random               Random                               No
