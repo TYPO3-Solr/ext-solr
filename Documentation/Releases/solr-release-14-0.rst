@@ -268,10 +268,16 @@ A full reindexing is recommended. Please refer to the Apache Solr documentation 
 Solr 10 bundles Jetty 12, which strictly rejects ambiguous URI path encoding (HTTP 400). A previous workaround using double rawurlencode() for the managed synonyms and stopwords
 API has been removed, as it is incompatible with Jetty 12. Synonym base words and stop words containing non-ASCII characters (e.g. umlauts) are now handled correctly.
 
+In Solr 10 the LocalTikaExtractionBackend (deprecated since Solr 9.10, SOLR-17961) was also removed. The tikaserver backend is now the only supported extraction backend. The `/update/extract`
+request handler has been removed from solrconfig.xml accordingly. Users relying on Solr Cell must use EXT:tika v14+ and provide a Tika Server or Tika app
+
 ..  warning::
     Synonym base words containing "%" or "/" remain unsupported. "%" is rejected by
     Jetty 12 as potentially ambiguous, and "/" is interpreted as a URI path separator by Solr.
     See: https://issues.apache.org/jira/browse/SOLR-6853
+
+..  warning::
+    Users relying on Solr Cell must use EXT:tika v14+ and provide a Tika Server or Tika app and every usage of `SolrWriteService->extractByQuery()` must be refactored to use EXT:tika.
 
 
 !!! Deprecated dynamic Solr fields dropped
