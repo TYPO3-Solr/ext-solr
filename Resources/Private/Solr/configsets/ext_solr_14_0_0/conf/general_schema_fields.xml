@@ -217,25 +217,6 @@
 	<dynamicField name="*_dateRangeM" type="dateRange" indexed="true" stored="true" docValues="false" multiValued="true" />
 
 
-	<!--
-		These fields are deprecated and only kept for backwards compatibility:
-	-->
-	<dynamicField name="*_tIntS"      type="integer"   indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_tIntM"      type="integer"   indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_tLongS"     type="long"      indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_tLongM"     type="long"      indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_tFloatS"    type="float"     indexed="true" stored="true" docValues="true" multiValued="false"/>
-	<dynamicField name="*_tFloatM"    type="float"     indexed="true" stored="true" docValues="true" multiValued="true"/>
-	<dynamicField name="*_tDoubleS"   type="double"    indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_tDoubleM"   type="double"    indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_tDouble4S"  type="double"    indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_tDouble4M"  type="double"    indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_tDateS"     type="date"      indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_tDateM"     type="date"      indexed="true" stored="true" docValues="true" multiValued="true" />
-	<!--
-		End of deprecated fields
-	-->
-
 	<dynamicField name="*_textS"      type="text"      indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_textM"      type="text"      indexed="true" stored="true" multiValued="true" />
 	<dynamicField name="*_textTS"     type="textTight" indexed="true" stored="true" multiValued="false" />
