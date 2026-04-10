@@ -31,6 +31,12 @@ use TYPO3\CMS\Reports\Status;
 class TextToVectorModelStoreStatus extends AbstractSolrStatus
 {
     /**
+     * Class name of the knn_text_to_vector query parser
+     */
+    private const TTV_QUERY_PARSER_CLASS_NAME =
+        'org.apache.solr.languagemodels.textvectorisation.search.TextToVectorQParserPlugin';
+
+    /**
      * Checks the status of the vector plugin and store
      *
      * @throws UnexpectedTYPO3SiteInitializationException
@@ -53,10 +59,8 @@ class TextToVectorModelStoreStatus extends AbstractSolrStatus
         $configuredModels = [];
         $missingModelConfigurations = 0;
         foreach ($endpoints as $endpoint => $adminService) {
-            if (!property_exists(
-                $adminService->getPluginsInformation()->plugins->QUERYPARSER,
-                'org.apache.solr.languagemodels.textvectorisation.search.TextToVectorQParserPlugin',
-            )) {
+            $ttvQueryParser = $adminService->getCoreConfiguration()->config->queryParser->knn_text_to_vector ?? null;
+            if (($ttvQueryParser->class ?? '')  !== self::TTV_QUERY_PARSER_CLASS_NAME) {
                 $configuredEndpoints[] = [
                     'baseUrl' => $endpoint,
                     'status' => ContextualFeedbackSeverity::WARNING,

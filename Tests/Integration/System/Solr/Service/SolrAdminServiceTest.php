@@ -170,11 +170,12 @@ class SolrAdminServiceTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetPluginsInformation(): void
+    public function canGetCoreConfiguration(): void
     {
-        $result = $this->solrAdminService->getPluginsInformation();
+        $result = $this->solrAdminService->getCoreConfiguration();
         self::assertSame(0, $result->responseHeader->status);
         self::assertSame(2, count($result));
+        self::assertGreaterThanOrEqual(10, (float)$result->config->luceneMatchVersion); // @phpstan-ignore-line
     }
 
     /**
