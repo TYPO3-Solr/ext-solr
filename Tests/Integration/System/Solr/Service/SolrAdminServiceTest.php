@@ -62,13 +62,24 @@ class SolrAdminServiceTest extends IntegrationTestBase
         yield 'normal' => ['baseWord' => 'homepage', 'synonyms' => ['website']];
         yield 'umlaut' => ['baseWord' => 'früher', 'synonyms' => ['vergangenheit']];
         yield '"' => ['baseWord' => '"', 'synonyms' => ['quote mark']];
-        yield '%' => ['baseWord' => '%', 'synonyms' => ['percent']];
         yield '#' => ['baseWord' => '#', 'synonyms' => ['hashtag']];
         yield ':' => ['baseWord' => ':', 'synonyms' => ['colon']];
         yield ';' => ['baseWord' => ';', 'synonyms' => ['semicolon']];
 
-        // '/' still persists in https://issues.apache.org/jira/browse/SOLR-6853
-        //yield '/' => ['baseWord' => '/', 'synonyms' => ['slash']]
+        // The previous workaround in SolrAdminService using double rawurlencode() was introduced to prevent Jetty
+        // from interpreting encoded slashes (%2F) as path separators (see SOLR-6853).
+        // This workaround breaks Jetty 12 (bundled with Solr 10), which now strictly rejects
+        // ambiguous URI path encoding with HTTP 400.
+        //
+        // Removing the workaround restores basic functionallity (single rawurlencode()), but
+        // base words containing "%" or "/" still cannot be used:
+        // "%" encodes to "%25", which Jetty 12 rejects as potentially ambiguous,
+        // and "/" encodes to "%2F", which Solr interprets as a path separator.
+        // Both characters are therefore not supported as synonym base words.
+        //
+        // See: https://issues.apache.org/jira/browse/SOLR-6853
+        //yield '%' => ['baseWord' => '%', 'synonyms' => ['percent']];
+        //yield '/' => ['baseWord' => '/', 'synonyms' => ['slash']];
     }
 
     #[DataProvider('synonymDataProvider')]
