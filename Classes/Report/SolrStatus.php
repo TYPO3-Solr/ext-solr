@@ -186,8 +186,12 @@ class SolrStatus extends AbstractSolrStatus
     protected function checkAccessFilter(SolrAdminService $solrAdminService): string
     {
         try {
-            $accessFilterPluginVersion = $this->accessFilterPluginInstalledStatus->getInstalledPluginVersion($solrAdminService);
-            $accessFilterMessage = $accessFilterPluginVersion;
+            if ($this->accessFilterPluginInstalledStatus->isPluginInstalled($solrAdminService)) {
+                $accessFilterMessage = 'Installed';
+            } else {
+                $accessFilterMessage = 'Not installed';
+            }
+
         } catch (Throwable $e) {
             $this->responseStatus = ContextualFeedbackSeverity::ERROR;
             $accessFilterMessage = 'Error getting access filter: ' . $e->getMessage();

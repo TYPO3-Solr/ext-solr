@@ -62,12 +62,12 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getPluginsInformation(): void
+    public function getCoreConfiguration(): void
     {
         $fakePluginsResponse = $this->createMock(ResponseAdapter::class);
-        $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/plugins?wt=json', $fakePluginsResponse);
-        $result = $this->adminService->getPluginsInformation();
-        self::assertSame($fakePluginsResponse, $result, 'Could not get expected result from getPluginsInformation');
+        $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/config?wt=json', $fakePluginsResponse);
+        $result = $this->adminService->getCoreConfiguration();
+        self::assertSame($fakePluginsResponse, $result, 'Could not get expected result from getCoreConfiguration');
     }
 
     #[Test]

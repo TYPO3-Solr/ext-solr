@@ -37,7 +37,7 @@ use function simplexml_load_string;
  */
 class SolrAdminService extends AbstractSolrService
 {
-    public const PLUGINS_SERVLET = 'admin/plugins';
+    public const CONFIG_SERVLET = 'config';
     public const LUKE_SERVLET = 'admin/luke';
     public const SYSTEM_SERVLET = 'admin/system';
     public const CORES_SERVLET = '../admin/cores';
@@ -51,7 +51,7 @@ class SolrAdminService extends AbstractSolrService
 
     protected ?ResponseAdapter $systemData = null;
 
-    protected ?ResponseAdapter $pluginsData = null;
+    protected ?ResponseAdapter $configurationData = null;
 
     protected ?string $solrconfigName = null;
 
@@ -97,25 +97,25 @@ class SolrAdminService extends AbstractSolrService
     }
 
     /**
-     * Gets information about the plugins installed in Solr
+     * Gets information about the configuration
      *
-     * @return ResponseAdapter|null A nested array of plugin data.
+     * @return ResponseAdapter|null A nested array of configuration data
      */
-    public function getPluginsInformation(): ?ResponseAdapter
+    public function getCoreConfiguration(): ?ResponseAdapter
     {
-        if (count($this->pluginsData ?? []) === 0) {
-            $url = $this->_constructUrl(self::PLUGINS_SERVLET, ['wt' => 'json']);
-            $pluginsInformation = $this->_sendRawGet($url);
+        if (count($this->configurationData ?? []) === 0) {
+            $url = $this->_constructUrl(self::CONFIG_SERVLET, ['wt' => 'json']);
+            $configurationInformation = $this->_sendRawGet($url);
 
             /**
              * access a random property to trigger response parsing
              * @phpstan-ignore-next-line
              */
-            $pluginsInformation->responseHeader;
-            $this->pluginsData = $pluginsInformation;
+            $configurationInformation->responseHeader;
+            $this->configurationData = $configurationInformation;
         }
 
-        return $this->pluginsData;
+        return $this->configurationData;
     }
 
     /**
