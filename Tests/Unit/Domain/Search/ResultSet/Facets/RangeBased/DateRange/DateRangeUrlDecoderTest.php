@@ -56,4 +56,12 @@ class DateRangeUrlDecoderTest extends SetUpUnitTestCase
         $actual = $this->rangeParser->decode('201001010000-');
         self::assertEquals($expected, $actual);
     }
+
+    #[Test]
+    public function endDateIsAlwaysEndOfDayRegardlessOfTimeSuffix(): void
+    {
+        $expected = '[2010-01-01T00:00:00Z TO 2010-01-31T23:59:59Z]';
+        $actual = $this->rangeParser->decode('201001010000-201001310000');
+        self::assertEquals($expected, $actual);
+    }
 }

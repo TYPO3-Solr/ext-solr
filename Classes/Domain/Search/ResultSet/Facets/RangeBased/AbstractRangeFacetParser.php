@@ -112,6 +112,9 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
                 $rangeCounts,
                 true,
             );
+            if (isset($activeValue[0])) {
+                $range->setRawUrlValue($activeValue[0]);
+            }
             $facet->setRange($range);
         }
 

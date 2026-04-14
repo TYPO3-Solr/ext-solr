@@ -6,27 +6,52 @@
 
 	<div class="card">
 		<div class="card-header facet-label">
-			<span class="bi bi-filter"></span>
+			<span class="bi bi-filter" aria-hidden="true"></span>
 			<a data-bs-toggle="collapse" href="#facet{facet.name}">{facet.label}</a>
 		</div>
 
-		<div class="card-body facet-type-numericRange fluidfacet collapse show" data-facet-name="{facet.name}" data-facet-label="{facet.label}" id="facet{facet.name}">
+		<div class="card-body facet-type-numericRange fluidfacet collapse show"
+				 data-facet-name="{facet.name}"
+				 data-facet-label="{facet.label}"
+				 id="facet{facet.name}">
 			<div
-					class="ui-slider facet-type-numericRange-data"
-					data-facet-name="{facet.name}"
+					class="facet-type-numericRange-data"
 					data-facet-label="{facet.label}"
-					data-range-min="{facet.range.startInResponse}"
-					data-range-max="{facet.range.endInResponse}"
-					data-range-min-selected="{facet.range.startRequested}"
-					data-range-max-selected="{facet.range.endRequested}"
-					data-range-gap="{facet.range.gap}"
 					data-facet-url="{s:uri.facet.setFacetItem(facet: facet, facetItemValue: '___FROM___-___TO___')}"
-			></div>
-			<div id="facet-{facet.name}-value">
-				<f:if condition="{facet.isUsed}">
-					<f:then>{facet.range.startRequested} - {facet.range.endRequested}</f:then>
-					<f:else>{facet.range.startInResponse} - {facet.range.endInResponse}</f:else>
-				</f:if>
+			>
+				<div class="tx-solr-numericRange" >
+					<label for="{facet.name}_min" class="tx-solr-numericRange__label">{facet.label} Minimum</label>
+					<input type="range"
+								 min="{facet.range.startInResponse}"
+								 value="{f:if(condition:facet.range.startRequested, then:facet.range.startRequested, else: facet.range.startInResponse)}"
+								 max="{facet.range.endInResponse}"
+								 step="{facet.range.gap}"
+								 name="{facet.name}_min"
+								 id="{facet.name}_min"
+								 class="tx-solr-numericRange__input">
+					<label for="{facet.name}_max" class="tx-solr-numericRange__label">{facet.label} Maximum</label>
+					<input type="range"
+								 min="{facet.range.startInResponse}"
+								 value="{f:if(condition:facet.range.endRequested, then:facet.range.endRequested, else: facet.range.endInResponse)}"
+								 max="{facet.range.endInResponse}"
+								 step="{facet.range.gap}"
+								 name="{facet.name}_max"
+								 id="{facet.name}_max"
+								 class="tx-solr-numericRange__input">
+					<div class="tx-solr-numericRange__slider">
+						<div class="tx-solr-numericRange__slider__track"></div>
+						<div class="tx-solr-numericRange__slider__range-between"></div>
+						<span class="left tx-solr-numericRange__slider__thumb"
+									tabindex="-1"
+									aria-hidden="true"></span>
+						<span class="right tx-solr-numericRange__slider__thumb"
+									tabindex="-1"
+									aria-hidden="true"></span>
+					</div>
+					<div class="tx-solr-numericRange__values">
+						<span class="tx-solr-numericRange__values--min">{facet.range.startRequested}</span>-<span class="tx-solr-numericRange__values--max">{facet.range.endRequested}</span>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

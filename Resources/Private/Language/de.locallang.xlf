@@ -130,6 +130,18 @@
       <trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
 				<source>Last</source>
 			<target state="final">Letzte</target></trans-unit>
+      <trans-unit id="daterange_start" xml:space="preserve">
+				<source>start date</source>
+			<target state="final">Startdatum</target></trans-unit>
+      <trans-unit id="daterange_end" xml:space="preserve">
+				<source>end date</source>
+			<target state="final">Enddatum</target></trans-unit>
+      <trans-unit id="daterange_start_validation" xml:space="preserve">
+				<source>Bitte wählen Sie ein Startdatum zwischen ###MIN### und ###MAX###</source>
+			<target state="final">Enddatum</target></trans-unit>
+      <trans-unit id="daterange_end_validation" xml:space="preserve">
+				<source>Bitte wählen Sie ein Enddatum zwischen ###MIN### und ###MAX###</source>
+			<target state="final">Enddatum</target></trans-unit>
       <!-- From locallang.xlf -->
       <!-- From locallang_db.xlf -->
       <trans-unit id="tt_content.CType_pi_frequentsearches" xml:space="preserve" approved="yes">

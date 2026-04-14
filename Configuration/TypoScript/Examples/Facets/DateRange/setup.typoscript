@@ -18,11 +18,9 @@ plugin.tx_solr.search.faceting.facets {
 }
 # Load js files
 page.includeJSFooterlibs {
-    solr-jquery = EXT:solr/Resources/Public/JavaScript/JQuery/jquery.min.js
-    solr-ui = EXT:solr/Resources/Public/JavaScript/JQuery/jquery-ui.min.js
     solr-daterange = EXT:solr/Resources/Public/JavaScript/facet_daterange_controller.js
 }
 
 page.includeCSS {
-    solr-ui = EXT:solr/Resources/Public/Css/JQueryUi/jquery-ui.custom.css
+    solr-daterange = EXT:solr/Resources/Public/StyleSheets/Frontend/daterange.css
 }
