@@ -67,7 +67,7 @@ ExtensionManagementUtility::addStaticFile(
 ExtensionManagementUtility::addStaticFile(
     'solr',
     'Configuration/TypoScript/Examples/Suggest/',
-    'Search - (Example) Suggest/autocomplete with jquery',
+    'Search - (Example) Suggest/autocomplete',
 );
 
 ExtensionManagementUtility::addStaticFile(
@@ -108,17 +108,17 @@ ExtensionManagementUtility::addStaticFile(
 ExtensionManagementUtility::addStaticFile(
     'solr',
     'Configuration/TypoScript/Examples/Facets/DateRange/',
-    'Search - (Example) DateRange facet with jquery ui datepicker on created field',
+    'Search - (Example) DateRange facet with datepicker on created field',
 );
 ExtensionManagementUtility::addStaticFile(
     'solr',
     'Configuration/TypoScript/Examples/Facets/NumericRange/',
-    'Search - (Example) NumericRange facet with jquery ui slider on pid field',
+    'Search - (Example) NumericRange facet with slider on pid field',
 );
 ExtensionManagementUtility::addStaticFile(
     'solr',
     'Configuration/TypoScript/Examples/Ajaxify/',
-    'Search - Ajaxify the search results with jQuery',
+    'Search - Ajaxify the search results',
 );
 
 // Solr Fluid Grouping Examples

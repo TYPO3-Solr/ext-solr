@@ -100,6 +100,34 @@ used as the base content access variant.
 Breaking Changes
 ----------------
 
+!!! jQuery Removed: Vanilla JavaScript Frontend
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The jQuery, jQuery UI, and associated plugin dependencies have been removed
+from all frontend JavaScript. All controllers (search, suggest, facet options,
+date range, numeric range) have been rewritten in vanilla JavaScript.
+The `autoComplete.js <https://tarekraafat.github.io/autoComplete.js/#/>`_ library
+is now used for the suggest/autocomplete feature.
+
+New dedicated CSS files (``daterange.css``, ``numericrange.css``) replace the
+bundled jQuery UI stylesheet (``jquery-ui.custom.css``).
+
+*Migration:* Remove any ``solr-jquery``, ``solr-uri-jquery``, and ``solr-ui``
+(jQuery UI) asset references from your TypoScript includes and replace them
+with the updated example templates. See the *Frontend / Autosuggest*,
+*Frontend / Facets*, and *Frontend / Ajax* documentation chapters for updated examples.
+
+.. note::
+   If you have overridden any of the following Fluid templates, review the
+   changes in EXT:solr and update your overrides accordingly, as the
+   ``data-*`` attributes and markup structure have changed:
+
+   *  ``Resources/Private/Partials/Facets/Options.html``
+   *  ``Resources/Private/Partials/Facets/OptionsFiltered.html``
+   *  ``Resources/Private/Partials/Facets/RangeDate.html``
+   *  ``Resources/Private/Partials/Facets/RangeNumeric.html``
+
+
 Unified Site Hash Strategy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -302,6 +330,7 @@ Since EXT:solr 9 and Apache Solr 7 dynamic fields based on trie fields are marke
 All Changes
 -----------
 
+*   [!!!][TASK] Remove jQuery dependency from frontend JavaScript by @dkd-lehnebach in `#4619 <https://github.com/TYPO3-Solr/ext-solr/pull/4619>`_
 *   [BUGFIX] Prevent c:0 variant and content leakage on fe_group-restricted pages by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
 *   [!!!][TASK] Remove legacy PageIndexer system and migrate to IndexingInstructions by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
 *   [TASK] Set CWD to public path during sub-requests and remove CliEnvironment by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
@@ -379,6 +408,7 @@ awesome community. Here are the contributors to this release.
 
 - `Amir Arends <https://github.com/amirarends>`_
 - `Benni Mack <https://github.com/bmack>`_
+- `Florian Lehnebach <https://github.com/dkd-lehnebach>`_
 - `@garfieldius <https://github.com/garfieldius>`_
 - `Helmut Hummel <https://github.com/helhum>`_
 - `@jschlier <https://github.com/jschlier>`_
