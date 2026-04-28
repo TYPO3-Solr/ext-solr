@@ -131,6 +131,7 @@ class SolrStatus extends AbstractSolrStatus
             ->getAdminService();
 
         $solrVersion = $this->checkSolrVersion($solrAdmin);
+        $solrMode = $this->checkSolrMode($solrAdmin);
         $accessFilter = $this->checkAccessFilter($solrAdmin);
         $pingTime = $this->checkPingTime($solrAdmin);
         $configName = $this->checkSolrConfigName($solrAdmin);
@@ -147,6 +148,7 @@ class SolrStatus extends AbstractSolrStatus
             'connection' => $solrConnection,
             'solr' => $solrAdmin,
             'solrVersion' => $solrVersion,
+            'solrMode' => $solrMode,
             'pingTime' => $pingTime,
             'configName' => $configName,
             'schemaName' => $schemaName,
@@ -178,6 +180,23 @@ class SolrStatus extends AbstractSolrStatus
         }
 
         return $solrVersion;
+    }
+
+    /**
+     * Checks the solr mode and adds it to the report.
+     *
+     * @return string solr mode
+     */
+    protected function checkSolrMode(SolrAdminService $solr): string
+    {
+        try {
+            $solrMode = $solr->getSolrServerMode();
+        } catch (Throwable $e) {
+            $this->responseStatus = ContextualFeedbackSeverity::ERROR;
+            $solrMode = 'Error getting solr mode: ' . $e->getMessage();
+        }
+
+        return $solrMode;
     }
 
     /**
