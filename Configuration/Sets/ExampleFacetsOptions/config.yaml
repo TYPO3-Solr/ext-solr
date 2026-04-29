@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-facets-options
+label: "Solr search - (Example) Options facet on author field"
+dependencies:
+  - apache-solr-for-typo3/solr
