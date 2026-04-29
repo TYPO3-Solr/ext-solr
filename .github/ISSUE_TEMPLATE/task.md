@@ -1,6 +1,6 @@
 ---
 name: Task
-about: This template is used to decribe regular tasks
+about: This template is used to describe regular tasks
 title: "[TASK]"
 labels: ''
 assignees: ''

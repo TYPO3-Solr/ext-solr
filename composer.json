@@ -5,7 +5,7 @@
   "license": "GPL-3.0-or-later",
   "keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
   "homepage": "https://www.typo3-solr.com",
-  "version": "14.0.0-alpha1",
+  "version": "14.0.0-alpha2",
   "authors": [
     {
       "name": "dkd Internet Service GmbH",
@@ -30,7 +30,7 @@
     "ext-simplexml": "*",
     "solarium/solarium": "6.4.1",
     "typo3/cms-backend": "*",
-    "typo3/cms-core": "14.*.*@dev",
+    "typo3/cms-core": "^v14.3.0",
     "typo3/cms-extbase": "*",
     "typo3/cms-fluid": "*",
     "typo3/cms-frontend": "*",
