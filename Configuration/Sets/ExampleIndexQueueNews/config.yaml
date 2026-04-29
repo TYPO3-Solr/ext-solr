@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-index-queue-news
+label: "Solr search - (Example) Index Queue Configuration for news"
+dependencies:
+  - apache-solr-for-typo3/solr

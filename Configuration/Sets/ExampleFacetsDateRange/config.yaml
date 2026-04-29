@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-facets-date-range
+label: "Solr search - (Example) DateRange facet with datepicker on created field"
+dependencies:
+  - apache-solr-for-typo3/solr

@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-everything-on
+label: "Solr search - (Example) Everything On"
+dependencies:
+  - apache-solr-for-typo3/solr
