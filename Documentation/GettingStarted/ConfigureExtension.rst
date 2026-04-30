@@ -23,11 +23,19 @@ Underlying settings can be found in the extension configuration, though the defa
 
 
 
-Static TypoScript
------------------
+Site Sets or Static TypoScript
+------------------------------
 
-The extension already comes with basic TypoScript configuration that will work for small pages out of the box. For now create or
-edit an existing TypoScript Template record in your page tree and add the provided static TypoScript:
+The extension already comes with basic TypoScript configuration that will work
+for small pages out of the box.
+
+For TYPO3 14 projects, the recommended setup is to include EXT:solr through
+site set dependencies. See :ref:`configuration-site-sets` for the available
+site sets and an example site configuration.
+
+If your project still uses TypoScript Template records, create or edit an
+existing TypoScript Template record in your page tree and add the provided
+static TypoScript:
 
 .. image:: /Images/GettingStarted/typo3-include-static-typoscript.png
 

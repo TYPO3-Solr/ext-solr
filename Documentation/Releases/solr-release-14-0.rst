@@ -21,6 +21,16 @@ TYPO3 14 LTS Compatibility
 EXT:solr has been fully adapted for TYPO3 14 LTS, including Fluid v5 ViewHelper
 compatibility, TCA changes, deprecation removals, and testing framework updates.
 
+TYPO3 Site Sets
+~~~~~~~~~~~~~~~
+
+EXT:solr now provides TYPO3 site sets for the base configuration, optional
+frontend assets, OpenSearch and the shipped example configurations. For TYPO3
+14 projects that do not use TypoScript template records, site set dependencies
+are the recommended way to include EXT:solr configuration.
+
+See :ref:`configuration-site-sets` for the full list of available site sets.
+
 XLIFF 2.0 Migration
 ~~~~~~~~~~~~~~~~~~~
 
