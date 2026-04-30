@@ -29,5 +29,6 @@ Configuration Reference
 	./Reference/TxSolrSuggest
 	./Reference/TxSolrStatistics
 	./Reference/TxSolrLogging
+	./SiteSets
 	./Reference/ExtensionSettings
 	./Reference/SolrConnection
