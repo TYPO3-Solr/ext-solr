@@ -298,7 +298,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        <a href="#panel-group3document-core-{currentCore.index}" data-bs-toggle="collapse">{indexInspectorDocumentsByType.core.corepath}</a>
+                        <a href="#panel-group3document-core-{currentCore.index}" data-bs-toggle="collapse" class="solr-info-module__panel-title-link">
+                            <span class="solr-info-module__panel-title-text">{indexInspectorDocumentsByType.core.corepath}</span>
+                            <span class="badge badge-default">{indexInspectorDocumentsByType.documentCount} documents</span>
+                        </a>
                         <a href="#panel-group3document-core-{currentCore.index}" title="Collapse table" class="float-end" data-bs-toggle="collapse">
                             <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
                         </a>
@@ -322,7 +325,10 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" data-bs-toggle="collapse">Type: {documentType} ({f:count(subject: documents)})</a>
+                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" data-bs-toggle="collapse" class="solr-info-module__panel-title-link">
+                        <span class="solr-info-module__panel-title-text">Type: {documentType}</span>
+                        <span class="badge badge-default">{f:count(subject: documents)} documents</span>
+                    </a>
                     <a href="#panel-group4document-type-{currentCore.index}-{documentType}" title="Collapse table" class="float-end" data-bs-toggle="collapse">
                         <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
                     </a>

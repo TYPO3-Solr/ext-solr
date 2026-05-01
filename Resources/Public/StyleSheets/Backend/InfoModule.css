@@ -75,6 +75,26 @@
     text-overflow: ellipsis;
 }
 
+#index_fields-tab .solr-info-module__panel-title-link,
+#index_inspector-tab .solr-info-module__panel-title-link {
+    align-items: center;
+    display: inline-flex;
+    gap: calc(var(--typo3-spacing) / 2);
+    min-width: 0;
+}
+
+#index_fields-tab .solr-info-module__panel-title-text,
+#index_inspector-tab .solr-info-module__panel-title-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#index_fields-tab .panel-title .badge,
+#index_inspector-tab .panel-title .badge {
+    flex: 0 0 auto;
+}
+
 #index_fields-tab .panel-title > .float-end,
 #index_inspector-tab .panel-title > .float-end {
     display: inline-flex;

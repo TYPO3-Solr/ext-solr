@@ -251,6 +251,7 @@ class InfoModuleController extends AbstractModuleController
             }
 
             $documentsByCoreAndType[$languageId]['core'] = $coreAdmin;
+            $documentsByCoreAndType[$languageId]['documentCount'] = count($documents);
             $documentsByCoreAndType[$languageId]['documents'] = $documentsByType;
         }
 
