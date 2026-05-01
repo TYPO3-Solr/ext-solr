@@ -4,17 +4,18 @@
 <f:layout name="Backend/WithPageTree"/>
 
 <f:section name="Main">
+    <f:be.pageRenderer includeCssFiles="{0: 'EXT:solr/Resources/Public/StyleSheets/Backend/CoreOptimizationModule.css'}"/>
 
-    <div role="tabpanel">
+    <div role="tabpanel" class="solr-core-optimization-module">
         <ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
             <li role="presentation" class="t3js-tabmenu-item nav-item">
                 <a href="#synonyms-tab" class="nav-link active" title="" aria-controls="synonyms-tab" role="tab" data-bs-toggle="tab">
-                    Synonyms
+                    <f:translate key="tabs.synonyms" domain="solr.modules.core_optimization"/>
                 </a>
             </li>
             <li role="presentation" class="t3js-tabmenu-item nav-item ">
                 <a href="#stopwords-tab" class="nav-link" title="" aria-controls="stopwords-tab" role="tab" data-bs-toggle="tab">
-                    Stop Words
+                    <f:translate key="tabs.stopWords" domain="solr.modules.core_optimization"/>
                 </a>
             </li>
         </ul>
@@ -42,143 +43,235 @@
 </f:section>
 
 <f:section name="Synonyms">
-	By defining synonyms you can allow to find documents by words that do not occur in the documents but have the same meaning:<br/>
-	<b>Note:</b> The word that you want replace with a synonym needs to appear on <b>both</b> sides when you want to find it with the term itself later!<br/>
-		Example:<br />
-	<ul>
-		<li><b>"smartphone" => "smartphone, cellphone, mobile, mobilephone"</b>
-			<ul>
-				<li>will match <b>"smartphone, cellphone, mobile, mobilephone"</b></li>
-				<li>And when "smartphone" were missing on the right side, then you could not find the documents with "smartphone" anymore!</li>
-			</ul>
-		</li>
-	</ul>
-	<b>Note: The changes do not apply on the fly, you need to reindex all the pages with occurrences of changed synonyms.</b>
+    <div class="panel panel-default solr-core-optimization-module__guide">
+        <div class="panel-heading">
+            <h2 class="panel-title"><f:translate key="synonyms.guide.title" domain="solr.modules.core_optimization"/></h2>
+        </div>
+        <div class="panel-body">
+            <p class="solr-core-optimization-module__lead">
+                <f:translate key="synonyms.guide.intro" domain="solr.modules.core_optimization"/>
+            </p>
+            <p>
+                <strong><f:translate key="synonyms.guide.note.label" domain="solr.modules.core_optimization"/></strong>
+                <f:translate key="synonyms.guide.note" domain="solr.modules.core_optimization"/>
+            </p>
+
+            <div class="solr-core-optimization-module__example" aria-label="{f:translate(key: 'synonyms.example.title', domain: 'solr.modules.core_optimization')}">
+                <div class="solr-core-optimization-module__example-row">
+                    <span class="solr-core-optimization-module__example-label"><f:translate key="synonyms.example.base" domain="solr.modules.core_optimization"/></span>
+                    <code>"smartphone"</code>
+                </div>
+                <div class="solr-core-optimization-module__example-row">
+                    <span class="solr-core-optimization-module__example-label"><f:translate key="synonyms.example.mapping" domain="solr.modules.core_optimization"/></span>
+                    <code>"smartphone" =&gt; "smartphone, cellphone, mobile, mobile phone"</code>
+                </div>
+                <div class="solr-core-optimization-module__example-row">
+                    <span class="solr-core-optimization-module__example-label"><f:translate key="synonyms.example.result" domain="solr.modules.core_optimization"/></span>
+                    <span><f:translate key="synonyms.example.resultText" domain="solr.modules.core_optimization"/></span>
+                </div>
+            </div>
+
+            <p class="solr-core-optimization-module__hint">
+                <f:translate key="synonyms.guide.reindexNote" domain="solr.modules.core_optimization"/>
+            </p>
+        </div>
+    </div>
 
     <f:if condition="{synonyms}">
         <f:then>
-            <h3>Manage Synonyms</h3>
-            <table class="table table-condensed table-hover table-striped">
-                <thead>
-                <tr class="t3-row-header">
-                    <th>Base Word</th><th>Synonyms</th>
-                    <th>
-                        <f:link.action action="deleteAllSynonyms" title="Delete all synonyms" class="btn btn-default btn-sm">
-                            <core:icon identifier="actions-edit-delete"/>
-                        </f:link.action>
-                        <f:link.action action="exportSynonyms" title="Export all synonyms" class="btn btn-default btn-sm">
-                            <core:icon identifier="actions-document-export-csv"/>
-                        </f:link.action>
-                        </th>
-                </tr>
-                </thead>
-                <tbody>
-                <f:for each="{synonyms}" key="baseWord" as="synonymList">
-                    <tr>
-                        <td>{baseWord}</td>
-                        <td>{synonymList}</td>
-                        <td>
-                            <f:link.action action="deleteSynonyms" arguments="{baseWord:'{baseWord}'}" title="Remove Synonym Mapping"><core:icon identifier="actions-edit-delete"/></f:link.action>
-                        </td>
-                    </tr>
-                </f:for>
-                </tbody>
-            </table>
+            <section class="panel panel-default solr-core-optimization-module__section">
+                <div class="panel-heading">
+                    <div class="solr-core-optimization-module__section-header">
+                        <h3 class="panel-title"><f:translate key="synonyms.manage.title" domain="solr.modules.core_optimization"/></h3>
+                        <div class="btn-group">
+                            <f:link.action action="exportSynonyms" title="{f:translate(key: 'synonyms.action.exportAll', domain: 'solr.modules.core_optimization')}" class="btn btn-default btn-sm">
+                                <core:icon identifier="actions-document-export-csv" size="small"/>
+                                <f:translate key="synonyms.action.exportAll" domain="solr.modules.core_optimization"/>
+                            </f:link.action>
+                            <f:link.action action="deleteAllSynonyms" title="{f:translate(key: 'synonyms.action.deleteAll', domain: 'solr.modules.core_optimization')}" class="btn btn-default btn-sm">
+                                <core:icon identifier="actions-edit-delete" size="small"/>
+                                <f:translate key="synonyms.action.deleteAll" domain="solr.modules.core_optimization"/>
+                            </f:link.action>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-fit">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                        <tr class="t3-row-header">
+                            <th><f:translate key="synonyms.table.baseWord" domain="solr.modules.core_optimization"/></th>
+                            <th><f:translate key="synonyms.table.synonyms" domain="solr.modules.core_optimization"/></th>
+                            <th class="col-control"><f:translate key="synonyms.table.actions" domain="solr.modules.core_optimization"/></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <f:for each="{synonyms}" key="baseWord" as="synonymList">
+                            <tr>
+                                <td><code>{baseWord}</code></td>
+                                <td>{synonymList}</td>
+                                <td class="col-control">
+                                    <f:link.action action="deleteSynonyms" arguments="{baseWord:'{baseWord}'}" title="{f:translate(key: 'synonyms.action.deleteMapping', domain: 'solr.modules.core_optimization')}" class="btn btn-default btn-sm">
+                                        <core:icon identifier="actions-edit-delete" size="small"/>
+                                    </f:link.action>
+                                </td>
+                            </tr>
+                        </f:for>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </f:then>
         <f:else>
-            <f:be.infobox state="-1">
-                No synonyms configured yet.
+            <f:be.infobox title="{f:translate(key: 'synonyms.empty.title', domain: 'solr.modules.core_optimization')}" state="-1">
+                <f:translate key="synonyms.empty.message" domain="solr.modules.core_optimization"/>
             </f:be.infobox>
         </f:else>
     </f:if>
 
-    <h3>Add Synonyms (lowercase)</h3>
-    <div class="section">
-        <f:form action="addSynonyms" id="add-synonyms">
-            <div class="form-group">
-                <label for="baseWord">Base Word</label>
-                <f:form.textfield id="baseWord" name="baseWord" class="form-control" />
-                <span>f.e. iphone</span>
+    <div class="solr-core-optimization-module__form-grid">
+        <section class="panel panel-default solr-core-optimization-module__section">
+            <div class="panel-heading">
+                <h3 class="panel-title"><f:translate key="synonyms.add.title" domain="solr.modules.core_optimization"/></h3>
             </div>
-            <div class="form-group">
-                <label for="synonyms">Synonyms</label>
-                <f:form.textfield id="synonyms" name="synonyms" class="form-control" />
-                <span>comma-separated; f.e. smartphone, cellphone</span>
+            <div class="panel-body">
+                <f:form action="addSynonyms" id="add-synonyms">
+                    <div class="form-group">
+                        <label class="form-label" for="baseWord"><f:translate key="synonyms.add.baseWord" domain="solr.modules.core_optimization"/></label>
+                        <f:form.textfield id="baseWord" name="baseWord" class="form-control"/>
+                        <div class="form-text"><f:translate key="synonyms.add.baseWord.help" domain="solr.modules.core_optimization"/></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="synonyms"><f:translate key="synonyms.add.synonyms" domain="solr.modules.core_optimization"/></label>
+                        <f:form.textfield id="synonyms" name="synonyms" class="form-control"/>
+                        <div class="form-text"><f:translate key="synonyms.add.synonyms.help" domain="solr.modules.core_optimization"/></div>
+                    </div>
+                    <div class="form-check">
+                        <f:form.checkbox id="overrideExistingSingle" name="overrideExisting" value="1" class="form-check-input"/>
+                        <label class="form-check-label" for="overrideExistingSingle"><f:translate key="synonyms.add.overrideExisting" domain="solr.modules.core_optimization"/></label>
+                    </div>
+                    <div class="solr-core-optimization-module__actions">
+                        <f:form.button type="submit" class="btn btn-sm btn-primary">
+                            <core:icon identifier="actions-plus" size="small"/>
+                            <f:translate key="synonyms.add.submit" domain="solr.modules.core_optimization"/>
+                        </f:form.button>
+                    </div>
+                </f:form>
             </div>
-            <div class="form-group">
-                <f:form.checkbox id="overrideExistingSingle" name="overrideExisting" value="1" />
-                <label for="overrideExistingSingle"> Override, if synonym already exists</label>
+        </section>
+
+        <section class="panel panel-default solr-core-optimization-module__section">
+            <div class="panel-heading">
+                <h3 class="panel-title"><f:translate key="synonyms.upload.title" domain="solr.modules.core_optimization"/></h3>
             </div>
-            <div class="submit">
-                <f:form.submit value="Add Synonyms" class="btn btn-sm btn-default"/>
+            <div class="panel-body">
+                <f:form action="importSynonymList" id="upload-synonyms" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label class="form-label" for="synonymFileUpload"><f:translate key="synonyms.upload.file" domain="solr.modules.core_optimization"/></label>
+                        <f:form.upload id="synonymFileUpload" name="synonymFileUpload" class="form-control"/>
+                        <div class="form-text"><f:translate key="synonyms.upload.file.help" domain="solr.modules.core_optimization"/></div>
+                    </div>
+                    <div class="form-check">
+                        <f:form.checkbox id="overrideExisting" name="overrideExisting" value="1" class="form-check-input"/>
+                        <label class="form-check-label" for="overrideExisting"><f:translate key="synonyms.upload.overrideExisting" domain="solr.modules.core_optimization"/></label>
+                    </div>
+                    <div class="form-check">
+                        <f:form.checkbox id="deleteSynonymsBefore" name="deleteSynonymsBefore" value="1" class="form-check-input"/>
+                        <label class="form-check-label" for="deleteSynonymsBefore"><f:translate key="synonyms.upload.replaceAll" domain="solr.modules.core_optimization"/></label>
+                    </div>
+                    <div class="solr-core-optimization-module__actions">
+                        <f:form.button type="submit" class="btn btn-sm btn-primary">
+                            <core:icon identifier="actions-upload" size="small"/>
+                            <f:translate key="synonyms.upload.submit" domain="solr.modules.core_optimization"/>
+                        </f:form.button>
+                    </div>
+                </f:form>
             </div>
-        </f:form>
-    </div>
-    <h3>Upload Synonym List</h3>
-    <div class="section">
-        <f:form action="importSynonymList" id="upload-synonyms" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <f:form.upload id="synonymFileUpload" name="synonymFileUpload" />
-            </div>
-            <div class="form-group">
-                <f:form.checkbox id="overrideExisting" name="overrideExisting" value="1" />
-                <label for="overrideExisting"> Override synonym, if synonym already exists</label>
-            </div>
-            <div class="form-group">
-                <f:form.checkbox id="deleteSynonymsBefore" name="deleteSynonymsBefore" value="1" />
-                <label for="deleteSynonymsBefore"> Replace complete synonym list</label>
-            </div>
-            <div class="submit">
-                <f:form.submit value="Upload file" class="btn btn-sm btn-default"/>
-            </div>
-        </f:form>
+        </section>
     </div>
 </f:section>
 
 <f:section name="StopWords">
-	<p>	Stop words allow you to specify a list of words that will be discarded during indexing.<br/>
-		Usually they are very small and very common words (such as "the" and "and") that often have <br/>
-		little bearing on whether a document is a good match or not.<br/>
-		The format is one word per line.</p>
-
-    <h3>Stop Word List (one per line, lowercase)</h3>
-    <div class="section section-with-header">
-        <div class="row">
-            <div class="col-md-12">
-                <f:if condition="{stopWordsCount} == 0">
-                    <f:be.infobox state="-1">
-                        The stop word list is empty.
-                    </f:be.infobox>
-                </f:if>
-
-                <f:form action="saveStopWords" id="edit-stopwords">
-                    <f:form.textarea name="stopWords" rows="20" cols="50" style="width: auto;" value="{stopWords}"/>
-                    <div class="submit">
-                        <f:form.submit value="Save Stop Word List" class="btn btn-sm btn-default"/>
-                        <f:if condition="{stopWordsCount} > 0">
-                            <f:link.action action="exportStopWords" title="Export StopWords" class="btn btn-default btn-sm">
-                                <core:icon identifier="actions-document-export-csv"/>
-                            </f:link.action>
-                        </f:if>
-                    </div>
-                </f:form>
+    <div class="panel panel-default solr-core-optimization-module__guide">
+        <div class="panel-heading">
+            <h2 class="panel-title"><f:translate key="stopWords.guide.title" domain="solr.modules.core_optimization"/></h2>
+        </div>
+        <div class="panel-body">
+            <p class="solr-core-optimization-module__lead">
+                <f:translate key="stopWords.guide.intro" domain="solr.modules.core_optimization"/>
+            </p>
+            <p>
+                <f:translate key="stopWords.guide.format" domain="solr.modules.core_optimization"/>
+            </p>
+            <div class="solr-core-optimization-module__example solr-core-optimization-module__example--compact">
+                <code>the</code>
+                <code>and</code>
+                <code>or</code>
             </div>
+            <p class="solr-core-optimization-module__hint">
+                <f:translate key="stopWords.guide.reindexNote" domain="solr.modules.core_optimization"/>
+            </p>
         </div>
     </div>
 
-    <h3>Upload StopWords List</h3>
-    <div class="section section-with-header">
-        <f:form action="importStopWordList" id="upload-stopwords" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <f:form.upload id="stopwordsFileUpload" name="stopwordsFileUpload" />
+    <section class="panel panel-default solr-core-optimization-module__section">
+        <div class="panel-heading">
+            <div class="solr-core-optimization-module__section-header">
+                <h3 class="panel-title"><f:translate key="stopWords.list.title" domain="solr.modules.core_optimization"/></h3>
+                <f:if condition="{stopWordsCount} > 0">
+                    <div class="btn-group">
+                        <f:link.action action="exportStopWords" title="{f:translate(key: 'stopWords.action.export', domain: 'solr.modules.core_optimization')}" class="btn btn-default btn-sm">
+                            <core:icon identifier="actions-document-export-csv" size="small"/>
+                            <f:translate key="stopWords.action.export" domain="solr.modules.core_optimization"/>
+                        </f:link.action>
+                    </div>
+                </f:if>
             </div>
-            <div class="form-group">
-                <f:form.checkbox id="replaceStopwords" name="replaceStopwords" value="1" checked="1"/>
-                <label for="replaceStopwords"> Override complete list</label>
-            </div>
-            <div class="submit">
-                <f:form.submit value="Upload file" class="btn btn-sm btn-default"/>
-            </div>
-        </f:form>
-    </div>
+        </div>
+        <div class="panel-body">
+            <f:if condition="{stopWordsCount} == 0">
+                <f:be.infobox title="{f:translate(key: 'stopWords.empty.title', domain: 'solr.modules.core_optimization')}" state="-1">
+                    <f:translate key="stopWords.empty.message" domain="solr.modules.core_optimization"/>
+                </f:be.infobox>
+            </f:if>
+
+            <f:form action="saveStopWords" id="edit-stopwords">
+                <div class="form-group">
+                    <label class="form-label" for="stopWords"><f:translate key="stopWords.list.label" domain="solr.modules.core_optimization"/></label>
+                    <f:form.textarea id="stopWords" name="stopWords" rows="14" class="form-control solr-core-optimization-module__textarea" value="{stopWords}"/>
+                    <div class="form-text"><f:translate key="stopWords.list.help" domain="solr.modules.core_optimization"/></div>
+                </div>
+                <div class="solr-core-optimization-module__actions">
+                    <f:form.button type="submit" class="btn btn-sm btn-primary">
+                        <core:icon identifier="actions-save" size="small"/>
+                        <f:translate key="stopWords.list.submit" domain="solr.modules.core_optimization"/>
+                    </f:form.button>
+                </div>
+            </f:form>
+        </div>
+    </section>
+
+    <section class="panel panel-default solr-core-optimization-module__section">
+        <div class="panel-heading">
+            <h3 class="panel-title"><f:translate key="stopWords.upload.title" domain="solr.modules.core_optimization"/></h3>
+        </div>
+        <div class="panel-body">
+            <f:form action="importStopWordList" id="upload-stopwords" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label" for="stopwordsFileUpload"><f:translate key="stopWords.upload.file" domain="solr.modules.core_optimization"/></label>
+                    <f:form.upload id="stopwordsFileUpload" name="stopwordsFileUpload" class="form-control"/>
+                    <div class="form-text"><f:translate key="stopWords.upload.file.help" domain="solr.modules.core_optimization"/></div>
+                </div>
+                <div class="form-check">
+                    <f:form.checkbox id="replaceStopwords" name="replaceStopwords" value="1" checked="1" class="form-check-input"/>
+                    <label class="form-check-label" for="replaceStopwords"><f:translate key="stopWords.upload.replaceAll" domain="solr.modules.core_optimization"/></label>
+                </div>
+                <div class="solr-core-optimization-module__actions">
+                    <f:form.button type="submit" class="btn btn-sm btn-primary">
+                        <core:icon identifier="actions-upload" size="small"/>
+                        <f:translate key="stopWords.upload.submit" domain="solr.modules.core_optimization"/>
+                    </f:form.button>
+                </div>
+            </f:form>
+        </div>
+    </section>
 </f:section>

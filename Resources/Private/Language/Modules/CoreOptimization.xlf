@@ -8,12 +8,262 @@
     </unit>
     <unit id="short_description">
       <segment state="final">
-        <source>Maintain synonyms and stopwords</source>
+        <source>Maintain synonyms and stop words</source>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
-        <source>This module allows you to optimize the cores, you can maintain synonyms and stopwords to improve the search results.</source>
+        <source>Maintain synonyms and stop words for Solr cores to improve search results.</source>
+      </segment>
+    </unit>
+    <unit id="tabs.synonyms">
+      <segment state="final">
+        <source>Synonyms</source>
+      </segment>
+    </unit>
+    <unit id="tabs.stopWords">
+      <segment state="final">
+        <source>Stop Words</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.guide.title">
+      <segment state="final">
+        <source>How synonyms affect search</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.guide.intro">
+      <segment state="final">
+        <source>Synonyms help Solr find documents with related search terms, even when those exact terms do not appear in the content.</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.guide.note.label">
+      <segment state="final">
+        <source>Important:</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.guide.note">
+      <segment state="final">
+        <source>include the base word in the synonym list when searches for the base word should still match later.</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.example.title">
+      <segment state="final">
+        <source>Synonym example</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.example.base">
+      <segment state="final">
+        <source>Search term</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.example.mapping">
+      <segment state="final">
+        <source>Synonym mapping</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.example.result">
+      <segment state="final">
+        <source>Result</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.example.resultText">
+      <segment state="final">
+        <source>A search for smartphone, cellphone, mobile, or mobile phone can match the same document set.</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.guide.reindexNote">
+      <segment state="final">
+        <source>After changing synonyms, reindex affected content so the new terms are applied consistently.</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.manage.title">
+      <segment state="final">
+        <source>Manage Synonyms</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.table.baseWord">
+      <segment state="final">
+        <source>Base Word</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.table.synonyms">
+      <segment state="final">
+        <source>Synonyms</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.table.actions">
+      <segment state="final">
+        <source>Actions</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.action.exportAll">
+      <segment state="final">
+        <source>Export all</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.action.deleteAll">
+      <segment state="final">
+        <source>Delete all</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.action.deleteMapping">
+      <segment state="final">
+        <source>Delete mapping</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.empty.title">
+      <segment state="final">
+        <source>No synonyms configured</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.empty.message">
+      <segment state="final">
+        <source>Add a synonym mapping or upload a synonym list to configure this core.</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.title">
+      <segment state="final">
+        <source>Add Synonyms</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.baseWord">
+      <segment state="final">
+        <source>Base Word</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.baseWord.help">
+      <segment state="final">
+        <source>Use lowercase input, for example iphone.</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.synonyms">
+      <segment state="final">
+        <source>Synonyms</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.synonyms.help">
+      <segment state="final">
+        <source>Comma-separated terms, for example smartphone, cellphone.</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.overrideExisting">
+      <segment state="final">
+        <source>Override existing mapping for this base word</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.submit">
+      <segment state="final">
+        <source>Add Synonyms</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.title">
+      <segment state="final">
+        <source>Upload Synonym List</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.file">
+      <segment state="final">
+        <source>Synonym file</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.file.help">
+      <segment state="final">
+        <source>Upload a plain text list using Solr synonym syntax.</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.overrideExisting">
+      <segment state="final">
+        <source>Override mappings that already exist</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.replaceAll">
+      <segment state="final">
+        <source>Replace the complete synonym list</source>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.submit">
+      <segment state="final">
+        <source>Upload file</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.title">
+      <segment state="final">
+        <source>How stop words affect indexing</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.intro">
+      <segment state="final">
+        <source>Stop words are ignored during indexing and searching. Use them for very common words that do not help ranking, such as the or and.</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.format">
+      <segment state="final">
+        <source>Enter one lowercase word per line. Keep the list focused so useful short terms are not removed by accident.</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.reindexNote">
+      <segment state="final">
+        <source>After changing stop words, reindex affected content so the updated list is reflected in the index.</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.list.title">
+      <segment state="final">
+        <source>Stop Word List</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.list.label">
+      <segment state="final">
+        <source>Stop words</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.list.help">
+      <segment state="final">
+        <source>One lowercase word per line.</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.list.submit">
+      <segment state="final">
+        <source>Save Stop Word List</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.action.export">
+      <segment state="final">
+        <source>Export list</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.empty.title">
+      <segment state="final">
+        <source>No stop words configured</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.empty.message">
+      <segment state="final">
+        <source>Add stop words manually or upload a list to configure this core.</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.upload.title">
+      <segment state="final">
+        <source>Upload Stop Word List</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.upload.file">
+      <segment state="final">
+        <source>Stop word file</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.upload.file.help">
+      <segment state="final">
+        <source>Upload a plain text file with one stop word per line.</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.upload.replaceAll">
+      <segment state="final">
+        <source>Replace the complete stop word list</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.upload.submit">
+      <segment state="final">
+        <source>Upload file</source>
       </segment>
     </unit>
   </file>

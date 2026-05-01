@@ -4,19 +4,319 @@
     <unit id="title">
       <segment state="final">
         <source>Core Optimization</source>
-        <target>Core Optimization</target>
+        <target>Core-Optimierung</target>
       </segment>
     </unit>
     <unit id="short_description">
       <segment state="final">
-        <source>Maintain synonyms and stopwords</source>
-        <target>Maintain synonyms and stopwords</target>
+        <source>Maintain synonyms and stop words</source>
+        <target>Synonyme und Stoppwörter pflegen</target>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
-        <source>This module allows you to optimize the cores, you can maintain synonyms and stopwords to improve the search results.</source>
-        <target>This module allows you to optimize the cores, you can maintain synonyms and stopwords to improve the search results.</target>
+        <source>Maintain synonyms and stop words for Solr cores to improve search results.</source>
+        <target>Pflegen Sie Synonyme und Stoppwörter für Solr-Cores, um die Suchergebnisse zu verbessern.</target>
+      </segment>
+    </unit>
+    <unit id="tabs.synonyms">
+      <segment state="final">
+        <source>Synonyms</source>
+        <target>Synonyme</target>
+      </segment>
+    </unit>
+    <unit id="tabs.stopWords">
+      <segment state="final">
+        <source>Stop Words</source>
+        <target>Stoppwörter</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.guide.title">
+      <segment state="final">
+        <source>How synonyms affect search</source>
+        <target>Wie Synonyme die Suche beeinflussen</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.guide.intro">
+      <segment state="final">
+        <source>Synonyms help Solr find documents with related search terms, even when those exact terms do not appear in the content.</source>
+        <target>Synonyme helfen Solr, Dokumente über verwandte Suchbegriffe zu finden, auch wenn diese Begriffe nicht exakt im Inhalt vorkommen.</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.guide.note.label">
+      <segment state="final">
+        <source>Important:</source>
+        <target>Wichtig:</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.guide.note">
+      <segment state="final">
+        <source>include the base word in the synonym list when searches for the base word should still match later.</source>
+        <target>Nehmen Sie das Basiswort in die Synonymliste auf, wenn Suchen nach dem Basiswort später weiterhin Treffer liefern sollen.</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.example.title">
+      <segment state="final">
+        <source>Synonym example</source>
+        <target>Synonym-Beispiel</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.example.base">
+      <segment state="final">
+        <source>Search term</source>
+        <target>Suchbegriff</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.example.mapping">
+      <segment state="final">
+        <source>Synonym mapping</source>
+        <target>Synonym-Zuordnung</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.example.result">
+      <segment state="final">
+        <source>Result</source>
+        <target>Ergebnis</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.example.resultText">
+      <segment state="final">
+        <source>A search for smartphone, cellphone, mobile, or mobile phone can match the same document set.</source>
+        <target>Eine Suche nach smartphone, cellphone, mobile oder mobile phone kann dieselbe Dokumentgruppe finden.</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.guide.reindexNote">
+      <segment state="final">
+        <source>After changing synonyms, reindex affected content so the new terms are applied consistently.</source>
+        <target>Indexieren Sie betroffene Inhalte nach Änderungen an Synonymen neu, damit die neuen Begriffe konsistent angewendet werden.</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.manage.title">
+      <segment state="final">
+        <source>Manage Synonyms</source>
+        <target>Synonyme verwalten</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.table.baseWord">
+      <segment state="final">
+        <source>Base Word</source>
+        <target>Basiswort</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.table.synonyms">
+      <segment state="final">
+        <source>Synonyms</source>
+        <target>Synonyme</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.table.actions">
+      <segment state="final">
+        <source>Actions</source>
+        <target>Aktionen</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.action.exportAll">
+      <segment state="final">
+        <source>Export all</source>
+        <target>Alle exportieren</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.action.deleteAll">
+      <segment state="final">
+        <source>Delete all</source>
+        <target>Alle löschen</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.action.deleteMapping">
+      <segment state="final">
+        <source>Delete mapping</source>
+        <target>Zuordnung löschen</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.empty.title">
+      <segment state="final">
+        <source>No synonyms configured</source>
+        <target>Keine Synonyme konfiguriert</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.empty.message">
+      <segment state="final">
+        <source>Add a synonym mapping or upload a synonym list to configure this core.</source>
+        <target>Fügen Sie eine Synonym-Zuordnung hinzu oder laden Sie eine Synonymliste hoch, um diesen Core zu konfigurieren.</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.title">
+      <segment state="final">
+        <source>Add Synonyms</source>
+        <target>Synonyme hinzufügen</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.baseWord">
+      <segment state="final">
+        <source>Base Word</source>
+        <target>Basiswort</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.baseWord.help">
+      <segment state="final">
+        <source>Use lowercase input, for example iphone.</source>
+        <target>Verwenden Sie Kleinschreibung, zum Beispiel iphone.</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.synonyms">
+      <segment state="final">
+        <source>Synonyms</source>
+        <target>Synonyme</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.synonyms.help">
+      <segment state="final">
+        <source>Comma-separated terms, for example smartphone, cellphone.</source>
+        <target>Kommagetrennte Begriffe, zum Beispiel smartphone, cellphone.</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.overrideExisting">
+      <segment state="final">
+        <source>Override existing mapping for this base word</source>
+        <target>Bestehende Zuordnung für dieses Basiswort überschreiben</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.add.submit">
+      <segment state="final">
+        <source>Add Synonyms</source>
+        <target>Synonyme hinzufügen</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.title">
+      <segment state="final">
+        <source>Upload Synonym List</source>
+        <target>Synonymliste hochladen</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.file">
+      <segment state="final">
+        <source>Synonym file</source>
+        <target>Synonymdatei</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.file.help">
+      <segment state="final">
+        <source>Upload a plain text list using Solr synonym syntax.</source>
+        <target>Laden Sie eine reine Textliste mit Solr-Synonymsyntax hoch.</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.overrideExisting">
+      <segment state="final">
+        <source>Override mappings that already exist</source>
+        <target>Bereits vorhandene Zuordnungen überschreiben</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.replaceAll">
+      <segment state="final">
+        <source>Replace the complete synonym list</source>
+        <target>Vollständige Synonymliste ersetzen</target>
+      </segment>
+    </unit>
+    <unit id="synonyms.upload.submit">
+      <segment state="final">
+        <source>Upload file</source>
+        <target>Datei hochladen</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.title">
+      <segment state="final">
+        <source>How stop words affect indexing</source>
+        <target>Wie Stoppwörter die Indexierung beeinflussen</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.intro">
+      <segment state="final">
+        <source>Stop words are ignored during indexing and searching. Use them for very common words that do not help ranking, such as the or and.</source>
+        <target>Stoppwörter werden bei Indexierung und Suche ignoriert. Verwenden Sie sie für sehr häufige Wörter, die das Ranking nicht verbessern, zum Beispiel the oder and.</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.format">
+      <segment state="final">
+        <source>Enter one lowercase word per line. Keep the list focused so useful short terms are not removed by accident.</source>
+        <target>Geben Sie ein kleingeschriebenes Wort pro Zeile ein. Halten Sie die Liste gezielt, damit nützliche kurze Begriffe nicht versehentlich entfernt werden.</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.reindexNote">
+      <segment state="final">
+        <source>After changing stop words, reindex affected content so the updated list is reflected in the index.</source>
+        <target>Indexieren Sie betroffene Inhalte nach Änderungen an Stoppwörtern neu, damit die aktualisierte Liste im Index berücksichtigt wird.</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.list.title">
+      <segment state="final">
+        <source>Stop Word List</source>
+        <target>Stoppwortliste</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.list.label">
+      <segment state="final">
+        <source>Stop words</source>
+        <target>Stoppwörter</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.list.help">
+      <segment state="final">
+        <source>One lowercase word per line.</source>
+        <target>Ein kleingeschriebenes Wort pro Zeile.</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.list.submit">
+      <segment state="final">
+        <source>Save Stop Word List</source>
+        <target>Stoppwortliste speichern</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.action.export">
+      <segment state="final">
+        <source>Export list</source>
+        <target>Liste exportieren</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.empty.title">
+      <segment state="final">
+        <source>No stop words configured</source>
+        <target>Keine Stoppwörter konfiguriert</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.empty.message">
+      <segment state="final">
+        <source>Add stop words manually or upload a list to configure this core.</source>
+        <target>Fügen Sie Stoppwörter manuell hinzu oder laden Sie eine Liste hoch, um diesen Core zu konfigurieren.</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.upload.title">
+      <segment state="final">
+        <source>Upload Stop Word List</source>
+        <target>Stoppwortliste hochladen</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.upload.file">
+      <segment state="final">
+        <source>Stop word file</source>
+        <target>Stoppwortdatei</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.upload.file.help">
+      <segment state="final">
+        <source>Upload a plain text file with one stop word per line.</source>
+        <target>Laden Sie eine reine Textdatei mit einem Stoppwort pro Zeile hoch.</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.upload.replaceAll">
+      <segment state="final">
+        <source>Replace the complete stop word list</source>
+        <target>Vollständige Stoppwortliste ersetzen</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.upload.submit">
+      <segment state="final">
+        <source>Upload file</source>
+        <target>Datei hochladen</target>
       </segment>
     </unit>
   </file>
