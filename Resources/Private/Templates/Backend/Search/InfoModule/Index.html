@@ -219,7 +219,7 @@
 
             <f:if condition="{search_phrases_statistics}">
                 <f:then>
-                    <table class="table table-condensed table-hover table-striped">
+                    <table class="table table-sm table-hover table-striped">
                         <thead>
                         <tr class="t3-row-header">
                             <th class="nowrap">&nbsp;</th>
@@ -269,7 +269,7 @@
                         <f:if condition="{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}">
                             <f:then>
                                 <a data-bs-toggle="collapse" data-bs-parent="#index-fields_accordion" href="#collapse-core{iterator.index}">{indexFieldsInfoForCore.corePath}</a>
-                                <a href="#collapse-core{iterator.index}" title="Collapse table" class="pull-right" data-bs-toggle="collapse">
+                                <a href="#collapse-core{iterator.index}" title="Collapse table" class="float-end" data-bs-toggle="collapse">
                                     <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
                                 </a>
                             </f:then>
@@ -279,7 +279,7 @@
                         </f:if>
                     </h4>
                 </div>
-                <div id="collapse-core{iterator.index}" class="panel-collapse collapse {f:if(condition: '{iterator.isFirst}', then: 'in')}">
+                <div id="collapse-core{iterator.index}" class="panel-collapse collapse {f:if(condition: '{iterator.isFirst}', then: 'show')}">
                     <div class="panel-body">
                         <f:render partial="Backend/ApacheSolr/FieldTypesForSingleCore" arguments="{indexFieldsInfoForCore: indexFieldsInfoForCore}"/>
                     </div>
@@ -299,13 +299,13 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">
                         <a href="#panel-group3document-core-{currentCore.index}" data-bs-toggle="collapse">{indexInspectorDocumentsByType.core.corepath}</a>
-                        <a href="#panel-group3document-core-{currentCore.index}" title="Collapse table" class="pull-right" data-bs-toggle="collapse">
+                        <a href="#panel-group3document-core-{currentCore.index}" title="Collapse table" class="float-end" data-bs-toggle="collapse">
                             <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
                         </a>
                     </h3>
                 </div>
 
-                <div id="panel-group3document-core-{currentCore.index}" class="panel-collapse collapse {f:if(condition: '{iterator.isFirst}', then: 'in')}">
+                <div id="panel-group3document-core-{currentCore.index}" class="panel-collapse collapse {f:if(condition: '{iterator.isFirst}', then: 'show')}">
                     <div class="panel-body">
                         <f:for each="{indexInspectorDocumentsByType.documents}" as="documents" key="documentType">
                             <f:if condition="{documents}"> <f:comment><!-- Don't show emty panel groups if array with documents is empty. --></f:comment>
@@ -323,15 +323,15 @@
             <div class="panel-heading">
                 <h3 class="panel-title">
                     <a href="#panel-group4document-type-{currentCore.index}-{documentType}" data-bs-toggle="collapse">Type: {documentType} ({f:count(subject: documents)})</a>
-                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" title="Collapse table" class="pull-right" data-bs-toggle="collapse">
+                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" title="Collapse table" class="float-end" data-bs-toggle="collapse">
                         <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
                     </a>
                 </h3>
             </div>
-            <div id="panel-group4document-type-{currentCore.index}-{documentType}" class="panel-collapse collapse {f:if(condition: '{f:count(subject: documentsByType)} < 2', then: 'in', else: '')}">
+            <div id="panel-group4document-type-{currentCore.index}-{documentType}" class="panel-collapse collapse {f:if(condition: '{f:count(subject: documentsByType)} < 2', then: 'show', else: '')}">
                 <div class="panel-body">
                     <div class="panel-group">
-                        <table class="table table-striped table-condensed">
+                        <table class="table table-striped table-sm">
                             <tr>
                                 <th>Id</th>
                                 <th>Title</th>

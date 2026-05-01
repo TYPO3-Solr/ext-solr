@@ -1,9 +1,166 @@
+#connections-tab,
+#statistics-tab,
+#index_fields-tab,
+#index_inspector-tab {
+    color: var(--typo3-text-color-base);
+    font-size: var(--typo3-font-size);
+}
+
+#connections-tab h2,
+#statistics-tab h2,
+#index_fields-tab h2,
+#index_inspector-tab h2 {
+    font-family: var(--typo3-header-font-family);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: var(--typo3-spacing);
+}
+
+#connections-tab hr,
+#statistics-tab hr,
+#index_fields-tab hr,
+#index_inspector-tab hr {
+    border-color: var(--typo3-component-border-color);
+    margin-block: var(--typo3-spacing);
+}
+
+#connections-tab .panel-tab,
+#statistics-tab .panel-tab,
+#index_fields-tab .panel-tab,
+#index_inspector-tab .panel-tab {
+    --typo3-panel-padding-y: calc(var(--typo3-spacing) * 1.25);
+    --typo3-panel-padding-x: calc(var(--typo3-spacing) * 1.25);
+}
+
+#connections-tab .panel-body > :last-child,
+#statistics-tab .panel-body > :last-child,
+#index_fields-tab .panel-body > :last-child,
+#index_inspector-tab .panel-body > :last-child {
+    margin-bottom: 0;
+}
+
+#statistics-tab .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--typo3-spacing);
+    margin-bottom: var(--typo3-spacing);
+}
+
+#statistics-tab .form-group {
+    margin-bottom: 0;
+}
+
+#statistics-tab .section-with-header {
+    margin-top: calc(var(--typo3-spacing) * 1.5);
+}
+
+#index_fields-tab .panel-group,
+#index_inspector-tab .panel-group {
+    margin-bottom: 0;
+}
+
+#index_fields-tab .panel-title,
+#index_inspector-tab .panel-title {
+    align-items: center;
+    display: flex;
+    gap: calc(var(--typo3-spacing) / 2);
+}
+
+#index_fields-tab .panel-title > a:first-child,
+#index_inspector-tab .panel-title > a:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#index_fields-tab .panel-title > .float-end,
+#index_inspector-tab .panel-title > .float-end {
+    display: inline-flex;
+    flex: 0 0 auto;
+    float: none !important;
+    margin-inline-start: auto;
+}
+
+#index_fields-tab .core-metrics {
+    margin-bottom: var(--typo3-spacing);
+}
+
 #index_fields-tab .well {
-    min-height: 20px;
-    padding: 19px;
-    margin-bottom: 20px;
-    background-color: #fafafa;
-    border: 1px solid #ccc;
-    border-radius: 2px;
-    box-shadow: inset 0 1px 1px rgb(0 0 0 / 5%);
+    align-items: center;
+    background-color: var(--typo3-surface-container-low);
+    border: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    border-radius: var(--typo3-component-border-radius);
+    box-shadow: var(--typo3-component-box-shadow);
+    color: var(--typo3-text-color-base);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--typo3-spacing) / 2);
+    justify-content: center;
+    margin-bottom: 0;
+    min-height: 7rem;
+    padding: calc(var(--typo3-spacing) * 1.25);
+}
+
+#index_fields-tab .well > :last-child {
+    margin-bottom: 0;
+}
+
+#index_fields-tab .core-metrics .well p {
+    color: var(--typo3-text-color-base);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+}
+
+#index_fields-tab .core-metrics .well h3 {
+    color: var(--typo3-text-color-variant);
+    font-family: var(--typo3-font-family);
+    font-size: var(--typo3-font-size);
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0;
+}
+
+#index_fields-tab .table,
+#index_inspector-tab .table,
+#statistics-tab .table {
+    --typo3-table-font-size: var(--typo3-font-size);
+    margin-bottom: 0;
+}
+
+#index_fields-tab .table + .table,
+#index_inspector-tab .table + .table,
+#statistics-tab .table + .table {
+    margin-top: var(--typo3-spacing);
+}
+
+#index_fields-tab .table thead th,
+#index_inspector-tab .table thead th,
+#statistics-tab .table thead th,
+#index_inspector-tab .table > tbody:first-child > tr:first-child > th {
+    background-color: var(--typo3-surface-container-low);
+    color: var(--typo3-text-color-base);
+    font-weight: 700;
+}
+
+#index_fields-tab .table td,
+#index_fields-tab .table th,
+#index_inspector-tab .table td,
+#index_inspector-tab .table th,
+#statistics-tab .table td,
+#statistics-tab .table th {
+    line-height: var(--typo3-line-height);
+}
+
+@media (max-width: 767.98px) {
+    #connections-tab .panel-tab,
+    #statistics-tab .panel-tab,
+    #index_fields-tab .panel-tab,
+    #index_inspector-tab .panel-tab {
+        --typo3-panel-padding-y: var(--typo3-spacing);
+        --typo3-panel-padding-x: var(--typo3-spacing);
+    }
 }
