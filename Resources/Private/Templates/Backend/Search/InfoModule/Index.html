@@ -270,13 +270,19 @@
                     <h4 class="panel-title">
                         <f:if condition="{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}">
                             <f:then>
-                                <a data-bs-toggle="collapse" data-bs-parent="#index-fields_accordion" href="#collapse-core{iterator.index}">{indexFieldsInfoForCore.corePath}</a>
+                                <a data-bs-toggle="collapse" data-bs-parent="#index-fields_accordion" href="#collapse-core{iterator.index}" class="solr-info-module__panel-title-link">
+                                    <span class="solr-info-module__panel-title-text">{indexFieldsInfoForCore.corePath}</span>
+                                    <span class="badge badge-default">{indexFieldsInfoForCore.coreMetrics.numberOfFields} fields</span>
+                                </a>
                                 <a href="#collapse-core{iterator.index}" title="Collapse table" class="float-end" data-bs-toggle="collapse">
                                     <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
                                 </a>
                             </f:then>
                             <f:else>
-                                <a>{indexFieldsInfoForCore.corePath} is empty!</a>
+                                <a class="solr-info-module__panel-title-link">
+                                    <span class="solr-info-module__panel-title-text">{indexFieldsInfoForCore.corePath} is empty!</span>
+                                    <span class="badge badge-default">{indexFieldsInfoForCore.coreMetrics.numberOfFields} fields</span>
+                                </a>
                             </f:else>
                         </f:if>
                     </h4>
