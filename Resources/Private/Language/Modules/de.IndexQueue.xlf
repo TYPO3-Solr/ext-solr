@@ -19,5 +19,11 @@
         <target>Prüfen Sie den Status der Index Queue, initialisieren Sie Inhalte für die Indexierung, leeren Sie Einträge und stellen Sie fehlgeschlagene oder veraltete Elemente erneut ein.</target>
       </segment>
     </unit>
+    <unit id="errors.actions">
+      <segment state="final">
+        <source>Actions</source>
+        <target>Aktionen</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

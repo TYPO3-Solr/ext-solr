@@ -16,5 +16,10 @@
         <source>Check Index Queue status, initialize content for indexing, clear entries, and requeue failed or outdated items.</source>
       </segment>
     </unit>
+    <unit id="errors.actions">
+      <segment state="final">
+        <source>Actions</source>
+      </segment>
+    </unit>
   </file>
 </xliff>

@@ -55,9 +55,11 @@
 								<div class="progress-bar bg-success"
 									 style="width: {indexqueue_statistics.successPercentage}%"
 									 role="progressbar"
+									 aria-label="{f:translate(key:'solr.backend.index_queue_module.status.indexed')}"
 									 aria-valuenow="{indexqueue_statistics.successPercentage}"
 									 aria-valuemin="0"
 									 aria-valuemax="100"
+									 aria-valuetext="{f:translate(key:'solr.backend.index_queue_module.status.indexed')}: {indexqueue_statistics.successCount}/{indexqueue_statistics.totalCount} ({indexqueue_statistics.successPercentage}%)"
 									 title="{f:translate(key:'solr.backend.index_queue_module.status.indexed')}: {indexqueue_statistics.successCount}/{indexqueue_statistics.totalCount} ({indexqueue_statistics.successPercentage}%)">
 
 									<f:translate key="solr.backend.index_queue_module.status.indexed"/>
@@ -68,9 +70,11 @@
 								<div class="progress-bar bg-warning"
 									 style="width: {indexqueue_statistics.pendingPercentage}%"
 									 role="progressbar"
+									 aria-label="{f:translate(key:'solr.backend.index_queue_module.status.pending')}"
 									 aria-valuenow="{indexqueue_statistics.pendingPercentage}"
 									 aria-valuemin="0"
 									 aria-valuemax="100"
+									 aria-valuetext="{f:translate(key:'solr.backend.index_queue_module.status.pending')}: {indexqueue_statistics.pendingCount}/{indexqueue_statistics.totalCount} ({indexqueue_statistics.pendingPercentage}%)"
 									 title="{f:translate(key:'solr.backend.index_queue_module.status.pending')}: {indexqueue_statistics.pendingCount}/{indexqueue_statistics.totalCount} ({indexqueue_statistics.pendingPercentage}%)">
 
 									<f:translate key="solr.backend.index_queue_module.status.pending"/>
@@ -81,9 +85,11 @@
 								<div class="progress-bar bg-danger"
 									 style="width: {indexqueue_statistics.failedPercentage}%"
 									 role="progressbar"
+									 aria-label="{f:translate(key:'solr.backend.index_queue_module.status.errors')}"
 									 aria-valuenow="{indexqueue_statistics.failedPercentage}"
 									 aria-valuemin="0"
 									 aria-valuemax="100"
+									 aria-valuetext="{f:translate(key:'solr.backend.index_queue_module.status.errors')}: {indexqueue_statistics.failedCount}/{indexqueue_statistics.totalCount} ({indexqueue_statistics.failedPercentage}%)"
 									 title="{f:translate(key:'solr.backend.index_queue_module.status.errors')}: {indexqueue_statistics.failedCount}/{indexqueue_statistics.totalCount} ({indexqueue_statistics.failedPercentage}%)">
 
 									<f:translate key="solr.backend.index_queue_module.status.errors"/>
@@ -102,16 +108,18 @@
 								<table class="table table-sm table-hover table-striped">
 									<thead>
 										<tr>
-											<th>
+											<th scope="col">
 												<f:translate key="solr.backend.index_queue_module.errors.id"/>
 											</th>
-											<th>
+											<th scope="col">
 												<f:translate key="solr.backend.index_queue_module.errors.item_type"/>
 											</th>
-											<th>
+											<th scope="col">
 												<f:translate key="solr.backend.index_queue_module.errors.item_uid"/>
 											</th>
-											<th></th>
+											<th scope="col">
+												<span class="visually-hidden"><f:translate key="errors.actions" domain="solr.modules.index_queue"/></span>
+											</th>
 										</tr>
 									</thead>
 									<tbody>
