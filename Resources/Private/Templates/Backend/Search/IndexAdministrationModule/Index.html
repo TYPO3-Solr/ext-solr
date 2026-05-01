@@ -15,13 +15,13 @@
 		</header>
 
 		<div class="card-container solr-index-admin-module__cards">
-			<section class="card card-size-small solr-index-admin-module__card">
+			<section class="card card-size-small solr-index-admin-module__card" aria-labelledby="solr-index-admin-reload-title">
 				<div class="card-header">
-					<div class="card-icon">
+					<div class="card-icon" aria-hidden="true">
 						<core:icon identifier="actions-database-reload" size="medium" alternativeMarkupIdentifier="inline"/>
 					</div>
 					<div class="card-header-body">
-						<h2 class="card-title"><f:translate key="card.reload.title" domain="solr.modules.index_admin"/></h2>
+						<h2 class="card-title" id="solr-index-admin-reload-title"><f:translate key="card.reload.title" domain="solr.modules.index_admin"/></h2>
 						<span class="card-subtitle"><f:translate key="card.reload.subtitle" domain="solr.modules.index_admin"/></span>
 					</div>
 				</div>
@@ -40,13 +40,13 @@
 				</div>
 			</section>
 
-			<section class="card card-size-small solr-index-admin-module__card solr-index-admin-module__card--danger">
+			<section class="card card-size-small solr-index-admin-module__card solr-index-admin-module__card--danger" aria-labelledby="solr-index-admin-empty-index-title">
 				<div class="card-header">
-					<div class="card-icon">
+					<div class="card-icon" aria-hidden="true">
 						<core:icon identifier="actions-database" size="medium" alternativeMarkupIdentifier="inline"/>
 					</div>
 					<div class="card-header-body">
-						<h2 class="card-title"><f:translate key="card.emptyIndex.title" domain="solr.modules.index_admin"/></h2>
+						<h2 class="card-title" id="solr-index-admin-empty-index-title"><f:translate key="card.emptyIndex.title" domain="solr.modules.index_admin"/></h2>
 						<span class="card-subtitle"><f:translate key="card.emptyIndex.subtitle" domain="solr.modules.index_admin"/></span>
 					</div>
 				</div>
@@ -67,13 +67,13 @@
 				</div>
 			</section>
 
-			<section class="card card-size-small solr-index-admin-module__card solr-index-admin-module__card--danger">
+			<section class="card card-size-small solr-index-admin-module__card solr-index-admin-module__card--danger" aria-labelledby="solr-index-admin-clear-queue-title">
 				<div class="card-header">
-					<div class="card-icon">
+					<div class="card-icon" aria-hidden="true">
 						<core:icon identifier="actions-list" size="medium" alternativeMarkupIdentifier="inline"/>
 					</div>
 					<div class="card-header-body">
-						<h2 class="card-title">
+						<h2 class="card-title" id="solr-index-admin-clear-queue-title">
 							<f:translate key="card.clearQueue.title" domain="solr.modules.index_admin"/>
 						</h2>
 						<span class="card-subtitle"><f:translate key="card.clearQueue.subtitle" domain="solr.modules.index_admin"/></span>
