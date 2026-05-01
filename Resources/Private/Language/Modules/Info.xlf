@@ -16,5 +16,15 @@
         <source>Review connection details, search statistics, indexed fields, and documents for the selected Solr core.</source>
       </segment>
     </unit>
+    <unit id="chart.label">
+      <segment state="final">
+        <source>Search queries over time</source>
+      </segment>
+    </unit>
+    <unit id="chart.description">
+      <segment state="final">
+        <source>Line chart showing search query volume for the selected date range.</source>
+      </segment>
+    </unit>
   </file>
 </xliff>

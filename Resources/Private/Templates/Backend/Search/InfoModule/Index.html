@@ -164,7 +164,19 @@
     <div class="row">
         <div class="col-md-12">
             <div class="solr-info-module__chart-panel">
-                <canvas id="queriesOverTime" data-query-labels="{queriesChartLabels}" data-query-data="{queriesChartData}"></canvas>
+                <p id="queriesOverTimeDescription" class="visually-hidden">
+                    <f:translate key="chart.description" domain="solr.modules.info"/>
+                </p>
+                <canvas
+                    id="queriesOverTime"
+                    data-query-labels="{queriesChartLabels}"
+                    data-query-data="{queriesChartData}"
+                    role="img"
+                    aria-label="{f:translate(key: 'chart.label', domain: 'solr.modules.info')}"
+                    aria-describedby="queriesOverTimeDescription"
+                >
+                    <f:translate key="chart.description" domain="solr.modules.info"/>
+                </canvas>
             </div>
         </div>
     </div>

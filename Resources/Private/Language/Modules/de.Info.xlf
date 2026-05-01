@@ -19,5 +19,17 @@
         <target>Prüfen Sie Verbindungsdetails, Suchstatistiken, indexierte Felder und Dokumente für den ausgewählten Solr-Core.</target>
       </segment>
     </unit>
+    <unit id="chart.label">
+      <segment state="final">
+        <source>Search queries over time</source>
+        <target>Suchanfragen im Zeitverlauf</target>
+      </segment>
+    </unit>
+    <unit id="chart.description">
+      <segment state="final">
+        <source>Line chart showing search query volume for the selected date range.</source>
+        <target>Liniendiagramm mit dem Suchanfragevolumen im ausgewählten Zeitraum.</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

@@ -394,7 +394,6 @@
 			<trans-unit id="solr.backend.search_statistics_module.filter.end" xml:space="preserve">
 				<source>End</source>
 			</trans-unit>
-
 		</body>
 	</file>
 </xliff>
