@@ -9,14 +9,14 @@
     </unit>
     <unit id="short_description">
       <segment state="final">
-        <source>Allows to check the status of the index queue</source>
-        <target>Allows to check the status of the index queue</target>
+        <source>Check and manage the Index Queue</source>
+        <target>Index Queue prüfen und verwalten</target>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
-        <source>This module allows you to check the state of the index queue and reQueue items.</source>
-        <target>This module allows you to check the state of the index queue and reQueue items.</target>
+        <source>Check Index Queue status, initialize content for indexing, clear entries, and requeue failed or outdated items.</source>
+        <target>Prüfen Sie den Status der Index Queue, initialisieren Sie Inhalte für die Indexierung, leeren Sie Einträge und stellen Sie fehlgeschlagene oder veraltete Elemente erneut ein.</target>
       </segment>
     </unit>
   </file>

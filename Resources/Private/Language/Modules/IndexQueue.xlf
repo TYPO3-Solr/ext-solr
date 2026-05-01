@@ -8,12 +8,12 @@
     </unit>
     <unit id="short_description">
       <segment state="final">
-        <source>Allows to check the status of the index queue</source>
+        <source>Check and manage the Index Queue</source>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
-        <source>This module allows you to check the state of the index queue and reQueue items.</source>
+        <source>Check Index Queue status, initialize content for indexing, clear entries, and requeue failed or outdated items.</source>
       </segment>
     </unit>
   </file>

@@ -12,10 +12,14 @@
 
 		<f:if condition="{indexqueue_statistics.totalCount} > 0">
 			<section class="panel panel-default solr-index-queue-module__section">
-				<div class="panel-heading">
+				<div class="panel-heading solr-index-queue-module__section-heading">
 					<h2 class="panel-title">
 						<f:translate key="solr.backend.index_queue_module.header_status"/>
 					</h2>
+					<f:form action="doIndexingRun" method="POST">
+						<f:form.submit class="btn btn-sm btn-default"
+									   value="{f:translate(key:'solr.backend.index_queue_module.index_now')}"/>
+					</f:form>
 				</div>
 				<div class="panel-body">
 					<div class="solr-index-queue-module__status">
@@ -86,11 +90,6 @@
 								</div>
 							</f:if>
 						</div>
-
-						<f:form action="doIndexingRun" method="POST">
-							<f:form.submit class="btn btn-sm btn-default"
-										   value="{f:translate(key:'solr.backend.index_queue_module.index_now')}"/>
-						</f:form>
 					</div>
 
 					<f:if condition="{indexqueue_errors}">
@@ -143,7 +142,7 @@
 		</f:if>
 
 		<section class="panel panel-default solr-index-queue-module__section">
-			<div class="panel-heading">
+			<div class="panel-heading solr-index-queue-module__section-heading">
 				<h2 class="panel-title">
 					<f:translate key="solr.backend.index_queue_module.header_init" />
 				</h2>
@@ -153,10 +152,12 @@
 					<div class="t3js-formengine-palette-field index-queue-init-form">
 						<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
 					</div>
-					<div class="solr-index-queue-module__actions">
-						<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" class="btn btn-sm btn-default"/>
+					<div class="solr-index-queue-module__form-footer">
+						<div class="help">{f:translate(key:'solr.backend.index_queue_module.help')}</div>
+						<div class="solr-index-queue-module__actions">
+							<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" class="btn btn-sm btn-default"/>
+						</div>
 					</div>
-					<div class="help">{f:translate(key:'solr.backend.index_queue_module.help')}</div>
 				</f:form>
 			</div>
 		</section>
@@ -165,7 +166,7 @@
 		<solr:backend.security.ifHasAccessToModule extension="Solr" main="searchbackend" sub="indexadministration">
 			<f:then>
 				<section class="panel panel-default solr-index-queue-module__section solr-index-queue-module__danger-section">
-					<div class="panel-heading">
+					<div class="panel-heading solr-index-queue-module__section-heading">
 						<h2 class="panel-title">
 							<f:translate key="solr.backend.index_queue_module.button.clear_index_queue"/>
 						</h2>
