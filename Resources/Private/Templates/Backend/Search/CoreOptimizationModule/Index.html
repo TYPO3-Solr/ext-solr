@@ -6,21 +6,21 @@
 <f:section name="Main">
     <f:be.pageRenderer includeCssFiles="{0: 'EXT:solr/Resources/Public/StyleSheets/Backend/CoreOptimizationModule.css'}"/>
 
-    <div role="tabpanel" class="solr-core-optimization-module">
-        <ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
-            <li role="presentation" class="t3js-tabmenu-item nav-item">
-                <a href="#synonyms-tab" class="nav-link active" title="" aria-controls="synonyms-tab" role="tab" data-bs-toggle="tab">
+    <div class="tab-wrapper solr-core-optimization-module">
+        <ul class="nav nav-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
+            <li role="presentation" class="nav-item">
+                <button type="button" id="synonyms-tab-button" class="nav-link active" data-typo3-tab="#synonyms-tab" aria-controls="synonyms-tab" aria-selected="true" tabindex="0" role="tab">
                     <f:translate key="tabs.synonyms" domain="solr.modules.core_optimization"/>
-                </a>
+                </button>
             </li>
-            <li role="presentation" class="t3js-tabmenu-item nav-item ">
-                <a href="#stopwords-tab" class="nav-link" title="" aria-controls="stopwords-tab" role="tab" data-bs-toggle="tab">
+            <li role="presentation" class="nav-item">
+                <button type="button" id="stopwords-tab-button" class="nav-link" data-typo3-tab="#stopwords-tab" aria-controls="stopwords-tab" aria-selected="false" tabindex="-1" role="tab">
                     <f:translate key="tabs.stopWords" domain="solr.modules.core_optimization"/>
-                </a>
+                </button>
             </li>
         </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="synonyms-tab">
+            <div role="tabpanel" class="tab-pane active" id="synonyms-tab" aria-labelledby="synonyms-tab-button">
                 <div class="panel panel-tab">
                     <div class="panel-body">
 
@@ -29,7 +29,7 @@
                     </div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="stopwords-tab">
+            <div role="tabpanel" class="tab-pane" id="stopwords-tab" aria-labelledby="stopwords-tab-button">
                 <div class="panel panel-tab">
                     <div class="panel-body">
 
