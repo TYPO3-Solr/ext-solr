@@ -15,7 +15,7 @@
         <div id="panel-group4document-id-{document.fields._version_}" class="panel-collapse collapse {f:if(condition: '{documentsCount} < 2', then: 'show', else: '')}" role="region" aria-labelledby="document-heading-{document.fields._version_}">
             <div class="panel-body">
                 <table class="table table-sm table-hover table-striped">
-                    <thead><tr><th>Fieldname</th><th>Value</th></tr></thead>
+                    <thead><tr><th scope="col">Fieldname</th><th scope="col">Value</th></tr></thead>
                     <tbody id="document-tbody-pid-{document.fields.uid}">
                     <f:render section="Rows" arguments="{tableRows: document.fields, document: document}"/>
                     </tbody>
@@ -45,7 +45,7 @@
 
 <f:section name="SubTable">
     <table class="table table-sm table-hover table-striped table-bordered">
-        <thead><tr><th>Fieldname</th><th>Value</th></tr></thead>
+        <thead><tr><th scope="col">Fieldname</th><th scope="col">Value</th></tr></thead>
         <tbody>
             <f:render section="Rows" arguments="{tableRows: tableRows}"/>
         </tbody>

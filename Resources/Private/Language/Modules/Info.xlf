@@ -36,5 +36,10 @@
         <source>Requeue document</source>
       </segment>
     </unit>
+    <unit id="statistics.rank">
+      <segment state="final">
+        <source>Rank</source>
+      </segment>
+    </unit>
   </file>
 </xliff>

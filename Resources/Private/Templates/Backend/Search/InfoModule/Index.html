@@ -236,17 +236,19 @@
                     <table class="table table-sm table-hover table-striped">
                         <thead>
                         <tr class="t3-row-header">
-                            <th class="nowrap">&nbsp;</th>
-                            <th>
+                            <th class="nowrap" scope="col">
+                                <span class="visually-hidden"><f:translate key="statistics.rank" domain="solr.modules.info"/></span>
+                            </th>
+                            <th scope="col">
                                 <f:translate key="solr.backend.search_statistics_module.item_phrase"/>
                             </th>
-                            <th>
+                            <th scope="col">
                                 <f:translate key="solr.backend.search_statistics_module.item_count"/>
                             </th>
-                            <th>
+                            <th scope="col">
                                 <f:translate key="solr.backend.search_statistics_module.results"/>
                             </th>
-                            <th>
+                            <th scope="col">
                                 <f:translate key="solr.backend.search_statistics_module.percentage"/>
                             </th>
                         </tr>
@@ -359,12 +361,12 @@
                     <div class="panel-group">
                         <table class="table table-striped table-sm">
                             <tr>
-                                <th>Id</th>
-                                <th>Title</th>
-                                <th>Url</th>
-                                <th>Created</th>
-                                <th>Indexed</th>
-                                <th>Actions</th>
+                                <th scope="col">Id</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Url</th>
+                                <th scope="col">Created</th>
+                                <th scope="col">Indexed</th>
+                                <th scope="col">Actions</th>
 
                             </tr>
                             <f:for each="{documents}" as="document">

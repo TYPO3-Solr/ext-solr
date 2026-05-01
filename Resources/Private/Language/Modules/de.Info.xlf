@@ -43,5 +43,11 @@
         <target>Dokument erneut einreihen</target>
       </segment>
     </unit>
+    <unit id="statistics.rank">
+      <segment state="final">
+        <source>Rank</source>
+        <target>Rang</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
