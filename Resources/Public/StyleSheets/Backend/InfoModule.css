@@ -6,6 +6,20 @@
     font-size: var(--typo3-font-size);
 }
 
+.solr-info-module .nav-tabs {
+    --typo3-nav-font-size: var(--typo3-font-size);
+    --typo3-nav-link-padding-x: var(--typo3-spacing);
+    --typo3-nav-link-padding-y: calc(var(--typo3-spacing) / 2);
+}
+
+.solr-info-module .nav-tabs .nav-link {
+    align-items: center;
+    display: inline-flex;
+    font-family: var(--typo3-font-family);
+    font-size: var(--typo3-nav-font-size);
+    line-height: var(--typo3-line-height);
+}
+
 #connections-tab h2,
 #statistics-tab h2,
 #index_fields-tab h2,

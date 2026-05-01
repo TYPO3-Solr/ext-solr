@@ -8,12 +8,12 @@
     </unit>
     <unit id="short_description">
       <segment state="final">
-        <source>Get information from your search usage and data</source>
+        <source>Review search data and Solr status</source>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
-        <source>This module allows you to get information (statistics, used fields, connection details) from the core.</source>
+        <source>Review connection details, search statistics, indexed fields, and documents for the selected Solr core.</source>
       </segment>
     </unit>
   </file>

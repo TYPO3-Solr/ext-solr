@@ -4,27 +4,27 @@
 <f:section name="Main">
     <f:be.pageRenderer includeCssFiles="{0: 'EXT:solr/Resources/Public/StyleSheets/Backend/InfoModule.css'}"/>
 
-    <div role="tabpanel">
-        <ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
-            <li role="presentation" class="t3js-tabmenu-item nav-item">
-                <a href="#connections-tab" class="nav-link{f:if(condition: '{activeTabId} == 0', then: ' active')}" title="" aria-controls="tab-1" role="tab" data-bs-toggle="tab">
+    <div class="tab-wrapper solr-info-module">
+        <ul class="nav nav-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
+            <li role="presentation" class="nav-item">
+                <button type="button" class="nav-link{f:if(condition: '{activeTabId} == 0', then: ' active')}" aria-controls="connections-tab" role="tab" data-typo3-tab="#connections-tab">
                     Connections
-                </a>
+                </button>
             </li>
-            <li role="presentation" class="t3js-tabmenu-item nav-item ">
-                <a href="#statistics-tab" class="nav-link{f:if(condition: '{activeTabId} == 1', then: ' active')}" title="" aria-controls="tab-3" role="tab" data-bs-toggle="tab">
+            <li role="presentation" class="nav-item">
+                <button type="button" class="nav-link{f:if(condition: '{activeTabId} == 1', then: ' active')}" aria-controls="statistics-tab" role="tab" data-typo3-tab="#statistics-tab">
                     Statistics
-                </a>
+                </button>
             </li>
-            <li role="presentation" class="t3js-tabmenu-item nav-item ">
-                <a href="#index_fields-tab" class="nav-link{f:if(condition: '{activeTabId} == 2', then: ' active')}" title="" aria-controls="tab-2" role="tab" data-bs-toggle="tab">
+            <li role="presentation" class="nav-item">
+                <button type="button" class="nav-link{f:if(condition: '{activeTabId} == 2', then: ' active')}" aria-controls="index_fields-tab" role="tab" data-typo3-tab="#index_fields-tab">
                     Index Fields
-                </a>
+                </button>
             </li>
-            <li role="presentation" class="t3js-tabmenu-item nav-item">
-                <a href="#index_inspector-tab" class="nav-link{f:if(condition: '{activeTabId} == 3', then: ' active')}" title="" aria-controls="tab-2" role="tab" data-bs-toggle="tab">
+            <li role="presentation" class="nav-item">
+                <button type="button" class="nav-link{f:if(condition: '{activeTabId} == 3', then: ' active')}" aria-controls="index_inspector-tab" role="tab" data-typo3-tab="#index_inspector-tab">
                     Index Documents
-                </a>
+                </button>
             </li>
         </ul>
         <div class="tab-content">

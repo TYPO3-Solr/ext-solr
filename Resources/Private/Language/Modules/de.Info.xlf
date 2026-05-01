@@ -9,14 +9,14 @@
     </unit>
     <unit id="short_description">
       <segment state="final">
-        <source>Get information from your search usage and data</source>
-        <target>Get information from your search usage and data</target>
+        <source>Review search data and Solr status</source>
+        <target>Suchdaten und Solr-Status prüfen</target>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
-        <source>This module allows you to get information (statistics, used fields, connection details) from the core.</source>
-        <target>This module allows you to get information (statistics, used fields, connection details) from the core.</target>
+        <source>Review connection details, search statistics, indexed fields, and documents for the selected Solr core.</source>
+        <target>Prüfen Sie Verbindungsdetails, Suchstatistiken, indexierte Felder und Dokumente für den ausgewählten Solr-Core.</target>
       </segment>
     </unit>
   </file>
