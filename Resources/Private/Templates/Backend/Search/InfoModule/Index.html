@@ -7,49 +7,49 @@
     <div class="tab-wrapper solr-info-module">
         <ul class="nav nav-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
             <li role="presentation" class="nav-item">
-                <button type="button" class="nav-link{f:if(condition: '{activeTabId} == 0', then: ' active')}" aria-controls="connections-tab" role="tab" data-typo3-tab="#connections-tab">
+                <button type="button" id="connections-tab-button" class="nav-link{f:if(condition: '{activeTabId} == 0', then: ' active')}" aria-controls="connections-tab" aria-selected="{f:if(condition: '{activeTabId} == 0', then: 'true', else: 'false')}" tabindex="{f:if(condition: '{activeTabId} == 0', then: '0', else: '-1')}" role="tab" data-typo3-tab="#connections-tab">
                     Connections
                 </button>
             </li>
             <li role="presentation" class="nav-item">
-                <button type="button" class="nav-link{f:if(condition: '{activeTabId} == 1', then: ' active')}" aria-controls="statistics-tab" role="tab" data-typo3-tab="#statistics-tab">
+                <button type="button" id="statistics-tab-button" class="nav-link{f:if(condition: '{activeTabId} == 1', then: ' active')}" aria-controls="statistics-tab" aria-selected="{f:if(condition: '{activeTabId} == 1', then: 'true', else: 'false')}" tabindex="{f:if(condition: '{activeTabId} == 1', then: '0', else: '-1')}" role="tab" data-typo3-tab="#statistics-tab">
                     Statistics
                 </button>
             </li>
             <li role="presentation" class="nav-item">
-                <button type="button" class="nav-link{f:if(condition: '{activeTabId} == 2', then: ' active')}" aria-controls="index_fields-tab" role="tab" data-typo3-tab="#index_fields-tab">
+                <button type="button" id="index-fields-tab-button" class="nav-link{f:if(condition: '{activeTabId} == 2', then: ' active')}" aria-controls="index_fields-tab" aria-selected="{f:if(condition: '{activeTabId} == 2', then: 'true', else: 'false')}" tabindex="{f:if(condition: '{activeTabId} == 2', then: '0', else: '-1')}" role="tab" data-typo3-tab="#index_fields-tab">
                     Index Fields
                 </button>
             </li>
             <li role="presentation" class="nav-item">
-                <button type="button" class="nav-link{f:if(condition: '{activeTabId} == 3', then: ' active')}" aria-controls="index_inspector-tab" role="tab" data-typo3-tab="#index_inspector-tab">
+                <button type="button" id="index-inspector-tab-button" class="nav-link{f:if(condition: '{activeTabId} == 3', then: ' active')}" aria-controls="index_inspector-tab" aria-selected="{f:if(condition: '{activeTabId} == 3', then: 'true', else: 'false')}" tabindex="{f:if(condition: '{activeTabId} == 3', then: '0', else: '-1')}" role="tab" data-typo3-tab="#index_inspector-tab">
                     Index Documents
                 </button>
             </li>
         </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 0', then: ' active')}" id="connections-tab">
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 0', then: ' active')}" id="connections-tab" aria-labelledby="connections-tab-button">
                 <div class="panel panel-tab">
                     <div class="panel-body">
                         <f:render section="ConnectionInfos" arguments="{_all}"/>
                     </div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 1', then: ' active')}" id="statistics-tab">
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 1', then: ' active')}" id="statistics-tab" aria-labelledby="statistics-tab-button">
                 <div class="panel panel-tab">
                     <div class="panel-body">
                         <f:render section="Statistics" arguments="{_all}"/>
                     </div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 2', then: ' active')}" id="index_fields-tab">
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 2', then: ' active')}" id="index_fields-tab" aria-labelledby="index-fields-tab-button">
                 <div class="panel panel-tab">
                     <div class="panel-body">
                         <f:render section="IndexFields" arguments="{_all}"/>
                     </div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 3', then: ' active')}" id="index_inspector-tab">
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 3', then: ' active')}" id="index_inspector-tab" aria-labelledby="index-inspector-tab-button">
                 <div class="panel panel-tab">
                     <div class="panel-body">
                         <f:render section="IndexInspector" arguments="{_all}"/>
