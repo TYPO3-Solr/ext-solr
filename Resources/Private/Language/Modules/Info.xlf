@@ -46,5 +46,75 @@
         <source>opens in a new window</source>
       </segment>
     </unit>
+    <unit id="connections.site">
+      <segment state="final">
+        <source>Site</source>
+      </segment>
+    </unit>
+    <unit id="connections.connected.title">
+      <segment state="final">
+        <source>Solr connection is available</source>
+      </segment>
+    </unit>
+    <unit id="connections.connected.description">
+      <segment state="final">
+        <source>TYPO3 reached the configured Apache Solr endpoint for each language core.</source>
+      </segment>
+    </unit>
+    <unit id="connections.missing.title">
+      <segment state="final">
+        <source>Solr connection failed</source>
+      </segment>
+    </unit>
+    <unit id="connections.invalidPaths.title">
+      <segment state="final">
+        <source>Invalid Solr paths</source>
+      </segment>
+    </unit>
+    <unit id="connections.invalidPaths.description">
+      <segment state="final">
+        <source>Paths must not contain these characters: *, ?, &lt;, &gt;, |, :, or #.</source>
+      </segment>
+    </unit>
+    <unit id="connections.details.title">
+      <segment state="final">
+        <source>Connection details</source>
+      </segment>
+    </unit>
+    <unit id="connections.domain.label">
+      <segment state="final">
+        <source>Used domain</source>
+      </segment>
+    </unit>
+    <unit id="connections.domain.help">
+      <segment state="final">
+        <source>TYPO3 uses this domain when separating indexed documents for the selected site.</source>
+      </segment>
+    </unit>
+    <unit id="connections.apiKey.label">
+      <segment state="final">
+        <source>API key</source>
+      </segment>
+    </unit>
+    <unit id="connections.apiKey.help">
+      <segment state="final">
+        <source>This key identifies requests from this TYPO3 site to its Solr cores.</source>
+      </segment>
+    </unit>
+    <unit id="connections.hostedSolr.title">
+      <segment state="final">
+        <source>No Solr server running?</source>
+      </segment>
+    </unit>
+    <unit id="connections.hostedSolr.description">
+      <segment state="final">
+        <source>Use hosted-solr.com for managed Apache Solr cores prepared for EXT:solr, without running your own server.</source>
+      </segment>
+    </unit>
+    <unit id="connections.hostedSolr.button">
+      <segment state="final">
+        <source>Buy now</source>
+      </segment>
+    </unit>
   </file>
 </xliff>

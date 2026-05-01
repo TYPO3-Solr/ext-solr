@@ -63,10 +63,11 @@
 <f:comment><!-- Sections --></f:comment>
 
 <f:section name="ConnectionInfos">
-    <h2>Site: {site.label}</h2>
+    <h2><f:translate key="connections.site" domain="solr.modules.info"/>: {site.label}</h2>
 
     <f:if condition="{connectedHosts}">
-        <f:be.infobox title="Following Apache Solr servers have been contacted:" state="0">
+        <f:be.infobox title="{f:translate(key: 'connections.connected.title', domain: 'solr.modules.info')}" state="0">
+            <p><f:translate key="connections.connected.description" domain="solr.modules.info"/></p>
             <ul>
                 <f:for each="{connectedHosts}" as="connectedHost">
                     <li>{connectedHost}</li>
@@ -76,7 +77,7 @@
     </f:if>
 
     <f:if condition="{missingHosts}">
-        <f:be.infobox title="Unable to contact following Apache Solr servers:" state="2">
+        <f:be.infobox title="{f:translate(key: 'connections.missing.title', domain: 'solr.modules.info')}" state="2">
             <ul>
                 <f:for each="{missingHosts}" as="missingHost">
                     <li>{missingHost}</li>
@@ -86,25 +87,57 @@
     </f:if>
 
     <f:if condition="{invalidPaths}">
-        <f:be.infobox title="Following paths are not valid:" state="1">
+        <f:be.infobox title="{f:translate(key: 'connections.invalidPaths.title', domain: 'solr.modules.info')}" state="1">
             <ul>
                 <f:for each="{invalidPaths}" as="invalidPath">
                     <li>{invalidPath}</li>
                 </f:for>
             </ul>
-            <p>Path should not contain the characters "*, ?, <, >, |, :, or #"!</p>
+            <p><f:translate key="connections.invalidPaths.description" domain="solr.modules.info"/></p>
         </f:be.infobox>
     </f:if>
 
-    <hr class="double" />
-    Used domain: {site.domain}
+    <div class="solr-info-module__connection-details" aria-label="{f:translate(key: 'connections.details.title', domain: 'solr.modules.info')}">
+        <dl class="solr-info-module__definition-list">
+            <div class="solr-info-module__definition-item">
+                <dt>
+                    <core:icon identifier="actions-info" size="small"/>
+                    <span><f:translate key="connections.domain.label" domain="solr.modules.info"/></span>
+                </dt>
+                <dd>
+                    <code>{site.domain}</code>
+                    <span class="form-text"><f:translate key="connections.domain.help" domain="solr.modules.info"/></span>
+                </dd>
+            </div>
+            <div class="solr-info-module__definition-item">
+                <dt>
+                    <core:icon identifier="actions-key" size="small"/>
+                    <span><f:translate key="connections.apiKey.label" domain="solr.modules.info"/></span>
+                </dt>
+                <dd>
+                    <code>{apiKey}</code>
+                    <span class="form-text"><f:translate key="connections.apiKey.help" domain="solr.modules.info"/></span>
+                </dd>
+            </div>
+        </dl>
+    </div>
 
-    <hr class="double" />
-    API key: {apiKey}
-
-    <hr class="double" />
-
-    No solr server running? You can use <strong><a href="http://www.hosted-solr.com/" target="_blank" rel="noopener noreferrer">hosted-solr.com<span class="visually-hidden"> (<f:translate key="external.opensInNewWindow" domain="solr.modules.info"/>)</span></a></strong> to setup a solr core with just a few clicks.
+    <aside class="solr-info-module__hosted-solr" aria-labelledby="hosted-solr-title">
+        <div class="solr-info-module__hosted-solr-brand" aria-hidden="true">
+            <core:icon identifier="extensions-solr-module-main" size="medium"/>
+            <span>hosted-solr.com</span>
+        </div>
+        <div class="solr-info-module__hosted-solr-content">
+            <h3 id="hosted-solr-title"><f:translate key="connections.hostedSolr.title" domain="solr.modules.info"/></h3>
+            <p><f:translate key="connections.hostedSolr.description" domain="solr.modules.info"/></p>
+        </div>
+        <div class="solr-info-module__hosted-solr-action">
+            <a href="https://hosted-solr.com/en/pricing/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                <f:translate key="connections.hostedSolr.button" domain="solr.modules.info"/>
+                <span class="visually-hidden"> (<f:translate key="external.opensInNewWindow" domain="solr.modules.info"/>)</span>
+            </a>
+        </div>
+    </aside>
 </f:section>
 
 <f:section name="Statistics">

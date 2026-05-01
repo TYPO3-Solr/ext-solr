@@ -55,5 +55,89 @@
         <target>öffnet in einem neuen Fenster</target>
       </segment>
     </unit>
+    <unit id="connections.site">
+      <segment state="final">
+        <source>Site</source>
+        <target>Site</target>
+      </segment>
+    </unit>
+    <unit id="connections.connected.title">
+      <segment state="final">
+        <source>Solr connection is available</source>
+        <target>Solr-Verbindung ist verfügbar</target>
+      </segment>
+    </unit>
+    <unit id="connections.connected.description">
+      <segment state="final">
+        <source>TYPO3 reached the configured Apache Solr endpoint for each language core.</source>
+        <target>TYPO3 hat den konfigurierten Apache-Solr-Endpunkt für jeden Sprach-Core erreicht.</target>
+      </segment>
+    </unit>
+    <unit id="connections.missing.title">
+      <segment state="final">
+        <source>Solr connection failed</source>
+        <target>Solr-Verbindung fehlgeschlagen</target>
+      </segment>
+    </unit>
+    <unit id="connections.invalidPaths.title">
+      <segment state="final">
+        <source>Invalid Solr paths</source>
+        <target>Ungültige Solr-Pfade</target>
+      </segment>
+    </unit>
+    <unit id="connections.invalidPaths.description">
+      <segment state="final">
+        <source>Paths must not contain these characters: *, ?, &lt;, &gt;, |, :, or #.</source>
+        <target>Pfade dürfen diese Zeichen nicht enthalten: *, ?, &lt;, &gt;, |, : oder #.</target>
+      </segment>
+    </unit>
+    <unit id="connections.details.title">
+      <segment state="final">
+        <source>Connection details</source>
+        <target>Verbindungsdetails</target>
+      </segment>
+    </unit>
+    <unit id="connections.domain.label">
+      <segment state="final">
+        <source>Used domain</source>
+        <target>Verwendete Domain</target>
+      </segment>
+    </unit>
+    <unit id="connections.domain.help">
+      <segment state="final">
+        <source>TYPO3 uses this domain when separating indexed documents for the selected site.</source>
+        <target>TYPO3 verwendet diese Domain, um indexierte Dokumente für die ausgewählte Site zu trennen.</target>
+      </segment>
+    </unit>
+    <unit id="connections.apiKey.label">
+      <segment state="final">
+        <source>API key</source>
+        <target>API-Schlüssel</target>
+      </segment>
+    </unit>
+    <unit id="connections.apiKey.help">
+      <segment state="final">
+        <source>This key identifies requests from this TYPO3 site to its Solr cores.</source>
+        <target>Dieser Schlüssel identifiziert Anfragen dieser TYPO3-Site an ihre Solr-Cores.</target>
+      </segment>
+    </unit>
+    <unit id="connections.hostedSolr.title">
+      <segment state="final">
+        <source>No Solr server running?</source>
+        <target>Kein Solr-Server verfügbar?</target>
+      </segment>
+    </unit>
+    <unit id="connections.hostedSolr.description">
+      <segment state="final">
+        <source>Use hosted-solr.com for managed Apache Solr cores prepared for EXT:solr, without running your own server.</source>
+        <target>Nutzen Sie hosted-solr.com für verwaltete Apache-Solr-Cores, vorbereitet für EXT:solr, ohne eigenen Serverbetrieb.</target>
+      </segment>
+    </unit>
+    <unit id="connections.hostedSolr.button">
+      <segment state="final">
+        <source>Buy now</source>
+        <target>Jetzt kaufen</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
