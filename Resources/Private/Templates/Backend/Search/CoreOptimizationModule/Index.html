@@ -56,7 +56,7 @@
                 <f:translate key="synonyms.guide.note" domain="solr.modules.core_optimization"/>
             </p>
 
-            <div class="solr-core-optimization-module__example" aria-label="{f:translate(key: 'synonyms.example.title', domain: 'solr.modules.core_optimization')}">
+            <div class="solr-core-optimization-module__example" role="group" aria-label="{f:translate(key: 'synonyms.example.title', domain: 'solr.modules.core_optimization')}">
                 <div class="solr-core-optimization-module__example-row">
                     <span class="solr-core-optimization-module__example-label"><f:translate key="synonyms.example.base" domain="solr.modules.core_optimization"/></span>
                     <code>"smartphone"</code>
@@ -112,6 +112,7 @@
                                 <td class="col-control">
                                     <f:link.action action="deleteSynonyms" arguments="{baseWord:'{baseWord}'}" title="{f:translate(key: 'synonyms.action.deleteMapping', domain: 'solr.modules.core_optimization')}" class="btn btn-default btn-sm">
                                         <core:icon identifier="actions-edit-delete" size="small"/>
+                                        <span class="visually-hidden"><f:translate key="synonyms.action.deleteMapping" domain="solr.modules.core_optimization"/></span>
                                     </f:link.action>
                                 </td>
                             </tr>
