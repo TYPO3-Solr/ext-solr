@@ -8,12 +8,12 @@
     </unit>
     <unit id="short_description">
       <segment state="final">
-        <source>Administrate solr</source>
+        <source>Manage Solr search</source>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
-        <source>This module provides submodules to maintain solr functionality.</source>
+        <source>Access the Solr backend modules for connection checks, index maintenance, queue handling, and core optimization.</source>
       </segment>
     </unit>
   </file>

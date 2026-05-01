@@ -9,14 +9,14 @@
     </unit>
     <unit id="short_description">
       <segment state="final">
-        <source>Administrate solr</source>
-        <target>Administrate solr</target>
+        <source>Manage Solr search</source>
+        <target>Solr-Suche verwalten</target>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
-        <source>This module provides submodules to maintain solr functionality.</source>
-        <target>This module provides submodules to maintain solr functionality.</target>
+        <source>Access the Solr backend modules for connection checks, index maintenance, queue handling, and core optimization.</source>
+        <target>Öffnet die Solr-Backendmodule für Verbindungsprüfungen, Indexwartung, Queue-Verwaltung und Core-Optimierung.</target>
       </segment>
     </unit>
   </file>

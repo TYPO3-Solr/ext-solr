@@ -25,14 +25,25 @@ use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Backend\Context\PageContext;
+use TYPO3\CMS\Backend\Routing\PreviewUriBuilder;
+use TYPO3\CMS\Backend\Routing\UriBuilder as BackendUriBuilder;
+use TYPO3\CMS\Backend\Template\Components\ButtonBar;
+use TYPO3\CMS\Backend\Template\Components\ComponentFactory;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Imaging\IconSize;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -45,6 +56,8 @@ use TYPO3Fluid\Fluid\View\ViewInterface as FluidStandaloneViewInterface;
  */
 abstract class AbstractModuleController extends ActionController
 {
+    private const INDEX_ADMINISTRATION_LANGUAGE_DOMAIN = 'solr.modules.index_admin';
+
     /**
      * Holds the requested page UID because the selected page uid,
      * might be overwritten by the automatic site selection.
@@ -61,11 +74,14 @@ abstract class AbstractModuleController extends ActionController
 
     public function __construct(
         protected readonly ModuleTemplateFactory $moduleTemplateFactory,
+        protected readonly ComponentFactory $componentFactory,
         protected readonly IconFactory $iconFactory,
+        protected readonly BackendUriBuilder $backendUriBuilder,
         protected readonly ModuleDataStorageService $moduleDataStorageService,
         protected readonly SiteRepository $siteRepository,
         protected readonly SiteFinder $siteFinder,
         protected readonly ConnectionManager $solrConnectionManager,
+        protected readonly TcaSchemaFactory $tcaSchemaFactory,
         protected QueueInterface $indexQueue,
         protected ?int $selectedPageUID = null,
     ) {
@@ -160,13 +176,145 @@ abstract class AbstractModuleController extends ActionController
 
         /** @var BackendUserAuthentication $beUser */
         $beUser = $GLOBALS['BE_USER'];
-        $permissionClause = $beUser->getPagePermsClause(1);
-        $pageRecord = BackendUtility::readPageAccess($this->selectedSite->getRootPageId(), $permissionClause);
+        $pageContext = $this->request->getAttribute('pageContext');
+        $pageRecord = null;
+        $rootLine = [];
+        $languageId = 0;
+        $pageUid = $this->selectedPageUID;
+
+        if ($pageContext instanceof PageContext && $pageContext->isAccessible()) {
+            $pageRecord = $pageContext->pageRecord;
+            $rootLine = $pageContext->rootLine;
+            $languageId = $pageContext->getPrimaryLanguageId();
+            $pageUid = $pageContext->pageId;
+        }
+
+        if ($pageRecord === null) {
+            $permissionClause = $beUser->getPagePermsClause(1);
+            $pageRecord = BackendUtility::readPageAccess($pageUid, $permissionClause);
+            if ($pageRecord === false && $pageUid !== $this->selectedSite->getRootPageId()) {
+                $pageUid = $this->selectedSite->getRootPageId();
+                $pageRecord = BackendUtility::readPageAccess($pageUid, $permissionClause);
+            }
+            if ($pageRecord !== false) {
+                $rootLine = BackendUtility::BEgetRootLine((int)$pageRecord['uid'], $permissionClause);
+            }
+        }
 
         if ($pageRecord === false) {
             throw new InvalidArgumentException(vsprintf('There is something wrong with permissions for page "%s" for backend user "%s".', [$this->selectedSite->getRootPageId(), $beUser->user['username']]), 1496146317);
         }
-        $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation($pageRecord);
+
+        $this->moduleTemplate->getDocHeaderComponent()->setPageBreadcrumb($pageRecord);
+        $this->addPageActionButtons($pageRecord, $rootLine, $pageUid, $languageId, $pageContext instanceof PageContext ? $pageContext : null);
+    }
+
+    private function addPageActionButtons(array $pageRecord, array $rootLine, int $pageUid, int $languageId, ?PageContext $pageContext): void
+    {
+        $previewUriBuilder = PreviewUriBuilder::create($pageRecord);
+        if ($previewUriBuilder->isPreviewable()) {
+            $this->moduleTemplate->addButtonToButtonBar(
+                $this->componentFactory->createViewButton(
+                    $previewUriBuilder
+                        ->withRootLine($rootLine)
+                        ->withLanguage($languageId)
+                        ->buildDispatcherDataAttributes() ?? [],
+                ),
+                ButtonBar::BUTTON_POSITION_LEFT,
+                15,
+            );
+        }
+
+        if (!$this->isPageEditable($pageRecord, $languageId)) {
+            return;
+        }
+
+        $editablePageUid = $this->getEditablePageUid($pageContext, $pageUid, $languageId);
+        $editParams = [
+            'edit' => ['pages' => [$editablePageUid => 'edit']],
+            'module' => $this->getCurrentBackendRouteIdentifier(),
+            'returnUrl' => $this->getCurrentRequestUri(),
+        ];
+        $editPagePropertiesLabel = $this->getLanguageService()->sL('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:editPageProperties')
+            ?: 'Edit page properties';
+
+        $editButton = $this->componentFactory->createGenericButton()
+            ->setTag('typo3-backend-contextual-record-edit-trigger')
+            ->setAttributes([
+                'url' => (string)$this->backendUriBuilder->buildUriFromRoute('record_edit_contextual', $editParams),
+                'edit-url' => (string)$this->backendUriBuilder->buildUriFromRoute('record_edit', $editParams),
+            ])
+            ->setLabel($editPagePropertiesLabel)
+            ->setShowLabelText(true)
+            ->setIcon($this->iconFactory->getIcon('actions-page-open', IconSize::SMALL));
+
+        $this->moduleTemplate->addButtonToButtonBar($editButton, ButtonBar::BUTTON_POSITION_LEFT, 20);
+    }
+
+    private function getEditablePageUid(?PageContext $pageContext, int $pageUid, int $languageId): int
+    {
+        if ($pageContext instanceof PageContext && $languageId > 0 && ($overlayRecord = $pageContext->languageInformation->getTranslationRecord($languageId)) !== null) {
+            return (int)$overlayRecord['uid'];
+        }
+
+        return $pageUid;
+    }
+
+    private function isPageEditable(array $pageRecord, int $languageId): bool
+    {
+        if ($pageRecord === []) {
+            return false;
+        }
+
+        $schema = $this->tcaSchemaFactory->get('pages');
+        if ($schema->hasCapability(TcaSchemaCapability::AccessReadOnly)) {
+            return false;
+        }
+
+        /** @var BackendUserAuthentication $beUser */
+        $beUser = $GLOBALS['BE_USER'];
+        if ($beUser->isAdmin()) {
+            return true;
+        }
+
+        if ($schema->hasCapability(TcaSchemaCapability::AccessAdminOnly)) {
+            return false;
+        }
+
+        $isEditLocked = false;
+        if ($schema->hasCapability(TcaSchemaCapability::EditLock)) {
+            $isEditLocked = $pageRecord[$schema->getCapability(TcaSchemaCapability::EditLock)->getFieldName()] ?? false;
+        }
+        if ($isEditLocked) {
+            return false;
+        }
+
+        return $beUser->doesUserHaveAccess($pageRecord, Permission::PAGE_EDIT)
+            && $beUser->checkLanguageAccess($languageId)
+            && $beUser->check('tables_modify', 'pages');
+    }
+
+    private function getCurrentBackendRouteIdentifier(): string
+    {
+        $route = $this->request->getAttribute('route');
+        if (is_object($route) && method_exists($route, 'getOption')) {
+            $identifier = $route->getOption('_identifier');
+            if (is_string($identifier) && $identifier !== '') {
+                return $identifier;
+            }
+        }
+
+        return 'searchbackend';
+    }
+
+    private function getCurrentRequestUri(): string
+    {
+        $normalizedParams = $this->request->getAttribute('normalizedParams');
+        if ($normalizedParams instanceof NormalizedParams) {
+            return $normalizedParams->getRequestUri();
+        }
+
+        return $this->request->getRequestTarget();
     }
 
     /**
@@ -227,9 +375,9 @@ abstract class AbstractModuleController extends ActionController
         $this->indexQueue->deleteItemsBySite($this->selectedSite);
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'solr.backend.index_administration.success.queue_emptied',
-                'Solr',
-                [$this->selectedSite->getLabel()],
+                'flash.queueEmptied',
+                self::INDEX_ADMINISTRATION_LANGUAGE_DOMAIN,
+                ['site' => $this->selectedSite->getLabel()],
             ),
         );
 
@@ -290,5 +438,10 @@ abstract class AbstractModuleController extends ActionController
         $this->selectedSolrCoreConnection = array_shift($solrCoreConnections);
         $moduleData->setCore($this->selectedSolrCoreConnection->getAdminService()->getCorePath());
         $this->moduleDataStorageService->persistModuleData($moduleData);
+    }
+
+    protected function getLanguageService(): LanguageService
+    {
+        return $GLOBALS['LANG'];
     }
 }
