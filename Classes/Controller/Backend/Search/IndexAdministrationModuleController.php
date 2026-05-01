@@ -27,6 +27,8 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class IndexAdministrationModuleController extends AbstractModuleController
 {
+    private const LANGUAGE_DOMAIN = 'solr.modules.index_admin';
+
     /**
      * Index action, shows an overview of available index maintenance operations.
      */
@@ -55,10 +57,25 @@ class IndexAdministrationModuleController extends AbstractModuleController
                 $writeService->commit(false, false);
                 $affectedCores[] = $writeService->getPrimaryEndpoint()->getCore();
             }
-            $message = LocalizationUtility::translate('solr.backend.index_administration.index_emptied_all', 'Solr', [$this->selectedSite->getLabel(), implode(', ', $affectedCores)]);
+            $message = LocalizationUtility::translate(
+                'flash.indexEmptied',
+                self::LANGUAGE_DOMAIN,
+                [
+                    'site' => $this->selectedSite->getLabel(),
+                    'cores' => implode(', ', $affectedCores),
+                ],
+            );
             $this->addFlashMessage($message);
         } catch (Throwable $e) {
-            $this->addFlashMessage(LocalizationUtility::translate('solr.backend.index_administration.error.on_empty_index', 'Solr', [$e->__toString()]), '', ContextualFeedbackSeverity::ERROR);
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'flash.emptyIndexError',
+                    self::LANGUAGE_DOMAIN,
+                    ['error' => $e->__toString()],
+                ),
+                '',
+                ContextualFeedbackSeverity::ERROR,
+            );
         }
 
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
@@ -82,7 +99,11 @@ class IndexAdministrationModuleController extends AbstractModuleController
                 $coresReloaded = false;
 
                 $this->addFlashMessage(
-                    'Failed to reload index configuration for core "' . $coreName . '"',
+                    LocalizationUtility::translate(
+                        'flash.reloadFailed',
+                        self::LANGUAGE_DOMAIN,
+                        ['core' => $coreName],
+                    ),
                     '',
                     ContextualFeedbackSeverity::ERROR,
                 );
@@ -94,7 +115,14 @@ class IndexAdministrationModuleController extends AbstractModuleController
 
         if ($coresReloaded) {
             $this->addFlashMessage(
-                'Core configuration reloaded (' . implode(', ', $reloadedCores) . ').',
+                LocalizationUtility::translate(
+                    'flash.reloaded',
+                    self::LANGUAGE_DOMAIN,
+                    [
+                        'count' => count($reloadedCores),
+                        'cores' => implode(', ', $reloadedCores),
+                    ],
+                ),
             );
         }
 

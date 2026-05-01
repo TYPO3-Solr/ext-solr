@@ -4,19 +4,139 @@
     <unit id="title">
       <segment state="final">
         <source>Index Administration</source>
-        <target>Index Administration</target>
+        <target>Index-Verwaltung</target>
       </segment>
     </unit>
     <unit id="short_description">
       <segment state="final">
-        <source>Administrate your solr system</source>
-        <target>Administrate your solr system</target>
+        <source>Maintain Solr indexes and queues</source>
+        <target>Solr-Indizes und Queues verwalten</target>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
-        <source>This module allows you to do admin operations on the index (e.g. clear the index queue or clean the solr server).</source>
-        <target>This module allows you to do admin operations on the index (e.g. clear the index queue or clean the solr server).</target>
+        <source>Manage Solr core configuration, Solr documents, and TYPO3 Index Queue entries for the selected site.</source>
+        <target>Verwalten Sie die Solr-Core-Konfiguration, Solr-Dokumente und TYPO3 Index-Queue-Einträge für die ausgewählte Site.</target>
+      </segment>
+    </unit>
+    <unit id="card.reload.title">
+      <segment state="final">
+        <source>Reload Core Configuration</source>
+        <target>Core-Konfiguration neu laden</target>
+      </segment>
+    </unit>
+    <unit id="card.reload.subtitle">
+      <segment state="final">
+        <source>Solr core settings</source>
+        <target>Solr-Core-Einstellungen</target>
+      </segment>
+    </unit>
+    <unit id="card.reload.description">
+      <segment state="final">
+        <source>Reload the selected site's Solr cores after changing synonyms, stop words, protected words, or other core/index configuration.</source>
+        <target>Lädt die Solr-Cores der ausgewählten Site nach Änderungen an Synonymen, Stoppwörtern, geschützten Wörtern oder anderer Core-/Index-Konfiguration neu.</target>
+      </segment>
+    </unit>
+    <unit id="card.reload.button">
+      <segment state="final">
+        <source>Reload Configuration</source>
+        <target>Konfiguration neu laden</target>
+      </segment>
+    </unit>
+    <unit id="card.emptyIndex.title">
+      <segment state="final">
+        <source>Empty Index</source>
+        <target>Index leeren</target>
+      </segment>
+    </unit>
+    <unit id="card.emptyIndex.subtitle">
+      <segment state="final">
+        <source>Indexed Solr documents</source>
+        <target>Indexierte Solr-Dokumente</target>
+      </segment>
+    </unit>
+    <unit id="card.emptyIndex.description">
+      <segment state="final">
+        <source>Remove only the selected site's documents from Solr, even when several sites share one index.</source>
+        <target>Entfernt nur die Dokumente der ausgewählten Site aus Solr, auch wenn mehrere Sites denselben Index verwenden.</target>
+      </segment>
+    </unit>
+    <unit id="card.emptyIndex.button">
+      <segment state="final">
+        <source>Empty Index</source>
+        <target>Index leeren</target>
+      </segment>
+    </unit>
+    <unit id="card.clearQueue.title">
+      <segment state="final">
+        <source>Clear Index Queue</source>
+        <target>Index Queue leeren</target>
+      </segment>
+    </unit>
+    <unit id="card.clearQueue.subtitle">
+      <segment state="final">
+        <source>TYPO3 queue entries</source>
+        <target>TYPO3 Queue-Einträge</target>
+      </segment>
+    </unit>
+    <unit id="card.clearQueue.description">
+      <segment state="final">
+        <source>Empty the selected site's Index Queue entries. Re-initialize the queue afterwards to build it again.</source>
+        <target>Leert die Index-Queue-Einträge der ausgewählten Site. Initialisieren Sie die Queue danach neu, um sie wieder aufzubauen.</target>
+      </segment>
+    </unit>
+    <unit id="card.clearQueue.button">
+      <segment state="final">
+        <source>Clear Index Queue</source>
+        <target>Index Queue leeren</target>
+      </segment>
+    </unit>
+    <unit id="modal.confirm.title">
+      <segment state="final">
+        <source>Please confirm</source>
+        <target>Bitte bestätigen</target>
+      </segment>
+    </unit>
+    <unit id="modal.emptyIndex.content">
+      <segment state="final">
+        <source>Are you sure you want to empty the index? All Solr documents for this site will be removed.</source>
+        <target>Möchten Sie den Index wirklich leeren? Alle Solr-Dokumente dieser Site werden entfernt.</target>
+      </segment>
+    </unit>
+    <unit id="modal.clearQueue.content">
+      <segment state="final">
+        <source>Are you sure you want to clear the Index Queue?</source>
+        <target>Möchten Sie die Index Queue wirklich leeren?</target>
+      </segment>
+    </unit>
+    <unit id="flash.indexEmptied">
+      <segment state="final">
+        <source>Index emptied for site "{site}" ({cores}).</source>
+        <target>Index für Site "{site}" geleert ({cores}).</target>
+      </segment>
+    </unit>
+    <unit id="flash.queueEmptied">
+      <segment state="final">
+        <source>Index Queue emptied for site "{site}".</source>
+        <target>Index Queue für Site "{site}" geleert.</target>
+      </segment>
+    </unit>
+    <unit id="flash.emptyIndexError">
+      <segment state="final">
+        <source>An error occurred while deleting documents from the index: {error}</source>
+        <target>Beim Löschen von Dokumenten aus dem Index ist ein Fehler aufgetreten: {error}</target>
+      </segment>
+    </unit>
+    <unit id="flash.reloadFailed">
+      <segment state="final">
+        <source>Failed to reload index configuration for core "{core}".</source>
+        <target>Core-Konfiguration für Core "{core}" konnte nicht neu geladen werden.</target>
+      </segment>
+    </unit>
+    <unit id="flash.reloaded">
+      <segment state="final">
+        <source>{count, plural, one {Core configuration reloaded for # core ({cores}).} other {Core configuration reloaded for # cores ({cores}).}}</source>
+        <target>{count, plural, one {Core-Konfiguration für # Core neu geladen ({cores}).} other {Core-Konfiguration für # Cores neu geladen ({cores}).}}</target>
       </segment>
     </unit>
   </file>

@@ -1,72 +1,100 @@
 {namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+{namespace core=TYPO3\CMS\Core\ViewHelpers}
 <f:layout name="Backend/WithPageTree"/>
 
 <f:section name="Main">
-	<f:be.pageRenderer includeJavaScriptModules="{0: '@apache-solr-for-typo3/solr/FormModal.js'}"/>
+	<f:be.pageRenderer includeCssFiles="{0: 'EXT:solr/Resources/Public/StyleSheets/Backend/IndexAdministrationModule.css'}" includeJavaScriptModules="{0: '@apache-solr-for-typo3/solr/FormModal.js'}"/>
+	<f:variable name="confirmTitle"><f:translate key="modal.confirm.title" domain="solr.modules.index_admin"/></f:variable>
+	<f:variable name="emptyIndexConfirmation"><f:translate key="modal.emptyIndex.content" domain="solr.modules.index_admin"/></f:variable>
+	<f:variable name="clearQueueConfirmation"><f:translate key="modal.clearQueue.content" domain="solr.modules.index_admin"/></f:variable>
 
-	<div class="row">
-		<div class="col-xs-12">
-			<h1>{f:translate(key: 'solr.backend.index_administration.label', default: 'Index Administration')}</h1>
-			<p class="lead"><f:translate key="solr.backend.index_administration.description" /></p>
+	<div class="solr-index-admin-module">
+		<header class="solr-index-admin-module__intro">
+			<h1><f:translate key="title" domain="solr.modules.index_admin"/></h1>
+			<p class="lead"><f:translate key="description" domain="solr.modules.index_admin"/></p>
+		</header>
+
+		<div class="card-container solr-index-admin-module__cards">
+			<section class="card card-size-small solr-index-admin-module__card">
+				<div class="card-header">
+					<div class="card-icon">
+						<core:icon identifier="actions-database-reload" size="medium" alternativeMarkupIdentifier="inline"/>
+					</div>
+					<div class="card-header-body">
+						<h2 class="card-title"><f:translate key="card.reload.title" domain="solr.modules.index_admin"/></h2>
+						<span class="card-subtitle"><f:translate key="card.reload.subtitle" domain="solr.modules.index_admin"/></span>
+					</div>
+				</div>
+				<div class="card-body">
+					<p class="card-text">
+						<f:translate key="card.reload.description" domain="solr.modules.index_admin"/>
+					</p>
+				</div>
+				<div class="card-footer">
+					<f:form action="reloadIndexConfiguration">
+						<f:form.button type="submit" class="btn btn-sm btn-default">
+							<core:icon identifier="actions-refresh" size="small"/>
+							<f:translate key="card.reload.button" domain="solr.modules.index_admin"/>
+						</f:form.button>
+					</f:form>
+				</div>
+			</section>
+
+			<section class="card card-size-small solr-index-admin-module__card solr-index-admin-module__card--danger">
+				<div class="card-header">
+					<div class="card-icon">
+						<core:icon identifier="actions-database" size="medium" alternativeMarkupIdentifier="inline"/>
+					</div>
+					<div class="card-header-body">
+						<h2 class="card-title"><f:translate key="card.emptyIndex.title" domain="solr.modules.index_admin"/></h2>
+						<span class="card-subtitle"><f:translate key="card.emptyIndex.subtitle" domain="solr.modules.index_admin"/></span>
+					</div>
+				</div>
+				<div class="card-body">
+					<p class="card-text">
+						<f:translate key="card.emptyIndex.description" domain="solr.modules.index_admin"/>
+					</p>
+				</div>
+				<div class="card-footer">
+					<f:form action="emptyIndex" method="POST">
+						<f:form.button type="submit"
+									   class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
+									   data="{title: confirmTitle, content: emptyIndexConfirmation, severity: 'warning'}">
+							<core:icon identifier="actions-delete" size="small"/>
+							<f:translate key="card.emptyIndex.button" domain="solr.modules.index_admin"/>
+						</f:form.button>
+					</f:form>
+				</div>
+			</section>
+
+			<section class="card card-size-small solr-index-admin-module__card solr-index-admin-module__card--danger">
+				<div class="card-header">
+					<div class="card-icon">
+						<core:icon identifier="actions-list" size="medium" alternativeMarkupIdentifier="inline"/>
+					</div>
+					<div class="card-header-body">
+						<h2 class="card-title">
+							<f:translate key="card.clearQueue.title" domain="solr.modules.index_admin"/>
+						</h2>
+						<span class="card-subtitle"><f:translate key="card.clearQueue.subtitle" domain="solr.modules.index_admin"/></span>
+					</div>
+				</div>
+				<div class="card-body">
+					<p class="card-text">
+						<f:translate key="card.clearQueue.description" domain="solr.modules.index_admin"/>
+					</p>
+				</div>
+				<div class="card-footer">
+					<f:form action="clearIndexQueue" method="POST">
+						<f:form.button type="submit"
+									   class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
+									   data="{title: confirmTitle, content: clearQueueConfirmation, severity: 'warning'}">
+							<core:icon identifier="actions-delete" size="small"/>
+							<f:translate key="card.clearQueue.button" domain="solr.modules.index_admin"/>
+						</f:form.button>
+					</f:form>
+				</div>
+			</section>
 		</div>
 	</div>
-
-	<h3>Reload Core Configuration</h3>
-	<div class="row">
-		<div class="col-xs-3">
-			<f:form action="reloadIndexConfiguration">
-				<f:form.submit value="Reload Configuration" class="btn btn-sm btn-default" />
-			</f:form>
-		</div>
-		<div class="col-xs-9 action-description">
-			<p>
-			A core in Solr is what holds your index. When changing core/index configuration
-			such as synonyms, stop words, or protected words you need to reload the core
-			to make the changes become active. To reload configuration you can either restart
-			the whole Solr server or simply reload a specific core.
-			Here you can reload the site's cores/indexes.
-			</p>
-		</div>
-	</div>
-
-	<h3>Empty Index</h3>
-	<div class="row">
-		<div class="col-xs-3">
-			<f:form action="emptyIndex" method="POST">
-				<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
-							   data="{title: 'Please confirm', content: 'Are you sure you want to clear the index? All Solr documents will be removed.', severity: 'warning'}"
-							   value="Empty Index"/>
-
-			</f:form>
-		</div>
-		<div class="col-xs-9 action-description">
-			<p>
-				This will simply empty the site's index. When doing so it will take
-				care of
-				only deleting the currently selected site's documents even if
-				you index multiple sites into one index.
-			</p>
-		</div>
-	</div>
-
-	<h3>
-		<f:translate key="solr.backend.index_queue_module.button.clear_index_queue"/>
-	</h3>
-	<div class="row">
-		<div class="col-xs-3">
-			<f:form action="clearIndexQueue" method="POST">
-				<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
-							   data="{title: 'Please confirm', content: 'Are you sure you want to clear the Index Queue?', severity: 'warning'}"
-							   value="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"/>
-			</f:form>
-		</div>
-		<div class="col-xs-9 action-description">
-			<p>
-				This will empty the Index Queue. It will take care of only deleting
-				the currently selected site's Index Queue entries.
-				You will have to re-initialize the Index Queue afterwards.
-			</p>
-		</div>
-	</div>
-
 </f:section>

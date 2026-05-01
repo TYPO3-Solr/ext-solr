@@ -80,7 +80,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTestBase
         $controller->expects(self::exactly(1))
             ->method('addFlashMessage')
             ->with(
-                'Core configuration reloaded (' .
+                'Core configuration reloaded for 3 cores (' .
                 $this->resolveCoreName('core_en') . ', ' .
                 $this->resolveCoreName('core_de') . ', ' .
                 $this->resolveCoreName('core_da') .
@@ -102,7 +102,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTestBase
         $controller->expects(self::atLeastOnce())
             ->method('addFlashMessage')
             ->with(
-                'Index emptied for Site "Root of Testpage testone.site aka integration_tree_one, Root Page ID: 1" (' .
+                'Index emptied for site "Root of Testpage testone.site aka integration_tree_one, Root Page ID: 1" (' .
                 $this->resolveCoreName('core_en') . ', ' .
                 $this->resolveCoreName('core_de') . ', ' .
                 $this->resolveCoreName('core_da') .
