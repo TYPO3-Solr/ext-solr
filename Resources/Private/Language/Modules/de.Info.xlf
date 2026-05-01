@@ -49,5 +49,11 @@
         <target>Rang</target>
       </segment>
     </unit>
+    <unit id="external.opensInNewWindow">
+      <segment state="final">
+        <source>opens in a new window</source>
+        <target>öffnet in einem neuen Fenster</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

@@ -41,5 +41,10 @@
         <source>Rank</source>
       </segment>
     </unit>
+    <unit id="external.opensInNewWindow">
+      <segment state="final">
+        <source>opens in a new window</source>
+      </segment>
+    </unit>
   </file>
 </xliff>
