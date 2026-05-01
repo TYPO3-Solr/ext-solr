@@ -3,14 +3,16 @@
 <f:if condition="{document}">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">
-                <a href="#panel-group4document-id-{document.fields._version_}" data-bs-toggle="collapse">Title: {document.fields.title}</a>
-                <a href="#panel-group4document-id-{document.fields._version_}" title="Collapse table" class="float-end" data-bs-toggle="collapse">
-                    <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+            <h3 class="panel-title" id="document-heading-{document.fields._version_}">
+                <a href="#panel-group4document-id-{document.fields._version_}" data-bs-toggle="collapse" role="button" aria-expanded="{f:if(condition: '{documentsCount} < 2', then: 'true', else: 'false')}" aria-controls="panel-group4document-id-{document.fields._version_}">
+                    Title: {document.fields.title}
+                    <span aria-hidden="true">
+                        <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                    </span>
                 </a>
             </h3>
         </div>
-        <div id="panel-group4document-id-{document.fields._version_}" class="panel-collapse collapse {f:if(condition: '{documentsCount} < 2', then: 'show', else: '')}">
+        <div id="panel-group4document-id-{document.fields._version_}" class="panel-collapse collapse {f:if(condition: '{documentsCount} < 2', then: 'show', else: '')}" role="region" aria-labelledby="document-heading-{document.fields._version_}">
             <div class="panel-body">
                 <table class="table table-sm table-hover table-striped">
                     <thead><tr><th>Fieldname</th><th>Value</th></tr></thead>

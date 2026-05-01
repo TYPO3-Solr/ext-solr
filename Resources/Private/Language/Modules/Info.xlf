@@ -26,5 +26,15 @@
         <source>Line chart showing search query volume for the selected date range.</source>
       </segment>
     </unit>
+    <unit id="documents.action.showDetails">
+      <segment state="final">
+        <source>Show document details</source>
+      </segment>
+    </unit>
+    <unit id="documents.action.requeue">
+      <segment state="final">
+        <source>Requeue document</source>
+      </segment>
+    </unit>
   </file>
 </xliff>

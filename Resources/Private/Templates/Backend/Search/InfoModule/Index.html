@@ -279,27 +279,27 @@
         <f:for each="{indexFieldsInfoByCorePaths}" as="indexFieldsInfoForCore" iteration="iterator">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">
+                    <h4 class="panel-title" id="index-fields-heading-{iterator.index}">
                         <f:if condition="{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}">
                             <f:then>
-                                <a data-bs-toggle="collapse" data-bs-parent="#index-fields_accordion" href="#collapse-core{iterator.index}" class="solr-info-module__panel-title-link">
+                                <a data-bs-toggle="collapse" data-bs-parent="#index-fields_accordion" href="#collapse-core{iterator.index}" class="solr-info-module__panel-title-link" role="button" aria-expanded="{f:if(condition: '{iterator.isFirst}', then: 'true', else: 'false')}" aria-controls="collapse-core{iterator.index}">
                                     <span class="solr-info-module__panel-title-text">{indexFieldsInfoForCore.corePath}</span>
                                     <span class="badge badge-default">{indexFieldsInfoForCore.coreMetrics.numberOfFields} fields</span>
-                                </a>
-                                <a href="#collapse-core{iterator.index}" title="Collapse table" class="float-end" data-bs-toggle="collapse">
-                                    <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                                    <span class="solr-info-module__panel-title-icon" aria-hidden="true">
+                                        <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                                    </span>
                                 </a>
                             </f:then>
                             <f:else>
-                                <a class="solr-info-module__panel-title-link">
+                                <span class="solr-info-module__panel-title-link">
                                     <span class="solr-info-module__panel-title-text">{indexFieldsInfoForCore.corePath} is empty!</span>
                                     <span class="badge badge-default">{indexFieldsInfoForCore.coreMetrics.numberOfFields} fields</span>
-                                </a>
+                                </span>
                             </f:else>
                         </f:if>
                     </h4>
                 </div>
-                <div id="collapse-core{iterator.index}" class="panel-collapse collapse {f:if(condition: '{iterator.isFirst}', then: 'show')}">
+                <div id="collapse-core{iterator.index}" class="panel-collapse collapse {f:if(condition: '{iterator.isFirst}', then: 'show')}" role="region" aria-labelledby="index-fields-heading-{iterator.index}">
                     <div class="panel-body">
                         <f:render partial="Backend/ApacheSolr/FieldTypesForSingleCore" arguments="{indexFieldsInfoForCore: indexFieldsInfoForCore}"/>
                     </div>
@@ -317,18 +317,18 @@
         <f:for each="{indexInspectorDocumentsByLanguageAndType}" as="indexInspectorDocumentsByType" key="language" iteration="currentCore">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">
-                        <a href="#panel-group3document-core-{currentCore.index}" data-bs-toggle="collapse" class="solr-info-module__panel-title-link">
+                    <h3 class="panel-title" id="index-inspector-core-heading-{currentCore.index}">
+                        <a href="#panel-group3document-core-{currentCore.index}" data-bs-toggle="collapse" class="solr-info-module__panel-title-link" role="button" aria-expanded="{f:if(condition: '{currentCore.isFirst}', then: 'true', else: 'false')}" aria-controls="panel-group3document-core-{currentCore.index}">
                             <span class="solr-info-module__panel-title-text">{indexInspectorDocumentsByType.core.corepath}</span>
                             <span class="badge badge-default">{indexInspectorDocumentsByType.documentCount} documents</span>
-                        </a>
-                        <a href="#panel-group3document-core-{currentCore.index}" title="Collapse table" class="float-end" data-bs-toggle="collapse">
-                            <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                            <span class="solr-info-module__panel-title-icon" aria-hidden="true">
+                                <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                            </span>
                         </a>
                     </h3>
                 </div>
 
-                <div id="panel-group3document-core-{currentCore.index}" class="panel-collapse collapse {f:if(condition: '{iterator.isFirst}', then: 'show')}">
+                <div id="panel-group3document-core-{currentCore.index}" class="panel-collapse collapse {f:if(condition: '{currentCore.isFirst}', then: 'show')}" role="region" aria-labelledby="index-inspector-core-heading-{currentCore.index}">
                     <div class="panel-body">
                         <f:for each="{indexInspectorDocumentsByType.documents}" as="documents" key="documentType">
                             <f:if condition="{documents}"> <f:comment><!-- Don't show emty panel groups if array with documents is empty. --></f:comment>
@@ -344,17 +344,17 @@
     <f:section name="PanelGroupForDocumentType">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">
-                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" data-bs-toggle="collapse" class="solr-info-module__panel-title-link">
+                <h3 class="panel-title" id="index-inspector-type-heading-{currentCore.index}-{documentType}">
+                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" data-bs-toggle="collapse" class="solr-info-module__panel-title-link" role="button" aria-expanded="{f:if(condition: '{f:count(subject: documentsByType)} < 2', then: 'true', else: 'false')}" aria-controls="panel-group4document-type-{currentCore.index}-{documentType}">
                         <span class="solr-info-module__panel-title-text">Type: {documentType}</span>
                         <span class="badge badge-default">{f:count(subject: documents)} documents</span>
-                    </a>
-                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" title="Collapse table" class="float-end" data-bs-toggle="collapse">
-                        <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                        <span class="solr-info-module__panel-title-icon" aria-hidden="true">
+                            <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                        </span>
                     </a>
                 </h3>
             </div>
-            <div id="panel-group4document-type-{currentCore.index}-{documentType}" class="panel-collapse collapse {f:if(condition: '{f:count(subject: documentsByType)} < 2', then: 'show', else: '')}">
+            <div id="panel-group4document-type-{currentCore.index}-{documentType}" class="panel-collapse collapse {f:if(condition: '{f:count(subject: documentsByType)} < 2', then: 'show', else: '')}" role="region" aria-labelledby="index-inspector-type-heading-{currentCore.index}-{documentType}">
                 <div class="panel-body">
                     <div class="panel-group">
                         <table class="table table-striped table-sm">
@@ -376,17 +376,15 @@
                                     <td><f:format.date format="d.m.Y H:i:s">{document.indexed}</f:format.date></td>
 
                                     <td>
-                                        <span class="btn btn-default">
-                                            <f:link.action action="documentsDetails" arguments="{uid: document.uid, type: document.type, languageUid: language, selectedPageUID: selectedPageUID}" title="Show details">
-                                                <core:icon identifier="actions-document-view" />
-                                            </f:link.action>
-                                        </span>
+                                        <f:link.action action="documentsDetails" arguments="{uid: document.uid, type: document.type, languageUid: language, selectedPageUID: selectedPageUID}" title="{f:translate(key: 'documents.action.showDetails', domain: 'solr.modules.info')}" class="btn btn-default">
+                                            <core:icon identifier="actions-document-view" />
+                                            <span class="visually-hidden"><f:translate key="documents.action.showDetails" domain="solr.modules.info"/></span>
+                                        </f:link.action>
                                         <solr:backend.security.ifHasAccessToModule extension="Solr" main="searchbackend" sub="indexqueue">
-                                            <span class="btn btn-default">
-                                                <f:be.link route="searchbackend_indexqueue.Backend\Search\IndexQueueModule_requeueDocument" parameters="{uid: document.uid, type: document.type}">
-                                                    <core:icon identifier="actions-refresh" />
-                                                </f:be.link>
-                                            </span>
+                                            <f:be.link route="searchbackend_indexqueue.Backend\Search\IndexQueueModule_requeueDocument" parameters="{uid: document.uid, type: document.type}" title="{f:translate(key: 'documents.action.requeue', domain: 'solr.modules.info')}" class="btn btn-default">
+                                                <core:icon identifier="actions-refresh" />
+                                                <span class="visually-hidden"><f:translate key="documents.action.requeue" domain="solr.modules.info"/></span>
+                                            </f:be.link>
                                         </solr:backend.security.ifHasAccessToModule>
                                     </td>
                                 </tr>

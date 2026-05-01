@@ -31,5 +31,17 @@
         <target>Liniendiagramm mit dem Suchanfragevolumen im ausgewählten Zeitraum.</target>
       </segment>
     </unit>
+    <unit id="documents.action.showDetails">
+      <segment state="final">
+        <source>Show document details</source>
+        <target>Dokumentdetails anzeigen</target>
+      </segment>
+    </unit>
+    <unit id="documents.action.requeue">
+      <segment state="final">
+        <source>Requeue document</source>
+        <target>Dokument erneut einreihen</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

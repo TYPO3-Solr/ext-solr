@@ -125,6 +125,13 @@
     flex: 0 0 auto;
 }
 
+#index_fields-tab .solr-info-module__panel-title-icon,
+#index_inspector-tab .solr-info-module__panel-title-icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+}
+
 #index_fields-tab .panel-title > .float-end,
 #index_inspector-tab .panel-title > .float-end {
     display: inline-flex;
