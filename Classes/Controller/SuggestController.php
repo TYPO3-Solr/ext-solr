@@ -18,7 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Controller;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationGuard;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -46,7 +47,7 @@ class SuggestController extends AbstractBaseController
             return $this->handleSolrUnavailable();
         }
 
-        try {
+        return GeneralUtility::makeInstance(SolrCommunicationGuard::class)->run(function () use ($additionalFilters, $rawQuery): ResponseInterface {
             /** @var SuggestService $suggestService */
             $suggestService = GeneralUtility::makeInstance(
                 SuggestService::class,
@@ -61,13 +62,11 @@ class SuggestController extends AbstractBaseController
 
             $searchRequest = $this->getSearchRequestBuilder()->buildForSuggest($arguments, $rawQuery, $pageId, $languageId);
             $result = $suggestService->getSuggestions($this->request, $searchRequest, $additionalFilters);
-        } catch (SolrUnavailableException) {
-            return $this->handleSolrUnavailable();
-        }
-        return $this->htmlResponse(json_encode($result, JSON_UNESCAPED_SLASHES));
+            return $this->htmlResponse(json_encode($result, JSON_UNESCAPED_SLASHES));
+        }, fn (SolrCommunicationException $exception): ResponseInterface => $this->handleSolrUnavailable($exception));
     }
 
-    private function handleSolrUnavailable(): ResponseInterface
+    private function handleSolrUnavailable(?SolrCommunicationException $exception = null): ResponseInterface
     {
         $this->logSolrUnavailable();
         $result = ['status' => false];

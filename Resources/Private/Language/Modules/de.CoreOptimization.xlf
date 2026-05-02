@@ -367,6 +367,12 @@
         <target>Ein Fehler ist aufgetreten</target>
       </segment>
     </unit>
+    <unit id="flash.solrUnavailable.message">
+      <segment state="final">
+        <source>Solr is currently not reachable. The managed resources could not be loaded or changed. Check the Solr service and reload the module.</source>
+        <target>Solr ist derzeit nicht erreichbar. Die verwalteten Ressourcen konnten nicht geladen oder geändert werden. Prüfen Sie den Solr-Dienst und laden Sie das Modul neu.</target>
+      </segment>
+    </unit>
     <unit id="flash.synonyms.missingParameter.message">
       <segment state="final">
         <source>Please provide a base word and at least one synonym.</source>

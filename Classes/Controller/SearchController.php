@@ -23,7 +23,8 @@ use ApacheSolrForTypo3\Solr\Event\Search\BeforeSearchResultIsShownEvent;
 use ApacheSolrForTypo3\Solr\Mvc\Variable\SolrVariableProvider;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
-use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationGuard;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
@@ -100,7 +101,7 @@ class SearchController extends AbstractBaseController
             return $this->handleSolrUnavailable();
         }
 
-        try {
+        return $this->runSolrCommunicationGuarded(function (): ResponseInterface {
             $arguments = $this->request->getArguments();
 
             $pageId = $this->request->getAttribute('routing')->getPageId();
@@ -149,10 +150,8 @@ class SearchController extends AbstractBaseController
             ];
 
             $this->view->assignMultiple($values);
-        } catch (SolrUnavailableException) {
-            return $this->handleSolrUnavailable();
-        }
-        return $this->htmlResponse();
+            return $this->htmlResponse();
+        });
     }
 
     /**
@@ -230,17 +229,23 @@ class SearchController extends AbstractBaseController
             return $this->handleSolrUnavailable();
         }
 
-        try {
+        return $this->runSolrCommunicationGuarded(function () use ($documentId): ResponseInterface {
             $document = $this->searchService->getDocumentById($documentId);
             $values = [
                 'document' => $document,
                 'contentObjectData' => $this->request->getAttribute('currentContentObject')?->data,
             ];
             $this->view->assignMultiple($values);
-        } catch (SolrUnavailableException) {
-            return $this->handleSolrUnavailable();
-        }
-        return $this->htmlResponse();
+            return $this->htmlResponse();
+        });
+    }
+
+    protected function runSolrCommunicationGuarded(callable $operation): ResponseInterface
+    {
+        return GeneralUtility::makeInstance(SolrCommunicationGuard::class)->run(
+            $operation,
+            fn (SolrCommunicationException $exception): ResponseInterface => $this->handleSolrUnavailable($exception),
+        );
     }
 
     /**
@@ -257,7 +262,7 @@ class SearchController extends AbstractBaseController
     /**
      * Called when the solr server is unavailable.
      */
-    protected function handleSolrUnavailable(): ResponseInterface
+    protected function handleSolrUnavailable(?SolrCommunicationException $exception = null): ResponseInterface
     {
         parent::logSolrUnavailable();
         return new ForwardResponse('solrNotAvailable');

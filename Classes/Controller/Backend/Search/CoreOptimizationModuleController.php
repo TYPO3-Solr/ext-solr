@@ -16,6 +16,8 @@
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationGuard;
 use ApacheSolrForTypo3\Solr\Utility\ManagedResourcesUtility;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Http\RedirectResponse;
@@ -60,18 +62,30 @@ class CoreOptimizationModuleController extends AbstractModuleController
             return $this->moduleTemplate->renderResponse('Backend/Search/CoreOptimizationModule/Index');
         }
 
-        $synonyms = [];
-        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
-        $rawSynonyms = $coreAdmin->getSynonyms();
-        foreach ($rawSynonyms as $baseWord => $synonymList) {
-            $synonyms[$baseWord] = implode(', ', $synonymList);
-        }
+        $managedResources = $this->runSolrCommunicationGuarded(function (): array {
+            $synonyms = [];
+            $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+            $rawSynonyms = $coreAdmin->getSynonyms();
+            foreach ($rawSynonyms as $baseWord => $synonymList) {
+                $synonyms[$baseWord] = implode(', ', $synonymList);
+            }
 
-        $stopWords = $coreAdmin->getStopWords();
+            $stopWords = $coreAdmin->getStopWords();
+            return [
+                'synonyms' => $synonyms,
+                'stopWords' => implode(PHP_EOL, $stopWords),
+                'stopWordsCount' => count($stopWords),
+            ];
+        }) ?? [
+            'synonyms' => [],
+            'stopWords' => '',
+            'stopWordsCount' => 0,
+        ];
+
         $this->moduleTemplate->assignMultiple([
-            'synonyms' => $synonyms,
-            'stopWords' => implode(PHP_EOL, $stopWords),
-            'stopWordsCount' => count($stopWords),
+            'synonyms' => $managedResources['synonyms'],
+            'stopWords' => $managedResources['stopWords'],
+            'stopWordsCount' => $managedResources['stopWordsCount'],
         ]);
 
         return $this->moduleTemplate->renderResponse('Backend/Search/CoreOptimizationModule/Index');
@@ -94,20 +108,22 @@ class CoreOptimizationModuleController extends AbstractModuleController
                 ContextualFeedbackSeverity::ERROR,
             );
         } else {
-            $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
-            if ($overrideExisting && $coreAdmin->getSynonyms($baseWord)) {
-                $coreAdmin->deleteSynonym($baseWord);
-            }
-            $coreAdmin->addSynonym($baseWord, $synonymList);
-            $coreAdmin->reloadCore();
+            $this->runSolrCommunicationGuarded(function () use ($baseWord, $synonymList, $overrideExisting): void {
+                $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+                if ($overrideExisting && $coreAdmin->getSynonyms($baseWord)) {
+                    $coreAdmin->deleteSynonym($baseWord);
+                }
+                $coreAdmin->addSynonym($baseWord, $synonymList);
+                $coreAdmin->reloadCore();
 
-            $this->addFlashMessage(
-                $this->translate('flash.synonyms.added.message', [
-                    'baseWord' => $baseWord,
-                    'count' => count($synonymList),
-                    'synonyms' => implode(', ', $synonymList),
-                ]),
-            );
+                $this->addFlashMessage(
+                    $this->translate('flash.synonyms.added.message', [
+                        'baseWord' => $baseWord,
+                        'count' => count($synonymList),
+                        'synonyms' => implode(', ', $synonymList),
+                    ]),
+                );
+            });
         }
 
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
@@ -118,12 +134,14 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     public function exportStopWordsAction(string $fileFormat = 'txt'): ResponseInterface
     {
-        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
-        return $this->exportFile(
-            implode(PHP_EOL, $coreAdmin->getStopWords()),
-            'stopwords',
-            $fileFormat,
-        );
+        return $this->runSolrCommunicationGuarded(function () use ($fileFormat): ResponseInterface {
+            $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+            return $this->exportFile(
+                implode(PHP_EOL, $coreAdmin->getStopWords()),
+                'stopwords',
+                $fileFormat,
+            );
+        }) ?? new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
     /**
@@ -133,9 +151,11 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     public function exportSynonymsAction(string $fileFormat = 'txt'): ResponseInterface
     {
-        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
-        $synonyms = $coreAdmin->getSynonyms();
-        return $this->exportFile(ManagedResourcesUtility::exportSynonymsToTxt($synonyms), 'synonyms', $fileFormat);
+        return $this->runSolrCommunicationGuarded(function () use ($fileFormat): ResponseInterface {
+            $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+            $synonyms = $coreAdmin->getSynonyms();
+            return $this->exportFile(ManagedResourcesUtility::exportSynonymsToTxt($synonyms), 'synonyms', $fileFormat);
+        }) ?? new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
     /**
@@ -155,27 +175,30 @@ class CoreOptimizationModuleController extends AbstractModuleController
             return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
         }
 
-        if ($deleteSynonymsBefore) {
-            $this->deleteAllSynonyms();
-        }
-
         $fileLines = ManagedResourcesUtility::importSynonymsFromPlainTextContents($synonymFileUpload);
-        $synonymCount = 0;
-
-        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
-        foreach ($fileLines as $baseWord => $synonyms) {
-            if (empty($baseWord) || empty($synonyms)) {
-                continue;
+        $this->runSolrCommunicationGuarded(function () use ($fileLines, $overrideExisting, $deleteSynonymsBefore): void {
+            if ($deleteSynonymsBefore) {
+                $this->deleteAllSynonyms();
             }
-            $this->deleteExistingSynonym($overrideExisting, $deleteSynonymsBefore, $baseWord);
-            $coreAdmin->addSynonym($baseWord, $synonyms);
-            $synonymCount++;
-        }
 
-        $coreAdmin->reloadCore();
-        $this->addFlashMessage(
-            $this->translate('flash.synonyms.imported.message', ['count' => $synonymCount]),
-        );
+            $synonymCount = 0;
+
+            $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+            foreach ($fileLines as $baseWord => $synonyms) {
+                if (empty($baseWord) || empty($synonyms)) {
+                    continue;
+                }
+                $this->deleteExistingSynonym($overrideExisting, $deleteSynonymsBefore, $baseWord);
+                $coreAdmin->addSynonym($baseWord, $synonyms);
+                $synonymCount++;
+            }
+
+            $coreAdmin->reloadCore();
+            $this->addFlashMessage(
+                $this->translate('flash.synonyms.imported.message', ['count' => $synonymCount]),
+            );
+        });
+
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
@@ -208,24 +231,26 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     public function deleteAllSynonymsAction(): ResponseInterface
     {
-        $allSynonymsCouldBeDeleted = $this->deleteAllSynonyms();
+        $this->runSolrCommunicationGuarded(function (): void {
+            $allSynonymsCouldBeDeleted = $this->deleteAllSynonyms();
 
-        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
-        $reloadResponse = $coreAdmin->reloadCore();
+            $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+            $reloadResponse = $coreAdmin->reloadCore();
 
-        if ($allSynonymsCouldBeDeleted
-            && $reloadResponse->getHttpStatus() == 200
-        ) {
-            $this->addFlashMessage(
-                $this->translate('flash.synonyms.deleteAll.success'),
-            );
-        } else {
-            $this->addFlashMessage(
-                $this->translate('flash.synonyms.deleteAll.error'),
-                $this->translate('flash.title.error'),
-                ContextualFeedbackSeverity::ERROR,
-            );
-        }
+            if ($allSynonymsCouldBeDeleted
+                && $reloadResponse->getHttpStatus() == 200
+            ) {
+                $this->addFlashMessage(
+                    $this->translate('flash.synonyms.deleteAll.success'),
+                );
+            } else {
+                $this->addFlashMessage(
+                    $this->translate('flash.synonyms.deleteAll.error'),
+                    $this->translate('flash.title.error'),
+                    ContextualFeedbackSeverity::ERROR,
+                );
+            }
+        });
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
@@ -238,23 +263,25 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     public function deleteSynonymsAction(string $baseWord): ResponseInterface
     {
-        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
-        $deleteResponse = $coreAdmin->deleteSynonym($baseWord);
-        $reloadResponse = $coreAdmin->reloadCore();
+        $this->runSolrCommunicationGuarded(function () use ($baseWord): void {
+            $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+            $deleteResponse = $coreAdmin->deleteSynonym($baseWord);
+            $reloadResponse = $coreAdmin->reloadCore();
 
-        if ($deleteResponse->getHttpStatus() == 200
-            && $reloadResponse->getHttpStatus() == 200
-        ) {
-            $this->addFlashMessage(
-                $this->translate('flash.synonyms.delete.success'),
-            );
-        } else {
-            $this->addFlashMessage(
-                $this->translate('flash.synonyms.delete.error'),
-                $this->translate('flash.title.error'),
-                ContextualFeedbackSeverity::ERROR,
-            );
-        }
+            if ($deleteResponse->getHttpStatus() == 200
+                && $reloadResponse->getHttpStatus() == 200
+            ) {
+                $this->addFlashMessage(
+                    $this->translate('flash.synonyms.delete.success'),
+                );
+            } else {
+                $this->addFlashMessage(
+                    $this->translate('flash.synonyms.delete.error'),
+                    $this->translate('flash.title.error'),
+                    ContextualFeedbackSeverity::ERROR,
+                );
+            }
+        });
 
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
@@ -270,29 +297,31 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $newStopWords = mb_strtolower($stopWords);
         $newStopWords = GeneralUtility::trimExplode("\n", $newStopWords, true);
 
-        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
-        $oldStopWords = $coreAdmin->getStopWords();
+        $this->runSolrCommunicationGuarded(function () use ($newStopWords, $replaceStopwords): void {
+            $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+            $oldStopWords = $coreAdmin->getStopWords();
 
-        if ($replaceStopwords) {
-            $removedStopWords = array_diff($oldStopWords, $newStopWords);
-            $wordsRemoved = $this->removeStopsWordsFromIndex($removedStopWords);
-        } else {
-            $wordsRemoved = true;
-        }
+            if ($replaceStopwords) {
+                $removedStopWords = array_diff($oldStopWords, $newStopWords);
+                $wordsRemoved = $this->removeStopsWordsFromIndex($removedStopWords);
+            } else {
+                $wordsRemoved = true;
+            }
 
-        $wordsAdded = true;
-        $addedStopWords = array_diff($newStopWords, $oldStopWords);
-        if (!empty($addedStopWords)) {
-            $wordsAddedResponse = $coreAdmin->addStopWords($addedStopWords);
-            $wordsAdded = ($wordsAddedResponse->getHttpStatus() == 200);
-        }
+            $wordsAdded = true;
+            $addedStopWords = array_diff($newStopWords, $oldStopWords);
+            if (!empty($addedStopWords)) {
+                $wordsAddedResponse = $coreAdmin->addStopWords($addedStopWords);
+                $wordsAdded = ($wordsAddedResponse->getHttpStatus() == 200);
+            }
 
-        $reloadResponse = $coreAdmin->reloadCore();
-        if ($wordsRemoved && $wordsAdded && $reloadResponse->getHttpStatus() == 200) {
-            $this->addFlashMessage(
-                $this->translate('flash.stopWords.updated'),
-            );
-        }
+            $reloadResponse = $coreAdmin->reloadCore();
+            if ($wordsRemoved && $wordsAdded && $reloadResponse->getHttpStatus() == 200) {
+                $this->addFlashMessage(
+                    $this->translate('flash.stopWords.updated'),
+                );
+            }
+        });
 
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
@@ -350,6 +379,21 @@ class CoreOptimizationModuleController extends AbstractModuleController
         }
 
         return $wordsRemoved;
+    }
+
+    private function runSolrCommunicationGuarded(callable $operation): mixed
+    {
+        return GeneralUtility::makeInstance(SolrCommunicationGuard::class)->run(
+            $operation,
+            function (SolrCommunicationException $exception) {
+                $this->addFlashMessage(
+                    $this->translate('flash.solrUnavailable.message'),
+                    $this->translate('flash.title.error'),
+                    ContextualFeedbackSeverity::ERROR,
+                );
+                return null;
+            },
+        );
     }
 
     private function translate(string $key, array $arguments = []): string
