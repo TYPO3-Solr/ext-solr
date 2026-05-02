@@ -481,6 +481,11 @@
         <source>TYPO3 14 configset</source>
       </segment>
     </unit>
+    <unit id="productionChecklist.configset.description">
+      <segment state="final">
+        <source>Pure notice — Solr Admin does not expose the configset name; the schema and solrconfig checks above verify the deployed files instead.</source>
+      </segment>
+    </unit>
     <unit id="productionChecklist.configset.detail">
       <segment state="final">
         <source>Use configset {configset} for TYPO3 14. Solr Admin does not expose the original configset name here; the schema and solrconfig checks above verify the deployed files.</source>
@@ -489,6 +494,11 @@
     <unit id="productionChecklist.jvmMemory.title">
       <segment state="final">
         <source>JVM memory</source>
+      </segment>
+    </unit>
+    <unit id="productionChecklist.jvmMemory.description">
+      <segment state="final">
+        <source>Reads the JVM max heap from Solr's /admin/info/system endpoint and compares it against the recommended production minimum (1 GiB).</source>
       </segment>
     </unit>
     <unit id="productionChecklist.jvmMemory.detail.ok">
@@ -511,6 +521,11 @@
         <source>Public access</source>
       </segment>
     </unit>
+    <unit id="productionChecklist.publicAccess.description">
+      <segment state="final">
+        <source>Pure notice — no reachability probe is performed; verify network exposure manually with firewall, private network or authenticated reverse proxy.</source>
+      </segment>
+    </unit>
     <unit id="productionChecklist.publicAccess.detail">
       <segment state="final">
         <source>Verify in production that Solr is not publicly reachable. Protect it with a firewall, private network or authenticated reverse proxy; DDEV admin URLs are development-only.</source>
@@ -519,6 +534,11 @@
     <unit id="productionChecklist.indexQueueWorker.title">
       <segment state="final">
         <source>Index Queue Worker scheduler task</source>
+      </segment>
+    </unit>
+    <unit id="productionChecklist.indexQueueWorker.description">
+      <segment state="final">
+        <source>Searches the tx_scheduler_task table for an active IndexQueueWorkerTask entry that is not disabled.</source>
       </segment>
     </unit>
     <unit id="productionChecklist.indexQueueWorker.detail.ok">
@@ -536,6 +556,11 @@
         <source>Verbose logging</source>
       </segment>
     </unit>
+    <unit id="productionChecklist.logging.description">
+      <segment state="final">
+        <source>Reads the TypoScript plugin.tx_solr.logging.* keys and lists any verbose query or indexing log options that are currently enabled.</source>
+      </segment>
+    </unit>
     <unit id="productionChecklist.logging.detail.ok">
       <segment state="final">
         <source>Verbose Solr query and indexing logging is disabled. Exception logging may remain enabled.</source>
@@ -551,6 +576,11 @@
         <source>Solr data backup</source>
       </segment>
     </unit>
+    <unit id="productionChecklist.backup.description">
+      <segment state="final">
+        <source>Pure notice — no backup probe is performed; confirm backup schedule and a tested restore yourself.</source>
+      </segment>
+    </unit>
     <unit id="productionChecklist.backup.detail">
       <segment state="final">
         <source>Confirm that the Solr data volume is backed up regularly and that restore has been tested.</source>
@@ -559,6 +589,11 @@
     <unit id="productionChecklist.cve.title">
       <segment state="final">
         <source>CVE and patch level</source>
+      </segment>
+    </unit>
+    <unit id="productionChecklist.cve.description">
+      <segment state="final">
+        <source>Reads the live Solr version from /admin/info/system and compares it with the CVE-2025-24814 patch threshold (Solr 9.8.0 or newer).</source>
       </segment>
     </unit>
     <unit id="productionChecklist.cve.detail.ok">
@@ -581,6 +616,11 @@
         <source>Site hash strategy</source>
       </segment>
     </unit>
+    <unit id="productionChecklist.siteHash.description">
+      <segment state="final">
+        <source>Pure notice — the legacy siteHashStrategy extension setting was removed in EXT:solr 14, so no live check is needed.</source>
+      </segment>
+    </unit>
     <unit id="productionChecklist.siteHash.detail">
       <segment state="final">
         <source>No siteHashStrategy setting is needed in EXT:solr 14. The site-identifier based strategy is the default and the old extension setting was removed.</source>
@@ -589,6 +629,11 @@
     <unit id="productionChecklist.languageCores.title">
       <segment state="final">
         <source>Language cores</source>
+      </segment>
+    </unit>
+    <unit id="productionChecklist.languageCores.description">
+      <segment state="final">
+        <source>For every configured site connection, queries Solr's /admin/cores endpoint and reports cores with missing schema or duplicate names.</source>
       </segment>
     </unit>
     <unit id="productionChecklist.languageCores.detail.ok">

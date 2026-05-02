@@ -577,6 +577,12 @@
         <target>TYPO3-14-Configset</target>
       </segment>
     </unit>
+    <unit id="productionChecklist.configset.description">
+      <segment state="final">
+        <source>Pure notice — Solr Admin does not expose the configset name; the schema and solrconfig checks above verify the deployed files instead.</source>
+        <target>Reiner Hinweis — Solr Admin liefert den Configset-Namen nicht; die Schema- und solrconfig-Prüfungen oben prüfen stattdessen die deployten Dateien.</target>
+      </segment>
+    </unit>
     <unit id="productionChecklist.configset.detail">
       <segment state="final">
         <source>Use configset {configset} for TYPO3 14. Solr Admin does not expose the original configset name here; the schema and solrconfig checks above verify the deployed files.</source>
@@ -587,6 +593,12 @@
       <segment state="final">
         <source>JVM memory</source>
         <target>JVM-Speicher</target>
+      </segment>
+    </unit>
+    <unit id="productionChecklist.jvmMemory.description">
+      <segment state="final">
+        <source>Reads the JVM max heap from Solr's /admin/info/system endpoint and compares it against the recommended production minimum (1 GiB).</source>
+        <target>Liest den maximalen JVM-Heap aus Solr /admin/info/system und vergleicht ihn mit dem empfohlenen Produktionsminimum (1 GiB).</target>
       </segment>
     </unit>
     <unit id="productionChecklist.jvmMemory.detail.ok">
@@ -613,6 +625,12 @@
         <target>Öffentlicher Zugriff</target>
       </segment>
     </unit>
+    <unit id="productionChecklist.publicAccess.description">
+      <segment state="final">
+        <source>Pure notice — no reachability probe is performed; verify network exposure manually with firewall, private network or authenticated reverse proxy.</source>
+        <target>Reiner Hinweis — keine Erreichbarkeitsprobe; prüfen Sie die Netzwerkfreigabe manuell mit Firewall, privatem Netzwerk oder authentifiziertem Reverse Proxy.</target>
+      </segment>
+    </unit>
     <unit id="productionChecklist.publicAccess.detail">
       <segment state="final">
         <source>Verify in production that Solr is not publicly reachable. Protect it with a firewall, private network or authenticated reverse proxy; DDEV admin URLs are development-only.</source>
@@ -623,6 +641,12 @@
       <segment state="final">
         <source>Index Queue Worker scheduler task</source>
         <target>Scheduler-Task „Index Queue Worker“</target>
+      </segment>
+    </unit>
+    <unit id="productionChecklist.indexQueueWorker.description">
+      <segment state="final">
+        <source>Searches the tx_scheduler_task table for an active IndexQueueWorkerTask entry that is not disabled.</source>
+        <target>Sucht in der Tabelle tx_scheduler_task nach einem aktiven, nicht deaktivierten IndexQueueWorkerTask-Eintrag.</target>
       </segment>
     </unit>
     <unit id="productionChecklist.indexQueueWorker.detail.ok">
@@ -643,6 +667,12 @@
         <target>Ausführliches Logging</target>
       </segment>
     </unit>
+    <unit id="productionChecklist.logging.description">
+      <segment state="final">
+        <source>Reads the TypoScript plugin.tx_solr.logging.* keys and lists any verbose query or indexing log options that are currently enabled.</source>
+        <target>Liest die TypoScript-Schlüssel plugin.tx_solr.logging.* und listet aktive ausführliche Query- oder Indexierungs-Log-Optionen.</target>
+      </segment>
+    </unit>
     <unit id="productionChecklist.logging.detail.ok">
       <segment state="final">
         <source>Verbose Solr query and indexing logging is disabled. Exception logging may remain enabled.</source>
@@ -661,6 +691,12 @@
         <target>Solr-Daten-Backup</target>
       </segment>
     </unit>
+    <unit id="productionChecklist.backup.description">
+      <segment state="final">
+        <source>Pure notice — no backup probe is performed; confirm backup schedule and a tested restore yourself.</source>
+        <target>Reiner Hinweis — keine Backup-Prüfung; bestätigen Sie Backup-Plan und einen getesteten Restore selbst.</target>
+      </segment>
+    </unit>
     <unit id="productionChecklist.backup.detail">
       <segment state="final">
         <source>Confirm that the Solr data volume is backed up regularly and that restore has been tested.</source>
@@ -671,6 +707,12 @@
       <segment state="final">
         <source>CVE and patch level</source>
         <target>CVE- und Patch-Stand</target>
+      </segment>
+    </unit>
+    <unit id="productionChecklist.cve.description">
+      <segment state="final">
+        <source>Reads the live Solr version from /admin/info/system and compares it with the CVE-2025-24814 patch threshold (Solr 9.8.0 or newer).</source>
+        <target>Liest die Live-Solr-Version aus /admin/info/system und vergleicht sie mit dem CVE-2025-24814-Patch-Schwellwert (Solr 9.8.0 oder neuer).</target>
       </segment>
     </unit>
     <unit id="productionChecklist.cve.detail.ok">
@@ -697,6 +739,12 @@
         <target>Site-Hash-Strategie</target>
       </segment>
     </unit>
+    <unit id="productionChecklist.siteHash.description">
+      <segment state="final">
+        <source>Pure notice — the legacy siteHashStrategy extension setting was removed in EXT:solr 14, so no live check is needed.</source>
+        <target>Reiner Hinweis — die alte siteHashStrategy-Einstellung wurde in EXT:solr 14 entfernt, ein Live-Check ist nicht nötig.</target>
+      </segment>
+    </unit>
     <unit id="productionChecklist.siteHash.detail">
       <segment state="final">
         <source>No siteHashStrategy setting is needed in EXT:solr 14. The site-identifier based strategy is the default and the old extension setting was removed.</source>
@@ -707,6 +755,12 @@
       <segment state="final">
         <source>Language cores</source>
         <target>Sprach-Cores</target>
+      </segment>
+    </unit>
+    <unit id="productionChecklist.languageCores.description">
+      <segment state="final">
+        <source>For every configured site connection, queries Solr's /admin/cores endpoint and reports cores with missing schema or duplicate names.</source>
+        <target>Fragt für jede konfigurierte Site-Verbindung den Endpunkt /admin/cores ab und meldet Cores mit fehlendem Schema oder doppelten Namen.</target>
       </segment>
     </unit>
     <unit id="productionChecklist.languageCores.detail.ok">

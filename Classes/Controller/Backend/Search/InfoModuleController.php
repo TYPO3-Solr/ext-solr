@@ -560,6 +560,7 @@ class InfoModuleController extends AbstractModuleController
     /**
      * @return array{
      *     labelKey: string,
+     *     descriptionKey: string,
      *     detailKey: string,
      *     detailArguments: array<string, string|int>,
      *     statusClass: string,
@@ -576,6 +577,7 @@ class InfoModuleController extends AbstractModuleController
     ): array {
         return [
             'labelKey' => $labelKey,
+            'descriptionKey' => preg_replace('/\.title$/', '.description', $labelKey),
             'detailKey' => $detailKey,
             'detailArguments' => $detailArguments,
             'statusClass' => $severity->getCssClass(),

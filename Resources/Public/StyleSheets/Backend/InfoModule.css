@@ -1453,6 +1453,12 @@
     overflow-wrap: anywhere;
 }
 
+.solr-info-module__production-checklist-body .solr-info-module__production-checklist-description {
+    font-size: .85em;
+    font-style: italic;
+    opacity: .85;
+}
+
 @media (max-width: 767.98px) {
     #connections-tab .panel-tab,
     #statistics-tab .panel-tab,
