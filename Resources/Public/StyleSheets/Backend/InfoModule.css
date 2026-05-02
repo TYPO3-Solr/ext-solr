@@ -317,10 +317,9 @@
 
 .solr-info-module__server-item-header {
     align-items: flex-start;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: calc(var(--typo3-spacing) * .75);
-    justify-content: space-between;
+    grid-template-columns: minmax(0, 1fr) auto;
     margin-bottom: 0;
 }
 
@@ -344,6 +343,8 @@
     flex-wrap: wrap;
     gap: calc(var(--typo3-spacing) * .4);
     justify-content: flex-end;
+    margin-inline-start: auto;
+    text-align: end;
 }
 
 .solr-info-module__status-pill {
@@ -502,30 +503,43 @@
 }
 
 .solr-info-module__server-links {
-    align-items: center;
-    display: flex;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    display: grid;
     gap: calc(var(--typo3-spacing) * .4);
+    grid-template-columns: max-content minmax(0, 1fr);
 }
 
 .solr-info-module__server-link-list {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--typo3-spacing);
+    gap: calc(var(--typo3-spacing) * .6) var(--typo3-spacing);
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
 .solr-info-module__server-link-item {
-    align-items: center;
+    align-items: flex-start;
     display: inline-flex;
-    gap: calc(var(--typo3-spacing) * .25);
+    gap: calc(var(--typo3-spacing) * .4);
 }
 
 .solr-info-module__server-link-item + .solr-info-module__server-link-item {
     border-inline-start: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
     padding-inline-start: var(--typo3-spacing);
+}
+
+.solr-info-module__server-link-body {
+    display: grid;
+    gap: calc(var(--typo3-spacing) * .1);
+    min-width: 0;
+}
+
+.solr-info-module__server-link-hint {
+    color: var(--typo3-text-color-variant);
+    font-size: var(--typo3-font-size-small);
+    line-height: 1.2;
+    margin: 0;
 }
 
 .solr-info-module__server-link-unavailable {
@@ -1412,6 +1426,27 @@
     .solr-info-module__refresh-button {
         grid-column: 1 / -1;
         justify-self: stretch;
+    }
+
+    .solr-info-module__server-item-header,
+    .solr-info-module__server-links {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .solr-info-module__server-summary {
+        justify-content: flex-start;
+        margin-inline-start: 0;
+        text-align: start;
+    }
+
+    .solr-info-module__server-link-list {
+        display: grid;
+        gap: calc(var(--typo3-spacing) * .6);
+    }
+
+    .solr-info-module__server-link-item + .solr-info-module__server-link-item {
+        border-inline-start: 0;
+        padding-inline-start: 0;
     }
 
     .solr-info-module__production-checklist-item {
