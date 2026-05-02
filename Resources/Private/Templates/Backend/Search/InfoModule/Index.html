@@ -203,6 +203,18 @@
                                     <span>{connection.languageTitle}</span>
                                 </span>
                             </div>
+                            <p class="solr-info-module__server-metric">
+                                <f:if condition="{connection.documentCountAvailable}">
+                                    <f:then>
+                                        <f:translate key="connections.documents.count" domain="solr.modules.info" arguments="{count: connection.documentCount}"/>
+                                    </f:then>
+                                    <f:else>
+                                        <span class="solr-info-module__server-metric--danger">
+                                            <f:translate key="connections.documents.countUnavailable" domain="solr.modules.info"/>
+                                        </span>
+                                    </f:else>
+                                </f:if>
+                            </p>
                         </div>
                         <div class="solr-info-module__server-summary">
                             <span class="solr-info-module__status-pill solr-info-module__status-pill--status solr-info-module__status-pill--{connection.statusClass}">
@@ -216,18 +228,6 @@
                                     </f:else>
                                 </f:if>
                             </span>
-                            <f:if condition="{connection.documentCountAvailable}">
-                                <f:then>
-                                    <span class="badge badge-default">
-                                        <f:translate key="connections.documents.count" domain="solr.modules.info" arguments="{count: connection.documentCount}"/>
-                                    </span>
-                                </f:then>
-                                <f:else>
-                                    <span class="badge badge-danger">
-                                        <f:translate key="connections.documents.countUnavailable" domain="solr.modules.info"/>
-                                    </span>
-                                </f:else>
-                            </f:if>
                         </div>
                     </div>
                     <f:if condition="{connection.statusClass} != 'success'">
@@ -252,39 +252,43 @@
                             </span>
                         </div>
                     </f:if>
-                    <div class="solr-info-module__server-meta">
-                        <div class="solr-info-module__server-endpoint">
-                            <span class="solr-info-module__server-meta-label">
-                                <f:translate key="connections.endpoint.label" domain="solr.modules.info"/>
-                            </span>
-                            <div>
-                                <code>{connection.endpoint}</code>
-                            </div>
-                        </div>
-                        <div class="solr-info-module__server-links">
-                            <span class="solr-info-module__server-meta-label">
-                                <f:translate key="connections.browserEndpoints.label" domain="solr.modules.info"/>
-                            </span>
+                    <dl class="solr-info-module__server-meta">
+                        <dt class="solr-info-module__server-meta-label">
+                            <f:translate key="connections.endpoint.label" domain="solr.modules.info"/>
+                        </dt>
+                        <dd class="solr-info-module__server-meta-value">
+                            <code>{connection.endpoint}</code>
+                        </dd>
+                        <dt class="solr-info-module__server-meta-label">
+                            <f:translate key="connections.browserEndpoints.label" domain="solr.modules.info"/>
+                        </dt>
+                        <dd class="solr-info-module__server-meta-value">
                             <f:if condition="{connection.browserEndpoints}">
                                 <f:then>
                                     <ul class="solr-info-module__server-link-list">
                                         <f:for each="{connection.browserEndpoints}" as="browserEndpoint">
-                                            <li class="solr-info-module__server-link-item">
-                                                <span class="solr-info-module__server-link-body">
-                                                    <a href="{browserEndpoint.url}" target="_blank" rel="noopener noreferrer" class="solr-info-module__server-link" title="{browserEndpoint.url}">
-                                                        <span class="solr-info-module__server-link-icon" title="{f:translate(key: 'external.opensInNewWindow', domain: 'solr.modules.info')}">
-                                                            <core:icon identifier="actions-window-open" size="small"/>
+                                            <li class="solr-info-module__server-link-item solr-info-module__server-link-item--{f:if(condition: browserEndpoint.isReachable, then: 'reachable', else: 'unreachable')}">
+                                                <a href="{browserEndpoint.url}" target="_blank" rel="noopener noreferrer" class="solr-info-module__server-link" title="{browserEndpoint.url}">
+                                                    <span class="solr-info-module__server-link-icon" title="{f:translate(key: 'external.opensInNewWindow', domain: 'solr.modules.info')}">
+                                                        <core:icon identifier="actions-window-open" size="small"/>
+                                                    </span>
+                                                    <span><f:translate key="{browserEndpoint.labelKey}" domain="solr.modules.info"/></span>
+                                                    <span class="visually-hidden"> (<f:translate key="external.opensInNewWindow" domain="solr.modules.info"/>)</span>
+                                                    <span class="visually-hidden">
+                                                        <f:if condition="{browserEndpoint.isReachable}">
+                                                            <f:then><f:translate key="connections.browserEndpoint.reachable" domain="solr.modules.info"/></f:then>
+                                                            <f:else><f:translate key="connections.browserEndpoint.notReachable" domain="solr.modules.info"/></f:else>
+                                                        </f:if>
+                                                    </span>
+                                                </a>
+                                                <f:if condition="{browserEndpoint.isReachable}">
+                                                    <f:then></f:then>
+                                                    <f:else>
+                                                        <span class="badge badge-danger" aria-hidden="true">
+                                                            <f:translate key="connections.browserEndpoint.notReachable" domain="solr.modules.info"/>
                                                         </span>
-                                                        <span><f:translate key="{browserEndpoint.labelKey}" domain="solr.modules.info"/></span>
-                                                        <span class="visually-hidden"> (<f:translate key="external.opensInNewWindow" domain="solr.modules.info"/>)</span>
-                                                    </a>
-                                                </span>
-                                                <span class="badge {f:if(condition: browserEndpoint.isReachable, then: 'badge-success', else: 'badge-danger')}">
-                                                    <f:if condition="{browserEndpoint.isReachable}">
-                                                        <f:then><f:translate key="connections.browserEndpoint.reachable" domain="solr.modules.info"/></f:then>
-                                                        <f:else><f:translate key="connections.browserEndpoint.notReachable" domain="solr.modules.info"/></f:else>
-                                                    </f:if>
-                                                </span>
+                                                    </f:else>
+                                                </f:if>
                                             </li>
                                         </f:for>
                                     </ul>
@@ -295,8 +299,8 @@
                                     </span>
                                 </f:else>
                             </f:if>
-                        </div>
-                    </div>
+                        </dd>
+                    </dl>
                 </li>
             </f:for>
         </ul>
@@ -344,20 +348,28 @@
                     </span>
                     <ul class="solr-info-module__server-link-list">
                         <f:for each="{solrServerInfo.adminEndpoints}" as="adminEndpoint">
-                            <li class="solr-info-module__server-link-item">
+                            <li class="solr-info-module__server-link-item solr-info-module__server-link-item--{f:if(condition: adminEndpoint.isReachable, then: 'reachable', else: 'unreachable')}">
                                 <a href="{adminEndpoint.url}" target="_blank" rel="noopener noreferrer" class="solr-info-module__server-link" title="{adminEndpoint.url}">
                                     <span class="solr-info-module__server-link-icon" title="{f:translate(key: 'external.opensInNewWindow', domain: 'solr.modules.info')}">
                                         <core:icon identifier="actions-window-open" size="small"/>
                                     </span>
                                     <span><f:translate key="{adminEndpoint.labelKey}" domain="solr.modules.info"/></span>
                                     <span class="visually-hidden"> (<f:translate key="external.opensInNewWindow" domain="solr.modules.info"/>)</span>
+                                    <span class="visually-hidden">
+                                        <f:if condition="{adminEndpoint.isReachable}">
+                                            <f:then><f:translate key="connections.browserEndpoint.reachable" domain="solr.modules.info"/></f:then>
+                                            <f:else><f:translate key="connections.browserEndpoint.notReachable" domain="solr.modules.info"/></f:else>
+                                        </f:if>
+                                    </span>
                                 </a>
-                                <span class="badge {f:if(condition: adminEndpoint.isReachable, then: 'badge-success', else: 'badge-danger')}">
-                                    <f:if condition="{adminEndpoint.isReachable}">
-                                        <f:then><f:translate key="connections.browserEndpoint.reachable" domain="solr.modules.info"/></f:then>
-                                        <f:else><f:translate key="connections.browserEndpoint.notReachable" domain="solr.modules.info"/></f:else>
-                                    </f:if>
-                                </span>
+                                <f:if condition="{adminEndpoint.isReachable}">
+                                    <f:then></f:then>
+                                    <f:else>
+                                        <span class="badge badge-danger" aria-hidden="true">
+                                            <f:translate key="connections.browserEndpoint.notReachable" domain="solr.modules.info"/>
+                                        </span>
+                                    </f:else>
+                                </f:if>
                             </li>
                         </f:for>
                     </ul>
