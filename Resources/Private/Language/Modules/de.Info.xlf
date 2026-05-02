@@ -985,5 +985,53 @@
         <target>Jetzt kaufen</target>
       </segment>
     </unit>
+    <unit id="overview.resources.title">
+      <segment state="final">
+        <source>Learn more</source>
+        <target>Mehr erfahren</target>
+      </segment>
+    </unit>
+    <unit id="overview.resources.description">
+      <segment state="final">
+        <source>Short references for maintaining and extending the TYPO3 Solr setup.</source>
+        <target>Kurze Hinweise für Pflege und Erweiterung des TYPO3-Solr-Setups.</target>
+      </segment>
+    </unit>
+    <unit id="overview.resources.skill.title">
+      <segment state="final">
+        <source>TYPO3 Solr skill</source>
+        <target>TYPO3-Solr-Skill</target>
+      </segment>
+    </unit>
+    <unit id="overview.resources.skill.description">
+      <segment state="final">
+        <source>A skill is a compact, task-specific guide for AI-assisted TYPO3 work. The TYPO3 Solr skill collects setup, indexing, debugging, and production guidance so changes follow EXT:solr and TYPO3 backend patterns.</source>
+        <target>Ein Skill ist ein kompakter, aufgabenbezogener Leitfaden für KI-unterstützte TYPO3-Arbeit. Der TYPO3-Solr-Skill bündelt Setup-, Indexierungs-, Debugging- und Produktionshinweise, damit Änderungen zu EXT:solr und den TYPO3-Backend-Mustern passen.</target>
+      </segment>
+    </unit>
+    <unit id="overview.resources.skill.link">
+      <segment state="final">
+        <source>Open TYPO3 Solr skill</source>
+        <target>TYPO3-Solr-Skill öffnen</target>
+      </segment>
+    </unit>
+    <unit id="overview.resources.article.title">
+      <segment state="final">
+        <source>TYPO3 Solr enterprise search</source>
+        <target>TYPO3 Solr Enterprise-Suche</target>
+      </segment>
+    </unit>
+    <unit id="overview.resources.article.description">
+      <segment state="final">
+        <source>The webconsulting article explains how EXT:solr turns TYPO3 into enterprise search: full-text search for pages and records, facets, autocomplete, the Index Queue, DDEV or hosting options, and optional vector or hybrid search.</source>
+        <target>Der webconsulting-Artikel beschreibt, wie EXT:solr TYPO3 um Enterprise-Suche ergänzt: Volltextsuche für Seiten und Datensätze, Facetten, Autocomplete, Index-Queue, DDEV- oder Hosting-Optionen und optionale Vector- oder Hybrid-Suche.</target>
+      </segment>
+    </unit>
+    <unit id="overview.resources.article.link">
+      <segment state="final">
+        <source>Read article</source>
+        <target>Artikel lesen</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
