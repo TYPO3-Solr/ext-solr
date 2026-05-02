@@ -56,6 +56,11 @@
         <source>Index now</source>
       </segment>
     </unit>
+    <unit id="action.indexBatch">
+      <segment state="final">
+        <source>Index up to 50</source>
+      </segment>
+    </unit>
     <unit id="action.back">
       <segment state="final">
         <source>Go back</source>

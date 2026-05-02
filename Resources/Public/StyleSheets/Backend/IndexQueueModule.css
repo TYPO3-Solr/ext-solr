@@ -54,6 +54,16 @@
     margin-bottom: 0;
 }
 
+.solr-index-queue-module__status-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--typo3-spacing) * .5);
+}
+
+.solr-index-queue-module__status-actions form {
+    margin-bottom: 0;
+}
+
 .solr-index-queue-module__status-section .solr-index-queue-module__section-heading {
     align-items: flex-start;
     display: grid;

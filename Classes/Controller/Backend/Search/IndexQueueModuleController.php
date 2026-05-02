@@ -41,6 +41,8 @@ class IndexQueueModuleController extends AbstractModuleController
 {
     private const LANGUAGE_DOMAIN = 'solr.modules.index_queue';
 
+    private const MANUAL_INDEX_RUN_MAX_LIMIT = 50;
+
     protected array $enabledIndexQueues;
 
     protected function initializeAction(): void
@@ -272,11 +274,13 @@ class IndexQueueModuleController extends AbstractModuleController
      *
      * @noinspection PhpUnused Is *Action
      */
-    public function doIndexingRunAction(): ResponseInterface
+    public function doIndexingRunAction(int $limit = 1): ResponseInterface
     {
+        $limit = max(1, min($limit, self::MANUAL_INDEX_RUN_MAX_LIMIT));
+
         /** @var IndexService $indexService */
         $indexService = GeneralUtility::makeInstance(IndexService::class, $this->selectedSite);
-        $indexWithoutErrors = $indexService->indexItems(1);
+        $indexWithoutErrors = $indexService->indexItems($limit);
 
         $label = 'flash.manualIndex.success.message';
         $severity = ContextualFeedbackSeverity::OK;

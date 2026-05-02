@@ -67,6 +67,12 @@
         <target>Jetzt indexieren</target>
       </segment>
     </unit>
+    <unit id="action.indexBatch">
+      <segment state="final">
+        <source>Index up to 50</source>
+        <target>Bis zu 50 indexieren</target>
+      </segment>
+    </unit>
     <unit id="action.back">
       <segment state="final">
         <source>Go back</source>
