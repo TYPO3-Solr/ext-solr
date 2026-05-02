@@ -177,6 +177,15 @@
     margin-bottom: var(--typo3-spacing);
 }
 
+.solr-info-module__section-heading--full-description {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.solr-info-module__section-heading--full-description .solr-info-module__server-scope-note {
+    grid-column: 1 / -1;
+}
+
 .solr-info-module__section-heading h3 {
     color: var(--typo3-text-color-base);
     font-family: var(--typo3-header-font-family);
