@@ -301,7 +301,14 @@
 
     .solr-index-queue-module__danger-action {
         grid-template-columns: minmax(0, 1fr);
-        padding-inline: 0;
+        padding-inline: var(--typo3-spacing);
+    }
+
+    .solr-index-queue-module__actions,
+    .solr-index-queue-module__danger-action form,
+    .solr-index-queue-module__form-help,
+    .solr-index-queue-module__danger-action .action-description {
+        width: 100%;
     }
 
     .solr-index-queue-module__section-heading {
