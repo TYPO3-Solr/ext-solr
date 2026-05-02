@@ -11,7 +11,7 @@
 		</header>
 
 		<div class="solr-llm-module__toolbar">
-			<f:form action="index" method="get" class="solr-llm-module__configuration-form">
+			<f:form action="index" method="get" target="_top" class="solr-llm-module__configuration-form">
 				<f:form.hidden name="id" value="{selectedPageUID}"/>
 				<label class="form-label" for="solr-llm-configuration">
 					<f:translate key="configuration.select.label" domain="solr.modules.llm"/>
@@ -37,13 +37,13 @@
 
 			<div class="solr-llm-module__module-links">
 				<f:if condition="{nrLlmConfigurationModuleUri}">
-					<a class="btn btn-sm btn-default" href="{nrLlmConfigurationModuleUri}">
+					<a class="btn btn-sm btn-default" href="{nrLlmConfigurationModuleUri}" target="_top">
 						<core:icon identifier="actions-open" size="small"/>
 						<f:translate key="configuration.openNrLlm.button" domain="solr.modules.llm"/>
 					</a>
 				</f:if>
 				<f:if condition="{nrLlmWizardModuleUri}">
-					<a class="btn btn-sm btn-default" href="{nrLlmWizardModuleUri}">
+					<a class="btn btn-sm btn-default" href="{nrLlmWizardModuleUri}" target="_top">
 						<core:icon identifier="actions-add" size="small"/>
 						<f:translate key="configuration.setup.button" domain="solr.modules.llm"/>
 					</a>
