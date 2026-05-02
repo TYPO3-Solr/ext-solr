@@ -1,0 +1,207 @@
+.solr-llm-module {
+    --solr-llm-gap: var(--typo3-spacing, 1rem);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--solr-llm-gap) * 1.25);
+}
+
+.solr-llm-module__intro {
+    max-width: 72rem;
+}
+
+.solr-llm-module__toolbar {
+    align-items: flex-end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--solr-llm-gap);
+    justify-content: space-between;
+}
+
+.solr-llm-module__configuration-form {
+    display: flex;
+    flex: 1 1 38rem;
+    flex-direction: column;
+    gap: .5rem;
+    min-width: min(100%, 22rem);
+}
+
+.solr-llm-module__configuration-controls,
+.solr-llm-module__module-links {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.solr-llm-module__configuration-controls .form-select {
+    max-width: 32rem;
+    min-width: min(100%, 20rem);
+}
+
+.solr-llm-module__grid {
+    display: grid;
+    gap: var(--solr-llm-gap);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+}
+
+.solr-llm-card {
+    border-radius: var(--typo3-component-border-radius, .25rem);
+}
+
+.solr-llm-card--wide {
+    max-width: 72rem;
+}
+
+.solr-llm-card .card-header {
+    align-items: center;
+    display: flex;
+    gap: .75rem;
+}
+
+.solr-llm-card .card-icon {
+    align-items: center;
+    color: var(--typo3-state-default-color, currentColor);
+    display: inline-flex;
+    flex: 0 0 auto;
+    justify-content: center;
+}
+
+.solr-llm-card .card-header-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.solr-llm-card .card-title {
+    font-size: var(--typo3-font-size-lg, 1.125rem);
+    margin: 0;
+}
+
+.solr-llm-card .card-subtitle {
+    color: var(--typo3-text-color-secondary, currentColor);
+    display: block;
+    font-size: var(--typo3-font-size-sm, .875rem);
+    margin-top: .125rem;
+}
+
+.solr-llm-definition-list {
+    display: grid;
+    gap: .75rem;
+    margin: 0 0 1rem;
+}
+
+.solr-llm-definition-list > div {
+    display: grid;
+    gap: .25rem;
+}
+
+.solr-llm-definition-list dt {
+    color: var(--typo3-text-color-secondary, currentColor);
+    font-size: var(--typo3-font-size-sm, .875rem);
+    font-weight: 700;
+}
+
+.solr-llm-definition-list dd {
+    margin: 0;
+}
+
+.solr-llm-metrics {
+    display: grid;
+    gap: .75rem;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    margin-bottom: 1rem;
+}
+
+.solr-llm-metric {
+    background: var(--typo3-component-bg, transparent);
+    border: 1px solid var(--typo3-component-border-color, currentColor);
+    border-radius: var(--typo3-component-border-radius, .25rem);
+    padding: .75rem;
+}
+
+.solr-llm-metric__value {
+    display: block;
+    font-size: var(--typo3-font-size-xl, 1.25rem);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.solr-llm-metric__label {
+    color: var(--typo3-text-color-secondary, currentColor);
+    display: block;
+    font-size: var(--typo3-font-size-sm, .875rem);
+    margin-top: .25rem;
+}
+
+.solr-llm-test-result {
+    align-items: flex-start;
+    border: 1px solid var(--typo3-state-default-border-color, var(--typo3-component-border-color));
+    border-left-width: .25rem;
+    border-radius: var(--typo3-component-border-radius, .25rem);
+    display: flex;
+    gap: .75rem;
+    max-width: 72rem;
+    padding: .875rem 1rem;
+}
+
+.solr-llm-test-result--ok {
+    background: var(--typo3-state-success-bg, transparent);
+    border-color: var(--typo3-state-success-border-color, var(--typo3-component-border-color));
+    color: var(--typo3-state-success-color, currentColor);
+}
+
+.solr-llm-test-result--error {
+    background: var(--typo3-state-danger-bg, transparent);
+    border-color: var(--typo3-state-danger-border-color, var(--typo3-component-border-color));
+    color: var(--typo3-state-danger-color, currentColor);
+}
+
+.solr-llm-test-result--warning {
+    background: var(--typo3-state-warning-bg, transparent);
+    border-color: var(--typo3-state-warning-border-color, var(--typo3-component-border-color));
+    color: var(--typo3-state-warning-color, currentColor);
+}
+
+.solr-llm-test-result p {
+    margin: .25rem 0 0;
+}
+
+.solr-llm-steps,
+.solr-llm-legend {
+    margin-bottom: 1rem;
+    padding-left: 1.25rem;
+}
+
+.solr-llm-steps li,
+.solr-llm-legend li {
+    margin-bottom: .5rem;
+}
+
+.solr-llm-code {
+    background: var(--typo3-component-bg, transparent);
+    border: 1px solid var(--typo3-component-border-color, currentColor);
+    border-radius: var(--typo3-component-border-radius, .25rem);
+    color: var(--typo3-text-color-base, currentColor);
+    margin: 0;
+    overflow: auto;
+    padding: .875rem 1rem;
+}
+
+.solr-llm-empty-state {
+    align-items: center;
+    border: 1px solid var(--typo3-state-warning-border-color, var(--typo3-component-border-color));
+    border-left-width: .25rem;
+    border-radius: var(--typo3-component-border-radius, .25rem);
+    display: flex;
+    gap: 1rem;
+    max-width: 56rem;
+    padding: 1rem;
+}
+
+.solr-llm-empty-state h2 {
+    font-size: var(--typo3-font-size-lg, 1.125rem);
+    margin: 0 0 .25rem;
+}
+
+.solr-llm-empty-state p {
+    margin: 0;
+}

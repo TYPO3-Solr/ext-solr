@@ -33,6 +33,10 @@ return [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:solr/Resources/Public/Images/Icons/ModuleInfo.svg',
     ],
+    'extensions-solr-module-llm' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:solr/Resources/Public/Images/Icons/ModuleLlm.svg',
+    ],
     'extensions-solr-plugin-contentelement' => [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:solr/Resources/Public/Images/Icons/ContentElement.svg',

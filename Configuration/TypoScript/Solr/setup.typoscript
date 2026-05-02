@@ -71,6 +71,12 @@ plugin.tx_solr {
 
     ignoreGlobalQParameter = 0
 
+    llmQueryEnhancer {
+      enabled = 0
+      configurationIdentifier = solr-search-query-enhancer
+      cacheLifetime = 86400
+    }
+
     query {
       type = 0
       allowEmptyQuery = 0
@@ -413,4 +419,3 @@ plugin.tx_solr_PiFrequentSearches_FrequentSearches < lib.solr_extbase_bootstrap
 plugin.tx_solr_PiFrequentSearches_FrequentSearches {
   pluginName = pi_frequentlySearched
 }
-

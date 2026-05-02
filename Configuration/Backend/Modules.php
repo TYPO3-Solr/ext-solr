@@ -8,6 +8,7 @@ use ApacheSolrForTypo3\Solr\Controller\Backend\Search\CoreOptimizationModuleCont
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexQueueModuleController;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\InfoModuleController;
+use ApacheSolrForTypo3\Solr\Controller\Backend\Search\LlmModuleController;
 
 return [
     'searchbackend' => [
@@ -69,6 +70,19 @@ return [
         'controllerActions' => [
             IndexAdministrationModuleController::class => [
                 'index', 'emptyIndex', 'clearIndexQueue', 'reloadIndexConfiguration', 'switchSite',
+            ],
+        ],
+    ],
+    'searchbackend_llm' => [
+        'parent' => 'searchbackend',
+        'access' => 'user',
+        'path' => '/module/searchbackend/llm',
+        'iconIdentifier' => 'extensions-solr-module-llm',
+        'labels' => 'solr.modules.llm',
+        'extensionName' => 'Solr',
+        'controllerActions' => [
+            LlmModuleController::class => [
+                'index', 'switchSite',
             ],
         ],
     ],

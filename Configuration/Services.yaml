@@ -61,6 +61,12 @@ services:
     arguments:
       $cache: '@cache.solr'
 
+  ApacheSolrForTypo3\Solr\Domain\Search\Llm\LlmQueryEnhancerService:
+    public: true
+    autowire: true
+    arguments:
+      $cache: '@cache.solr'
+
   ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder:
     public: true
     autowire: true
@@ -262,6 +268,13 @@ services:
     tags:
       - name: event.listener
         identifier: 'solr.search-component.last-searches'
+  ApacheSolrForTypo3\Solr\Search\LlmQueryEnhancerComponent:
+    autowire: true
+    shared: false
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.llm-query-enhancer'
+        before: 'solr.search-component.statistics,solr.search-component.relevance,solr.search-component.spellchecking'
   ApacheSolrForTypo3\Solr\Search\RelevanceComponent:
     autowire: true
     shared: false

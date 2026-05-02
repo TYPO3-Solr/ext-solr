@@ -1,0 +1,246 @@
+{namespace core=TYPO3\CMS\Core\ViewHelpers}
+<f:layout name="Backend/WithPageTree"/>
+
+<f:section name="Main">
+	<f:be.pageRenderer includeCssFiles="{0: 'EXT:solr/Resources/Public/StyleSheets/Backend/LlmModule.css'}"/>
+
+	<div class="solr-llm-module">
+		<header class="solr-llm-module__intro">
+			<h1><f:translate key="module.heading" domain="solr.modules.llm"/></h1>
+			<p class="lead"><f:translate key="module.teaser" domain="solr.modules.llm"/></p>
+		</header>
+
+		<div class="solr-llm-module__toolbar">
+			<f:form action="index" method="get" class="solr-llm-module__configuration-form">
+				<f:form.hidden name="id" value="{selectedPageUID}"/>
+				<label class="form-label" for="solr-llm-configuration">
+					<f:translate key="configuration.select.label" domain="solr.modules.llm"/>
+				</label>
+				<div class="solr-llm-module__configuration-controls">
+					<f:form.select
+						name="configurationIdentifier"
+						id="solr-llm-configuration"
+						value="{selectedConfigurationIdentifier}"
+						options="{configurationOptions}"
+						class="form-select form-select-sm"
+					/>
+					<f:form.button type="submit" class="btn btn-sm btn-default">
+						<core:icon identifier="actions-view-list-expand" size="small"/>
+						<f:translate key="configuration.show.button" domain="solr.modules.llm"/>
+					</f:form.button>
+					<f:form.button type="submit" name="operation" value="testConnection" class="btn btn-sm btn-default">
+						<core:icon identifier="actions-refresh" size="small"/>
+						<f:translate key="configuration.test.button" domain="solr.modules.llm"/>
+					</f:form.button>
+				</div>
+			</f:form>
+
+			<div class="solr-llm-module__module-links">
+				<f:if condition="{nrLlmConfigurationModuleUri}">
+					<a class="btn btn-sm btn-default" href="{nrLlmConfigurationModuleUri}">
+						<core:icon identifier="actions-open" size="small"/>
+						<f:translate key="configuration.openNrLlm.button" domain="solr.modules.llm"/>
+					</a>
+				</f:if>
+				<f:if condition="{nrLlmWizardModuleUri}">
+					<a class="btn btn-sm btn-default" href="{nrLlmWizardModuleUri}">
+						<core:icon identifier="actions-add" size="small"/>
+						<f:translate key="configuration.setup.button" domain="solr.modules.llm"/>
+					</a>
+				</f:if>
+			</div>
+		</div>
+
+		<f:if condition="{nrLlmAvailable}">
+			<f:then>
+				<div class="solr-llm-module__grid">
+					<section class="card solr-llm-card" aria-labelledby="solr-llm-runtime-title">
+						<div class="card-header">
+							<div class="card-icon" aria-hidden="true">
+								<core:icon identifier="actions-system-extension-configure" size="medium" alternativeMarkupIdentifier="inline"/>
+							</div>
+							<div class="card-header-body">
+								<h2 class="card-title" id="solr-llm-runtime-title"><f:translate key="runtime.title" domain="solr.modules.llm"/></h2>
+								<span class="card-subtitle"><f:translate key="runtime.subtitle" domain="solr.modules.llm"/></span>
+							</div>
+							<f:if condition="{runtimeConfiguration.enabled}">
+								<f:then>
+									<span class="badge badge-success"><f:translate key="status.enabled" domain="solr.modules.llm"/></span>
+								</f:then>
+								<f:else>
+									<span class="badge badge-warning"><f:translate key="status.paused" domain="solr.modules.llm"/></span>
+								</f:else>
+							</f:if>
+						</div>
+						<div class="card-body">
+							<dl class="solr-llm-definition-list">
+								<div>
+									<dt><f:translate key="runtime.configurationIdentifier" domain="solr.modules.llm"/></dt>
+									<dd><code>{runtimeConfiguration.configurationIdentifier}</code></dd>
+								</div>
+								<div>
+									<dt><f:translate key="runtime.cacheLifetime" domain="solr.modules.llm"/></dt>
+									<dd><f:translate key="runtime.cacheLifetime.value" arguments="{seconds: runtimeConfiguration.cacheLifetime}" domain="solr.modules.llm"/></dd>
+								</div>
+							</dl>
+							<p class="card-text text-body-secondary"><f:translate key="runtime.description" domain="solr.modules.llm"/></p>
+						</div>
+					</section>
+
+					<section class="card solr-llm-card" aria-labelledby="solr-llm-provider-title">
+						<div class="card-header">
+							<div class="card-icon" aria-hidden="true">
+								<core:icon identifier="actions-bolt" size="medium" alternativeMarkupIdentifier="inline"/>
+							</div>
+							<div class="card-header-body">
+								<h2 class="card-title" id="solr-llm-provider-title"><f:translate key="provider.title" domain="solr.modules.llm"/></h2>
+								<span class="card-subtitle"><f:translate key="provider.subtitle" domain="solr.modules.llm"/></span>
+							</div>
+							<f:if condition="{selectedConfiguration}">
+								<f:then>
+									<f:if condition="{selectedConfiguration.isActive}">
+										<f:then>
+											<span class="badge badge-success"><f:translate key="status.configured" domain="solr.modules.llm"/></span>
+										</f:then>
+										<f:else>
+											<span class="badge badge-danger"><f:translate key="status.inactive" domain="solr.modules.llm"/></span>
+										</f:else>
+									</f:if>
+								</f:then>
+								<f:else>
+									<span class="badge badge-warning"><f:translate key="status.missing" domain="solr.modules.llm"/></span>
+								</f:else>
+							</f:if>
+						</div>
+						<div class="card-body">
+							<f:if condition="{selectedConfiguration}">
+								<f:then>
+									<dl class="solr-llm-definition-list">
+										<div>
+											<dt><f:translate key="provider.configuration" domain="solr.modules.llm"/></dt>
+											<dd>{selectedConfiguration.name} <code>{selectedConfiguration.identifier}</code></dd>
+										</div>
+										<div>
+											<dt><f:translate key="provider.provider" domain="solr.modules.llm"/></dt>
+											<dd>{selectedConfiguration.providerName} <span class="text-body-secondary">({selectedConfiguration.adapterType})</span></dd>
+										</div>
+										<div>
+											<dt><f:translate key="provider.model" domain="solr.modules.llm"/></dt>
+											<dd>{selectedConfiguration.modelName} <span class="text-body-secondary">{selectedConfiguration.modelId}</span></dd>
+										</div>
+										<div>
+											<dt><f:translate key="provider.limits" domain="solr.modules.llm"/></dt>
+											<dd><f:translate key="provider.limits.value" arguments="{temperature: selectedConfiguration.temperature, maxTokens: selectedConfiguration.maxTokens}" domain="solr.modules.llm"/></dd>
+										</div>
+									</dl>
+								</f:then>
+								<f:else>
+									<p class="card-text"><f:translate key="provider.missing.text" arguments="{identifier: selectedConfigurationIdentifier}" domain="solr.modules.llm"/></p>
+								</f:else>
+							</f:if>
+						</div>
+					</section>
+
+					<section class="card solr-llm-card" aria-labelledby="solr-llm-usage-title">
+						<div class="card-header">
+							<div class="card-icon" aria-hidden="true">
+								<core:icon identifier="content-widget-chart-bar" size="medium" alternativeMarkupIdentifier="inline"/>
+							</div>
+							<div class="card-header-body">
+								<h2 class="card-title" id="solr-llm-usage-title"><f:translate key="usage.title" domain="solr.modules.llm"/></h2>
+								<span class="card-subtitle"><f:translate key="usage.subtitle" domain="solr.modules.llm"/></span>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="solr-llm-metrics">
+								<div class="solr-llm-metric">
+									<span class="solr-llm-metric__value">{usage.requests}</span>
+									<span class="solr-llm-metric__label"><f:translate key="usage.requests" arguments="{count: usage.requests}" domain="solr.modules.llm"/></span>
+								</div>
+								<div class="solr-llm-metric">
+									<span class="solr-llm-metric__value">{usage.tokens}</span>
+									<span class="solr-llm-metric__label"><f:translate key="usage.tokens" arguments="{count: usage.tokens}" domain="solr.modules.llm"/></span>
+								</div>
+								<div class="solr-llm-metric">
+									<span class="solr-llm-metric__value">{usage.cost -> f:format.number(decimals: 4)}</span>
+									<span class="solr-llm-metric__label"><f:translate key="usage.cost" domain="solr.modules.llm"/></span>
+								</div>
+							</div>
+							<p class="card-text text-body-secondary">
+								<f:if condition="{usage.latest}">
+									<f:then>
+										<f:translate key="usage.latestPrefix" domain="solr.modules.llm"/>
+										<f:format.date format="Y-m-d H:i">{usage.latest}</f:format.date>
+									</f:then>
+									<f:else>
+										<f:translate key="usage.none" domain="solr.modules.llm"/>
+									</f:else>
+								</f:if>
+							</p>
+						</div>
+					</section>
+				</div>
+
+				<f:if condition="{connectionTest}">
+					<div class="solr-llm-test-result solr-llm-test-result--{connectionTest.status}">
+						<core:icon identifier="{f:if(condition: connectionTest.success, then: 'actions-check', else: 'actions-close')}" size="small"/>
+						<div>
+							<strong><f:translate key="testResult.title" domain="solr.modules.llm"/></strong>
+							<p>{connectionTest.message}</p>
+						</div>
+					</div>
+				</f:if>
+
+				<section class="card solr-llm-card solr-llm-card--wide" aria-labelledby="solr-llm-setup-title">
+					<div class="card-header">
+						<div class="card-icon" aria-hidden="true">
+							<core:icon identifier="actions-lightbulb" size="medium" alternativeMarkupIdentifier="inline"/>
+						</div>
+						<div class="card-header-body">
+							<h2 class="card-title" id="solr-llm-setup-title"><f:translate key="setup.title" domain="solr.modules.llm"/></h2>
+							<span class="card-subtitle"><f:translate key="setup.subtitle" domain="solr.modules.llm"/></span>
+						</div>
+					</div>
+					<div class="card-body">
+						<ol class="solr-llm-steps">
+							<li><f:translate key="setup.step.provider" domain="solr.modules.llm"/></li>
+							<li><f:translate key="setup.step.configuration" arguments="{identifier: 'solr-search-query-enhancer'}" domain="solr.modules.llm"/></li>
+							<li><f:translate key="setup.step.typoscript" domain="solr.modules.llm"/></li>
+						</ol>
+						<pre class="solr-llm-code"><code>plugin.tx_solr.search.llmQueryEnhancer.enabled = 1
+plugin.tx_solr.search.llmQueryEnhancer.configurationIdentifier = solr-search-query-enhancer</code></pre>
+					</div>
+				</section>
+
+				<section class="card solr-llm-card solr-llm-card--wide" aria-labelledby="solr-llm-indexing-title">
+					<div class="card-header">
+						<div class="card-icon" aria-hidden="true">
+							<core:icon identifier="actions-info" size="medium" alternativeMarkupIdentifier="inline"/>
+						</div>
+						<div class="card-header-body">
+							<h2 class="card-title" id="solr-llm-indexing-title"><f:translate key="indexing.title" domain="solr.modules.llm"/></h2>
+							<span class="card-subtitle"><f:translate key="indexing.subtitle" domain="solr.modules.llm"/></span>
+						</div>
+					</div>
+					<div class="card-body">
+						<p><f:translate key="indexing.description" domain="solr.modules.llm"/></p>
+						<ul class="solr-llm-legend">
+							<li><strong><f:translate key="indexing.legend.query" domain="solr.modules.llm"/></strong> <f:translate key="indexing.legend.query.text" domain="solr.modules.llm"/></li>
+							<li><strong><f:translate key="indexing.legend.vector" domain="solr.modules.llm"/></strong> <f:translate key="indexing.legend.vector.text" domain="solr.modules.llm"/></li>
+							<li><strong><f:translate key="indexing.legend.usage" domain="solr.modules.llm"/></strong> <f:translate key="indexing.legend.usage.text" domain="solr.modules.llm"/></li>
+						</ul>
+					</div>
+				</section>
+			</f:then>
+			<f:else>
+				<div class="solr-llm-empty-state">
+					<core:icon identifier="actions-info" size="large"/>
+					<div>
+						<h2><f:translate key="nrLlm.unavailable.title" domain="solr.modules.llm"/></h2>
+						<p><f:translate key="nrLlm.unavailable.text" domain="solr.modules.llm"/></p>
+					</div>
+				</div>
+			</f:else>
+		</f:if>
+	</div>
+</f:section>

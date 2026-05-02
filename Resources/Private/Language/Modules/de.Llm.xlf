@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="de">
+  <file id="f1" original="EXT:solr/Resources/Private/Language/Modules/Llm.xlf">
+    <unit id="title">
+      <segment state="final">
+        <source>LLM</source>
+        <target>LLM</target>
+      </segment>
+    </unit>
+    <unit id="short_description">
+      <segment state="final">
+        <source>Use LLM configurations for Solr</source>
+        <target>LLM-Konfigurationen für Solr verwenden</target>
+      </segment>
+    </unit>
+    <unit id="description">
+      <segment state="final">
+        <source>Connect Solr search with provider-agnostic nr_llm configurations for query enhancement and diagnostics.</source>
+        <target>Verbindet die Solr-Suche mit providerunabhängigen nr_llm-Konfigurationen für Query-Optimierung und Diagnose.</target>
+      </segment>
+    </unit>
+    <unit id="module.heading">
+      <segment state="final">
+        <source>Solr LLM</source>
+        <target>Solr LLM</target>
+      </segment>
+    </unit>
+    <unit id="module.teaser">
+      <segment state="final">
+        <source>Use an nr_llm configuration to enhance search queries, check provider readiness, and monitor LLM usage for Solr.</source>
+        <target>Nutzen Sie eine nr_llm-Konfiguration, um Suchanfragen zu verbessern, den Provider-Status zu prüfen und die LLM-Nutzung für Solr zu überwachen.</target>
+      </segment>
+    </unit>
+    <unit id="configuration.select.label">
+      <segment state="final">
+        <source>LLM configuration</source>
+        <target>LLM-Konfiguration</target>
+      </segment>
+    </unit>
+    <unit id="configuration.show.button">
+      <segment state="final">
+        <source>Show configuration</source>
+        <target>Konfiguration anzeigen</target>
+      </segment>
+    </unit>
+    <unit id="configuration.test.button">
+      <segment state="final">
+        <source>Test provider</source>
+        <target>Provider testen</target>
+      </segment>
+    </unit>
+    <unit id="configuration.openNrLlm.button">
+      <segment state="final">
+        <source>Manage LLM configurations</source>
+        <target>LLM-Konfigurationen verwalten</target>
+      </segment>
+    </unit>
+    <unit id="configuration.setup.button">
+      <segment state="final">
+        <source>Open setup wizard</source>
+        <target>Einrichtungsassistent öffnen</target>
+      </segment>
+    </unit>
+    <unit id="runtime.title">
+      <segment state="final">
+        <source>Runtime Query Enhancer</source>
+        <target>Query-Optimierung zur Laufzeit</target>
+      </segment>
+    </unit>
+    <unit id="runtime.subtitle">
+      <segment state="final">
+        <source>Frontend search integration</source>
+        <target>Integration in die Frontend-Suche</target>
+      </segment>
+    </unit>
+    <unit id="runtime.configurationIdentifier">
+      <segment state="final">
+        <source>Configuration identifier</source>
+        <target>Konfigurationskennung</target>
+      </segment>
+    </unit>
+    <unit id="runtime.cacheLifetime">
+      <segment state="final">
+        <source>Cache lifetime</source>
+        <target>Cache-Laufzeit</target>
+      </segment>
+    </unit>
+    <unit id="runtime.cacheLifetime.value">
+      <segment state="final">
+        <source>{seconds, plural, one {# second} other {# seconds}}</source>
+        <target>{seconds, plural, one {# Sekunde} other {# Sekunden}}</target>
+      </segment>
+    </unit>
+    <unit id="runtime.description">
+      <segment state="final">
+        <source>When enabled, Solr sends the user's search phrase to nr_llm before the Solr request is executed. If nr_llm is missing or fails, the original query is used.</source>
+        <target>Wenn aktiv, sendet Solr den Suchbegriff vor der Solr-Anfrage an nr_llm. Fehlt nr_llm oder schlägt der Aufruf fehl, wird der ursprüngliche Suchbegriff verwendet.</target>
+      </segment>
+    </unit>
+    <unit id="status.enabled">
+      <segment state="final">
+        <source>Enabled</source>
+        <target>Aktiv</target>
+      </segment>
+    </unit>
+    <unit id="status.paused">
+      <segment state="final">
+        <source>Paused</source>
+        <target>Pausiert</target>
+      </segment>
+    </unit>
+    <unit id="status.configured">
+      <segment state="final">
+        <source>Configured</source>
+        <target>Konfiguriert</target>
+      </segment>
+    </unit>
+    <unit id="status.inactive">
+      <segment state="final">
+        <source>Inactive</source>
+        <target>Inaktiv</target>
+      </segment>
+    </unit>
+    <unit id="status.missing">
+      <segment state="final">
+        <source>Missing</source>
+        <target>Fehlt</target>
+      </segment>
+    </unit>
+    <unit id="provider.title">
+      <segment state="final">
+        <source>Provider Feedback</source>
+        <target>Provider-Rückmeldung</target>
+      </segment>
+    </unit>
+    <unit id="provider.subtitle">
+      <segment state="final">
+        <source>Selected nr_llm setup</source>
+        <target>Ausgewählte nr_llm-Einrichtung</target>
+      </segment>
+    </unit>
+    <unit id="provider.configuration">
+      <segment state="final">
+        <source>Configuration</source>
+        <target>Konfiguration</target>
+      </segment>
+    </unit>
+    <unit id="provider.provider">
+      <segment state="final">
+        <source>Provider</source>
+        <target>Provider</target>
+      </segment>
+    </unit>
+    <unit id="provider.model">
+      <segment state="final">
+        <source>Model</source>
+        <target>Modell</target>
+      </segment>
+    </unit>
+    <unit id="provider.limits">
+      <segment state="final">
+        <source>Search call settings</source>
+        <target>Einstellungen für Suchaufrufe</target>
+      </segment>
+    </unit>
+    <unit id="provider.limits.value">
+      <segment state="final">
+        <source>Temperature {temperature}, max. {maxTokens, plural, one {# token} other {# tokens}}</source>
+        <target>Temperatur {temperature}, max. {maxTokens, plural, one {# Token} other {# Tokens}}</target>
+      </segment>
+    </unit>
+    <unit id="provider.missing.text">
+      <segment state="final">
+        <source>No nr_llm configuration with identifier "{identifier}" was found.</source>
+        <target>Es wurde keine nr_llm-Konfiguration mit der Kennung "{identifier}" gefunden.</target>
+      </segment>
+    </unit>
+    <unit id="usage.title">
+      <segment state="final">
+        <source>Usage Statistics</source>
+        <target>Nutzungsstatistik</target>
+      </segment>
+    </unit>
+    <unit id="usage.subtitle">
+      <segment state="final">
+        <source>Tracked by nr_llm</source>
+        <target>Erfasst durch nr_llm</target>
+      </segment>
+    </unit>
+    <unit id="usage.requests">
+      <segment state="final">
+        <source>{count, plural, one {request} other {requests}}</source>
+        <target>{count, plural, one {Anfrage} other {Anfragen}}</target>
+      </segment>
+    </unit>
+    <unit id="usage.tokens">
+      <segment state="final">
+        <source>{count, plural, one {token} other {tokens}}</source>
+        <target>{count, plural, one {Token} other {Tokens}}</target>
+      </segment>
+    </unit>
+    <unit id="usage.cost">
+      <segment state="final">
+        <source>estimated cost</source>
+        <target>geschätzte Kosten</target>
+      </segment>
+    </unit>
+    <unit id="usage.latestPrefix">
+      <segment state="final">
+        <source>Latest tracked usage:</source>
+        <target>Zuletzt erfasste Nutzung:</target>
+      </segment>
+    </unit>
+    <unit id="usage.none">
+      <segment state="final">
+        <source>No usage has been tracked for this configuration yet.</source>
+        <target>Für diese Konfiguration wurde noch keine Nutzung erfasst.</target>
+      </segment>
+    </unit>
+    <unit id="testResult.title">
+      <segment state="final">
+        <source>Provider test</source>
+        <target>Provider-Test</target>
+      </segment>
+    </unit>
+    <unit id="testResult.nrLlmUnavailable">
+      <segment state="final">
+        <source>EXT:nr_llm is not installed or not active.</source>
+        <target>EXT:nr_llm ist nicht installiert oder nicht aktiv.</target>
+      </segment>
+    </unit>
+    <unit id="testResult.missingConfiguration">
+      <segment state="final">
+        <source>No active nr_llm configuration was found for this identifier.</source>
+        <target>Für diese Kennung wurde keine aktive nr_llm-Konfiguration gefunden.</target>
+      </segment>
+    </unit>
+    <unit id="testResult.unsupportedTest">
+      <segment state="final">
+        <source>The installed nr_llm version cannot test a configuration directly.</source>
+        <target>Die installierte nr_llm-Version kann eine Konfiguration nicht direkt testen.</target>
+      </segment>
+    </unit>
+    <unit id="setup.title">
+      <segment state="final">
+        <source>Where to configure the LLM</source>
+        <target>Wo das LLM konfiguriert wird</target>
+      </segment>
+    </unit>
+    <unit id="setup.subtitle">
+      <segment state="final">
+        <source>nr_llm stays the provider layer</source>
+        <target>nr_llm bleibt die Provider-Schicht</target>
+      </segment>
+    </unit>
+    <unit id="setup.step.provider">
+      <segment state="final">
+        <source>Create or activate a provider and model in the nr_llm module.</source>
+        <target>Legen Sie im nr_llm-Modul einen Provider und ein Modell an oder aktivieren Sie bestehende Einträge.</target>
+      </segment>
+    </unit>
+    <unit id="setup.step.configuration">
+      <segment state="final">
+        <source>Create an active nr_llm configuration with the identifier "{identifier}".</source>
+        <target>Legen Sie eine aktive nr_llm-Konfiguration mit der Kennung "{identifier}" an.</target>
+      </segment>
+    </unit>
+    <unit id="setup.step.typoscript">
+      <segment state="final">
+        <source>Enable the Solr query enhancer in TypoScript for the site where search should use the LLM.</source>
+        <target>Aktivieren Sie die Solr-Query-Optimierung im TypoScript der Site, deren Suche das LLM verwenden soll.</target>
+      </segment>
+    </unit>
+    <unit id="indexing.title">
+      <segment state="final">
+        <source>What is LLM-indexed?</source>
+        <target>Was wird mit LLM indexiert?</target>
+      </segment>
+    </unit>
+    <unit id="indexing.subtitle">
+      <segment state="final">
+        <source>Query enhancement vs. document indexing</source>
+        <target>Query-Optimierung statt Dokument-Indexierung</target>
+      </segment>
+    </unit>
+    <unit id="indexing.description">
+      <segment state="final">
+        <source>The current "solr-search-query-enhancer" setup improves search phrases at runtime. It does not write additional LLM fields into Solr documents.</source>
+        <target>Die aktuelle Einrichtung "solr-search-query-enhancer" verbessert Suchbegriffe zur Laufzeit. Sie schreibt keine zusätzlichen LLM-Felder in Solr-Dokumente.</target>
+      </segment>
+    </unit>
+    <unit id="indexing.legend.query">
+      <segment state="final">
+        <source>Query enhancement:</source>
+        <target>Query-Optimierung:</target>
+      </segment>
+    </unit>
+    <unit id="indexing.legend.query.text">
+      <segment state="final">
+        <source>the LLM rewrites or expands the search phrase before Solr searches.</source>
+        <target>Das LLM formuliert den Suchbegriff um oder erweitert ihn, bevor Solr sucht.</target>
+      </segment>
+    </unit>
+    <unit id="indexing.legend.vector">
+      <segment state="final">
+        <source>Vector indexing:</source>
+        <target>Vektor-Indexierung:</target>
+      </segment>
+    </unit>
+    <unit id="indexing.legend.vector.text">
+      <segment state="final">
+        <source>this is separate and uses the Solr text-to-vector model store when configured.</source>
+        <target>Das ist separat und verwendet den Solr Text-to-Vector Model Store, wenn er konfiguriert ist.</target>
+      </segment>
+    </unit>
+    <unit id="indexing.legend.usage">
+      <segment state="final">
+        <source>Statistics:</source>
+        <target>Statistik:</target>
+      </segment>
+    </unit>
+    <unit id="indexing.legend.usage.text">
+      <segment state="final">
+        <source>LLM calls are counted in nr_llm usage; indexed documents are still counted from Solr.</source>
+        <target>LLM-Aufrufe werden in der nr_llm-Nutzung gezählt; indexierte Dokumente werden weiterhin aus Solr gezählt.</target>
+      </segment>
+    </unit>
+    <unit id="nrLlm.unavailable.title">
+      <segment state="final">
+        <source>nr_llm is not installed or not active</source>
+        <target>nr_llm ist nicht installiert oder nicht aktiv</target>
+      </segment>
+    </unit>
+    <unit id="nrLlm.unavailable.text">
+      <segment state="final">
+        <source>Install and activate EXT:nr_llm to use provider-agnostic LLM configurations with Solr.</source>
+        <target>Installieren und aktivieren Sie EXT:nr_llm, um providerunabhängige LLM-Konfigurationen mit Solr zu verwenden.</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
