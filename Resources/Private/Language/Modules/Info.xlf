@@ -436,6 +436,26 @@
         <source>unknown site roots</source>
       </segment>
     </unit>
+    <unit id="reports.message.vector.enabled.plugin">
+      <segment state="final">
+        <source>Solr vector search is enabled, but at least one endpoint does not provide the Text-to-Vector query parser. Deploy the matching configset and reload the affected core.</source>
+      </segment>
+    </unit>
+    <unit id="reports.message.vector.enabled.model">
+      <segment state="final">
+        <source>Solr vector search is enabled, but at least one endpoint has no uploaded "llm" model. Upload the model store configuration to the affected core.</source>
+      </segment>
+    </unit>
+    <unit id="reports.message.vector.optional.plugin">
+      <segment state="final">
+        <source>Some endpoints do not provide the Text-to-Vector query parser. This is optional while Solr vector search is disabled.</source>
+      </segment>
+    </unit>
+    <unit id="reports.message.vector.optional.model">
+      <segment state="final">
+        <source>Some endpoints do not have an uploaded "llm" model. This is optional while Solr vector search is disabled.</source>
+      </segment>
+    </unit>
     <unit id="productionChecklist.title">
       <segment state="final">
         <source>Production checklist</source>

@@ -408,8 +408,8 @@ class InfoModuleController extends AbstractModuleController
             ];
         }
 
-        $highestSeverity = $this->getHighestReportSeverity($statuses);
         $items = $this->buildSolrReportItems($providerClass, $statuses);
+        $highestSeverity = $this->getHighestReportItemSeverity($items);
         $issueItems = array_values(array_filter(
             $items,
             static fn (array $item): bool => $item['severityValue'] > ContextualFeedbackSeverity::OK->value,
@@ -437,16 +437,16 @@ class InfoModuleController extends AbstractModuleController
     private function buildSolrReportItems(string $providerClass, array $statuses): array
     {
         $items = [];
-        foreach ($statuses as $status) {
+        foreach ($statuses as $statusIndex => $status) {
             if (!$status instanceof Status) {
                 continue;
             }
 
-            $severity = $status->getSeverity();
+            $severity = $this->getEffectiveSolrReportSeverity($providerClass, $status);
             $items[] = [
                 'title' => $status->getTitle(),
                 'value' => $status->getValue(),
-                'message' => $this->getSolrReportItemMessage($providerClass, $status),
+                'message' => $this->getSolrReportItemMessage($providerClass, $status, (int)$statusIndex),
                 'statusClass' => $severity->getCssClass(),
                 'statusLabelKey' => $this->getReportSeverityLabelKey($severity),
                 'severityValue' => $severity->value,
@@ -458,7 +458,20 @@ class InfoModuleController extends AbstractModuleController
         return $items;
     }
 
-    private function getSolrReportItemMessage(string $providerClass, Status $status): string
+    private function getEffectiveSolrReportSeverity(string $providerClass, Status $status): ContextualFeedbackSeverity
+    {
+        if (
+            $providerClass === TextToVectorModelStoreStatus::class
+            && $status->getSeverity() === ContextualFeedbackSeverity::WARNING
+            && !$this->isVectorSearchConfigured()
+        ) {
+            return ContextualFeedbackSeverity::INFO;
+        }
+
+        return $status->getSeverity();
+    }
+
+    private function getSolrReportItemMessage(string $providerClass, Status $status, int $statusIndex): string
     {
         if (
             $providerClass === SolrConfigurationStatus::class
@@ -467,7 +480,25 @@ class InfoModuleController extends AbstractModuleController
             return $this->getSolrConfigurationReportMessage($status);
         }
 
+        if (
+            $providerClass === TextToVectorModelStoreStatus::class
+            && $status->getSeverity()->value > ContextualFeedbackSeverity::OK->value
+        ) {
+            return $this->getTextToVectorReportMessage($statusIndex);
+        }
+
         return $this->normalizeReportMessage($status->getMessage());
+    }
+
+    private function getTextToVectorReportMessage(int $statusIndex): string
+    {
+        $keyPrefix = $this->isVectorSearchConfigured()
+            ? 'reports.message.vector.enabled'
+            : 'reports.message.vector.optional';
+
+        return $this->translateInfoLabel(
+            $statusIndex === 0 ? $keyPrefix . '.plugin' : $keyPrefix . '.model',
+        );
     }
 
     private function getSolrConfigurationReportMessage(Status $status): string
@@ -500,14 +531,15 @@ class InfoModuleController extends AbstractModuleController
     }
 
     /**
-     * @param Status[] $statuses
+     * @param array<int, array<string, mixed>> $items
      */
-    private function getHighestReportSeverity(array $statuses): ContextualFeedbackSeverity
+    private function getHighestReportItemSeverity(array $items): ContextualFeedbackSeverity
     {
         $highestSeverity = ContextualFeedbackSeverity::NOTICE;
-        foreach ($statuses as $status) {
-            if ($status instanceof Status && $status->getSeverity()->value > $highestSeverity->value) {
-                $highestSeverity = $status->getSeverity();
+        foreach ($items as $item) {
+            $severityValue = (int)($item['severityValue'] ?? ContextualFeedbackSeverity::NOTICE->value);
+            if ($severityValue > $highestSeverity->value) {
+                $highestSeverity = ContextualFeedbackSeverity::from($severityValue);
             }
         }
 
@@ -663,6 +695,24 @@ class InfoModuleController extends AbstractModuleController
         }
 
         return $current;
+    }
+
+    private function isVectorSearchConfigured(): bool
+    {
+        try {
+            $frameWorkConfiguration = $this->configurationManager->getConfiguration(
+                ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
+                'solr',
+            );
+        } catch (Throwable) {
+            return false;
+        }
+
+        if (!is_array($frameWorkConfiguration)) {
+            return false;
+        }
+
+        return (int)$this->getTypoScriptValueByPath($frameWorkConfiguration, 'plugin.tx_solr.search.query.type') > 0;
     }
 
     private function isTruthyTypoScriptValue(mixed $value): bool

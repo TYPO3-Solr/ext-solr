@@ -523,6 +523,30 @@
         <target>unbekannte Site-Roots</target>
       </segment>
     </unit>
+    <unit id="reports.message.vector.enabled.plugin">
+      <segment state="final">
+        <source>Solr vector search is enabled, but at least one endpoint does not provide the Text-to-Vector query parser. Deploy the matching configset and reload the affected core.</source>
+        <target>Solr Vector Search ist aktiviert, aber mindestens ein Endpunkt stellt den Text-to-Vector Query Parser nicht bereit. Deployen Sie das passende Configset und laden Sie den betroffenen Core neu.</target>
+      </segment>
+    </unit>
+    <unit id="reports.message.vector.enabled.model">
+      <segment state="final">
+        <source>Solr vector search is enabled, but at least one endpoint has no uploaded "llm" model. Upload the model store configuration to the affected core.</source>
+        <target>Solr Vector Search ist aktiviert, aber mindestens ein Endpunkt hat kein hochgeladenes "llm"-Modell. Laden Sie die Model-Store-Konfiguration in den betroffenen Core hoch.</target>
+      </segment>
+    </unit>
+    <unit id="reports.message.vector.optional.plugin">
+      <segment state="final">
+        <source>Some endpoints do not provide the Text-to-Vector query parser. This is optional while Solr vector search is disabled.</source>
+        <target>Einige Endpunkte stellen den Text-to-Vector Query Parser nicht bereit. Das ist optional, solange Solr Vector Search deaktiviert ist.</target>
+      </segment>
+    </unit>
+    <unit id="reports.message.vector.optional.model">
+      <segment state="final">
+        <source>Some endpoints do not have an uploaded "llm" model. This is optional while Solr vector search is disabled.</source>
+        <target>Einige Endpunkte haben kein hochgeladenes "llm"-Modell. Das ist optional, solange Solr Vector Search deaktiviert ist.</target>
+      </segment>
+    </unit>
     <unit id="productionChecklist.title">
       <segment state="final">
         <source>Production checklist</source>
