@@ -96,6 +96,16 @@
         <source>{count, plural, one {# document} other {# documents}}</source>
       </segment>
     </unit>
+    <unit id="documents.countUnavailableTitle">
+      <segment state="final">
+        <source>Document counts unavailable</source>
+      </segment>
+    </unit>
+    <unit id="documents.countUnavailableMessage">
+      <segment state="final">
+        <source>The live Solr counts could not be read. Check whether the Solr server and the configured core are reachable, then reload the module.</source>
+      </segment>
+    </unit>
     <unit id="documents.coreCount">
       <segment state="final">
         <source>Core total: {count, plural, one {# document} other {# documents}}</source>
@@ -103,32 +113,62 @@
     </unit>
     <unit id="documents.coreCountUnavailable">
       <segment state="final">
-        <source>Core total unavailable</source>
+        <source>Core unavailable</source>
       </segment>
     </unit>
     <unit id="documents.pageCount">
       <segment state="final">
-        <source>Selected page: {count, plural, one {# document} other {# documents}}</source>
+        <source>Page: {count, plural, one {# document} other {# documents}}</source>
       </segment>
     </unit>
     <unit id="documents.pageCountUnavailable">
       <segment state="final">
-        <source>Selected page unavailable</source>
+        <source>Page unavailable</source>
       </segment>
     </unit>
     <unit id="documents.siteCount">
       <segment state="final">
-        <source>Selected site: {count, plural, one {# document} other {# documents}}</source>
+        <source>Site total: {count, plural, one {# document} other {# documents}}</source>
       </segment>
     </unit>
     <unit id="documents.siteCountUnavailable">
       <segment state="final">
-        <source>Selected site unavailable</source>
+        <source>Site unavailable</source>
       </segment>
     </unit>
-    <unit id="documents.scopeNote">
+    <unit id="documents.pageLabel">
       <segment state="final">
-        <source>Core total is the unfiltered Solr count for this core and can include other sites. Selected site and selected page are filtered to the current TYPO3 context.</source>
+        <source>Page</source>
+      </segment>
+    </unit>
+    <unit id="documents.siteLabel">
+      <segment state="final">
+        <source>Site total</source>
+      </segment>
+    </unit>
+    <unit id="documents.coreLabel">
+      <segment state="final">
+        <source>Core total</source>
+      </segment>
+    </unit>
+    <unit id="documents.legend.title">
+      <segment state="final">
+        <source>Document count legend</source>
+      </segment>
+    </unit>
+    <unit id="documents.legend.page">
+      <segment state="final">
+        <source>Documents on the page selected in the page tree.</source>
+      </segment>
+    </unit>
+    <unit id="documents.legend.site">
+      <segment state="final">
+        <source>Documents for the selected site under {domain}.</source>
+      </segment>
+    </unit>
+    <unit id="documents.legend.core">
+      <segment state="final">
+        <source>Unfiltered Solr count for this core. It can include documents from other sites.</source>
       </segment>
     </unit>
     <unit id="documents.titleLabel">
@@ -239,6 +279,26 @@
     <unit id="reports.description">
       <segment state="final">
         <source>Compact Solr-only health checks from the TYPO3 Reports module. Non-OK checks include a short next step.</source>
+      </segment>
+    </unit>
+    <unit id="reports.openStatusReport">
+      <segment state="final">
+        <source>Open full Solr report</source>
+      </segment>
+    </unit>
+    <unit id="reports.openStatusReport.note">
+      <segment state="final">
+        <source>Generated on demand; can take a few seconds.</source>
+      </segment>
+    </unit>
+    <unit id="reports.expandAll">
+      <segment state="final">
+        <source>Open all</source>
+      </segment>
+    </unit>
+    <unit id="reports.collapseAll">
+      <segment state="final">
+        <source>Close all</source>
       </segment>
     </unit>
     <unit id="reports.summary.statusCount">
@@ -406,6 +466,31 @@
         <source>This list shows {configured, plural, one {# core configured for the selected site} other {# cores configured for the selected site}}. Selected-site totals are live Solr query counts filtered to the current TYPO3 site. Queue numbers count queue entries. The server overview below includes {loaded, plural, one {# loaded core} other {# loaded cores}} from Solr Admin.</source>
       </segment>
     </unit>
+    <unit id="connections.servers.scopeNote.configured">
+      <segment state="final">
+        <source>This list shows {configured, plural, one {# core configured for the selected site} other {# cores configured for the selected site}}.</source>
+      </segment>
+    </unit>
+    <unit id="connections.servers.scopeNote.coreTotal">
+      <segment state="final">
+        <source>Core total is the unfiltered Solr count and can include documents from other sites.</source>
+      </segment>
+    </unit>
+    <unit id="connections.servers.scopeNote.selectedSite">
+      <segment state="final">
+        <source>Selected site is filtered to the current TYPO3 site.</source>
+      </segment>
+    </unit>
+    <unit id="connections.servers.scopeNote.queue">
+      <segment state="final">
+        <source>Queue numbers count queue entries; these badges count indexed Solr documents.</source>
+      </segment>
+    </unit>
+    <unit id="connections.servers.scopeNote.loaded">
+      <segment state="final">
+        <source>The server overview below includes {loaded, plural, one {# loaded core} other {# loaded cores}} from Solr Admin.</source>
+      </segment>
+    </unit>
     <unit id="connections.servers.configuredCount">
       <segment state="final">
         <source>{count, plural, one {# configured core} other {# configured cores}}</source>
@@ -441,6 +526,21 @@
         <source>Connection problem</source>
       </segment>
     </unit>
+    <unit id="connections.status.coreEndpointUnavailableTitle">
+      <segment state="final">
+        <source>Core endpoint not reachable</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.adminUiUnavailableTitle">
+      <segment state="final">
+        <source>Admin UI not reachable</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.adminUiPartialTitle">
+      <segment state="final">
+        <source>Admin UI partially reachable</source>
+      </segment>
+    </unit>
     <unit id="connections.status.documentCountUnavailableTitle">
       <segment state="final">
         <source>Live count unavailable</source>
@@ -464,6 +564,16 @@
     <unit id="connections.status.reason.documentCountUnavailable">
       <segment state="final">
         <source>TYPO3 could not read the live document count from this core. Check the Solr core status and query endpoint.</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.reason.adminUiUnavailable">
+      <segment state="final">
+        <source>TYPO3 can reach the configured core, but none of the Admin UI links answered. Check the DDEV port mappings for 8983/8984 or restart the Solr service.</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.reason.adminUiPartial">
+      <segment state="final">
+        <source>TYPO3 can reach the configured core, but at least one Admin UI link did not answer. Use the reachable link or check the missing port mapping.</source>
       </segment>
     </unit>
     <unit id="connections.status.validation.empty">

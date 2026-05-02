@@ -62,6 +62,8 @@ class InfoModuleController extends AbstractModuleController
         AllowUrlFOpenStatus::class,
     ];
 
+    private const SOLR_REPORT_PREVIEW_LIMIT = 3;
+
     protected ApacheSolrDocumentRepository $apacheSolrDocumentRepository;
 
     private array $browserEndpointProbeResults = [];
@@ -148,6 +150,8 @@ class InfoModuleController extends AbstractModuleController
      *     icon: string,
      *     statusCount: int,
      *     issueCount: int,
+     *     hiddenIssueCount: int,
+     *     previewItems: array<int, array<string, mixed>>,
      *     displayItems: array<int, array<string, mixed>>
      * }
      */
@@ -183,6 +187,7 @@ class InfoModuleController extends AbstractModuleController
             $items,
             static fn (array $item): bool => $item['severityValue'] > ContextualFeedbackSeverity::OK->value,
         ));
+        $previewItems = array_slice($issueItems, 0, self::SOLR_REPORT_PREVIEW_LIMIT);
 
         return [
             'label' => $providerLabel,
@@ -192,6 +197,8 @@ class InfoModuleController extends AbstractModuleController
             'icon' => $highestSeverity->getIconIdentifier(),
             'statusCount' => count($statuses),
             'issueCount' => count($issueItems),
+            'hiddenIssueCount' => max(count($issueItems) - count($previewItems), 0),
+            'previewItems' => $previewItems,
             'displayItems' => $items,
         ];
     }
@@ -352,6 +359,8 @@ class InfoModuleController extends AbstractModuleController
             $coreName = $this->getCoreNameFromPath($coreAdmin->getCorePath());
             $coreDocumentCount = $this->getCoreDocumentCountForEndpoint($coreUrl);
             $siteDocumentCount = $this->getSiteDocumentCountForEndpoint($coreUrl);
+            $browserEndpoints = $this->getBrowserEndpointLinks($coreUrl);
+            $browserEndpointStatus = $this->getBrowserEndpointStatus($browserEndpoints);
             $documents = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId($this->selectedPageUID, (int)$languageId);
             $pageDocumentCount = count($documents);
             if ($siteDocumentCount === null) {
@@ -359,18 +368,18 @@ class InfoModuleController extends AbstractModuleController
             } else {
                 $configuredCoreDocumentTotal += $siteDocumentCount;
             }
-            $statusClass = $this->getConnectionStatusClass($isConnected, $coreDocumentCount);
+            $statusClass = $this->getConnectionStatusClass($isConnected, $coreDocumentCount, $browserEndpointStatus);
             $connectionSummaries[] = [
                 'corePath' => $coreAdmin->getCorePath(),
                 'coreName' => $coreName,
                 'endpoint' => $coreUrl,
-                'browserEndpoints' => $this->getBrowserEndpointLinks($coreUrl),
+                'browserEndpoints' => $browserEndpoints,
                 'statusClass' => $statusClass,
                 'statusIconIdentifier' => $this->getConnectionStatusIconIdentifier($statusClass),
                 'statusMessageRole' => $statusClass === 'danger' ? 'alert' : 'status',
-                'statusPillState' => $this->getConnectionStatusPillState($isConnected, $coreDocumentCount),
-                'statusMessageTitleKey' => $this->getConnectionStatusMessageTitleKey($isConnected, $coreDocumentCount),
-                'statusReasonKey' => $this->getConnectionStatusReasonKey($isConnected, $coreDocumentCount),
+                'statusPillState' => $this->getConnectionStatusPillState($isConnected, $coreDocumentCount, $browserEndpointStatus),
+                'statusMessageTitleKey' => $this->getConnectionStatusMessageTitleKey($isConnected, $coreDocumentCount, $browserEndpointStatus),
+                'statusReasonKey' => $this->getConnectionStatusReasonKey($isConnected, $coreDocumentCount, $browserEndpointStatus),
                 'connectionErrorKey' => $pingResult['errorKey'],
                 'connectionErrorArguments' => $pingResult['errorArguments'],
                 'isConnected' => $isConnected,
@@ -398,10 +407,18 @@ class InfoModuleController extends AbstractModuleController
         ]);
     }
 
-    private function getConnectionStatusClass(bool $isConnected, ?int $documentCount): string
+    private function getConnectionStatusClass(bool $isConnected, ?int $documentCount, string $browserEndpointStatus): string
     {
         if (!$isConnected || $documentCount === null) {
             return 'danger';
+        }
+
+        if ($browserEndpointStatus === 'unreachable') {
+            return 'danger';
+        }
+
+        if ($browserEndpointStatus === 'partial') {
+            return 'warning';
         }
 
         return ($documentCount ?? 0) > 0 ? 'success' : 'warning';
@@ -417,27 +434,35 @@ class InfoModuleController extends AbstractModuleController
         };
     }
 
-    private function getConnectionStatusPillState(bool $isConnected, ?int $documentCount): string
+    private function getConnectionStatusPillState(bool $isConnected, ?int $documentCount, string $browserEndpointStatus): string
     {
-        if (!$isConnected || $documentCount === null) {
+        if (!$isConnected || $documentCount === null || $browserEndpointStatus === 'unreachable') {
             return 'error';
         }
 
-        if (($documentCount ?? 0) === 0) {
+        if ($browserEndpointStatus === 'partial' || ($documentCount ?? 0) === 0) {
             return 'check';
         }
 
         return 'ok';
     }
 
-    private function getConnectionStatusMessageTitleKey(bool $isConnected, ?int $documentCount): string
+    private function getConnectionStatusMessageTitleKey(bool $isConnected, ?int $documentCount, string $browserEndpointStatus): string
     {
         if (!$isConnected) {
-            return 'connections.status.errorTitle';
+            return 'connections.status.coreEndpointUnavailableTitle';
         }
 
         if ($documentCount === null) {
             return 'connections.status.documentCountUnavailableTitle';
+        }
+
+        if ($browserEndpointStatus === 'unreachable') {
+            return 'connections.status.adminUiUnavailableTitle';
+        }
+
+        if ($browserEndpointStatus === 'partial') {
+            return 'connections.status.adminUiPartialTitle';
         }
 
         if (($documentCount ?? 0) === 0) {
@@ -447,7 +472,7 @@ class InfoModuleController extends AbstractModuleController
         return 'connections.status.okTitle';
     }
 
-    private function getConnectionStatusReasonKey(bool $isConnected, ?int $documentCount): string
+    private function getConnectionStatusReasonKey(bool $isConnected, ?int $documentCount, string $browserEndpointStatus): string
     {
         if (!$isConnected) {
             return 'connections.status.reason.notReachable';
@@ -455,6 +480,14 @@ class InfoModuleController extends AbstractModuleController
 
         if ($documentCount === null) {
             return 'connections.status.reason.documentCountUnavailable';
+        }
+
+        if ($browserEndpointStatus === 'unreachable') {
+            return 'connections.status.reason.adminUiUnavailable';
+        }
+
+        if ($browserEndpointStatus === 'partial') {
+            return 'connections.status.reason.adminUiPartial';
         }
 
         if (($documentCount ?? 0) === 0) {
@@ -467,6 +500,27 @@ class InfoModuleController extends AbstractModuleController
     private function getCoreNameFromPath(string $corePath): string
     {
         return trim($corePath, '/');
+    }
+
+    /**
+     * @param array<int, array{labelKey: string, url: string, probeUrl: string, isReachable: bool}> $browserEndpoints
+     */
+    private function getBrowserEndpointStatus(array $browserEndpoints): string
+    {
+        if ($browserEndpoints === []) {
+            return 'unavailable';
+        }
+
+        $reachableCount = count(array_filter($browserEndpoints, static fn (array $endpoint): bool => (bool)$endpoint['isReachable']));
+        if ($reachableCount === 0) {
+            return 'unreachable';
+        }
+
+        if ($reachableCount < count($browserEndpoints)) {
+            return 'partial';
+        }
+
+        return 'reachable';
     }
 
     /**
@@ -1202,6 +1256,9 @@ class InfoModuleController extends AbstractModuleController
             $documentsByCoreAndType[$languageId]['documentCountAvailable'] = $pageDocumentCount !== null;
             $documentsByCoreAndType[$languageId]['siteDocumentCountAvailable'] = $siteDocumentCount !== null;
             $documentsByCoreAndType[$languageId]['coreDocumentCountAvailable'] = $coreDocumentCount !== null;
+            $documentsByCoreAndType[$languageId]['hasDocumentCountError'] = $pageDocumentCount === null
+                || $siteDocumentCount === null
+                || $coreDocumentCount === null;
             $documentsByCoreAndType[$languageId]['documents'] = $documentsByType;
         }
 
