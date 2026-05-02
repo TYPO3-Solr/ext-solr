@@ -446,7 +446,7 @@ class InfoModuleController extends AbstractModuleController
             $items[] = [
                 'title' => $status->getTitle(),
                 'value' => $status->getValue(),
-                'message' => $this->normalizeReportMessage($status->getMessage()),
+                'message' => $this->getSolrReportItemMessage($providerClass, $status),
                 'statusClass' => $severity->getCssClass(),
                 'statusLabelKey' => $this->getReportSeverityLabelKey($severity),
                 'severityValue' => $severity->value,
@@ -456,6 +456,47 @@ class InfoModuleController extends AbstractModuleController
         }
 
         return $items;
+    }
+
+    private function getSolrReportItemMessage(string $providerClass, Status $status): string
+    {
+        if (
+            $providerClass === SolrConfigurationStatus::class
+            && $status->getSeverity()->value > ContextualFeedbackSeverity::OK->value
+        ) {
+            return $this->getSolrConfigurationReportMessage($status);
+        }
+
+        return $this->normalizeReportMessage($status->getMessage());
+    }
+
+    private function getSolrConfigurationReportMessage(Status $status): string
+    {
+        $affectedSites = $this->extractSiteReferencesFromReportMessage($status->getMessage());
+        $selectedRootPageId = $this->selectedSite?->getRootPageId() ?? 0;
+        $selectedSiteLabel = $this->selectedSite?->getLabel() ?? '';
+        $selectedSiteIsAffected = $selectedRootPageId > 0 && str_contains($affectedSites, '[' . $selectedRootPageId . ']');
+
+        return $this->translateInfoLabel(
+            $selectedSiteIsAffected
+                ? 'reports.message.configuration.indexingDisabled.selectedAffected'
+                : 'reports.message.configuration.indexingDisabled.selectedNotAffected',
+            [
+                'sites' => $affectedSites !== '' ? $affectedSites : $this->translateInfoLabel('reports.message.configuration.indexingDisabled.unknownSites'),
+                'rootPageId' => $selectedRootPageId,
+                'site' => $selectedSiteLabel,
+            ],
+        );
+    }
+
+    private function extractSiteReferencesFromReportMessage(string $message): string
+    {
+        $message = $this->normalizeReportMessage($message);
+        if (preg_match_all('/\[\d+\]\s+[^\[]+?(?=\s+\[\d+\]|$)/', $message, $matches) !== 1) {
+            return '';
+        }
+
+        return implode(', ', array_map('trim', $matches[0]));
     }
 
     /**

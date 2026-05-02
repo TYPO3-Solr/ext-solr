@@ -505,6 +505,24 @@
         <target>Die Report-Prüfung konnte nicht geladen werden: {message}</target>
       </segment>
     </unit>
+    <unit id="reports.message.configuration.indexingDisabled.selectedAffected">
+      <segment state="final">
+        <source>This is a global Solr report check. The selected site root [{rootPageId}] {site} is affected because page indexing is disabled there. Affected site roots: {sites}. Set config.index_enable = 1 for the affected root and initialize or re-index the queue afterwards.</source>
+        <target>Dies ist eine globale Solr-Report-Prüfung. Der ausgewählte Site-Root [{rootPageId}] {site} ist betroffen, weil die Seitenindexierung dort deaktiviert ist. Betroffene Site-Roots: {sites}. Setzen Sie config.index_enable = 1 für den betroffenen Root und initialisieren oder reindexieren Sie anschließend die Queue.</target>
+      </segment>
+    </unit>
+    <unit id="reports.message.configuration.indexingDisabled.selectedNotAffected">
+      <segment state="final">
+        <source>This is a global Solr report check. The selected site root [{rootPageId}] {site} is not in the affected list; the warning comes from another Solr-enabled site. Affected site roots: {sites}.</source>
+        <target>Dies ist eine globale Solr-Report-Prüfung. Der ausgewählte Site-Root [{rootPageId}] {site} steht nicht in der betroffenen Liste; die Warnung kommt von einer anderen Solr-aktivierten Site. Betroffene Site-Roots: {sites}.</target>
+      </segment>
+    </unit>
+    <unit id="reports.message.configuration.indexingDisabled.unknownSites">
+      <segment state="final">
+        <source>unknown site roots</source>
+        <target>unbekannte Site-Roots</target>
+      </segment>
+    </unit>
     <unit id="productionChecklist.title">
       <segment state="final">
         <source>Production checklist</source>
