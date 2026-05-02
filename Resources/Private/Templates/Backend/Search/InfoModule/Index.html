@@ -661,6 +661,11 @@
 </f:section>
 
 <f:section name="Reports">
+    <f:be.pageRenderer
+        includeJavaScriptModules="{
+            0: '@apache-solr-for-typo3/solr/Backend/InfoModuleReportToggle.js'
+        }"
+    />
     <section class="solr-info-module__report-overview" aria-labelledby="solr-report-overview-title">
         <div class="solr-info-module__section-heading">
             <div>
@@ -675,17 +680,17 @@
                 </p>
             </div>
             <div class="solr-info-module__server-heading-badges">
-                <input
-                    type="checkbox"
-                    id="solr-report-toggle-all"
-                    class="solr-info-module__report-toggle-all-control"
+                <button
+                    type="button"
+                    class="btn btn-default btn-sm solr-info-module__report-toggle-all"
                     aria-controls="solr-report-accordion"
-                />
-                <label class="btn btn-default btn-sm solr-info-module__report-toggle-all" for="solr-report-toggle-all">
+                    aria-pressed="false"
+                    data-state="collapsed"
+                >
                     <core:icon identifier="actions-view-list-expand" size="small"/>
                     <span class="solr-info-module__report-toggle-all-open"><f:translate key="reports.expandAll" domain="solr.modules.info"/></span>
                     <span class="solr-info-module__report-toggle-all-close"><f:translate key="reports.collapseAll" domain="solr.modules.info"/></span>
-                </label>
+                </button>
                 <span class="solr-info-module__status-pill solr-info-module__status-pill--{solrReportSummary.statusClass}">
                     <f:translate key="{solrReportSummary.statusLabelKey}" domain="solr.modules.info"/>
                 </span>

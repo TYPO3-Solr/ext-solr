@@ -1146,39 +1146,16 @@
     margin-bottom: 0;
 }
 
-.solr-info-module__report-toggle-all-control {
-    block-size: 1px;
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    inline-size: 1px;
-    overflow: hidden;
-    position: absolute;
-    white-space: nowrap;
-}
-
 .solr-info-module__report-toggle-all-close {
     display: none;
 }
 
-.solr-info-module__report-toggle-all-control:checked + .solr-info-module__report-toggle-all .solr-info-module__report-toggle-all-open {
+.solr-info-module__report-toggle-all[data-state="all-open"] .solr-info-module__report-toggle-all-open {
     display: none;
 }
 
-.solr-info-module__report-toggle-all-control:checked + .solr-info-module__report-toggle-all .solr-info-module__report-toggle-all-close {
+.solr-info-module__report-toggle-all[data-state="all-open"] .solr-info-module__report-toggle-all-close {
     display: inline;
-}
-
-.solr-info-module__report-toggle-all-control:focus-visible + .solr-info-module__report-toggle-all {
-    outline: var(--typo3-outline-width) var(--typo3-outline-style) color-mix(in srgb, var(--typo3-component-focus-border-color), transparent var(--typo3-outline-transparent-mix));
-    outline-offset: 2px;
-}
-
-.solr-info-module__report-overview:has(.solr-info-module__report-toggle-all-control:checked) .solr-info-module__report-items.collapse {
-    display: grid;
-}
-
-.solr-info-module__report-overview:has(.solr-info-module__report-toggle-all-control:checked) .solr-info-module__report-toggle-icon {
-    transform: rotate(180deg);
 }
 
 .solr-info-module__report-list {
