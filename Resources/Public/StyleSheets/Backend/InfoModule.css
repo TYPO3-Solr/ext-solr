@@ -1290,7 +1290,6 @@
 .solr-info-module__report-items,
 .solr-info-module__report-preview-items {
     background-color: var(--solr-info-module-report-list-bg);
-    border: var(--typo3-component-border-width) solid var(--solr-info-module-report-list-border-color);
     border-radius: var(--typo3-component-border-radius);
     color: var(--solr-info-module-report-list-color);
     display: grid;
