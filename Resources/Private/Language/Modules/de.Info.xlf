@@ -757,6 +757,12 @@
         <target>Diese Liste zeigt {configured, plural, one {# für die ausgewählte Site konfigurierten Core} other {# für die ausgewählte Site konfigurierte Cores}}. Die Summen für die ausgewählte Site sind Live-Zahlen aus Solr-Abfragen und auf die aktuelle TYPO3-Site gefiltert. Queue-Zahlen zählen Queue-Einträge. Die Serverübersicht unten enthält {loaded, plural, one {# geladenen Core} other {# geladene Cores}} aus Solr Admin.</target>
       </segment>
     </unit>
+    <unit id="connections.servers.help.toggle">
+      <segment state="final">
+        <source>Show help</source>
+        <target>Hilfe anzeigen</target>
+      </segment>
+    </unit>
     <unit id="connections.servers.scopeNote.configured">
       <segment state="final">
         <source>This list shows {configured, plural, one {# core configured for the selected site} other {# cores configured for the selected site}}.</source>

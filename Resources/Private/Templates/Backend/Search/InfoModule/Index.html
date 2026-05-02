@@ -130,9 +130,6 @@
             <div class="solr-info-module__section-heading-main">
                 <h3 id="solr-server-overview-title"><f:translate key="connections.servers.title" domain="solr.modules.info"/></h3>
                 <p><f:translate key="connections.servers.description" domain="solr.modules.info"/></p>
-                <span class="form-text solr-info-module__server-check-note">
-                    <f:translate key="connections.browserEndpoints.checkedOnLoad" domain="solr.modules.info"/>
-                </span>
             </div>
             <div class="solr-info-module__server-heading-badges">
                 <span class="badge badge-default">
@@ -151,33 +148,44 @@
                     </f:else>
                 </f:if>
             </div>
-            <f:if condition="{solrServerInfo}">
-                <ul class="form-text solr-info-module__server-scope-note">
-                    <li>
-                        <f:translate
-                            key="connections.servers.scopeNote.configured"
-                            domain="solr.modules.info"
-                            arguments="{configured: configuredCoreCount}"
-                        />
-                    </li>
-                    <li>
-                        <f:translate key="connections.servers.scopeNote.coreTotal" domain="solr.modules.info"/>
-                    </li>
-                    <li>
-                        <f:translate key="connections.servers.scopeNote.selectedSite" domain="solr.modules.info"/>
-                    </li>
-                    <li>
-                        <f:translate key="connections.servers.scopeNote.queue" domain="solr.modules.info"/>
-                    </li>
-                    <li>
-                        <f:translate
-                            key="connections.servers.scopeNote.loaded"
-                            domain="solr.modules.info"
-                            arguments="{loaded: solrServerInfo.coreCount}"
-                        />
-                    </li>
-                </ul>
-            </f:if>
+            <details class="solr-info-module__server-help">
+                <summary class="btn btn-default btn-sm solr-info-module__server-help-toggle">
+                    <core:icon identifier="actions-chevron-down" size="small"/>
+                    <span><f:translate key="connections.servers.help.toggle" domain="solr.modules.info"/></span>
+                </summary>
+                <div class="solr-info-module__server-help-body">
+                    <span class="form-text solr-info-module__server-check-note">
+                        <f:translate key="connections.browserEndpoints.checkedOnLoad" domain="solr.modules.info"/>
+                    </span>
+                    <f:if condition="{solrServerInfo}">
+                        <ul class="form-text solr-info-module__server-scope-note">
+                            <li>
+                                <f:translate
+                                    key="connections.servers.scopeNote.configured"
+                                    domain="solr.modules.info"
+                                    arguments="{configured: configuredCoreCount}"
+                                />
+                            </li>
+                            <li>
+                                <f:translate key="connections.servers.scopeNote.coreTotal" domain="solr.modules.info"/>
+                            </li>
+                            <li>
+                                <f:translate key="connections.servers.scopeNote.selectedSite" domain="solr.modules.info"/>
+                            </li>
+                            <li>
+                                <f:translate key="connections.servers.scopeNote.queue" domain="solr.modules.info"/>
+                            </li>
+                            <li>
+                                <f:translate
+                                    key="connections.servers.scopeNote.loaded"
+                                    domain="solr.modules.info"
+                                    arguments="{loaded: solrServerInfo.coreCount}"
+                                />
+                            </li>
+                        </ul>
+                    </f:if>
+                </div>
+            </details>
         </div>
 
         <ul class="solr-info-module__server-list">
