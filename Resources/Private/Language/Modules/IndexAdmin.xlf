@@ -78,7 +78,7 @@
     </unit>
     <unit id="card.clearQueue.description">
       <segment state="final">
-        <source>Empty the selected site's Index Queue entries. Re-initialize the queue afterwards to build it again.</source>
+        <source>Clear only the selected site's Index Queue entries. Re-initialize the queue afterwards before indexing can continue.</source>
       </segment>
     </unit>
     <unit id="card.clearQueue.button">
@@ -98,7 +98,7 @@
     </unit>
     <unit id="modal.clearQueue.content">
       <segment state="final">
-        <source>Are you sure you want to clear the Index Queue?</source>
+        <source>Are you sure you want to clear the Index Queue for this site?</source>
       </segment>
     </unit>
     <unit id="flash.indexEmptied">

@@ -82,7 +82,7 @@
     <unit id="card.clearQueue.title">
       <segment state="final">
         <source>Clear Index Queue</source>
-        <target>Index Queue leeren</target>
+        <target>Index-Queue leeren</target>
       </segment>
     </unit>
     <unit id="card.clearQueue.subtitle">
@@ -93,14 +93,14 @@
     </unit>
     <unit id="card.clearQueue.description">
       <segment state="final">
-        <source>Empty the selected site's Index Queue entries. Re-initialize the queue afterwards to build it again.</source>
-        <target>Leert die Index-Queue-Einträge der ausgewählten Site. Initialisieren Sie die Queue danach neu, um sie wieder aufzubauen.</target>
+        <source>Clear only the selected site's Index Queue entries. Re-initialize the queue afterwards before indexing can continue.</source>
+        <target>Leert nur die Index-Queue-Einträge der ausgewählten Site. Initialisieren Sie die Queue anschließend erneut, damit die Indexierung fortgesetzt werden kann.</target>
       </segment>
     </unit>
     <unit id="card.clearQueue.button">
       <segment state="final">
         <source>Clear Index Queue</source>
-        <target>Index Queue leeren</target>
+        <target>Index-Queue leeren</target>
       </segment>
     </unit>
     <unit id="modal.confirm.title">
@@ -117,8 +117,8 @@
     </unit>
     <unit id="modal.clearQueue.content">
       <segment state="final">
-        <source>Are you sure you want to clear the Index Queue?</source>
-        <target>Möchten Sie die Index Queue wirklich leeren?</target>
+        <source>Are you sure you want to clear the Index Queue for this site?</source>
+        <target>Möchten Sie die Index-Queue für diese Site wirklich leeren?</target>
       </segment>
     </unit>
     <unit id="flash.indexEmptied">
@@ -130,7 +130,7 @@
     <unit id="flash.queueEmptied">
       <segment state="final">
         <source>Index Queue emptied for site "{site}".</source>
-        <target>Index Queue für Site "{site}" geleert.</target>
+        <target>Index-Queue für Site "{site}" geleert.</target>
       </segment>
     </unit>
     <unit id="flash.emptyIndexError">

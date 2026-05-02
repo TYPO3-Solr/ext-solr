@@ -39,6 +39,8 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class IndexQueueModuleController extends AbstractModuleController
 {
+    private const LANGUAGE_DOMAIN = 'solr.modules.index_queue';
+
     protected array $enabledIndexQueues;
 
     protected function initializeAction(): void
@@ -71,9 +73,13 @@ class IndexQueueModuleController extends AbstractModuleController
         }
 
         $statistics = $this->indexQueue->getStatisticsBySite($this->selectedSite);
-        $this->moduleTemplate->assign('indexQueueInitializationSelector', $this->getIndexQueueInitializationSelector());
-        $this->moduleTemplate->assign('indexqueue_statistics', $statistics);
-        $this->moduleTemplate->assign('indexqueue_errors', $this->indexQueue->getErrorsBySite($this->selectedSite));
+        $this->moduleTemplate->assignMultiple([
+            'indexQueueInitializationSelector' => $this->getIndexQueueInitializationSelector(),
+            'indexqueue_statistics' => $statistics,
+            'indexqueue_errors' => $this->indexQueue->getErrorsBySite($this->selectedSite),
+            'confirmTitle' => $this->translate('modal.confirm.title'),
+            'clearQueueConfirmation' => $this->translate('clear.confirm.message'),
+        ]);
         return $this->moduleTemplate->renderResponse('Backend/Search/IndexQueueModule/Index');
     }
 
@@ -141,28 +147,19 @@ class IndexQueueModuleController extends AbstractModuleController
                     $initializedIndexingConfigurations[$configurationToInitialize] = $initializedIndexingConfiguration;
                 } catch (Throwable $e) {
                     $this->addFlashMessage(
-                        sprintf(
-                            LocalizationUtility::translate(
-                                'solr.backend.index_queue_module.flashmessage.initialize_failure',
-                                'Solr',
-                            ),
-                            $e->getMessage(),
-                            $e->getCode(),
-                        ),
-                        LocalizationUtility::translate(
-                            'solr.backend.index_queue_module.flashmessage.initialize_failure.title',
-                            'Solr',
-                        ),
+                        $this->translate('flash.initialize.failure.message', [
+                            'message' => $e->getMessage(),
+                            'code' => $e->getCode(),
+                        ]),
+                        $this->translate('flash.initialize.failure.title'),
                         ContextualFeedbackSeverity::ERROR,
                     );
                 }
             }
         } else {
-            $messageLabel = 'solr.backend.index_queue_module.flashmessage.initialize.no_selection';
-            $titleLabel = 'solr.backend.index_queue_module.flashmessage.not_initialized.title';
             $this->addFlashMessage(
-                LocalizationUtility::translate($messageLabel, 'Solr'),
-                LocalizationUtility::translate($titleLabel, 'Solr'),
+                $this->translate('flash.initialize.noSelection.message'),
+                $this->translate('flash.initialize.notInitialized.title'),
                 ContextualFeedbackSeverity::WARNING,
             );
         }
@@ -170,32 +167,28 @@ class IndexQueueModuleController extends AbstractModuleController
         $messagesForConfigurations = [];
         foreach ($initializedIndexingConfigurations as $indexingConfigurationName => $initializationData) {
             if ($initializationData['status'] === true) {
-                $messagesForConfigurations[] = $indexingConfigurationName . ' (' . $initializationData['totalCount'] . ' records)';
+                $messagesForConfigurations[] = $this->translate('flash.initialize.configurationSummary', [
+                    'configuration' => $indexingConfigurationName,
+                    'count' => $initializationData['totalCount'],
+                ]);
             } else {
                 $this->addFlashMessage(
-                    sprintf(
-                        LocalizationUtility::translate(
-                            'solr.backend.index_queue_module.flashmessage.initialize_failure',
-                            'Solr',
-                        ),
-                        $indexingConfigurationName,
-                        1662117020,
-                    ),
-                    LocalizationUtility::translate(
-                        'solr.backend.index_queue_module.flashmessage.initialize_failure.title',
-                        'Solr',
-                    ),
+                    $this->translate('flash.initialize.failureForConfiguration.message', [
+                        'configuration' => $indexingConfigurationName,
+                        'code' => 1662117020,
+                    ]),
+                    $this->translate('flash.initialize.failure.title'),
                     ContextualFeedbackSeverity::ERROR,
                 );
             }
         }
 
         if (!empty($messagesForConfigurations)) {
-            $messageLabel = 'solr.backend.index_queue_module.flashmessage.initialize.success';
-            $titleLabel = 'solr.backend.index_queue_module.flashmessage.initialize.title';
             $this->addFlashMessage(
-                LocalizationUtility::translate($messageLabel, 'Solr', [implode(', ', $messagesForConfigurations)]),
-                LocalizationUtility::translate($titleLabel, 'Solr'),
+                $this->translate('flash.initialize.success.message', [
+                    'configurations' => implode(', ', $messagesForConfigurations),
+                ]),
+                $this->translate('flash.initialize.title'),
                 ContextualFeedbackSeverity::OK,
             );
         }
@@ -213,10 +206,10 @@ class IndexQueueModuleController extends AbstractModuleController
         foreach ($this->enabledIndexQueues as $queue) {
             $resetResult = $queue->resetAllErrors();
 
-            $label = 'solr.backend.index_queue_module.flashmessage.success.reset_errors';
+            $label = 'flash.resetErrors.success.message';
             $severity = ContextualFeedbackSeverity::OK;
             if (!$resetResult) {
-                $label = 'solr.backend.index_queue_module.flashmessage.error.reset_errors';
+                $label = 'flash.resetErrors.error.message';
                 $severity = ContextualFeedbackSeverity::ERROR;
             }
 
@@ -234,12 +227,12 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     public function requeueDocumentAction(string $type, int $uid): ResponseInterface
     {
-        $label = 'solr.backend.index_queue_module.flashmessage.error.single_item_not_requeued';
+        $label = 'flash.requeue.error.message';
         $severity = ContextualFeedbackSeverity::ERROR;
 
         $updateCount = $this->indexQueue->updateItem($type, $uid, time());
         if ($updateCount > 0) {
-            $label = 'solr.backend.index_queue_module.flashmessage.success.single_item_was_requeued';
+            $label = 'flash.requeue.success.message';
             $severity = ContextualFeedbackSeverity::OK;
         }
 
@@ -260,7 +253,7 @@ class IndexQueueModuleController extends AbstractModuleController
         $item = $this->indexQueue->getItem($indexQueueItemId);
         if ($item === null) {
             // add a flash message and quit
-            $label = 'solr.backend.index_queue_module.flashmessage.error.no_queue_item_for_queue_error';
+            $label = 'flash.error.noQueueItem.message';
             $severity = ContextualFeedbackSeverity::ERROR;
             $this->addIndexQueueFlashMessage($label, $severity);
 
@@ -285,16 +278,16 @@ class IndexQueueModuleController extends AbstractModuleController
         $indexService = GeneralUtility::makeInstance(IndexService::class, $this->selectedSite);
         $indexWithoutErrors = $indexService->indexItems(1);
 
-        $label = 'solr.backend.index_queue_module.flashmessage.success.index_manual';
+        $label = 'flash.manualIndex.success.message';
         $severity = ContextualFeedbackSeverity::OK;
         if (!$indexWithoutErrors) {
-            $label = 'solr.backend.index_queue_module.flashmessage.error.index_manual';
+            $label = 'flash.manualIndex.error.message';
             $severity = ContextualFeedbackSeverity::ERROR;
         }
 
         $this->addFlashMessage(
-            LocalizationUtility::translate($label, 'Solr'),
-            LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.index_manual', 'Solr'),
+            $this->translate($label),
+            $this->translate('flash.manualIndex.title'),
             $severity,
         );
 
@@ -306,7 +299,7 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     protected function addIndexQueueFlashMessage(string $label, ContextualFeedbackSeverity $severity): void
     {
-        $this->addFlashMessage(LocalizationUtility::translate($label, 'Solr'), LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title', 'Solr'), $severity);
+        $this->addFlashMessage($this->translate($label), $this->translate('flash.title'), $severity);
     }
 
     /**
@@ -327,5 +320,13 @@ class IndexQueueModuleController extends AbstractModuleController
         }
 
         return $queues;
+    }
+
+    /**
+     * @param array<string, mixed> $arguments
+     */
+    private function translate(string $key, array $arguments = []): string
+    {
+        return LocalizationUtility::translate($key, self::LANGUAGE_DOMAIN, $arguments) ?? $key;
     }
 }

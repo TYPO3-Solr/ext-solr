@@ -20,10 +20,10 @@
 			<target state="final">Re-Indexierung der Seite erzwingen</target></trans-unit>
       <trans-unit id="reindex_description" xml:space="preserve" approved="yes">
 				<source>Purges the Solr Index and initializes the Index Queue of a site.</source>
-			<target state="final">Leert den solr index und initialisiert die Index Queue einer Seite.</target></trans-unit>
+			<target state="final">Leert den Solr-Index und initialisiert die Index-Queue einer Site.</target></trans-unit>
       <trans-unit id="indexqueueworker_description" xml:space="preserve" approved="yes">
 				<source>Processes the items in the Index Queue and sends them to Solr.</source>
-			<target state="final">Verarbeitet einen Item in der Index Queue und sendet ihn an den Solr Server.</target></trans-unit>
+			<target state="final">Verarbeitet Einträge aus der Index-Queue und sendet sie an den Solr-Server.</target></trans-unit>
       <trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve" approved="yes">
 				<source>Number of documents to index</source>
 			<target state="final">Anzahl der zu indexierenden Dokumente</target></trans-unit>

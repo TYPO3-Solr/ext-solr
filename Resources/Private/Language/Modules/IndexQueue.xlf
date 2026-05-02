@@ -31,5 +31,205 @@
         <source>Actions</source>
       </segment>
     </unit>
+    <unit id="status.title">
+      <segment state="final">
+        <source>Index Queue Status</source>
+      </segment>
+    </unit>
+    <unit id="status.indexed">
+      <segment state="final">
+        <source>Indexed</source>
+      </segment>
+    </unit>
+    <unit id="status.pending">
+      <segment state="final">
+        <source>Pending</source>
+      </segment>
+    </unit>
+    <unit id="status.errors">
+      <segment state="final">
+        <source>Errors</source>
+      </segment>
+    </unit>
+    <unit id="action.indexNow">
+      <segment state="final">
+        <source>Index now</source>
+      </segment>
+    </unit>
+    <unit id="action.back">
+      <segment state="final">
+        <source>Go back</source>
+      </segment>
+    </unit>
+    <unit id="errors.headline">
+      <segment state="final">
+        <source>Index Queue Errors</source>
+      </segment>
+    </unit>
+    <unit id="errors.id">
+      <segment state="final">
+        <source>ID</source>
+      </segment>
+    </unit>
+    <unit id="errors.itemType">
+      <segment state="final">
+        <source>Item type</source>
+      </segment>
+    </unit>
+    <unit id="errors.itemUid">
+      <segment state="final">
+        <source>Item UID</source>
+      </segment>
+    </unit>
+    <unit id="errors.showButton">
+      <segment state="final">
+        <source>Show details</source>
+      </segment>
+    </unit>
+    <unit id="errors.resetButton">
+      <segment state="final">
+        <source>Reset errors</source>
+      </segment>
+    </unit>
+    <unit id="initialization.title">
+      <segment state="final">
+        <source>Index Queue Initialization</source>
+      </segment>
+    </unit>
+    <unit id="initialization.button">
+      <segment state="final">
+        <source>Queue selected content</source>
+      </segment>
+    </unit>
+    <unit id="initialization.help">
+      <segment state="final">
+        <source>Initializing the Index Queue is the most complete way to force re-indexing or build the Index Queue for the first time. The Index Queue Worker scheduler task indexes the queued items afterwards.</source>
+      </segment>
+    </unit>
+    <unit id="clear.title">
+      <segment state="final">
+        <source>Clear Index Queue</source>
+      </segment>
+    </unit>
+    <unit id="clear.button">
+      <segment state="final">
+        <source>Clear Index Queue</source>
+      </segment>
+    </unit>
+    <unit id="clear.description">
+      <segment state="final">
+        <source>This clears only the Index Queue entries for the currently selected site. Re-initialize the Index Queue afterwards before indexing can continue.</source>
+      </segment>
+    </unit>
+    <unit id="clear.confirm.message">
+      <segment state="final">
+        <source>Are you sure you want to clear the Index Queue for the currently selected site?</source>
+      </segment>
+    </unit>
+    <unit id="modal.confirm.title">
+      <segment state="final">
+        <source>Please confirm</source>
+      </segment>
+    </unit>
+    <unit id="errorDetails.title">
+      <segment state="final">
+        <source>Error details for queue item</source>
+      </segment>
+    </unit>
+    <unit id="errorDetails.uid">
+      <segment state="final">
+        <source>UID</source>
+      </segment>
+    </unit>
+    <unit id="errorDetails.type">
+      <segment state="final">
+        <source>Type</source>
+      </segment>
+    </unit>
+    <unit id="flash.title">
+      <segment state="final">
+        <source>Index Queue</source>
+      </segment>
+    </unit>
+    <unit id="flash.manualIndex.title">
+      <segment state="final">
+        <source>Manual indexing</source>
+      </segment>
+    </unit>
+    <unit id="flash.manualIndex.success.message">
+      <segment state="final">
+        <source>Backend indexing finished successfully.</source>
+      </segment>
+    </unit>
+    <unit id="flash.manualIndex.error.message">
+      <segment state="final">
+        <source>Backend indexing did not finish successfully. Check the Index Queue errors.</source>
+      </segment>
+    </unit>
+    <unit id="flash.resetErrors.success.message">
+      <segment state="final">
+        <source>The Index Queue errors were reset.</source>
+      </segment>
+    </unit>
+    <unit id="flash.resetErrors.error.message">
+      <segment state="final">
+        <source>The Index Queue errors could not be reset.</source>
+      </segment>
+    </unit>
+    <unit id="flash.requeue.success.message">
+      <segment state="final">
+        <source>The item was marked for re-indexing.</source>
+      </segment>
+    </unit>
+    <unit id="flash.requeue.error.message">
+      <segment state="final">
+        <source>The item could not be marked for re-indexing.</source>
+      </segment>
+    </unit>
+    <unit id="flash.error.noQueueItem.message">
+      <segment state="final">
+        <source>No valid queue item was passed for the error details.</source>
+      </segment>
+    </unit>
+    <unit id="flash.initialize.title">
+      <segment state="final">
+        <source>Index Queue initialized</source>
+      </segment>
+    </unit>
+    <unit id="flash.initialize.notInitialized.title">
+      <segment state="final">
+        <source>Index Queue not initialized</source>
+      </segment>
+    </unit>
+    <unit id="flash.initialize.noSelection.message">
+      <segment state="final">
+        <source>Select at least one content type before initializing the Index Queue.</source>
+      </segment>
+    </unit>
+    <unit id="flash.initialize.success.message">
+      <segment state="final">
+        <source>The following content was queued for indexing: {configurations}.</source>
+      </segment>
+    </unit>
+    <unit id="flash.initialize.configurationSummary">
+      <segment state="final">
+        <source>{count, plural, one {{configuration} (# record)} other {{configuration} (# records)}}</source>
+      </segment>
+    </unit>
+    <unit id="flash.initialize.failure.title">
+      <segment state="final">
+        <source>Index Queue initialization failed</source>
+      </segment>
+    </unit>
+    <unit id="flash.initialize.failure.message">
+      <segment state="final">
+        <source>Index Queue initialization failed: {message} ({code}).</source>
+      </segment>
+    </unit>
+    <unit id="flash.initialize.failureForConfiguration.message">
+      <segment state="final">
+        <source>Index Queue initialization failed for "{configuration}" ({code}).</source>
+      </segment>
+    </unit>
   </file>
 </xliff>

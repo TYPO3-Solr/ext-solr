@@ -3,11 +3,15 @@
 	data-namespace-typo3-fluid="true">
 
 <f:if condition="{indexQueueItem.errors}">
-	<h1><f:translate key="solr.backend.index_queue_module.error_details"/> (uid: <code>{indexQueueItem.indexQueueUid}</code>, type: <code>{indexQueueItem.type}</code>):</h1>
+	<h1>
+		<f:translate key="errorDetails.title" domain="solr.modules.index_queue"/>
+		(<f:translate key="errorDetails.uid" domain="solr.modules.index_queue"/>: <code>{indexQueueItem.indexQueueUid}</code>,
+		<f:translate key="errorDetails.type" domain="solr.modules.index_queue"/>: <code>{indexQueueItem.type}</code>):
+	</h1>
     <pre class="alert alert-danger">{indexQueueItem.errors}</pre>
 
     <f:link.action class="btn btn-default">
-			{core:icon(identifier:'actions-view-go-back')} <f:translate key="solr.backend.index_queue_module.back"/>
+			{core:icon(identifier:'actions-view-go-back')} <f:translate key="action.back" domain="solr.modules.index_queue"/>
     </f:link.action>
 </f:if>
 </html>
