@@ -46,12 +46,11 @@ class SolrVersionStatus extends AbstractSolrStatus
             /** @var SolrConnection $solrConnection */
             if (!$coreAdmin->ping()) {
                 $url = $coreAdmin->__toString();
-                $pingFailedMsg = 'Could not ping Solr server, can not check version ' . $url;
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    'Apache Solr Version',
-                    'Not accessible',
-                    $pingFailedMsg,
+                    $this->translate('status.solrVersion.title'),
+                    $this->translate('status.value.notAccessible'),
+                    $this->translate('status.solrVersion.pingFailed.message', ['url' => $url]),
                     ContextualFeedbackSeverity::ERROR,
                 );
                 $reports[] = $status;
@@ -65,9 +64,12 @@ class SolrVersionStatus extends AbstractSolrStatus
             if ($isSupported) {
                 $reports[] = GeneralUtility::makeInstance(
                     Status::class,
-                    'Apache Solr Version',
-                    'OK',
-                    'Version of ' . $coreAdmin->__toString() . ' is ok: ' . $solrVersion,
+                    $this->translate('status.solrVersion.title'),
+                    $this->translate('status.value.ok'),
+                    $this->translate('status.solrVersion.ok.message', [
+                        'endpoint' => $coreAdmin->__toString(),
+                        'version' => $solrVersion,
+                    ]),
                     ContextualFeedbackSeverity::OK,
                 );
                 continue;
@@ -82,8 +84,8 @@ class SolrVersionStatus extends AbstractSolrStatus
             $report = $this->getRenderedReport('SolrVersionStatus.html', $variables);
             $status = GeneralUtility::makeInstance(
                 Status::class,
-                'Apache Solr Version',
-                'Unsupported',
+                $this->translate('status.solrVersion.title'),
+                $this->translate('status.value.unsupported'),
                 $report,
                 ContextualFeedbackSeverity::ERROR,
             );

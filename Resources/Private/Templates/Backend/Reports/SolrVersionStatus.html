@@ -3,30 +3,30 @@
 	data-namespace-typo3-fluid="true"
 >
 
-<p style="margin-bottom: 10px;">Found an unsupported Apache Solr server version. <br />
-	It is strongly recommended to use one of the explicitly tested versions, preferably the latest one.<br />
-	The currently supported versions are:
+<p style="margin-bottom: 10px;"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.solrVersion.unsupported.intro" /><br />
+	<f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.solrVersion.unsupported.recommendation" /><br />
+	<f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.solrVersion.supportedVersions" />
 	<f:for each="{supportedSolrVersions}" as="version" iteration="iterator">
 		<strong><code>{version}</code></strong>{f:if(condition: '{iterator.isLast}', then: '.', else: ',')}
 	</f:for>
-	<br />Your version is: <code>{currentVersion}</code>.
+	<br /><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.solrVersion.currentVersion" /> <code>{currentVersion}</code>.
 </p>
 <table class="table table-condensed table-hover table-striped">
 		<thead>
 		<tr>
-				<td colspan="2">Affected Solr server</td>
+				<td colspan="2"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.affectedSolrServer" /></td>
 		</tr>
 		</thead>
 		<tr>
-				<th>Host</th>
+				<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.host" /></th>
 				<td>{solr.primaryEndpoint.host}</td>
 		</tr>
 		<tr>
-				<th>Path</th>
+				<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.path" /></th>
 				<td>{solr.corePath}</td>
 		</tr>
 		<tr>
-				<th>Port</th>
+				<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.port" /></th>
 				<td>{solr.primaryEndpoint.port}</td>
 		</tr>
 </table>

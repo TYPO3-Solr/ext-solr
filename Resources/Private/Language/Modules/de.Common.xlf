@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="de">
+  <file id="f1" original="EXT:solr/Resources/Private/Language/Modules/Common.xlf">
+    <unit id="refresh.button">
+      <segment state="final">
+        <source>Refresh module</source>
+        <target>Modul aktualisieren</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

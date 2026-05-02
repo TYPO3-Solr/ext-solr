@@ -58,8 +58,8 @@ class SchemaStatus extends AbstractSolrStatus
         if (empty($solrConnections)) {
             $reports[] = GeneralUtility::makeInstance(
                 Status::class,
-                'Apache Solr Version / Schema Version',
-                'No Solr connections configured',
+                $this->translate('status.schema.title'),
+                $this->translate('status.value.noSolrConnectionsConfigured'),
                 '',
                 ContextualFeedbackSeverity::WARNING,
             );
@@ -72,12 +72,11 @@ class SchemaStatus extends AbstractSolrStatus
             /** @var SolrConnection $solrConnection */
             if (!$adminService->ping()) {
                 $url = $adminService->__toString();
-                $pingFailedMsg = 'Could not ping solr server, can not check version ' . $url;
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    'Apache Solr Version',
-                    'Not accessible',
-                    $pingFailedMsg,
+                    $this->translate('status.solrVersion.title'),
+                    $this->translate('status.value.notAccessible'),
+                    $this->translate('status.solrVersion.pingFailed.message', ['url' => $url]),
                     ContextualFeedbackSeverity::ERROR,
                 );
                 $reports[] = $status;
@@ -90,8 +89,8 @@ class SchemaStatus extends AbstractSolrStatus
                 $report = $this->getRenderedReport('SchemaStatus.html', $variables);
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    'Schema Version',
-                    'Unsupported Schema',
+                    $this->translate('status.schema.version.title'),
+                    $this->translate('status.schema.unsupported.value'),
                     $report,
                     ContextualFeedbackSeverity::WARNING,
                 );
@@ -102,8 +101,8 @@ class SchemaStatus extends AbstractSolrStatus
         if (empty($reports)) {
             $reports[] = GeneralUtility::makeInstance(
                 Status::class,
-                'Apache Solr Version / Schema Version',
-                'OK',
+                $this->translate('status.schema.title'),
+                $this->translate('status.value.ok'),
                 '',
                 ContextualFeedbackSeverity::OK,
             );

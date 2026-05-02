@@ -42,7 +42,7 @@ if (queriesOverTimeChartElement !== null) {
       datasets: [
         {
           data: JSON.parse(queriesOverTimeChartElement.dataset.queryData),
-          label: '# of Queries',
+          label: queriesOverTimeChartElement.dataset.queryDatasetLabel || 'Search queries',
 
           backgroundColor: queryColor,
           borderCapStyle: 'round',

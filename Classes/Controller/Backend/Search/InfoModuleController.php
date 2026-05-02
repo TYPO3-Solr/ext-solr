@@ -20,6 +20,15 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository as Apach
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsFilterDto;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus;
+use ApacheSolrForTypo3\Solr\Report\AllowUrlFOpenStatus;
+use ApacheSolrForTypo3\Solr\Report\SchemaStatus;
+use ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus;
+use ApacheSolrForTypo3\Solr\Report\SolrConfigStatus;
+use ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus;
+use ApacheSolrForTypo3\Solr\Report\SolrStatus;
+use ApacheSolrForTypo3\Solr\Report\SolrVersionStatus;
+use ApacheSolrForTypo3\Solr\Report\TextToVectorModelStoreStatus;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
@@ -28,18 +37,40 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Reports\Status;
+use Throwable;
 
 /**
  * Info Module
  */
 class InfoModuleController extends AbstractModuleController
 {
+    private const LANGUAGE_DOMAIN = 'solr.modules.info';
+
+    private const SOLR_REPORT_PROVIDERS = [
+        AccessFilterPluginInstalledStatus::class,
+        SolrConfigurationStatus::class,
+        SolrStatus::class,
+        SchemaStatus::class,
+        SiteHandlingStatus::class,
+        TextToVectorModelStoreStatus::class,
+        SolrVersionStatus::class,
+        SolrConfigStatus::class,
+        AllowUrlFOpenStatus::class,
+    ];
+
     protected ApacheSolrDocumentRepository $apacheSolrDocumentRepository;
 
     private array $browserEndpointProbeResults = [];
 
+    private array $coreDocumentCountByEndpoint = [];
+
     private array $siteDocumentCountByEndpoint = [];
+
+    private ?array $solrServerInfo = null;
 
     /**
      * @inheritDoc
@@ -74,8 +105,187 @@ class InfoModuleController extends AbstractModuleController
         $this->collectStatistics($statisticsFilter, $operation);
         $this->collectIndexFieldsInfo();
         $this->collectIndexInspectorInfo();
+        $this->collectSolrReportInfo();
 
         return $this->moduleTemplate->renderResponse('Backend/Search/InfoModule/Index');
+    }
+
+    private function collectSolrReportInfo(): void
+    {
+        $groups = [];
+        $statusCount = 0;
+        $issueCount = 0;
+        $highestSeverity = ContextualFeedbackSeverity::NOTICE;
+
+        foreach (self::SOLR_REPORT_PROVIDERS as $providerClass) {
+            $group = $this->buildSolrReportGroup($providerClass);
+            $groups[] = $group;
+            $statusCount += $group['statusCount'];
+            $issueCount += $group['issueCount'];
+
+            if ($group['severityValue'] > $highestSeverity->value) {
+                $highestSeverity = ContextualFeedbackSeverity::from($group['severityValue']);
+            }
+        }
+
+        $this->moduleTemplate->assignMultiple([
+            'solrReportGroups' => $groups,
+            'solrReportSummary' => [
+                'statusCount' => $statusCount,
+                'issueCount' => $issueCount,
+                'statusClass' => $highestSeverity->getCssClass(),
+                'statusLabelKey' => $this->getReportSeverityLabelKey($highestSeverity),
+            ],
+        ]);
+    }
+
+    /**
+     * @return array{
+     *     label: string,
+     *     statusClass: string,
+     *     statusLabelKey: string,
+     *     severityValue: int,
+     *     icon: string,
+     *     statusCount: int,
+     *     issueCount: int,
+     *     displayItems: array<int, array<string, mixed>>
+     * }
+     */
+    private function buildSolrReportGroup(string $providerClass): array
+    {
+        $providerLabel = $providerClass;
+        $statuses = [];
+
+        try {
+            $provider = GeneralUtility::makeInstance(
+                $providerClass,
+                GeneralUtility::makeInstance(ViewFactoryInterface::class),
+            );
+            $providerLabel = $this->getLanguageService()->sL($provider->getLabel()) ?: $providerClass;
+            $statuses = $provider->getStatus();
+        } catch (Throwable $exception) {
+            $statuses = [
+                GeneralUtility::makeInstance(
+                    Status::class,
+                    $this->translateInfoLabel('reports.providerUnavailable.title'),
+                    $this->translateInfoLabel('reports.providerUnavailable.value'),
+                    $this->translateInfoLabel('reports.providerUnavailable.message', [
+                        'message' => $this->shortenErrorMessage($exception->getMessage()),
+                    ]),
+                    ContextualFeedbackSeverity::ERROR,
+                ),
+            ];
+        }
+
+        $highestSeverity = $this->getHighestReportSeverity($statuses);
+        $items = $this->buildSolrReportItems($providerClass, $statuses);
+        $issueItems = array_values(array_filter(
+            $items,
+            static fn (array $item): bool => $item['severityValue'] > ContextualFeedbackSeverity::OK->value,
+        ));
+
+        return [
+            'label' => $providerLabel,
+            'statusClass' => $highestSeverity->getCssClass(),
+            'statusLabelKey' => $this->getReportSeverityLabelKey($highestSeverity),
+            'severityValue' => $highestSeverity->value,
+            'icon' => $highestSeverity->getIconIdentifier(),
+            'statusCount' => count($statuses),
+            'issueCount' => count($issueItems),
+            'displayItems' => $items,
+        ];
+    }
+
+    /**
+     * @param Status[] $statuses
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildSolrReportItems(string $providerClass, array $statuses): array
+    {
+        $items = [];
+        foreach ($statuses as $status) {
+            if (!$status instanceof Status) {
+                continue;
+            }
+
+            $severity = $status->getSeverity();
+            $items[] = [
+                'title' => $status->getTitle(),
+                'value' => $status->getValue(),
+                'message' => $this->normalizeReportMessage($status->getMessage()),
+                'statusClass' => $severity->getCssClass(),
+                'statusLabelKey' => $this->getReportSeverityLabelKey($severity),
+                'severityValue' => $severity->value,
+                'icon' => $severity->getIconIdentifier(),
+                'hintKey' => $this->getReportHintKey($providerClass, $severity),
+            ];
+        }
+
+        return $items;
+    }
+
+    /**
+     * @param Status[] $statuses
+     */
+    private function getHighestReportSeverity(array $statuses): ContextualFeedbackSeverity
+    {
+        $highestSeverity = ContextualFeedbackSeverity::NOTICE;
+        foreach ($statuses as $status) {
+            if ($status instanceof Status && $status->getSeverity()->value > $highestSeverity->value) {
+                $highestSeverity = $status->getSeverity();
+            }
+        }
+
+        return $highestSeverity;
+    }
+
+    private function getReportSeverityLabelKey(ContextualFeedbackSeverity $severity): string
+    {
+        return match ($severity) {
+            ContextualFeedbackSeverity::OK => 'reports.severity.ok',
+            ContextualFeedbackSeverity::WARNING => 'reports.severity.warning',
+            ContextualFeedbackSeverity::ERROR => 'reports.severity.error',
+            ContextualFeedbackSeverity::INFO => 'reports.severity.info',
+            ContextualFeedbackSeverity::NOTICE => 'reports.severity.notice',
+        };
+    }
+
+    private function getReportHintKey(string $providerClass, ContextualFeedbackSeverity $severity): string
+    {
+        if ($severity->value <= ContextualFeedbackSeverity::OK->value) {
+            return '';
+        }
+
+        return match ($providerClass) {
+            AccessFilterPluginInstalledStatus::class => 'reports.hint.accessFilter',
+            SolrConfigurationStatus::class => 'reports.hint.configuration',
+            SolrStatus::class => 'reports.hint.connection',
+            SchemaStatus::class => 'reports.hint.schema',
+            SiteHandlingStatus::class => 'reports.hint.siteHandling',
+            TextToVectorModelStoreStatus::class => 'reports.hint.vector',
+            SolrVersionStatus::class => 'reports.hint.solrVersion',
+            SolrConfigStatus::class => 'reports.hint.solrConfig',
+            AllowUrlFOpenStatus::class => 'reports.hint.allowUrlFopen',
+            default => 'reports.hint.default',
+        };
+    }
+
+    private function normalizeReportMessage(string $message): string
+    {
+        $message = str_replace(['<br>', '<br/>', '<br />', '</p>', '</li>'], "\n", $message);
+        $message = html_entity_decode(strip_tags($message), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $message = trim((string)preg_replace('/\s+/', ' ', $message));
+
+        if (strlen($message) <= 280) {
+            return $message;
+        }
+
+        return substr($message, 0, 277) . '...';
+    }
+
+    private function translateInfoLabel(string $key, array $arguments = []): string
+    {
+        return LocalizationUtility::translate($key, self::LANGUAGE_DOMAIN, $arguments) ?? $key;
     }
 
     /**
@@ -102,7 +312,8 @@ class InfoModuleController extends AbstractModuleController
         $invalidPaths = [];
         $connectionSummaries = [];
         $configuredCoreDocumentTotal = 0;
-        $solrServerInfo = null;
+        $configuredCoreDocumentTotalAvailable = true;
+        $this->solrServerInfo = null;
 
         /** @var Path $path */
         $path = GeneralUtility::makeInstance(Path::class);
@@ -134,24 +345,32 @@ class InfoModuleController extends AbstractModuleController
                 $invalidPaths[] = $coreAdmin->getCorePath();
             }
 
-            if ($solrServerInfo === null) {
-                $solrServerInfo = $this->getSolrServerInfo($coreUrl);
+            if ($this->solrServerInfo === null) {
+                $this->solrServerInfo = $this->getSolrServerInfo($coreUrl);
             }
 
             $coreName = $this->getCoreNameFromPath($coreAdmin->getCorePath());
-            $coreDocumentCount = $solrServerInfo['coreDocumentCounts'][$coreName] ?? 0;
+            $coreDocumentCount = $this->getCoreDocumentCountForEndpoint($coreUrl);
             $siteDocumentCount = $this->getSiteDocumentCountForEndpoint($coreUrl);
             $documents = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId($this->selectedPageUID, (int)$languageId);
             $pageDocumentCount = count($documents);
-            $configuredCoreDocumentTotal += $siteDocumentCount;
+            if ($siteDocumentCount === null) {
+                $configuredCoreDocumentTotalAvailable = false;
+            } else {
+                $configuredCoreDocumentTotal += $siteDocumentCount;
+            }
+            $statusClass = $this->getConnectionStatusClass($isConnected, $coreDocumentCount);
             $connectionSummaries[] = [
                 'corePath' => $coreAdmin->getCorePath(),
+                'coreName' => $coreName,
                 'endpoint' => $coreUrl,
                 'browserEndpoints' => $this->getBrowserEndpointLinks($coreUrl),
-                'statusClass' => $this->getConnectionStatusClass($isConnected, $siteDocumentCount),
-                'statusMessageRole' => $isConnected ? 'status' : 'alert',
-                'statusMessageTitleKey' => $this->getConnectionStatusMessageTitleKey($isConnected, $siteDocumentCount),
-                'statusReasonKey' => $this->getConnectionStatusReasonKey($isConnected, $siteDocumentCount),
+                'statusClass' => $statusClass,
+                'statusIconIdentifier' => $this->getConnectionStatusIconIdentifier($statusClass),
+                'statusMessageRole' => $statusClass === 'danger' ? 'alert' : 'status',
+                'statusPillState' => $this->getConnectionStatusPillState($isConnected, $coreDocumentCount),
+                'statusMessageTitleKey' => $this->getConnectionStatusMessageTitleKey($isConnected, $coreDocumentCount),
+                'statusReasonKey' => $this->getConnectionStatusReasonKey($isConnected, $coreDocumentCount),
                 'connectionErrorKey' => $pingResult['errorKey'],
                 'connectionErrorArguments' => $pingResult['errorArguments'],
                 'isConnected' => $isConnected,
@@ -159,6 +378,8 @@ class InfoModuleController extends AbstractModuleController
                 'languageTitle' => $this->getLanguageTitle((int)$languageId),
                 'documentCount' => $siteDocumentCount,
                 'coreDocumentCount' => $coreDocumentCount,
+                'documentCountAvailable' => $siteDocumentCount !== null,
+                'coreDocumentCountAvailable' => $coreDocumentCount !== null,
                 'pageDocumentCount' => $pageDocumentCount,
             ];
         }
@@ -172,23 +393,51 @@ class InfoModuleController extends AbstractModuleController
             'connectionSummaries' => $connectionSummaries,
             'configuredCoreCount' => count($connectionSummaries),
             'indexedDocumentTotal' => $configuredCoreDocumentTotal,
-            'solrServerInfo' => $solrServerInfo,
+            'indexedDocumentTotalAvailable' => $configuredCoreDocumentTotalAvailable,
+            'solrServerInfo' => $this->solrServerInfo,
         ]);
     }
 
     private function getConnectionStatusClass(bool $isConnected, ?int $documentCount): string
     {
-        if (!$isConnected) {
+        if (!$isConnected || $documentCount === null) {
             return 'danger';
         }
 
         return ($documentCount ?? 0) > 0 ? 'success' : 'warning';
     }
 
+    private function getConnectionStatusIconIdentifier(string $statusClass): string
+    {
+        return match ($statusClass) {
+            'success' => 'status-dialog-ok',
+            'warning' => 'status-dialog-warning',
+            'danger' => 'status-dialog-error',
+            default => 'status-dialog-information',
+        };
+    }
+
+    private function getConnectionStatusPillState(bool $isConnected, ?int $documentCount): string
+    {
+        if (!$isConnected || $documentCount === null) {
+            return 'error';
+        }
+
+        if (($documentCount ?? 0) === 0) {
+            return 'check';
+        }
+
+        return 'ok';
+    }
+
     private function getConnectionStatusMessageTitleKey(bool $isConnected, ?int $documentCount): string
     {
         if (!$isConnected) {
             return 'connections.status.errorTitle';
+        }
+
+        if ($documentCount === null) {
+            return 'connections.status.documentCountUnavailableTitle';
         }
 
         if (($documentCount ?? 0) === 0) {
@@ -202,6 +451,10 @@ class InfoModuleController extends AbstractModuleController
     {
         if (!$isConnected) {
             return 'connections.status.reason.notReachable';
+        }
+
+        if ($documentCount === null) {
+            return 'connections.status.reason.documentCountUnavailable';
         }
 
         if (($documentCount ?? 0) === 0) {
@@ -425,7 +678,8 @@ class InfoModuleController extends AbstractModuleController
             ),
         );
 
-        $cores = is_array($coreStatus['status'] ?? null) ? $coreStatus['status'] : [];
+        $hasServerInfo = is_array($systemInfo) && is_array($coreStatus);
+        $cores = $hasServerInfo && is_array($coreStatus['status'] ?? null) ? $coreStatus['status'] : [];
         $documentCount = 0;
         $coreDocumentCounts = [];
         foreach ($cores as $coreName => $core) {
@@ -456,8 +710,8 @@ class InfoModuleController extends AbstractModuleController
         }
 
         return [
-            'isAvailable' => is_array($systemInfo),
-            'statusClass' => is_array($systemInfo) ? 'success' : 'danger',
+            'isAvailable' => $hasServerInfo,
+            'statusClass' => $hasServerInfo ? 'success' : 'danger',
             'adminEndpoints' => $this->getBrowserAdminRootLinks($endpointContext),
             'metrics' => $metrics,
             'coreCount' => count($cores),
@@ -559,10 +813,42 @@ class InfoModuleController extends AbstractModuleController
         ];
     }
 
-    private function getSiteDocumentCountForEndpoint(string $endpointUrl): int
+    private function getCoreDocumentCountForEndpoint(string $endpointUrl): ?int
+    {
+        if (array_key_exists($endpointUrl, $this->coreDocumentCountByEndpoint)) {
+            return $this->coreDocumentCountByEndpoint[$endpointUrl];
+        }
+
+        $endpointContext = $this->getSolrEndpointContext($endpointUrl);
+        if ($endpointContext === null || $endpointContext['coreName'] === null) {
+            $this->coreDocumentCountByEndpoint[$endpointUrl] = null;
+            return null;
+        }
+
+        $response = $this->fetchSolrJson(
+            $this->buildSolrApiUrl(
+                $endpointContext['scheme'],
+                $endpointContext['host'],
+                $endpointContext['port'],
+                $endpointContext['solrBasePath'],
+                $endpointContext['coreName'] . '/select',
+                [
+                    'q' => '*:*',
+                    'rows' => '0',
+                    'wt' => 'json',
+                ],
+            ),
+        );
+
+        $responseBody = is_array($response['response'] ?? null) ? $response['response'] : null;
+        $this->coreDocumentCountByEndpoint[$endpointUrl] = $responseBody !== null ? (int)($responseBody['numFound'] ?? 0) : null;
+        return $this->coreDocumentCountByEndpoint[$endpointUrl];
+    }
+
+    private function getSiteDocumentCountForEndpoint(string $endpointUrl): ?int
     {
         if ($this->selectedSite === null) {
-            return 0;
+            return null;
         }
 
         $siteHash = $this->selectedSite->getSiteHash();
@@ -573,8 +859,8 @@ class InfoModuleController extends AbstractModuleController
 
         $endpointContext = $this->getSolrEndpointContext($endpointUrl);
         if ($endpointContext === null) {
-            $this->siteDocumentCountByEndpoint[$cacheKey] = 0;
-            return 0;
+            $this->siteDocumentCountByEndpoint[$cacheKey] = null;
+            return null;
         }
 
         $response = $this->fetchSolrJson(
@@ -593,8 +879,8 @@ class InfoModuleController extends AbstractModuleController
             ),
         );
 
-        $responseBody = is_array($response['response'] ?? null) ? $response['response'] : [];
-        $this->siteDocumentCountByEndpoint[$cacheKey] = (int)($responseBody['numFound'] ?? 0);
+        $responseBody = is_array($response['response'] ?? null) ? $response['response'] : null;
+        $this->siteDocumentCountByEndpoint[$cacheKey] = $responseBody !== null ? (int)($responseBody['numFound'] ?? 0) : null;
         return $this->siteDocumentCountByEndpoint[$cacheKey];
     }
 
@@ -898,6 +1184,11 @@ class InfoModuleController extends AbstractModuleController
 
             $documents = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId($this->selectedPageUID, $languageId);
             $siteDocumentCount = $this->getSiteDocumentCountForEndpoint($url);
+            if ($this->solrServerInfo === null) {
+                $this->solrServerInfo = $this->getSolrServerInfo($url);
+            }
+            $coreDocumentCount = $this->getCoreDocumentCountForEndpoint($url);
+            $pageDocumentCount = $coreDocumentCount !== null ? count($documents) : null;
 
             $documentsByType = [];
             foreach ($documents as $document) {
@@ -905,8 +1196,12 @@ class InfoModuleController extends AbstractModuleController
             }
 
             $documentsByCoreAndType[$languageId]['core'] = $coreAdmin;
-            $documentsByCoreAndType[$languageId]['documentCount'] = count($documents);
+            $documentsByCoreAndType[$languageId]['documentCount'] = $pageDocumentCount;
             $documentsByCoreAndType[$languageId]['siteDocumentCount'] = $siteDocumentCount;
+            $documentsByCoreAndType[$languageId]['coreDocumentCount'] = $coreDocumentCount;
+            $documentsByCoreAndType[$languageId]['documentCountAvailable'] = $pageDocumentCount !== null;
+            $documentsByCoreAndType[$languageId]['siteDocumentCountAvailable'] = $siteDocumentCount !== null;
+            $documentsByCoreAndType[$languageId]['coreDocumentCountAvailable'] = $coreDocumentCount !== null;
             $documentsByCoreAndType[$languageId]['documents'] = $documentsByType;
         }
 

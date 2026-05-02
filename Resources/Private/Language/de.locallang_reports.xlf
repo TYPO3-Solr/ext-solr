@@ -1,16 +1,557 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-  <file source-language="en" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_reports.xlf" date="2023-06-01T10:07:00Z" product-name="solr" target-language="de">
-    <header/>
-    <body>
-			
-			
-			
-			
-			
-			
-			
-			
-		</body>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="de">
+  <file id="f1" original="EXT:solr/Resources/Private/Language/locallang_reports.xlf">
+    <unit id="status_solr_access-filter">
+      <segment state="final">
+        <source>Solr Access Filter Plugin</source>
+        <target>Solr Access Filter Plugin</target>
+      </segment>
+    </unit>
+    <unit id="status_solr_allow-url-open">
+      <segment state="final">
+        <source>URL-aware fopen wrappers</source>
+        <target>URL-fähige fopen-Wrapper</target>
+      </segment>
+    </unit>
+    <unit id="status_solr_connectionstatus">
+      <segment state="final">
+        <source>Solr Connection Status</source>
+        <target>Solr-Verbindungsstatus</target>
+      </segment>
+    </unit>
+    <unit id="status_solr_configuration">
+      <segment state="final">
+        <source>Solr Configuration</source>
+        <target>Solr-Konfiguration</target>
+      </segment>
+    </unit>
+    <unit id="status_solr_schema">
+      <segment state="final">
+        <source>Solr Schema Version</source>
+        <target>Solr-Schemaversion</target>
+      </segment>
+    </unit>
+    <unit id="status_solr_site-handling">
+      <segment state="final">
+        <source>Solr Site Handling Status</source>
+        <target>Solr-Site-Handling-Status</target>
+      </segment>
+    </unit>
+    <unit id="status_solr_solrconfig">
+      <segment state="final">
+        <source>Solrconfig Version</source>
+        <target>Solrconfig-Version</target>
+      </segment>
+    </unit>
+    <unit id="status_solr_solrversion">
+      <segment state="final">
+        <source>Solr Version</source>
+        <target>Solr-Version</target>
+      </segment>
+    </unit>
+    <unit id="status_solr_vector_support">
+      <segment state="final">
+        <source>Solr Vector Support</source>
+        <target>Solr Vector Support</target>
+      </segment>
+    </unit>
+    <unit id="status.value.ok">
+      <segment state="final">
+        <source>OK</source>
+        <target>OK</target>
+      </segment>
+    </unit>
+    <unit id="status.value.error">
+      <segment state="final">
+        <source>Error</source>
+        <target>Fehler</target>
+      </segment>
+    </unit>
+    <unit id="status.value.on">
+      <segment state="final">
+        <source>On</source>
+        <target>Ein</target>
+      </segment>
+    </unit>
+    <unit id="status.value.off">
+      <segment state="final">
+        <source>Off</source>
+        <target>Aus</target>
+      </segment>
+    </unit>
+    <unit id="status.value.installed">
+      <segment state="final">
+        <source>Installed</source>
+        <target>Installiert</target>
+      </segment>
+    </unit>
+    <unit id="status.value.notInstalled">
+      <segment state="final">
+        <source>Not installed</source>
+        <target>Nicht installiert</target>
+      </segment>
+    </unit>
+    <unit id="status.value.notAccessible">
+      <segment state="final">
+        <source>Not accessible</source>
+        <target>Nicht erreichbar</target>
+      </segment>
+    </unit>
+    <unit id="status.value.unsupported">
+      <segment state="final">
+        <source>Unsupported</source>
+        <target>Nicht unterstützt</target>
+      </segment>
+    </unit>
+    <unit id="status.value.notSet">
+      <segment state="final">
+        <source>not set</source>
+        <target>nicht gesetzt</target>
+      </segment>
+    </unit>
+    <unit id="status.value.noSitesFound">
+      <segment state="final">
+        <source>No sites found</source>
+        <target>Keine Sites gefunden</target>
+      </segment>
+    </unit>
+    <unit id="status.value.noSolrConnectionsConfigured">
+      <segment state="final">
+        <source>No Solr connections configured</source>
+        <target>Keine Solr-Verbindungen konfiguriert</target>
+      </segment>
+    </unit>
+    <unit id="status.value.couldNotConnectTo">
+      <segment state="final">
+        <source>Could not connect to {endpoint}</source>
+        <target>Verbindung zu {endpoint} nicht möglich</target>
+      </segment>
+    </unit>
+    <unit id="status.accessFilter.title">
+      <segment state="final">
+        <source>Solr Access Filter Plugin</source>
+        <target>Solr Access Filter Plugin</target>
+      </segment>
+    </unit>
+    <unit id="status.accessFilter.installed.message">
+      <segment state="final">
+        <source>Solr Access Filter Plugin is installed. Always use the version supplied with EXT:solr.</source>
+        <target>Das Solr Access Filter Plugin ist installiert. Verwenden Sie immer die mit EXT:solr gelieferte Version.</target>
+      </segment>
+    </unit>
+    <unit id="status.solrVersion.title">
+      <segment state="final">
+        <source>Apache Solr Version</source>
+        <target>Apache-Solr-Version</target>
+      </segment>
+    </unit>
+    <unit id="status.solrVersion.pingFailed.message">
+      <segment state="final">
+        <source>Could not ping Solr server, cannot check version {url}</source>
+        <target>Der Solr-Server konnte nicht gepingt werden. Die Version kann nicht geprüft werden: {url}</target>
+      </segment>
+    </unit>
+    <unit id="status.solrVersion.ok.message">
+      <segment state="final">
+        <source>Version of {endpoint} is OK: {version}</source>
+        <target>Version von {endpoint} ist OK: {version}</target>
+      </segment>
+    </unit>
+    <unit id="status.solrConfig.title">
+      <segment state="final">
+        <source>Solrconfig Version</source>
+        <target>Solrconfig-Version</target>
+      </segment>
+    </unit>
+    <unit id="status.solrConfig.unsupported.value">
+      <segment state="final">
+        <source>Unsupported solrconfig.xml</source>
+        <target>solrconfig.xml nicht unterstützt</target>
+      </segment>
+    </unit>
+    <unit id="status.schema.title">
+      <segment state="final">
+        <source>Apache Solr Version / Schema Version</source>
+        <target>Apache-Solr-Version / Schemaversion</target>
+      </segment>
+    </unit>
+    <unit id="status.schema.version.title">
+      <segment state="final">
+        <source>Schema Version</source>
+        <target>Schemaversion</target>
+      </segment>
+    </unit>
+    <unit id="status.schema.unsupported.value">
+      <segment state="final">
+        <source>Unsupported schema</source>
+        <target>Schema nicht unterstützt</target>
+      </segment>
+    </unit>
+    <unit id="status.configuration.sites.title">
+      <segment state="final">
+        <source>Sites</source>
+        <target>Sites</target>
+      </segment>
+    </unit>
+    <unit id="status.configuration.pageIndexing.title">
+      <segment state="final">
+        <source>Page Indexing</source>
+        <target>Seitenindexierung</target>
+      </segment>
+    </unit>
+    <unit id="status.configuration.indexingDisabled.value">
+      <segment state="final">
+        <source>Indexing is disabled</source>
+        <target>Indexierung ist deaktiviert</target>
+      </segment>
+    </unit>
+    <unit id="status.allowUrlFopen.disabled.message">
+      <segment state="final">
+        <source>allow_url_fopen must be enabled in php.ini to allow communication between TYPO3 and the Apache Solr server. Indexing pages using the Index Queue will also not work with this setting disabled.</source>
+        <target>allow_url_fopen muss in php.ini aktiviert sein, damit TYPO3 mit dem Apache-Solr-Server kommunizieren kann. Auch die Seitenindexierung über die Index Queue funktioniert nicht, wenn diese Einstellung deaktiviert ist.</target>
+      </segment>
+    </unit>
+    <unit id="status.textToVector.plugin.title">
+      <segment state="final">
+        <source>Apache Solr Text to Vector</source>
+        <target>Apache Solr Text to Vector</target>
+      </segment>
+    </unit>
+    <unit id="status.textToVector.models.title">
+      <segment state="final">
+        <source>Apache Solr Text to Vector: Configured Models</source>
+        <target>Apache Solr Text to Vector: konfigurierte Modelle</target>
+      </segment>
+    </unit>
+    <unit id="status.solrConnection.title">
+      <segment state="final">
+        <source>Apache Solr Connection</source>
+        <target>Apache-Solr-Verbindung</target>
+      </segment>
+    </unit>
+    <unit id="status.solrConnection.contacted.value">
+      <segment state="final">
+        <source>Your site has contacted the Apache Solr server.</source>
+        <target>Ihre Site hat den Apache-Solr-Server erreicht.</target>
+      </segment>
+    </unit>
+    <unit id="status.solrConnection.failed.value">
+      <segment state="final">
+        <source>Failed contacting the Solr server.</source>
+        <target>Der Solr-Server konnte nicht erreicht werden.</target>
+      </segment>
+    </unit>
+    <unit id="status.solrConnection.error.solrVersion">
+      <segment state="final">
+        <source>Error getting Solr version: {error}</source>
+        <target>Fehler beim Abrufen der Solr-Version: {error}</target>
+      </segment>
+    </unit>
+    <unit id="status.solrConnection.error.accessFilter">
+      <segment state="final">
+        <source>Error getting access filter: {error}</source>
+        <target>Fehler beim Abrufen des Access Filters: {error}</target>
+      </segment>
+    </unit>
+    <unit id="status.solrConnection.error.ping">
+      <segment state="final">
+        <source>Ping error: {error}</source>
+        <target>Ping-Fehler: {error}</target>
+      </segment>
+    </unit>
+    <unit id="status.solrConnection.error.solrConfig">
+      <segment state="final">
+        <source>Error determining Solr config: {error}</source>
+        <target>Fehler beim Ermitteln der Solr-Konfiguration: {error}</target>
+      </segment>
+    </unit>
+    <unit id="status.solrConnection.error.schema">
+      <segment state="final">
+        <source>Error determining schema name: {error}</source>
+        <target>Fehler beim Ermitteln des Schema-Namens: {error}</target>
+      </segment>
+    </unit>
+    <unit id="status.siteHandling.configuration.title">
+      <segment state="final">
+        <source>Site handling configuration</source>
+        <target>Site-Handling-Konfiguration</target>
+      </segment>
+    </unit>
+    <unit id="status.siteHandling.notTypo3Site.message">
+      <segment state="final">
+        <source>The configured site &quot;{site}&quot; is not a TYPO3-managed site. Check the TYPO3 site configuration.</source>
+        <target>Die konfigurierte Site &quot;{site}&quot; ist keine von TYPO3 verwaltete Site. Prüfen Sie die TYPO3-Site-Konfiguration.</target>
+      </segment>
+    </unit>
+    <unit id="status.siteHandling.identifier.title">
+      <segment state="final">
+        <source>Site Identifier: &quot;{identifier}&quot;</source>
+        <target>Site-Identifier: &quot;{identifier}&quot;</target>
+      </segment>
+    </unit>
+    <unit id="status.siteHandling.language.label">
+      <segment state="final">
+        <source>Language: {language}</source>
+        <target>Sprache: {language}</target>
+      </segment>
+    </unit>
+    <unit id="status.siteHandling.language.disabled.message">
+      <segment state="final">
+        <source>No checks: The language is disabled in site configuration.</source>
+        <target>Keine Prüfung: Die Sprache ist in der Site-Konfiguration deaktiviert.</target>
+      </segment>
+    </unit>
+    <unit id="status.siteHandling.base.invalid.message">
+      <segment state="final">
+        <source>Entry Point[base]=&quot;{base}&quot; is not a valid URL. Empty or invalid parts: &quot;{parts}&quot;.</source>
+        <target>Entry Point[base]=&quot;{base}&quot; ist keine gültige URL. Leere oder ungültige Teile: &quot;{parts}&quot;.</target>
+      </segment>
+    </unit>
+    <unit id="status.siteHandling.base.valid.message">
+      <segment state="final">
+        <source>Entry Point[base]=&quot;{base}&quot; is a valid URL.</source>
+        <target>Entry Point[base]=&quot;{base}&quot; ist eine gültige URL.</target>
+      </segment>
+    </unit>
+    <unit id="status.siteHandling.urlPart.scheme">
+      <segment state="final">
+        <source>scheme</source>
+        <target>Schema</target>
+      </segment>
+    </unit>
+    <unit id="status.siteHandling.urlPart.host">
+      <segment state="final">
+        <source>host</source>
+        <target>Host</target>
+      </segment>
+    </unit>
+    <unit id="report.textToVector.plugin.warning">
+      <segment state="final">
+        <source>Vector plugin is not configured for all endpoints. Check the configsets of the marked endpoints.</source>
+        <target>Das Vector Plugin ist nicht für alle Endpunkte konfiguriert. Prüfen Sie die Configsets der markierten Endpunkte.</target>
+      </segment>
+    </unit>
+    <unit id="report.textToVector.model.warning">
+      <segment state="final">
+        <source>To use vector search, every endpoint needs an uploaded &quot;llm&quot; model. Push the model configuration to the affected endpoint.</source>
+        <target>Für Vector Search benötigt jeder Endpunkt ein hochgeladenes &quot;llm&quot;-Modell. Übertragen Sie die Modellkonfiguration auf den betroffenen Endpunkt.</target>
+      </segment>
+    </unit>
+    <unit id="report.textToVector.warning.ignore">
+      <segment state="final">
+        <source>You can ignore this warning if you do not use vector search.</source>
+        <target>Sie können diese Warnung ignorieren, wenn Sie keine Vector Search verwenden.</target>
+      </segment>
+    </unit>
+    <unit id="report.configuration.indexingDisabled.intro">
+      <segment state="final">
+        <source>Set config.index_enable = 1 to allow page indexing.</source>
+        <target>Setzen Sie config.index_enable = 1, um die Seitenindexierung zu erlauben.</target>
+      </segment>
+    </unit>
+    <unit id="report.configuration.indexingDisabled.sites">
+      <segment state="final">
+        <source>The following sites were found with indexing disabled:</source>
+        <target>Für die folgenden Sites ist die Indexierung deaktiviert:</target>
+      </segment>
+    </unit>
+    <unit id="report.configuration.rootPageFlag.message">
+      <segment state="final">
+        <source>Connections to your Solr server are detected automatically. Set the &quot;Use as Root Page&quot; page property on your site root pages.</source>
+        <target>Verbindungen zu Ihrem Solr-Server werden automatisch erkannt. Setzen Sie die Seiteneigenschaft &quot;Als Root-Seite verwenden&quot; auf Ihren Site-Root-Seiten.</target>
+      </segment>
+    </unit>
+    <unit id="report.accessFilter.notInstalled.message">
+      <segment state="final">
+        <source>EXT:solr ships a plugin for Apache Solr that enforces TYPO3 access restrictions in search results. The plugin is not installed on the following server. Install it if your site uses frontend user group access restrictions.</source>
+        <target>EXT:solr liefert ein Plugin für Apache Solr mit, das TYPO3-Zugriffsbeschränkungen in Suchergebnissen durchsetzt. Das Plugin ist auf dem folgenden Server nicht installiert. Installieren Sie es, wenn Ihre Site Frontend-Benutzergruppen-Beschränkungen verwendet.</target>
+      </segment>
+    </unit>
+    <unit id="report.accessFilter.installHint">
+      <segment state="final">
+        <source>Make sure the access plugin is installed. It can be found at</source>
+        <target>Stellen Sie sicher, dass das Access Plugin installiert ist. Es befindet sich unter</target>
+      </segment>
+    </unit>
+    <unit id="report.solrVersion.unsupported.intro">
+      <segment state="final">
+        <source>Found an unsupported Apache Solr server version.</source>
+        <target>Es wurde eine nicht unterstützte Apache-Solr-Version gefunden.</target>
+      </segment>
+    </unit>
+    <unit id="report.solrVersion.unsupported.recommendation">
+      <segment state="final">
+        <source>Use one of the explicitly tested versions, preferably the latest supported version.</source>
+        <target>Verwenden Sie eine ausdrücklich getestete Version, vorzugsweise die neueste unterstützte Version.</target>
+      </segment>
+    </unit>
+    <unit id="report.solrVersion.supportedVersions">
+      <segment state="final">
+        <source>Currently supported versions are:</source>
+        <target>Aktuell unterstützte Versionen:</target>
+      </segment>
+    </unit>
+    <unit id="report.solrVersion.currentVersion">
+      <segment state="final">
+        <source>Your version is:</source>
+        <target>Ihre Version ist:</target>
+      </segment>
+    </unit>
+    <unit id="report.schema.unsupported.intro">
+      <segment state="final">
+        <source>A schema different from the one provided with the extension was detected.</source>
+        <target>Es wurde ein Schema erkannt, das vom mitgelieferten Schema der Extension abweicht.</target>
+      </segment>
+    </unit>
+    <unit id="report.schema.unsupported.recommendation">
+      <segment state="final">
+        <source>Use the schema.xml file shipped with Apache Solr for TYPO3. It contains the optimized field setup for TYPO3 and should be updated whenever the extension configset changes.</source>
+        <target>Verwenden Sie die mit Apache Solr for TYPO3 gelieferte schema.xml. Sie enthält das optimierte Feld-Setup für TYPO3 und sollte aktualisiert werden, wenn sich das Configset der Extension ändert.</target>
+      </segment>
+    </unit>
+    <unit id="report.schema.unsupported.currentPrefix">
+      <segment state="final">
+        <source>Your Solr server currently uses schema version</source>
+        <target>Ihr Solr-Server verwendet aktuell die Schemaversion</target>
+      </segment>
+    </unit>
+    <unit id="report.schema.unsupported.recommendedPrefix">
+      <segment state="final">
+        <source>the recommended schema version is</source>
+        <target>die empfohlene Schemaversion ist</target>
+      </segment>
+    </unit>
+    <unit id="report.schema.unsupported.pathHint">
+      <segment state="final">
+        <source>The recommended schema.xml file is in</source>
+        <target>Die empfohlene schema.xml befindet sich in</target>
+      </segment>
+    </unit>
+    <unit id="report.schema.unsupported.solrConfigHint">
+      <segment state="final">
+        <source>Also check that the current solrconfig.xml is used.</source>
+        <target>Prüfen Sie außerdem, ob die aktuelle solrconfig.xml verwendet wird.</target>
+      </segment>
+    </unit>
+    <unit id="report.solrConfig.unsupported.intro">
+      <segment state="final">
+        <source>A solrconfig.xml different from the one provided with the extension was detected.</source>
+        <target>Es wurde eine solrconfig.xml erkannt, die von der mitgelieferten Datei der Extension abweicht.</target>
+      </segment>
+    </unit>
+    <unit id="report.solrConfig.unsupported.recommendation">
+      <segment state="final">
+        <source>Use the solrconfig.xml file shipped with Apache Solr for TYPO3. It contains the optimized setup for TYPO3 and should be updated whenever the extension configset changes.</source>
+        <target>Verwenden Sie die mit Apache Solr for TYPO3 gelieferte solrconfig.xml. Sie enthält das optimierte Setup für TYPO3 und sollte aktualisiert werden, wenn sich das Configset der Extension ändert.</target>
+      </segment>
+    </unit>
+    <unit id="report.solrConfig.unsupported.currentPrefix">
+      <segment state="final">
+        <source>Your Solr server currently uses a Solr configuration file named</source>
+        <target>Ihr Solr-Server verwendet aktuell die Solr-Konfigurationsdatei</target>
+      </segment>
+    </unit>
+    <unit id="report.solrConfig.unsupported.recommendedPrefix">
+      <segment state="final">
+        <source>the recommended configuration is</source>
+        <target>die empfohlene Konfiguration ist</target>
+      </segment>
+    </unit>
+    <unit id="report.solrConfig.unsupported.pathHint">
+      <segment state="final">
+        <source>The recommended solrconfig.xml file is in</source>
+        <target>Die empfohlene solrconfig.xml befindet sich in</target>
+      </segment>
+    </unit>
+    <unit id="report.solrConfig.unsupported.schemaHint">
+      <segment state="final">
+        <source>Also check that the current schema.xml is used.</source>
+        <target>Prüfen Sie außerdem, ob die aktuelle schema.xml verwendet wird.</target>
+      </segment>
+    </unit>
+    <unit id="report.table.affectedSolrServer">
+      <segment state="final">
+        <source>Affected Solr server</source>
+        <target>Betroffener Solr-Server</target>
+      </segment>
+    </unit>
+    <unit id="report.table.site">
+      <segment state="final">
+        <source>Site</source>
+        <target>Site</target>
+      </segment>
+    </unit>
+    <unit id="report.table.language">
+      <segment state="final">
+        <source>Language</source>
+        <target>Sprache</target>
+      </segment>
+    </unit>
+    <unit id="report.table.scheme">
+      <segment state="final">
+        <source>Scheme</source>
+        <target>Schema</target>
+      </segment>
+    </unit>
+    <unit id="report.table.host">
+      <segment state="final">
+        <source>Host</source>
+        <target>Host</target>
+      </segment>
+    </unit>
+    <unit id="report.table.path">
+      <segment state="final">
+        <source>Path</source>
+        <target>Pfad</target>
+      </segment>
+    </unit>
+    <unit id="report.table.port">
+      <segment state="final">
+        <source>Port</source>
+        <target>Port</target>
+      </segment>
+    </unit>
+    <unit id="report.table.username">
+      <segment state="final">
+        <source>Username</source>
+        <target>Benutzername</target>
+      </segment>
+    </unit>
+    <unit id="report.table.accessFilterPlugin">
+      <segment state="final">
+        <source>Access Filter Plugin</source>
+        <target>Access Filter Plugin</target>
+      </segment>
+    </unit>
+    <unit id="report.table.apacheSolr">
+      <segment state="final">
+        <source>Apache Solr</source>
+        <target>Apache Solr</target>
+      </segment>
+    </unit>
+    <unit id="report.table.endpoint">
+      <segment state="final">
+        <source>Endpoint</source>
+        <target>Endpunkt</target>
+      </segment>
+    </unit>
+    <unit id="report.table.class">
+      <segment state="final">
+        <source>Class</source>
+        <target>Klasse</target>
+      </segment>
+    </unit>
+    <unit id="report.table.baseUrl">
+      <segment state="final">
+        <source>Base URL</source>
+        <target>Basis-URL</target>
+      </segment>
+    </unit>
+    <unit id="report.table.model">
+      <segment state="final">
+        <source>Model</source>
+        <target>Modell</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

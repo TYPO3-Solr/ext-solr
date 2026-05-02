@@ -4,17 +4,17 @@
 >
 
 <f:if condition="{missingModelConfigurations}">
-	<p>To use vector search all endpoints need an uploaded "llm" model, please push your model configuration</p>
-	<p>You can ignore this warning, if you do not want to use Vector search</p>
+	<p><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.textToVector.model.warning" /></p>
+	<p><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.textToVector.warning.ignore" /></p>
 </f:if>
 
 <table class="table table-condensed table-hover table-striped">
 	<thead>
 	<tr>
-		<th>Endpoint</th>
-		<th>Class</th>
-		<th>Base url</th>
-		<th>Model</th>
+		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.endpoint" /></th>
+		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.class" /></th>
+		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.baseUrl" /></th>
+		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.model" /></th>
 	</tr>
 	</thead>
 	<f:for each="{endpoints}" as="endpoint">

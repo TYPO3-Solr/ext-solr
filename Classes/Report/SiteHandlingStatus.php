@@ -38,8 +38,6 @@ use TYPO3\CMS\Reports\Status;
  */
 class SiteHandlingStatus extends AbstractSolrStatus
 {
-    public const TITLE_SITE_HANDLING_CONFIGURATION = 'Site handling configuration';
-
     public const
         CSS_STATUS_NOTICE = 'notice',
         CSS_STATUS_INFO = 'info',
@@ -72,8 +70,8 @@ class SiteHandlingStatus extends AbstractSolrStatus
         if (!$this->siteRepository->hasAvailableSites()) {
             $reports[] = GeneralUtility::makeInstance(
                 Status::class,
-                self::TITLE_SITE_HANDLING_CONFIGURATION,
-                'No sites found',
+                $this->translate('status.siteHandling.configuration.title'),
+                $this->translate('status.value.noSitesFound'),
                 '',
                 ContextualFeedbackSeverity::WARNING,
             );
@@ -85,9 +83,9 @@ class SiteHandlingStatus extends AbstractSolrStatus
             if (!($site instanceof Site)) {
                 $reports[] = GeneralUtility::makeInstance(
                     Status::class,
-                    self::TITLE_SITE_HANDLING_CONFIGURATION,
-                    'Something went wrong',
-                    vsprintf('The configured Site "%s" is not TYPO3 managed site. Please refer to TYPO3 site management docs and configure the site properly.', [$site->getLabel()]),
+                    $this->translate('status.siteHandling.configuration.title'),
+                    $this->translate('status.value.error'),
+                    $this->translate('status.siteHandling.notTypo3Site.message', ['site' => $site->getLabel()]),
                     ContextualFeedbackSeverity::ERROR,
                 );
                 continue;
@@ -111,8 +109,8 @@ class SiteHandlingStatus extends AbstractSolrStatus
         foreach ($ypo3Site->getAllLanguages() as $siteLanguage) {
             if (!$siteLanguage->isEnabled()) {
                 $variables['validationResults'][$siteLanguage->getTitle()] = [
-                    'label' => 'Language: ' . $siteLanguage->getTitle(),
-                    'message' => 'No checks: The language is disabled in site configuration.',
+                    'label' => $this->translate('status.siteHandling.language.label', ['language' => $siteLanguage->getTitle()]),
+                    'message' => $this->translate('status.siteHandling.language.disabled.message'),
                     'CSSClassesFor' => [
                         'tr' => self::CSS_STATUS_NOTICE,
                     ],
@@ -127,7 +125,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
         $renderedReport = $this->getRenderedReport('SiteHandlingStatus.html', $variables);
         return GeneralUtility::makeInstance(
             Status::class,
-            sprintf('Site Identifier: "%s"', $ypo3Site->getIdentifier()),
+            $this->translate('status.siteHandling.identifier.title', ['identifier' => $ypo3Site->getIdentifier()]),
             '',
             $renderedReport,
             $globalPassedStateForThisSite ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::ERROR,
@@ -148,7 +146,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
     protected function generateValidationResultsForSingleSiteLanguage(SiteLanguage $siteLanguage): array
     {
         $validationResult = [
-            'label' => 'Language: ' . $siteLanguage->getTitle(),
+            'label' => $this->translate('status.siteHandling.language.label', ['language' => $siteLanguage->getTitle()]),
             'passed' => true,
             'CSSClassesFor' => [
                 'tr' => self::CSS_STATUS_OK,
@@ -156,20 +154,16 @@ class SiteHandlingStatus extends AbstractSolrStatus
         ];
 
         if (!GeneralUtility::isValidUrl((string)$siteLanguage->getBase())) {
-            $validationResult['message'] =
-                sprintf(
-                    'Entry Point[base]="%s" is not valid URL.'
-                    . ' Following parts of defined URL are empty or invalid: "%s"',
-                    $siteLanguage->getBase()->__toString(),
-                    $this->fetchInvalidPartsOfUri($siteLanguage->getBase()),
-                );
+            $validationResult['message'] = $this->translate('status.siteHandling.base.invalid.message', [
+                'base' => $siteLanguage->getBase()->__toString(),
+                'parts' => $this->fetchInvalidPartsOfUri($siteLanguage->getBase()),
+            ]);
             $validationResult['passed'] = false;
             $validationResult['CSSClassesFor']['tr'] = self::CSS_STATUS_ERROR;
         } else {
-            $validationResult['message'] = sprintf(
-                'Entry Point[base]="%s" is valid URL.',
-                $siteLanguage->getBase()->__toString(),
-            );
+            $validationResult['message'] = $this->translate('status.siteHandling.base.valid.message', [
+                'base' => $siteLanguage->getBase()->__toString(),
+            ]);
         }
 
         return $validationResult;
@@ -182,10 +176,10 @@ class SiteHandlingStatus extends AbstractSolrStatus
     {
         $invalidParts = [];
         if (empty($uri->getScheme())) {
-            $invalidParts[] = 'scheme';
+            $invalidParts[] = $this->translate('status.siteHandling.urlPart.scheme');
         }
         if (empty($uri->getHost())) {
-            $invalidParts[] = 'host';
+            $invalidParts[] = $this->translate('status.siteHandling.urlPart.host');
         }
 
         return implode(', ', $invalidParts);

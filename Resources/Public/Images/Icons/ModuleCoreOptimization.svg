@@ -1,4 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <path fill="currentColor" opacity=".3" d="M22 34 42 10h9L39 28h11L25 58l6-24h-9Z"/>
-  <path fill="currentColor" d="M28.7 56a2.6 2.6 0 0 1-2.53-3.21L30 37H18.5a2.5 2.5 0 0 1-1.92-4.1l20-24A2.5 2.5 0 0 1 38.5 8h9a2.5 2.5 0 0 1 2.08 3.89L40.67 25H49.5a2.5 2.5 0 0 1 1.92 4.1l-20.8 26a2.48 2.48 0 0 1-1.92.9ZM23.84 32H33.2a2.5 2.5 0 0 1 2.43 3.09l-2.2 9.07L44.3 30.5H36a2.5 2.5 0 0 1-2.07-3.9L42.8 13.5h-3.13L23.84 32Z"/>
+  <g fill="currentColor" opacity=".45">
+    <rect width="4" height="40" x="16" y="12" rx="2"/>
+    <rect width="4" height="40" x="30" y="12" rx="2"/>
+    <rect width="4" height="40" x="44" y="12" rx="2"/>
+  </g>
+  <g fill="currentColor">
+    <rect width="16" height="10" x="10" y="18" rx="2"/>
+    <rect width="16" height="10" x="38" y="26" rx="2"/>
+    <rect width="16" height="10" x="24" y="38" rx="2"/>
+  </g>
 </svg>

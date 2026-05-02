@@ -61,9 +61,9 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
         if (empty($reports)) {
             $reports[] = GeneralUtility::makeInstance(
                 Status::class,
-                'Solr Access Filter Plugin',
-                'OK',
-                'Solr Access Filter Plugin is installed, please always use the version supplied with EXT:solr.',
+                $this->translate('status.accessFilter.title'),
+                $this->translate('status.value.ok'),
+                $this->translate('status.accessFilter.installed.message'),
                 ContextualFeedbackSeverity::OK,
             );
         }
@@ -94,8 +94,8 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
         );
         return GeneralUtility::makeInstance(
             Status::class,
-            'Solr Access Filter Plugin',
-            'Not Installed',
+            $this->translate('status.accessFilter.title'),
+            $this->translate('status.value.notInstalled'),
             $report,
             ContextualFeedbackSeverity::WARNING,
         );

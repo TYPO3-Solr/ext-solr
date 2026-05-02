@@ -3,8 +3,8 @@
 	xmlns:acoBase="http://typo3.org/ns/Aco/AcoBase/ViewHelpers"
 >
 <f:if condition="{unsupportedEndpoints}">
-	<p>Vector plugin is not configured for all endpoints, please check configsets of marked endpoints.</p>
-	<p>You can ignore this warning, if you do not want to use Vector search</p>
+	<p><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.textToVector.plugin.warning" /></p>
+	<p><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.textToVector.warning.ignore" /></p>
 </f:if>
 
 <table class="table table-condensed table-hover table-striped">

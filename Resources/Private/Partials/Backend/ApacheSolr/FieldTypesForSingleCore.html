@@ -7,20 +7,20 @@
                 <div class="col-md-4">
                     <div class="well text-center">
                         <p>{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}</p>
-                        <h3>Documents</h3>
+                        <h3><f:translate key="fields.metric.documents" domain="solr.modules.info"/></h3>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="well text-center">
                         <p>{indexFieldsInfoForCore.coreMetrics.numberOfDeletedDocuments}</p>
 
-                        <h3>Deleted Documents</h3>
+                        <h3><f:translate key="fields.metric.deletedDocuments" domain="solr.modules.info"/></h3>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="well text-center">
                         <p>{indexFieldsInfoForCore.coreMetrics.numberOfFields}</p>
-                        <h3>Fields</h3>
+                        <h3><f:translate key="fields.metric.fields" domain="solr.modules.info"/></h3>
                     </div>
                 </div>
             </div>
@@ -28,10 +28,10 @@
             <table class="table table-sm table-hover table-striped">
                 <thead>
                 <tr class="t3-row-header">
-                    <th scope="col">Field Name</th>
-                    <th scope="col">Index Field Type</th>
-                    <th scope="col"># Documents</th>
-                    <th scope="col">Distinct Terms</th>
+                    <th scope="col"><f:translate key="fields.table.name" domain="solr.modules.info"/></th>
+                    <th scope="col"><f:translate key="fields.table.type" domain="solr.modules.info"/></th>
+                    <th scope="col"><f:translate key="fields.table.documents" domain="solr.modules.info"/></th>
+                    <th scope="col"><f:translate key="fields.table.distinctTerms" domain="solr.modules.info"/></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,7 +49,7 @@
 
         <f:else>
             <div class="well">
-                <p>Your index in "{indexFieldsInfoForCore.corePath}" is empty.</p>
+                <p><f:translate key="fields.emptyMessage" domain="solr.modules.info" arguments="{core: indexFieldsInfoForCore.corePath}"/></p>
             </div>
         </f:else>
     </f:if>

@@ -57,8 +57,8 @@ class SolrConfigStatus extends AbstractSolrStatus
         if (empty($solrConnections)) {
             $reports[] = GeneralUtility::makeInstance(
                 Status::class,
-                'Solrconfig Version',
-                'No Solr connections configured',
+                $this->translate('status.solrConfig.title'),
+                $this->translate('status.value.noSolrConnectionsConfigured'),
                 '',
                 ContextualFeedbackSeverity::WARNING,
             );
@@ -72,8 +72,8 @@ class SolrConfigStatus extends AbstractSolrStatus
             if (!$adminService->ping()) {
                 $reports[] = GeneralUtility::makeInstance(
                     Status::class,
-                    'Solrconfig Version',
-                    'Couldn\'t connect to ' . $adminService->__toString(),
+                    $this->translate('status.solrConfig.title'),
+                    $this->translate('status.value.couldNotConnectTo', ['endpoint' => $adminService->__toString()]),
                     '',
                     ContextualFeedbackSeverity::WARNING,
                 );
@@ -86,8 +86,8 @@ class SolrConfigStatus extends AbstractSolrStatus
                 $report = $this->getRenderedReport('SolrConfigStatus.html', $variables);
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    'Solrconfig Version',
-                    'Unsupported solrconfig.xml',
+                    $this->translate('status.solrConfig.title'),
+                    $this->translate('status.solrConfig.unsupported.value'),
                     $report,
                     ContextualFeedbackSeverity::WARNING,
                 );
@@ -99,8 +99,8 @@ class SolrConfigStatus extends AbstractSolrStatus
         if (empty($reports)) {
             $reports[] = GeneralUtility::makeInstance(
                 Status::class,
-                'Solrconfig Version',
-                'OK',
+                $this->translate('status.solrConfig.title'),
+                $this->translate('status.value.ok'),
                 '',
                 ContextualFeedbackSeverity::OK,
             );

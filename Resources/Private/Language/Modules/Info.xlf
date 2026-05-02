@@ -26,6 +26,21 @@
         <source>Review connection status, search statistics, index fields, and indexed documents for the selected site.</source>
       </segment>
     </unit>
+    <unit id="refresh.title">
+      <segment state="final">
+        <source>Refresh live Solr status</source>
+      </segment>
+    </unit>
+    <unit id="refresh.description">
+      <segment state="final">
+        <source>Reload this module after Solr was started, restarted, or reconfigured. TYPO3 then repeats the live ping, Admin UI link, and document-count checks.</source>
+      </segment>
+    </unit>
+    <unit id="refresh.button">
+      <segment state="final">
+        <source>Refresh status</source>
+      </segment>
+    </unit>
     <unit id="tabs.overview">
       <segment state="final">
         <source>Overview</source>
@@ -46,9 +61,19 @@
         <source>Index Documents</source>
       </segment>
     </unit>
+    <unit id="tabs.reports">
+      <segment state="final">
+        <source>Reports</source>
+      </segment>
+    </unit>
     <unit id="chart.label">
       <segment state="final">
         <source>Search queries over time</source>
+      </segment>
+    </unit>
+    <unit id="chart.dataset.queries">
+      <segment state="final">
+        <source>Search queries</source>
       </segment>
     </unit>
     <unit id="chart.description">
@@ -71,19 +96,269 @@
         <source>{count, plural, one {# document} other {# documents}}</source>
       </segment>
     </unit>
+    <unit id="documents.coreCount">
+      <segment state="final">
+        <source>Core total: {count, plural, one {# document} other {# documents}}</source>
+      </segment>
+    </unit>
+    <unit id="documents.coreCountUnavailable">
+      <segment state="final">
+        <source>Core total unavailable</source>
+      </segment>
+    </unit>
     <unit id="documents.pageCount">
       <segment state="final">
-        <source>{count, plural, one {# document on selected page} other {# documents on selected page}}</source>
+        <source>Selected page: {count, plural, one {# document} other {# documents}}</source>
+      </segment>
+    </unit>
+    <unit id="documents.pageCountUnavailable">
+      <segment state="final">
+        <source>Selected page unavailable</source>
       </segment>
     </unit>
     <unit id="documents.siteCount">
       <segment state="final">
-        <source>{count, plural, one {# document for this site} other {# documents for this site}}</source>
+        <source>Selected site: {count, plural, one {# document} other {# documents}}</source>
+      </segment>
+    </unit>
+    <unit id="documents.siteCountUnavailable">
+      <segment state="final">
+        <source>Selected site unavailable</source>
       </segment>
     </unit>
     <unit id="documents.scopeNote">
       <segment state="final">
-        <source>This tab lists documents for the selected page and records stored directly on that page. The site badge shows the indexed documents for the selected site in the same core.</source>
+        <source>Core total is the unfiltered Solr count for this core and can include other sites. Selected site and selected page are filtered to the current TYPO3 context.</source>
+      </segment>
+    </unit>
+    <unit id="documents.titleLabel">
+      <segment state="final">
+        <source>Title: {title}</source>
+      </segment>
+    </unit>
+    <unit id="documents.typeLabel">
+      <segment state="final">
+        <source>Type: {type}</source>
+      </segment>
+    </unit>
+    <unit id="documents.table.id">
+      <segment state="final">
+        <source>ID</source>
+      </segment>
+    </unit>
+    <unit id="documents.table.title">
+      <segment state="final">
+        <source>Title</source>
+      </segment>
+    </unit>
+    <unit id="documents.table.url">
+      <segment state="final">
+        <source>URL</source>
+      </segment>
+    </unit>
+    <unit id="documents.table.created">
+      <segment state="final">
+        <source>Created</source>
+      </segment>
+    </unit>
+    <unit id="documents.table.indexed">
+      <segment state="final">
+        <source>Indexed</source>
+      </segment>
+    </unit>
+    <unit id="documents.table.actions">
+      <segment state="final">
+        <source>Actions</source>
+      </segment>
+    </unit>
+    <unit id="documents.table.fieldName">
+      <segment state="final">
+        <source>Field name</source>
+      </segment>
+    </unit>
+    <unit id="documents.table.fieldValue">
+      <segment state="final">
+        <source>Value</source>
+      </segment>
+    </unit>
+    <unit id="fields.count">
+      <segment state="final">
+        <source>{count, plural, one {# field} other {# fields}}</source>
+      </segment>
+    </unit>
+    <unit id="fields.coreEmptyTitle">
+      <segment state="final">
+        <source>{core} is empty</source>
+      </segment>
+    </unit>
+    <unit id="fields.emptyMessage">
+      <segment state="final">
+        <source>The index in {core} is empty.</source>
+      </segment>
+    </unit>
+    <unit id="fields.metric.documents">
+      <segment state="final">
+        <source>Documents</source>
+      </segment>
+    </unit>
+    <unit id="fields.metric.deletedDocuments">
+      <segment state="final">
+        <source>Deleted documents</source>
+      </segment>
+    </unit>
+    <unit id="fields.metric.fields">
+      <segment state="final">
+        <source>Fields</source>
+      </segment>
+    </unit>
+    <unit id="fields.table.name">
+      <segment state="final">
+        <source>Field name</source>
+      </segment>
+    </unit>
+    <unit id="fields.table.type">
+      <segment state="final">
+        <source>Index field type</source>
+      </segment>
+    </unit>
+    <unit id="fields.table.documents">
+      <segment state="final">
+        <source>Documents</source>
+      </segment>
+    </unit>
+    <unit id="fields.table.distinctTerms">
+      <segment state="final">
+        <source>Distinct terms</source>
+      </segment>
+    </unit>
+    <unit id="reports.title">
+      <segment state="final">
+        <source>Solr reports</source>
+      </segment>
+    </unit>
+    <unit id="reports.description">
+      <segment state="final">
+        <source>Compact Solr-only health checks from the TYPO3 Reports module. Non-OK checks include a short next step.</source>
+      </segment>
+    </unit>
+    <unit id="reports.summary.statusCount">
+      <segment state="final">
+        <source>{count, plural, one {# check} other {# checks}}</source>
+      </segment>
+    </unit>
+    <unit id="reports.summary.issueCount">
+      <segment state="final">
+        <source>{count, plural, =0 {No issues} one {# issue} other {# issues}}</source>
+      </segment>
+    </unit>
+    <unit id="reports.statusCount">
+      <segment state="final">
+        <source>{count, plural, one {# item} other {# items}}</source>
+      </segment>
+    </unit>
+    <unit id="reports.toggleDetails">
+      <segment state="final">
+        <source>Show or hide {count, plural, one {# report item} other {# report items}} for {label}</source>
+      </segment>
+    </unit>
+    <unit id="reports.hiddenIssues">
+      <segment state="final">
+        <source>{count, plural, one {# more issue hidden in this compact view} other {# more issues hidden in this compact view}}</source>
+      </segment>
+    </unit>
+    <unit id="reports.severity.ok">
+      <segment state="final">
+        <source>OK</source>
+      </segment>
+    </unit>
+    <unit id="reports.severity.warning">
+      <segment state="final">
+        <source>Check</source>
+      </segment>
+    </unit>
+    <unit id="reports.severity.error">
+      <segment state="final">
+        <source>Error</source>
+      </segment>
+    </unit>
+    <unit id="reports.severity.info">
+      <segment state="final">
+        <source>Info</source>
+      </segment>
+    </unit>
+    <unit id="reports.severity.notice">
+      <segment state="final">
+        <source>Notice</source>
+      </segment>
+    </unit>
+    <unit id="reports.hint.label">
+      <segment state="final">
+        <source>Hint</source>
+      </segment>
+    </unit>
+    <unit id="reports.hint.accessFilter">
+      <segment state="final">
+        <source>Use the Access Filter Plugin supplied with EXT:solr and reload the affected Solr core.</source>
+      </segment>
+    </unit>
+    <unit id="reports.hint.configuration">
+      <segment state="final">
+        <source>Enable page indexing with config.index_enable = 1 for the affected site roots, then initialize or re-index the queue.</source>
+      </segment>
+    </unit>
+    <unit id="reports.hint.connection">
+      <segment state="final">
+        <source>Check the Solr service, configured host, port and core path. In DDEV, verify the typo3-solr service and port mapping.</source>
+      </segment>
+    </unit>
+    <unit id="reports.hint.schema">
+      <segment state="final">
+        <source>Deploy the EXT:solr v14 schema/configset to the affected core and reload or recreate the core.</source>
+      </segment>
+    </unit>
+    <unit id="reports.hint.siteHandling">
+      <segment state="final">
+        <source>Fix the site base URL in the TYPO3 site configuration and flush caches afterwards.</source>
+      </segment>
+    </unit>
+    <unit id="reports.hint.vector">
+      <segment state="final">
+        <source>Configure the vector plugin/model store only if vector search is used; otherwise this warning can be ignored.</source>
+      </segment>
+    </unit>
+    <unit id="reports.hint.solrVersion">
+      <segment state="final">
+        <source>Use a Solr version supported by this EXT:solr release, then apply the matching configsets.</source>
+      </segment>
+    </unit>
+    <unit id="reports.hint.solrConfig">
+      <segment state="final">
+        <source>Deploy the recommended solrconfig.xml from EXT:solr v14 and reload or recreate the affected core.</source>
+      </segment>
+    </unit>
+    <unit id="reports.hint.allowUrlFopen">
+      <segment state="final">
+        <source>Enable allow_url_fopen in the PHP configuration used by TYPO3.</source>
+      </segment>
+    </unit>
+    <unit id="reports.hint.default">
+      <segment state="final">
+        <source>Open the full Reports module for the detailed status output and fix the affected configuration.</source>
+      </segment>
+    </unit>
+    <unit id="reports.providerUnavailable.title">
+      <segment state="final">
+        <source>Report check unavailable</source>
+      </segment>
+    </unit>
+    <unit id="reports.providerUnavailable.value">
+      <segment state="final">
+        <source>Error</source>
+      </segment>
+    </unit>
+    <unit id="reports.providerUnavailable.message">
+      <segment state="final">
+        <source>The report check could not be loaded: {message}</source>
       </segment>
     </unit>
     <unit id="statistics.rank">
@@ -128,7 +403,7 @@
     </unit>
     <unit id="connections.servers.scopeNote">
       <segment state="final">
-        <source>This list shows {configured, plural, one {# core configured for this site} other {# cores configured for this site}}. Document counts are filtered to this selected site. The server overview below includes {loaded, plural, one {# loaded core} other {# loaded cores}} from Solr Admin and can include other sites.</source>
+        <source>This list shows {configured, plural, one {# core configured for the selected site} other {# cores configured for the selected site}}. Selected-site totals are live Solr query counts filtered to the current TYPO3 site. Queue numbers count queue entries. The server overview below includes {loaded, plural, one {# loaded core} other {# loaded cores}} from Solr Admin.</source>
       </segment>
     </unit>
     <unit id="connections.servers.configuredCount">
@@ -146,6 +421,11 @@
         <source>Not reachable</source>
       </segment>
     </unit>
+    <unit id="connections.status.pill.label">
+      <segment state="final">
+        <source>{state, select, ok {OK} check {Check} error {Error} other {Unknown}}</source>
+      </segment>
+    </unit>
     <unit id="connections.status.okTitle">
       <segment state="final">
         <source>Core ready</source>
@@ -161,19 +441,29 @@
         <source>Connection problem</source>
       </segment>
     </unit>
+    <unit id="connections.status.documentCountUnavailableTitle">
+      <segment state="final">
+        <source>Live count unavailable</source>
+      </segment>
+    </unit>
     <unit id="connections.status.reason.ok">
       <segment state="final">
-        <source>The Solr core is reachable and has indexed documents for this selected site and language.</source>
+        <source>The Solr core is reachable and contains indexed documents.</source>
       </segment>
     </unit>
     <unit id="connections.status.reason.noDocuments">
       <segment state="final">
-        <source>The Solr core is reachable, but Solr reports no indexed documents for this selected site and language. Initialize or re-index content if documents are expected.</source>
+        <source>The Solr core is reachable, but the live query reports no indexed documents in this core. Initialize or re-index content if documents are expected.</source>
       </segment>
     </unit>
     <unit id="connections.status.reason.notReachable">
       <segment state="final">
         <source>TYPO3 cannot reach this Solr core. Check the TYPO3 endpoint, Solr service, and port mapping.</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.reason.documentCountUnavailable">
+      <segment state="final">
+        <source>TYPO3 could not read the live document count from this core. Check the Solr core status and query endpoint.</source>
       </segment>
     </unit>
     <unit id="connections.status.validation.empty">
@@ -208,12 +498,32 @@
     </unit>
     <unit id="connections.documents.count">
       <segment state="final">
-        <source>{count, plural, one {# site document} other {# site documents}}</source>
+        <source>Selected site: {count, plural, one {# document} other {# documents}}</source>
+      </segment>
+    </unit>
+    <unit id="connections.documents.countUnavailable">
+      <segment state="final">
+        <source>Selected site unavailable</source>
+      </segment>
+    </unit>
+    <unit id="connections.documents.coreCount">
+      <segment state="final">
+        <source>Core total: {count, plural, one {# document} other {# documents}}</source>
+      </segment>
+    </unit>
+    <unit id="connections.documents.coreCountUnavailable">
+      <segment state="final">
+        <source>Core total unavailable</source>
       </segment>
     </unit>
     <unit id="connections.documents.total">
       <segment state="final">
-        <source>{count, plural, one {# indexed document for this site} other {# indexed documents for this site}}</source>
+        <source>Selected site: {count, plural, one {# indexed document} other {# indexed documents}}</source>
+      </segment>
+    </unit>
+    <unit id="connections.documents.totalUnavailable">
+      <segment state="final">
+        <source>Selected site unavailable</source>
       </segment>
     </unit>
     <unit id="connections.language.label">
@@ -228,22 +538,22 @@
     </unit>
     <unit id="connections.browserEndpoint.label">
       <segment state="final">
-        <source>Browser URL</source>
+        <source>Admin UI</source>
       </segment>
     </unit>
     <unit id="connections.browserEndpoints.label">
       <segment state="final">
-        <source>Browser URLs</source>
+        <source>Admin UI</source>
       </segment>
     </unit>
     <unit id="connections.browserEndpoints.checkedOnLoad">
       <segment state="final">
-        <source>Link status is checked when the module loads. Reload the module to verify the current configuration again.</source>
+        <source>Admin UI link status is checked when the module loads. Reload the module to verify the current configuration again.</source>
       </segment>
     </unit>
     <unit id="connections.browserEndpoints.unavailableInvalidEndpoint">
       <segment state="final">
-        <source>No browser URL is shown because the configured TYPO3 endpoint is invalid.</source>
+        <source>No Admin UI link is shown because the configured TYPO3 endpoint is invalid.</source>
       </segment>
     </unit>
     <unit id="connections.browserEndpoint.https">
@@ -286,6 +596,16 @@
         <source>Key runtime information from the Solr Admin API for the configured server.</source>
       </segment>
     </unit>
+    <unit id="connections.serverInfo.scopeNote">
+      <segment state="final">
+        <source>Solr Admin reports {total, plural, one {# document} other {# documents}} across all loaded cores, including cores or documents that may belong to other sites. The selected-site total above is {siteTotal, plural, one {# document} other {# documents}}.</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.scopeNoteUnavailable">
+      <segment state="final">
+        <source>Solr Admin reports {total, plural, one {# document} other {# documents}} across all loaded cores. The selected-site total is unavailable because a live Solr query could not be read.</source>
+      </segment>
+    </unit>
     <unit id="connections.serverInfo.adminLinks">
       <segment state="final">
         <source>Admin UI</source>
@@ -298,7 +618,7 @@
     </unit>
     <unit id="connections.serverInfo.indexedDocuments">
       <segment state="final">
-        <source>{count, plural, one {# indexed document} other {# indexed documents}}</source>
+        <source>Solr total: {count, plural, one {# document} other {# documents}}</source>
       </segment>
     </unit>
     <unit id="connections.serverInfo.solrVersion">

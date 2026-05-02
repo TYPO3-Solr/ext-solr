@@ -31,6 +31,24 @@
         <target>Prüfen Sie Verbindungsstatus, Suchstatistiken, Indexfelder und indexierte Dokumente für die ausgewählte Site.</target>
       </segment>
     </unit>
+    <unit id="refresh.title">
+      <segment state="final">
+        <source>Refresh live Solr status</source>
+        <target>Live-Solr-Status aktualisieren</target>
+      </segment>
+    </unit>
+    <unit id="refresh.description">
+      <segment state="final">
+        <source>Reload this module after Solr was started, restarted, or reconfigured. TYPO3 then repeats the live ping, Admin UI link, and document-count checks.</source>
+        <target>Laden Sie dieses Modul neu, nachdem Solr gestartet, neu gestartet oder umkonfiguriert wurde. TYPO3 prüft dann Ping, Link zur Admin-Oberfläche und Dokumentenzahlen erneut live.</target>
+      </segment>
+    </unit>
+    <unit id="refresh.button">
+      <segment state="final">
+        <source>Refresh status</source>
+        <target>Status aktualisieren</target>
+      </segment>
+    </unit>
     <unit id="tabs.overview">
       <segment state="final">
         <source>Overview</source>
@@ -55,10 +73,22 @@
         <target>Indexdokumente</target>
       </segment>
     </unit>
+    <unit id="tabs.reports">
+      <segment state="final">
+        <source>Reports</source>
+        <target>Berichte</target>
+      </segment>
+    </unit>
     <unit id="chart.label">
       <segment state="final">
         <source>Search queries over time</source>
         <target>Suchanfragen im Zeitverlauf</target>
+      </segment>
+    </unit>
+    <unit id="chart.dataset.queries">
+      <segment state="final">
+        <source>Search queries</source>
+        <target>Suchanfragen</target>
       </segment>
     </unit>
     <unit id="chart.description">
@@ -85,22 +115,322 @@
         <target>{count, plural, one {# Dokument} other {# Dokumente}}</target>
       </segment>
     </unit>
+    <unit id="documents.coreCount">
+      <segment state="final">
+        <source>Core total: {count, plural, one {# document} other {# documents}}</source>
+        <target>Core gesamt: {count, plural, one {# Dokument} other {# Dokumente}}</target>
+      </segment>
+    </unit>
+    <unit id="documents.coreCountUnavailable">
+      <segment state="final">
+        <source>Core total unavailable</source>
+        <target>Core gesamt nicht verfügbar</target>
+      </segment>
+    </unit>
     <unit id="documents.pageCount">
       <segment state="final">
-        <source>{count, plural, one {# document on selected page} other {# documents on selected page}}</source>
-        <target>{count, plural, one {# Dokument auf ausgewählter Seite} other {# Dokumente auf ausgewählter Seite}}</target>
+        <source>Selected page: {count, plural, one {# document} other {# documents}}</source>
+        <target>Ausgewählte Seite: {count, plural, one {# Dokument} other {# Dokumente}}</target>
+      </segment>
+    </unit>
+    <unit id="documents.pageCountUnavailable">
+      <segment state="final">
+        <source>Selected page unavailable</source>
+        <target>Ausgewählte Seite nicht verfügbar</target>
       </segment>
     </unit>
     <unit id="documents.siteCount">
       <segment state="final">
-        <source>{count, plural, one {# document for this site} other {# documents for this site}}</source>
-        <target>{count, plural, one {# Dokument für diese Site} other {# Dokumente für diese Site}}</target>
+        <source>Selected site: {count, plural, one {# document} other {# documents}}</source>
+        <target>Ausgewählte Site: {count, plural, one {# Dokument} other {# Dokumente}}</target>
+      </segment>
+    </unit>
+    <unit id="documents.siteCountUnavailable">
+      <segment state="final">
+        <source>Selected site unavailable</source>
+        <target>Ausgewählte Site nicht verfügbar</target>
       </segment>
     </unit>
     <unit id="documents.scopeNote">
       <segment state="final">
-        <source>This tab lists documents for the selected page and records stored directly on that page. The site badge shows the indexed documents for the selected site in the same core.</source>
-        <target>Dieser Tab listet Dokumente der ausgewählten Seite und Datensätze, die direkt auf dieser Seite gespeichert sind. Das Site-Badge zeigt die indexierten Dokumente der ausgewählten Site im gleichen Core.</target>
+        <source>Core total is the unfiltered Solr count for this core and can include other sites. Selected site and selected page are filtered to the current TYPO3 context.</source>
+        <target>Core gesamt ist die ungefilterte Solr-Zahl für diesen Core und kann andere Sites enthalten. Ausgewählte Site und ausgewählte Seite sind auf den aktuellen TYPO3-Kontext gefiltert.</target>
+      </segment>
+    </unit>
+    <unit id="documents.titleLabel">
+      <segment state="final">
+        <source>Title: {title}</source>
+        <target>Titel: {title}</target>
+      </segment>
+    </unit>
+    <unit id="documents.typeLabel">
+      <segment state="final">
+        <source>Type: {type}</source>
+        <target>Typ: {type}</target>
+      </segment>
+    </unit>
+    <unit id="documents.table.id">
+      <segment state="final">
+        <source>ID</source>
+        <target>ID</target>
+      </segment>
+    </unit>
+    <unit id="documents.table.title">
+      <segment state="final">
+        <source>Title</source>
+        <target>Titel</target>
+      </segment>
+    </unit>
+    <unit id="documents.table.url">
+      <segment state="final">
+        <source>URL</source>
+        <target>URL</target>
+      </segment>
+    </unit>
+    <unit id="documents.table.created">
+      <segment state="final">
+        <source>Created</source>
+        <target>Erstellt</target>
+      </segment>
+    </unit>
+    <unit id="documents.table.indexed">
+      <segment state="final">
+        <source>Indexed</source>
+        <target>Indexiert</target>
+      </segment>
+    </unit>
+    <unit id="documents.table.actions">
+      <segment state="final">
+        <source>Actions</source>
+        <target>Aktionen</target>
+      </segment>
+    </unit>
+    <unit id="documents.table.fieldName">
+      <segment state="final">
+        <source>Field name</source>
+        <target>Feldname</target>
+      </segment>
+    </unit>
+    <unit id="documents.table.fieldValue">
+      <segment state="final">
+        <source>Value</source>
+        <target>Wert</target>
+      </segment>
+    </unit>
+    <unit id="fields.count">
+      <segment state="final">
+        <source>{count, plural, one {# field} other {# fields}}</source>
+        <target>{count, plural, one {# Feld} other {# Felder}}</target>
+      </segment>
+    </unit>
+    <unit id="fields.coreEmptyTitle">
+      <segment state="final">
+        <source>{core} is empty</source>
+        <target>{core} ist leer</target>
+      </segment>
+    </unit>
+    <unit id="fields.emptyMessage">
+      <segment state="final">
+        <source>The index in {core} is empty.</source>
+        <target>Der Index in {core} ist leer.</target>
+      </segment>
+    </unit>
+    <unit id="fields.metric.documents">
+      <segment state="final">
+        <source>Documents</source>
+        <target>Dokumente</target>
+      </segment>
+    </unit>
+    <unit id="fields.metric.deletedDocuments">
+      <segment state="final">
+        <source>Deleted documents</source>
+        <target>Gelöschte Dokumente</target>
+      </segment>
+    </unit>
+    <unit id="fields.metric.fields">
+      <segment state="final">
+        <source>Fields</source>
+        <target>Felder</target>
+      </segment>
+    </unit>
+    <unit id="fields.table.name">
+      <segment state="final">
+        <source>Field name</source>
+        <target>Feldname</target>
+      </segment>
+    </unit>
+    <unit id="fields.table.type">
+      <segment state="final">
+        <source>Index field type</source>
+        <target>Indexfeldtyp</target>
+      </segment>
+    </unit>
+    <unit id="fields.table.documents">
+      <segment state="final">
+        <source>Documents</source>
+        <target>Dokumente</target>
+      </segment>
+    </unit>
+    <unit id="fields.table.distinctTerms">
+      <segment state="final">
+        <source>Distinct terms</source>
+        <target>Eindeutige Begriffe</target>
+      </segment>
+    </unit>
+    <unit id="reports.title">
+      <segment state="final">
+        <source>Solr reports</source>
+        <target>Solr-Berichte</target>
+      </segment>
+    </unit>
+    <unit id="reports.description">
+      <segment state="final">
+        <source>Compact Solr-only health checks from the TYPO3 Reports module. Non-OK checks include a short next step.</source>
+        <target>Kompakte, reine Solr-Statusprüfungen aus dem TYPO3-Report-Modul. Prüfungen, die nicht OK sind, enthalten einen kurzen nächsten Schritt.</target>
+      </segment>
+    </unit>
+    <unit id="reports.summary.statusCount">
+      <segment state="final">
+        <source>{count, plural, one {# check} other {# checks}}</source>
+        <target>{count, plural, one {# Prüfung} other {# Prüfungen}}</target>
+      </segment>
+    </unit>
+    <unit id="reports.summary.issueCount">
+      <segment state="final">
+        <source>{count, plural, =0 {No issues} one {# issue} other {# issues}}</source>
+        <target>{count, plural, =0 {Keine Probleme} one {# Problem} other {# Probleme}}</target>
+      </segment>
+    </unit>
+    <unit id="reports.statusCount">
+      <segment state="final">
+        <source>{count, plural, one {# item} other {# items}}</source>
+        <target>{count, plural, one {# Eintrag} other {# Einträge}}</target>
+      </segment>
+    </unit>
+    <unit id="reports.toggleDetails">
+      <segment state="final">
+        <source>Show or hide {count, plural, one {# report item} other {# report items}} for {label}</source>
+        <target>{count, plural, one {# Report-Eintrag} other {# Report-Einträge}} für {label} ein- oder ausblenden</target>
+      </segment>
+    </unit>
+    <unit id="reports.hiddenIssues">
+      <segment state="final">
+        <source>{count, plural, one {# more issue hidden in this compact view} other {# more issues hidden in this compact view}}</source>
+        <target>{count, plural, one {# weiteres Problem ist in dieser kompakten Ansicht ausgeblendet} other {# weitere Probleme sind in dieser kompakten Ansicht ausgeblendet}}</target>
+      </segment>
+    </unit>
+    <unit id="reports.severity.ok">
+      <segment state="final">
+        <source>OK</source>
+        <target>OK</target>
+      </segment>
+    </unit>
+    <unit id="reports.severity.warning">
+      <segment state="final">
+        <source>Check</source>
+        <target>Prüfen</target>
+      </segment>
+    </unit>
+    <unit id="reports.severity.error">
+      <segment state="final">
+        <source>Error</source>
+        <target>Fehler</target>
+      </segment>
+    </unit>
+    <unit id="reports.severity.info">
+      <segment state="final">
+        <source>Info</source>
+        <target>Info</target>
+      </segment>
+    </unit>
+    <unit id="reports.severity.notice">
+      <segment state="final">
+        <source>Notice</source>
+        <target>Hinweis</target>
+      </segment>
+    </unit>
+    <unit id="reports.hint.label">
+      <segment state="final">
+        <source>Hint</source>
+        <target>Hinweis</target>
+      </segment>
+    </unit>
+    <unit id="reports.hint.accessFilter">
+      <segment state="final">
+        <source>Use the Access Filter Plugin supplied with EXT:solr and reload the affected Solr core.</source>
+        <target>Verwenden Sie das mit EXT:solr gelieferte Access Filter Plugin und laden Sie den betroffenen Solr-Core neu.</target>
+      </segment>
+    </unit>
+    <unit id="reports.hint.configuration">
+      <segment state="final">
+        <source>Enable page indexing with config.index_enable = 1 for the affected site roots, then initialize or re-index the queue.</source>
+        <target>Aktivieren Sie die Seitenindexierung mit config.index_enable = 1 für die betroffenen Site-Roots und initialisieren oder reindexieren Sie anschließend die Queue.</target>
+      </segment>
+    </unit>
+    <unit id="reports.hint.connection">
+      <segment state="final">
+        <source>Check the Solr service, configured host, port and core path. In DDEV, verify the typo3-solr service and port mapping.</source>
+        <target>Prüfen Sie den Solr-Dienst sowie Host, Port und Core-Pfad. In DDEV prüfen Sie den Dienst typo3-solr und die Port-Zuordnung.</target>
+      </segment>
+    </unit>
+    <unit id="reports.hint.schema">
+      <segment state="final">
+        <source>Deploy the EXT:solr v14 schema/configset to the affected core and reload or recreate the core.</source>
+        <target>Deployen Sie das EXT:solr-v14-Schema/Configset in den betroffenen Core und laden oder erstellen Sie den Core neu.</target>
+      </segment>
+    </unit>
+    <unit id="reports.hint.siteHandling">
+      <segment state="final">
+        <source>Fix the site base URL in the TYPO3 site configuration and flush caches afterwards.</source>
+        <target>Korrigieren Sie die Site-Base-URL in der TYPO3-Site-Konfiguration und leeren Sie anschließend die Caches.</target>
+      </segment>
+    </unit>
+    <unit id="reports.hint.vector">
+      <segment state="final">
+        <source>Configure the vector plugin/model store only if vector search is used; otherwise this warning can be ignored.</source>
+        <target>Konfigurieren Sie Vector Plugin/Model Store nur, wenn Vector Search verwendet wird. Andernfalls kann diese Warnung ignoriert werden.</target>
+      </segment>
+    </unit>
+    <unit id="reports.hint.solrVersion">
+      <segment state="final">
+        <source>Use a Solr version supported by this EXT:solr release, then apply the matching configsets.</source>
+        <target>Verwenden Sie eine von dieser EXT:solr-Version unterstützte Solr-Version und wenden Sie danach die passenden Configsets an.</target>
+      </segment>
+    </unit>
+    <unit id="reports.hint.solrConfig">
+      <segment state="final">
+        <source>Deploy the recommended solrconfig.xml from EXT:solr v14 and reload or recreate the affected core.</source>
+        <target>Deployen Sie die empfohlene solrconfig.xml aus EXT:solr v14 und laden oder erstellen Sie den betroffenen Core neu.</target>
+      </segment>
+    </unit>
+    <unit id="reports.hint.allowUrlFopen">
+      <segment state="final">
+        <source>Enable allow_url_fopen in the PHP configuration used by TYPO3.</source>
+        <target>Aktivieren Sie allow_url_fopen in der PHP-Konfiguration, die von TYPO3 verwendet wird.</target>
+      </segment>
+    </unit>
+    <unit id="reports.hint.default">
+      <segment state="final">
+        <source>Open the full Reports module for the detailed status output and fix the affected configuration.</source>
+        <target>Öffnen Sie das vollständige Report-Modul für die detaillierte Statusausgabe und korrigieren Sie die betroffene Konfiguration.</target>
+      </segment>
+    </unit>
+    <unit id="reports.providerUnavailable.title">
+      <segment state="final">
+        <source>Report check unavailable</source>
+        <target>Report-Prüfung nicht verfügbar</target>
+      </segment>
+    </unit>
+    <unit id="reports.providerUnavailable.value">
+      <segment state="final">
+        <source>Error</source>
+        <target>Fehler</target>
+      </segment>
+    </unit>
+    <unit id="reports.providerUnavailable.message">
+      <segment state="final">
+        <source>The report check could not be loaded: {message}</source>
+        <target>Die Report-Prüfung konnte nicht geladen werden: {message}</target>
       </segment>
     </unit>
     <unit id="statistics.rank">
@@ -153,8 +483,8 @@
     </unit>
     <unit id="connections.servers.scopeNote">
       <segment state="final">
-        <source>This list shows {configured, plural, one {# core configured for this site} other {# cores configured for this site}}. Document counts are filtered to this selected site. The server overview below includes {loaded, plural, one {# loaded core} other {# loaded cores}} from Solr Admin and can include other sites.</source>
-        <target>Diese Liste zeigt {configured, plural, one {# für diese Site konfigurierten Core} other {# für diese Site konfigurierte Cores}}. Dokumentzahlen sind auf diese ausgewählte Site gefiltert. Die Serverübersicht unten enthält {loaded, plural, one {# geladenen Core} other {# geladene Cores}} aus Solr Admin und kann andere Sites enthalten.</target>
+        <source>This list shows {configured, plural, one {# core configured for the selected site} other {# cores configured for the selected site}}. Selected-site totals are live Solr query counts filtered to the current TYPO3 site. Queue numbers count queue entries. The server overview below includes {loaded, plural, one {# loaded core} other {# loaded cores}} from Solr Admin.</source>
+        <target>Diese Liste zeigt {configured, plural, one {# für die ausgewählte Site konfigurierten Core} other {# für die ausgewählte Site konfigurierte Cores}}. Die Summen für die ausgewählte Site sind Live-Zahlen aus Solr-Abfragen und auf die aktuelle TYPO3-Site gefiltert. Queue-Zahlen zählen Queue-Einträge. Die Serverübersicht unten enthält {loaded, plural, one {# geladenen Core} other {# geladene Cores}} aus Solr Admin.</target>
       </segment>
     </unit>
     <unit id="connections.servers.configuredCount">
@@ -175,6 +505,12 @@
         <target>Nicht erreichbar</target>
       </segment>
     </unit>
+    <unit id="connections.status.pill.label">
+      <segment state="final">
+        <source>{state, select, ok {OK} check {Check} error {Error} other {Unknown}}</source>
+        <target>{state, select, ok {OK} check {Prüfen} error {Fehler} other {Unbekannt}}</target>
+      </segment>
+    </unit>
     <unit id="connections.status.okTitle">
       <segment state="final">
         <source>Core ready</source>
@@ -193,22 +529,34 @@
         <target>Verbindungsproblem</target>
       </segment>
     </unit>
+    <unit id="connections.status.documentCountUnavailableTitle">
+      <segment state="final">
+        <source>Live count unavailable</source>
+        <target>Live-Zahl nicht verfügbar</target>
+      </segment>
+    </unit>
     <unit id="connections.status.reason.ok">
       <segment state="final">
-        <source>The Solr core is reachable and has indexed documents for this selected site and language.</source>
-        <target>Der Solr-Core ist erreichbar und enthält indexierte Dokumente für diese ausgewählte Site und Sprache.</target>
+        <source>The Solr core is reachable and contains indexed documents.</source>
+        <target>Der Solr-Core ist erreichbar und enthält indexierte Dokumente.</target>
       </segment>
     </unit>
     <unit id="connections.status.reason.noDocuments">
       <segment state="final">
-        <source>The Solr core is reachable, but Solr reports no indexed documents for this selected site and language. Initialize or re-index content if documents are expected.</source>
-        <target>Der Solr-Core ist erreichbar, aber Solr meldet keine indexierten Dokumente für diese ausgewählte Site und Sprache. Initialisieren oder reindexieren Sie Inhalte, wenn Dokumente erwartet werden.</target>
+        <source>The Solr core is reachable, but the live query reports no indexed documents in this core. Initialize or re-index content if documents are expected.</source>
+        <target>Der Solr-Core ist erreichbar, aber die Live-Abfrage meldet keine indexierten Dokumente in diesem Core. Initialisieren oder reindexieren Sie Inhalte, wenn Dokumente erwartet werden.</target>
       </segment>
     </unit>
     <unit id="connections.status.reason.notReachable">
       <segment state="final">
         <source>TYPO3 cannot reach this Solr core. Check the TYPO3 endpoint, Solr service, and port mapping.</source>
         <target>TYPO3 kann diesen Solr-Core nicht erreichen. Prüfen Sie den TYPO3-Endpunkt, den Solr-Dienst und die Port-Zuordnung.</target>
+      </segment>
+    </unit>
+    <unit id="connections.status.reason.documentCountUnavailable">
+      <segment state="final">
+        <source>TYPO3 could not read the live document count from this core. Check the Solr core status and query endpoint.</source>
+        <target>TYPO3 konnte die Live-Dokumentenzahl dieses Cores nicht lesen. Prüfen Sie den Solr-Core-Status und den Query-Endpunkt.</target>
       </segment>
     </unit>
     <unit id="connections.status.validation.empty">
@@ -249,14 +597,38 @@
     </unit>
     <unit id="connections.documents.count">
       <segment state="final">
-        <source>{count, plural, one {# site document} other {# site documents}}</source>
-        <target>{count, plural, one {# Site-Dokument} other {# Site-Dokumente}}</target>
+        <source>Selected site: {count, plural, one {# document} other {# documents}}</source>
+        <target>Ausgewählte Site: {count, plural, one {# Dokument} other {# Dokumente}}</target>
+      </segment>
+    </unit>
+    <unit id="connections.documents.countUnavailable">
+      <segment state="final">
+        <source>Selected site unavailable</source>
+        <target>Ausgewählte Site nicht verfügbar</target>
+      </segment>
+    </unit>
+    <unit id="connections.documents.coreCount">
+      <segment state="final">
+        <source>Core total: {count, plural, one {# document} other {# documents}}</source>
+        <target>Core gesamt: {count, plural, one {# Dokument} other {# Dokumente}}</target>
+      </segment>
+    </unit>
+    <unit id="connections.documents.coreCountUnavailable">
+      <segment state="final">
+        <source>Core total unavailable</source>
+        <target>Core gesamt nicht verfügbar</target>
       </segment>
     </unit>
     <unit id="connections.documents.total">
       <segment state="final">
-        <source>{count, plural, one {# indexed document for this site} other {# indexed documents for this site}}</source>
-        <target>{count, plural, one {# indexiertes Dokument für diese Site} other {# indexierte Dokumente für diese Site}}</target>
+        <source>Selected site: {count, plural, one {# indexed document} other {# indexed documents}}</source>
+        <target>Ausgewählte Site: {count, plural, one {# indexiertes Dokument} other {# indexierte Dokumente}}</target>
+      </segment>
+    </unit>
+    <unit id="connections.documents.totalUnavailable">
+      <segment state="final">
+        <source>Selected site unavailable</source>
+        <target>Ausgewählte Site nicht verfügbar</target>
       </segment>
     </unit>
     <unit id="connections.language.label">
@@ -273,26 +645,26 @@
     </unit>
     <unit id="connections.browserEndpoint.label">
       <segment state="final">
-        <source>Browser URL</source>
-        <target>Browser-URL</target>
+        <source>Admin UI</source>
+        <target>Admin-Oberfläche</target>
       </segment>
     </unit>
     <unit id="connections.browserEndpoints.label">
       <segment state="final">
-        <source>Browser URLs</source>
-        <target>Browser-URLs</target>
+        <source>Admin UI</source>
+        <target>Admin-Oberfläche</target>
       </segment>
     </unit>
     <unit id="connections.browserEndpoints.checkedOnLoad">
       <segment state="final">
-        <source>Link status is checked when the module loads. Reload the module to verify the current configuration again.</source>
-        <target>Der Linkstatus wird beim Laden des Moduls geprüft. Laden Sie das Modul neu, um die aktuelle Konfiguration erneut zu prüfen.</target>
+        <source>Admin UI link status is checked when the module loads. Reload the module to verify the current configuration again.</source>
+        <target>Der Linkstatus der Admin-Oberfläche wird beim Laden des Moduls geprüft. Laden Sie das Modul neu, um die aktuelle Konfiguration erneut zu prüfen.</target>
       </segment>
     </unit>
     <unit id="connections.browserEndpoints.unavailableInvalidEndpoint">
       <segment state="final">
-        <source>No browser URL is shown because the configured TYPO3 endpoint is invalid.</source>
-        <target>Es wird keine Browser-URL angezeigt, weil der konfigurierte TYPO3-Endpunkt ungültig ist.</target>
+        <source>No Admin UI link is shown because the configured TYPO3 endpoint is invalid.</source>
+        <target>Es wird kein Link zur Admin-Oberfläche angezeigt, weil der konfigurierte TYPO3-Endpunkt ungültig ist.</target>
       </segment>
     </unit>
     <unit id="connections.browserEndpoint.https">
@@ -343,6 +715,18 @@
         <target>Wichtige Laufzeitinformationen aus der Solr-Admin-API für den konfigurierten Server.</target>
       </segment>
     </unit>
+    <unit id="connections.serverInfo.scopeNote">
+      <segment state="final">
+        <source>Solr Admin reports {total, plural, one {# document} other {# documents}} across all loaded cores, including cores or documents that may belong to other sites. The selected-site total above is {siteTotal, plural, one {# document} other {# documents}}.</source>
+        <target>Solr Admin meldet {total, plural, one {# Dokument} other {# Dokumente}} über alle geladenen Cores, einschließlich Cores oder Dokumenten, die zu anderen Sites gehören können. Die Summe für die ausgewählte Site oben beträgt {siteTotal, plural, one {# Dokument} other {# Dokumente}}.</target>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.scopeNoteUnavailable">
+      <segment state="final">
+        <source>Solr Admin reports {total, plural, one {# document} other {# documents}} across all loaded cores. The selected-site total is unavailable because a live Solr query could not be read.</source>
+        <target>Solr Admin meldet {total, plural, one {# Dokument} other {# Dokumente}} über alle geladenen Cores. Die Summe für die ausgewählte Site ist nicht verfügbar, weil eine Live-Abfrage an Solr nicht gelesen werden konnte.</target>
+      </segment>
+    </unit>
     <unit id="connections.serverInfo.adminLinks">
       <segment state="final">
         <source>Admin UI</source>
@@ -357,8 +741,8 @@
     </unit>
     <unit id="connections.serverInfo.indexedDocuments">
       <segment state="final">
-        <source>{count, plural, one {# indexed document} other {# indexed documents}}</source>
-        <target>{count, plural, one {# indexiertes Dokument} other {# indexierte Dokumente}}</target>
+        <source>Solr total: {count, plural, one {# document} other {# documents}}</source>
+        <target>Solr gesamt: {count, plural, one {# Dokument} other {# Dokumente}}</target>
       </segment>
     </unit>
     <unit id="connections.serverInfo.solrVersion">

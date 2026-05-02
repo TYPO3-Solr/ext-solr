@@ -34,16 +34,13 @@ class AllowUrlFOpenStatus extends AbstractSolrStatus
     {
         $reports = [];
         $severity = ContextualFeedbackSeverity::OK;
-        $value = 'On';
+        $value = $this->translate('status.value.on');
         $message = '';
 
         if (!ini_get('allow_url_fopen')) {
             $severity = ContextualFeedbackSeverity::ERROR;
-            $value = 'Off';
-            $message = 'allow_url_fopen must be enabled in php.ini to allow
-				communication between TYPO3 and the Apache Solr server.
-				Indexing pages using the Index Queue will also not work with
-				this setting disabled.';
+            $value = $this->translate('status.value.off');
+            $message = $this->translate('status.allowUrlFopen.disabled.message');
         }
 
         $reports[] = GeneralUtility::makeInstance(

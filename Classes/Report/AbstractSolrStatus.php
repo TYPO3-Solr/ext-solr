@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Core\View\ViewFactoryInterface;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
@@ -43,5 +44,14 @@ abstract class AbstractSolrStatus implements StatusProviderInterface
         $view->assignMultiple($variables);
 
         return $view->render();
+    }
+
+    protected function translate(string $key, array $arguments = []): string
+    {
+        return LocalizationUtility::translate(
+            'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:' . $key,
+            null,
+            $arguments,
+        ) ?? $key;
     }
 }

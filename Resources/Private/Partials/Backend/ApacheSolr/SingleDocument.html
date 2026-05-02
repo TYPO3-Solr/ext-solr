@@ -5,7 +5,7 @@
         <div class="panel-heading">
             <h3 class="panel-title" id="document-heading-{document.fields._version_}">
                 <a href="#panel-group4document-id-{document.fields._version_}" data-bs-toggle="collapse" role="button" aria-expanded="{f:if(condition: '{documentsCount} < 2', then: 'true', else: 'false')}" aria-controls="panel-group4document-id-{document.fields._version_}">
-                    Title: {document.fields.title}
+                    <f:translate key="documents.titleLabel" domain="solr.modules.info" arguments="{title: document.fields.title}"/>
                     <span aria-hidden="true">
                         <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
                     </span>
@@ -15,7 +15,12 @@
         <div id="panel-group4document-id-{document.fields._version_}" class="panel-collapse collapse {f:if(condition: '{documentsCount} < 2', then: 'show', else: '')}" role="region" aria-labelledby="document-heading-{document.fields._version_}">
             <div class="panel-body">
                 <table class="table table-sm table-hover table-striped">
-                    <thead><tr><th scope="col">Fieldname</th><th scope="col">Value</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th scope="col"><f:translate key="documents.table.fieldName" domain="solr.modules.info"/></th>
+                            <th scope="col"><f:translate key="documents.table.fieldValue" domain="solr.modules.info"/></th>
+                        </tr>
+                    </thead>
                     <tbody id="document-tbody-pid-{document.fields.uid}">
                     <f:render section="Rows" arguments="{tableRows: document.fields, document: document}"/>
                     </tbody>
@@ -45,7 +50,12 @@
 
 <f:section name="SubTable">
     <table class="table table-sm table-hover table-striped table-bordered">
-        <thead><tr><th scope="col">Fieldname</th><th scope="col">Value</th></tr></thead>
+        <thead>
+            <tr>
+                <th scope="col"><f:translate key="documents.table.fieldName" domain="solr.modules.info"/></th>
+                <th scope="col"><f:translate key="documents.table.fieldValue" domain="solr.modules.info"/></th>
+            </tr>
+        </thead>
         <tbody>
             <f:render section="Rows" arguments="{tableRows: tableRows}"/>
         </tbody>

@@ -56,6 +56,8 @@ use TYPO3Fluid\Fluid\View\ViewInterface as FluidStandaloneViewInterface;
  */
 abstract class AbstractModuleController extends ActionController
 {
+    private const MODULE_COMMON_LANGUAGE_DOMAIN = 'solr.modules.common';
+
     private const INDEX_ADMINISTRATION_LANGUAGE_DOMAIN = 'solr.modules.index_admin';
 
     /**
@@ -168,6 +170,8 @@ abstract class AbstractModuleController extends ActionController
         $selectOtherPage = $this->siteRepository->hasAvailableSites() || $this->selectedPageUID < 1;
         $this->moduleTemplate->assign('showSelectOtherPage', $selectOtherPage);
         $this->moduleTemplate->assign('selectedPageUID', $this->selectedPageUID);
+        $this->addModuleRefreshButton();
+
         if ($this->selectedPageUID < 1) {
             return;
         }
@@ -209,6 +213,21 @@ abstract class AbstractModuleController extends ActionController
 
         $this->moduleTemplate->getDocHeaderComponent()->setPageBreadcrumb($pageRecord);
         $this->addPageActionButtons($pageRecord, $rootLine, $pageUid, $languageId, $pageContext instanceof PageContext ? $pageContext : null);
+    }
+
+    private function addModuleRefreshButton(): void
+    {
+        $this->moduleTemplate->getDocHeaderComponent()->disableAutomaticReloadButton();
+
+        $label = LocalizationUtility::translate('refresh.button', self::MODULE_COMMON_LANGUAGE_DOMAIN)
+            ?? 'Refresh module';
+        $refreshButton = $this->componentFactory->createLinkButton()
+            ->setHref($this->getCurrentRequestUri())
+            ->setTitle($label)
+            ->setShowLabelText(true)
+            ->setIcon($this->iconFactory->getIcon('actions-refresh', IconSize::SMALL));
+
+        $this->moduleTemplate->addButtonToButtonBar($refreshButton, ButtonBar::BUTTON_POSITION_RIGHT, 90);
     }
 
     private function addPageActionButtons(array $pageRecord, array $rootLine, int $pageUid, int $languageId, ?PageContext $pageContext): void
@@ -307,7 +326,7 @@ abstract class AbstractModuleController extends ActionController
         return 'searchbackend';
     }
 
-    private function getCurrentRequestUri(): string
+    protected function getCurrentRequestUri(): string
     {
         $normalizedParams = $this->request->getAttribute('normalizedParams');
         if ($normalizedParams instanceof NormalizedParams) {

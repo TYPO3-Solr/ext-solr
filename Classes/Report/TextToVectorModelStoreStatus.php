@@ -95,7 +95,7 @@ class TextToVectorModelStoreStatus extends AbstractSolrStatus
 
         $reports[] = GeneralUtility::makeInstance(
             Status::class,
-            'Apache Solr Text to Vector',
+            $this->translate('status.textToVector.plugin.title'),
             '',
             $this->getRenderedReport(
                 'TextToVectorModelStorePluginStatus.html',
@@ -110,7 +110,7 @@ class TextToVectorModelStoreStatus extends AbstractSolrStatus
         if ($configuredModels !== []) {
             $reports[] = GeneralUtility::makeInstance(
                 Status::class,
-                'Apache Solr Text to Vector: Configured Models',
+                $this->translate('status.textToVector.models.title'),
                 '',
                 $this->getRenderedReport(
                     'TextToVectorModelStoreModelStatus.html',
