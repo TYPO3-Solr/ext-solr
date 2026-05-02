@@ -10,7 +10,7 @@
     <unit id="status_solr_allow-url-open">
       <segment state="final">
         <source>URL-aware fopen wrappers</source>
-        <target>URL-fähige fopen-Wrapper</target>
+        <target>PHP-URL-Zugriff mit fopen</target>
       </segment>
     </unit>
     <unit id="status_solr_connectionstatus">
@@ -201,8 +201,8 @@
     </unit>
     <unit id="status.configuration.indexingDisabled.value">
       <segment state="final">
-        <source>Indexing is disabled</source>
-        <target>Indexierung ist deaktiviert</target>
+        <source>Indexing disabled for {count, plural, one {# site} other {# sites}}</source>
+        <target>Indexierung bei {count, plural, one {# Site} other {# Sites}} deaktiviert</target>
       </segment>
     </unit>
     <unit id="status.allowUrlFopen.disabled.message">
@@ -345,14 +345,14 @@
     </unit>
     <unit id="report.configuration.indexingDisabled.intro">
       <segment state="final">
-        <source>Set config.index_enable = 1 to allow page indexing.</source>
-        <target>Setzen Sie config.index_enable = 1, um die Seitenindexierung zu erlauben.</target>
+        <source>Page indexing is disabled only for the listed Solr-enabled sites.</source>
+        <target>Die Seitenindexierung ist nur für die aufgeführten Solr-aktivierten Sites deaktiviert.</target>
       </segment>
     </unit>
     <unit id="report.configuration.indexingDisabled.sites">
       <segment state="final">
-        <source>The following sites were found with indexing disabled:</source>
-        <target>Für die folgenden Sites ist die Indexierung deaktiviert:</target>
+        <source>Enable config.index_enable = 1 in the TypoScript of these sites if their pages should be indexed:</source>
+        <target>Aktivieren Sie config.index_enable = 1 im TypoScript dieser Sites, wenn deren Seiten indexiert werden sollen:</target>
       </segment>
     </unit>
     <unit id="report.configuration.rootPageFlag.message">

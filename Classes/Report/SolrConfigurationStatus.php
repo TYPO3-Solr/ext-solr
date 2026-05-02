@@ -126,11 +126,15 @@ class SolrConfigurationStatus extends AbstractSolrStatus
             );
         }
 
-        $report = $this->getRenderedReport('SolrConfigurationStatusIndexing.html', ['pages' => $rootPagesWithIndexingOff]);
+        $affectedSiteCount = count($rootPagesWithIndexingOff);
+        $report = $this->getRenderedReport('SolrConfigurationStatusIndexing.html', [
+            'affectedSiteCount' => $affectedSiteCount,
+            'pages' => $rootPagesWithIndexingOff,
+        ]);
         return GeneralUtility::makeInstance(
             Status::class,
             $this->translate('status.configuration.pageIndexing.title'),
-            $this->translate('status.configuration.indexingDisabled.value'),
+            $this->translate('status.configuration.indexingDisabled.value', ['count' => $affectedSiteCount]),
             $report,
             ContextualFeedbackSeverity::WARNING,
         );

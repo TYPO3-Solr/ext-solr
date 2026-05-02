@@ -168,7 +168,7 @@
     </unit>
     <unit id="status.configuration.indexingDisabled.value">
       <segment state="final">
-        <source>Indexing is disabled</source>
+        <source>Indexing disabled for {count, plural, one {# site} other {# sites}}</source>
       </segment>
     </unit>
     <unit id="status.allowUrlFopen.disabled.message">
@@ -288,12 +288,12 @@
     </unit>
     <unit id="report.configuration.indexingDisabled.intro">
       <segment state="final">
-        <source>Set config.index_enable = 1 to allow page indexing.</source>
+        <source>Page indexing is disabled only for the listed Solr-enabled sites.</source>
       </segment>
     </unit>
     <unit id="report.configuration.indexingDisabled.sites">
       <segment state="final">
-        <source>The following sites were found with indexing disabled:</source>
+        <source>Enable config.index_enable = 1 in the TypoScript of these sites if their pages should be indexed:</source>
       </segment>
     </unit>
     <unit id="report.configuration.rootPageFlag.message">
