@@ -115,6 +115,8 @@ abstract class AbstractModuleController extends ActionController
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         if ($this->request->hasArgument('id')) {
             $this->selectedPageUID = (int)$this->request->getArgument('id');
+        } elseif ($this->request->hasArgument('selectedPageUID')) {
+            $this->selectedPageUID = (int)$this->request->getArgument('selectedPageUID');
         }
 
         $this->requestedPageUID = $this->selectedPageUID;
@@ -212,18 +214,16 @@ abstract class AbstractModuleController extends ActionController
     private function addPageActionButtons(array $pageRecord, array $rootLine, int $pageUid, int $languageId, ?PageContext $pageContext): void
     {
         $previewUriBuilder = PreviewUriBuilder::create($pageRecord);
-        if ($previewUriBuilder->isPreviewable()) {
-            $this->moduleTemplate->addButtonToButtonBar(
-                $this->componentFactory->createViewButton(
-                    $previewUriBuilder
-                        ->withRootLine($rootLine)
-                        ->withLanguage($languageId)
-                        ->buildDispatcherDataAttributes() ?? [],
-                ),
-                ButtonBar::BUTTON_POSITION_LEFT,
-                15,
-            );
-        }
+        $this->moduleTemplate->addButtonToButtonBar(
+            $this->componentFactory->createViewButton(
+                $previewUriBuilder
+                    ->withRootLine($rootLine)
+                    ->withLanguage($languageId)
+                    ->buildDispatcherDataAttributes() ?? [],
+            ),
+            ButtonBar::BUTTON_POSITION_LEFT,
+            15,
+        );
 
         if (!$this->isPageEditable($pageRecord, $languageId)) {
             return;

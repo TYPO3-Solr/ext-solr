@@ -19,6 +19,18 @@
         <target>Verwalten Sie die Solr-Core-Konfiguration, Solr-Dokumente und TYPO3 Index-Queue-Einträge für die ausgewählte Site.</target>
       </segment>
     </unit>
+    <unit id="module.heading">
+      <segment state="final">
+        <source>Index Administration</source>
+        <target>Index-Verwaltung</target>
+      </segment>
+    </unit>
+    <unit id="module.teaser">
+      <segment state="final">
+        <source>Reload core configuration, empty Solr documents, or clear TYPO3 Index Queue entries for the selected site.</source>
+        <target>Laden Sie die Core-Konfiguration neu, leeren Sie Solr-Dokumente oder löschen Sie TYPO3 Index-Queue-Einträge für die ausgewählte Site.</target>
+      </segment>
+    </unit>
     <unit id="card.reload.title">
       <segment state="final">
         <source>Reload Core Configuration</source>

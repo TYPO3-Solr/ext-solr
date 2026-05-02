@@ -16,6 +16,36 @@
         <source>Review connection details, search statistics, indexed fields, and documents for the selected Solr core.</source>
       </segment>
     </unit>
+    <unit id="module.heading">
+      <segment state="final">
+        <source>Solr Information</source>
+      </segment>
+    </unit>
+    <unit id="module.teaser">
+      <segment state="final">
+        <source>Review connection status, search statistics, index fields, and indexed documents for the selected site.</source>
+      </segment>
+    </unit>
+    <unit id="tabs.overview">
+      <segment state="final">
+        <source>Overview</source>
+      </segment>
+    </unit>
+    <unit id="tabs.statistics">
+      <segment state="final">
+        <source>Statistics</source>
+      </segment>
+    </unit>
+    <unit id="tabs.indexFields">
+      <segment state="final">
+        <source>Index Fields</source>
+      </segment>
+    </unit>
+    <unit id="tabs.indexDocuments">
+      <segment state="final">
+        <source>Index Documents</source>
+      </segment>
+    </unit>
     <unit id="chart.label">
       <segment state="final">
         <source>Search queries over time</source>
@@ -36,9 +66,34 @@
         <source>Requeue document</source>
       </segment>
     </unit>
+    <unit id="documents.count">
+      <segment state="final">
+        <source>{count, plural, one {# document} other {# documents}}</source>
+      </segment>
+    </unit>
+    <unit id="documents.pageCount">
+      <segment state="final">
+        <source>{count, plural, one {# document on selected page} other {# documents on selected page}}</source>
+      </segment>
+    </unit>
+    <unit id="documents.siteCount">
+      <segment state="final">
+        <source>{count, plural, one {# document for this site} other {# documents for this site}}</source>
+      </segment>
+    </unit>
+    <unit id="documents.scopeNote">
+      <segment state="final">
+        <source>This tab lists documents for the selected page and records stored directly on that page. The site badge shows the indexed documents for the selected site in the same core.</source>
+      </segment>
+    </unit>
     <unit id="statistics.rank">
       <segment state="final">
         <source>Rank</source>
+      </segment>
+    </unit>
+    <unit id="statistics.queryCount">
+      <segment state="final">
+        <source>{count, plural, one {# query} other {# queries}}</source>
       </segment>
     </unit>
     <unit id="external.opensInNewWindow">
@@ -59,6 +114,226 @@
     <unit id="connections.connected.description">
       <segment state="final">
         <source>TYPO3 reached the configured Apache Solr endpoint for each language core.</source>
+      </segment>
+    </unit>
+    <unit id="connections.servers.title">
+      <segment state="final">
+        <source>Solr cores</source>
+      </segment>
+    </unit>
+    <unit id="connections.servers.description">
+      <segment state="final">
+        <source>Status and site-specific index information for each configured language core.</source>
+      </segment>
+    </unit>
+    <unit id="connections.servers.scopeNote">
+      <segment state="final">
+        <source>This list shows {configured, plural, one {# core configured for this site} other {# cores configured for this site}}. Document counts are filtered to this selected site. The server overview below includes {loaded, plural, one {# loaded core} other {# loaded cores}} from Solr Admin and can include other sites.</source>
+      </segment>
+    </unit>
+    <unit id="connections.servers.configuredCount">
+      <segment state="final">
+        <source>{count, plural, one {# configured core} other {# configured cores}}</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.connected">
+      <segment state="final">
+        <source>Connected</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.missing">
+      <segment state="final">
+        <source>Not reachable</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.okTitle">
+      <segment state="final">
+        <source>Core ready</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.warningTitle">
+      <segment state="final">
+        <source>Check indexing</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.errorTitle">
+      <segment state="final">
+        <source>Connection problem</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.reason.ok">
+      <segment state="final">
+        <source>The Solr core is reachable and has indexed documents for this selected site and language.</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.reason.noDocuments">
+      <segment state="final">
+        <source>The Solr core is reachable, but Solr reports no indexed documents for this selected site and language. Initialize or re-index content if documents are expected.</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.reason.notReachable">
+      <segment state="final">
+        <source>TYPO3 cannot reach this Solr core. Check the TYPO3 endpoint, Solr service, and port mapping.</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.validation.empty">
+      <segment state="final">
+        <source>The configured TYPO3 endpoint is empty.</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.validation.malformed">
+      <segment state="final">
+        <source>The configured TYPO3 endpoint is malformed. Check the Solr host, port, and path.</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.validation.invalidPort">
+      <segment state="final">
+        <source>The configured TYPO3 endpoint uses invalid port {port}. Use a port between 1 and 65535.</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.validation.unsupportedScheme">
+      <segment state="final">
+        <source>The configured TYPO3 endpoint uses unsupported scheme "{scheme}". Use HTTP or HTTPS.</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.validation.pingFailed">
+      <segment state="final">
+        <source>The configured TYPO3 endpoint is valid, but Solr did not answer the ping request.</source>
+      </segment>
+    </unit>
+    <unit id="connections.status.validation.exception">
+      <segment state="final">
+        <source>The configured TYPO3 endpoint could not be checked: {error}</source>
+      </segment>
+    </unit>
+    <unit id="connections.documents.count">
+      <segment state="final">
+        <source>{count, plural, one {# site document} other {# site documents}}</source>
+      </segment>
+    </unit>
+    <unit id="connections.documents.total">
+      <segment state="final">
+        <source>{count, plural, one {# indexed document for this site} other {# indexed documents for this site}}</source>
+      </segment>
+    </unit>
+    <unit id="connections.language.label">
+      <segment state="final">
+        <source>Language</source>
+      </segment>
+    </unit>
+    <unit id="connections.endpoint.label">
+      <segment state="final">
+        <source>TYPO3 endpoint</source>
+      </segment>
+    </unit>
+    <unit id="connections.browserEndpoint.label">
+      <segment state="final">
+        <source>Browser URL</source>
+      </segment>
+    </unit>
+    <unit id="connections.browserEndpoints.label">
+      <segment state="final">
+        <source>Browser URLs</source>
+      </segment>
+    </unit>
+    <unit id="connections.browserEndpoints.checkedOnLoad">
+      <segment state="final">
+        <source>Link status is checked when the module loads. Reload the module to verify the current configuration again.</source>
+      </segment>
+    </unit>
+    <unit id="connections.browserEndpoints.unavailableInvalidEndpoint">
+      <segment state="final">
+        <source>No browser URL is shown because the configured TYPO3 endpoint is invalid.</source>
+      </segment>
+    </unit>
+    <unit id="connections.browserEndpoint.https">
+      <segment state="final">
+        <source>HTTPS :8984</source>
+      </segment>
+    </unit>
+    <unit id="connections.browserEndpoint.http">
+      <segment state="final">
+        <source>HTTP :8983</source>
+      </segment>
+    </unit>
+    <unit id="connections.browserEndpoint.configured">
+      <segment state="final">
+        <source>Configured URL</source>
+      </segment>
+    </unit>
+    <unit id="connections.browserEndpoint.reachable">
+      <segment state="final">
+        <source>Reachable</source>
+      </segment>
+    </unit>
+    <unit id="connections.browserEndpoint.notReachable">
+      <segment state="final">
+        <source>Not reachable</source>
+      </segment>
+    </unit>
+    <unit id="connections.action.openSolrAdmin">
+      <segment state="final">
+        <source>Open Solr Admin</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.title">
+      <segment state="final">
+        <source>Solr server overview</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.description">
+      <segment state="final">
+        <source>Key runtime information from the Solr Admin API for the configured server.</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.adminLinks">
+      <segment state="final">
+        <source>Admin UI</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.coreCount">
+      <segment state="final">
+        <source>{count, plural, one {# loaded core} other {# loaded cores}}</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.indexedDocuments">
+      <segment state="final">
+        <source>{count, plural, one {# indexed document} other {# indexed documents}}</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.solrVersion">
+      <segment state="final">
+        <source>Solr version</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.luceneVersion">
+      <segment state="final">
+        <source>Lucene version</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.javaRuntime">
+      <segment state="final">
+        <source>Java runtime</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.jvmMemory">
+      <segment state="final">
+        <source>JVM memory</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.solrHome">
+      <segment state="final">
+        <source>Solr home</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.uptime">
+      <segment state="final">
+        <source>Uptime</source>
+      </segment>
+    </unit>
+    <unit id="connections.serverInfo.unavailable">
+      <segment state="final">
+        <source>The Solr Admin API could not be read. Check the Admin UI links or reload the module after the server is available.</source>
       </segment>
     </unit>
     <unit id="connections.missing.title">

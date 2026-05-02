@@ -16,6 +16,16 @@
         <source>Check Index Queue status, initialize content for indexing, clear entries, and requeue failed or outdated items.</source>
       </segment>
     </unit>
+    <unit id="module.heading">
+      <segment state="final">
+        <source>Index Queue</source>
+      </segment>
+    </unit>
+    <unit id="module.teaser">
+      <segment state="final">
+        <source>Check queue status, initialize content for indexing, and handle failed or outdated entries.</source>
+      </segment>
+    </unit>
     <unit id="errors.actions">
       <segment state="final">
         <source>Actions</source>

@@ -19,6 +19,18 @@
         <target>Prüfen Sie den Status der Index Queue, initialisieren Sie Inhalte für die Indexierung, leeren Sie Einträge und stellen Sie fehlgeschlagene oder veraltete Elemente erneut ein.</target>
       </segment>
     </unit>
+    <unit id="module.heading">
+      <segment state="final">
+        <source>Index Queue</source>
+        <target>Index Queue</target>
+      </segment>
+    </unit>
+    <unit id="module.teaser">
+      <segment state="final">
+        <source>Check queue status, initialize content for indexing, and handle failed or outdated entries.</source>
+        <target>Prüfen Sie den Queue-Status, initialisieren Sie Inhalte für die Indexierung und bearbeiten Sie fehlgeschlagene oder veraltete Einträge.</target>
+      </segment>
+    </unit>
     <unit id="errors.actions">
       <segment state="final">
         <source>Actions</source>

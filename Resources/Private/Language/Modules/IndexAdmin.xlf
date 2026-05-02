@@ -16,6 +16,16 @@
         <source>Manage Solr core configuration, Solr documents, and TYPO3 Index Queue entries for the selected site.</source>
       </segment>
     </unit>
+    <unit id="module.heading">
+      <segment state="final">
+        <source>Index Administration</source>
+      </segment>
+    </unit>
+    <unit id="module.teaser">
+      <segment state="final">
+        <source>Reload core configuration, empty Solr documents, or clear TYPO3 Index Queue entries for the selected site.</source>
+      </segment>
+    </unit>
     <unit id="card.reload.title">
       <segment state="final">
         <source>Reload Core Configuration</source>

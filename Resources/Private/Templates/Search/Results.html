@@ -87,11 +87,13 @@
 							</f:else>
 						</f:if>
 					</span>
+					<f:if condition="{pagination.allPageNumbers -> f:count()} > 1">
 						<span class="result-range">
-						<s:pageBrowserRange>
-							<f:translate key="results_range" arguments="{0: from, 1: to, 2: total}" extensionName="solr">Results %d until %d of %d</f:translate>
-						</s:pageBrowserRange>
-					</span>
+							<s:pageBrowserRange>
+								<f:translate key="results_range" arguments="{0: from, 1: to, 2: total}" extensionName="solr">Results %d until %d of %d</f:translate>
+							</s:pageBrowserRange>
+						</span>
+					</f:if>
 				</f:if>
 			</div>
 		</div>
@@ -122,12 +124,21 @@
 						</f:then>
 						<f:else if="{resultSet.allResultCount}">
 							<div class="row">
-								<div class="col-8">
-									<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
-								</div>
-								<div class="col-4">
-									<f:render partial="Result/PerPage" section="PerPage" arguments="{resultSet: resultSet}" />
-								</div>
+								<f:if condition="{pagination.allPageNumbers -> f:count()} > 1">
+									<f:then>
+										<div class="col-8">
+											<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
+										</div>
+										<div class="col-4">
+											<f:render partial="Result/PerPage" section="PerPage" arguments="{resultSet: resultSet}" />
+										</div>
+									</f:then>
+									<f:else>
+										<div class="col-12 d-flex justify-content-end">
+											<f:render partial="Result/PerPage" section="PerPage" arguments="{resultSet: resultSet}" />
+										</div>
+									</f:else>
+								</f:if>
 							</div>
 
 							<div data-start="{pagination.startRecordNumber}" class="results-list list-group">
@@ -135,7 +146,9 @@
 									<f:render partial="Result/Document" section="Document" arguments="{resultSet: resultSet, document: document}" />
 								</f:for>
 							</div>
-							<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
+							<f:if condition="{pagination.allPageNumbers -> f:count()} > 1">
+								<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
+							</f:if>
 						</f:else>
 					</f:if>
 				</f:if>

@@ -16,6 +16,16 @@
         <source>Maintain synonyms and stop words for Solr cores to improve search results.</source>
       </segment>
     </unit>
+    <unit id="module.heading">
+      <segment state="final">
+        <source>Core Optimization</source>
+      </segment>
+    </unit>
+    <unit id="module.teaser">
+      <segment state="final">
+        <source>Maintain synonyms and stop words for the selected Solr cores to improve search results.</source>
+      </segment>
+    </unit>
     <unit id="tabs.synonyms">
       <segment state="final">
         <source>Synonyms</source>
@@ -193,7 +203,27 @@
     </unit>
     <unit id="stopWords.guide.intro">
       <segment state="final">
-        <source>Stop words are ignored during indexing and searching. Use them for very common words that do not help ranking, such as the or and.</source>
+        <source>Stop words are ignored during indexing and searching. Use them for very common words that do not help ranking.</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.examples.label">
+      <segment state="final">
+        <source>Examples:</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.examples.first">
+      <segment state="final">
+        <source>the</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.examples.second">
+      <segment state="final">
+        <source>and</source>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.examples.third">
+      <segment state="final">
+        <source>or</source>
       </segment>
     </unit>
     <unit id="stopWords.guide.format">
@@ -264,6 +294,71 @@
     <unit id="stopWords.upload.submit">
       <segment state="final">
         <source>Upload file</source>
+      </segment>
+    </unit>
+    <unit id="flash.title.missingParameter">
+      <segment state="final">
+        <source>Missing parameter</source>
+      </segment>
+    </unit>
+    <unit id="flash.title.error">
+      <segment state="final">
+        <source>An error occurred</source>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.missingParameter.message">
+      <segment state="final">
+        <source>Please provide a base word and at least one synonym.</source>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.added.message">
+      <segment state="final">
+        <source>{count, plural, one {Added {synonyms} as a synonym for base word {baseWord}.} other {Added {synonyms} as synonyms for base word {baseWord}.}}</source>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.uploadMissing.message">
+      <segment state="final">
+        <source>Please select a synonym file to upload.</source>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.imported.message">
+      <segment state="final">
+        <source>{count, plural, one {# synonym mapping imported.} other {# synonym mappings imported.}}</source>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.deleteAll.success">
+      <segment state="final">
+        <source>All synonym mappings removed.</source>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.deleteAll.error">
+      <segment state="final">
+        <source>Failed to remove all synonym mappings.</source>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.delete.success">
+      <segment state="final">
+        <source>Synonym mapping removed.</source>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.delete.error">
+      <segment state="final">
+        <source>Failed to remove the synonym mapping.</source>
+      </segment>
+    </unit>
+    <unit id="flash.stopWords.uploadMissing.message">
+      <segment state="final">
+        <source>Please select a stop word file to upload.</source>
+      </segment>
+    </unit>
+    <unit id="flash.stopWords.updated">
+      <segment state="final">
+        <source>Stop words updated.</source>
+      </segment>
+    </unit>
+    <unit id="flash.stopWords.removeFailed">
+      <segment state="final">
+        <source>Failed to remove stop word {word}.</source>
       </segment>
     </unit>
   </file>

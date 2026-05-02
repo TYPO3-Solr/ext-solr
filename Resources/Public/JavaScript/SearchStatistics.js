@@ -30,7 +30,7 @@ if (queriesOverTimeChartElement !== null) {
   const gridColor = resolveCssColor('var(--typo3-component-border-color)', fallbackGridColor);
   const surfaceColor = resolveCssColor('var(--typo3-surface-container-lowest)', fallbackSurfaceColor);
   const tooltipSurfaceColor = resolveCssColor('var(--typo3-surface-container-high)', surfaceColor);
-  const queryColor = resolveCssColor('var(--typo3-text-color-primary)', textColor);
+  const queryColor = resolveCssColor('var(--typo3-state-primary-bg)', textColor);
 
   Chart.defaults.color = textColor;
   Chart.defaults.borderColor = gridColor;

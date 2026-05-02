@@ -1,4 +1,6 @@
 .solr-index-queue-module {
+    --solr-index-queue-module-action-column-width: 20rem;
+
     color: var(--typo3-text-color-base);
     font-size: var(--typo3-font-size);
 }
@@ -52,6 +54,20 @@
     margin-bottom: 0;
 }
 
+.solr-index-queue-module__status-section .solr-index-queue-module__section-heading {
+    align-items: flex-start;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.solr-index-queue-module__status-heading-main {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--typo3-spacing) * .75);
+    min-width: 0;
+}
+
 .solr-index-queue-module__section > .panel-body {
     padding-top: var(--typo3-spacing);
 }
@@ -71,7 +87,14 @@
 }
 
 .solr-index-queue-module__status-list {
+    display: flex;
+    flex-wrap: wrap;
     gap: calc(var(--typo3-spacing) / 2);
+    justify-content: flex-end;
+    list-style: none;
+    margin: 0;
+    min-width: 0;
+    padding: 0;
 }
 
 .solr-index-queue-module__progress {
@@ -122,8 +145,18 @@
 }
 
 .solr-index-queue-module__actions {
+    align-items: center;
+    display: flex;
     flex: 0 0 auto;
+    min-height: var(--typo3-input-height);
+    min-width: 0;
     margin-top: 0;
+}
+
+.solr-index-queue-module__actions .btn,
+.solr-index-queue-module__danger-action .btn {
+    max-width: 100%;
+    white-space: normal;
 }
 
 .solr-index-queue-module .help {
@@ -132,6 +165,20 @@
     line-height: var(--typo3-line-height);
     margin: 0;
     max-width: 80rem;
+}
+
+.solr-index-queue-module__form-help {
+    align-items: center;
+    color: var(--typo3-text-color-variant);
+    display: flex;
+    margin-block: 0;
+    margin-inline: 0;
+    max-width: none;
+    min-height: var(--typo3-input-height);
+    min-width: 0;
+    padding-inline: 0;
+    text-align: start;
+    width: 100%;
 }
 
 .solr-index-queue-module .index-queue-init-form {
@@ -206,12 +253,12 @@
 }
 
 .solr-index-queue-module__form-footer {
-    align-items: center;
+    align-items: stretch;
     background-color: var(--typo3-surface-container-low);
     border-radius: var(--typo3-component-border-radius);
-    display: flex;
+    display: grid;
     gap: var(--typo3-spacing);
-    justify-content: space-between;
+    grid-template-columns: var(--solr-index-queue-module-action-column-width) minmax(0, 1fr);
     margin-top: var(--typo3-spacing);
     padding: var(--typo3-spacing);
 }
@@ -224,11 +271,25 @@
     align-items: start;
     display: grid;
     gap: var(--typo3-spacing);
-    grid-template-columns: max-content minmax(0, 1fr);
+    grid-template-columns: var(--solr-index-queue-module-action-column-width) minmax(0, 1fr);
+    padding-inline: var(--typo3-spacing);
+}
+
+.solr-index-queue-module__danger-action form {
+    justify-self: start;
+    margin-bottom: 0;
+}
+
+.solr-index-queue-module__danger-action .action-description {
+    align-items: center;
+    display: flex;
+    min-height: var(--typo3-input-height);
+    min-width: 0;
 }
 
 .solr-index-queue-module__danger-action .action-description p {
-    color: var(--typo3-text-color-base);
+    color: var(--typo3-text-color-variant);
+    line-height: var(--typo3-line-height);
     margin-bottom: 0;
 }
 
@@ -240,11 +301,28 @@
 
     .solr-index-queue-module__danger-action {
         grid-template-columns: minmax(0, 1fr);
+        padding-inline: 0;
     }
 
-    .solr-index-queue-module__section-heading,
-    .solr-index-queue-module__form-footer {
+    .solr-index-queue-module__section-heading {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .solr-index-queue-module__status-section .solr-index-queue-module__section-heading {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .solr-index-queue-module__status-section .solr-index-queue-module__status-list {
+        justify-content: flex-start;
+    }
+
+    .solr-index-queue-module__form-footer {
+        align-items: flex-start;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .solr-index-queue-module__form-help {
+        padding-inline: 0;
     }
 }

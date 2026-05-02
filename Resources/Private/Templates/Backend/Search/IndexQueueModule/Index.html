@@ -6,50 +6,51 @@
 
 	<div class="solr-index-queue-module">
 		<header class="solr-index-queue-module__intro">
-			<h1>Index Queue</h1>
-			<p class="lead"><f:translate key="solr.backend.index_queue_module.description" /></p>
+			<h1><f:translate key="module.heading" domain="solr.modules.index_queue"/></h1>
+			<p class="lead"><f:translate key="module.teaser" domain="solr.modules.index_queue"/></p>
 		</header>
 
 		<f:if condition="{indexqueue_statistics.totalCount} > 0">
-			<section class="panel panel-default solr-index-queue-module__section">
+			<section class="panel panel-default solr-index-queue-module__section solr-index-queue-module__status-section">
 				<div class="panel-heading solr-index-queue-module__section-heading">
-					<h2 class="panel-title">
-						<f:translate key="solr.backend.index_queue_module.header_status"/>
-					</h2>
-					<f:form action="doIndexingRun" method="POST">
-						<f:form.submit class="btn btn-sm btn-default"
-									   value="{f:translate(key:'solr.backend.index_queue_module.index_now')}"/>
-					</f:form>
+					<div class="solr-index-queue-module__status-heading-main">
+						<h2 class="panel-title">
+							<f:translate key="solr.backend.index_queue_module.header_status"/>
+						</h2>
+						<f:form action="doIndexingRun" method="POST">
+							<f:form.submit class="btn btn-sm btn-default"
+										   value="{f:translate(key:'solr.backend.index_queue_module.index_now')}"/>
+						</f:form>
+					</div>
+					<ul class="badge-list solr-index-queue-module__status-list" aria-label="{f:translate(key:'solr.backend.index_queue_module.header_status')}">
+						<f:if condition="{indexqueue_statistics.successCount} > 0">
+							<li>
+								<span class="badge badge-success">
+									<f:translate key="solr.backend.index_queue_module.status.indexed"/>:
+									{indexqueue_statistics.successCount}/{indexqueue_statistics.totalCount}
+								</span>
+							</li>
+						</f:if>
+						<f:if condition="{indexqueue_statistics.pendingCount} > 0">
+							<li>
+								<span class="badge badge-warning">
+									<f:translate key="solr.backend.index_queue_module.status.pending"/>:
+									{indexqueue_statistics.pendingCount}/{indexqueue_statistics.totalCount}
+								</span>
+							</li>
+						</f:if>
+						<f:if condition="{indexqueue_statistics.failedCount} > 0">
+							<li>
+								<span class="badge badge-danger">
+									<f:translate key="solr.backend.index_queue_module.status.errors"/>:
+									{indexqueue_statistics.failedCount}/{indexqueue_statistics.totalCount}
+								</span>
+							</li>
+						</f:if>
+					</ul>
 				</div>
 				<div class="panel-body">
 					<div class="solr-index-queue-module__status">
-						<ul class="badge-list solr-index-queue-module__status-list" aria-label="{f:translate(key:'solr.backend.index_queue_module.header_status')}">
-							<f:if condition="{indexqueue_statistics.successCount} > 0">
-								<li>
-									<span class="badge badge-success">
-										<f:translate key="solr.backend.index_queue_module.status.indexed"/>:
-										{indexqueue_statistics.successCount}/{indexqueue_statistics.totalCount}
-									</span>
-								</li>
-							</f:if>
-							<f:if condition="{indexqueue_statistics.pendingCount} > 0">
-								<li>
-									<span class="badge badge-warning">
-										<f:translate key="solr.backend.index_queue_module.status.pending"/>:
-										{indexqueue_statistics.pendingCount}/{indexqueue_statistics.totalCount}
-									</span>
-								</li>
-							</f:if>
-							<f:if condition="{indexqueue_statistics.failedCount} > 0">
-								<li>
-									<span class="badge badge-danger">
-										<f:translate key="solr.backend.index_queue_module.status.errors"/>:
-										{indexqueue_statistics.failedCount}/{indexqueue_statistics.totalCount}
-									</span>
-								</li>
-							</f:if>
-						</ul>
-
 						<div class="progress d-flex solr-index-queue-module__progress">
 							<f:if condition="{indexqueue_statistics.successCount} > 0">
 								<div class="progress-bar bg-success"
@@ -161,10 +162,10 @@
 						<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
 					</div>
 					<div class="solr-index-queue-module__form-footer">
-						<div class="help">{f:translate(key:'solr.backend.index_queue_module.help')}</div>
 						<div class="solr-index-queue-module__actions">
 							<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" class="btn btn-sm btn-default"/>
 						</div>
+						<div class="help solr-index-queue-module__form-help">{f:translate(key:'solr.backend.index_queue_module.help')}</div>
 					</div>
 				</f:form>
 			</div>

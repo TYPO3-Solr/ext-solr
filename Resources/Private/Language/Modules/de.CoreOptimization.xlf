@@ -19,6 +19,18 @@
         <target>Pflegen Sie Synonyme und Stoppwörter für Solr-Cores, um die Suchergebnisse zu verbessern.</target>
       </segment>
     </unit>
+    <unit id="module.heading">
+      <segment state="final">
+        <source>Core Optimization</source>
+        <target>Core-Optimierung</target>
+      </segment>
+    </unit>
+    <unit id="module.teaser">
+      <segment state="final">
+        <source>Maintain synonyms and stop words for the selected Solr cores to improve search results.</source>
+        <target>Pflegen Sie Synonyme und Stoppwörter für die ausgewählten Solr-Cores, um die Suchergebnisse zu verbessern.</target>
+      </segment>
+    </unit>
     <unit id="tabs.synonyms">
       <segment state="final">
         <source>Synonyms</source>
@@ -231,14 +243,38 @@
     </unit>
     <unit id="stopWords.guide.intro">
       <segment state="final">
-        <source>Stop words are ignored during indexing and searching. Use them for very common words that do not help ranking, such as the or and.</source>
-        <target>Stoppwörter werden bei Indexierung und Suche ignoriert. Verwenden Sie sie für sehr häufige Wörter, die das Ranking nicht verbessern, zum Beispiel the oder and.</target>
+        <source>Stop words are ignored during indexing and searching. Use them for very common words that do not help ranking.</source>
+        <target>Stoppwörter werden bei Indexierung und Suche ignoriert. Verwenden Sie sie für sehr häufige Wörter, die das Ranking nicht verbessern.</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.examples.label">
+      <segment state="final">
+        <source>Examples:</source>
+        <target>Beispiele:</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.examples.first">
+      <segment state="final">
+        <source>the</source>
+        <target>der</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.examples.second">
+      <segment state="final">
+        <source>and</source>
+        <target>und</target>
+      </segment>
+    </unit>
+    <unit id="stopWords.guide.examples.third">
+      <segment state="final">
+        <source>or</source>
+        <target>oder</target>
       </segment>
     </unit>
     <unit id="stopWords.guide.format">
       <segment state="final">
         <source>Enter one lowercase word per line. Keep the list focused so useful short terms are not removed by accident.</source>
-        <target>Geben Sie ein kleingeschriebenes Wort pro Zeile ein. Halten Sie die Liste gezielt, damit nützliche kurze Begriffe nicht versehentlich entfernt werden.</target>
+        <target>Tragen Sie pro Zeile ein Stoppwort in Kleinschreibung ein. Beschränken Sie die Liste auf wirklich irrelevante Wörter, damit sinnvolle kurze Suchbegriffe nicht unbeabsichtigt ausgeschlossen werden.</target>
       </segment>
     </unit>
     <unit id="stopWords.guide.reindexNote">
@@ -317,6 +353,84 @@
       <segment state="final">
         <source>Upload file</source>
         <target>Datei hochladen</target>
+      </segment>
+    </unit>
+    <unit id="flash.title.missingParameter">
+      <segment state="final">
+        <source>Missing parameter</source>
+        <target>Fehlende Angabe</target>
+      </segment>
+    </unit>
+    <unit id="flash.title.error">
+      <segment state="final">
+        <source>An error occurred</source>
+        <target>Ein Fehler ist aufgetreten</target>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.missingParameter.message">
+      <segment state="final">
+        <source>Please provide a base word and at least one synonym.</source>
+        <target>Geben Sie ein Basiswort und mindestens ein Synonym an.</target>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.added.message">
+      <segment state="final">
+        <source>{count, plural, one {Added {synonyms} as a synonym for base word {baseWord}.} other {Added {synonyms} as synonyms for base word {baseWord}.}}</source>
+        <target>{count, plural, one {Synonym {synonyms} wurde für das Basiswort {baseWord} hinzugefügt.} other {Synonyme {synonyms} wurden für das Basiswort {baseWord} hinzugefügt.}}</target>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.uploadMissing.message">
+      <segment state="final">
+        <source>Please select a synonym file to upload.</source>
+        <target>Wählen Sie eine Synonymdatei zum Hochladen aus.</target>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.imported.message">
+      <segment state="final">
+        <source>{count, plural, one {# synonym mapping imported.} other {# synonym mappings imported.}}</source>
+        <target>{count, plural, one {# Synonym-Zuordnung importiert.} other {# Synonym-Zuordnungen importiert.}}</target>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.deleteAll.success">
+      <segment state="final">
+        <source>All synonym mappings removed.</source>
+        <target>Alle Synonym-Zuordnungen wurden entfernt.</target>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.deleteAll.error">
+      <segment state="final">
+        <source>Failed to remove all synonym mappings.</source>
+        <target>Die Synonym-Zuordnungen konnten nicht vollständig entfernt werden.</target>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.delete.success">
+      <segment state="final">
+        <source>Synonym mapping removed.</source>
+        <target>Synonym-Zuordnung entfernt.</target>
+      </segment>
+    </unit>
+    <unit id="flash.synonyms.delete.error">
+      <segment state="final">
+        <source>Failed to remove the synonym mapping.</source>
+        <target>Die Synonym-Zuordnung konnte nicht entfernt werden.</target>
+      </segment>
+    </unit>
+    <unit id="flash.stopWords.uploadMissing.message">
+      <segment state="final">
+        <source>Please select a stop word file to upload.</source>
+        <target>Wählen Sie eine Stoppwortdatei zum Hochladen aus.</target>
+      </segment>
+    </unit>
+    <unit id="flash.stopWords.updated">
+      <segment state="final">
+        <source>Stop words updated.</source>
+        <target>Stoppwörter aktualisiert.</target>
+      </segment>
+    </unit>
+    <unit id="flash.stopWords.removeFailed">
+      <segment state="final">
+        <source>Failed to remove stop word {word}.</source>
+        <target>Das Stoppwort {word} konnte nicht entfernt werden.</target>
       </segment>
     </unit>
   </file>

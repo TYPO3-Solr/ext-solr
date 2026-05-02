@@ -19,5 +19,29 @@
         <target>This module allows you to get information (statistics, used fields, connection details) from the core.</target>
       </segment>
     </unit>
+    <unit id="tabs.overview">
+      <segment state="final">
+        <source>Overview</source>
+        <target>Обзор</target>
+      </segment>
+    </unit>
+    <unit id="tabs.statistics">
+      <segment state="final">
+        <source>Statistics</source>
+        <target>Статистика</target>
+      </segment>
+    </unit>
+    <unit id="tabs.indexFields">
+      <segment state="final">
+        <source>Index Fields</source>
+        <target>Поля индекса</target>
+      </segment>
+    </unit>
+    <unit id="tabs.indexDocuments">
+      <segment state="final">
+        <source>Index Documents</source>
+        <target>Документы индекса</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

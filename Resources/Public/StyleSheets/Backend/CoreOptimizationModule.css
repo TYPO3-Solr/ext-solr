@@ -8,6 +8,28 @@
     --typo3-panel-padding-x: calc(var(--typo3-spacing) * 1.25);
 }
 
+.solr-core-optimization-module__intro {
+    margin-bottom: calc(var(--typo3-spacing) * 1.5);
+    max-width: 80rem;
+}
+
+.solr-core-optimization-module__intro h1 {
+    color: var(--typo3-text-color-base);
+    font-family: var(--typo3-header-font-family);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: calc(var(--typo3-spacing) * .75);
+}
+
+.solr-core-optimization-module__intro .lead {
+    color: var(--typo3-text-color-variant);
+    font-size: .9375rem;
+    font-weight: 400;
+    line-height: var(--typo3-line-height);
+    margin-bottom: 0;
+}
+
 .solr-core-optimization-module .panel-body > :last-child,
 .solr-core-optimization-module form > :last-child {
     margin-bottom: 0;
@@ -53,6 +75,27 @@
     display: grid;
     gap: calc(var(--typo3-spacing) * .75);
     grid-template-columns: minmax(8rem, max-content) minmax(0, 1fr);
+}
+
+.solr-core-optimization-module__example--definition {
+    column-gap: calc(var(--typo3-spacing) * .75);
+    grid-template-columns: minmax(11rem, 14rem) minmax(0, 1fr);
+    row-gap: calc(var(--typo3-spacing) * .75);
+}
+
+.solr-core-optimization-module__example--definition .solr-core-optimization-module__example-row {
+    display: contents;
+}
+
+.solr-core-optimization-module__example--definition .solr-core-optimization-module__example-label,
+.solr-core-optimization-module__example--definition .solr-core-optimization-module__example-value,
+.solr-core-optimization-module__example--definition code {
+    align-self: center;
+}
+
+.solr-core-optimization-module__example-value {
+    line-height: var(--typo3-line-height);
+    min-width: 0;
 }
 
 .solr-core-optimization-module__example-label {
@@ -170,6 +213,10 @@
 
     .solr-core-optimization-module__section-header,
     .solr-core-optimization-module__example-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .solr-core-optimization-module__example--definition {
         grid-template-columns: minmax(0, 1fr);
     }
 

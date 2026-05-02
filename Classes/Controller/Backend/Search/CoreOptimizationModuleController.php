@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Http\UploadedFile;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
@@ -30,6 +31,8 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
  */
 class CoreOptimizationModuleController extends AbstractModuleController
 {
+    private const LANGUAGE_DOMAIN = 'solr.modules.core_optimization';
+
     /**
      * Set up the doc header properly here
      *
@@ -81,25 +84,29 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     public function addSynonymsAction(string $baseWord, string $synonyms, bool $overrideExisting): ResponseInterface
     {
-        if (empty($baseWord) || empty($synonyms)) {
+        $baseWord = mb_strtolower(trim($baseWord));
+        $synonymList = GeneralUtility::trimExplode(',', mb_strtolower($synonyms), true);
+
+        if ($baseWord === '' || $synonymList === []) {
             $this->addFlashMessage(
-                'Please provide a base word and synonyms.',
-                'Missing parameter',
+                $this->translate('flash.synonyms.missingParameter.message'),
+                $this->translate('flash.title.missingParameter'),
                 ContextualFeedbackSeverity::ERROR,
             );
         } else {
-            $baseWord = mb_strtolower($baseWord);
-            $synonyms = mb_strtolower($synonyms);
-
             $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
             if ($overrideExisting && $coreAdmin->getSynonyms($baseWord)) {
                 $coreAdmin->deleteSynonym($baseWord);
             }
-            $coreAdmin->addSynonym($baseWord, GeneralUtility::trimExplode(',', $synonyms, true));
+            $coreAdmin->addSynonym($baseWord, $synonymList);
             $coreAdmin->reloadCore();
 
             $this->addFlashMessage(
-                '"' . $synonyms . '" added as synonyms for base word "' . $baseWord . '"',
+                $this->translate('flash.synonyms.added.message', [
+                    'baseWord' => $baseWord,
+                    'count' => count($synonymList),
+                    'synonyms' => implode(', ', $synonymList),
+                ]),
             );
         }
 
@@ -141,8 +148,8 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $synonymFileUpload = $this->request->getUploadedFiles()['synonymFileUpload'] ?? null;
         if (!$synonymFileUpload instanceof UploadedFile) {
             $this->addFlashMessage(
-                'Synonyms upload not found.',
-                '',
+                $this->translate('flash.synonyms.uploadMissing.message'),
+                $this->translate('flash.title.missingParameter'),
                 ContextualFeedbackSeverity::ERROR,
             );
             return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
@@ -167,7 +174,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
         $coreAdmin->reloadCore();
         $this->addFlashMessage(
-            $synonymCount . ' synonyms imported.',
+            $this->translate('flash.synonyms.imported.message', ['count' => $synonymCount]),
         );
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
@@ -180,8 +187,8 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $stopwordsFileUpload = $this->request->getUploadedFiles()['stopwordsFileUpload'] ?? null;
         if (!$stopwordsFileUpload instanceof UploadedFile) {
             $this->addFlashMessage(
-                'Stop Word upload not found.',
-                '',
+                $this->translate('flash.stopWords.uploadMissing.message'),
+                $this->translate('flash.title.missingParameter'),
                 ContextualFeedbackSeverity::ERROR,
             );
             return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
@@ -210,12 +217,12 @@ class CoreOptimizationModuleController extends AbstractModuleController
             && $reloadResponse->getHttpStatus() == 200
         ) {
             $this->addFlashMessage(
-                'All synonym removed.',
+                $this->translate('flash.synonyms.deleteAll.success'),
             );
         } else {
             $this->addFlashMessage(
-                'Failed to remove all synonyms.',
-                'An error occurred',
+                $this->translate('flash.synonyms.deleteAll.error'),
+                $this->translate('flash.title.error'),
                 ContextualFeedbackSeverity::ERROR,
             );
         }
@@ -239,12 +246,12 @@ class CoreOptimizationModuleController extends AbstractModuleController
             && $reloadResponse->getHttpStatus() == 200
         ) {
             $this->addFlashMessage(
-                'Synonym removed.',
+                $this->translate('flash.synonyms.delete.success'),
             );
         } else {
             $this->addFlashMessage(
-                'Failed to remove synonym.',
-                'An error occurred',
+                $this->translate('flash.synonyms.delete.error'),
+                $this->translate('flash.title.error'),
                 ContextualFeedbackSeverity::ERROR,
             );
         }
@@ -283,7 +290,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $reloadResponse = $coreAdmin->reloadCore();
         if ($wordsRemoved && $wordsAdded && $reloadResponse->getHttpStatus() == 200) {
             $this->addFlashMessage(
-                'Stop Words Updated.',
+                $this->translate('flash.stopWords.updated'),
             );
         }
 
@@ -334,8 +341,8 @@ class CoreOptimizationModuleController extends AbstractModuleController
             if ($response->getHttpStatus() != 200) {
                 $wordsRemoved = false;
                 $this->addFlashMessage(
-                    'Failed to remove stop word "' . $word . '".',
-                    'An error occurred',
+                    $this->translate('flash.stopWords.removeFailed', ['word' => $word]),
+                    $this->translate('flash.title.error'),
                     ContextualFeedbackSeverity::ERROR,
                 );
                 break;
@@ -343,6 +350,11 @@ class CoreOptimizationModuleController extends AbstractModuleController
         }
 
         return $wordsRemoved;
+    }
+
+    private function translate(string $key, array $arguments = []): string
+    {
+        return LocalizationUtility::translate($key, self::LANGUAGE_DOMAIN, $arguments) ?? $key;
     }
 
     /**

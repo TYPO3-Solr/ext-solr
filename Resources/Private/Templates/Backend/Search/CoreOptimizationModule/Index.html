@@ -7,6 +7,11 @@
     <f:be.pageRenderer includeCssFiles="{0: 'EXT:solr/Resources/Public/StyleSheets/Backend/CoreOptimizationModule.css'}"/>
 
     <div class="tab-wrapper solr-core-optimization-module">
+        <header class="solr-core-optimization-module__intro">
+            <h1><f:translate key="module.heading" domain="solr.modules.core_optimization"/></h1>
+            <p class="lead"><f:translate key="module.teaser" domain="solr.modules.core_optimization"/></p>
+        </header>
+
         <ul class="nav nav-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
             <li role="presentation" class="nav-item">
                 <button type="button" id="synonyms-tab-button" class="nav-link active" data-typo3-tab="#synonyms-tab" aria-controls="synonyms-tab" aria-selected="true" tabindex="0" role="tab">
@@ -56,7 +61,7 @@
                 <f:translate key="synonyms.guide.note" domain="solr.modules.core_optimization"/>
             </p>
 
-            <div class="solr-core-optimization-module__example" role="group" aria-label="{f:translate(key: 'synonyms.example.title', domain: 'solr.modules.core_optimization')}">
+            <div class="solr-core-optimization-module__example solr-core-optimization-module__example--definition" role="group" aria-label="{f:translate(key: 'synonyms.example.title', domain: 'solr.modules.core_optimization')}">
                 <div class="solr-core-optimization-module__example-row">
                     <span class="solr-core-optimization-module__example-label"><f:translate key="synonyms.example.base" domain="solr.modules.core_optimization"/></span>
                     <code>"smartphone"</code>
@@ -67,7 +72,7 @@
                 </div>
                 <div class="solr-core-optimization-module__example-row">
                     <span class="solr-core-optimization-module__example-label"><f:translate key="synonyms.example.result" domain="solr.modules.core_optimization"/></span>
-                    <span><f:translate key="synonyms.example.resultText" domain="solr.modules.core_optimization"/></span>
+                    <span class="solr-core-optimization-module__example-value"><f:translate key="synonyms.example.resultText" domain="solr.modules.core_optimization"/></span>
                 </div>
             </div>
 
@@ -203,10 +208,11 @@
             <p>
                 <f:translate key="stopWords.guide.format" domain="solr.modules.core_optimization"/>
             </p>
-            <div class="solr-core-optimization-module__example solr-core-optimization-module__example--compact">
-                <code>the</code>
-                <code>and</code>
-                <code>or</code>
+            <div class="solr-core-optimization-module__example solr-core-optimization-module__example--compact" role="group" aria-label="{f:translate(key: 'stopWords.guide.examples.label', domain: 'solr.modules.core_optimization')}">
+                <span class="solr-core-optimization-module__example-label"><f:translate key="stopWords.guide.examples.label" domain="solr.modules.core_optimization"/></span>
+                <code><f:translate key="stopWords.guide.examples.first" domain="solr.modules.core_optimization"/></code>
+                <code><f:translate key="stopWords.guide.examples.second" domain="solr.modules.core_optimization"/></code>
+                <code><f:translate key="stopWords.guide.examples.third" domain="solr.modules.core_optimization"/></code>
             </div>
             <p class="solr-core-optimization-module__hint">
                 <f:translate key="stopWords.guide.reindexNote" domain="solr.modules.core_optimization"/>
