@@ -724,6 +724,43 @@
                 </li>
             </f:for>
         </ul>
+
+        <section class="solr-info-module__production-checklist" aria-labelledby="solr-production-checklist-title">
+            <div class="solr-info-module__section-heading solr-info-module__production-checklist-heading">
+                <div>
+                    <h3 id="solr-production-checklist-title"><f:translate key="productionChecklist.title" domain="solr.modules.info"/></h3>
+                    <p><f:translate key="productionChecklist.description" domain="solr.modules.info"/></p>
+                </div>
+                <div class="solr-info-module__server-heading-badges">
+                    <span class="solr-info-module__status-pill solr-info-module__status-pill--{productionChecklistSummary.statusClass}">
+                        <f:translate key="{productionChecklistSummary.statusLabelKey}" domain="solr.modules.info"/>
+                    </span>
+                    <span class="badge badge-default">
+                        <f:translate key="productionChecklist.summary.checkCount" domain="solr.modules.info" arguments="{count: productionChecklistSummary.checkCount}"/>
+                    </span>
+                    <span class="badge {f:if(condition: productionChecklistSummary.reviewCount, then: 'badge-warning', else: 'badge-success')}">
+                        <f:translate key="productionChecklist.summary.reviewCount" domain="solr.modules.info" arguments="{count: productionChecklistSummary.reviewCount}"/>
+                    </span>
+                </div>
+            </div>
+
+            <ul class="solr-info-module__production-checklist-list">
+                <f:for each="{productionChecklistItems}" as="checkItem">
+                    <li class="solr-info-module__production-checklist-item solr-info-module__production-checklist-item--{checkItem.statusClass}">
+                        <span class="solr-info-module__production-checklist-icon" aria-hidden="true">
+                            <core:icon identifier="{checkItem.icon}" size="small"/>
+                        </span>
+                        <span class="solr-info-module__production-checklist-body">
+                            <strong><f:translate key="{checkItem.labelKey}" domain="solr.modules.info"/></strong>
+                            <span><f:translate key="{checkItem.detailKey}" domain="solr.modules.info" arguments="{checkItem.detailArguments}"/></span>
+                        </span>
+                        <span class="solr-info-module__status-pill solr-info-module__status-pill--{checkItem.statusClass}">
+                            <f:translate key="{checkItem.statusLabelKey}" domain="solr.modules.info"/>
+                        </span>
+                    </li>
+                </f:for>
+            </ul>
+        </section>
     </section>
 </f:section>
 

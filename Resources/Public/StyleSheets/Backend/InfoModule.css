@@ -1310,6 +1310,85 @@
     font-weight: 400;
 }
 
+.solr-info-module__production-checklist {
+    border-top: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    display: grid;
+    gap: var(--typo3-spacing);
+    margin-top: calc(var(--typo3-spacing) * 1.25);
+    padding-top: var(--typo3-spacing);
+}
+
+.solr-info-module__production-checklist-heading h3 {
+    font-size: 1rem;
+    margin: 0 0 calc(var(--typo3-spacing) * .25);
+}
+
+.solr-info-module__production-checklist-list {
+    display: grid;
+    gap: calc(var(--typo3-spacing) * .5);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.solr-info-module__production-checklist-item {
+    --solr-info-module-production-checklist-state-color: var(--typo3-state-default-border-color);
+
+    align-items: flex-start;
+    background-color: var(--typo3-surface-container-low);
+    border: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    border-left: calc(var(--typo3-component-border-width) * 5) solid var(--solr-info-module-production-checklist-state-color);
+    border-radius: var(--typo3-component-border-radius);
+    box-shadow: var(--typo3-component-box-shadow);
+    color: var(--typo3-text-color-base);
+    display: grid;
+    gap: calc(var(--typo3-spacing) * .6);
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding: calc(var(--typo3-spacing) * .65) var(--typo3-spacing);
+}
+
+.solr-info-module__production-checklist-item--success {
+    --solr-info-module-production-checklist-state-color: var(--typo3-state-success-border-color);
+}
+
+.solr-info-module__production-checklist-item--warning {
+    --solr-info-module-production-checklist-state-color: var(--typo3-state-warning-border-color);
+}
+
+.solr-info-module__production-checklist-item--danger {
+    --solr-info-module-production-checklist-state-color: var(--typo3-state-danger-border-color);
+}
+
+.solr-info-module__production-checklist-item--info,
+.solr-info-module__production-checklist-item--notice {
+    --solr-info-module-production-checklist-state-color: var(--typo3-state-info-border-color);
+}
+
+.solr-info-module__production-checklist-icon {
+    color: var(--solr-info-module-production-checklist-state-color);
+    display: inline-flex;
+    margin-top: .125rem;
+}
+
+.solr-info-module__production-checklist-icon .icon {
+    color: currentColor;
+}
+
+.solr-info-module__production-checklist-body {
+    display: grid;
+    gap: calc(var(--typo3-spacing) * .2);
+    min-width: 0;
+}
+
+.solr-info-module__production-checklist-body strong {
+    font-weight: 700;
+}
+
+.solr-info-module__production-checklist-body span {
+    color: var(--typo3-text-color-secondary);
+    overflow-wrap: anywhere;
+}
+
 @media (max-width: 767.98px) {
     #connections-tab .panel-tab,
     #statistics-tab .panel-tab,
@@ -1333,6 +1412,15 @@
     .solr-info-module__refresh-button {
         grid-column: 1 / -1;
         justify-self: stretch;
+    }
+
+    .solr-info-module__production-checklist-item {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .solr-info-module__production-checklist-item > .solr-info-module__status-pill {
+        grid-column: 2;
+        justify-self: flex-start;
     }
 
     .solr-info-module__hosted-solr {

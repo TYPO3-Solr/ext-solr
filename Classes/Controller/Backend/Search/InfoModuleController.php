@@ -32,8 +32,10 @@ use ApacheSolrForTypo3\Solr\Report\TextToVectorModelStoreStatus;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
+use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -64,6 +66,12 @@ class InfoModuleController extends AbstractModuleController
 
     private const SOLR_REPORT_PREVIEW_LIMIT = 3;
 
+    private const EXPECTED_CONFIGSET_VERSION = 'ext_solr_14_0_0';
+
+    private const RECOMMENDED_JVM_MAX_BYTES = 1073741824;
+
+    private const MINIMUM_CVE_SAFE_SOLR_VERSION = '9.8.0';
+
     protected ApacheSolrDocumentRepository $apacheSolrDocumentRepository;
 
     private array $browserEndpointProbeResults = [];
@@ -71,6 +79,8 @@ class InfoModuleController extends AbstractModuleController
     private array $coreDocumentCountByEndpoint = [];
 
     private array $siteDocumentCountByEndpoint = [];
+
+    private array $connectionSummaries = [];
 
     private ?array $solrServerInfo = null;
 
@@ -108,8 +118,225 @@ class InfoModuleController extends AbstractModuleController
         $this->collectIndexFieldsInfo();
         $this->collectIndexInspectorInfo();
         $this->collectSolrReportInfo();
+        $this->collectProductionChecklistInfo();
 
         return $this->moduleTemplate->renderResponse('Backend/Search/InfoModule/Index');
+    }
+
+    private function collectProductionChecklistInfo(): void
+    {
+        $items = [
+            $this->buildConfigsetChecklistItem(),
+            $this->buildJvmMemoryChecklistItem(),
+            $this->buildPublicAccessChecklistItem(),
+            $this->buildIndexQueueWorkerChecklistItem(),
+            $this->buildLoggingChecklistItem(),
+            $this->buildBackupChecklistItem(),
+            $this->buildCveChecklistItem(),
+            $this->buildSiteHashChecklistItem(),
+            $this->buildLanguageCoreChecklistItem(),
+        ];
+
+        $reviewCount = count(array_filter(
+            $items,
+            static fn (array $item): bool => $item['severityValue'] > ContextualFeedbackSeverity::OK->value,
+        ));
+
+        $highestSeverity = ContextualFeedbackSeverity::OK;
+        foreach ($items as $item) {
+            if ($item['severityValue'] > $highestSeverity->value) {
+                $highestSeverity = ContextualFeedbackSeverity::from($item['severityValue']);
+            }
+        }
+
+        $this->moduleTemplate->assignMultiple([
+            'productionChecklistItems' => $items,
+            'productionChecklistSummary' => [
+                'checkCount' => count($items),
+                'reviewCount' => $reviewCount,
+                'statusClass' => $highestSeverity->getCssClass(),
+                'statusLabelKey' => $this->getReportSeverityLabelKey($highestSeverity),
+            ],
+        ]);
+    }
+
+    private function buildConfigsetChecklistItem(): array
+    {
+        $expectedConfigset = $this->getExpectedConfigsetVersion();
+        return $this->buildProductionChecklistItem(
+            'productionChecklist.configset.title',
+            'productionChecklist.configset.detail',
+            ContextualFeedbackSeverity::NOTICE,
+            [
+                'configset' => $expectedConfigset,
+            ],
+        );
+    }
+
+    private function buildJvmMemoryChecklistItem(): array
+    {
+        $maxBytes = $this->solrServerInfo['jvmMemoryMaxBytes'] ?? null;
+        if (!is_int($maxBytes) || $maxBytes <= 0) {
+            return $this->buildProductionChecklistItem(
+                'productionChecklist.jvmMemory.title',
+                'productionChecklist.jvmMemory.detail.unavailable',
+                ContextualFeedbackSeverity::WARNING,
+                [
+                    'recommended' => $this->formatBytes(self::RECOMMENDED_JVM_MAX_BYTES),
+                ],
+            );
+        }
+
+        if ($maxBytes < self::RECOMMENDED_JVM_MAX_BYTES) {
+            return $this->buildProductionChecklistItem(
+                'productionChecklist.jvmMemory.title',
+                'productionChecklist.jvmMemory.detail.warning',
+                ContextualFeedbackSeverity::WARNING,
+                [
+                    'current' => $this->formatBytes($maxBytes),
+                    'recommended' => $this->formatBytes(self::RECOMMENDED_JVM_MAX_BYTES),
+                ],
+            );
+        }
+
+        return $this->buildProductionChecklistItem(
+            'productionChecklist.jvmMemory.title',
+            'productionChecklist.jvmMemory.detail.ok',
+            ContextualFeedbackSeverity::OK,
+            [
+                'current' => $this->formatBytes($maxBytes),
+                'recommended' => $this->formatBytes(self::RECOMMENDED_JVM_MAX_BYTES),
+            ],
+        );
+    }
+
+    private function buildPublicAccessChecklistItem(): array
+    {
+        return $this->buildProductionChecklistItem(
+            'productionChecklist.publicAccess.title',
+            'productionChecklist.publicAccess.detail',
+            ContextualFeedbackSeverity::NOTICE,
+        );
+    }
+
+    private function buildIndexQueueWorkerChecklistItem(): array
+    {
+        $hasWorker = $this->hasActiveIndexQueueWorkerTask();
+        return $this->buildProductionChecklistItem(
+            'productionChecklist.indexQueueWorker.title',
+            $hasWorker ? 'productionChecklist.indexQueueWorker.detail.ok' : 'productionChecklist.indexQueueWorker.detail.warning',
+            $hasWorker ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::WARNING,
+        );
+    }
+
+    private function buildLoggingChecklistItem(): array
+    {
+        $enabledLoggingKeys = $this->getEnabledVerboseLoggingKeys();
+        if ($enabledLoggingKeys === []) {
+            return $this->buildProductionChecklistItem(
+                'productionChecklist.logging.title',
+                'productionChecklist.logging.detail.ok',
+                ContextualFeedbackSeverity::OK,
+            );
+        }
+
+        return $this->buildProductionChecklistItem(
+            'productionChecklist.logging.title',
+            'productionChecklist.logging.detail.warning',
+            ContextualFeedbackSeverity::WARNING,
+            [
+                'keys' => implode(', ', $enabledLoggingKeys),
+            ],
+        );
+    }
+
+    private function buildBackupChecklistItem(): array
+    {
+        return $this->buildProductionChecklistItem(
+            'productionChecklist.backup.title',
+            'productionChecklist.backup.detail',
+            ContextualFeedbackSeverity::NOTICE,
+        );
+    }
+
+    private function buildCveChecklistItem(): array
+    {
+        $solrVersion = trim((string)($this->solrServerInfo['solrVersion'] ?? ''));
+        if ($solrVersion === '') {
+            return $this->buildProductionChecklistItem(
+                'productionChecklist.cve.title',
+                'productionChecklist.cve.detail.unavailable',
+                ContextualFeedbackSeverity::WARNING,
+                [
+                    'minimumVersion' => self::MINIMUM_CVE_SAFE_SOLR_VERSION,
+                ],
+            );
+        }
+
+        $severity = version_compare($solrVersion, self::MINIMUM_CVE_SAFE_SOLR_VERSION, '>=') ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::WARNING;
+        return $this->buildProductionChecklistItem(
+            'productionChecklist.cve.title',
+            $severity === ContextualFeedbackSeverity::OK ? 'productionChecklist.cve.detail.ok' : 'productionChecklist.cve.detail.warning',
+            $severity,
+            [
+                'currentVersion' => $solrVersion,
+                'minimumVersion' => self::MINIMUM_CVE_SAFE_SOLR_VERSION,
+            ],
+        );
+    }
+
+    private function buildSiteHashChecklistItem(): array
+    {
+        return $this->buildProductionChecklistItem(
+            'productionChecklist.siteHash.title',
+            'productionChecklist.siteHash.detail',
+            ContextualFeedbackSeverity::OK,
+        );
+    }
+
+    private function buildLanguageCoreChecklistItem(): array
+    {
+        $connections = $this->connectionSummaries;
+        if (!is_array($connections) || $connections === []) {
+            return $this->buildProductionChecklistItem(
+                'productionChecklist.languageCores.title',
+                'productionChecklist.languageCores.detail.unavailable',
+                ContextualFeedbackSeverity::WARNING,
+            );
+        }
+
+        $coreNames = [];
+        $missingSchemaCoreNames = [];
+        $coreSchemas = is_array($this->solrServerInfo['coreSchemas'] ?? null) ? $this->solrServerInfo['coreSchemas'] : [];
+        foreach ($connections as $connection) {
+            if (!is_array($connection)) {
+                continue;
+            }
+
+            $coreName = trim((string)($connection['coreName'] ?? ''));
+            if ($coreName === '') {
+                continue;
+            }
+
+            $coreNames[] = $coreName;
+            $schema = trim((string)($coreSchemas[$coreName] ?? ''));
+            if ($schema === '') {
+                $missingSchemaCoreNames[] = $coreName;
+            }
+        }
+
+        $hasDuplicateCoreNames = count($coreNames) !== count(array_unique($coreNames));
+        $isComplete = !$hasDuplicateCoreNames && $missingSchemaCoreNames === [];
+
+        return $this->buildProductionChecklistItem(
+            'productionChecklist.languageCores.title',
+            $isComplete ? 'productionChecklist.languageCores.detail.ok' : 'productionChecklist.languageCores.detail.warning',
+            $isComplete ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::WARNING,
+            [
+                'count' => count(array_unique($coreNames)),
+                'missing' => implode(', ', $missingSchemaCoreNames),
+            ],
+        );
     }
 
     private function collectSolrReportInfo(): void
@@ -257,6 +484,156 @@ class InfoModuleController extends AbstractModuleController
         };
     }
 
+    /**
+     * @return array{
+     *     labelKey: string,
+     *     detailKey: string,
+     *     detailArguments: array<string, string|int>,
+     *     statusClass: string,
+     *     statusLabelKey: string,
+     *     severityValue: int,
+     *     icon: string
+     * }
+     */
+    private function buildProductionChecklistItem(
+        string $labelKey,
+        string $detailKey,
+        ContextualFeedbackSeverity $severity,
+        array $detailArguments = [],
+    ): array {
+        return [
+            'labelKey' => $labelKey,
+            'detailKey' => $detailKey,
+            'detailArguments' => $detailArguments,
+            'statusClass' => $severity->getCssClass(),
+            'statusLabelKey' => $this->getReportSeverityLabelKey($severity),
+            'severityValue' => $severity->value,
+            'icon' => $severity->getIconIdentifier(),
+        ];
+    }
+
+    private function getExpectedConfigsetVersion(): string
+    {
+        $composerFile = GeneralUtility::getFileAbsFileName('EXT:solr/composer.json');
+        if (is_file($composerFile)) {
+            $composer = json_decode((string)file_get_contents($composerFile), true);
+            $configset = $composer['extra']['TYPO3-Solr']['version-matrix']['configset'] ?? '';
+            if (is_string($configset) && trim($configset) !== '') {
+                return trim($configset);
+            }
+        }
+
+        return self::EXPECTED_CONFIGSET_VERSION;
+    }
+
+    private function hasActiveIndexQueueWorkerTask(): bool
+    {
+        try {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_scheduler_task');
+            $rows = $queryBuilder
+                ->select('disable', 'tasktype', 'serialized_task_object')
+                ->from('tx_scheduler_task')
+                ->where($queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0)))
+                ->executeQuery()
+                ->fetchAllAssociative();
+        } catch (Throwable) {
+            return false;
+        }
+
+        foreach ($rows as $row) {
+            if ((int)($row['disable'] ?? 0) !== 0) {
+                continue;
+            }
+
+            $taskType = trim((string)($row['tasktype'] ?? ''));
+            $serializedTask = (string)($row['serialized_task_object'] ?? '');
+            if ($taskType === IndexQueueWorkerTask::class || str_contains($serializedTask, IndexQueueWorkerTask::class)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function getEnabledVerboseLoggingKeys(): array
+    {
+        try {
+            $frameWorkConfiguration = $this->configurationManager->getConfiguration(
+                ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
+                'solr',
+            );
+        } catch (Throwable) {
+            return ['TypoScript'];
+        }
+
+        $loggingConfiguration = $frameWorkConfiguration['plugin.']['tx_solr.']['logging.'] ?? [];
+        if (!is_array($loggingConfiguration)) {
+            return [];
+        }
+
+        $paths = [
+            'debugOutput',
+            'indexing.indexQueueInitialization',
+            'indexing.pageIndexed',
+            'indexing.queue.pages',
+            'query.filters',
+            'query.searchWords',
+            'query.queryString',
+            'query.rawPost',
+            'query.rawGet',
+            'query.rawDelete',
+        ];
+
+        $enabledPaths = [];
+        foreach ($paths as $path) {
+            $value = $this->getTypoScriptValueByPath($loggingConfiguration, $path);
+            if ($this->isTruthyTypoScriptValue($value)) {
+                $enabledPaths[] = 'plugin.tx_solr.logging.' . $path;
+            }
+        }
+
+        return $enabledPaths;
+    }
+
+    private function getTypoScriptValueByPath(array $configuration, string $path): mixed
+    {
+        $current = $configuration;
+        foreach (explode('.', $path) as $segment) {
+            if (!is_array($current)) {
+                return null;
+            }
+
+            $arrayKey = $segment . '.';
+            if (array_key_exists($arrayKey, $current)) {
+                $current = $current[$arrayKey];
+                continue;
+            }
+
+            if (array_key_exists($segment, $current)) {
+                $current = $current[$segment];
+                continue;
+            }
+
+            return null;
+        }
+
+        return $current;
+    }
+
+    private function isTruthyTypoScriptValue(mixed $value): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        $value = strtolower(trim((string)$value));
+        return $value !== '' && $value !== '0' && $value !== 'false' && $value !== 'off';
+    }
+
     private function getReportHintKey(string $providerClass, ContextualFeedbackSeverity $severity): string
     {
         if ($severity->value <= ContextualFeedbackSeverity::OK->value) {
@@ -318,6 +695,7 @@ class InfoModuleController extends AbstractModuleController
         $missingHosts = [];
         $invalidPaths = [];
         $connectionSummaries = [];
+        $this->connectionSummaries = [];
         $configuredCoreDocumentTotal = 0;
         $configuredCoreDocumentTotalAvailable = true;
         $this->solrServerInfo = null;
@@ -405,6 +783,7 @@ class InfoModuleController extends AbstractModuleController
             'indexedDocumentTotalAvailable' => $configuredCoreDocumentTotalAvailable,
             'solrServerInfo' => $this->solrServerInfo,
         ]);
+        $this->connectionSummaries = $connectionSummaries;
     }
 
     private function getConnectionStatusClass(bool $isConnected, ?int $documentCount, string $browserEndpointStatus): string
@@ -701,7 +1080,10 @@ class InfoModuleController extends AbstractModuleController
      *     metrics: array<int, array{labelKey: string, value: string}>,
      *     coreCount: int,
      *     documentCount: int,
-     *     coreDocumentCounts: array<string, int>
+     *     coreDocumentCounts: array<string, int>,
+     *     coreSchemas: array<string, string>,
+     *     solrVersion: string,
+     *     jvmMemoryMaxBytes: int|null
      * }|null
      */
     private function getSolrServerInfo(string $endpointUrl): ?array
@@ -736,15 +1118,28 @@ class InfoModuleController extends AbstractModuleController
         $cores = $hasServerInfo && is_array($coreStatus['status'] ?? null) ? $coreStatus['status'] : [];
         $documentCount = 0;
         $coreDocumentCounts = [];
+        $coreSchemas = [];
         foreach ($cores as $coreName => $core) {
-            if (is_array($core) && isset($core['index']['numDocs'])) {
+            if (!is_array($core)) {
+                continue;
+            }
+
+            if (isset($core['index']['numDocs'])) {
+                $coreName = (string)$coreName;
                 $coreDocumentCount = (int)$core['index']['numDocs'];
                 $documentCount += $coreDocumentCount;
-                $coreDocumentCounts[(string)$coreName] = $coreDocumentCount;
+                $coreDocumentCounts[$coreName] = $coreDocumentCount;
+            }
+
+            $schema = trim((string)($core['schema'] ?? ''));
+            if ($schema !== '') {
+                $coreSchemas[(string)$coreName] = $schema;
             }
         }
 
         $metrics = [];
+        $solrVersion = '';
+        $jvmMemoryMaxBytes = null;
         if (is_array($systemInfo)) {
             $lucene = is_array($systemInfo['lucene'] ?? null) ? $systemInfo['lucene'] : [];
             $jvm = is_array($systemInfo['jvm'] ?? null) ? $systemInfo['jvm'] : [];
@@ -752,9 +1147,11 @@ class InfoModuleController extends AbstractModuleController
             $memory = is_array($jvm['memory'] ?? null) ? $jvm['memory'] : [];
             $memoryRaw = is_array($memory['raw'] ?? null) ? $memory['raw'] : [];
             $jmx = is_array($jvm['jmx'] ?? null) ? $jvm['jmx'] : [];
+            $solrVersion = trim((string)($lucene['solr-spec-version'] ?? ''));
+            $jvmMemoryMaxBytes = isset($memoryRaw['max']) ? (int)$memoryRaw['max'] : null;
 
             $metrics = array_values(array_filter([
-                $this->buildServerMetric('connections.serverInfo.solrVersion', $lucene['solr-spec-version'] ?? ''),
+                $this->buildServerMetric('connections.serverInfo.solrVersion', $solrVersion),
                 $this->buildServerMetric('connections.serverInfo.luceneVersion', $lucene['lucene-spec-version'] ?? ''),
                 $this->buildServerMetric('connections.serverInfo.javaRuntime', $jre['version'] ?? $jvm['version'] ?? ''),
                 $this->buildServerMetric('connections.serverInfo.jvmMemory', $this->formatMemoryUsage($memory, $memoryRaw)),
@@ -771,6 +1168,9 @@ class InfoModuleController extends AbstractModuleController
             'coreCount' => count($cores),
             'documentCount' => $documentCount,
             'coreDocumentCounts' => $coreDocumentCounts,
+            'coreSchemas' => $coreSchemas,
+            'solrVersion' => $solrVersion,
+            'jvmMemoryMaxBytes' => $jvmMemoryMaxBytes,
         ];
     }
 
@@ -805,6 +1205,23 @@ class InfoModuleController extends AbstractModuleController
 
         $percentage = isset($memoryRaw['used%']) ? sprintf('%.1f%%', (float)$memoryRaw['used%']) : '';
         return trim($used . ' / ' . $max . ($percentage !== '' ? ' (' . $percentage . ')' : ''));
+    }
+
+    private function formatBytes(int $bytes): string
+    {
+        if ($bytes >= 1073741824) {
+            return rtrim(rtrim(sprintf('%.1f', $bytes / 1073741824), '0'), '.') . ' GB';
+        }
+
+        if ($bytes >= 1048576) {
+            return rtrim(rtrim(sprintf('%.1f', $bytes / 1048576), '0'), '.') . ' MB';
+        }
+
+        if ($bytes >= 1024) {
+            return rtrim(rtrim(sprintf('%.1f', $bytes / 1024), '0'), '.') . ' KB';
+        }
+
+        return $bytes . ' B';
     }
 
     private function formatDuration(int $milliseconds): string
