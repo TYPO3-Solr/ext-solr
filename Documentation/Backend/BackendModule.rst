@@ -91,6 +91,16 @@ The **Index Queue** module is the most important module. It allows you to do the
 
 .. image:: /Images/Backend/solr-backend-module_IndexQueue.png
 
+Manual indexing actions
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The status section offers two buttons for ad-hoc indexing without waiting for the scheduler:
+
+* **Index now** processes a single pending item per click. Useful for spot-checking indexer changes against one document.
+* **Index N items** appears whenever more than one item is pending. ``N`` is rendered dynamically as ``min(pendingCount, 50)`` so the label reflects exactly how many items the next click will process — never more than the queue holds, and capped at 50 per request to keep the HTTP round-trip predictable. With 31 pending items the button reads "31 indexieren"; with 200 pending it reads "50 indexieren" and you click it again to drain the next batch.
+
+Both actions reuse :php:`IndexService::indexItems()`, so the per-item events, error handling, and Solr commit behavior are identical to a scheduler run.
+
 Index Administration (earlier Index Maintenance)
 ------------------------------------------------
 

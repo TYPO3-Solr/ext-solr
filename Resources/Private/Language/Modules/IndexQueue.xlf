@@ -53,12 +53,12 @@
     </unit>
     <unit id="action.indexNow">
       <segment state="final">
-        <source>Index now</source>
+        <source>Index once</source>
       </segment>
     </unit>
     <unit id="action.indexBatch">
       <segment state="final">
-        <source>Index up to 50</source>
+        <source>Index %d items</source>
       </segment>
     </unit>
     <unit id="action.back">

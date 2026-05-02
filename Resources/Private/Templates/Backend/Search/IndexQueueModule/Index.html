@@ -22,11 +22,13 @@
 								<f:form.submit class="btn btn-sm btn-default"
 											   value="{f:translate(key:'action.indexNow', domain:'solr.modules.index_queue')}"/>
 							</f:form>
-							<f:form action="doIndexingRun" method="POST">
-								<f:form.hidden name="limit" value="50"/>
-								<f:form.submit class="btn btn-sm btn-default"
-											   value="{f:translate(key:'action.indexBatch', domain:'solr.modules.index_queue')}"/>
-							</f:form>
+							<f:if condition="{manualIndexBatchSize} > 1">
+								<f:form action="doIndexingRun" method="POST">
+									<f:form.hidden name="limit" value="{manualIndexBatchSize}"/>
+									<f:form.submit class="btn btn-sm btn-default"
+												   value="{f:translate(key:'action.indexBatch', domain:'solr.modules.index_queue', arguments:{0: manualIndexBatchSize})}"/>
+								</f:form>
+							</f:if>
 						</div>
 					</div>
 					<ul class="badge-list solr-index-queue-module__status-list" aria-label="{f:translate(key:'status.title', domain:'solr.modules.index_queue')}">

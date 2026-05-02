@@ -63,14 +63,14 @@
     </unit>
     <unit id="action.indexNow">
       <segment state="final">
-        <source>Index now</source>
-        <target>Jetzt indexieren</target>
+        <source>Index once</source>
+        <target>Einmal indexieren</target>
       </segment>
     </unit>
     <unit id="action.indexBatch">
       <segment state="final">
-        <source>Index up to 50</source>
-        <target>Bis zu 50 indexieren</target>
+        <source>Index %d items</source>
+        <target>%d indexieren</target>
       </segment>
     </unit>
     <unit id="action.back">

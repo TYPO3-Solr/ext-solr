@@ -75,10 +75,12 @@ class IndexQueueModuleController extends AbstractModuleController
         }
 
         $statistics = $this->indexQueue->getStatisticsBySite($this->selectedSite);
+        $manualIndexBatchSize = min($statistics->getPendingCount(), self::MANUAL_INDEX_RUN_MAX_LIMIT);
         $this->moduleTemplate->assignMultiple([
             'indexQueueInitializationSelector' => $this->getIndexQueueInitializationSelector(),
             'indexqueue_statistics' => $statistics,
             'indexqueue_errors' => $this->indexQueue->getErrorsBySite($this->selectedSite),
+            'manualIndexBatchSize' => $manualIndexBatchSize,
             'confirmTitle' => $this->translate('modal.confirm.title'),
             'clearQueueConfirmation' => $this->translate('clear.confirm.message'),
         ]);
