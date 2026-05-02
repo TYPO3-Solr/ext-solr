@@ -290,28 +290,10 @@
 
     <f:if condition="{solrServerInfo}">
         <section class="solr-info-module__runtime-overview" aria-labelledby="solr-runtime-overview-title">
-            <div class="solr-info-module__section-heading">
-                <div>
+            <div class="solr-info-module__section-heading solr-info-module__section-heading--full-description">
+                <div class="solr-info-module__section-heading-main">
                     <h3 id="solr-runtime-overview-title"><f:translate key="connections.serverInfo.title" domain="solr.modules.info"/></h3>
                     <p><f:translate key="connections.serverInfo.description" domain="solr.modules.info"/></p>
-                    <span class="form-text solr-info-module__server-scope-note">
-                        <f:if condition="{indexedDocumentTotalAvailable}">
-                            <f:then>
-                                <f:translate
-                                    key="connections.serverInfo.scopeNote"
-                                    domain="solr.modules.info"
-                                    arguments="{total: solrServerInfo.documentCount, siteTotal: indexedDocumentTotal}"
-                                />
-                            </f:then>
-                            <f:else>
-                                <f:translate
-                                    key="connections.serverInfo.scopeNoteUnavailable"
-                                    domain="solr.modules.info"
-                                    arguments="{total: solrServerInfo.documentCount}"
-                                />
-                            </f:else>
-                        </f:if>
-                    </span>
                 </div>
                 <div class="solr-info-module__runtime-badges">
                     <span class="badge badge-default">
@@ -321,6 +303,24 @@
                         <f:translate key="connections.serverInfo.indexedDocuments" domain="solr.modules.info" arguments="{count: solrServerInfo.documentCount}"/>
                     </span>
                 </div>
+                <span class="form-text solr-info-module__server-scope-note">
+                    <f:if condition="{indexedDocumentTotalAvailable}">
+                        <f:then>
+                            <f:translate
+                                key="connections.serverInfo.scopeNote"
+                                domain="solr.modules.info"
+                                arguments="{total: solrServerInfo.documentCount, siteTotal: indexedDocumentTotal}"
+                            />
+                        </f:then>
+                        <f:else>
+                            <f:translate
+                                key="connections.serverInfo.scopeNoteUnavailable"
+                                domain="solr.modules.info"
+                                arguments="{total: solrServerInfo.documentCount}"
+                            />
+                        </f:else>
+                    </f:if>
+                </span>
             </div>
 
             <div class="solr-info-module__runtime-card solr-info-module__server-item--{solrServerInfo.statusClass}">
