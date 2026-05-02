@@ -711,8 +711,8 @@
     </unit>
     <unit id="productionChecklist.cve.description">
       <segment state="final">
-        <source>Reads the live Solr version from /admin/info/system and compares it with the CVE-2025-24814 patch threshold (Solr 9.8.0 or newer).</source>
-        <target>Liest die Live-Solr-Version aus /admin/info/system und vergleicht sie mit dem CVE-2025-24814-Patch-Schwellwert (Solr 9.8.0 oder neuer).</target>
+        <source>Reads the live Solr version from /admin/info/system and compares it with the CVE-2025-24814 patch threshold (Solr 9.8.0 or newer). No automatic check against current CVE databases.</source>
+        <target>Liest die Live-Solr-Version aus /admin/info/system und vergleicht sie mit dem CVE-2025-24814-Patch-Schwellwert (Solr 9.8.0 oder neuer). Keine automatische Prüfung gegen aktuelle CVE-Datenbanken.</target>
       </segment>
     </unit>
     <unit id="productionChecklist.cve.detail.ok">

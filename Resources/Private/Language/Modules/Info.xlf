@@ -593,7 +593,7 @@
     </unit>
     <unit id="productionChecklist.cve.description">
       <segment state="final">
-        <source>Reads the live Solr version from /admin/info/system and compares it with the CVE-2025-24814 patch threshold (Solr 9.8.0 or newer).</source>
+        <source>Reads the live Solr version from /admin/info/system and compares it with the CVE-2025-24814 patch threshold (Solr 9.8.0 or newer). No automatic check against current CVE databases.</source>
       </segment>
     </unit>
     <unit id="productionChecklist.cve.detail.ok">
