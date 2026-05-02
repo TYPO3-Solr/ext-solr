@@ -202,13 +202,20 @@
                                     <core:icon identifier="actions-translate" size="small"/>
                                     <span>{connection.languageTitle}</span>
                                 </span>
-                                <span class="solr-info-module__status-pill solr-info-module__status-pill--status solr-info-module__status-pill--{connection.statusClass}">
-                                    <core:icon identifier="{connection.statusIconIdentifier}" size="small"/>
-                                    <f:translate key="connections.status.pill.label" domain="solr.modules.info" arguments="{state: connection.statusPillState}"/>
-                                </span>
                             </div>
                         </div>
                         <div class="solr-info-module__server-summary">
+                            <span class="solr-info-module__status-pill solr-info-module__status-pill--status solr-info-module__status-pill--{connection.statusClass}">
+                                <core:icon identifier="{connection.statusIconIdentifier}" size="small"/>
+                                <f:if condition="{connection.statusClass} == 'success'">
+                                    <f:then>
+                                        <f:translate key="connections.status.connected" domain="solr.modules.info"/>
+                                    </f:then>
+                                    <f:else>
+                                        <f:translate key="connections.status.pill.label" domain="solr.modules.info" arguments="{state: connection.statusPillState}"/>
+                                    </f:else>
+                                </f:if>
+                            </span>
                             <f:if condition="{connection.documentCountAvailable}">
                                 <f:then>
                                     <span class="badge badge-default">
@@ -246,6 +253,14 @@
                         </div>
                     </f:if>
                     <div class="solr-info-module__server-meta">
+                        <div class="solr-info-module__server-endpoint">
+                            <span class="solr-info-module__server-meta-label">
+                                <f:translate key="connections.endpoint.label" domain="solr.modules.info"/>
+                            </span>
+                            <div>
+                                <code>{connection.endpoint}</code>
+                            </div>
+                        </div>
                         <div class="solr-info-module__server-links">
                             <span class="solr-info-module__server-meta-label">
                                 <f:translate key="connections.browserEndpoints.label" domain="solr.modules.info"/>
@@ -257,13 +272,12 @@
                                             <li class="solr-info-module__server-link-item">
                                                 <span class="solr-info-module__server-link-body">
                                                     <a href="{browserEndpoint.url}" target="_blank" rel="noopener noreferrer" class="solr-info-module__server-link" title="{browserEndpoint.url}">
-                                                        <core:icon identifier="actions-window-open" size="small"/>
+                                                        <span class="solr-info-module__server-link-icon" title="{f:translate(key: 'external.opensInNewWindow', domain: 'solr.modules.info')}">
+                                                            <core:icon identifier="actions-window-open" size="small"/>
+                                                        </span>
                                                         <span><f:translate key="{browserEndpoint.labelKey}" domain="solr.modules.info"/></span>
                                                         <span class="visually-hidden"> (<f:translate key="external.opensInNewWindow" domain="solr.modules.info"/>)</span>
                                                     </a>
-                                                    <span class="form-text solr-info-module__server-link-hint">
-                                                        <f:translate key="external.opensInNewWindow" domain="solr.modules.info"/>
-                                                    </span>
                                                 </span>
                                                 <span class="badge {f:if(condition: browserEndpoint.isReachable, then: 'badge-success', else: 'badge-danger')}">
                                                     <f:if condition="{browserEndpoint.isReachable}">
@@ -281,14 +295,6 @@
                                     </span>
                                 </f:else>
                             </f:if>
-                        </div>
-                        <div class="solr-info-module__server-endpoint">
-                            <span class="solr-info-module__server-meta-label">
-                                <f:translate key="connections.endpoint.label" domain="solr.modules.info"/>
-                            </span>
-                            <div>
-                                <code>{connection.endpoint}</code>
-                            </div>
                         </div>
                     </div>
                 </li>
@@ -340,7 +346,9 @@
                         <f:for each="{solrServerInfo.adminEndpoints}" as="adminEndpoint">
                             <li class="solr-info-module__server-link-item">
                                 <a href="{adminEndpoint.url}" target="_blank" rel="noopener noreferrer" class="solr-info-module__server-link" title="{adminEndpoint.url}">
-                                    <core:icon identifier="actions-window-open" size="small"/>
+                                    <span class="solr-info-module__server-link-icon" title="{f:translate(key: 'external.opensInNewWindow', domain: 'solr.modules.info')}">
+                                        <core:icon identifier="actions-window-open" size="small"/>
+                                    </span>
                                     <span><f:translate key="{adminEndpoint.labelKey}" domain="solr.modules.info"/></span>
                                     <span class="visually-hidden"> (<f:translate key="external.opensInNewWindow" domain="solr.modules.info"/>)</span>
                                 </a>
@@ -694,10 +702,10 @@
                             </span>
                             <button
                                 type="button"
-                                class="badge badge-default solr-info-module__report-toggle collapsed"
+                                class="badge badge-default solr-info-module__report-toggle{f:if(condition: reportGroup.issueCount, then: '', else: ' collapsed')}"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#solr-report-items-{reportGroupIterator.index}"
-                                aria-expanded="false"
+                                aria-expanded="{f:if(condition: reportGroup.issueCount, then: 'true', else: 'false')}"
                                 aria-controls="solr-report-items-{reportGroupIterator.index}"
                                 aria-label="{f:translate(key: 'reports.toggleDetails', domain: 'solr.modules.info', arguments: {count: reportGroup.statusCount, label: reportGroup.label})}"
                             >
@@ -709,22 +717,9 @@
                         </div>
                     </div>
 
-                    <f:if condition="{reportGroup.previewItems}">
-                        <ul class="solr-info-module__report-preview-items" aria-labelledby="solr-report-heading-{reportGroupIterator.index}">
-                            <f:for each="{reportGroup.previewItems}" as="reportItem">
-                                <f:render section="ReportItem" arguments="{reportItem: reportItem}"/>
-                            </f:for>
-                            <f:if condition="{reportGroup.hiddenIssueCount}">
-                                <li class="solr-info-module__report-hidden-count">
-                                    <f:translate key="reports.hiddenIssues" domain="solr.modules.info" arguments="{count: reportGroup.hiddenIssueCount}"/>
-                                </li>
-                            </f:if>
-                        </ul>
-                    </f:if>
-
                     <f:if condition="{reportGroup.displayItems}">
                         <ul
-                            class="solr-info-module__report-items collapse"
+                            class="solr-info-module__report-items collapse{f:if(condition: reportGroup.issueCount, then: ' show')}"
                             id="solr-report-items-{reportGroupIterator.index}"
                             role="region"
                             aria-labelledby="solr-report-heading-{reportGroupIterator.index}"
