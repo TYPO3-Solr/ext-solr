@@ -1261,12 +1261,13 @@
     display: inline-flex;
     font-size: var(--typo3-font-size);
     gap: calc(var(--typo3-spacing) * .25);
-    justify-content: space-between;
+    justify-content: flex-end;
     line-height: 1.2;
     min-height: 1.75rem;
     /* Reserve enough width for the longest realistic count (~"8888 Einträge") so all toggles align. */
     min-width: 9.5rem;
     padding: calc(var(--typo3-spacing) * .25) calc(var(--typo3-spacing) * .55);
+    text-align: end;
 }
 
 .solr-info-module__report-toggle:focus-visible {
