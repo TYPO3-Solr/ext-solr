@@ -19,13 +19,6 @@ table.tx_solr_index_list {
     vertical-align: middle;
 }
 
-.tx_solr_index_list .bgColor2 td {
-    background-color: var(--typo3-surface-container-low);
-    color: var(--typo3-text-color-base);
-    font-weight: 700;
-    text-align: left;
-}
-
 #tx-solr-connection {
     float: right;
 }

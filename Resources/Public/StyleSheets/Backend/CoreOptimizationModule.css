@@ -1,7 +1,11 @@
 .solr-core-optimization-module {
-    /* Override TYPO3 base font scale to enforce minimum 14px (≈ 1rem given backend root font-size:max(1em,14px)). */
+    /*
+     * Override TYPO3 base font scale to enforce a readable backend module:
+     *  - --typo3-font-size: 1rem        (≥14px — minimum body size)
+     *  - --typo3-font-size-small: .9375rem (≈13–15px — secondary text, well above the 11px default)
+     */
     --typo3-font-size: 1rem;
-    --typo3-font-size-small: var(--typo3-font-size);
+    --typo3-font-size-small: 0.9375rem;
 
     color: var(--typo3-text-color-base);
     font-family: var(--typo3-font-family);
@@ -208,7 +212,7 @@
 
 .solr-core-optimization-module .form-text {
     color: var(--typo3-text-color-variant);
-    font-size: var(--typo3-font-size);
+    font-size: var(--typo3-font-size-small);
     line-height: var(--typo3-line-height);
     margin-top: calc(var(--typo3-spacing) * .35);
 }

@@ -1,28 +1,28 @@
-<p style="margin-bottom: 10px;">
+<p>
     <f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.accessFilter.notInstalled.message" />
 </p>
 
-<table class="table table-condensed table-hover table-striped">
+<table class="table table-sm table-hover table-striped">
     <thead>
-    <tr>
-        <td colspan="2">
-            <f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.affectedSolrServer" />
-        </td>
-    </tr>
+        <tr>
+            <th scope="col" colspan="2">
+                <f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.affectedSolrServer" />
+            </th>
+        </tr>
     </thead>
     <tbody>
-    <tr>
-        <th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.host" /></th>
-        <td>{solr.primaryEndpoint.host}</td>
-    </tr>
-    <tr>
-        <th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.path" /></th>
-        <td>{solr.corePath}</td>
-    </tr>
-    <tr>
-        <th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.port" /></th>
-        <td>{solr.primaryEndpoint.port}</td>
-    </tr>
+        <tr>
+            <th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.host" /></th>
+            <td>{solr.primaryEndpoint.host}</td>
+        </tr>
+        <tr>
+            <th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.path" /></th>
+            <td>{solr.corePath}</td>
+        </tr>
+        <tr>
+            <th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.port" /></th>
+            <td>{solr.primaryEndpoint.port}</td>
+        </tr>
     </tbody>
 </table>
 
