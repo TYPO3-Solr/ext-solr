@@ -103,11 +103,11 @@
                 <div class="table-fit">
                     <table class="table table-hover table-striped">
                         <thead>
-                        <tr class="t3-row-header">
-                            <th scope="col"><f:translate key="synonyms.table.baseWord" domain="solr.modules.core_optimization"/></th>
-                            <th scope="col"><f:translate key="synonyms.table.synonyms" domain="solr.modules.core_optimization"/></th>
-                            <th scope="col" class="col-control"><f:translate key="synonyms.table.actions" domain="solr.modules.core_optimization"/></th>
-                        </tr>
+                            <tr>
+                                <th scope="col"><f:translate key="synonyms.table.baseWord" domain="solr.modules.core_optimization"/></th>
+                                <th scope="col"><f:translate key="synonyms.table.synonyms" domain="solr.modules.core_optimization"/></th>
+                                <th scope="col" class="col-control"><f:translate key="synonyms.table.actions" domain="solr.modules.core_optimization"/></th>
+                            </tr>
                         </thead>
                         <tbody>
                         <f:for each="{synonyms}" key="baseWord" as="synonymList">

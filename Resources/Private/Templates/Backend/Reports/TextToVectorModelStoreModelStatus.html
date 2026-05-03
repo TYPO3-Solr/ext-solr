@@ -8,23 +8,25 @@
 	<p><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.textToVector.warning.ignore" /></p>
 </f:if>
 
-<table class="table table-condensed table-hover table-striped">
+<table class="table table-sm table-hover table-striped">
 	<thead>
-	<tr>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.endpoint" /></th>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.class" /></th>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.baseUrl" /></th>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.model" /></th>
-	</tr>
-	</thead>
-	<f:for each="{endpoints}" as="endpoint">
-		<tr class="{endpoint.status.cssClass}">
-			<td>{endpoint.baseUrl}</td>
-			<td>{endpoint.class}</td>
-			<td>{endpoint.modelBaseUrl}</td>
-			<td>{endpoint.modelName}</td>
+		<tr>
+			<th scope="col"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.endpoint" /></th>
+			<th scope="col"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.class" /></th>
+			<th scope="col"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.baseUrl" /></th>
+			<th scope="col"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.model" /></th>
 		</tr>
-	</f:for>
+	</thead>
+	<tbody>
+		<f:for each="{endpoints}" as="endpoint">
+			<tr class="{endpoint.status.cssClass}">
+				<td>{endpoint.baseUrl}</td>
+				<td>{endpoint.class}</td>
+				<td>{endpoint.modelBaseUrl}</td>
+				<td>{endpoint.modelName}</td>
+			</tr>
+		</f:for>
+	</tbody>
 </table>
 
 </html>

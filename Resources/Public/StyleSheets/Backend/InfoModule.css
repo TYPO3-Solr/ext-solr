@@ -1090,27 +1090,29 @@
     margin-bottom: var(--typo3-spacing);
 }
 
-#index_fields-tab .well {
-    align-items: center;
+#index_fields-tab .core-metrics .card {
     background-color: var(--typo3-surface-container-low);
     border: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
     border-radius: var(--typo3-component-border-radius);
     box-shadow: var(--typo3-component-box-shadow);
     color: var(--typo3-text-color-base);
+    min-height: 7rem;
+}
+
+#index_fields-tab .core-metrics .card-body {
+    align-items: center;
     display: flex;
     flex-direction: column;
     gap: calc(var(--typo3-spacing) / 2);
     justify-content: center;
-    margin-bottom: 0;
-    min-height: 7rem;
     padding: calc(var(--typo3-spacing) * 1.25);
 }
 
-#index_fields-tab .well > :last-child {
+#index_fields-tab .core-metrics .card-body > :last-child {
     margin-bottom: 0;
 }
 
-#index_fields-tab .core-metrics .well p {
+#index_fields-tab .core-metrics .card-body p {
     color: var(--typo3-text-color-base);
     font-size: 1.5rem;
     font-weight: 700;
@@ -1118,7 +1120,7 @@
     margin: 0;
 }
 
-#index_fields-tab .core-metrics .well h3 {
+#index_fields-tab .core-metrics .card-body h3 {
     color: var(--typo3-text-color-variant);
     font-family: var(--typo3-font-family);
     font-size: var(--typo3-font-size);

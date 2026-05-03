@@ -186,7 +186,7 @@ table.tx_solr_index_list {
     margin-bottom: calc(var(--typo3-spacing) * 1.25);
 }
 
-.core-metrics .well {
+.core-metrics .card-body {
     padding: calc(var(--typo3-spacing) * .5);
 }
 

@@ -1,55 +1,61 @@
-
 <f:if condition="{indexFieldsInfoForCore.noError}">
 
     <f:if condition="{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}">
         <f:then>
             <div class="row core-metrics g-3">
                 <div class="col-md-4">
-                    <div class="well text-center">
-                        <p>{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}</p>
-                        <h3><f:translate key="fields.metric.documents" domain="solr.modules.info"/></h3>
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <p>{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}</p>
+                            <h3><f:translate key="fields.metric.documents" domain="solr.modules.info"/></h3>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="well text-center">
-                        <p>{indexFieldsInfoForCore.coreMetrics.numberOfDeletedDocuments}</p>
-
-                        <h3><f:translate key="fields.metric.deletedDocuments" domain="solr.modules.info"/></h3>
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <p>{indexFieldsInfoForCore.coreMetrics.numberOfDeletedDocuments}</p>
+                            <h3><f:translate key="fields.metric.deletedDocuments" domain="solr.modules.info"/></h3>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="well text-center">
-                        <p>{indexFieldsInfoForCore.coreMetrics.numberOfFields}</p>
-                        <h3><f:translate key="fields.metric.fields" domain="solr.modules.info"/></h3>
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <p>{indexFieldsInfoForCore.coreMetrics.numberOfFields}</p>
+                            <h3><f:translate key="fields.metric.fields" domain="solr.modules.info"/></h3>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <table class="table table-sm table-hover table-striped">
                 <thead>
-                <tr class="t3-row-header">
-                    <th scope="col"><f:translate key="fields.table.name" domain="solr.modules.info"/></th>
-                    <th scope="col"><f:translate key="fields.table.type" domain="solr.modules.info"/></th>
-                    <th scope="col"><f:translate key="fields.table.documents" domain="solr.modules.info"/></th>
-                    <th scope="col"><f:translate key="fields.table.distinctTerms" domain="solr.modules.info"/></th>
-                </tr>
+                    <tr>
+                        <th scope="col"><f:translate key="fields.table.name" domain="solr.modules.info"/></th>
+                        <th scope="col"><f:translate key="fields.table.type" domain="solr.modules.info"/></th>
+                        <th scope="col"><f:translate key="fields.table.documents" domain="solr.modules.info"/></th>
+                        <th scope="col"><f:translate key="fields.table.distinctTerms" domain="solr.modules.info"/></th>
+                    </tr>
                 </thead>
                 <tbody>
-                <f:for each="{indexFieldsInfoForCore.fields}" as="field">
-                    <tr>
-                        <td>{field.name}</td>
-                        <td>{field.type}</td>
-                        <td>{field.docs}</td>
-                        <td>{field.terms}</td>
-                    </tr>
-                </f:for>
+                    <f:for each="{indexFieldsInfoForCore.fields}" as="field">
+                        <tr>
+                            <td>{field.name}</td>
+                            <td>{field.type}</td>
+                            <td>{field.docs}</td>
+                            <td>{field.terms}</td>
+                        </tr>
+                    </f:for>
                 </tbody>
             </table>
         </f:then>
 
         <f:else>
-            <div class="well">
-                <p><f:translate key="fields.emptyMessage" domain="solr.modules.info" arguments="{core: indexFieldsInfoForCore.corePath}"/></p>
+            <div class="callout callout-info">
+                <div class="callout-body">
+                    <p><f:translate key="fields.emptyMessage" domain="solr.modules.info" arguments="{core: indexFieldsInfoForCore.corePath}"/></p>
+                </div>
             </div>
         </f:else>
     </f:if>

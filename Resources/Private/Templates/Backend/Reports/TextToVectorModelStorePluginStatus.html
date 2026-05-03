@@ -7,12 +7,14 @@
 	<p><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.textToVector.warning.ignore" /></p>
 </f:if>
 
-<table class="table table-condensed table-hover table-striped">
-	<f:for each="{endpoints}" as="endpoint">
-		<tr class="{endpoint.status.cssClass}">
-			<td>{endpoint.baseUrl}</td>
-		</tr>
-	</f:for>
+<table class="table table-sm table-hover table-striped">
+	<tbody>
+		<f:for each="{endpoints}" as="endpoint">
+			<tr class="{endpoint.status.cssClass}">
+				<td>{endpoint.baseUrl}</td>
+			</tr>
+		</f:for>
+	</tbody>
 </table>
 
 </html>

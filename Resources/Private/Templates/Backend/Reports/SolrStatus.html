@@ -3,51 +3,53 @@
 	data-namespace-typo3-fluid="true"
 >
 
-<table class="table table-condensed table-hover table-striped">
-	<tr>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.site" /></th>
-		<td>{site}</td>
-	</tr>
-	<tr>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.language" /></th>
-		<td>{siteLanguage.title} [{siteLanguage.languageId}]</td>
-	</tr>
-	<tr>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.scheme" /></th>
-		<td>{solr.primaryEndpoint.scheme}</td>
-	</tr>
-	<tr>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.host" /></th>
-		<td>{solr.primaryEndpoint.host}</td>
-	</tr>
-	<tr>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.path" /></th>
-		<td>{solr.corePath}</td>
-	</tr>
-	<tr>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.port" /></th>
-		<td>{solr.primaryEndpoint.port}</td>
-	</tr>
-	<tr>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.username" /></th>
-		<td>{connection.solrUsername}</td>
-	</tr>
-	<tr>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.apacheSolr" /></th>
-		<td>{solrVersion}</td>
-	</tr>
-	<tr>
-		<th>solrconfig.xml</th>
-		<td>{configName}</td>
-	</tr>
-	<tr>
-		<th>schema.xml</th>
-		<td>{schemaName}</td>
-	</tr>
-	<tr>
-		<th><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.accessFilterPlugin" /></th>
-		<td>{accessFilter}</td>
-	</tr>
+<table class="table table-sm table-hover table-striped">
+	<tbody>
+		<tr>
+			<th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.site" /></th>
+			<td>{site}</td>
+		</tr>
+		<tr>
+			<th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.language" /></th>
+			<td>{siteLanguage.title} [{siteLanguage.languageId}]</td>
+		</tr>
+		<tr>
+			<th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.scheme" /></th>
+			<td>{solr.primaryEndpoint.scheme}</td>
+		</tr>
+		<tr>
+			<th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.host" /></th>
+			<td>{solr.primaryEndpoint.host}</td>
+		</tr>
+		<tr>
+			<th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.path" /></th>
+			<td>{solr.corePath}</td>
+		</tr>
+		<tr>
+			<th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.port" /></th>
+			<td>{solr.primaryEndpoint.port}</td>
+		</tr>
+		<tr>
+			<th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.username" /></th>
+			<td>{connection.solrUsername}</td>
+		</tr>
+		<tr>
+			<th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.apacheSolr" /></th>
+			<td>{solrVersion}</td>
+		</tr>
+		<tr>
+			<th scope="row">solrconfig.xml</th>
+			<td>{configName}</td>
+		</tr>
+		<tr>
+			<th scope="row">schema.xml</th>
+			<td>{schemaName}</td>
+		</tr>
+		<tr>
+			<th scope="row"><f:translate key="LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:report.table.accessFilterPlugin" /></th>
+			<td>{accessFilter}</td>
+		</tr>
+	</tbody>
 </table>
 
 </html>
