@@ -131,7 +131,7 @@ Index Queue
 
 The **Index-Queue** module is the operational hub for indexing. Its responsibilities:
 
-* show the current **Status der Index-Queue** (a labelled progress bar split into *Indexiert* / *Ausstehend* / *Fehler* with a numeric badge for each, e.g. ``Indexiert: 21/31`` and ``Ausstehend: 10/31`` in the screenshot);
+* show the current **Status der Index-Queue** — a labelled progress bar split into *Indexiert* / *Ausstehend* / *Fehler* with a numeric badge for each (in the screenshot the queue holds ``25/25`` indexed and ``25/25`` pending items, with no errors);
 * let you initialise the queue per indexing configuration (``pages``, ``news`` …) using the **Index-Queue initialisieren** card — selecting a row and clicking *Ausgewählte Inhalte in die Queue stellen* triggers a full re-queue; the *Index Queue Worker* scheduler task drains it afterwards;
 * trigger ad-hoc indexing without waiting for the scheduler — see the next subsection;
 * clear the queue for the current site via **Index-Queue leeren** when you want to start over.
@@ -144,7 +144,7 @@ Manual indexing actions
 The status section offers two buttons for ad-hoc indexing without waiting for the scheduler:
 
 * **Einmal indexieren** processes a single pending item per click. Useful for spot-checking indexer changes against one document.
-* **N indexieren** appears whenever more than one item is pending. ``N`` is rendered dynamically as ``min(pendingCount, 50)`` so the label reflects exactly how many items the next click will process — never more than the queue holds, and capped at 50 per request to keep the HTTP round-trip predictable. With 31 pending items the button reads "10 indexieren" / "31 indexieren" depending on the configured batch size; with 200 pending it reads "50 indexieren" and you click it again to drain the next batch.
+* **N indexieren** appears whenever more than one item is pending. ``N`` is rendered dynamically as ``min(pendingCount, 50)`` so the label reflects exactly how many items the next click will process — never more than the queue holds, and capped at 50 per request to keep the HTTP round-trip predictable. With 25 pending items the button reads "25 indexieren"; with 200 pending it reads "50 indexieren" and you click it again to drain the next batch.
 
 Both actions reuse :php:`IndexService::indexItems()`, so the per-item events, error handling, and Solr commit behavior are identical to a scheduler run.
 
@@ -160,3 +160,32 @@ The **Index-Verwaltung** module groups the destructive operations that affect th
 The danger cards are border-highlighted in TYPO3's danger token, and submitting them opens a TYPO3 confirmation modal — there is no single-click destructive action.
 
 .. image:: /Images/Backend/solr-backend-module_IndexAdministration.png
+
+Solr LLM
+--------
+
+The **Solr LLM** module is the bridge between EXT:solr and a provider-agnostic ``EXT:nr_llm`` configuration. It does not host the provider credentials itself — those stay in ``nr_llm`` — but it is where you pick the configuration that the Solr search uses, verify that it works, and watch how often it is invoked.
+
+The module pre-selects the configuration referenced in ``plugin.tx_solr.search.llmQueryEnhancer.configurationIdentifier`` (default: ``solr-search-query-enhancer``). Use the dropdown in the toolbar to switch to a different configuration, *Konfiguration anzeigen* to reload the panel for the chosen one, and *Provider testen* to fire a live test call against the provider. The two right-aligned buttons (*LLM-Konfigurationen verwalten*, *Einrichtungsassistent öffnen*) jump straight into the corresponding ``EXT:nr_llm`` modules.
+
+.. image:: /Images/Backend/solr-backend-module_Llm.png
+
+The body is organised as three status cards followed by two reference cards:
+
+* **Query-Optimierung zur Laufzeit** — shows whether the runtime enhancer is currently active for the selected site. The badge reads *Aktiv* when ``plugin.tx_solr.search.llmQueryEnhancer.enabled = 1`` and *Pausiert* otherwise. The card lists the configuration identifier in use and the cache lifetime (``cacheLifetime`` in seconds, default ``86400``) so you know how long an enhanced query is reused before it is recomputed.
+* **Provider-Rückmeldung** — summarises the picked ``nr_llm`` configuration: provider + adapter type, model name and id, and the per-call limits (*Temperatur*, *max. Tokens*). The badge is *Konfiguriert* when the configuration is active, *Inaktiv* when it exists but is disabled, and *Fehlt* when the identifier cannot be resolved.
+* **Nutzungsstatistik** — three metric tiles (*Anfragen*, *Tokens*, *geschätzte Kosten*) plus the timestamp of the last tracked call. Numbers are read from ``EXT:nr_llm``'s usage log so they are scoped to that configuration, not the whole site.
+
+.. important::
+
+   The badge on *Query-Optimierung zur Laufzeit* reflects the runtime flag only. A configuration can be *Konfiguriert* and the runtime can still be *Pausiert* — flip the TypoScript switch to actually use it on the frontend:
+
+   .. code-block:: typoscript
+
+      plugin.tx_solr.search.llmQueryEnhancer.enabled = 1
+      plugin.tx_solr.search.llmQueryEnhancer.configurationIdentifier = solr-search-query-enhancer
+
+* **Wo das LLM konfiguriert wird** — three numbered steps (provider/model in ``nr_llm``, an active configuration with the matching identifier, the TypoScript snippet above) plus the snippet itself, ready to copy.
+* **Was wird mit LLM indexiert?** — clarifies what the current ``solr-search-query-enhancer`` setup actually does: it rewrites or expands the **query** at runtime, it does **not** write extra LLM fields into Solr documents. Vector indexing is a separate path that only runs when the Solr text-to-vector model store is configured. LLM call counts come from ``nr_llm``'s usage log; document counts continue to come from Solr.
+
+If ``EXT:nr_llm`` is not installed or not active the module collapses to a single empty-state panel telling you to install it — none of the cards above are rendered, because they would have nothing to show.
