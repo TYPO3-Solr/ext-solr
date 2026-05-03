@@ -1264,8 +1264,8 @@
     justify-content: flex-end;
     line-height: 1.2;
     min-height: 1.75rem;
-    /* Reserve enough width for the longest realistic count (~"8888 Einträge") so all toggles align. */
-    min-width: 9.5rem;
+    /* Reserve enough width for a 3-digit count (~"888 Einträge") so all toggles align. */
+    min-width: 8.5rem;
     padding: calc(var(--typo3-spacing) * .25) calc(var(--typo3-spacing) * .55);
     text-align: end;
 }
