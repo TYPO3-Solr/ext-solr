@@ -1,10 +1,4 @@
 .solr-llm-module {
-    /*
-     * Lift the body font size to 1rem (16px at the standard 16px root) so the
-     * solr backend modules clear the 14px accessibility floor while leaving
-     * --typo3-font-size-small at the TYPO3 styleguide default for secondary text.
-     */
-    --typo3-font-size: 1rem;
     --solr-llm-gap: var(--typo3-spacing);
 
     color: var(--typo3-text-color-base);

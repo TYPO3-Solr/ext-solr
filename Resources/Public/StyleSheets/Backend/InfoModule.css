@@ -1,11 +1,4 @@
 .solr-info-module {
-    /*
-     * Lift the body font size to 1rem (16px at the standard 16px root) so the
-     * solr backend modules clear the 14px accessibility floor while leaving
-     * --typo3-font-size-small at the TYPO3 styleguide default for secondary text.
-     */
-    --typo3-font-size: 1rem;
-
     color: var(--typo3-text-color-base);
     font-family: var(--typo3-font-family);
     font-size: var(--typo3-font-size);
@@ -22,17 +15,11 @@
     line-height: var(--typo3-line-height);
 }
 
-.solr-info-module .nav-tabs {
-    --typo3-nav-font-size: var(--typo3-font-size);
-    --typo3-nav-link-padding-x: var(--typo3-spacing);
-    --typo3-nav-link-padding-y: calc(var(--typo3-spacing) / 2);
-}
-
 .solr-info-module .nav-tabs .nav-link {
     align-items: center;
     display: inline-flex;
     font-family: var(--typo3-font-family);
-    font-size: var(--typo3-nav-font-size);
+    font-size: var(--typo3-font-size);
     line-height: var(--typo3-line-height);
 }
 
@@ -86,15 +73,6 @@
 #reports-tab hr {
     border-color: var(--typo3-component-border-color);
     margin-block: var(--typo3-spacing);
-}
-
-#connections-tab .panel-tab,
-#statistics-tab .panel-tab,
-#index_fields-tab .panel-tab,
-#index_inspector-tab .panel-tab,
-#reports-tab .panel-tab {
-    --typo3-panel-padding-y: calc(var(--typo3-spacing) * 1.25);
-    --typo3-panel-padding-x: calc(var(--typo3-spacing) * 1.25);
 }
 
 #connections-tab .panel-body > :last-child,
@@ -1132,7 +1110,6 @@
 #index_inspector-tab .table,
 #statistics-tab .table,
 #reports-tab .table {
-    --typo3-table-font-size: var(--typo3-font-size);
     margin-bottom: 0;
 }
 
@@ -1498,15 +1475,6 @@
 }
 
 @media (max-width: 767.98px) {
-    #connections-tab .panel-tab,
-    #statistics-tab .panel-tab,
-    #index_fields-tab .panel-tab,
-    #index_inspector-tab .panel-tab,
-    #reports-tab .panel-tab {
-        --typo3-panel-padding-y: var(--typo3-spacing);
-        --typo3-panel-padding-x: var(--typo3-spacing);
-    }
-
     #statistics-tab .solr-info-module__chart-panel {
         height: 18rem;
         margin-block: var(--typo3-spacing);

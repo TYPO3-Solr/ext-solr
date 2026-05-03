@@ -1,10 +1,4 @@
 .solr-index-queue-module {
-    /*
-     * Lift the body font size to 1rem (16px at the standard 16px root) so the
-     * solr backend modules clear the 14px accessibility floor while leaving
-     * --typo3-font-size-small at the TYPO3 styleguide default for secondary text.
-     */
-    --typo3-font-size: 1rem;
     --solr-index-queue-module-action-column-width: 20rem;
 
     color: var(--typo3-text-color-base);
@@ -36,8 +30,6 @@
 }
 
 .solr-index-queue-module__section {
-    --typo3-panel-padding-y: calc(var(--typo3-spacing) * 1.25);
-    --typo3-panel-padding-x: calc(var(--typo3-spacing) * 1.25);
     overflow: hidden;
 }
 
@@ -253,9 +245,6 @@
 }
 
 .solr-index-queue-module .index-queue-init-form table.table {
-    --typo3-table-padding-y: .75rem;
-    --typo3-table-padding-x: 1rem;
-    --typo3-table-font-size: var(--typo3-font-size);
     font-size: var(--typo3-font-size);
     margin-bottom: 0;
     width: 100%;
@@ -297,10 +286,6 @@
     padding: var(--typo3-spacing);
 }
 
-.solr-index-queue-module__danger-section {
-    --typo3-panel-border-color: var(--typo3-state-danger-border-color);
-}
-
 .solr-index-queue-module__danger-action {
     align-items: start;
     display: grid;
@@ -329,11 +314,6 @@
 }
 
 @media (max-width: 767.98px) {
-    .solr-index-queue-module__section {
-        --typo3-panel-padding-y: var(--typo3-spacing);
-        --typo3-panel-padding-x: var(--typo3-spacing);
-    }
-
     .solr-index-queue-module__danger-action {
         grid-template-columns: minmax(0, 1fr);
         padding-inline: var(--typo3-spacing);

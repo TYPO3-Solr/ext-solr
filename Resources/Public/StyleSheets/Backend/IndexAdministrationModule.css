@@ -1,11 +1,4 @@
 .solr-index-admin-module {
-    /*
-     * Lift the body font size to 1rem (16px at the standard 16px root) so the
-     * solr backend modules clear the 14px accessibility floor while leaving
-     * --typo3-font-size-small at the TYPO3 styleguide default for secondary text.
-     */
-    --typo3-font-size: 1rem;
-
     color: var(--typo3-text-color-base);
     font-family: var(--typo3-font-family);
     font-size: var(--typo3-font-size);
@@ -35,13 +28,10 @@
 }
 
 .solr-index-admin-module__cards {
-    --typo3-card-grid-gap: var(--typo3-spacing);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
 }
 
 .solr-index-admin-module__card {
-    --typo3-card-bg: var(--typo3-component-bg);
-    --typo3-card-padding: calc(var(--typo3-spacing) * 1.15);
     min-height: 13.5rem;
 }
 
@@ -101,10 +91,6 @@
     gap: calc(var(--typo3-spacing) * .4);
 }
 
-.solr-index-admin-module__card--danger {
-    --typo3-card-border-color: var(--typo3-state-danger-border-color);
-}
-
 .solr-index-admin-module__card--danger .card-icon {
     background-color: var(--typo3-surface-container-danger);
     border-color: var(--typo3-state-danger-border-color);
@@ -113,7 +99,6 @@
 
 @media (max-width: 767.98px) {
     .solr-index-admin-module__card {
-        --typo3-card-padding: var(--typo3-spacing);
         min-height: 0;
     }
 }

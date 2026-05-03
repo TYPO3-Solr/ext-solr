@@ -1,20 +1,8 @@
 .solr-core-optimization-module {
-    /*
-     * Lift the body font size to 1rem (16px at the standard 16px root) so the
-     * solr backend modules clear the 14px accessibility floor while leaving
-     * --typo3-font-size-small at the TYPO3 styleguide default for secondary text.
-     */
-    --typo3-font-size: 1rem;
-
     color: var(--typo3-text-color-base);
     font-family: var(--typo3-font-family);
     font-size: var(--typo3-font-size);
     line-height: var(--typo3-line-height);
-}
-
-.solr-core-optimization-module .panel-tab {
-    --typo3-panel-padding-y: calc(var(--typo3-spacing) * 1.25);
-    --typo3-panel-padding-x: calc(var(--typo3-spacing) * 1.25);
 }
 
 .solr-core-optimization-module__intro {
@@ -168,7 +156,6 @@
 }
 
 .solr-core-optimization-module .table {
-    --typo3-table-font-size: var(--typo3-font-size);
     margin-bottom: 0;
 }
 
@@ -242,11 +229,6 @@
 }
 
 @media (max-width: 767.98px) {
-    .solr-core-optimization-module .panel-tab {
-        --typo3-panel-padding-y: var(--typo3-spacing);
-        --typo3-panel-padding-x: var(--typo3-spacing);
-    }
-
     .solr-core-optimization-module__section-header,
     .solr-core-optimization-module__example-row {
         grid-template-columns: minmax(0, 1fr);
