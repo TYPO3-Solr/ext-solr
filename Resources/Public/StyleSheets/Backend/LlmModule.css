@@ -1,12 +1,37 @@
 .solr-llm-module {
-    --solr-llm-gap: var(--typo3-spacing, 1rem);
+    /* Override TYPO3 base font scale to enforce minimum 14px (≈ 1rem given backend root font-size:max(1em,14px)). */
+    --typo3-font-size: 1rem;
+    --typo3-font-size-small: var(--typo3-font-size);
+    --solr-llm-gap: var(--typo3-spacing);
+
+    color: var(--typo3-text-color-base);
     display: flex;
     flex-direction: column;
+    font-family: var(--typo3-font-family);
+    font-size: var(--typo3-font-size);
     gap: calc(var(--solr-llm-gap) * 1.25);
+    line-height: var(--typo3-line-height);
 }
 
 .solr-llm-module__intro {
     max-width: 72rem;
+}
+
+.solr-llm-module__intro h1 {
+    color: var(--typo3-text-color-base);
+    font-family: var(--typo3-header-font-family);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: calc(var(--typo3-spacing) * .75);
+}
+
+.solr-llm-module__intro .lead {
+    color: var(--typo3-text-color-variant);
+    font-size: var(--typo3-font-size);
+    font-weight: 400;
+    line-height: var(--typo3-line-height);
+    margin-bottom: 0;
 }
 
 .solr-llm-module__toolbar {
@@ -21,8 +46,15 @@
     display: flex;
     flex: 1 1 38rem;
     flex-direction: column;
-    gap: .5rem;
+    gap: calc(var(--solr-llm-gap) * .5);
     min-width: min(100%, 22rem);
+}
+
+.solr-llm-module__configuration-form label,
+.solr-llm-module__configuration-form .form-label {
+    color: var(--typo3-text-color-base);
+    font-size: var(--typo3-font-size);
+    font-weight: 600;
 }
 
 .solr-llm-module__configuration-controls,
@@ -30,12 +62,17 @@
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    gap: .5rem;
+    gap: calc(var(--solr-llm-gap) * .5);
 }
 
 .solr-llm-module__configuration-controls .form-select {
+    font-size: var(--typo3-font-size);
     max-width: 32rem;
     min-width: min(100%, 20rem);
+}
+
+.solr-llm-module__module-links .btn {
+    font-size: var(--typo3-font-size);
 }
 
 .solr-llm-module__grid {
@@ -45,7 +82,11 @@
 }
 
 .solr-llm-card {
-    border-radius: var(--typo3-component-border-radius, .25rem);
+    background-color: var(--typo3-component-bg);
+    border: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    border-radius: var(--typo3-component-border-radius);
+    box-shadow: var(--typo3-component-box-shadow);
+    color: var(--typo3-text-color-base);
 }
 
 .solr-llm-card--wide {
@@ -54,13 +95,16 @@
 
 .solr-llm-card .card-header {
     align-items: center;
+    background-color: var(--typo3-surface-container-low);
+    border-bottom: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
     display: flex;
-    gap: .75rem;
+    gap: calc(var(--typo3-spacing) * .75);
+    padding: calc(var(--typo3-spacing) * .85) var(--typo3-spacing);
 }
 
 .solr-llm-card .card-icon {
     align-items: center;
-    color: var(--typo3-state-default-color, currentColor);
+    color: var(--typo3-text-color-base);
     display: inline-flex;
     flex: 0 0 auto;
     justify-content: center;
@@ -72,136 +116,171 @@
 }
 
 .solr-llm-card .card-title {
-    font-size: var(--typo3-font-size-lg, 1.125rem);
+    color: var(--typo3-text-color-base);
+    font-family: var(--typo3-header-font-family);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
     margin: 0;
 }
 
 .solr-llm-card .card-subtitle {
-    color: var(--typo3-text-color-secondary, currentColor);
+    color: var(--typo3-text-color-variant);
     display: block;
-    font-size: var(--typo3-font-size-sm, .875rem);
-    margin-top: .125rem;
+    font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
+    margin-top: calc(var(--typo3-spacing) * .15);
+}
+
+.solr-llm-card .card-body {
+    padding: var(--typo3-spacing);
 }
 
 .solr-llm-definition-list {
     display: grid;
-    gap: .75rem;
-    margin: 0 0 1rem;
+    gap: calc(var(--typo3-spacing) * .75);
+    margin: 0 0 var(--typo3-spacing);
 }
 
 .solr-llm-definition-list > div {
     display: grid;
-    gap: .25rem;
+    gap: calc(var(--typo3-spacing) * .25);
 }
 
 .solr-llm-definition-list dt {
-    color: var(--typo3-text-color-secondary, currentColor);
-    font-size: var(--typo3-font-size-sm, .875rem);
+    color: var(--typo3-text-color-variant);
+    font-size: var(--typo3-font-size);
     font-weight: 700;
+    line-height: var(--typo3-line-height);
 }
 
 .solr-llm-definition-list dd {
+    color: var(--typo3-text-color-base);
+    font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
     margin: 0;
 }
 
 .solr-llm-metrics {
     display: grid;
-    gap: .75rem;
+    gap: calc(var(--typo3-spacing) * .75);
     grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-    margin-bottom: 1rem;
+    margin-bottom: var(--typo3-spacing);
 }
 
 .solr-llm-metric {
-    background: var(--typo3-component-bg, transparent);
-    border: 1px solid var(--typo3-component-border-color, currentColor);
-    border-radius: var(--typo3-component-border-radius, .25rem);
-    padding: .75rem;
+    background-color: var(--typo3-component-bg);
+    border: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    border-radius: var(--typo3-component-border-radius);
+    padding: calc(var(--typo3-spacing) * .75);
 }
 
 .solr-llm-metric__value {
+    color: var(--typo3-text-color-base);
     display: block;
-    font-size: var(--typo3-font-size-xl, 1.25rem);
+    font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.2;
 }
 
 .solr-llm-metric__label {
-    color: var(--typo3-text-color-secondary, currentColor);
+    color: var(--typo3-text-color-variant);
     display: block;
-    font-size: var(--typo3-font-size-sm, .875rem);
-    margin-top: .25rem;
+    font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
+    margin-top: calc(var(--typo3-spacing) * .25);
 }
 
 .solr-llm-test-result {
     align-items: flex-start;
-    border: 1px solid var(--typo3-state-default-border-color, var(--typo3-component-border-color));
-    border-left-width: .25rem;
-    border-radius: var(--typo3-component-border-radius, .25rem);
+    background-color: var(--typo3-surface-container-default);
+    border: var(--typo3-component-border-width) solid var(--typo3-state-default-border-color);
+    border-left-width: calc(var(--typo3-component-border-width) * 5);
+    border-radius: var(--typo3-component-border-radius);
+    color: var(--typo3-text-color-base);
     display: flex;
-    gap: .75rem;
+    font-size: var(--typo3-font-size);
+    gap: calc(var(--typo3-spacing) * .75);
+    line-height: var(--typo3-line-height);
     max-width: 72rem;
-    padding: .875rem 1rem;
+    padding: calc(var(--typo3-spacing) * .85) var(--typo3-spacing);
 }
 
 .solr-llm-test-result--ok {
-    background: var(--typo3-state-success-bg, transparent);
-    border-color: var(--typo3-state-success-border-color, var(--typo3-component-border-color));
-    color: var(--typo3-state-success-color, currentColor);
+    background-color: var(--typo3-surface-container-success);
+    border-color: var(--typo3-state-success-border-color);
+    color: var(--typo3-surface-container-success-text);
 }
 
 .solr-llm-test-result--error {
-    background: var(--typo3-state-danger-bg, transparent);
-    border-color: var(--typo3-state-danger-border-color, var(--typo3-component-border-color));
-    color: var(--typo3-state-danger-color, currentColor);
+    background-color: var(--typo3-surface-container-danger);
+    border-color: var(--typo3-state-danger-border-color);
+    color: var(--typo3-surface-container-danger-text);
 }
 
 .solr-llm-test-result--warning {
-    background: var(--typo3-state-warning-bg, transparent);
-    border-color: var(--typo3-state-warning-border-color, var(--typo3-component-border-color));
-    color: var(--typo3-state-warning-color, currentColor);
+    background-color: var(--typo3-surface-container-warning);
+    border-color: var(--typo3-state-warning-border-color);
+    color: var(--typo3-surface-container-warning-text);
 }
 
 .solr-llm-test-result p {
-    margin: .25rem 0 0;
+    color: inherit;
+    margin: calc(var(--typo3-spacing) * .25) 0 0;
 }
 
 .solr-llm-steps,
 .solr-llm-legend {
-    margin-bottom: 1rem;
-    padding-left: 1.25rem;
+    color: var(--typo3-text-color-base);
+    font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
+    margin-bottom: var(--typo3-spacing);
+    padding-left: calc(var(--typo3-spacing) * 1.25);
 }
 
 .solr-llm-steps li,
 .solr-llm-legend li {
-    margin-bottom: .5rem;
+    margin-bottom: calc(var(--typo3-spacing) * .5);
 }
 
 .solr-llm-code {
-    background: var(--typo3-component-bg, transparent);
-    border: 1px solid var(--typo3-component-border-color, currentColor);
-    border-radius: var(--typo3-component-border-radius, .25rem);
-    color: var(--typo3-text-color-base, currentColor);
+    background-color: var(--typo3-component-bg);
+    border: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    border-radius: var(--typo3-component-border-radius);
+    color: var(--typo3-text-color-base);
+    font-family: var(--typo3-font-family-code);
+    font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
     margin: 0;
     overflow: auto;
-    padding: .875rem 1rem;
+    padding: calc(var(--typo3-spacing) * .85) var(--typo3-spacing);
 }
 
 .solr-llm-empty-state {
     align-items: center;
-    border: 1px solid var(--typo3-state-warning-border-color, var(--typo3-component-border-color));
-    border-left-width: .25rem;
-    border-radius: var(--typo3-component-border-radius, .25rem);
+    background-color: var(--typo3-surface-container-warning);
+    border: var(--typo3-component-border-width) solid var(--typo3-state-warning-border-color);
+    border-left-width: calc(var(--typo3-component-border-width) * 5);
+    border-radius: var(--typo3-component-border-radius);
+    color: var(--typo3-surface-container-warning-text);
     display: flex;
-    gap: 1rem;
+    gap: var(--typo3-spacing);
     max-width: 56rem;
-    padding: 1rem;
+    padding: var(--typo3-spacing);
 }
 
 .solr-llm-empty-state h2 {
-    font-size: var(--typo3-font-size-lg, 1.125rem);
-    margin: 0 0 .25rem;
+    color: var(--typo3-surface-container-warning-text);
+    font-family: var(--typo3-header-font-family);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0 0 calc(var(--typo3-spacing) * .25);
 }
 
 .solr-llm-empty-state p {
+    color: var(--typo3-surface-container-warning-text);
+    font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
     margin: 0;
 }

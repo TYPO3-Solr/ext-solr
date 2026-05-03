@@ -3,31 +3,29 @@
 /* ----- core overwrites ----- */
 
 #typo3-inner-docbody {
-	padding-left: 0;
+    padding-left: 0;
 }
 
 
 /* ----- icons ----- */
 
 [class^="icon-"], [class*=" icon-"] {
-	background-image: none !important;
+    background-image: none !important;
 }
 
 
 /* ----- module layout ----- */
 
 #moduleMenu .nav-list > .active > a {
-	font-weight: bold;
+    font-weight: 700;
 }
-
 
 h2.module-title {
-	margin-top: 0;
+    margin-top: 0;
 }
 
-
 #moduleContent.col-md-9 {
-	padding: 0;
+    padding: 0;
 }
 
 
@@ -35,168 +33,185 @@ h2.module-title {
 
 .coreSelector,
 .siteSelector {
-	display: inline-block;
-	padding-top: 4px;
+    display: inline-block;
+    padding-top: calc(var(--typo3-spacing) * .25);
 }
 
 .coreSelector select,
 .siteSelector select {
-	width: auto;
-	height: auto;
-	line-height: 16px;
-	font-size: 11px;
-	margin: auto;
-	padding: 0;
-	border: 1px solid #cdcdcd;
-	border-radius: 5px;
-	cursor: default;
-	background-color: #ffffff;
-	-webkit-appearance: menulist;
-	-moz-appearance: menulist;
+    background-color: var(--typo3-component-bg);
+    border: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    border-radius: var(--typo3-component-border-radius);
+    color: var(--typo3-component-color, var(--typo3-text-color-base));
+    cursor: pointer;
+    font-size: var(--typo3-font-size);
+    height: auto;
+    line-height: var(--typo3-line-height);
+    margin: auto;
+    padding: calc(var(--typo3-spacing) * .25) calc(var(--typo3-spacing) * .5);
+    width: auto;
+    -webkit-appearance: menulist;
+    -moz-appearance: menulist;
 }
 
 .coreSelector label,
 .siteSelector label {
-	width: auto;
-	line-height: 25px;
+    color: var(--typo3-text-color-base);
+    font-size: var(--typo3-font-size);
+    line-height: 1.75;
+    width: auto;
 }
 
 .siteSelector label {
-	width: 50px;
+    width: 50px;
 }
 
 
 /* ----- UI elements ----- */
 
 hr.double {
-	border-width: 2px;
+    border-width: 2px;
 }
 
 .typo3-messages {
-	margin-bottom: 20px;
+    margin-bottom: calc(var(--typo3-spacing) * 1.25);
 }
 
 .section {
-	background-color: #ededed;
-	border-top: 1px solid #cdcdcd;
-	border-bottom: 1px solid #cdcdcd;
-	padding: 12px;
-	margin-bottom: 24px;
+    background-color: var(--typo3-surface-container-low);
+    border-top: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    border-bottom: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    color: var(--typo3-text-color-base);
+    font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
+    margin-bottom: calc(var(--typo3-spacing) * 1.5);
+    padding: calc(var(--typo3-spacing) * .75);
 }
 
 .section-with-header h2 {
-	margin-top: 0;
+    margin-top: 0;
 }
 
 
 .row.danger-zone {
-	margin-bottom: 10px;
-	margin-top: 50px;
+    margin-bottom: calc(var(--typo3-spacing) * .5);
+    margin-top: calc(var(--typo3-spacing) * 3);
 }
 
 .danger-zone h2 {
-	border-bottom: 1px solid #dddddd;
-	padding-bottom: 20px;
+    border-bottom: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    color: var(--typo3-text-color-base);
+    padding-bottom: calc(var(--typo3-spacing) * 1.25);
 }
 
 
 /* ----- Forms ----- */
 
 form div {
-	clear: both;
-	margin-bottom: 5px;
+    clear: both;
+    margin-bottom: calc(var(--typo3-spacing) * .25);
 }
 
 form div.submit {
-	padding-top: 10px;
-	padding-bottom: 10px;
+    padding-top: calc(var(--typo3-spacing) * .5);
+    padding-bottom: calc(var(--typo3-spacing) * .5);
 }
 
 form div.submit.indented {
-	padding-left: 100px;
+    padding-left: calc(var(--typo3-spacing) * 6);
 }
 
 form span.example {
-	font-size: 10px;
-	display: inline-block;
-	line-height: 21px;
+    color: var(--typo3-text-color-variant);
+    display: inline-block;
+    font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
 }
 
 
 /* ----- Index Maintenance ----- */
 
 .section-divider {
-	border-bottom: 1px solid #dddddd;
-	margin-bottom: 20px;
-	padding-bottom: 10px;
+    border-bottom: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    margin-bottom: calc(var(--typo3-spacing) * 1.25);
+    padding-bottom: calc(var(--typo3-spacing) * .5);
 }
 
 hr.section-divider {
-	margin-top: 0;
+    margin-top: 0;
 }
 
 .action:last-child {
-	border-bottom: none;
+    border-bottom: none;
 }
 
 .action-description h3 {
-	margin-top: 0;
+    color: var(--typo3-text-color-base);
+    margin-top: 0;
 }
 
 
 /* ----- Index Fields ----- */
 
 #typo3-inner-docbody p {
-	margin: 7px 0;
+    color: var(--typo3-text-color-base);
+    font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
+    margin: calc(var(--typo3-spacing) * .4) 0;
 }
 
 table.tx_solr_index_list {
-	width: 100%;
+    width: 100%;
 }
 
 .tx_solr_index_list td {
-	padding: 2px 4px;
-	vertical-align: middle;
-	height: 20px;
-	font-size: 11px;
-	border-bottom: 1px solid #dee0e1;
+    border-bottom: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    color: var(--typo3-text-color-base);
+    font-size: var(--typo3-font-size);
+    height: auto;
+    line-height: var(--typo3-line-height);
+    padding: calc(var(--typo3-spacing) * .5) calc(var(--typo3-spacing) * .75);
+    vertical-align: middle;
 }
 
 .tx_solr_index_list .bgColor2 td {
-	text-align: left;
-	font-weight: bold;
-	color: #fff;
+    background-color: var(--typo3-surface-container-low);
+    color: var(--typo3-text-color-base);
+    font-weight: 700;
+    text-align: left;
 }
 
 #tx-solr-connection {
-	float: right;
+    float: right;
 }
 
 #tx-solr-connection select {
-	max-width: 300px;
+    max-width: 300px;
 }
 
 .coreSelector {
-	margin-bottom: 20px;
+    margin-bottom: calc(var(--typo3-spacing) * 1.25);
 }
 
 .core-metrics .well {
-	padding: 10px;
+    padding: calc(var(--typo3-spacing) * .5);
 }
 
 .core-metrics p {
-	font-size: 20px;
-	font-weight: bold;
-	color: #555555;
+    color: var(--typo3-text-color-base);
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 .core-metrics h3 {
-	margin-bottom: 0;
+    color: var(--typo3-text-color-variant);
+    font-size: var(--typo3-font-size);
+    margin-bottom: 0;
 }
 
 
 /* ----- Synonyms ----- */
 
 form input[type="text"] {
-	width: 250px;
+    width: 250px;
 }

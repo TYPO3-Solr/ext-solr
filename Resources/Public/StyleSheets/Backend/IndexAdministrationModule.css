@@ -1,6 +1,12 @@
 .solr-index-admin-module {
+    /* Override TYPO3 base font scale to enforce minimum 14px (≈ 1rem given backend root font-size:max(1em,14px)). */
+    --typo3-font-size: 1rem;
+    --typo3-font-size-small: var(--typo3-font-size);
+
     color: var(--typo3-text-color-base);
+    font-family: var(--typo3-font-family);
     font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
 }
 
 .solr-index-admin-module__intro {
@@ -9,6 +15,7 @@
 }
 
 .solr-index-admin-module__intro h1 {
+    color: var(--typo3-text-color-base);
     font-family: var(--typo3-header-font-family);
     font-size: 1.5rem;
     font-weight: 600;
@@ -18,7 +25,7 @@
 
 .solr-index-admin-module__intro .lead {
     color: var(--typo3-text-color-variant);
-    font-size: .9375rem;
+    font-size: var(--typo3-font-size);
     font-weight: 400;
     line-height: var(--typo3-line-height);
     margin-bottom: 0;
@@ -60,8 +67,9 @@
 }
 
 .solr-index-admin-module__card .card-title {
+    color: var(--typo3-text-color-base);
     font-family: var(--typo3-header-font-family);
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 600;
     line-height: 1.25;
 }
@@ -86,6 +94,7 @@
 .solr-index-admin-module__card .btn {
     align-items: center;
     display: inline-flex;
+    font-size: var(--typo3-font-size);
     gap: calc(var(--typo3-spacing) * .4);
 }
 

@@ -1,34 +1,34 @@
-
 .docheader-funcmenu select {
-	max-width: 500px;
+    font-size: var(--typo3-font-size);
+    max-width: 500px;
 }
 
 .tx_solr_mod-admin h3 {
-	margin-bottom: 30px;
+    color: var(--typo3-text-color-base);
+    margin-bottom: calc(var(--typo3-spacing) * 1.5);
 }
 
 .tx_solr_mod-admin fieldset {
-	padding: 10px;
-	margin-top: 10px;
-
-	border: none;
-	border-top: 2px solid #aaa;
+    border: none;
+    border-top: 2px solid var(--typo3-component-border-color);
+    margin-top: calc(var(--typo3-spacing) * .5);
+    padding: calc(var(--typo3-spacing) * .5);
 }
 
 .tx_solr_mod-admin legend {
-	position: relative;
-	bottom: 2px;
-	padding: 0 10px;
-
-	font-size: 12px;
-	color: #555;
+    bottom: 2px;
+    color: var(--typo3-text-color-variant);
+    font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
+    padding: 0 calc(var(--typo3-spacing) * .5);
+    position: relative;
 }
 
 .tx_solr_mod-admin hr {
-	border: none;
-	border-bottom: 1px solid #cdcdcd;
+    border: none;
+    border-bottom: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
 }
 
 .tx_solr_mod-admin hr.double {
-	border-width: 2px;
+    border-width: 2px;
 }

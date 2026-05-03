@@ -1,29 +1,36 @@
 #typo3-inner-docbody p {
-	margin: 7px 0;
+    color: var(--typo3-text-color-base);
+    font-size: var(--typo3-font-size);
+    line-height: var(--typo3-line-height);
+    margin: calc(var(--typo3-spacing) * .4) 0;
 }
 
 table.tx_solr_index_list {
-	width: 100%;
+    width: 100%;
 }
 
 .tx_solr_index_list td {
-	padding: 2px 4px;
-	vertical-align: middle;
-	height: 20px;
-	font-size: 11px;
-	border-bottom: 1px solid #dee0e1;
+    border-bottom: var(--typo3-component-border-width) solid var(--typo3-component-border-color);
+    color: var(--typo3-text-color-base);
+    font-size: var(--typo3-font-size);
+    height: auto;
+    line-height: var(--typo3-line-height);
+    padding: calc(var(--typo3-spacing) * .5) calc(var(--typo3-spacing) * .75);
+    vertical-align: middle;
 }
 
 .tx_solr_index_list .bgColor2 td {
-	text-align: left;
-	font-weight: bold;
-	color: #fff;
+    background-color: var(--typo3-surface-container-low);
+    color: var(--typo3-text-color-base);
+    font-weight: 700;
+    text-align: left;
 }
 
 #tx-solr-connection {
-	float: right;
+    float: right;
 }
 
 #tx-solr-connection select {
-	max-width: 300px;
+    font-size: var(--typo3-font-size);
+    max-width: 300px;
 }
