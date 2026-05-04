@@ -17,8 +17,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
+use ApacheSolrForTypo3\Solr\Tests\Integration\Fixtures\IndexingServiceForTesting;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -38,7 +39,7 @@ class IndexServiceTest extends IntegrationTestBase
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/solr',
+        'apache-solr-for-typo3/solr',
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension2',
     ];
 
@@ -50,6 +51,16 @@ class IndexServiceTest extends IntegrationTestBase
 
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
+
+        // Replace IndexingService with a test subclass that provides the
+        // typo3.testing.context attribute required by the testing-framework's
+        // FrontendUserHandler middleware (which doesn't null-check the attribute).
+        /** @var \Symfony\Component\DependencyInjection\Container $container */
+        $container = GeneralUtility::getContainer();
+        $container->set(
+            IndexingService::class,
+            IndexingServiceForTesting::fromProductionService($container->get(IndexingService::class)),
+        );
     }
 
     protected function addToIndexQueue(string $table, int $uid): void
@@ -62,7 +73,7 @@ class IndexServiceTest extends IntegrationTestBase
     {
         yield 'absRefPrefixIsFoo' => [
             'absRefPrefix' => 'foo',
-            'expectedUrl' => '/foo/en/?tx_ttnews%5Btt_news%5D=111&cHash=a14e458509b71459d1edaafd1d5a84a1',
+            'expectedUrl' => '/foo/en/?tx_ttnews%5Btt_news%5D=111&cHash=c3abc77c306e40ad619c3defe2f15950352874798840d7ff2bd8d341dd4291d7',
         ];
     }
 
@@ -70,17 +81,11 @@ class IndexServiceTest extends IntegrationTestBase
     #[Test]
     public function canResolveBaseAsPrefix(string $absRefPrefix, string $expectedUrl): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
-
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_withBasePrefix_' . $absRefPrefix . '.csv');
 
-        $this->mergeSiteConfiguration('integration_tree_one', ['base' => '/' . $absRefPrefix . '/']);
+        $this->mergeSiteConfiguration('integration_tree_one', ['base' => 'http://testone.site/' . $absRefPrefix . '/']);
 
         $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
-
-        $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
-        $cliEnvironment->backup();
-        $cliEnvironment->initialize(Environment::getPublicPath() . '/');
 
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
@@ -89,13 +94,41 @@ class IndexServiceTest extends IntegrationTestBase
         // run the indexer
         $indexService->indexItems(1);
 
-        $cliEnvironment->restore();
-
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         self::assertStringContainsString('"url":"' . $expectedUrl, $solrContent, 'Generated unexpected url with absRefPrefix = auto');
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
+    }
+
+    #[Test]
+    public function subRequestsRestoreWorkingDirectory(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_withBasePrefix_foo.csv');
+
+        $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
+
+        // Simulate CLI context: CWD is the project root, not the public directory.
+        $originalCwd = getcwd();
+        chdir(Environment::getProjectPath());
+
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
+
+        $indexService->indexItems(1);
+
+        self::assertSame(
+            Environment::getProjectPath(),
+            getcwd(),
+            'Working directory was not restored after sub-request indexing',
+        );
+
+        // Restore original CWD for test framework cleanup
+        chdir($originalCwd);
+
+        $this->waitToBeVisibleInSolr();
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Indexing failed when CWD was not the public directory');
     }
 }

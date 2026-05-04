@@ -26,8 +26,8 @@ use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\View\FluidViewAdapter;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
+use TYPO3\CMS\Fluid\View\FluidViewAdapter;
 use TYPO3Fluid\Fluid\View\AbstractTemplateView;
 
 /**
@@ -63,7 +63,7 @@ class SearchController extends AbstractBaseController
         $view->getRenderingContext()->setVariableProvider($variableProvider);
         $view->getRenderingContext()->getVariableProvider()->add(
             'typoScriptConfiguration',
-            $this->typoScriptConfiguration
+            $this->typoScriptConfiguration,
         );
 
         $customTemplate = $this->getCustomTemplateFromConfiguration();
@@ -133,8 +133,8 @@ class SearchController extends AbstractBaseController
                     $this->typoScriptConfiguration->getSearchPluginNamespace(),
                     $arguments,
                     $pagination,
-                    $currentPage
-                )
+                    $currentPage,
+                ),
             );
 
             $values = [
@@ -171,13 +171,14 @@ class SearchController extends AbstractBaseController
             new BeforeSearchFormIsShownEvent(
                 $this->searchService->getSearch(),
                 $this->getAdditionalFilters(),
-                $this->typoScriptConfiguration->getSearchPluginNamespace()
-            )
+                $this->typoScriptConfiguration->getSearchPluginNamespace(),
+            ),
         );
         $values = [
             'search' => $formEvent->getSearch(),
             'additionalFilters' => $formEvent->getAdditionalFilters(),
             'pluginNamespace' => $formEvent->getPluginNamespace(),
+            'additionalVariables' => $formEvent->getAdditionalVariables(),
             'contentObjectData' => $this->request->getAttribute('currentContentObject')?->data,
         ];
 
@@ -206,8 +207,8 @@ class SearchController extends AbstractBaseController
         $afterFrequentlySearchedEvent = $this->eventDispatcher->dispatch(
             new AfterFrequentlySearchHasBeenExecutedEvent(
                 $searchResultSet,
-                $this->getAdditionalFilters()
-            )
+                $this->getAdditionalFilters(),
+            ),
         );
         $values = [
             'additionalFilters' => $afterFrequentlySearchedEvent->getAdditionalFilters(),

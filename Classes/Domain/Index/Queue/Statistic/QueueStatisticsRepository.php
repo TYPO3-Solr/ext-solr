@@ -17,10 +17,11 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic;
 
+use ApacheSolrForTypo3\Solr\Exception\BadMethodCallException;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\ParameterType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
 
 /**
  * Class QueueStatisticsRepository
@@ -57,26 +58,26 @@ class QueueStatisticsRepository extends AbstractRepository
                     $queryBuilder->expr()->notLike($this->columnErrors, $queryBuilder->createNamedParameter('')),
                     $queryBuilder->quoteIdentifier('failed'),
                 ]),
-                $queryBuilder->expr()->count('*', 'count')
+                $queryBuilder->expr()->count('*', 'count'),
             )
             ->from($this->table)
             ->where(
-                $queryBuilder->expr()->eq($this->columnRootpage, $queryBuilder->createNamedParameter($rootPid, \Doctrine\DBAL\ParameterType::INTEGER))
+                $queryBuilder->expr()->eq($this->columnRootpage, $queryBuilder->createNamedParameter($rootPid, ParameterType::INTEGER)),
             )->groupBy('pending', 'failed');
 
         if (!empty($indexingConfigurationName)) {
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->eq(
                     $this->columnIndexingConfiguration,
-                    $queryBuilder->createNamedParameter($indexingConfigurationName)
-                )
+                    $queryBuilder->createNamedParameter($indexingConfigurationName),
+                ),
             );
         }
 
         return $this->buildQueueStatisticFromResultSet(
             $queryBuilder
                 ->executeQuery()
-                ->fetchAllAssociative()
+                ->fetchAllAssociative(),
         );
     }
 
@@ -103,10 +104,10 @@ class QueueStatisticsRepository extends AbstractRepository
     /**
      * Don't use this method.
      *
-     * @throws UnsupportedMethodException
+     * @throws BadMethodCallException
      */
     public function count(): int
     {
-        throw new UnsupportedMethodException('Can not count the Index Queue Statistics.', 1504694750);
+        throw new BadMethodCallException('Can not count the Index Queue Statistics.', 1504694750);
     }
 }

@@ -19,11 +19,8 @@ namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
-use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
-use ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 
@@ -35,13 +32,10 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
 {
     protected ?int $documentsToIndexLimit = null;
 
-    protected string $forcedWebRoot = '';
-
     /**
      * Works through the indexing queue and indexes the queued items into Solr and returns TRUE on success,
      * FALSE if no items were indexed or none were found.
      *
-     * @throws WebRootAllReadyDefinedException
      * @throws ConnectionException
      * @throws DBALException
      *
@@ -49,57 +43,11 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      */
     public function execute()
     {
-        $cliEnvironment = null;
-
-        // Wrapped the CliEnvironment to avoid defining TYPO3_PATH_WEB since this
-        // should only be done in the case when running it from outside TYPO3 BE
-        // @see #921 and #934 on https://github.com/TYPO3-Solr
-        if (Environment::isCli()) {
-            $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
-            $cliEnvironment->backup();
-            $cliEnvironment->initialize($this->getWebRoot(), Environment::getPublicPath() . '/');
-        }
-
         $site = $this->getSite();
         $indexService = $this->getInitializedIndexService($site);
         $indexService->indexItems($this->documentsToIndexLimit);
 
-        if (Environment::isCli()) {
-            $cliEnvironment->restore();
-        }
-
         return true;
-    }
-
-    /**
-     * In the cli context TYPO3 has chance to determine the webroot.
-     * Since we need it for the TSFE related things we allow to set it
-     * in the scheduler task and use the ###PATH_typo3### marker in the
-     * setting to be able to define relative paths.
-     */
-    public function getWebRoot(): string
-    {
-        if ($this->forcedWebRoot !== '') {
-            return $this->replaceWebRootMarkers($this->forcedWebRoot);
-        }
-
-        return Environment::getPublicPath() . '/';
-    }
-
-    /**
-     * Replaces the markers containing in $webRoot string
-     */
-    protected function replaceWebRootMarkers(string $webRoot): string
-    {
-        if (str_contains($webRoot, '###PATH_typo3###')) {
-            $webRoot = str_replace('###PATH_typo3###', Environment::getPublicPath() . '/typo3/', $webRoot);
-        }
-
-        if (str_contains($webRoot, '###PATH_site###')) {
-            $webRoot = str_replace('###PATH_site###', Environment::getPublicPath() . '/', $webRoot);
-        }
-
-        return $webRoot;
     }
 
     /**
@@ -126,8 +74,6 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
         if ($failedItemsCount) {
             $message .= ' Failures: ' . $failedItemsCount;
         }
-
-        $message .= ' / Using webroot: ' . htmlspecialchars($this->getWebRoot());
 
         return $message;
     }
@@ -158,16 +104,6 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
     public function setDocumentsToIndexLimit(int|string $limit): void
     {
         $this->documentsToIndexLimit = (int)$limit;
-    }
-
-    public function setForcedWebRoot(string $forcedWebRoot): void
-    {
-        $this->forcedWebRoot = $forcedWebRoot;
-    }
-
-    public function getForcedWebRoot(): string
-    {
-        return $this->forcedWebRoot;
     }
 
     /**

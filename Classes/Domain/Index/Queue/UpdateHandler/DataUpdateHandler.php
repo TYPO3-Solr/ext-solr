@@ -34,8 +34,10 @@ use ApacheSolrForTypo3\Solr\Traits\SkipRecordByRootlineConfigurationTrait;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -89,6 +91,11 @@ class DataUpdateHandler extends AbstractUpdateHandler
         // the field "no_search_sub_entries" of current page was set to 0
         'no_search_sub_entriesFlagWasAdded' => [
             'changeSet' => ['no_search_sub_entries' => '0'],
+        ],
+        // the current page has the field "extendToSubpages" enabled and the field "fe_group" was changed
+        'extendToSubpageEnabledAndFeGroupWasChanged' => [
+            'currentState' =>  ['extendToSubpages' => '1'],
+            'changeSet' => ['fe_group' => '*'],
         ],
     ];
 
@@ -318,28 +325,6 @@ class DataUpdateHandler extends AbstractUpdateHandler
     }
 
     /**
-     * Removes record from the index queue and from the solr index when the item is in the queue.
-     *
-     * @throws DBALException
-     * @deprecated DataUpdateHandler->removeFromIndexAndQueueWhenItemInQueue is deprecated and will be removed in v13.
-                   Use DataUpdateHandler->removeFromIndexAndQueue instead.
-     */
-    protected function removeFromIndexAndQueueWhenItemInQueue(string $recordTable, int $recordUid): void
-    {
-        trigger_error(
-            'DataUpdateHandler->removeFromIndexAndQueueWhenItemInQueue is deprecated and will be removed in v13.'
-            . ' Use DataUpdateHandler->removeFromIndexAndQueue instead.',
-            E_USER_DEPRECATED
-        );
-
-        if (!$this->indexQueue->containsItem($recordTable, $recordUid)) {
-            return;
-        }
-
-        $this->removeFromIndexAndQueue($recordTable, $recordUid);
-    }
-
-    /**
      * @throws DBALException
      */
     protected function getSolrConfigurationFromPageId(int $pageId): TypoScriptConfiguration
@@ -388,12 +373,17 @@ class DataUpdateHandler extends AbstractUpdateHandler
             $this->processRecord('pages', $uid, $rootPageIds);
         }
 
-        $this->updateCanonicalPages($uid);
-        $this->mountPageUpdater->update($uid);
+        if ($this->isRelevantMountPageUpdate($uid, $updatedFields)) {
+            $this->getGarbageHandler()->collectGarbage('pages', $uid);
+            $this->mountPageUpdater->updateMountPoint($uid);
+        } else {
+            $this->updateCanonicalPages($uid);
+            $this->mountPageUpdater->update($uid);
+        }
 
         // We need to get the full record to find out if this is a page translation
         $fullRecord = $this->getRecord('pages', $uid);
-        if (($fullRecord['sys_language_uid'] ?? null) > 0) {
+        if (($fullRecord['sys_language_uid'] ?? null) > 0 && (int)($fullRecord['l10n_parent']) > 0) {
             $uid = (int)$fullRecord['l10n_parent'];
         }
 
@@ -402,6 +392,18 @@ class DataUpdateHandler extends AbstractUpdateHandler
             $treePageIds = $this->getSubPageIds($uid);
             $this->updatePageIdItems($treePageIds);
         }
+    }
+
+    protected function isRelevantMountPageUpdate(int $pageUid, array $updatedFields): bool
+    {
+        $pageRecord = BackendUtility::getRecord('pages', $pageUid, '*', '', false);
+        if ($pageRecord === null || $pageRecord['doktype'] !== PageRepository::DOKTYPE_MOUNTPOINT) {
+            return false;
+        }
+        return array_filter(
+            array_keys($updatedFields),
+            static fn(string $field): bool => in_array($field, ['slug', 'hidden']),
+        ) !== [];
     }
 
     /**
@@ -485,7 +487,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
         $alternativeSiteRoots = $this->rootPageResolver->getAlternativeSiteRootPagesIds(
             $recordTable,
             $recordUid,
-            $recordPageId
+            $recordPageId,
         );
         return (int)array_pop($alternativeSiteRoots);
     }
@@ -533,8 +535,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
      */
     protected function getValidatedPid(string $table, int $uid): ?int
     {
-        $pid = $this->dataHandler->getPID($table, $uid);
-        if ($pid === false) {
+        $pid = (int)(BackendUtility::getRecord($table, $uid, 'pid', '', false)['pid'] ?? 0);
+        if ($pid === 0) {
             $message = 'Record without valid pid was processed ' . $table . ':' . $uid;
             $this->logger->warning($message);
             return null;

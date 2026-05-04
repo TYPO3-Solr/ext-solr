@@ -17,10 +17,12 @@ namespace ApacheSolrForTypo3\Solr\Backend;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
-use TYPO3\CMS\Backend\Form\FormResultCompiler;
+use TYPO3\CMS\Backend\Form\FormResultFactory;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
+use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -150,7 +152,8 @@ class IndexingConfigurationSelectorField
 
         foreach ($tablesToIndex as $configurationName => $tableName) {
             if (isset($GLOBALS['TCA'][$tableName])) {
-                $icon = $iconFactory->mapRecordTypeToIconIdentifier($tableName, []);
+                $tcaSchemaFactory = GeneralUtility::makeInstance(TcaSchemaFactory::class);
+                $icon = $iconFactory->mapRecordTypeToIconIdentifier($tableName, [], $tcaSchemaFactory->get($tableName));
                 if ($icon === $iconRegistry->getDefaultIconIdentifier() || !$iconRegistry->isRegistered($icon)) {
                     $icon = $defaultIcon;
                 }
@@ -203,10 +206,16 @@ class IndexingConfigurationSelectorField
         $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
 
         $selectCheckboxResult = $nodeFactory->create($options)->render();
-        $formResultCompiler = GeneralUtility::makeInstance(FormResultCompiler::class);
-        $formResultCompiler->mergeResult($selectCheckboxResult);
+        $formResult = GeneralUtility::makeInstance(FormResultFactory::class)->create($selectCheckboxResult);
 
-        $formHtml = $selectCheckboxResult['html'] ?? '';
-        return $formResultCompiler->addCssFiles() . $formHtml . $formResultCompiler->printNeededJSFunctions();
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        foreach ($formResult->stylesheetFiles as $stylesheetFile) {
+            $pageRenderer->addCssFile($stylesheetFile);
+        }
+        foreach ($formResult->javaScriptModules as $module) {
+            $pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction($module);
+        }
+
+        return $formResult->html;
     }
 }

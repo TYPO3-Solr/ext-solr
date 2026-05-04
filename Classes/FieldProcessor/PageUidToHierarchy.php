@@ -60,10 +60,10 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
         $results = [];
 
         foreach ($values as $value) {
-            $rootPageUidAndMountPoint = GeneralUtility::trimExplode(',', $value, true, 2);
+            $rootPageUidAndMountPoint = GeneralUtility::trimExplode(',', (string)$value, true, 2);
             $results[] = $this->getSolrRootlineForPageId(
                 (int)$rootPageUidAndMountPoint[0],
-                $rootPageUidAndMountPoint[1] ?? ''
+                $rootPageUidAndMountPoint[1] ?? '',
             );
         }
 

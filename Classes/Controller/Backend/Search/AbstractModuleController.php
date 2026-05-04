@@ -204,7 +204,7 @@ abstract class AbstractModuleController extends ActionController
                 [
                     'corePath' => $coreAdmin->getCorePath(),
                     'uriToRedirectTo' => $uriToRedirectTo,
-                ]
+                ],
             );
             $menuItem->setHref($uri);
 
@@ -229,8 +229,8 @@ abstract class AbstractModuleController extends ActionController
             LocalizationUtility::translate(
                 'solr.backend.index_administration.success.queue_emptied',
                 'Solr',
-                [$this->selectedSite->getLabel()]
-            )
+                [$this->selectedSite->getLabel()],
+            ),
         );
 
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);

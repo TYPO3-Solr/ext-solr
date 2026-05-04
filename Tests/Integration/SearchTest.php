@@ -29,8 +29,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use Doctrine\DBAL\Exception as DBALException;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Test class to perform a search on a real solr server
@@ -47,14 +47,8 @@ class SearchTest extends IntegrationTestBase
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->queryBuilder = new QueryBuilder(new TypoScriptConfiguration([]));
 
-        $this->getConfiguredTSFE();
+        $this->getConfiguredRequest();
         $this->searchInstance = GeneralUtility::makeInstance(Search::class);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
 
     /**
@@ -65,7 +59,6 @@ class SearchTest extends IntegrationTestBase
     #[Test]
     public function canSearchForADocument(): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/can_search.csv');
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
@@ -327,7 +320,7 @@ class SearchTest extends IntegrationTestBase
         self::assertTrue(
             // @extensionScannerIgnoreLine
             $parsedDatasByPhraseSlop[1]->response->docs[3]->getScore() === $parsedDatasByPhraseSlop[1]->response->docs[4]->getScore(),
-            'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=1.'
+            'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=1.',
         );
 
         // slop = 2
@@ -338,7 +331,7 @@ class SearchTest extends IntegrationTestBase
         self::assertTrue(
             // @extensionScannerIgnoreLine
             $parsedDatasByPhraseSlop[2]->response->docs[5]->getScore() === $parsedDatasByPhraseSlop[2]->response->docs[6]->getScore(),
-            'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=2.'
+            'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=2.',
         );
     }
 
@@ -412,7 +405,7 @@ class SearchTest extends IntegrationTestBase
         self::assertTrue(
             $slop0ResponseDocs[3]->getUid() === $slop1ResponseDocs[3]->getUid()
             && $slop0ResponseDocs[3]->getScore() < $slop1ResponseDocs[3]->getScore(),
-            'Trigram phrase slop value = 1 does not boost docs with "sloppy phrases"'
+            'Trigram phrase slop value = 1 does not boost docs with "sloppy phrases"',
         );
 
         // @extensionScannerIgnoreLine
@@ -420,7 +413,7 @@ class SearchTest extends IntegrationTestBase
         self::assertTrue(
             $slop1ResponseDocs[5]->getUid() === $slop2ResponseDocs[5]->getUid()
             && $slop0ResponseDocs[5]->getScore() < $slop1ResponseDocs[5]->getScore(),
-            'Trigram phrase slop value = 2 does not boost docs with "sloppy phrases"'
+            'Trigram phrase slop value = 2 does not boost docs with "sloppy phrases"',
         );
     }
 
@@ -508,7 +501,7 @@ class SearchTest extends IntegrationTestBase
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
     }
 
-    protected function getConfiguredTSFE(int $id = 1): TypoScriptFrontendController
+    protected function getConfiguredRequest(int $id = 1): ServerRequest
     {
         $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
         return $bootstrapper->bootstrap($id);

@@ -15,14 +15,19 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Service;
 
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\Client;
+use Solarium\Core\Client\Request;
 use Solarium\Core\Client\Response;
 use Solarium\QueryType\Update\Query\Query;
 use Solarium\QueryType\Update\Result;
+use Traversable;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SolrService class
@@ -32,6 +37,7 @@ class SolrWriteServiceTest extends SetUpUnitTestCase
     protected Response|MockObject $responseMock;
     protected Result|MockObject $resultMock;
     protected Client|MockObject $clientMock;
+    protected TypoScriptConfiguration&MockObject $configuration;
     protected SolrWriteService $service;
 
     protected function setUp(): void
@@ -42,7 +48,9 @@ class SolrWriteServiceTest extends SetUpUnitTestCase
         $this->resultMock->expects(self::any())->method('getResponse')->willReturn($this->responseMock);
         $this->clientMock = $this->createMock(Client::class);
 
-        $this->service = new SolrWriteService($this->clientMock);
+        $this->configuration = $this->createMock(TypoScriptConfiguration::class);
+
+        $this->service = new SolrWriteService($this->clientMock, $this->configuration);
         parent::setUp();
     }
 
@@ -55,5 +63,45 @@ class SolrWriteServiceTest extends SetUpUnitTestCase
 
         $result = $this->service->optimizeIndex();
         self::assertSame(200, $result->getResponse()->getStatusCode(), 'Expecting to get a 200 OK response');
+    }
+
+    #[Test]
+    #[DataProvider('addDocumentsDataProvider')]
+    public function canAddDocuments(bool $vectorSearchEnabled): void
+    {
+        $documents = [new Document()];
+        $queryMock = $this->createMock(Query::class);
+        $queryMock->expects(self::once())->method('addDocuments')->with($documents);
+
+        $requestMock = $this->createMock(Request::class);
+        if ($vectorSearchEnabled) {
+            $requestMock->expects(self::once())->method('addParam')->with('update.chain', 'textToVector');
+        } else {
+            $requestMock->expects(self::never())->method('addParam');
+        }
+
+        $this->configuration
+            ->expects(self::once())
+            ->method('isVectorSearchEnabled')
+            ->willReturn($vectorSearchEnabled);
+
+        $this->clientMock->expects(self::once())->method('createUpdate')->willReturn($queryMock);
+        $this->clientMock
+            ->expects(self::once())
+            ->method('createRequest')
+            ->with($queryMock)
+            ->willReturn($requestMock);
+
+        $this->service->addDocuments($documents);
+    }
+
+    public static function addDocumentsDataProvider(): Traversable
+    {
+        yield 'vector search disabled' => [
+            'vectorSearchEnabled' => false,
+        ];
+        yield 'vector search enabled' => [
+            'vectorSearchEnabled' => true,
+        ];
     }
 }

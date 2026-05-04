@@ -33,6 +33,8 @@ class QueueTest extends IntegrationTestBase
      */
     protected $indexQueue;
 
+    protected QueueInitializationService $queueInitializationService;
+
     /**
      * @var SiteRepository
      */
@@ -43,7 +45,7 @@ class QueueTest extends IntegrationTestBase
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
-        $this->indexQueue->setQueueInitializationService(GeneralUtility::makeInstance(QueueInitializationService::class));
+        $this->queueInitializationService = GeneralUtility::makeInstance(QueueInitializationService::class);
         $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
     }
 
@@ -74,7 +76,7 @@ class QueueTest extends IntegrationTestBase
 
         // after initialize the prefilled queue item should be lost and the root page should be added again
         $site = $this->siteRepository->getFirstAvailableSite();
-        $this->indexQueue->getQueueInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
+        $this->queueInitializationService->initializeBySiteAndIndexConfiguration($site, 'pages');
 
         $this->assertItemsInQueue(1);
         self::assertTrue($this->indexQueue->containsItem('pages', 1));
@@ -141,10 +143,10 @@ class QueueTest extends IntegrationTestBase
         $this->assertEmptyQueue();
         $site = $this->siteRepository->getFirstAvailableSite();
 
-        $this->indexQueue->getQueueInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
+        $this->queueInitializationService->initializeBySiteAndIndexConfiguration($site, 'pages');
         $this->assertItemsInQueue(4);
 
-        $this->indexQueue->getQueueInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
+        $this->queueInitializationService->initializeBySiteAndIndexConfiguration($site, 'pages');
         $this->assertItemsInQueue(4);
     }
 
@@ -172,10 +174,10 @@ class QueueTest extends IntegrationTestBase
                         }
                     }
                 }
-           }'
+           }',
         );
         $site = $this->siteRepository->getFirstAvailableSite();
-        $this->indexQueue->getQueueInitializationService()->initializeBySiteAndIndexConfiguration($site, 'custom_page_type');
+        $this->queueInitializationService->initializeBySiteAndIndexConfiguration($site, 'custom_page_type');
 
         $this->assertItemsInQueue(1);
 
@@ -183,7 +185,7 @@ class QueueTest extends IntegrationTestBase
         self::assertEquals(
             'custom_page_type',
             $queueItem->getIndexingConfigurationName(),
-            'Item was queued with unexpected configuration'
+            'Item was queued with unexpected configuration',
         );
     }
 
@@ -207,10 +209,16 @@ class QueueTest extends IntegrationTestBase
         $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
         self::assertSame(1, $itemCount, 'Unexpected remaining item count for the first site');
 
-        // when we update the item, no remaining item should be left
+        // after updating the item it should still be pending (changed > indexed)
         $this->indexQueue->updateItem('pages', 1);
         $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
-        self::assertSame(0, $itemCount, 'After updating a remaining item no remaining item should be left');
+        self::assertSame(1, $itemCount, 'After updating a remaining item it should still be pending');
+
+        // after marking the item as indexed, no remaining item should be left
+        $items = $this->indexQueue->getItems('pages', 1);
+        $this->indexQueue->updateIndexTimeByItem($items[0]);
+        $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
+        self::assertSame(0, $itemCount, 'After indexing the item no remaining item should be left');
     }
 
     #[Test]
@@ -225,7 +233,7 @@ class QueueTest extends IntegrationTestBase
         if (is_array($availableSites)) {
             foreach ($availableSites as $site) {
                 if ($site instanceof Site) {
-                    $this->indexQueue->getQueueInitializationService()->initializeBySiteAndIndexConfiguration($site);
+                    $this->queueInitializationService->initializeBySiteAndIndexConfiguration($site);
                 }
             }
         }

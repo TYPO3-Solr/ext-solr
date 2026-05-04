@@ -137,7 +137,7 @@ class ReIndexTask extends AbstractSolrTask
         if (!empty($this->indexingConfigurationsToReIndex)) {
             $information .= ', Indexing Configurations: ' . implode(
                 ', ',
-                $this->indexingConfigurationsToReIndex
+                $this->indexingConfigurationsToReIndex,
             );
         }
 

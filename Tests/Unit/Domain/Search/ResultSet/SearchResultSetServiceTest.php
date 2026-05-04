@@ -186,12 +186,12 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
         self::assertSame(
             1,
             $searchResultSet->getSearchResults()->getGroups()->getCount(),
-            'There should be 1 Groups of search results'
+            'There should be 1 Groups of search results',
         );
         self::assertSame(
             2,
             $searchResultSet->getSearchResults()->getGroups()->getByPosition(0)->getGroupItems()->getCount(),
-            'The group should contain two group items'
+            'The group should contain two group items',
         );
 
         /** @var Group $firstGroup */
@@ -199,36 +199,36 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
         self::assertSame(
             'typeGroup',
             $firstGroup->getGroupName(),
-            'Unexpected groupName for the first group'
+            'Unexpected groupName for the first group',
         );
 
         $typeGroup = $searchResultSet->getSearchResults()->getGroups()->getByPosition(0)->getGroupItems();
         self::assertSame(
             'pages',
             $typeGroup->getByPosition(0)->getGroupValue(),
-            'There should be 5 documents in the group pages'
+            'There should be 5 documents in the group pages',
         );
         self::assertSame(
             5,
             $typeGroup->getByPosition(0)->getSearchResults()->getCount(),
-            'There should be 5 documents in the group pages'
+            'There should be 5 documents in the group pages',
         );
 
         self::assertSame(
             'tx_news_domain_model_news',
             $typeGroup->getByPosition(1)->getGroupValue(),
-            'There should be 2 documents in the group news'
+            'There should be 2 documents in the group news',
         );
         self::assertSame(
             2,
             $typeGroup->getByPosition(1)->getSearchResults()->getCount(),
-            'There should be 2 documents in the group news'
+            'There should be 2 documents in the group news',
         );
 
         self::assertSame(
             7,
             $searchResultSet->getSearchResults()->getCount(),
-            'There should be a 7 search results when they are fetched without groups'
+            'There should be a 7 search results when they are fetched without groups',
         );
     }
 

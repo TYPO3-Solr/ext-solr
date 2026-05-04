@@ -1,4 +1,4 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title"
-,10,1,0,1,"/subpage","Subpage of testone.site aka integration_tree_one"
-,1111,111,0,1,"/subpage","Subpage of testtwo.site aka integration_tree_two"
+,"uid","pid","is_siteroot","doktype","slug","title","tstamp"
+,10,1,0,1,"/subpage","Subpage of testone.site aka integration_tree_one",1007007007
+,1111,111,0,1,"/subpage","Subpage of testtwo.site aka integration_tree_two",1007007007

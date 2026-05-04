@@ -89,7 +89,7 @@ abstract class SetUpEventListener extends SetUpUnitTestCase
     {
         $invalidTypes = array_diff(
             self::MONITORING_TYPES_TO_TEST,
-            [static::getMonitoringType()]
+            [static::getMonitoringType()],
         );
 
         $testData = [];

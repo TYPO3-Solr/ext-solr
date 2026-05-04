@@ -1,12 +1,12 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title"
+,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title","tstamp"
 # Site tree for first site: Uses the root pages from default tests setup
 # See: Ext:solr/Tests/Integration/Fixtures/sites_setup_and_data_set/01_integration_tree_one.csv
-,11,1,0,7,24,1,"/subpage","Subpage of first site"
+,11,1,0,7,24,1,"/subpage","Subpage of first site",1007007007
 # Site tree for secod site: Uses the root pages from default tests setup
 # See: Ext:solr/Tests/Integration/Fixtures/sites_setup_and_data_set/02_integration_tree_two.csv
-,21,111,0,7,24,1,"/subpage","Subpage of second site"
+,21,111,0,7,24,1,"/subpage","Subpage of second site",1007007007
 # detached and non Root Page-Tree
-,3,0,0,1,0,0,"/","Detached and non Root Page-Tree"
-,31,3,0,7,24,1,"/subpage-1","Subpage 1 of Detached"
-,32,3,0,7,24,1,"/subpage-2","Subpage 2 of Detached"
+,3,0,0,1,0,0,"/","Detached and non Root Page-Tree",1007007007
+,31,3,0,7,24,1,"/subpage-1","Subpage 1 of Detached",1007007007
+,32,3,0,7,24,1,"/subpage-2","Subpage 2 of Detached",1007007007

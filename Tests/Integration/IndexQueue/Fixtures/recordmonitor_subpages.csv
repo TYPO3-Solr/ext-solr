@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title",
-,2,1,0,1,"/sub-page-1","Sub page level one page one"
-,3,1,0,1,"/sub-page-2","Sub page level one page 2"
-,4,1,0,1,"/sub-page-3","Sub page level one page 3"
-,5,3,0,1,"/sub-page-2/subsubpage","Sub page level two page 1"
+,"uid","pid","is_siteroot","doktype","slug","title",,"tstamp"
+,2,1,0,1,"/sub-page-1","Sub page level one page one",1007007007
+,3,1,0,1,"/sub-page-2","Sub page level one page 2",1007007007
+,4,1,0,1,"/sub-page-3","Sub page level one page 3",1007007007
+,5,3,0,1,"/sub-page-2/subsubpage","Sub page level two page 1",1007007007

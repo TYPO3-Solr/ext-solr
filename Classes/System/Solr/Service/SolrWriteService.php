@@ -18,56 +18,13 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
 
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
-use Solarium\QueryType\Extract\Query;
 use Solarium\QueryType\Update\Result;
-use Throwable;
 
 /**
  * Class SolrWriteService
  */
 class SolrWriteService extends AbstractSolrService
 {
-    public const EXTRACT_SERVLET = 'update/extract';
-
-    /**
-     * Performs a content and meta data extraction request.
-     *
-     * @param Query $query An extraction query
-     * @return array An array containing the extracted content [0] and metadata [1]
-     */
-    public function extractByQuery(Query $query): array
-    {
-        try {
-            $response = $this->createAndExecuteRequest($query);
-            return [
-                $response->file,
-                $response->file_metadata,
-                $response,
-            ];
-        } catch (Throwable $e) {
-            $param = $query->getRequestBuilder()->build($query)->getParams();
-            $this->logger->error(
-                'Extracting text and meta data through Solr Cell over HTTP POST',
-                [
-                    'query' => (array)$query,
-                    'parameters' => $param,
-                    'file' => $query->getFile(),
-                    'query url' => self::EXTRACT_SERVLET,
-                    'exception' => $e->getMessage(),
-                ]
-            );
-            return [
-                null,
-                null,
-                new ResponseAdapter(
-                    $e->getTraceAsString(),
-                    $e->getCode(),
-                    $e->getMessage()
-                ),
-            ];
-        }
-    }
-
     /**
      * Deletes all index documents of a certain type and does a commit
      * afterwards.
@@ -105,7 +62,13 @@ class SolrWriteService extends AbstractSolrService
     {
         $update = $this->client->createUpdate();
         $update->addDocuments($documents);
-        return $this->createAndExecuteRequest($update);
+
+        $request = $this->createRequest($update);
+        if ($this->configuration->isVectorSearchEnabled()) {
+            $request->addParam('update.chain', 'textToVector');
+        }
+
+        return $this->executeRequest($request);
     }
 
     /**

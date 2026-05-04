@@ -41,17 +41,8 @@ class SuggestControllerTest extends IntegrationTestBase
             page.typeNum = 0
             # include suggest feature
             @import \'EXT:solr/Configuration/TypoScript/Examples/Suggest/setup.typoscript\'
-            '
+            ',
         );
-    }
-
-    /**
-     * Executed after each test. Empties solr and checks if the index is empty
-     */
-    protected function tearDown(): void
-    {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
-        parent::tearDown();
     }
 
     #[Test]
@@ -76,7 +67,7 @@ class SuggestControllerTest extends IntegrationTestBase
             /* @lang TYPO3_TypoScript */
             '
 			plugin.tx_solr.suggest.suggestField = title
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5]);

@@ -119,7 +119,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $additionalFields['site'] = [
             'code' => $siteSelectorField->getAvailableSitesSelector(
                 'tx_scheduler[site]',
-                $this->site
+                $this->site,
             ),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
         ];
@@ -138,7 +138,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
     protected function getIndexingConfigurationSelector(): string
     {
         $selectorMarkup = 'Please select a site first.';
-        $this->getPageRenderer()->addCssFile('../typo3conf/ext/solr/Resources/Css/Backend/indexingconfigurationselectorfield.css');
+        $this->getPageRenderer()->addCssFile('EXT:solr/Resources/Public/Css/Backend/indexingconfigurationselectorfield.css');
 
         if (is_null($this->site)) {
             return $selectorMarkup;
@@ -226,7 +226,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
             throw new LogicException(
                 '$task must be an instance of ReIndexTask, '
                 . 'other instances are not supported.',
-                1487500366
+                1487500366,
             );
         }
         return true;

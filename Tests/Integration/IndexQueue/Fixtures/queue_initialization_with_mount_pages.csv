@@ -1,7 +1,7 @@
 # Uses the root pages from default tests setup See: Ext:solr/Tests/Integration/Fixtures/sites_setup_and_data_set/01_integration_tree_one.csv
 "pages",
-,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title",
-,10,1,0,7,2,0,"/mount-point","Mount Point"
-,2,0,1,1,0,0,"/","Mounted"
-,20,2,0,1,0,0,"/child-of-mounter","Child of Mounter"
-,40,1,0,7,0,0,"/invalid-mount-point","Invalid Mount Point"
+,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title",,"tstamp"
+,10,1,0,7,2,0,"/mount-point","Mount Point",1007007007
+,2,0,1,1,0,0,"/","Mounted",1007007007
+,20,2,0,1,0,0,"/child-of-mounter","Child of Mounter",1007007007
+,40,1,0,7,0,0,"/invalid-mount-point","Invalid Mount Point",1007007007

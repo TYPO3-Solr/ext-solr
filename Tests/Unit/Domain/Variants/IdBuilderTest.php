@@ -47,7 +47,7 @@ class IdBuilderTest extends SetUpUnitTestCase
             static function (AfterVariantIdWasBuiltEvent $event) {
                 $event->setVariantId('mycustomid');
                 return $event;
-            }
+            },
         );
         $build = new IdBuilder($eventDispatcher);
         $variantId = $build->buildFromTypeAndUid('pages', 4711, [], $this->createMock(Site::class), new Document());

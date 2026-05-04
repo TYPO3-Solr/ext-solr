@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\StrategyFactory;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use Doctrine\DBAL\Exception as DBALException;
+use InvalidArgumentException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -64,6 +65,11 @@ class GarbageHandler extends AbstractUpdateHandler
         'no_search_sub_entriesFlagWasAdded' => [
             'changeSet' => ['no_search_sub_entries' => '1'],
         ],
+        // the current page has the field "extendToSubpages" enabled and the field "fe_group" was changed
+        'extendToSubpageEnabledAndFeGroupWasChanged' => [
+            'currentState' =>  ['extendToSubpages' => '1'],
+            'changeSet' => ['fe_group' => '*'],
+        ],
     ];
 
     /**
@@ -101,7 +107,7 @@ class GarbageHandler extends AbstractUpdateHandler
                 $subPageIds = $this->getSubPageIds($uid);
                 array_walk(
                     $subPageIds,
-                    fn(int $subPageId) => $this->collectGarbage('pages', $subPageId)
+                    fn(int $subPageId) => $this->collectGarbage('pages', $subPageId),
                 );
             }
         }
@@ -131,7 +137,7 @@ class GarbageHandler extends AbstractUpdateHandler
             // We need to get the full record to find out if this is a page translation
             $fullRecord = $this->getRecord('pages', $uid);
             $uidForRecursiveTriggers = $uid;
-            if (($fullRecord['sys_language_uid'] ?? null) > 0) {
+            if (($fullRecord['sys_language_uid'] ?? null) > 0 && (int)($fullRecord['l10n_parent']) > 0) {
                 $uidForRecursiveTriggers = (int)$fullRecord['l10n_parent'];
             }
             $this->deleteSubEntriesWhenRecursiveTriggerIsRecognized($table, $uidForRecursiveTriggers, $updatedFields);
@@ -193,7 +199,7 @@ class GarbageHandler extends AbstractUpdateHandler
     {
         try {
             $isAllowedPageType = $this->frontendEnvironment->isAllowedPageType($record);
-        } catch (SiteNotFoundException $e) {
+        } catch (SiteNotFoundException | InvalidArgumentException $e) {
             $this->logger->log(
                 LogLevel::WARNING,
                 'Couldn\t determine site for page ' . $record['uid'],
@@ -204,7 +210,7 @@ class GarbageHandler extends AbstractUpdateHandler
                         'file' => $e->getFile() . ':' . $e->getLine(),
                         'message' => $e->getMessage(),
                     ],
-                ]
+                ],
             );
 
             $isAllowedPageType = false;

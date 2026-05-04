@@ -86,7 +86,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             $field = $sortingOptions['field'];
             $label = $sortingOptions['label'] ?? '';
 
-            $isResetOption = $field === 'relevance';
+            $isResetOption = $field === 'relevance' || $field === '$q_vector';
 
             // Allow stdWrap on label:
             $labelHasSubConfiguration = is_array($sortingOptions['label.'] ?? null);
@@ -107,7 +107,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
                 $direction,
                 $label,
                 $selected,
-                $isResetOption
+                $isResetOption,
             );
             $resultSet->addSorting($sorting);
         }
@@ -135,7 +135,10 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             }
 
             if ($misspelledTerm === '') {
-                throw new UnexpectedValueException('No misspelled term before suggestion');
+                throw new UnexpectedValueException(
+                    'No misspelled term before suggestion',
+                    4271427727,
+                );
             }
 
             if (!is_object($suggestionData) && !is_array($suggestionData->suggestion)) {

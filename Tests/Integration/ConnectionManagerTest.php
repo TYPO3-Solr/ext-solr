@@ -138,7 +138,7 @@ class ConnectionManagerTest extends IntegrationTestBase
             ],
             [
                 $this->buildErrorHandlingConfiguration('Fluid', [404]),
-            ]
+            ],
         );
     }
 

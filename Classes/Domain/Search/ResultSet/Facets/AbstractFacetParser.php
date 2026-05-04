@@ -78,7 +78,7 @@ abstract class AbstractFacetParser implements FacetParserInterface
         $this->getReusableContentObject()->start(['optionValue' => $value, 'optionCount' => $count, 'facetName' => $facetName]);
         return $this->getReusableContentObject()->cObjGetSingle(
             $facetConfiguration['renderingInstruction'],
-            $facetConfiguration['renderingInstruction.']
+            $facetConfiguration['renderingInstruction.'],
         );
     }
 

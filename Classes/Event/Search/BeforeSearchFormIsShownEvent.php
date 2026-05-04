@@ -27,6 +27,7 @@ final class BeforeSearchFormIsShownEvent
     private Search $search;
     private array $additionalFilters;
     private string $pluginNamespace;
+    private array $additionalVariables = [];
 
     public function __construct(Search $search, array $additionalFilters, string $pluginNamespace)
     {
@@ -48,5 +49,15 @@ final class BeforeSearchFormIsShownEvent
     public function getPluginNamespace(): string
     {
         return $this->pluginNamespace;
+    }
+
+    public function getAdditionalVariables(): array
+    {
+        return $this->additionalVariables;
+    }
+
+    public function setAdditionalVariables(array $additionalVariables): void
+    {
+        $this->additionalVariables = $additionalVariables;
     }
 }

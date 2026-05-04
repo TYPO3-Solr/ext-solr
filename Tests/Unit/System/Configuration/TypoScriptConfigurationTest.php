@@ -19,7 +19,9 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Traversable;
 
 /**
  * Testcase to check if the configuration object can be used as expected
@@ -30,11 +32,13 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
+        // Must call parent::setUp() first to register ContentObjectService mock
+        parent::setUp();
+
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content'] = 'SOLR_CONTENT';
         $fakeConfigurationArray['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content.']['field'] = 'bodytext';
         $this->configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        parent::setUp();
     }
 
     #[Test]
@@ -402,11 +406,11 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         self::assertTrue(
             $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('pages'),
-            'Wrong logging state for pages index queue'
+            'Wrong logging state for pages index queue',
         );
         self::assertFalse(
             $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
-            'Wrong logging state for tt_content index queue'
+            'Wrong logging state for tt_content index queue',
         );
     }
 
@@ -427,11 +431,11 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         self::assertTrue(
             $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('pages'),
-            'Wrong logging state for pages index queue'
+            'Wrong logging state for pages index queue',
         );
         self::assertTrue(
             $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
-            'Wrong logging state for tt_content index queue'
+            'Wrong logging state for tt_content index queue',
         );
     }
 
@@ -832,5 +836,90 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         self::assertSame(['customA', 'customB'], $configuration->getSearchAdditionalPersistentArgumentNames(), 'Can not get configured custom parameters');
+    }
+
+    #[Test]
+    #[DataProvider('queryTypeDataProvider')]
+    public function canIndicateQueryType(
+        array $fakeConfiguration,
+        int $queryType,
+        bool $vectorSearchEnabled,
+    ): void {
+        $configuration = new TypoScriptConfiguration($fakeConfiguration);
+        self::assertEquals($queryType, $configuration->getSearchQueryType());
+        self::assertEquals($vectorSearchEnabled, $configuration->isVectorSearchEnabled());
+    }
+
+    public static function queryTypeDataProvider(): Traversable
+    {
+        yield 'unconfigured' => [
+            'fakeConfiguration' => [],
+            'queryType' => 0,
+            'vectorSearchEnabled' => false,
+        ];
+
+        yield 'default search' => [
+            'fakeConfiguration' => [
+                'plugin.' => [
+                    'tx_solr.' => [
+                        'search.' => [
+                            'query.' => [
+                                'type' => 0,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'queryType' => 0,
+            'vectorSearchEnabled' => false,
+        ];
+
+        yield 'vector search' => [
+            'fakeConfiguration' => [
+                'plugin.' => [
+                    'tx_solr.' => [
+                        'search.' => [
+                            'query.' => [
+                                'type' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'queryType' => 1,
+            'vectorSearchEnabled' => true,
+        ];
+    }
+
+    #[Test]
+    public function canGetMinimumVectorSimilarity(): void
+    {
+        $configuration = new TypoScriptConfiguration(['plugin.' => ['tx_solr.' => []]]);
+        self::assertEquals(0.75, $configuration->getMinimumVectorSimilarity());
+
+        $configuration->mergeSolrConfiguration([
+            'search.' => [
+                'vectorSearch.' => [
+                    'minimumSimilarity' => 0.80,
+                ],
+            ],
+        ]);
+        self::assertEquals(0.80, $configuration->getMinimumVectorSimilarity());
+    }
+
+    #[Test]
+    public function canGetTopKClosestVectorLimit(): void
+    {
+        $configuration = new TypoScriptConfiguration(['plugin.' => ['tx_solr.' => []]]);
+        self::assertEquals(1000, $configuration->getTopKClosestVectorLimit());
+
+        $configuration->mergeSolrConfiguration([
+            'search.' => [
+                'vectorSearch.' => [
+                    'topK' => 9999,
+                ],
+            ],
+        ]);
+        self::assertEquals(9999, $configuration->getTopKClosestVectorLimit());
     }
 }

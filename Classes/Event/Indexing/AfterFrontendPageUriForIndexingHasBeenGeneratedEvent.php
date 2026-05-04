@@ -23,8 +23,7 @@ use Psr\Http\Message\UriInterface;
 /**
  * Event which is fired for the Page Indexer, to define what kind of URL should be submitted.
  *
- * Previously defined via $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']
- * and the PageIndexerDataUrlModifier interface.
+ * Previously defined via $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier'].
  */
 class AfterFrontendPageUriForIndexingHasBeenGeneratedEvent
 {

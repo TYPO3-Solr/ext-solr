@@ -100,7 +100,7 @@ abstract class AbstractUpdateHandler
 
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(
             SolrLogManager::class,
-            __CLASS__
+            __CLASS__,
         );
     }
 
@@ -136,7 +136,7 @@ abstract class AbstractUpdateHandler
             // we collect the currentState fields to return a unique list of all fields
             $allCurrentStateFieldnames = array_merge(
                 $allCurrentStateFieldnames,
-                array_keys($triggerConfiguration['currentState'])
+                array_keys($triggerConfiguration['currentState']),
             );
         }
 
@@ -181,7 +181,7 @@ abstract class AbstractUpdateHandler
                 $indexQueueConfigurationName = $this->configurationAwareRecordService->getIndexingConfigurationName(
                     'pages',
                     $pageId,
-                    $solrConfiguration
+                    $solrConfiguration,
                 );
             } catch (SiteNotFoundException $e) {
                 $this->logger->log(
@@ -194,7 +194,7 @@ abstract class AbstractUpdateHandler
                             'file' => $e->getFile() . ':' . $e->getLine(),
                             'message' => $e->getMessage(),
                         ],
-                    ]
+                    ],
                 );
                 return false;
             }
@@ -202,7 +202,7 @@ abstract class AbstractUpdateHandler
                 return false;
             }
             $updateFields = $solrConfiguration->getIndexQueueConfigurationRecursiveUpdateFields(
-                $indexQueueConfigurationName
+                $indexQueueConfigurationName,
             );
 
             // Check if no additional fields have been defined and then skip recursive update
@@ -260,6 +260,13 @@ abstract class AbstractUpdateHandler
         $triggerConfigurationHasNoChangeSetStateConfiguration = !array_key_exists('changeSet', $triggerConfiguration);
         if ($triggerConfigurationHasNoChangeSetStateConfiguration) {
             return true;
+        }
+
+        // Return true if triggerConfiguration field value is '*' and it's key is in changedFields array
+        foreach ($triggerConfiguration['changeSet'] as $key => $value) {
+            if ($value === '*' && array_key_exists($key, $changedFields)) {
+                return true;
+            }
         }
 
         $diff = array_diff_assoc($triggerConfiguration['changeSet'], $changedFields);

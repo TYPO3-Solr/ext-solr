@@ -38,13 +38,13 @@ class AccessComponent
      */
     public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
-        if (!isset($GLOBALS['TSFE'])) {
+        if ($event->getSearchRequest()->getContextPageUid() < 1) {
             return;
         }
 
         $query = $this->queryBuilder
             ->startFrom($event->getQuery())
-            ->useSiteHashFromTypoScript($GLOBALS['TSFE']->id)
+            ->useSiteHashFromTypoScript($event->getSearchRequest()->getContextPageUid())
             ->useUserAccessGroups(Util::getFrontendUserGroups())
             ->getQuery();
         $event->setQuery($query);

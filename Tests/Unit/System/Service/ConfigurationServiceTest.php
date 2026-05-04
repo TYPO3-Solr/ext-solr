@@ -85,7 +85,7 @@ class ConfigurationServiceTest extends SetUpUnitTestCase
         $filters = $this->callInaccessibleMethod(
             new ConfigurationService(),
             'getFilterFromFlexForm',
-            $fakeFlexFormArrayData
+            $fakeFlexFormArrayData,
         );
 
         self::assertEquals([$filterField . ':' . $expectedFilterString], $filters);

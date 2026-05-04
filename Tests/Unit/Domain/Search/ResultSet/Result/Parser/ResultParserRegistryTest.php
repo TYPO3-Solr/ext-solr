@@ -37,11 +37,11 @@ class ResultParserRegistryTest extends SetUpUnitTestCase
         $container = new Container();
         $container->set(
             SearchResultBuilder::class,
-            $this->createMock(SearchResultBuilder::class)
+            $this->createMock(SearchResultBuilder::class),
         );
         $container->set(
             DocumentEscapeService::class,
-            $this->createMock(DocumentEscapeService::class)
+            $this->createMock(DocumentEscapeService::class),
         );
         GeneralUtility::setContainer($container);
         parent::setUp();

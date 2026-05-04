@@ -46,7 +46,7 @@ class DateRangeFacetParser extends AbstractRangeFacetParser
             $facetConfiguration,
             $this->facetClass,
             $this->facetItemClass,
-            $this->facetRangeCountClass
+            $this->facetRangeCountClass,
         );
     }
 

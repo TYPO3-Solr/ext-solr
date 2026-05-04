@@ -21,20 +21,13 @@ use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesServi
 use ApacheSolrForTypo3\Solr\Exception as SolrException;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use Doctrine\DBAL\Exception as DBALException;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException as AspectNotFoundExceptionAlias;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 
 /**
- * Class LastSearchesViewHelper
- *
- *
  * @noinspection PhpUnused
  */
-class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
+final class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
 {
     /**
      * @inheritdoc
@@ -46,6 +39,11 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
      */
     protected $escapeOutput = false;
 
+    public function __construct(
+        protected ConfigurationManager $configurationManager,
+        private readonly FrequentSearchesService $frequentSearchesService,
+    ) {}
+
     /**
      * Renders frequently searches component.
      *
@@ -55,25 +53,11 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
      */
     public function render()
     {
-        $cache = self::getInitializedCache();
-        /** @var ConfigurationManager $configurationManager */
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration();
-        /** @var FrequentSearchesService $frequentSearchesService */
-        $frequentSearchesService = GeneralUtility::makeInstance(
-            FrequentSearchesService::class,
-            $typoScriptConfiguration,
-            $cache,
+        $typoScriptConfiguration = $this->configurationManager->getTypoScriptConfiguration();
+        $frequentSearches = $this->frequentSearchesService->getFrequentSearchTerms(
+            $this->renderingContext->getAttribute(ServerRequestInterface::class),
         );
 
-        if (!$this->renderingContext instanceof RenderingContext) {
-            throw new SolrException(
-                'Solr rendering context must be an instance of RenderingContext',
-                1717760054,
-            );
-        }
-
-        $frequentSearches = $frequentSearchesService->getFrequentSearchTerms($this->renderingContext->getRequest());
         $minimumSize = $typoScriptConfiguration->getSearchFrequentSearchesMinSize();
         $maximumSize = $typoScriptConfiguration->getSearchFrequentSearchesMaxSize();
 
@@ -81,24 +65,8 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
         $templateVariableContainer->add('frequentSearches', self::enrichFrequentSearchesInfo($frequentSearches, $minimumSize, $maximumSize));
         $output = $this->renderChildren();
         $templateVariableContainer->remove('frequentSearches');
+
         return $output;
-    }
-
-    /**
-     * Initializes the cache for this command.
-     */
-    protected static function getInitializedCache(): ?FrontendInterface
-    {
-        $cacheIdentifier = 'tx_solr';
-        try {
-            /** @var CacheManager $cacheManager */
-            $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-            $cacheInstance = $cacheManager->getCache($cacheIdentifier);
-        } catch (NoSuchCacheException) {
-            return null;
-        }
-
-        return $cacheInstance;
     }
 
     /**
@@ -107,8 +75,11 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
      * @param array $frequentSearchTerms Frequent search terms as array with terms as keys and hits as the value
      * @return array An array with content for the frequent terms markers
      */
-    protected static function enrichFrequentSearchesInfo(array $frequentSearchTerms, int $minimumSize, int $maximumSize): array
-    {
+    private static function enrichFrequentSearchesInfo(
+        array $frequentSearchTerms,
+        int $minimumSize,
+        int $maximumSize,
+    ): array {
         $frequentSearches = [];
         if (count($frequentSearchTerms)) {
             $maximumHits = max(array_values($frequentSearchTerms));

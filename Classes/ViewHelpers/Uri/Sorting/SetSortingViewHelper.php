@@ -39,7 +39,7 @@ class SetSortingViewHelper extends AbstractUriViewHelper
     {
         $sortingName = $this->arguments['sortingName'];
         $sortingDirection = $this->arguments['sortingDirection'];
-        $previousRequest = static::getUsedSearchRequestFromRenderingContext($this->renderingContext);
+        $previousRequest = $this->getUsedSearchRequestFromRenderingContext($this->renderingContext);
 
         return self::getSearchUriBuilder($this->renderingContext)->getSetSortingUri($previousRequest, $sortingName, $sortingDirection);
     }

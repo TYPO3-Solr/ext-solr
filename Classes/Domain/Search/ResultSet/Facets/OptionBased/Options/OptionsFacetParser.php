@@ -64,7 +64,7 @@ class OptionsFacetParser extends AbstractFacetParser
             $facetName,
             $fieldName,
             $label,
-            $facetConfiguration
+            $facetConfiguration,
         );
 
         $hasActiveOptions = count($optionsFromRequest) > 0;
@@ -87,8 +87,8 @@ class OptionsFacetParser extends AbstractFacetParser
                     $optionsValue,
                     $count,
                     $isOptionsActive,
-                    ($metricsFromSolrResponse[$optionsValue] ?? [])
-                )
+                    ($metricsFromSolrResponse[$optionsValue] ?? []),
+                ),
             );
         }
 

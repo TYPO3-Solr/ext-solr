@@ -1,6 +1,7 @@
-.tx-solr-autosuggest { border: 1px solid #CCC; background: #FFF; overflow: auto; }
-.tx-solr-autosuggest strong { font-weight: bolder; color: #f18f0b; }
+.tx-solr-autosuggest { border: 1px solid #CCC; background: #FFF; overflow: auto; z-index: 9999;}
+.tx-solr-autosuggest strong { font-weight: bolder; color: var(--bs-primary, #f18f0b); }
+.tx-solr-autosuggest.autocomplete-suggestions { position: absolute; top: 100%; width: 100%; padding: 0; margin: 0 }
 .tx-solr-autosuggest .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
-.tx-solr-autosuggest .autocomplete-selected { background: #F1E0B6; }
-.tx-solr-autosuggest .autocomplete-group { padding: 10px 5px; }
+.tx-solr-autosuggest .autocomplete-selected { background: #f8f9fa; }
+.tx-solr-autosuggest .autocomplete-group { padding: 10px 5px; margin: 0; }
 .tx-solr-autosuggest .autocomplete-group strong { display: block; border-bottom: 1px solid #999; }

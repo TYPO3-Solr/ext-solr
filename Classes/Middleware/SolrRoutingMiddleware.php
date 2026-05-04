@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Middleware;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -83,7 +82,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if ($request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
+        if ($request->getAttribute('solr.indexingInstructions') !== null) {
             return $handler->handle($request);
         }
 
@@ -106,7 +105,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
         $page = $this->retrievePageInformation(
             $request->getUri(),
-            $site
+            $site,
         );
 
         if (empty($page['uid'])) {
@@ -115,7 +114,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
         $enhancerConfiguration = $this->getEnhancerConfiguration(
             $site,
-            $this->language->getLanguageId() === 0 ? (int)$page['uid'] : (int)$page['l10n_parent']
+            $this->language->getLanguageId() === 0 ? (int)$page['uid'] : (int)$page['l10n_parent'],
         );
 
         if ($enhancerConfiguration === null) {
@@ -130,7 +129,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         [, $parameters] = $this->extractParametersFromUriPath(
             $request->getUri(),
             $enhancerConfiguration['routePath'],
-            $page['slug']
+            $page['slug'],
         );
 
         /*
@@ -140,7 +139,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $request = $this->getRoutingService()->addPathArgumentsToQuery(
                 $request,
                 $enhancerConfiguration['_arguments'],
-                $parameters
+                $parameters,
             );
         }
 
@@ -153,8 +152,8 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         if ($page['slug'] !== '/') {
             $uri = $request->getUri()->withPath(
                 $this->getRoutingService()->cleanupHeadingSlash(
-                    $this->language->getBase()->getPath() . $page['slug']
-                )
+                    $this->language->getBase()->getPath() . $page['slug'],
+                ),
             );
             $request = $request->withUri($uri);
         }
@@ -189,7 +188,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
     {
         $enhancers = $this->getRoutingService()->fetchEnhancerInSiteConfigurationByPageUid(
             $site,
-            $pageUid
+            $pageUid,
         );
 
         if (empty($enhancers)) {
@@ -208,7 +207,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         // The parameter pageSlug itself does not contain the language parameter.
         $uriPath = $this->getRoutingService()->stripLanguagePrefixFromPath(
             $this->language,
-            $uri->getPath()
+            $uri->getPath(),
         );
 
         if ($uriPath === $pageSlug) {
@@ -279,7 +278,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
     {
         $path = $this->getRoutingService()->stripLanguagePrefixFromPath(
             $this->language,
-            $uri->getPath()
+            $uri->getPath(),
         );
         $slugProvider = $this->getRoutingService()->getSlugCandidateProvider($site);
         $scan = true;
@@ -287,7 +286,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         do {
             $items = $slugProvider->getCandidatesForPath(
                 $path,
-                $this->language
+                $this->language,
             );
 
             if (empty($items)) {
@@ -302,8 +301,8 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                         $message,
                         $path,
                         $this->language->getLocale()->getLanguageCode(),
-                        $uri->getPath()
-                    )
+                        $uri->getPath(),
+                    ),
                 );
                 $scan = false;
             } elseif (empty($path) && count($items) === 1) {
@@ -312,8 +311,8 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                     sprintf(
                         'Path "%1$s" -> slug "%2$s"',
                         $uri->getPath(),
-                        $page['slug']
-                    )
+                        $page['slug'],
+                    ),
                 );
                 $scan = false;
             } else {
@@ -322,8 +321,8 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                         sprintf(
                             'Path "%1$s" -> slug "%2$s"',
                             $path,
-                            $item['slug']
-                        )
+                            $item['slug'],
+                        ),
                     );
 
                     if ($item['slug'] === $path) {
@@ -353,7 +352,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $this->routingService = GeneralUtility::makeInstance(
                 RoutingService::class,
                 $this->settings,
-                $this->namespace
+                $this->namespace,
             );
         } else {
             $this->routingService = $this->routingService->withSettings($this->settings);

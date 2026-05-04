@@ -159,7 +159,7 @@ class UrlFacetContainer implements Countable
         }
         array_map(static function ($activeFacet) use (&$values, $facetName) {
             $parts = explode(':', $activeFacet, 2);
-            if ($parts[0] === $facetName) {
+            if ($parts[0] === $facetName && isset($parts[1])) {
                 $values[] = $parts[1];
             }
         }, $activeFacets);
@@ -183,7 +183,7 @@ class UrlFacetContainer implements Countable
         if ($this->sort && !empty($pathValue)) {
             ParameterSortingUtility::sortByType(
                 $pathValue,
-                $this->parameterStyle
+                $this->parameterStyle,
             );
         }
 

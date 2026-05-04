@@ -37,6 +37,8 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->endpointMock = $this->createMock(Endpoint::class);
         $this->endpointMock->expects(self::any())->method('getScheme')->willReturn('http');
         $this->endpointMock->expects(self::any())->method('getHost')->willReturn('localhost');
@@ -48,7 +50,6 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
         $this->clientMock = $this->createMock(Client::class);
         $this->clientMock->expects(self::any())->method('getEndpoint')->willReturn($this->endpointMock);
         $this->adminService = $this->getMockBuilder(SolrAdminService::class)->setConstructorArgs([$this->clientMock])->onlyMethods(['_sendRawGet'])->getMock();
-        parent::setUp();
     }
     #[Test]
     public function getLukeMetaDataIsSendingRequestToExpectedUrl(): void
@@ -61,12 +62,12 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function getPluginsInformation(): void
+    public function getCoreConfiguration(): void
     {
         $fakePluginsResponse = $this->createMock(ResponseAdapter::class);
-        $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/plugins?wt=json', $fakePluginsResponse);
-        $result = $this->adminService->getPluginsInformation();
-        self::assertSame($fakePluginsResponse, $result, 'Could not get expected result from getPluginsInformation');
+        $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/config?wt=json', $fakePluginsResponse);
+        $result = $this->adminService->getCoreConfiguration();
+        self::assertSame($fakePluginsResponse, $result, 'Could not get expected result from getCoreConfiguration');
     }
 
     #[Test]

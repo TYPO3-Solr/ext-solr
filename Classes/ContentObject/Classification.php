@@ -41,6 +41,10 @@ class Classification extends AbstractContentObject
 {
     public const CONTENT_OBJECT_NAME = 'SOLR_CLASSIFICATION';
 
+    public function __construct(
+        protected ClassificationService $classificationService,
+    ) {}
+
     /**
      * Executes the SOLR_CLASSIFICATION content object.
      *
@@ -51,7 +55,10 @@ class Classification extends AbstractContentObject
     public function render($conf = [])
     {
         if (!is_array($conf['classes.'])) {
-            throw new InvalidArgumentException('No class configuration configured for SOLR_CLASSIFICATION object. Given configuration: ' . serialize($conf));
+            throw new InvalidArgumentException(
+                'No class configuration configured for SOLR_CLASSIFICATION object. Given configuration: ' . serialize($conf),
+                8365879715,
+            );
         }
 
         $configuredMappedClasses = $conf['classes.'];
@@ -67,10 +74,8 @@ class Classification extends AbstractContentObject
             $data = $this->cObj->stdWrap($data, $conf);
         }
         $classifications = $this->buildClassificationsFromConfiguration($configuredMappedClasses);
-        /** @var ClassificationService $classificationService */
-        $classificationService = GeneralUtility::makeInstance(ClassificationService::class);
 
-        return serialize($classificationService->getMatchingClassNames((string)$data, $classifications));
+        return serialize($this->classificationService->getMatchingClassNames((string)$data, $classifications));
     }
 
     /**
@@ -81,9 +86,13 @@ class Classification extends AbstractContentObject
     protected function buildClassificationsFromConfiguration(array $configuredMappedClasses): array
     {
         $classifications = [];
+
         foreach ($configuredMappedClasses as $class) {
             if ((empty($class['patterns']) && empty($class['matchPatterns'])) || empty($class['class'])) {
-                throw new InvalidArgumentException('A class configuration in SOLR_CLASSIFCATION needs to have a pattern and a class configured. Given configuration: ' . serialize($class));
+                throw new InvalidArgumentException(
+                    'A class configuration in SOLR_CLASSIFCATION needs to have a pattern and a class configured. Given configuration: ' . serialize($class),
+                    8715165614,
+                );
             }
 
             // @todo deprecate patterns configuration
@@ -93,12 +102,7 @@ class Classification extends AbstractContentObject
             $unMatchPatters = empty($class['unmatchPatterns']) ? [] : GeneralUtility::trimExplode(',', $class['unmatchPatterns']);
 
             $className = $class['class'];
-            $classifications[] = GeneralUtility::makeInstance(
-                ClassificationItem::class,
-                $matchPatterns,
-                $unMatchPatters,
-                $className
-            );
+            $classifications[] = new ClassificationItem($matchPatterns, $unMatchPatters, $className);
         }
 
         return $classifications;

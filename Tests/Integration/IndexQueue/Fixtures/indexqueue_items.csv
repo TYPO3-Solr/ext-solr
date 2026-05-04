@@ -1,5 +1,5 @@
 "tx_solr_indexqueue_item",
-,"uid","root","item_type","errors","indexed"
-,4711,1,"pages","",1489507500
-,4712,1,"pages","1489469550",0
-,4713,1,"pages","",1489507800
+,"uid","root","item_type","item_uid","indexing_configuration","changed","errors","indexed"
+,4711,1,"pages",4711,"pages",1489507500,"",1489507500
+,4712,1,"pages",4712,"pages",1489469550,"1489469550",0
+,4713,1,"pages",4713,"pages",1489507800,"",1489507800

@@ -95,6 +95,49 @@ query
 
 The query sub-section defines a few query parameters for the query that will be sent to the Solr server later on. Some query parameters are also generated and set by the extension itself, f.e. when using facets.
 
+query.type
+~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.query.type
+:Default: 0
+:Options: 0,1
+:Since: 12.1.0, 13.1.0
+
+Allows to configure the query type that should be configured
+
+*   0: default score based Solr search (= well-known behaviour since EXT:solr started)
+*   1: pure vector based search (requires additional configuration and an LLM)
+
+..  note::
+    A full reindex is required if vector search is enabled, as vectors are only created if vector search is active
+
+..  note::
+    As no classic search term is used/available for the pure vector search, the highlighting component will not work. Using the siteHighlighting and an adjusted JavaScript could be an alternative approach.
+
+..  note::
+    Field `vectorContent` is used as a basis for vector generation, by default the contents of the `content` field are used, but you can define the contents via TypoScript
+
+   ..  code-block:: typoscript
+       :caption: How to define the contents of the vector field
+
+       plugin.tx_solr.index.queue.news.fields {
+         vectorContent = SOLR_CONTENT
+         vectorContent.cObject = COA
+         vectorContent.cObject {
+           10 = TEXT
+           10 {
+             field = name
+           }
+
+           15 = TEXT
+           15 {
+             field = bodytext
+           }
+         }
+       }
+
+
 query.allowEmptyQuery
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -306,6 +349,16 @@ Example:
         __pageSections.data = leveluid:0
     }
 
+**Note:** For this magic filter to work properly all documents require the hierarchical field `rootline`!
+
+Examples of how to fill `rootline` for news and files:
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.index.queue {
+        news.fields.rootline = {$plugin.tx_news.settings.detailPid}
+        _FILES.pageContext.__RecordContext.rootline = pid
+    }
 
 query.sortBy
 ~~~~~~~~~~~~
@@ -456,6 +509,36 @@ This parameter defines the "trigram phrase slop" value, which represents the num
 
 Note: The value of this setting has NO influence on explicit phrase search.
 
+query.vectorSearch.minimumSimilarity
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Float
+:TS Path: plugin.tx_solr.search.query.vectorSearch.minimumSimilarity
+:Default: 0.75
+:Since: 12.1.0, 13.1.0
+
+By default only documents with at least 0.75 of vector similarity score are returned, highest similarity score is 1.
+
+The calculated vector similarity score is returned in field `$q_vector`
+
+..  note::
+    This setting is only relevant if pure vector queries are used (query.type = 1).
+
+
+query.vectorSearch.topK
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.query.vectorSearch.topK
+:Default: 1000
+:Since: 12.1.0, 13.1.0
+
+Number of documents to return in vector search.
+
+..  note::
+    This setting is only relevant if pure vector queries are used (query.type = 1).
+
+
 results
 -------
 
@@ -470,7 +553,11 @@ results.resultsHighlighting
 
 En-/disables search term highlighting on the results page.
 
-Note:  The FastVectorHighlighter is used by default (Since 4.0) if fragmentSize is set to at least 18 (this is required by the FastVectorHighlighter to work).
+..  note::
+    The FastVectorHighlighter is used by default (Since 4.0) if fragmentSize is set to at least 18 (this is required by the FastVectorHighlighter to work).
+
+..  note::
+    The highlighting component will not work for vector search (`query.type=1`), as no classic search term is used/available to be highlighted. Using the siteHighlighting and an adjusted JavaScript could be an alternative approach.
 
 results.resultsHighlighting.highlightFields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

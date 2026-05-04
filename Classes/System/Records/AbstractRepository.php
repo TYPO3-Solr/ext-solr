@@ -88,9 +88,9 @@ abstract class AbstractRepository
                 vsprintf(
                     'The tables "%s" using different database connections. Transaction needs same database connection ' .
                     'for all tables, please reconfigure the database settings for involved tables properly.',
-                    [implode('", "', $tableNames)]
+                    [implode('", "', $tableNames)],
                 ),
-                1504866142
+                1504866142,
             );
         }
         return GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(array_shift($tableNames));

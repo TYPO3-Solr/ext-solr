@@ -61,15 +61,15 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
 
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchResultsHighlightingFragmentSeparator')->willReturn(
-            '###'
+            '###',
         );
         $configurationMock->expects(self::once())->method('getSearchResultsHighlightingWrap')->willReturn(
-            $configuredWrap
+            $configuredWrap,
         );
 
         $searchRequestMock = $this->createMock(SearchRequest::class);
         $searchRequestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn(
-            $configurationMock
+            $configurationMock,
         );
 
         $fakeHighlightedContent = new stdClass();
@@ -78,16 +78,16 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
 
         $searchMock = $this->createMock(Search::class);
         $searchMock->expects(self::once())->method('getHighlightedContent')->willReturn(
-            $fakeHighlightedContent
+            $fakeHighlightedContent,
         );
 
         $resultSetMock = $this->createMock(SearchResultSet::class);
         $resultSetMock->expects(self::any())->method('getUsedSearchRequest')->willReturn(
-            $searchRequestMock
+            $searchRequestMock,
         );
 
         $resultSetMock->expects(self::any())->method('getUsedSearch')->willReturn(
-            $searchMock
+            $searchMock,
         );
 
         $documentMock = $this->createMock(SearchResult::class);

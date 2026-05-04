@@ -1,0 +1,18 @@
+<html data-namespace-typo3-fluid="true"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:acoBase="http://typo3.org/ns/Aco/AcoBase/ViewHelpers"
+>
+<f:if condition="{unsupportedEndpoints}">
+	<p>Vector plugin is not configured for all endpoints, please check configsets of marked endpoints.</p>
+	<p>You can ignore this warning, if you do not want to use Vector search</p>
+</f:if>
+
+<table class="table table-condensed table-hover table-striped">
+	<f:for each="{endpoints}" as="endpoint">
+		<tr class="{endpoint.status.cssClass}">
+			<td>{endpoint.baseUrl}</td>
+		</tr>
+	</f:for>
+</table>
+
+</html>

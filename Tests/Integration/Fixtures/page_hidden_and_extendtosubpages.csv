@@ -1,5 +1,5 @@
 "pages",
-,"uid","pid","doktype","hidden","extendToSubpages","slug","title"
-,2,1,1,0,1,"/random","Random"
-,10,2,1,0,0,"/random/subpage","Random Subpage"
-,100,10,1,0,0,"/random/subpage/another-subpage","Random Subsubpage"
+,"uid","pid","doktype","hidden","extendToSubpages","slug","title","tstamp"
+,2,1,1,0,1,"/random","Random",1007007007
+,10,2,1,0,0,"/random/subpage","Random Subpage",1007007007
+,100,10,1,0,0,"/random/subpage/another-subpage","Random Subsubpage",1007007007

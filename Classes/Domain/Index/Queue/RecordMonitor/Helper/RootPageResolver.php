@@ -110,7 +110,7 @@ class RootPageResolver implements SingletonInterface
             throw new RootPageRecordNotFoundException(
                 'The page for the given page ID \'' . $pageId
                 . '\' could not be found in the database and can therefore not be used as site root page.',
-                1487171426
+                1487171426,
             );
         }
 

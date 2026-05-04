@@ -1,7 +1,7 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title"
-,2,1,1,1,0,0,"/","Mounting Tree A"
-,3,1,1,1,0,0,"/","Tree B"
-,10,2,0,7,4,0,"/mount-point","Mount Point"
-,4,3,0,1,0,0,"/","Mounted"
-,40,4,0,1,0,0,"/child-of-mounter","Child of Mounter"
+,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title","tstamp"
+,2,1,1,1,0,0,"/","Mounting Tree A",1007007007
+,3,1,1,1,0,0,"/","Tree B",1007007007
+,10,2,0,7,4,0,"/mount-point","Mount Point",1007007007
+,4,3,0,1,0,0,"/","Mounted",1007007007
+,40,4,0,1,0,0,"/child-of-mounter","Child of Mounter",1007007007

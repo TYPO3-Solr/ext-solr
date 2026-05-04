@@ -139,7 +139,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
         $suggestService = new SuggestService(
             $this->searchResultSetServiceMock,
             $this->configurationMock,
-            $this->queryBuilderMock
+            $this->queryBuilderMock,
         );
 
         $typo3Request = $this->getDefaultTypo3FrontendRequest();
@@ -191,7 +191,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
             [
                 $this->getFakedSearchResult('http://www.typo3-solr.com/a', 'pages', 'hello solr', 'my suggestions'),
                 $this->getFakedSearchResult('http://www.typo3-solr.com/b', 'news', 'what new in solr', 'new autosuggest'),
-            ]
+            ],
         );
 
         $fakeTopResults->expects(self::once())->method('getSearchResults')->willReturn($fakeResultDocuments);

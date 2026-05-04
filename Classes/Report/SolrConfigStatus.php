@@ -40,7 +40,7 @@ class SolrConfigStatus extends AbstractSolrStatus
      *
      * Must be updated when changing the solrconfig.
      */
-    public const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-13-0-0--20240513';
+    public const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-14-0-0--20260123';
 
     /**
      * Compiles a collection of solrconfig version checks against each configured
@@ -60,7 +60,7 @@ class SolrConfigStatus extends AbstractSolrStatus
                 'Solrconfig Version',
                 'No Solr connections configured',
                 '',
-                ContextualFeedbackSeverity::WARNING
+                ContextualFeedbackSeverity::WARNING,
             );
 
             return $reports;
@@ -75,7 +75,7 @@ class SolrConfigStatus extends AbstractSolrStatus
                     'Solrconfig Version',
                     'Couldn\'t connect to ' . $adminService->__toString(),
                     '',
-                    ContextualFeedbackSeverity::WARNING
+                    ContextualFeedbackSeverity::WARNING,
                 );
 
                 continue;
@@ -89,7 +89,7 @@ class SolrConfigStatus extends AbstractSolrStatus
                     'Solrconfig Version',
                     'Unsupported solrconfig.xml',
                     $report,
-                    ContextualFeedbackSeverity::WARNING
+                    ContextualFeedbackSeverity::WARNING,
                 );
 
                 $reports[] = $status;
@@ -102,7 +102,7 @@ class SolrConfigStatus extends AbstractSolrStatus
                 'Solrconfig Version',
                 'OK',
                 '',
-                ContextualFeedbackSeverity::OK
+                ContextualFeedbackSeverity::OK,
             );
         }
 

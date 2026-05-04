@@ -134,35 +134,40 @@ class Slops implements ParameterBuilderInterface
         $phraseSlop = static::getPhraseSlopFromConfiguration($searchConfiguration);
         $bigramPhraseSlop = static::getBigramPhraseSlopFromConfiguration($searchConfiguration);
         $trigramPhraseSlop = static::getTrigramPhraseSlopFromConfiguration($searchConfiguration);
+
         return new Slops($querySlop, $phraseSlop, $bigramPhraseSlop, $trigramPhraseSlop);
     }
 
     protected static function getPhraseSlopFromConfiguration(array $searchConfiguration): ?int
     {
-        $phraseEnabled = !(empty($searchConfiguration['query.']['phrase']) || $searchConfiguration['query.']['phrase'] !== 1);
+        $phraseEnabled = !(empty($searchConfiguration['query.']['phrase']) || (int)$searchConfiguration['query.']['phrase'] !== 1);
         $phraseSlopConfigured = !empty($searchConfiguration['query.']['phrase.']['slop']);
-        return ($phraseEnabled && $phraseSlopConfigured) ? $searchConfiguration['query.']['phrase.']['slop'] : self::NO_SLOP;
+
+        return ($phraseEnabled && $phraseSlopConfigured) ? (int)$searchConfiguration['query.']['phrase.']['slop'] : self::NO_SLOP;
     }
 
     protected static function getQuerySlopFromConfiguration(array $searchConfiguration): ?int
     {
-        $phraseEnabled = !(empty($searchConfiguration['query.']['phrase']) || $searchConfiguration['query.']['phrase'] !== 1);
+        $phraseEnabled = !(empty($searchConfiguration['query.']['phrase']) || (int)$searchConfiguration['query.']['phrase'] !== 1);
         $querySlopConfigured = !empty($searchConfiguration['query.']['phrase.']['querySlop']);
-        return ($phraseEnabled && $querySlopConfigured) ? $searchConfiguration['query.']['phrase.']['querySlop'] : self::NO_SLOP;
+
+        return ($phraseEnabled && $querySlopConfigured) ? (int)$searchConfiguration['query.']['phrase.']['querySlop'] : self::NO_SLOP;
     }
 
     protected static function getBigramPhraseSlopFromConfiguration(array $searchConfiguration): ?int
     {
-        $bigramPhraseEnabled = !empty($searchConfiguration['query.']['bigramPhrase']) && $searchConfiguration['query.']['bigramPhrase'] === 1;
+        $bigramPhraseEnabled = !empty($searchConfiguration['query.']['bigramPhrase']) && (int)$searchConfiguration['query.']['bigramPhrase'] === 1;
         $bigramSlopConfigured = !empty($searchConfiguration['query.']['bigramPhrase.']['slop']);
-        return ($bigramPhraseEnabled && $bigramSlopConfigured) ? $searchConfiguration['query.']['bigramPhrase.']['slop'] : self::NO_SLOP;
+
+        return ($bigramPhraseEnabled && $bigramSlopConfigured) ? (int)$searchConfiguration['query.']['bigramPhrase.']['slop'] : self::NO_SLOP;
     }
 
     protected static function getTrigramPhraseSlopFromConfiguration(array $searchConfiguration): ?int
     {
-        $trigramPhraseEnabled = !empty($searchConfiguration['query.']['trigramPhrase']) && $searchConfiguration['query.']['trigramPhrase'] === 1;
+        $trigramPhraseEnabled = !empty($searchConfiguration['query.']['trigramPhrase']) && (int)$searchConfiguration['query.']['trigramPhrase'] === 1;
         $trigramSlopConfigured = !empty($searchConfiguration['query.']['trigramPhrase.']['slop']);
-        return ($trigramPhraseEnabled && $trigramSlopConfigured) ? $searchConfiguration['query.']['trigramPhrase.']['slop'] : self::NO_SLOP;
+
+        return ($trigramPhraseEnabled && $trigramSlopConfigured) ? (int)$searchConfiguration['query.']['trigramPhrase.']['slop'] : self::NO_SLOP;
     }
 
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder

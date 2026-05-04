@@ -55,7 +55,7 @@ class ConfigurationAwareRecordService
                 $recordTable,
                 $recordUid,
                 $indexingConfigurationName,
-                $solrConfiguration
+                $solrConfiguration,
             );
             if (!empty($record)) {
                 $name = $indexingConfigurationName;
@@ -88,7 +88,7 @@ class ConfigurationAwareRecordService
                 $recordTable,
                 $recordUid,
                 $indexingConfigurationName,
-                $solrConfiguration
+                $solrConfiguration,
             );
             if (!empty($record)) {
                 // if we found a record which matches the conditions, we can continue
@@ -127,7 +127,7 @@ class ConfigurationAwareRecordService
         string $recordWhereClause = '',
     ): array {
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
-        $cacheId = md5('ConfigurationAwareRecordService' . ':' . 'getRecordIfIndexConfigurationIsValid' . ':' . $recordTable . ':' . $recordUid . ':' . $recordWhereClause);
+        $cacheId = hash('md5', 'ConfigurationAwareRecordService' . ':' . 'getRecordIfIndexConfigurationIsValid' . ':' . $recordTable . ':' . $recordUid . ':' . $recordWhereClause);
 
         $row = $cache->get($cacheId);
         if (!empty($row)) {
@@ -142,8 +142,8 @@ class ConfigurationAwareRecordService
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($recordUid, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter($recordUid, Connection::PARAM_INT),
+                ),
             );
 
         if ($recordWhereClause !== '') {

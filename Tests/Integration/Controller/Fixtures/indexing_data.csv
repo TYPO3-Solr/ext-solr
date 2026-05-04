@@ -1,12 +1,12 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title","subtitle","author"
-,2,1,0,1,"/men/socks","Socks","Men","Jane Doe"
-,3,1,0,1,"/men/jeans","Jeans","Men","John Doe"
-,4,1,0,1,"/women/shoes","Shoes","Woman","John Doe"
-,5,1,0,1,"/women/t-shirts","T-Shirts","Woman","John Doe"
-,6,1,0,1,"/men/t-shirts","T-Shirts","Men","Jane Doe"
-,7,1,0,1,"/men/sweatshirts","Sweatshirts","Men","Jane Doe"
-,8,1,0,1,"/women/sweatshirts","Sweatshirts","Woman","John Doe"
+,"uid","pid","is_siteroot","doktype","slug","title","subtitle","author","tstamp"
+,2,1,0,1,"/men/socks","Socks","Men","Jane Doe",1007007007
+,3,1,0,1,"/men/jeans","Jeans","Men","John Doe",1007007007
+,4,1,0,1,"/women/shoes","Shoes","Woman","John Doe",1007007007
+,5,1,0,1,"/women/t-shirts","T-Shirts","Woman","John Doe",1007007007
+,6,1,0,1,"/men/t-shirts","T-Shirts","Men","Jane Doe",1007007007
+,7,1,0,1,"/men/sweatshirts","Sweatshirts","Men","Jane Doe",1007007007
+,8,1,0,1,"/women/sweatshirts","Sweatshirts","Woman","John Doe",1007007007
 "tt_content",
 ,"uid","pid","colPos","CType","bodytext"
 ,2,2,0,"text","Our awesome new sock products prices starting at 10 euro"

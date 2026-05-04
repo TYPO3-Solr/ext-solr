@@ -52,7 +52,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
         preg_match_all(
             '/<!--\s*?TYPO3SEARCH_begin\s*?-->.*?<!--\s*?TYPO3SEARCH_end\s*?-->/mis',
             $html,
-            $indexableContents
+            $indexableContents,
         );
         $indexableContent = implode('', $indexableContents[0]);
 

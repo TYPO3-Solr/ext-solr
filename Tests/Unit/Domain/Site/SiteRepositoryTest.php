@@ -136,7 +136,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
                 0 => ['language' => 0],
                 2 => ['language' => 2],
                 5 => ['language' => 5],
-            ]
+            ],
         );
 
         $siteOne = $this->siteRepository->getFirstAvailableSite();
@@ -161,7 +161,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
                 if (in_array($idToUse, $pageIds)) {
                     $site = $this->createMock(Site::class);
                     $site->expects($this->any())->method('getRootPageId')->willReturn(
-                        $idToUse
+                        $idToUse,
                     );
                     $site->expects($this->any())->method('isEnabled')->willReturn(count($fakedConnectionConfiguration) > 0);
                     $site->expects($this->any())
@@ -169,7 +169,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
                         ->willReturn($fakedConnectionConfiguration);
                     return $site;
                 }
-            }
+            },
         );
     }
 

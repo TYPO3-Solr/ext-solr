@@ -1,7 +1,7 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title","sorting","no_search_sub_entries","mount_pid_ol","mount_pid"
-,2,1,0,1,0,0,"/1st-subpage-in-root-1","1st subpage in root 1",10,0,0,0
-,3,1,0,7,0,0,"/mount-point-for-subtree","mount point for subtree",20,0,0,10
-,4,1,0,254,"sys_language_uid","l10n_parent","/sysfolder-with-set-option-no_search_sub_entries","sysfolder with set option no_search_sub_entries",99,1,0,0
-,10,1,0,1,0,0,"/root-of-subtree-to-be-moved","root of subtree to be moved",30,0,0,0
-,11,10,0,1,0,0,"/root-of-subtree-to-be-moved/first-child-of-subtree-to-be-moved","first child of subtree to be moved",10,0,0,0
+,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title","sorting","no_search_sub_entries","mount_pid_ol","mount_pid","tstamp"
+,2,1,0,1,0,0,"/1st-subpage-in-root-1","1st subpage in root 1",10,0,0,0,1007007007
+,3,1,0,7,0,0,"/mount-point-for-subtree","mount point for subtree",20,0,0,10,1007007007
+,4,1,0,254,"sys_language_uid","l10n_parent","/sysfolder-with-set-option-no_search_sub_entries","sysfolder with set option no_search_sub_entries",99,1,0,0,1007007007
+,10,1,0,1,0,0,"/root-of-subtree-to-be-moved","root of subtree to be moved",30,0,0,0,1007007007
+,11,10,0,1,0,0,"/root-of-subtree-to-be-moved/first-child-of-subtree-to-be-moved","first child of subtree to be moved",10,0,0,0,1007007007

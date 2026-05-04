@@ -56,7 +56,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTestBase
                     'siteFinder' => GeneralUtility::makeInstance(SiteFinder::class),
                     'solrConnectionManager' => GeneralUtility::makeInstance(ConnectionManager::class),
                     'indexQueue' => GeneralUtility::makeInstance(Queue::class),
-                ]
+                ],
             )
             ->onlyMethods(['addFlashMessage'])
             ->getMock();
@@ -79,7 +79,15 @@ class IndexAdministrationModuleControllerTest extends IntegrationTestBase
         $controller->setSelectedSite($selectedSite);
         $controller->expects(self::exactly(1))
             ->method('addFlashMessage')
-            ->with('Core configuration reloaded (core_en, core_de, core_da).', '', ContextualFeedbackSeverity::OK);
+            ->with(
+                'Core configuration reloaded (' .
+                $this->resolveCoreName('core_en') . ', ' .
+                $this->resolveCoreName('core_de') . ', ' .
+                $this->resolveCoreName('core_da') .
+                ').',
+                '',
+                ContextualFeedbackSeverity::OK,
+            );
         $controller->reloadIndexConfigurationAction();
     }
 
@@ -94,7 +102,11 @@ class IndexAdministrationModuleControllerTest extends IntegrationTestBase
         $controller->expects(self::atLeastOnce())
             ->method('addFlashMessage')
             ->with(
-                'Index emptied for Site "Root of Testpage testone.site aka integration_tree_one, Root Page ID: 1" (core_en, core_de, core_da).'
+                'Index emptied for Site "Root of Testpage testone.site aka integration_tree_one, Root Page ID: 1" (' .
+                $this->resolveCoreName('core_en') . ', ' .
+                $this->resolveCoreName('core_de') . ', ' .
+                $this->resolveCoreName('core_da') .
+                ').',
             );
 
         $controller->emptyIndexAction();

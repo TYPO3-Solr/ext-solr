@@ -1,8 +1,8 @@
 "pages",
-,"uid","pid","is_siteroot","l10n_parent","sys_language_uid","doktype","slug","title"
-,1,0,1,0,0,1,"/","Page"
-,2,0,1,7,1,1,"/translated-subpage-with-assigned-category","Translated Sub page with assigned category"
-,7,1,0,0,0,1,"/subpage-with-category","Sub page with assigned category"
+,"uid","pid","is_siteroot","l10n_parent","sys_language_uid","doktype","slug","title","tstamp"
+,1,0,1,0,0,1,"/","Page",1007007007
+,2,0,1,7,1,1,"/translated-subpage-with-assigned-category","Translated Sub page with assigned category",1007007007
+,7,1,0,0,0,1,"/subpage-with-category","Sub page with assigned category",1007007007
 "sys_category",
 ,"uid","pid","title","sys_language_uid"
 ,123,0,"Some Category",0

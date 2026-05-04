@@ -3,7 +3,20 @@
 	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
 	data-namespace-typo3-fluid="true"
 >
-
+<f:variable
+	name="minDateMax"
+	value="{f:if(
+							condition: facet.range.endRequested,
+							then: '{f:format.date(date: facet.range.endRequested, pattern: \'yyyy-MM-dd\')}',
+							else: '{f:format.date(date: facet.range.endInResponse, pattern: \'yyyy-MM-dd\')}')}"
+/>
+<f:variable
+	name="maxDateMin"
+	value="{f:if(
+							condition: facet.range.startRequested,
+							then: '{f:format.date(date: facet.range.startRequested, pattern: \'yyyy-MM-dd\')}',
+							else: '{f:format.date(date: facet.range.startInResponse, pattern: \'yyyy-MM-dd\')}')}"
+/>
 	<div class="card">
 		<div class="card-header facet-label">
 				<span class="bi bi-filter"></span>
@@ -13,22 +26,41 @@
 		<div class="card-body facet-type-dateRange fluidfacet collapse show" data-facet-name="{facet.name}" data-facet-label="{facet.label}" id="facet{facet.name}">
 			<div
 				data-facet-name="{facet.name}"
-				data-facet-label="{facet.label}"
-				data-range-min="{facet.range.startInResponse}"
-				data-range-max="{facet.range.endInResponse}"
-				data-range-min-selected="{facet.range.startRequested}"
-				data-range-max-selected="{facet.range.endRequested}"
 				data-range-gap="{facet.range.gap}"
 				data-facet-url="{s:uri.facet.setFacetItem(facet: facet, facetItemValue: '___FROM___-___TO___')}"
+				data-facet-reset-url="{s:uri.facet.removeFacet(facet: facet)}"
+				data-range-start-validation-text="{f:translate(key: 'daterange_start_validation', extensionName: 'solr')}"
+				data-range-end-validation-text="{f:translate(key: 'daterange_end_validation', extensionName: 'solr')}"
+				class="tx-solr-daterange"
 			>
-				<input type="hidden" value="{s:uri.facet.addFacetItem(facet: facet, facetItemValue: '___FROM___-___TO___')}" id="created_url">
-
 				<div class="row">
 					<div class="col-sm-6">
-						<input type="text" class="dateselector form-control" id="start_date_created">
+						<label for="{facet.name}_min" class="tx-solr-daterange__label">
+							{facet.label}
+							<f:translate key="daterange_start" extensionName="solr">start date</f:translate>
+						</label>
+						<input
+							type="date"
+							class="form-control tx-solr-daterange__input"
+							value="{f:format.date(date: facet.range.startRequested, pattern: 'yyyy-MM-dd')}"
+							min="{f:format.date(date: facet.range.startInResponse, pattern: 'yyyy-MM-dd')}"
+							max="{minDateMax}"
+							name="{facet.name}_min"
+							id="{facet.name}_min">
 					</div>
 					<div class="col-sm-6">
-						<input type="text" class="dateselector form-control" id="end_date_created">
+						<label for="{facet.name}_max" class="tx-solr-daterange__label">
+							{facet.label}
+							<f:translate key="daterange_end" extensionName="solr">end date</f:translate>
+						</label>
+						<input
+							type="date"
+							value="{f:format.date(date: facet.range.endRequested, pattern: 'yyyy-MM-dd')}"
+							min="{maxDateMin}"
+							max="{f:format.date(date: facet.range.endInResponse, pattern: 'yyyy-MM-dd')}"
+							class="form-control tx-solr-daterange__input"
+							name="{facet.name}_max"
+							id="{facet.name}_max">
 					</div>
 				</div>
 			</div>

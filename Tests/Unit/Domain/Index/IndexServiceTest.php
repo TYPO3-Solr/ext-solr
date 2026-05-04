@@ -18,16 +18,18 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index;
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
-use Exception;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Container\ContainerInterface;
+use RuntimeException;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class IndexServiceTest extends SetUpUnitTestCase
 {
@@ -50,6 +52,19 @@ class IndexServiceTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
+    /**
+     * Helper: register a mock IndexingService in the DI container
+     * so that IndexService can resolve it via GeneralUtility::getContainer().
+     */
+    protected function mockIndexingServiceInContainer(IndexingService|MockObject $indexingServiceMock): void
+    {
+        $containerMock = $this->createMock(ContainerInterface::class);
+        $containerMock->method('get')
+            ->with(IndexingService::class)
+            ->willReturn($indexingServiceMock);
+        GeneralUtility::setContainer($containerMock);
+    }
+
     #[Test]
     public function eventsAreTriggered(): void
     {
@@ -60,19 +75,28 @@ class IndexServiceTest extends SetUpUnitTestCase
             ->getMock();
         $this->siteMock->expects(self::once())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
 
-        // we create an IndexService where indexItem is mocked to avoid real indexing in the unit test
-        $indexService = $this->getMockBuilder(IndexService::class)
-            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->eventDispatcherMock, $this->logManagerMock])
-            ->onlyMethods(['indexItem'])
-            ->getMock();
+        $indexingServiceMock = $this->createMock(IndexingService::class);
+        $indexingServiceMock->method('indexItems')->willReturn(true);
+        $this->mockIndexingServiceInContainer($indexingServiceMock);
 
-        // we fake an index queue with two items
+        $indexService = new IndexService(
+            $this->siteMock,
+            $this->queueMock,
+            $this->eventDispatcherMock,
+            $this->logManagerMock,
+        );
+
         $item1 = $this->createMock(Item::class);
+        $item1->method('getType')->willReturn('tx_test');
+        $item1->method('getItemPid')->willReturn(1);
+        $item1->method('getRecordPageId')->willReturn(1);
         $item2 = $this->createMock(Item::class);
-        $fakeItems = [$item1, $item2];
-        $this->fakeQueueItemContent($fakeItems);
+        $item2->method('getType')->willReturn('tx_test');
+        $item2->method('getItemPid')->willReturn(1);
+        $item2->method('getRecordPageId')->willReturn(1);
+        $this->fakeQueueItemContent([$item1, $item2]);
 
-        // we assert that 6 signals will be dispatched 1 at the beginning 1 before and after each items and 1 at the end.
+        // 6 events: 1 before all + 1 before + 1 after each item (2 items) + 1 after all
         $this->assertEventsWillBeDispatched(6);
         $indexService->indexItems(2);
     }
@@ -86,54 +110,54 @@ class IndexServiceTest extends SetUpUnitTestCase
         $statisticMock->expects(self::once())->method('getSuccessPercentage')->willReturn(50.0);
         $this->queueMock->expects(self::once())->method('getStatisticsBySite')->willReturn($statisticMock);
 
-        $indexService = $this->getMockBuilder(IndexService::class)
-            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->eventDispatcherMock, $this->logManagerMock])
-            ->onlyMethods(['indexItem'])
-            ->getMock();
+        $indexService = new IndexService(
+            $this->siteMock,
+            $this->queueMock,
+            $this->eventDispatcherMock,
+            $this->logManagerMock,
+        );
 
         $progress = $indexService->getProgress();
         self::assertEquals(50, $progress);
     }
 
     #[Test]
-    public function testServerHostIsRestoredInCaseOfAnException(): void
+    public function testExceptionsAreCaughtAndItemMarkedAsFailed(): void
     {
         $fakeConfiguration = $this->createMock(TypoScriptConfiguration::class);
         $this->siteMock = $this->getMockBuilder(Site::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getSolrConfiguration', 'getDomain'])
+            ->onlyMethods(['getSolrConfiguration'])
             ->getMock();
         $this->siteMock->expects(self::any())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
-        $this->siteMock->expects(self::any())->method('getDomain')->willReturn('www.indextest.local');
 
-        /** @var IndexService|MockObject $indexService */
-        $indexService = $this->getMockBuilder(IndexService::class)
-            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->eventDispatcherMock, $this->logManagerMock])
-            ->onlyMethods(['getIndexerByItem', 'restoreOriginalHttpHost'])
-            ->getMock();
+        $indexingServiceMock = $this->createMock(IndexingService::class);
+        $indexingServiceMock->method('indexItems')->willThrowException(
+            new RuntimeException('unknown error occurred', 8102831540),
+        );
+        $this->mockIndexingServiceInContainer($indexingServiceMock);
 
-        $indexService->expects(self::exactly(2))->method('restoreOriginalHttpHost');
+        $indexService = new IndexService(
+            $this->siteMock,
+            $this->queueMock,
+            $this->eventDispatcherMock,
+            $this->logManagerMock,
+        );
 
-        $indexerMock = $this->getMockBuilder(Indexer::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['index'])
-            ->getMock();
-        $indexerMock->expects(self::exactly(2))->method('index')->willReturnCallback(function () {
-            throw new Exception('unknown error occurred');
-        });
-        $indexService->expects(self::exactly(2))->method('getIndexerByItem')->willReturn($indexerMock);
-
-        // we fake an index queue with two items
         $item1 = $this->createMock(Item::class);
-        $item1->expects(self::any())->method('getSite')->willReturn($this->siteMock);
-        $item1->expects(self::any())->method('getIndexingConfigurationName')->willReturn('fake_table');
+        $item1->method('getType')->willReturn('tx_test');
+        $item1->method('getItemPid')->willReturn(1);
+        $item1->method('getRecordPageId')->willReturn(1);
+        $item1->method('getIndexQueueUid')->willReturn(1);
         $item2 = $this->createMock(Item::class);
-        $item2->expects(self::any())->method('getIndexingConfigurationName')->willReturn('fake_table');
+        $item2->method('getType')->willReturn('tx_test');
+        $item2->method('getItemPid')->willReturn(1);
+        $item2->method('getRecordPageId')->willReturn(1);
+        $item2->method('getIndexQueueUid')->willReturn(2);
+        $this->fakeQueueItemContent([$item1, $item2]);
 
-        $fakeItems = [$item1, $item2];
-        $this->fakeQueueItemContent($fakeItems);
-
-        $indexService->indexItems(2);
+        $result = $indexService->indexItems(2);
+        self::assertFalse($result);
     }
 
     #[Test]
@@ -141,34 +165,31 @@ class IndexServiceTest extends SetUpUnitTestCase
     {
         $fakeConfiguration = $this->createMock(TypoScriptConfiguration::class);
         $this->siteMock->expects(self::once())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
-        $this->siteMock->expects(self::any())->method('getDomain')->willReturn('www.indextest.local');
 
-        /** @var IndexService|MockObject $indexService  */
-        $indexService = $this->getMockBuilder(IndexService::class)
-            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->eventDispatcherMock, $this->logManagerMock])
-            ->onlyMethods(['getIndexerByItem'])
-            ->getMock();
+        $indexingServiceMock = $this->createMock(IndexingService::class);
+        $indexingServiceMock->expects(self::exactly(2))->method('indexItems')->willReturn(true);
+        $this->mockIndexingServiceInContainer($indexingServiceMock);
 
-        $indexerMock = $this->createMock(Indexer::class);
-        $indexerMock->expects(self::exactly(2))->method('index')->willReturn(true);
-        $indexService->expects(self::exactly(2))->method('getIndexerByItem')->willReturn($indexerMock);
+        $indexService = new IndexService(
+            $this->siteMock,
+            $this->queueMock,
+            $this->eventDispatcherMock,
+            $this->logManagerMock,
+        );
 
-        // we fake an index queue with two items
         $item1 = $this->createMock(Item::class);
-        $item1->expects(self::any())->method('getSite')->willReturn($this->siteMock);
-        $item1->expects(self::any())->method('getIndexingConfigurationName')->willReturn('fake_table');
+        $item1->method('getType')->willReturn('tx_test');
+        $item1->method('getItemPid')->willReturn(1);
+        $item1->method('getRecordPageId')->willReturn(1);
         $item2 = $this->createMock(Item::class);
-        $item2->expects(self::any())->method('getIndexingConfigurationName')->willReturn('fake_table');
-
-        $fakeItems = [$item1, $item2];
-        $this->fakeQueueItemContent($fakeItems);
+        $item2->method('getType')->willReturn('tx_test');
+        $item2->method('getItemPid')->willReturn(1);
+        $item2->method('getRecordPageId')->willReturn(1);
+        $this->fakeQueueItemContent([$item1, $item2]);
 
         $indexService->indexItems(2);
     }
 
-    /**
-     * @param array $fakeItems
-     */
     protected function fakeQueueItemContent(array $fakeItems): void
     {
         $this->queueMock

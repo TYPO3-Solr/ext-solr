@@ -88,12 +88,12 @@ abstract class AbstractBaseEventListener
             throw new InvalidArgumentException(
                 'Data update event listener can only dispatch processing finished events ('
                 . ProcessingFinishedEventInterface::class . ')',
-                1639987620
+                1639987620,
             );
         }
 
         $this->eventDispatcher->dispatch(
-            new $eventClass($event)
+            new $eventClass($event),
         );
     }
 

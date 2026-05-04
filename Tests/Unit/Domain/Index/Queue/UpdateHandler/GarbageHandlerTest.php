@@ -80,7 +80,7 @@ class GarbageHandlerTest extends SetUpUpdateHandler
             ->method('removeGarbageOf')
             ->with(
                 $table,
-                $uid
+                $uid,
             );
     }
 

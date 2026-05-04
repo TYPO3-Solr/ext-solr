@@ -41,13 +41,13 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         ];
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
-            $fakeFacetConfiguration
+            $fakeFacetConfiguration,
         );
         $configurationMock->expects(self::any())->method('getSearchFacetingFacetLimit')->with(100)->willReturn(
-            100
+            100,
         );
         $configurationMock->expects(self::any())->method('getSearchFacetingMinimumCount')->with(1)->willReturn(
-            1
+            1,
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -79,10 +79,10 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         ];
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
-            $fakeFacetConfiguration
+            $fakeFacetConfiguration,
         );
         $configurationMock->expects(self::any())->method('getSearchFacetingMinimumCount')->with(1)->willReturn(
-            1
+            1,
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -112,14 +112,14 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         ];
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
-            $fakeFacetConfiguration
+            $fakeFacetConfiguration,
         );
 
         $configurationMock->expects(self::any())->method('getSearchFacetingFacetLimit')->willReturn(
-            15
+            15,
         );
         $configurationMock->expects(self::any())->method('getSearchFacetingMinimumCount')->with(1)->willReturn(
-            1
+            1,
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -150,10 +150,10 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         ];
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
-            $fakeFacetConfiguration
+            $fakeFacetConfiguration,
         );
         $configurationMock->expects(self::any())->method('getSearchFacetingFacetLimit')->with(100)->willReturn(
-            100
+            100,
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -191,14 +191,14 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         ];
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
-            $fakeFacetConfiguration
+            $fakeFacetConfiguration,
         );
 
         $configurationMock->expects(self::any())->method('getSearchFacetingMinimumCount')->willReturn(
-            $expectedMinimumCount
+            $expectedMinimumCount,
         );
         $configurationMock->expects(self::any())->method('getSearchFacetingFacetLimit')->with(100)->willReturn(
-            100
+            100,
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -233,13 +233,13 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         ];
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
-            $fakeFacetConfiguration
+            $fakeFacetConfiguration,
         );
         $configurationMock->expects(self::any())->method('getSearchFacetingFacetLimit')->with(100)->willReturn(
-            100
+            100,
         );
         $configurationMock->expects(self::any())->method('getSearchFacetingMinimumCount')->with(1)->willReturn(
-            1
+            1,
         );
 
         $builder = new OptionsFacetQueryBuilder();

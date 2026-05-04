@@ -16,7 +16,8 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Middleware;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingInstructions;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Middleware\SolrRoutingMiddleware;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
@@ -91,8 +92,8 @@ class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
                 new SiteRouteResult(
                     new Uri('https://domain.example/facet/bar,buz,foo'),
                     new Site('website', 1, []),
-                    new SiteLanguage(0, 'en_US', new Uri('https://domain.example/'), [])
-                )
+                    new SiteLanguage(0, 'en_US', new Uri('https://domain.example/'), []),
+                ),
             );
         $this->routingServiceMock->expects(self::exactly(1))
             ->method('getSiteMatcher')
@@ -117,27 +118,30 @@ class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
         $solrRoutingMiddleware->injectRoutingService($this->routingServiceMock);
         $solrRoutingMiddleware->process(
             $serverRequest,
-            $this->responseOutputHandler
+            $this->responseOutputHandler,
         );
         $request = $this->responseOutputHandler->getRequest();
         $uri = $request->getUri();
 
         self::assertEquals(
             '/facet/bar,buz,foo',
-            $uri->getPath()
+            $uri->getPath(),
         );
     }
 
     #[Test]
     public function enhancerInactiveDuringIndexingTest(): void
     {
-        $serverRequest = new ServerRequest(
+        $itemMock = $this->createMock(Item::class);
+        $instructions = new IndexingInstructions(
+            items: [$itemMock],
+            action: IndexingInstructions::ACTION_INDEX_PAGE,
+            language: 0,
+        );
+        $serverRequest = (new ServerRequest(
             'GET',
             'https://domain.example/',
-            [
-                PageIndexerRequest::SOLR_INDEX_HEADER => '1',
-            ]
-        );
+        ))->withAttribute('solr.indexingInstructions', $instructions);
 
         $this->routingServiceMock->expects(self::never())->method('getSiteMatcher');
         $solrRoutingMiddleware = new SolrRoutingMiddleware();
@@ -145,7 +149,7 @@ class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
         $solrRoutingMiddleware->injectRoutingService($this->routingServiceMock);
         $solrRoutingMiddleware->process(
             $serverRequest,
-            $this->responseOutputHandler
+            $this->responseOutputHandler,
         );
     }
 }

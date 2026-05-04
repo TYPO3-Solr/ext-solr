@@ -50,7 +50,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
             $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
             $logger->error(
                 'Solr routing enhancer deactivated in Solr configuration,'
-                . ' set enableRouteEnhancer or remove SolrFacetMaskAndCombineEnhancer'
+                . ' set enableRouteEnhancer or remove SolrFacetMaskAndCombineEnhancer',
             );
             return;
         }
@@ -60,7 +60,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
         $variant = $this->getVariant($defaultPageRoute, $this->configuration);
         $collection->add(
             'enhancer_' . $this->namespace . spl_object_hash($variant),
-            $variant
+            $variant,
         );
     }
 
@@ -82,7 +82,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
         $variant->setPath(rtrim($variant->getPath(), '/') . '/' . ltrim($routePath, '/'));
         $variant->addOptions(['_enhancer' => $this, '_arguments' => $arguments]);
         $variant->setDefaults(
-            $variableProcessor->deflateKeys($this->configuration['defaults'] ?? [], $this->namespace, $arguments)
+            $variableProcessor->deflateKeys($this->configuration['defaults'] ?? [], $this->namespace, $arguments),
         );
         $this->applyRouteAspects($variant, $this->aspects, $this->namespace);
         $this->applyRequirements($variant, $this->configuration['requirements'] ?? [], $this->namespace);
@@ -191,7 +191,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
 
             if (isset($parametersCombined[$combinedKey]) && is_array($parametersCombined[$combinedKey])) {
                 $parametersCombined[$combinedKey] = $this->getRoutingService()->facetsToString(
-                    $parametersCombined[$combinedKey]
+                    $parametersCombined[$combinedKey],
                 );
             }
         }
@@ -233,7 +233,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
 
             $parameterName = RoutingUtility::deflateString(
                 $routeArguments[$pathVariable],
-                $this->namespace
+                $this->namespace,
             );
 
             // Skip processing if variable not listed inside of given parameters
@@ -301,7 +301,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
         return $this->getVariableProcessor()->deflateNamespaceParameters(
             $parameters,
             $this->namespace,
-            $route->getArguments()
+            $route->getArguments(),
         );
     }
 
@@ -314,7 +314,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
         $routingService = GeneralUtility::makeInstance(
             RoutingService::class,
             $this->configuration['solr'] ?? [],
-            (string)$this->configuration['extensionKey']
+            (string)$this->configuration['extensionKey'],
         );
         return $routingService->withPathArguments($this->configuration['_arguments']);
     }

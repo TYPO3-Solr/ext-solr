@@ -128,12 +128,12 @@ class PageUriBuilder
                     'path' => $pageIndexUri->getPath(),
                     'page ID' => $item->getRecordUid(),
                     'indexer options' => $options,
-                ]
+                ],
             );
 
             throw new RuntimeException(
                 'Could not create a valid URL to get frontend data while trying to index a page. Created URL: ' . (string)$pageIndexUri,
-                1311080805
+                1311080805,
             );
         }
 

@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
@@ -29,7 +30,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
@@ -53,16 +53,25 @@ class BuilderTest extends SetUpUnitTestCase
     protected Site|MockObject $siteMock;
     protected Typo3PageContentExtractor|MockObject $typo3PageExtractorMock;
     protected Builder|MockObject $documentBuilder;
+    protected MockObject|ExtensionConfiguration $extensionConfigurationMock;
 
     protected function setUp(): void
     {
         $this->variantIdBuilderMock = $this->createMock(IdBuilder::class);
         $this->siteMock = $this->createMock(Site::class);
         $this->typo3PageExtractorMock = $this->createMock(Typo3PageContentExtractor::class);
+        $this->extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
 
-        $this->documentBuilder = $this->getMockBuilder(Builder::class)->setConstructorArgs([$this->variantIdBuilderMock ])->onlyMethods(
-            ['getExtractorForPageContent', 'getSiteByPageId', 'getPageDocumentId', 'getDocumentId']
-        )->getMock();
+        $this->documentBuilder = $this->getMockBuilder(Builder::class)
+            ->setConstructorArgs([
+                $this->variantIdBuilderMock,
+                $this->extensionConfigurationMock,
+            ])->onlyMethods([
+                'getExtractorForPageContent',
+                'getSiteByPageId',
+                'getPageDocumentId',
+                'getDocumentId',
+            ])->getMock();
 
         $this->documentBuilder->expects(self::any())->method('getExtractorForPageContent')->willReturn($this->typo3PageExtractorMock);
         $this->documentBuilder->expects(self::any())->method('getSiteByPageId')->willReturn($this->siteMock);
@@ -72,7 +81,6 @@ class BuilderTest extends SetUpUnitTestCase
     #[Test]
     public function canBuildApacheSolrDocumentFromEmptyPage(): void
     {
-        $tsfe = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
@@ -84,7 +92,8 @@ class BuilderTest extends SetUpUnitTestCase
         $pageInformation->setPageRecord(self::FAKE_PAGE_RECORD);
         $pageArguments = new PageArguments(4711, '0', []);
         $siteLanguage = new SiteLanguage(1, 'en_US', new Uri('http://www.typo3-solr.com'), []);
-        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $tsfe, 'http://www.typo3-solr.com', $fakeRootLine);
+        $pageContent = '<html><body>Test content</body></html>';
+        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $pageContent, 'http://www.typo3-solr.com', $fakeRootLine);
 
         self::assertInstanceOf(Document::class, $document, 'Expect to get an ' . Document::class . ' back');
         self::assertSame('siteHash/pages/4711', $document['id'], 'Builder did not use documentId from mock');
@@ -93,7 +102,6 @@ class BuilderTest extends SetUpUnitTestCase
     #[Test]
     public function canSetKeywordsForApacheSolrDocument(): void
     {
-        $tsfe = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
@@ -105,7 +113,8 @@ class BuilderTest extends SetUpUnitTestCase
         $pageInformation->setPageRecord(array_merge(self::FAKE_PAGE_RECORD, ['keywords' => 'foo,bar']));
         $pageArguments = new PageArguments(4711, '0', []);
         $siteLanguage = new SiteLanguage(1, 'en_US', new Uri('http://www.typo3-solr.com'), []);
-        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $tsfe, 'http://www.typo3-solr.com', $fakeRootLine);
+        $pageContent = '<html><body>Test content</body></html>';
+        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $pageContent, 'http://www.typo3-solr.com', $fakeRootLine);
 
         self::assertSame($document['keywords'], ['foo', 'bar'], 'Could not set keywords from page document');
     }
@@ -113,7 +122,6 @@ class BuilderTest extends SetUpUnitTestCase
     #[Test]
     public function canSetEndtimeForApacheSolrDocument(): void
     {
-        $tsfe = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
@@ -125,7 +133,8 @@ class BuilderTest extends SetUpUnitTestCase
         $pageInformation->setPageRecord(array_merge(self::FAKE_PAGE_RECORD, ['endtime' => 1234]));
         $pageArguments = new PageArguments(4711, '0', []);
         $siteLanguage = new SiteLanguage(1, 'en_US', new Uri('http://www.typo3-solr.com'), []);
-        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $tsfe, 'http://www.typo3-solr.com', $fakeRootLine);
+        $pageContent = '<html><body>Test content</body></html>';
+        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $pageContent, 'http://www.typo3-solr.com', $fakeRootLine);
 
         self::assertSame($document['endtime'], 1234, 'Could not set endtime from page document');
     }
@@ -133,7 +142,6 @@ class BuilderTest extends SetUpUnitTestCase
     #[Test]
     public function canSetTagFieldsForApacheSolrDocument(): void
     {
-        $tsfe = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
@@ -145,7 +153,8 @@ class BuilderTest extends SetUpUnitTestCase
         $pageInformation->setPageRecord(self::FAKE_PAGE_RECORD);
         $pageArguments = new PageArguments(4711, '0', []);
         $siteLanguage = new SiteLanguage(1, 'en_US', new Uri('http://www.typo3-solr.com'), []);
-        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $tsfe, 'http://www.typo3-solr.com', $fakeRootLine);
+        $pageContent = '<html><body><h1>Fake H1 content</h1></body></html>';
+        $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $pageContent, 'http://www.typo3-solr.com', $fakeRootLine);
 
         self::assertSame($document['tagsH1'], 'Fake H1 content', 'Could not assign extracted h1 heading to solr document');
     }
@@ -158,7 +167,8 @@ class BuilderTest extends SetUpUnitTestCase
         $this->fakeDocumentId('testSiteHash/news/4711');
 
         $this->siteMock->expects(self::any())->method('getRootPageId')->willReturn(99);
-        $this->siteMock->expects(self::once())->method('getDomain')->willReturn('test.typo3.org');
+        $this->siteMock->expects(self::any())->method('getDomain')->willReturn('test.typo3.org');
+        $this->siteMock->expects(self::any())->method('getSiteIdentifier')->willReturn('test.typo3.org');
         $this->siteMock->expects(self::any())->method('getSiteHash')->willReturn('testSiteHash');
         $this->variantIdBuilderMock->expects(self::once())->method('buildFromTypeAndUid')->with($type, 4711, $fakeRecord, $this->siteMock)->willReturn('testVariantId');
 

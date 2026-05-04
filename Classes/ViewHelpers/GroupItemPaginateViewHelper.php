@@ -21,23 +21,27 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
+use TYPO3\CMS\Core\View\ViewInterface;
 
-/**
- * Class GroupItemPaginateViewHelper
- */
-class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
+final class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
 {
+    private const LAYOUT_ROOT_PATH = 'EXT:solr/Resources/Private/Layouts/ViewHelpers/';
+
+    private const PARTIAL_ROOT_PATH = 'EXT:solr/Resources/Private/Partials/ViewHelpers/';
+
+    private const TEMPLATE_ROOT_PATH = 'EXT:solr/Resources/Private/Templates/ViewHelpers/';
+
     protected $escapeChildren = false;
     protected $escapeOutput = false;
 
-    /**
-     * Initializes the arguments
-     */
+    public function __construct(
+        private readonly ViewFactoryInterface $viewFactory,
+    ) {}
+
     public function initializeArguments(): void
     {
         parent::initializeArguments();
@@ -70,10 +74,10 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
                 'configuration' => $configuration,
                 'resultSet' => $this->arguments['resultSet'],
                 'groupItem' => $this->arguments['groupItem'],
-            ]
+            ],
         );
 
-        $paginationRendered = $paginationView->render();
+        $paginationRendered = $paginationView->render('GroupItemPaginate/Index');
 
         $variableProvider = $this->renderingContext->getVariableProvider();
         $variableProvider->add('paginator', $paginator);
@@ -90,58 +94,55 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
         return implode('', $contents);
     }
 
-    protected function getTemplateObject(): StandaloneView
+    private function getTemplateObject(): ViewInterface
     {
-        /** @var SearchResultSet $resultSet */
-        $resultSet = $this->arguments['resultSet'];
-        $configuration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration();
+        $configuration = $this->getSearchResultSet()->getUsedSearchRequest()->getContextTypoScriptConfiguration();
         $viewConfiguration = $configuration->getValueByPath('plugin.tx_solr.view.');
 
         $layoutRootPaths = [];
-        $layoutRootPaths[] = GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Layouts/ViewHelpers/');
+        $layoutRootPaths[] = GeneralUtility::getFileAbsFileName(self::LAYOUT_ROOT_PATH);
         if (isset($viewConfiguration['layoutRootPaths.'])) {
             foreach ($viewConfiguration['layoutRootPaths.'] as $layoutRootPath) {
                 $layoutRootPaths[] = GeneralUtility::getFileAbsFileName(rtrim($layoutRootPath, '/') . '/ViewHelpers/');
             }
         }
         $partialRootPaths = [];
-        $partialRootPaths[] = GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Partials/ViewHelpers/');
+        $partialRootPaths[] = GeneralUtility::getFileAbsFileName(self::PARTIAL_ROOT_PATH);
         if (isset($viewConfiguration['partialRootPaths.'])) {
             foreach ($viewConfiguration['partialRootPaths.'] as $partialRootPath) {
                 $partialRootPaths[] = GeneralUtility::getFileAbsFileName(rtrim($partialRootPath, '/') . '/ViewHelpers/');
             }
         }
         $templateRootPaths = [];
-        $templateRootPaths[] = GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/ViewHelpers/');
+        $templateRootPaths[] = GeneralUtility::getFileAbsFileName(self::TEMPLATE_ROOT_PATH);
         if (isset($viewConfiguration['templateRootPaths.'])) {
             foreach ($viewConfiguration['templateRootPaths.'] as $templateRootPath) {
                 $templateRootPaths[] = GeneralUtility::getFileAbsFileName(rtrim($templateRootPath, '/') . '/ViewHelpers/');
             }
         }
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        if ($this->renderingContext instanceof RenderingContext) {
-            $view->setRequest($this->renderingContext->getRequest());
-        }
-        $view->setLayoutRootPaths($layoutRootPaths);
-        $view->setPartialRootPaths($partialRootPaths);
-        $view->setTemplateRootPaths($templateRootPaths);
-        $view->setTemplate('GroupItemPaginate/Index');
+        $request = $this->renderingContext->getAttribute(ServerRequestInterface::class);
 
-        return $view;
+        return $this->viewFactory->create(new ViewFactoryData(
+            templateRootPaths: $templateRootPaths,
+            partialRootPaths: $partialRootPaths,
+            layoutRootPaths: $layoutRootPaths,
+            request: $request,
+            format: 'html',
+        ));
     }
 
     /**
-     * Determines the number of results per page. When nothing is configured 10 will be returned.
+     * Determines the number of results per page. When nothing is configured, 10 will be returned.
      */
-    protected function getItemsPerPage(): int
+    private function getItemsPerPage(): int
     {
         $perPage = (int)$this->arguments['groupItem']->getGroup()->getResultsPerPage();
         return $perPage > 0 ? $perPage : 10;
     }
 
-    protected function getConfigurationManager(): ConfigurationManagerInterface
+    private function getSearchResultSet(): SearchResultSet
     {
-        return GeneralUtility::getContainer()->get(ConfigurationManager::class);
+        return $this->arguments['resultSet'];
     }
 }

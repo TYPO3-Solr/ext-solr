@@ -107,9 +107,6 @@
 			<trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve">
 				<source>Number of documents to index</source>
 			</trans-unit>
-			<trans-unit id="indexqueueworker_field_forcedWebRoot" xml:space="preserve">
-				<source>Forced webroot (only needed when webroot is not PATH_site)</source>
-			</trans-unit>
 			<trans-unit id="field_host" xml:space="preserve">
 				<source>Solr Host</source>
 			</trans-unit>
@@ -235,6 +232,18 @@
 			</trans-unit>
 			<trans-unit id="suggest_header" xml:space="preserve">
 				<source>Top Results</source>
+			</trans-unit>
+      <trans-unit id="daterange_start" xml:space="preserve">
+				<source>start date</source>
+			</trans-unit>
+      <trans-unit id="daterange_end" xml:space="preserve">
+				<source>end date</source>
+			</trans-unit>
+      <trans-unit id="daterange_start_validation" xml:space="preserve">
+				<source>Please choose a start date between ###MIN### and ###MAX###</source>
+			</trans-unit>
+      <trans-unit id="daterange_end_validation" xml:space="preserve">
+				<source>Please choose an end date between ###MIN### and ###MAX###</source>
 			</trans-unit>
 			<!-- From locallang.xlf -->
 			<trans-unit id="solr.backend.index_queue_module.description" xml:space="preserve">

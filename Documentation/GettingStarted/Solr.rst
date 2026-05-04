@@ -21,7 +21,7 @@ To pull the TYPO3 Solr image from Docker hub, simply type the following in comma
 
 .. code-block:: bash
 
-    docker pull typo3solr/ext-solr:<EXT:Solr_Version_main_version eg 13.0 or exact 13.0.1>
+    docker pull typo3solr/ext-solr:<EXT:Solr_Version_main_version eg 13.1 or exact 13.1.0>
 
 .. tip::
 

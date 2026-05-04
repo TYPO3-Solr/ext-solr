@@ -18,11 +18,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\ItemInterface;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration as ExtSolrExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
-use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
@@ -32,8 +34,8 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Scheduler\Scheduler;
 
 /**
  * This testcase is used to check if the GarbageCollector can delete garbage from the
@@ -41,12 +43,8 @@ use TYPO3\CMS\Scheduler\Scheduler;
  */
 class GarbageCollectorTest extends IntegrationTestBase
 {
-    protected array $coreExtensionsToLoad = [
-        'typo3/cms-scheduler',
-    ];
-
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/solr',
+        'apache-solr-for-typo3/solr',
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
     ];
 
@@ -58,11 +56,23 @@ class GarbageCollectorTest extends IntegrationTestBase
     protected ExtensionConfiguration $extensionConfiguration;
     protected EventQueueItemRepository $eventQueue;
     protected BackendUserAuthentication $backendUser;
+    protected ExtSolrExtensionConfiguration $extSolrExtensionConfigurationObject;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
+        $this->extSolrExtensionConfigurationObject = new class ([]) extends ExtSolrExtensionConfiguration implements SingletonInterface {
+            public function setConfiguration(array $configuration)
+            {
+                $this->configuration = $configuration;
+            }
+        };
+        GeneralUtility::setSingletonInstance(
+            ExtSolrExtensionConfiguration::class,
+            $this->extSolrExtensionConfigurationObject,
+        );
+
         $this->recordMonitor = GeneralUtility::makeInstance(RecordMonitor::class);
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
@@ -70,7 +80,6 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->indexer = GeneralUtility::makeInstance(Indexer::class);
         $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
-        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
         // fake that a backend user is logged in
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sites_setup_and_data_set/be_users.csv');
@@ -89,11 +98,21 @@ class GarbageCollectorTest extends IntegrationTestBase
             $this->garbageCollector,
             $this->indexer,
             $this->extensionConfiguration,
+            $this->extSolrExtensionConfigurationObject,
             $this->eventQueue,
             $this->backendUser,
-            $GLOBALS['LANG']
+            $GLOBALS['LANG'],
         );
         parent::tearDown();
+    }
+
+    protected function setExtensionsMonitoringType(int $monitoringType): void
+    {
+        $extSolrExtConf = $this->extensionConfiguration->get('solr');
+        $extSolrExtConf['monitoringType'] = $monitoringType;
+        $this->extensionConfiguration->set('solr', $extSolrExtConf);
+        // @phpstan-ignore method.notFound
+        $this->extSolrExtensionConfigurationObject->setConfiguration($extSolrExtConf);
     }
 
     protected function assertEmptyIndexQueue(): void
@@ -106,7 +125,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         self::assertGreaterThan(
             0,
             $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to be not empty.'
+            'Index queue is empty and was expected to be not empty.',
         );
     }
 
@@ -116,7 +135,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         self::assertEquals(
             $amount,
             $itemsInQueue,
-            'Index queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.'
+            'Index queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.',
         );
     }
 
@@ -131,7 +150,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         self::assertEquals(
             $amount,
             $itemsInQueue,
-            'Event queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.'
+            'Event queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.',
         );
     }
 
@@ -147,7 +166,7 @@ class GarbageCollectorTest extends IntegrationTestBase
     #[Test]
     public function queueItemStaysWhenOverlayIsSetToHiddenInDelayedProcessingMode(): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $this->prepareQueueItemStaysWhenOverlayIsSetToHidden();
         $this->assertEventQueueContainsItemAmount(1);
         $this->processEventQueue();
@@ -202,7 +221,7 @@ class GarbageCollectorTest extends IntegrationTestBase
     #[Test]
     public function canCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSetInDelayedProcessingMode(): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $this->prepareCanCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSet();
         $this->assertEventQueueContainsItemAmount(1);
         $this->processEventQueue();
@@ -253,7 +272,7 @@ class GarbageCollectorTest extends IntegrationTestBase
     #[Test]
     public function canCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSetForMultipleSubpagesInDelayedProcessingMode(): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $this->prepareCanCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSetForMultipleSubpages();
         $this->assertEventQueueContainsItemAmount(1);
         $this->processEventQueue();
@@ -308,7 +327,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler->start(
             [],
             ['pages' => [10 => ['move' => 2]]],
-            $this->backendUser
+            $this->backendUser,
         );
 
         $this->dataHandler->process_cmdmap();
@@ -332,7 +351,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler->start(
             [],
             ['pages' => [10 => ['move' => 4]]],
-            $this->backendUser
+            $this->backendUser,
         );
         $this->dataHandler->process_cmdmap();
         $this->assertEmptyIndexQueue();
@@ -355,7 +374,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler->start(
             [],
             ['pages' => [10 => ['move' => -2]]],
-            $this->backendUser
+            $this->backendUser,
         );
 
         $this->dataHandler->process_cmdmap();
@@ -374,7 +393,7 @@ class GarbageCollectorTest extends IntegrationTestBase
     #[Test]
     public function canCollectGarbageEvenIfNotInIndexQueueInDelayedProcessingMode(): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $this->prepareCanCollectGarbageEvenIfNotInIndexQueue();
         $this->assertEventQueueContainsItemAmount(2);
         $this->processEventQueue();
@@ -386,7 +405,6 @@ class GarbageCollectorTest extends IntegrationTestBase
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/subpage.csv');
 
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->assertEmptyIndexQueue();
         $this->addToQueueAndIndexRecord('pages', 2);
         $this->assertIndexQueueContainsItemAmount(1);
@@ -404,7 +422,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler->start(
             ['pages' => [2 => ['hidden' => 1]]],
             [],
-            $this->backendUser
+            $this->backendUser,
         );
         $this->dataHandler->process_datamap();
     }
@@ -422,7 +440,7 @@ class GarbageCollectorTest extends IntegrationTestBase
     #[DataProvider('canCollectGarbageOfDeletedRecordEvenIfNotInIndexQueueDataProvider')]
     public function canCollectGarbageOfDeletedRecordEvenIfNotInIndexQueueInDelayedProcessingMode(bool $forceHardDelete): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $this->prepareCanCollectGarbageOfDeletedRecordEvenIfNotInIndexQueue($forceHardDelete);
         $this->assertEventQueueContainsItemAmount(1);
         $this->processEventQueue();
@@ -434,7 +452,6 @@ class GarbageCollectorTest extends IntegrationTestBase
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/subpage.csv');
 
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->assertEmptyIndexQueue();
         $this->addToQueueAndIndexRecord('pages', 2);
         $this->assertIndexQueueContainsItemAmount(1);
@@ -456,7 +473,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler->start(
             [],
             ['pages' => [2 => ['delete' => 1 ]]],
-            $this->backendUser
+            $this->backendUser,
         );
         $this->dataHandler->process_cmdmap();
     }
@@ -465,6 +482,204 @@ class GarbageCollectorTest extends IntegrationTestBase
     {
         yield 'Test soft delete' => [ false ];
         yield 'Test hard delete' => [ true ];
+    }
+
+    #[Test]
+    #[DataProvider('canCollectMountPageGarbageDataProvider')]
+    public function canCollectMountPageGarbage(
+        int $monitoringType,
+        array $dataMap,
+        array $cmdMap,
+        int $expectedQueueCount,
+        int $expectedDocumentCount,
+        int $expectedItemsToReindex = 0,
+    ): void {
+        $this->setExtensionsMonitoringType($monitoringType);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/mount_page_garbage.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
+        $this->assertEmptyEventQueue();
+
+        // index all queue items
+        foreach ($this->indexQueue->getAllItems() as $item) {
+            self::assertTrue($this->indexPageQueueItem($item), 'Queue item failed to be indexed.');
+        }
+        $this->waitToBeVisibleInSolr();
+        self::assertSolrContainsDocumentCount(2, 'Initial number of documents in index not as expected');
+
+        $this->dataHandler->start(
+            $dataMap,
+            $cmdMap,
+            $this->backendUser,
+        );
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+
+        if ($monitoringType === 1) {
+            $this->processEventQueue();
+        }
+        $this->waitToBeVisibleInSolr();
+
+        $queueItems = $this->indexQueue->getAllItems();
+        self::assertCount($expectedQueueCount, $queueItems, 'Total number of index queue items differs');
+        $itemsToReindex = array_filter(
+            $queueItems,
+            static fn(Item $item): bool => $item->getState() === ItemInterface::STATE_PENDING,
+        );
+        self::assertCount($expectedItemsToReindex, $itemsToReindex, 'Number of items that need reindexing differs');
+        self::assertSolrContainsDocumentCount($expectedDocumentCount, 'Final number of documents in index not as expected');
+    }
+
+    public static function canCollectMountPageGarbageDataProvider(): Traversable
+    {
+        yield 'collect garbage on mount point deletion (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [20 => ['delete' => 1]]],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCount' => 1,
+        ];
+        yield 'collect garbage on mount point deletion (delayed processing)' => [
+            'monitoringType' => 1,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [20 => ['delete' => 1]]],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCount' => 1,
+        ];
+        yield 'collect garbage on mount point deactivation (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => ['pages' => [20 => ['hidden' => 1]]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCount' => 1,
+        ];
+        yield 'collect garbage on mount point deactivation (delayed processing)' => [
+            'monitoringType' => 1,
+            'dataMap' => ['pages' => [20 => ['hidden' => 1]]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCount' => 1,
+        ];
+        yield 'collect garbage on mount point title update (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => ['pages' => [20 => ['title' => 'new title']]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCount' => 2,
+        ];
+        yield 'collect garbage on mount point title update (delayed processing)' => [
+            'monitoringType' => 1,
+            'dataMap' => ['pages' => [20 => ['title' => 'new title']]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCount' => 2,
+        ];
+        yield 'collect garbage on mount point slug update (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => ['pages' => [20 => ['slug' => '/new-mount-point-slug']]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCount' => 1,
+            'expectedItemsToReindex' => 1,
+        ];
+        yield 'collect garbage on mount point slug update (delayed) processing)' => [
+            'monitoringType' => 1,
+            'dataMap' => ['pages' => [20 => ['slug' => '/new-mount-point-slug']]],
+            'cmdMap' => [],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCount' => 1,
+            'expectedItemsToReindex' => 1,
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('canCollectTranslatedMountPageGarbageDataProvider')]
+    public function canCollectTranslatedMountPageGarbage(
+        int $monitoringType,
+        array $dataMap,
+        array $cmdMap,
+        int $expectedQueueCount,
+        int $expectedDocumentCountEn,
+        int $expectedDocumentCountDe,
+        int $expectedItemsToReindex = 0,
+    ): void {
+        $this->setExtensionsMonitoringType($monitoringType);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/translated_mount_page_garbage.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
+        $this->assertEmptyEventQueue();
+
+        // index all queue items
+        foreach ($this->indexQueue->getAllItems() as $item) {
+            self::assertTrue($this->indexPageQueueItem($item), 'Queue item failed to be indexed in default language.');
+            self::assertTrue(
+                $this->indexPageQueueItem($item, 1, 'core_de'),
+                'Queue item failed to be indexed in german translation.',
+            );
+        }
+        $this->waitToBeVisibleInSolr();
+        $this->waitToBeVisibleInSolr('core_de');
+        self::assertSolrContainsDocumentCount(2, 'Initial number of documents in english index not as expected', 'core_en');
+        self::assertSolrContainsDocumentCount(2, 'Initial number of documents in german index not as expected', 'core_de');
+
+        $this->dataHandler->start(
+            $dataMap,
+            $cmdMap,
+            $this->backendUser,
+        );
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->process_cmdmap();
+
+        if ($monitoringType === 1) {
+            $this->processEventQueue();
+        }
+        $this->waitToBeVisibleInSolr();
+
+        $queueItems = $this->indexQueue->getAllItems();
+        self::assertCount($expectedQueueCount, $queueItems, 'Total number of index queue items differs');
+        $itemsToReindex = array_filter(
+            $queueItems,
+            static fn(Item $item): bool => $item->getState() === ItemInterface::STATE_PENDING,
+        );
+        self::assertCount($expectedItemsToReindex, $itemsToReindex, 'Number of items that need reindexing differs');
+        self::assertSolrContainsDocumentCount($expectedDocumentCountDe, 'Final number of documents in english index not as expected');
+        self::assertSolrContainsDocumentCount($expectedDocumentCountDe, 'Final number of documents in german index not as expected');
+    }
+
+    public static function canCollectTranslatedMountPageGarbageDataProvider(): Traversable
+    {
+        yield 'collect garbage on mount point deletion (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [20 => ['delete' => 1]]],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCountEn' => 1,
+            'expectedDocumentCountDe' => 1,
+        ];
+        yield 'collect garbage on mount point deletion (delayed processing)' => [
+            'monitoringType' => 1,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [20 => ['delete' => 1]]],
+            'expectedQueueCount' => 1,
+            'expectedDocumentCountEn' => 1,
+            'expectedDocumentCountDe' => 1,
+        ];
+        yield 'collect garbage on mount point translation deletion (immediate processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [21 => ['delete' => 1]]],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCountEn' => 1,
+            'expectedDocumentCountDe' => 1,
+            'expectedItemsToReindex' => 1,
+        ];
+        yield 'collect garbage on mount point translation deletion (delayed processing)' => [
+            'monitoringType' => 0,
+            'dataMap' => [],
+            'cmdMap' => ['pages' => [21 => ['delete' => 1]]],
+            'expectedQueueCount' => 2,
+            'expectedDocumentCountEn' => 1,
+            'expectedDocumentCountDe' => 1,
+            'expectedItemsToReindex' => 1,
+        ];
     }
 
     #[Test]
@@ -485,7 +700,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->indexPages([1]);
 
         // now the content of the deleted content element should be gone
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove deleted content');
         self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
@@ -493,7 +708,7 @@ class GarbageCollectorTest extends IntegrationTestBase
     #[Test]
     public function canRemoveDeletedContentElementInDelayedProcessingMode(): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $this->prepareCanRemoveDeletedContentElement();
         $this->assertEventQueueContainsItemAmount(2);
         $this->processEventQueue();
@@ -509,14 +724,13 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemoveDeletedContentElement(): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexed_content.csv');
 
         // we index a page with two content elements and expect solr contains the content of both
         $this->indexPages([1]);
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
         self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
 
@@ -544,10 +758,9 @@ class GarbageCollectorTest extends IntegrationTestBase
 
         // we index this item
         $this->indexPages([1]);
-        $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove hidden content');
         self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
@@ -555,7 +768,7 @@ class GarbageCollectorTest extends IntegrationTestBase
     #[Test]
     public function canRemoveHiddenContentElementInDelayedProcessingMode(): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $data = ['tt_content' => ['88' => ['hidden' => 1]]];
         $this->prepareCanRemoveContentElementTests($data);
 
@@ -586,7 +799,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->indexPages([1]);
 
         // now the content of the deleted content element should be gone
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content hidden by endtime in past');
         self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
@@ -594,7 +807,7 @@ class GarbageCollectorTest extends IntegrationTestBase
     #[Test]
     public function canRemoveContentElementWithEndTimeSetToPastInDelayedProcessingMode(): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $timeStampInPast = time() - (60 * 60 * 24);
         $data = ['tt_content' => ['88' => ['endtime' => $timeStampInPast]]];
         $this->prepareCanRemoveContentElementTests($data);
@@ -616,7 +829,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->prepareCanRemoveContentElementTests($data, 'does_not_remove_updated_content_element_with_not_set_endtime.csv', [2]);
 
         // document should stay in the index, because endtime was not in past but empty
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('will stay! still present after update!', $solrContent, 'solr did not contain rendered page content, which is needed for test.');
 
         $this->waitToBeVisibleInSolr();
@@ -629,14 +842,14 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->indexPages([2]);
 
         // now the content of the deleted content element should be gone
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('Updated! Will stay after update!', $solrContent, 'solr did not remove content hidden by endtime in past');
     }
 
     #[Test]
     public function doesNotRemoveUpdatedContentElementWithNotSetEndTimeInDelayedProcessingMode(): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $data = ['tt_content' => ['88' => ['bodytext' => 'Updated! Will stay after update!' ]]];
         $this->prepareCanRemoveContentElementTests($data, 'does_not_remove_updated_content_element_with_not_set_endtime.csv', [2]);
 
@@ -666,7 +879,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         $this->indexPages([1]);
 
         // now the content of the deletec content element should be gone
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content hidden by starttime in future');
         self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
@@ -674,7 +887,7 @@ class GarbageCollectorTest extends IntegrationTestBase
     #[Test]
     public function canRemoveContentElementWithStartDateSetToFutureInDelayedProcessingMode(): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $timeStampInPast = time() - (60 * 60 * 24);
         $data = ['tt_content' => ['88' => ['endtime' => $timeStampInPast]]];
         $this->prepareCanRemoveContentElementTests($data);
@@ -702,15 +915,13 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemoveContentElementTests(array $dataMap, string $fixture = 'indexed_content.csv', array $indexPageIds = [1]): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture);
 
         // we index a page with two content elements and expect solr contains the content of both
         $this->indexPages($indexPageIds);
-        $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         if ($fixture === 'indexed_content.csv') {
             self::assertStringContainsString('will be removed!', $solrContent, 'Solr did not contain rendered page content');
         }
@@ -741,10 +952,9 @@ class GarbageCollectorTest extends IntegrationTestBase
             $pages[] = $item->getRecordUid();
         }
         $this->indexPages($pages);
-        $this->waitToBeVisibleInSolr();
 
         // now only one document should be left with the content of the first content element
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringNotContainsString('will be removed!', $solrContent, 'Solr did not remove content from hidden page');
         self::assertStringContainsString('will stay!', $solrContent, 'Solr did not contain rendered page content');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Expected to have two documents in the index');
@@ -753,7 +963,7 @@ class GarbageCollectorTest extends IntegrationTestBase
     #[Test]
     public function canRemovePageWhenPageIsHiddenInDelayedProcessingMode(): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $dataMap = ['pages' => ['2' => ['hidden' => 1]]];
 
         $this->assertEmptyEventQueue();
@@ -782,10 +992,9 @@ class GarbageCollectorTest extends IntegrationTestBase
             $pages[] = $item->getRecordUid();
         }
         $this->indexPages($pages);
-        $this->waitToBeVisibleInSolr();
 
         // now only one document should be left with the content of the first content element
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content from deleted page');
         self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
         self::assertStringContainsString('"numFound":1', $solrContent, 'Expected to have two documents in the index');
@@ -794,7 +1003,7 @@ class GarbageCollectorTest extends IntegrationTestBase
     #[Test]
     public function canRemovePageWhenPageIsDeletedInDelayedProcessingMode(): void
     {
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $cmdMap = ['pages' => [2 => ['delete' => 1 ]]];
 
         $this->assertEmptyEventQueue();
@@ -871,14 +1080,13 @@ class GarbageCollectorTest extends IntegrationTestBase
      */
     protected function prepareCanRemovePagesTests(array $dataMap, array $cmdMap = []): void
     {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_remove_page.csv');
 
         // we index two pages and check that both are visible
         $this->indexPages([1, 2]);
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
         self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
         self::assertStringContainsString('"numFound":2', $solrContent, 'Expected to have two documents in the index');
@@ -912,7 +1120,7 @@ class GarbageCollectorTest extends IntegrationTestBase
         /** @var TestGarbageCollectorPostProcessor $hook */
         $hook = GeneralUtility::makeInstance(TestGarbageCollectorPostProcessor::class);
 
-        $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
+        $this->setExtensionsMonitoringType(1);
         $this->prepareCanTriggerHookAfterRecordDeletion();
         $this->assertEventQueueContainsItemAmount(1);
         self::assertFalse($hook->isHookWasCalled());
@@ -940,10 +1148,8 @@ class GarbageCollectorTest extends IntegrationTestBase
                     type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
-            }'
+            }',
         );
-
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
 
         $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_foo', 111);
         $this->waitToBeVisibleInSolr();
@@ -975,15 +1181,5 @@ class GarbageCollectorTest extends IntegrationTestBase
         }
 
         return $result;
-    }
-
-    /**
-     * Triggers event queue processing
-     */
-    protected function processEventQueue(): void
-    {
-        $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
-        $scheduler = GeneralUtility::makeInstance(Scheduler::class);
-        $scheduler->executeTask($task);
     }
 }

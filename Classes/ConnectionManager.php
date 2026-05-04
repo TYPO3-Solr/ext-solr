@@ -46,6 +46,16 @@ class ConnectionManager implements SingletonInterface
      */
     protected static array $connections = [];
 
+    /**
+     * Resets the static connection cache.
+     *
+     * @internal Only for use in test tearDown methods.
+     */
+    public static function resetConnections(): void
+    {
+        self::$connections = [];
+    }
+
     protected PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr;
 
     protected SiteRepository $siteRepository;
@@ -95,16 +105,22 @@ class ConnectionManager implements SingletonInterface
         array $writeEndpointConfiguration,
         TypoScriptConfiguration $typoScriptConfiguration,
     ): SolrConnection {
-        $connectionHash = md5(json_encode($readEndpointConfiguration) . json_encode($writeEndpointConfiguration));
+        $connectionHash = hash('md5', json_encode($readEndpointConfiguration) . json_encode($writeEndpointConfiguration));
         if (!isset(self::$connections[$connectionHash])) {
             $readEndpoint = new Endpoint($readEndpointConfiguration);
             if (!$this->isValidEndpoint($readEndpoint)) {
-                throw new InvalidConnectionException('Invalid read endpoint');
+                throw new InvalidConnectionException(
+                    'Invalid read endpoint',
+                    1451844097,
+                );
             }
 
             $writeEndpoint = new Endpoint($writeEndpointConfiguration);
             if (!$this->isValidEndpoint($writeEndpoint)) {
-                throw new InvalidConnectionException('Invalid write endpoint');
+                throw new InvalidConnectionException(
+                    'Invalid write endpoint',
+                    1049743991,
+                );
             }
 
             self::$connections[$connectionHash] = GeneralUtility::makeInstance(
@@ -169,7 +185,7 @@ class ConnectionManager implements SingletonInterface
         return $this->getSolrConnectionForEndpoints(
             $solrConfiguration['read'],
             $solrConfiguration['write'],
-            $typoScriptConfiguration
+            $typoScriptConfiguration,
         );
     }
 
@@ -211,7 +227,7 @@ class ConnectionManager implements SingletonInterface
         if ($config === null) {
             throw $this->buildNoConnectionExceptionForPageAndLanguage(
                 $typo3Site->getRootPageId(),
-                $languageUid
+                $languageUid,
             );
         }
 
@@ -329,7 +345,7 @@ class ConnectionManager implements SingletonInterface
 
         throw $this->buildNoConnectionException(
             $message,
-            $previous
+            $previous,
         );
     }
 
@@ -343,7 +359,7 @@ class ConnectionManager implements SingletonInterface
         return new NoSolrConnectionFoundException(
             $message,
             1575396474,
-            $previous
+            $previous,
         );
     }
 }

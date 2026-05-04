@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Event\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
-use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\IndexQueueInitializer;
 
 /**
  * PSR-14 Event which is fired after a index queue has been (re-) initialized.
@@ -29,7 +29,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
 final class AfterIndexQueueHasBeenInitializedEvent
 {
     public function __construct(
-        private readonly AbstractInitializer $initializer,
+        private readonly IndexQueueInitializer $initializer,
         private readonly Site $site,
         private readonly string $indexingConfigurationName,
         private readonly string $type,
@@ -37,7 +37,7 @@ final class AfterIndexQueueHasBeenInitializedEvent
         private bool $isInitialized,
     ) {}
 
-    public function getInitializer(): AbstractInitializer
+    public function getInitializer(): IndexQueueInitializer
     {
         return $this->initializer;
     }

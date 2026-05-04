@@ -17,25 +17,23 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
-use ApacheSolrForTypo3\Solr\ContentObject\Classification;
-use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
-use ApacheSolrForTypo3\Solr\ContentObject\Relation;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Exception\Exception as FrontendEnvironmentException;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
+use ApacheSolrForTypo3\Solr\FrontendSimulation\Exception\Exception as FrontendSimulationException;
+use ApacheSolrForTypo3\Solr\FrontendSimulation\FrontendAwareEnvironment;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use Doctrine\DBAL\Exception as DBALException;
-use TYPO3\CMS\Core\Core\Environment;
+use JsonException;
+use Throwable;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use UnexpectedValueException;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
  * An abstract indexer class to collect a few common methods shared with other
@@ -50,6 +48,7 @@ abstract class AbstractIndexer
 
     /**
      * Holds field names that are denied to overwrite in thy indexing configuration.
+     * @var string[]
      */
     protected static array $unAllowedOverrideFields = ['type'];
 
@@ -64,20 +63,21 @@ abstract class AbstractIndexer
      * @param Document $document base document to add fields to
      * @param array $indexingConfiguration Indexing configuration / mapping
      * @param array $data Record data
-     * @param TypoScriptFrontendController $tsfe The context-bound TSFE object
+     * @param ServerRequest $request The simulated frontend request
      * @param int|SiteLanguage $language The site language object or UID as int
      * @return Document Modified document with added fields
      *
-     * @throws ContentRenderingException
+     * @throws AspectNotFoundException
      * @throws DBALException
-     * @throws FrontendEnvironmentException
+     * @throws FrontendSimulationException
+     * @throws JsonException
      * @throws SiteNotFoundException
      */
     protected function addDocumentFieldsFromTyposcript(
         Document $document,
         array $indexingConfiguration,
         array $data,
-        TypoScriptFrontendController $tsfe,
+        ServerRequest $request,
         int|SiteLanguage $language,
     ): Document {
         $data = static::addVirtualContentFieldToRecord($document, $data);
@@ -92,7 +92,7 @@ abstract class AbstractIndexer
             if (!static::isAllowedToOverrideField($solrFieldName)) {
                 throw new InvalidFieldNameException(
                     'Must not overwrite field .' . $solrFieldName,
-                    1435441863
+                    1435441863,
                 );
             }
 
@@ -100,7 +100,7 @@ abstract class AbstractIndexer
                 $indexingConfiguration,
                 $solrFieldName,
                 $data,
-                $tsfe,
+                $request,
                 $language,
             );
             if ($fieldValue === null
@@ -113,12 +113,24 @@ abstract class AbstractIndexer
             $document->setField($solrFieldName, $fieldValue);
         }
 
+        /** @var PageInformation|null $pageInformation */
+        $pageInformation = $request->getAttribute('frontend.page.information');
+        $pageId = $pageInformation?->getId() ?? 0;
+
+        $typoScriptConfiguration = $this->getTypoScriptConfiguration(
+            $pageId,
+            ($language instanceof SiteLanguage ? $language->getLanguageId() : $language),
+        );
+        if ($typoScriptConfiguration->isVectorSearchEnabled() && !isset($document['vectorContent'])) {
+            $document->setField('vectorContent', $document['content']);
+        }
+
         return $document;
     }
 
     /**
      * Adds the content of the field 'content' from the solr document as virtual field __solr_content in the record,
-     * to have it available in typoscript.
+     * to have it available in TypoScript.
      */
     public static function addVirtualContentFieldToRecord(Document $document, array $data): array
     {
@@ -139,102 +151,36 @@ abstract class AbstractIndexer
      * @param array $indexingConfiguration Indexing configuration as defined in plugin.tx_solr_index.queue.[indexingConfigurationName].fields
      * @param string $solrFieldName A Solr field name that is configured in the indexing configuration
      * @param array $data A record or item's data
-     * @param TypoScriptFrontendController $tsfe
-     * @param int|SiteLanguage $language The language to use in TSFE stack
+     * @param ServerRequest $request The simulated frontend request
+     * @param int|SiteLanguage $language The language to use
      *
      * @return array|float|int|string|null The resolved string value to be indexed; null if value could not be resolved
-     *
-     *
-     * @throws FrontendEnvironmentException
-     * @throws DBALException
-     * @throws SiteNotFoundException
-     * @throws ContentRenderingException
      */
     protected function resolveFieldValue(
         array $indexingConfiguration,
         string $solrFieldName,
         array $data,
-        TypoScriptFrontendController $tsfe,
+        ServerRequest $request,
         int|SiteLanguage $language,
     ): mixed {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
-
-            // need to change directory to make IMAGE content objects work in BE context
-            // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
-            $backupWorkingDirectory = getcwd();
-            chdir(Environment::getPublicPath() . '/');
-
-            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
-            /** @noinspection PhpInternalEntityUsedInspection */
-            if (($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('applicationType') === SystemEnvironmentBuilder::REQUESTTYPE_FE) {
-                $request = $GLOBALS['TYPO3_REQUEST'];
-            } else {
-                $request = GeneralUtility::makeInstance(Tsfe::class)
-                    ->getServerRequestForTsfeByPageIdAndLanguageId(
-                        $tsfe->id,
-                        $language instanceof SiteLanguage ? $language->getLanguageId() : $language
-                    );
-            }
+            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $cObject->setRequest($request);
             $cObject->start($data, $this->type);
             $fieldValue = $cObject->cObjGetSingle(
                 $indexingConfiguration[$solrFieldName],
-                $indexingConfiguration[$solrFieldName . '.']
+                $indexingConfiguration[$solrFieldName . '.'],
             );
 
-            chdir($backupWorkingDirectory);
-
-            if ($this->isSerializedValue(
-                $indexingConfiguration,
-                $solrFieldName
-            )
-            ) {
-                $fieldValue = unserialize($fieldValue);
-            }
-        } elseif (
-            str_starts_with($indexingConfiguration[$solrFieldName], '<')
-        ) {
-            $referencedTsPath = trim(substr(
-                $indexingConfiguration[$solrFieldName],
-                1
-            ));
-
-            /** @var ?FrontendTypoScript $frontendTypoScript */
-            $frontendTypoScript = $tsfe->cObj->getRequest()->getAttribute('frontend.typoscript');
-            $configurationAccess = new ArrayAccessor($frontendTypoScript?->getSetupArray(), '.', true);
-            // $name and $conf is loaded with the referenced values.
-            $name = $configurationAccess->get($referencedTsPath);
-            $conf = $configurationAccess->get($referencedTsPath . '.');
-
-            // need to change directory to make IMAGE content objects work in BE context
-            // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
-            $backupWorkingDirectory = getcwd();
-            chdir(Environment::getPublicPath() . '/');
-
-            $cObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfe);
-            /** @noinspection PhpInternalEntityUsedInspection */
-            if (($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('applicationType') === SystemEnvironmentBuilder::REQUESTTYPE_FE) {
-                $request = $GLOBALS['TYPO3_REQUEST'];
-            } else {
-                $request = GeneralUtility::makeInstance(Tsfe::class)
-                    ->getServerRequestForTsfeByPageIdAndLanguageId(
-                        $tsfe->id,
-                        $language instanceof SiteLanguage ? $language->getLanguageId() : $language
-                    );
-            }
-            $cObject->setRequest($request);
-            $cObject->start($data, $this->type);
-            $fieldValue = $cObject->cObjGetSingle($name, $conf);
-
-            chdir($backupWorkingDirectory);
-
-            if ($this->isSerializedValue(
-                $indexingConfiguration,
-                $solrFieldName
-            )
-            ) {
-                $fieldValue = unserialize($fieldValue);
+            try {
+                $unserializedFieldValue = @unserialize($fieldValue);
+                if (is_array($unserializedFieldValue) || is_object($unserializedFieldValue)) {
+                    $fieldValue = $unserializedFieldValue;
+                }
+            } catch (Throwable) {
+                // Evil catch, but anyway do nothing to prevent flooding the logs on indexing.
+                // If the cObject implementation does not provide data the fields are not present in index, which will be noticed and fixed by devs/integrators.
             }
         } else {
             $indexingFieldName = $indexingConfiguration[$solrFieldName] ?? null;
@@ -252,13 +198,13 @@ abstract class AbstractIndexer
         $fieldType = substr(
             $solrFieldName,
             strrpos($solrFieldName, '_') + 1,
-            -1
+            -1,
         );
         if (is_array($fieldValue)) {
             foreach ($fieldValue as $key => $value) {
                 $fieldValue[$key] = $this->ensureFieldValueType(
                     $value,
-                    $fieldType
+                    $fieldType,
                 );
             }
         } else {
@@ -269,70 +215,6 @@ abstract class AbstractIndexer
     }
 
     // Utility methods
-
-    /**
-     * Uses a field's configuration to detect whether its value returned by a
-     * content object is expected to be serialized and thus needs to be
-     * unserialized.
-     *
-     * @param array $indexingConfiguration Current item's indexing configuration
-     * @param string $solrFieldName Current field being indexed
-     * @return bool TRUE if the value is expected to be serialized, FALSE otherwise
-     */
-    public static function isSerializedValue(array $indexingConfiguration, string $solrFieldName): bool
-    {
-        return static::isSerializedResultFromRegisteredHook($indexingConfiguration, $solrFieldName)
-            || static::isSerializedResultFromCustomContentElement($indexingConfiguration, $solrFieldName);
-    }
-
-    /**
-     * Checks if the response comes from a custom content element that returns a serialized value.
-     */
-    protected static function isSerializedResultFromCustomContentElement(array $indexingConfiguration, string $solrFieldName): bool
-    {
-        $isSerialized = false;
-
-        // SOLR_CLASSIFICATION - always returns serialized array
-        if (($indexingConfiguration[$solrFieldName] ?? null) == Classification::CONTENT_OBJECT_NAME) {
-            $isSerialized = true;
-        }
-
-        // SOLR_MULTIVALUE - always returns serialized array
-        if (($indexingConfiguration[$solrFieldName] ?? null) == Multivalue::CONTENT_OBJECT_NAME) {
-            $isSerialized = true;
-        }
-
-        // SOLR_RELATION - returns serialized array if multiValue option is set
-        if (($indexingConfiguration[$solrFieldName] ?? null) == Relation::CONTENT_OBJECT_NAME && !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])) {
-            $isSerialized = true;
-        }
-
-        return $isSerialized;
-    }
-
-    /**
-     * Checks registered hooks if a SerializedValueDetector detects a serialized response.
-     */
-    protected static function isSerializedResultFromRegisteredHook(array $indexingConfiguration, string $solrFieldName): bool
-    {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] ?? null)) {
-            return false;
-        }
-
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] as $classReference) {
-            $serializedValueDetector = GeneralUtility::makeInstance($classReference);
-            if (!$serializedValueDetector instanceof SerializedValueDetector) {
-                $message = get_class($serializedValueDetector) . ' must implement interface ' . SerializedValueDetector::class;
-                throw new UnexpectedValueException($message, 1404471741);
-            }
-
-            $isSerialized = (bool)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
-            if ($isSerialized) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Makes sure a field's value matches a (dynamic) field's type.
@@ -378,5 +260,55 @@ abstract class AbstractIndexer
         }
 
         return $value;
+    }
+
+    /**
+     * @throws SiteNotFoundException
+     * @throws AspectNotFoundException
+     * @throws FrontendSimulationException
+     * @throws JsonException
+     * @throws DBALException
+     */
+    protected function getRequest(int $pageId, int $languageId): ?ServerRequest
+    {
+        /** @noinspection PhpInternalEntityUsedInspection */
+        if (($GLOBALS['TYPO3_REQUEST'] ?? null)?->getAttribute('applicationType')
+            === SystemEnvironmentBuilder::REQUESTTYPE_FE) {
+            $request = $GLOBALS['TYPO3_REQUEST'];
+        } else {
+            $request = GeneralUtility::makeInstance(FrontendAwareEnvironment::class)
+                ->getServerRequestByPageIdAndLanguageId($pageId, $languageId);
+        }
+
+        return $request;
+    }
+
+    /**
+     * @throws AspectNotFoundException
+     * @throws SiteNotFoundException
+     * @throws FrontendSimulationException
+     * @throws JsonException
+     * @throws DBALException
+     */
+    protected function getFrontendTypoScript(int $pageId, int $languageId): ?FrontendTypoScript
+    {
+        $request = $this->getRequest($pageId, $languageId);
+        return $request?->getAttribute('frontend.typoscript');
+    }
+
+    /**
+     * @throws AspectNotFoundException
+     * @throws SiteNotFoundException
+     * @throws FrontendSimulationException
+     * @throws JsonException
+     * @throws DBALException
+     */
+    protected function getTypoScriptConfiguration(int $pageId, int $languageId): TypoScriptConfiguration
+    {
+        $frontendTypoScript = $this->getFrontendTypoScript($pageId, $languageId);
+        return GeneralUtility::makeInstance(
+            TypoScriptConfiguration::class,
+            $frontendTypoScript?->getSetupArray() ?? [],
+        );
     }
 }

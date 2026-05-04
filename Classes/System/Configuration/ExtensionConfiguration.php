@@ -95,7 +95,7 @@ class ExtensionConfiguration
     public function getAvailablePluginNamespaces(): array
     {
         $pluginNamespacesList = 'tx_solr,' . $this->getConfigurationOrDefaultValue(
-            'pluginNamespaces'
+            'pluginNamespaces',
         );
         return array_unique(GeneralUtility::trimExplode(',', $pluginNamespacesList));
     }
@@ -112,14 +112,14 @@ class ExtensionConfiguration
             static function ($pluginNamespace) {
                 return '^' . $pluginNamespace . '[';
             },
-            $this->getAvailablePluginNamespaces()
+            $this->getAvailablePluginNamespaces(),
         );
         $enhancersRouteParts = array_map(
             static function ($pluginNamespace) {
                 // __ \TYPO3\CMS\Core\Routing\Enhancer\VariableProcessor::LEVEL_DELIMITER
                 return '^' . $pluginNamespace . '__';
             },
-            $this->getAvailablePluginNamespaces()
+            $this->getAvailablePluginNamespaces(),
         );
 
         $exclusions = array_merge($pluginNamespaces, $enhancersRouteParts);

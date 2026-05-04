@@ -43,7 +43,7 @@ class ParameterSortingUtility
     {
         usort(
             $parameters,
-            [self::class, 'sort']
+            [self::class, 'sort'],
         );
         return $parameters;
     }
@@ -55,7 +55,7 @@ class ParameterSortingUtility
     {
         uksort(
             $parameters,
-            [self::class, 'sort']
+            [self::class, 'sort'],
         );
 
         return $parameters;

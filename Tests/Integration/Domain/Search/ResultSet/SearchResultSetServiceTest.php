@@ -23,9 +23,9 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use ApacheSolrForTypo3\Solr\Tests\Integration\TSFETestBootstrapper;
 use ApacheSolrForTypo3\Solr\Util;
 use PHPUnit\Framework\Attributes\Test;
-use stdClass;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,15 +37,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
-    }
-
-    /**
-     * Executed after each test. Emptys solr and checks if the index is empty
-     */
-    protected function tearDown(): void
-    {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
-        parent::tearDown();
+        GeneralUtility::makeInstance(TSFETestBootstrapper::class)->bootstrap(1);
     }
 
     #[Test]
@@ -56,8 +48,8 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->indexPages([1, 2, 3, 4, 5]);
 
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        self::assertStringContainsString('002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0', $solrContent);
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
+        self::assertStringContainsString('0213998bdee4e7dcc8ba05a598cabdadff322ad3/pages/1/0/0/0', $solrContent);
 
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1);
 
@@ -65,7 +57,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
 
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
         $searchResultsSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $typoScriptConfiguration, $search);
-        $document = $searchResultsSetService->getDocumentById('002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0');
+        $document = $searchResultsSetService->getDocumentById('0213998bdee4e7dcc8ba05a598cabdadff322ad3/pages/1/0/0/0');
 
         self::assertSame($document->getTitle(), 'Root of Testpage testone.site aka integration_tree_one', 'Could not get document from solr by id');
     }
@@ -240,7 +232,7 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/fe_user_page.csv');
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->indexPages([1, 2, 3], 1);
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":3', $solrContent);
     }
 
@@ -252,20 +244,14 @@ class SearchResultSetServiceTest extends IntegrationTestBase
         $searchResultSetService = GeneralUtility::makeInstance(
             SearchResultSetService::class,
             $typoScriptConfiguration,
-            $search
+            $search,
         );
 
-        $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 0, 0, $typoScriptConfiguration);
+        $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 1, 0, $typoScriptConfiguration);
         $searchRequest->setRawQueryString($queryString);
         $searchRequest->setResultsPerPage(10);
         $searchRequest->setPage(1);
 
-        // Simulate something as we still have some $GLOBALS[TSFE] dependency
-        $GLOBALS['TSFE'] = new stdClass();
-        $GLOBALS['TSFE']->id = 1;
-        $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
-        $GLOBALS['TSFE']->fe_user->initializeUserSessionManager();
-        $GLOBALS['TSFE']->fe_user->createUserSession([]);
         $searchResultSet = $searchResultSetService->search($searchRequest);
 
         $searchResults = $searchResultSet->getSearchResults();

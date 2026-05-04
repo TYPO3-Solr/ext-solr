@@ -1,0 +1,30 @@
+<html data-namespace-typo3-fluid="true"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:acoBase="http://typo3.org/ns/Aco/AcoBase/ViewHelpers"
+>
+
+<f:if condition="{missingModelConfigurations}">
+	<p>To use vector search all endpoints need an uploaded "llm" model, please push your model configuration</p>
+	<p>You can ignore this warning, if you do not want to use Vector search</p>
+</f:if>
+
+<table class="table table-condensed table-hover table-striped">
+	<thead>
+	<tr>
+		<th>Endpoint</th>
+		<th>Class</th>
+		<th>Base url</th>
+		<th>Model</th>
+	</tr>
+	</thead>
+	<f:for each="{endpoints}" as="endpoint">
+		<tr class="{endpoint.status.cssClass}">
+			<td>{endpoint.baseUrl}</td>
+			<td>{endpoint.class}</td>
+			<td>{endpoint.modelBaseUrl}</td>
+			<td>{endpoint.modelName}</td>
+		</tr>
+	</f:for>
+</table>
+
+</html>

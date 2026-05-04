@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class RelationTest
@@ -36,7 +35,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class RelationTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/solr',
+        'apache-solr-for-typo3/solr',
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
     ];
 
@@ -287,18 +286,17 @@ class RelationTest extends IntegrationTestBase
      */
     protected function getSolrRelation(string $table, int $uid): Relation
     {
-        $tsfeMock = $this->createMock(TypoScriptFrontendController::class);
-        $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfeMock);
+        $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $serverRequest = (new ServerRequest('http://testone.site/'))
             ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
             ->withAttribute(
                 'language',
-                $this->createMock(SiteLanguage::class)
+                $this->createMock(SiteLanguage::class),
             );
         $contentObjectRenderer->setRequest($serverRequest);
         $contentObjectRenderer->start(
             BackendUtility::getRecord($table, $uid),
-            $table
+            $table,
         );
         /** @var Relation $relation */
         $relation = $contentObjectRenderer->getContentObject(Relation::CONTENT_OBJECT_NAME);

@@ -28,7 +28,7 @@ class TestPageUriModification
         }
         if ($event->getItem()->getIndexingProperty('size') === 'enorme') {
             $event->setPageIndexUri(
-                $event->getPageIndexUri()->withQuery('&larger=large')
+                $event->getPageIndexUri()->withQuery('&larger=large'),
             );
         }
     }

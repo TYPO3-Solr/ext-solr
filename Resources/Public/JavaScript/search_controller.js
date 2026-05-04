@@ -1,54 +1,110 @@
+class SearchController {
+  constructor() {
+    this.ajaxType = 7383;
+    this.ajaxLink = document.querySelectorAll("a.solr-ajaxified");
+    this.solrContainer = null
+    this.solrContainerParent = null
+    this.loader = null
+  }
 
-function SearchController() {
-    var _this = this;
+  /**
+   * Initialize ajax search
+   */
+  init() {
+    if(typeof solrSearchAjaxType !== "undefined") {
+      this.ajaxType = solrSearchAjaxType;
+    }
+    this.ajaxLink.forEach((link)=> {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.handleClickOnAjaxifiedUri(link, event)
+      })
+    })
+  }
 
-    _this.ajaxType = 7383;
+  /**
+   * Create and add loading spinner to solr container
+   */
+  addLoadingSpinner() {
+    this.loader  = document.createElement("div");
+    this.loader.classList.add('tx-solr-loader')
+    this.solrContainerParent.append(this.loader)
+  }
 
-    this.init = function() {
-        jQuery("body").delegate("a.solr-ajaxified", "click", _this.handleClickOnAjaxifiedUri);
-    };
+  /**
+   * Fade out loading spinner
+   */
+  removeLoadingSpinner() {
+    this.loader.style.transition = "opacity 0.3s";
+    this.loader.style.opacity = "0";
+    this.loader.addEventListener("transitionend", () => this.loader.remove());
+  }
 
-    this.handleClickOnAjaxifiedUri = function() {
-        var clickedLink = jQuery(this);
+  /**
+   * Replace solr container content with fetched content
+   * @param fetchedContent
+   */
+  replaceContent(fetchedContent) {
+    const range = document.createRange();
+    const fragment = range.createContextualFragment(fetchedContent);
+    this.solrContainer.replaceWith(fragment);
+  }
 
-        var solrContainer = clickedLink.closest(".tx_solr");
-        var solrParent = solrContainer.parent();
+  scrollToTopOfElement(element, deltaTop) {
+    const targetPosition = element.getBoundingClientRect().top + window.scrollY - deltaTop;
 
-        var loader = jQuery("<div class='tx-solr-loader'></div>");
-        var uri = clickedLink.uri();
+    window.scrollTo({
+      top: targetPosition,
+      behavior: "smooth"
+    });
+  }
 
-        solrParent.append(loader);
-        uri.addQuery("type", _this.ajaxType);
+  /**
+   * Fetch data
+   * @param url
+   */
+  fetchData(url) {
+    fetch(url.toString())
+      .then(response => response.text())
+      .then(data => {
+        this.replaceContent(data)
+        this.removeLoadingSpinner()
+        this.scrollToTopOfElement(this.solrContainerParent, 50)
+        document.body.dispatchEvent(new CustomEvent("tx_solr_updated", { bubbles: true }));
 
-        jQuery.get(
-            uri.href(),
-            function(data) {
-                solrContainer = solrContainer.replaceWith(data);
-                _this.scrollToTopOfElement(solrParent, 50);
-                jQuery("body").trigger("tx_solr_updated");
-                loader.fadeOut().remove();
-                history.replaceState({}, null, uri.removeQuery("type").href());
-            }
-        );
-        return false;
-    };
+        // Set browser URL
+        url.searchParams.delete("type");
+        history.replaceState({}, null, url.pathname + url.search);
+      });
+  }
 
-    this.scrollToTopOfElement = function(element, deltaTop) {
-        jQuery('html, body').animate({
-            scrollTop: (element.offset().top - deltaTop) + 'px'
-        }, 'slow');
-    };
+  /**
+   * Handle click on ajaxified link
+   * @param link
+   * @param event
+   */
+  handleClickOnAjaxifiedUri(link, event) {
+    const uri = link.getAttribute('href')
+    const ajaxifiedUri = new URL(uri, window.location.origin);
+    this.solrContainer = event.target.closest('.tx_solr')
+    this.solrContainerParent = this.solrContainer.parentElement
 
-    this.setAjaxType = function(ajaxType) {
-        _this.ajaxType = ajaxType;
-    };
+    ajaxifiedUri.searchParams.set('type', this.ajaxType)
+    this.addLoadingSpinner()
+    this.fetchData(ajaxifiedUri)
+  }
 }
 
-jQuery(document).ready(function() {
-    var solrSearchController = new SearchController();
-    solrSearchController.init();
+const searchControllers = [];
+const initAjaxifiedSearch = () => {
+  searchControllers.length = 0;
+  let ajaxLinks = document.querySelectorAll('a.solr-ajaxified');
+  if (ajaxLinks.length) {
+    const controller = new SearchController();
+    controller.init();
+    searchControllers.push(controller);
+  }
+};
 
-    if(typeof solrSearchAjaxType !== "undefined") {
-        solrSearchController.setAjaxType(solrSearchAjaxType);
-    }
-});
+initAjaxifiedSearch();
+document.body.addEventListener("tx_solr_updated", initAjaxifiedSearch);

@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Parser\VectorStoreParser;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use Solarium\Client;
@@ -36,7 +37,7 @@ use function simplexml_load_string;
  */
 class SolrAdminService extends AbstractSolrService
 {
-    public const PLUGINS_SERVLET = 'admin/plugins';
+    public const CONFIG_SERVLET = 'config';
     public const LUKE_SERVLET = 'admin/luke';
     public const SYSTEM_SERVLET = 'admin/system';
     public const CORES_SERVLET = '../admin/cores';
@@ -44,12 +45,13 @@ class SolrAdminService extends AbstractSolrService
     public const SCHEMA_SERVLET = 'schema';
     public const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
     public const STOPWORDS_SERVLET = 'schema/analysis/stopwords/';
+    public const VECTOR_STORAGE_SERVLET = 'schema/text-to-vector-model-store/';
 
     protected array $lukeData = [];
 
     protected ?ResponseAdapter $systemData = null;
 
-    protected ?ResponseAdapter $pluginsData = null;
+    protected ?ResponseAdapter $configurationData = null;
 
     protected ?string $solrconfigName = null;
 
@@ -61,9 +63,13 @@ class SolrAdminService extends AbstractSolrService
 
     protected string $_stopWordsUrl = '';
 
+    protected string $_vectorStoreUrl = '';
+
     protected SynonymParser $synonymParser;
 
     protected StopWordParser $stopWordParser;
+
+    protected VectorStoreParser $vectorStoreParser;
 
     public function __construct(
         Client $client,
@@ -72,12 +78,14 @@ class SolrAdminService extends AbstractSolrService
         ?SynonymParser $synonymParser = null,
         ?StopWordParser $stopWordParser = null,
         ?SchemaParser $schemaParser = null,
+        ?VectorStoreParser $vectorStoreParser = null,
     ) {
         parent::__construct($client, $typoScriptConfiguration, $logManager);
 
         $this->synonymParser = $synonymParser ?? GeneralUtility::makeInstance(SynonymParser::class);
         $this->stopWordParser = $stopWordParser ?? GeneralUtility::makeInstance(StopWordParser::class);
         $this->schemaParser = $schemaParser ?? GeneralUtility::makeInstance(SchemaParser::class);
+        $this->vectorStoreParser = $vectorStoreParser ?? GeneralUtility::makeInstance(VectorStoreParser::class);
     }
 
     /**
@@ -89,25 +97,25 @@ class SolrAdminService extends AbstractSolrService
     }
 
     /**
-     * Gets information about the plugins installed in Solr
+     * Gets information about the configuration
      *
-     * @return ResponseAdapter|null A nested array of plugin data.
+     * @return ResponseAdapter|null A nested array of configuration data
      */
-    public function getPluginsInformation(): ?ResponseAdapter
+    public function getCoreConfiguration(): ?ResponseAdapter
     {
-        if (count($this->pluginsData ?? []) === 0) {
-            $url = $this->_constructUrl(self::PLUGINS_SERVLET, ['wt' => 'json']);
-            $pluginsInformation = $this->_sendRawGet($url);
+        if (count($this->configurationData ?? []) === 0) {
+            $url = $this->_constructUrl(self::CONFIG_SERVLET, ['wt' => 'json']);
+            $configurationInformation = $this->_sendRawGet($url);
 
             /**
              * access a random property to trigger response parsing
              * @phpstan-ignore-next-line
              */
-            $pluginsInformation->responseHeader;
-            $this->pluginsData = $pluginsInformation;
+            $configurationInformation->responseHeader;
+            $this->configurationData = $configurationInformation;
         }
 
-        return $this->pluginsData;
+        return $this->configurationData;
     }
 
     /**
@@ -131,7 +139,7 @@ class SolrAdminService extends AbstractSolrService
         if (!isset($this->lukeData[$numberOfTerms])) {
             $lukeUrl = $this->_constructUrl(
                 self::LUKE_SERVLET,
-                ['numTerms' => $numberOfTerms, 'wt' => 'json', 'fl' => '*']
+                ['numTerms' => $numberOfTerms, 'wt' => 'json', 'fl' => '*'],
             );
 
             $this->lukeData[$numberOfTerms] = $this->_sendRawGet($lukeUrl);
@@ -172,7 +180,10 @@ class SolrAdminService extends AbstractSolrService
             $response = $this->_sendRawGet($solrconfigXmlUrl);
             $solrconfigXml = simplexml_load_string($response->getRawResponse());
             if ($solrconfigXml === false) {
-                throw new InvalidArgumentException('No valid xml response from schema file: ' . $solrconfigXmlUrl);
+                throw new InvalidArgumentException(
+                    'No valid xml response from schema file: ' . $solrconfigXmlUrl,
+                    6337336918,
+                );
             }
             $this->solrconfigName = (string)$solrconfigXml->attributes()->name;
         }
@@ -232,7 +243,7 @@ class SolrAdminService extends AbstractSolrService
         $this->initializeSynonymsUrl();
         $synonymsUrl = $this->_synonymsUrl;
         if (!empty($baseWord)) {
-            $synonymsUrl .= '/' . rawurlencode(rawurlencode($baseWord));
+            $synonymsUrl .= '/' . rawurlencode($baseWord);
         }
 
         $response = $this->_sendRawGet($synonymsUrl);
@@ -255,7 +266,7 @@ class SolrAdminService extends AbstractSolrService
     public function deleteSynonym(string $baseWord): ResponseAdapter
     {
         $this->initializeSynonymsUrl();
-        return $this->_sendRawDelete($this->_synonymsUrl . '/' . rawurlencode(rawurlencode($baseWord)));
+        return $this->_sendRawDelete($this->_synonymsUrl . '/' . rawurlencode($baseWord));
     }
 
     /**
@@ -291,10 +302,13 @@ class SolrAdminService extends AbstractSolrService
     {
         $this->initializeStopWordsUrl();
         if (empty($stopWordToDelete)) {
-            throw new InvalidArgumentException('Must provide stop word.');
+            throw new InvalidArgumentException(
+                'Must provide stop word.',
+                5002188179,
+            );
         }
 
-        return $this->_sendRawDelete($this->_stopWordsUrl . '/' . rawurlencode(rawurlencode($stopWordToDelete)));
+        return $this->_sendRawDelete($this->_stopWordsUrl . '/' . rawurlencode($stopWordToDelete));
     }
 
     protected function initializeSynonymsUrl(): void
@@ -312,5 +326,21 @@ class SolrAdminService extends AbstractSolrService
         }
 
         $this->_stopWordsUrl = $this->_constructUrl(self::STOPWORDS_SERVLET) . $this->getSchema()->getManagedResourceId();
+    }
+
+    public function getVectorModelStore(): array
+    {
+        $this->initializeVectorStorageUrl();
+        $response = $this->_sendRawGet($this->_vectorStoreUrl);
+        return $this->vectorStoreParser->parseJson($response->getRawResponse());
+    }
+
+    protected function initializeVectorStorageUrl(): void
+    {
+        if (trim($this->_vectorStoreUrl ?? '') !== '') {
+            return;
+        }
+
+        $this->_vectorStoreUrl = $this->_constructUrl(self::VECTOR_STORAGE_SERVLET) . $this->getSchema()->getManagedResourceId();
     }
 }

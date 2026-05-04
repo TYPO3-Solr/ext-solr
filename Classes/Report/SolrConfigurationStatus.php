@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Reports\Status;
 
 /**
@@ -39,9 +40,11 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     protected FrontendEnvironment $frontendEnvironment;
 
     public function __construct(
+        ViewFactoryInterface $viewFactory,
         ?ExtensionConfiguration $extensionConfiguration = null,
         ?FrontendEnvironment $frontendEnvironment = null,
     ) {
+        parent::__construct($viewFactory);
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
     }
@@ -88,7 +91,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
                 'Sites',
                 'OK',
                 '',
-                ContextualFeedbackSeverity::OK
+                ContextualFeedbackSeverity::OK,
             );
         }
 
@@ -98,7 +101,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
             'Sites',
             'No sites found',
             $report,
-            ContextualFeedbackSeverity::ERROR
+            ContextualFeedbackSeverity::ERROR,
         );
     }
 
@@ -119,7 +122,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
                 'Page Indexing',
                 'OK',
                 '',
-                ContextualFeedbackSeverity::OK
+                ContextualFeedbackSeverity::OK,
             );
         }
 
@@ -129,7 +132,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
             'Page Indexing',
             'Indexing is disabled',
             $report,
-            ContextualFeedbackSeverity::WARNING
+            ContextualFeedbackSeverity::WARNING,
         );
     }
 

@@ -17,23 +17,27 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
+use ApacheSolrForTypo3\Solr\Event\Site\AfterSiteHashHasBeenDeterminedForSiteEvent;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\Entity\Site as TYPO3Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
  * SiteHashService
  *
- * Responsible to provide sitehash related service methods.
+ * Responsible to provide site-hash related service methods.
  */
-class SiteHashService
+readonly class SiteHashService
 {
-    protected SiteFinder $siteFinder;
-
-    public function __construct(SiteFinder $siteFinder)
-    {
-        $this->siteFinder = $siteFinder;
-    }
+    public function __construct(
+        protected SiteFinder $siteFinder,
+        protected ExtensionConfiguration $extensionConfiguration,
+        protected EventDispatcherInterface $eventDispatcher,
+    ) {}
 
     /**
      * Resolves magic keywords in allowed sites configuration.
@@ -52,61 +56,71 @@ class SiteHashService
         ?string $allowedSitesConfiguration = '',
     ): string {
         if ($allowedSitesConfiguration === '__all') {
-            return $this->getDomainListOfAllSites();
+            return $this->getIdentifiersOfAllSites();
         }
         if ($allowedSitesConfiguration === '*') {
             return '*';
         }
         // we thread empty allowed site configurations as __solr_current_site since this is the default behaviour
         $allowedSitesConfiguration = empty($allowedSitesConfiguration) ? '__solr_current_site' : $allowedSitesConfiguration;
-        return $this->getDomainByPageIdAndReplaceMarkers($pageId, $allowedSitesConfiguration);
+
+        return $this->getSiteIdentifierByPageIdAndReplaceMarkers($pageId, $allowedSitesConfiguration);
     }
 
-    /**
-     * Gets the site hash for a given domain
-     */
-    public function getSiteHashForDomain(string $domain): string
+    public function getSiteHash(TYPO3Site $site): string
     {
-        static $siteHashes = [];
-        if (isset($siteHashes[$domain])) {
-            return $siteHashes[$domain];
-        }
+        $siteHash = $this->getSiteHashForSiteIdentifier($site->getIdentifier());
 
-        $siteHashes[$domain] = sha1($domain . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] . 'tx_solr');
-        return $siteHashes[$domain];
+        $event = $this->eventDispatcher->dispatch(
+            new AfterSiteHashHasBeenDeterminedForSiteEvent(
+                $siteHash,
+                $site,
+                $this->extensionConfiguration,
+            ),
+        );
+        return $event->getSiteHash();
     }
 
     /**
-     * Returns a comma separated list of all domains from all sites.
+     * Gets the site hash for a given site-identifier
      */
-    protected function getDomainListOfAllSites(): string
+    public function getSiteHashForSiteIdentifier(string $siteIdentifier): string
+    {
+        $applicationContext = (string)Environment::getContext();
+        return hash('sha1', $applicationContext . $siteIdentifier . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] . 'tx_solr');
+    }
+
+    /**
+     * Returns a comma separated list of all site-identifiers.
+     */
+    protected function getIdentifiersOfAllSites(): string
     {
         $sites = $this->siteFinder->getAllSites();
-        $domains = [];
+        $siteIdentifiers = [];
         foreach ($sites as $typo3Site) {
             $connections = SiteUtility::getAllSolrConnectionConfigurations($typo3Site);
             if (!empty($connections)) {
-                $domains[] = $typo3Site->getBase()->getHost();
+                $siteIdentifiers[] = $typo3Site->getIdentifier();
             }
         }
 
-        return implode(',', $domains);
+        return implode(',', $siteIdentifiers);
     }
 
     /**
-     * Retrieves the domain of the site that belongs to the passed pageId and replaces their markers __solr_current_site
+     * Retrieves the site identifier of the site that belongs to the passed pageId and replaces their markers __solr_current_site
      * and __current_site.
      */
-    protected function getDomainByPageIdAndReplaceMarkers(int $pageId, string $allowedSitesConfiguration): string
+    protected function getSiteIdentifierByPageIdAndReplaceMarkers(int $pageId, string $allowedSitesConfiguration): string
     {
         try {
             $typo3Site = $this->siteFinder->getSiteByPageId($pageId);
-            $domainOfPage = $typo3Site->getBase()->getHost();
+            $siteIdentifierOfPage = $typo3Site->getIdentifier();
         } catch (SiteNotFoundException) {
             return '';
         }
 
-        $allowedSites = str_replace(['__solr_current_site', '__current_site'], $domainOfPage, $allowedSitesConfiguration);
+        $allowedSites = str_replace(['__solr_current_site', '__current_site'], $siteIdentifierOfPage, $allowedSitesConfiguration);
         return (string)$allowedSites;
     }
 }

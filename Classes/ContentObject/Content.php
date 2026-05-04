@@ -37,7 +37,7 @@ class Content extends AbstractContentObject
     {
         $contentExtractor = GeneralUtility::makeInstance(
             HtmlContentExtractor::class,
-            $this->getRawContent($this->cObj, $conf)
+            $this->getRawContent($this->cObj, $conf),
         );
 
         return $contentExtractor->getIndexableContent();

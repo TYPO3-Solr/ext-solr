@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -40,7 +41,7 @@ class ApiEid
         'siteHash' => [
             'params' => [
                 'required' => [
-                    'domain',
+                    'siteIdentifier',
                 ],
             ],
         ],
@@ -64,14 +65,13 @@ class ApiEid
      */
     protected function getSiteHashResponse(ServerRequestInterface $request): JsonResponse
     {
-        $domain = $request->getQueryParams()['domain'];
-
         /** @var SiteHashService $siteHashService */
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
-        $siteHash = $siteHashService->getSiteHashForDomain($domain);
-        return new JsonResponse(
-            ['sitehash' => $siteHash]
-        );
+        $siteHash = $siteHashService->getSiteHashForSiteIdentifier($request->getQueryParams()['siteIdentifier'] ?? []);
+        return new JsonResponse([
+            'sitehash' => $siteHash,
+            'typo3Context' => (string)Environment::getContext(),
+        ]);
     }
 
     /**
@@ -88,7 +88,7 @@ class ApiEid
                     ['errorMessage' => 'Invalid API key'],
                     403,
                 ),
-                403
+                403,
             );
         }
 
@@ -99,13 +99,14 @@ class ApiEid
                         'errorMessage' => 'You must provide an available API method, e.g. siteHash. See: available methods in methods key.',
                         'methods' => $this->getApiMethodDefinitions(),
                     ],
-                    400
+                    400,
                 ),
-                400
+                400,
             );
         }
 
         $requiredApiParams = $this->getApiMethodDefinitions()[$params['api']]['params']['required'] ?? [];
+
         $requiredApiParams[] = 'eID';
         $missingParams = array_values(array_diff($requiredApiParams, array_keys($request->getQueryParams())));
         if (!empty($missingParams)) {
@@ -116,9 +117,9 @@ class ApiEid
                         'missing_params' => $missingParams,
                         'methods' => $this->getApiMethodDefinitions()[$params['api']],
                     ],
-                    400
+                    400,
                 ),
-                400
+                400,
             );
         }
     }
@@ -132,7 +133,7 @@ class ApiEid
         foreach ($apiMethodDefinitions as $apiMethodName => $apiMethodDefinition) {
             $apiMethodDefinitions[$apiMethodName]['params']['required'] = array_merge(
                 self::REQUIRED_PARAMS_GLOBAL,
-                $apiMethodDefinition['params']['required']
+                $apiMethodDefinition['params']['required'],
             );
         }
         return $apiMethodDefinitions;

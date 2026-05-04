@@ -27,7 +27,6 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -40,19 +39,14 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Scheduler\Scheduler;
 
 /**
  * Testcase for the record monitor
  */
 class RecordMonitorTest extends IntegrationTestBase
 {
-    protected array $coreExtensionsToLoad = [
-        'typo3/cms-scheduler',
-    ];
-
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/solr',
+        'apache-solr-for-typo3/solr',
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
     ];
 
@@ -90,7 +84,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $this->extensionConfiguration,
             $this->eventQueue,
             $this->backendUser,
-            $GLOBALS['LANG']
+            $GLOBALS['LANG'],
         );
         parent::tearDown();
     }
@@ -105,7 +99,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertGreaterThan(
             0,
             $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to be not empty.'
+            'Index queue is empty and was expected to be not empty.',
         );
     }
 
@@ -118,7 +112,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertEquals(
             $amount,
             $itemsInQueue,
-            'Index queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.'
+            'Index queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.',
         );
     }
 
@@ -133,7 +127,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertEquals(
             $amount,
             $itemsInQueue,
-            'Event queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.'
+            'Event queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.',
         );
     }
 
@@ -150,7 +144,10 @@ class RecordMonitorTest extends IntegrationTestBase
     #[Test]
     public function canUpdateRootPageRecordWithoutSQLErrorFromMountPages(): void
     {
-        throw new SkippedWithMessageException('Skipping canUpdateRootPageRecordWithoutSQLErrorFromMountPages');
+        throw new SkippedWithMessageException(
+            'Skipping canUpdateRootPageRecordWithoutSQLErrorFromMountPages',
+            9115338385,
+        );
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -161,7 +158,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'version',
             'pages',
             1,
-            ['action' => 'swap']
+            ['action' => 'swap'],
         );
 
         $output = trim(ob_get_contents());
@@ -170,7 +167,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertStringNotContainsString(
             'You have an error in your SQL syntax',
             $output,
-            'We expect no sql error during the update of a regular page root record'
+            'We expect no sql error during the update of a regular page root record',
         );
 
         // we expect to have an index queue item now
@@ -196,7 +193,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertSame(
             'foo',
             $items[0]->getIndexingConfigurationName(),
-            'Item was queued with unexpected configuration'
+            'Item was queued with unexpected configuration',
         );
     }
 
@@ -220,7 +217,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertSame(
             'foo',
             $items[0]->getIndexingConfigurationName(),
-            'Item was queued with unexpected configuration'
+            'Item was queued with unexpected configuration',
         );
     }
 
@@ -252,7 +249,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'pid' => 1,
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
         ];
         $this->dataHandler->substNEWwithIDs = ['NEW566a9eac309d8193936351' => 8];
 
@@ -270,7 +267,7 @@ class RecordMonitorTest extends IntegrationTestBase
                     }
                 }
             }
-            '
+            ',
         );
 
         // we expect that the index queue is empty before we start
@@ -280,7 +277,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
     }
 
@@ -494,7 +491,7 @@ class RecordMonitorTest extends IntegrationTestBase
             GeneralUtility::makeInstance(RootPageResolver::class),
             GeneralUtility::makeInstance(PagesRepository::class),
             $dataHandler,
-            $loggerMock
+            $loggerMock,
         );
         GeneralUtility::addInstance(DataUpdateHandler::class, $dataUpdateHandler);
 
@@ -508,7 +505,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'title' => 'testce',
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
         ];
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/exception_is_triggered_without_pid.csv');
@@ -525,7 +522,7 @@ class RecordMonitorTest extends IntegrationTestBase
                     }
                 }
             }
-            '
+            ',
         );
 
         // we expect that the index queue is empty before we start
@@ -535,7 +532,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $dataHandler
+            $dataHandler,
         );
     }
 
@@ -580,7 +577,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'title' => 'testpage',
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
             'pid' => 1,
         ];
 
@@ -593,7 +590,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
     }
 
@@ -629,7 +626,7 @@ class RecordMonitorTest extends IntegrationTestBase
                     }
                 }
             }
-            '
+            ',
         );
 
         // create faked tce main call data
@@ -642,7 +639,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'doktype' => 130,
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
         ];
         $this->dataHandler->substNEWwithIDs = ['NEW566a9eac309d8193936351' => 8];
         // $this->importDataSetFromFixture('new_pages_record_is_using_correct_configuration_name_for_custom_page_type.xml');
@@ -654,7 +651,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
 
         // we expect to have an index queue item now
@@ -666,7 +663,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertSame(
             'custom_page_type',
             $items[0]->getIndexingConfigurationName(),
-            'Item was queued with unexpected configuration'
+            'Item was queued with unexpected configuration',
         );
     }
 
@@ -684,7 +681,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertSame(
             'custom_page_type',
             $items[0]->getIndexingConfigurationName(),
-            'Item was queued with unexpected configuration'
+            'Item was queued with unexpected configuration',
         );
     }
 
@@ -708,7 +705,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertSame(
             'custom_page_type',
             $items[0]->getIndexingConfigurationName(),
-            'Item was queued with unexpected configuration'
+            'Item was queued with unexpected configuration',
         );
     }
 
@@ -739,7 +736,7 @@ class RecordMonitorTest extends IntegrationTestBase
                         }
                     }
                 }
-            }'
+            }',
         );
 
         // we expect that the index queue is empty before we start
@@ -764,7 +761,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->dataHandler->start(
             [],
             ['pages' => [10 => ['move' => 2]]],
-            $this->backendUser
+            $this->backendUser,
         );
         $this->dataHandler->process_cmdmap();
         $this->assertIndexQueueContainsItemAmount(4);
@@ -779,7 +776,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->dataHandler->start(
             [],
             ['pages' => [10 => ['move' => 4]]],
-            $this->backendUser
+            $this->backendUser,
         );
         $this->dataHandler->process_cmdmap();
         $this->assertEmptyIndexQueue();
@@ -794,7 +791,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->dataHandler->start(
             [],
             ['pages' => [10 => ['move' => 2]]],
-            $this->backendUser
+            $this->backendUser,
         );
         $this->dataHandler->process_cmdmap();
         $this->assertIndexQueueContainsItemAmount(3);
@@ -813,7 +810,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $data['table'],
             $data['uid'],
             $data['fields'],
-            $this->dataHandler
+            $this->dataHandler,
         );
 
         // we assert that the page is added twice, once for the original tree and once for the mounted tree
@@ -839,7 +836,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $data['table'],
             $data['uid'],
             $data['fields'],
-            $this->dataHandler
+            $this->dataHandler,
         );
         $this->assertEventQueueContainsItemAmount(1);
         $this->processEventQueue();
@@ -865,7 +862,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 'title' => 'testpage',
                 'starttime' => 1000000,
                 'endtime' => 1100000,
-                'tsstamp' => 1000000,
+                'tstamp' => 1000000,
                 'pid' => 4,
             ],
         ];
@@ -875,7 +872,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $data['table'],
             $data['uid'],
             $data['fields'],
-            $this->dataHandler
+            $this->dataHandler,
         );
 
         return $data;
@@ -915,7 +912,7 @@ class RecordMonitorTest extends IntegrationTestBase
                         'mountPageDestination' => $itemData['mountPageDestination'],
                         'isMountedPage' => 1,
                     ],
-                    $items[$itemCount]->getIndexingProperties()
+                    $items[$itemCount]->getIndexingProperties(),
                 );
             }
         }
@@ -948,7 +945,7 @@ class RecordMonitorTest extends IntegrationTestBase
             [
                 'monitoringType' => 1,
                 'itemsInEventQueue' => 2,
-            ]
+            ],
         );
 
         $enableContentElementOnMountedPageInSysFolder = [
@@ -1007,7 +1004,7 @@ class RecordMonitorTest extends IntegrationTestBase
             [
                 'monitoringType' => 1,
                 'itemsInEventQueue' => 2,
-            ]
+            ],
         );
 
         $updateMountedPageInSysFolder = [
@@ -1034,7 +1031,7 @@ class RecordMonitorTest extends IntegrationTestBase
             [
                 'monitoringType' => 1,
                 'itemsInEventQueue' => 2,
-            ]
+            ],
         );
 
         $updateMountedPageInRoot = [
@@ -1064,7 +1061,7 @@ class RecordMonitorTest extends IntegrationTestBase
             [
                 'monitoringType' => 1,
                 'itemsInEventQueue' => 2,
-            ]
+            ],
         );
 
         $hideMountedPageInSysFolder = [
@@ -1085,7 +1082,7 @@ class RecordMonitorTest extends IntegrationTestBase
             [
                 'monitoringType' => 1,
                 'itemsInEventQueue' => 2,
-            ]
+            ],
         );
 
         $hideMountedPageInRoot = [
@@ -1106,7 +1103,7 @@ class RecordMonitorTest extends IntegrationTestBase
             [
                 'monitoringType' => 1,
                 'itemsInEventQueue' => 2,
-            ]
+            ],
         );
 
         $hideContentElementOnAnotherMountedPageInSysFolderWhichIsInQueue = [
@@ -1136,7 +1133,7 @@ class RecordMonitorTest extends IntegrationTestBase
                     [
                         'monitoringType' => 1,
                         'itemsInEventQueue' => 2,
-                    ]
+                    ],
                 );
 
         $enableContentElementOnMountedPageInSysFolderWhichIsInQueue = [
@@ -1195,7 +1192,7 @@ class RecordMonitorTest extends IntegrationTestBase
                 [
                     'monitoringType' => 1,
                     'itemsInEventQueue' => 2,
-                ]
+                ],
             );
     }
 
@@ -1211,7 +1208,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertSame(
             'pages',
             $firstQueueItem->getIndexingConfigurationName(),
-            'First queue item has unexpected indexingConfigurationName'
+            'First queue item has unexpected indexingConfigurationName',
         );
     }
 
@@ -1233,7 +1230,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertSame(
             'pages',
             $firstQueueItem->getIndexingConfigurationName(),
-            'First queue item has unexpected indexingConfigurationName'
+            'First queue item has unexpected indexingConfigurationName',
         );
         $this->assertEmptyEventQueue();
     }
@@ -1261,7 +1258,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
     }
 
@@ -1282,7 +1279,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
         $this->assertIndexQueueContainsItemAmount(1);
 
@@ -1292,7 +1289,7 @@ class RecordMonitorTest extends IntegrationTestBase
         self::assertSame(
             'pages',
             $firstQueueItem->getIndexingConfigurationName(),
-            'First queue item has unexpected indexingConfigurationName'
+            'First queue item has unexpected indexingConfigurationName',
         );
     }
 
@@ -1312,7 +1309,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
         $this->assertEmptyIndexQueue();
     }
@@ -1336,7 +1333,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
 
         $firstQueueItem = $this->indexQueue->getItem(1);
@@ -1389,7 +1386,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
     }
 
@@ -1425,7 +1422,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
-            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title'
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title',
         );
         $this->assertEmptyIndexQueue();
 
@@ -1441,7 +1438,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
     }
 
@@ -1452,7 +1449,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
-            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title'
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title',
         );
         $this->assertEmptyIndexQueue();
 
@@ -1468,7 +1465,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
 
         $this->assertIndexQueueContainsItemAmount(2);
@@ -1506,7 +1503,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
-            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title'
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title',
         );
         $this->assertEmptyIndexQueue();
 
@@ -1522,7 +1519,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
     }
 
@@ -1558,7 +1555,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
-            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype'
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype',
         );
         $this->assertEmptyIndexQueue();
 
@@ -1574,7 +1571,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
     }
 
@@ -1585,7 +1582,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
-            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype'
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype',
         );
         $this->assertEmptyIndexQueue();
 
@@ -1601,7 +1598,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
 
         $this->assertIndexQueueContainsItemAmount(1);
@@ -1614,7 +1611,7 @@ class RecordMonitorTest extends IntegrationTestBase
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
-            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype'
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype',
         );
         $this->assertEmptyIndexQueue();
 
@@ -1630,7 +1627,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
 
         $this->assertIndexQueueContainsItemAmount(1);
@@ -1654,7 +1651,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
 
         $this->assertIndexQueueContainsItemAmount(1);
@@ -1703,7 +1700,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
     }
 
@@ -1725,7 +1722,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
 
         $this->assertIndexQueueContainsItemAmount(1);
@@ -1802,7 +1799,7 @@ class RecordMonitorTest extends IntegrationTestBase
                     type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
-            }'
+            }',
         );
         $this->addTypoScriptToTemplateRecord(
             111,
@@ -1816,7 +1813,7 @@ class RecordMonitorTest extends IntegrationTestBase
                     type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
-            }'
+            }',
         );
 
         $this->assertEmptyIndexQueue();
@@ -1848,7 +1845,7 @@ class RecordMonitorTest extends IntegrationTestBase
                         title = title
                     }
                 }
-            }'
+            }',
         );
 
         $this->assertEmptyIndexQueue();
@@ -1861,7 +1858,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'title' => 'i am outside the site root',
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
             'pid' => 2,
         ];
 
@@ -1911,7 +1908,7 @@ class RecordMonitorTest extends IntegrationTestBase
                         title = title
                     }
                 }
-            }'
+            }',
         );
         $this->addTypoScriptToTemplateRecord(
             111,
@@ -1924,7 +1921,7 @@ class RecordMonitorTest extends IntegrationTestBase
                     type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
-            }'
+            }',
         );
 
         $this->assertEmptyIndexQueue();
@@ -1937,7 +1934,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'title' => 'i am outside the site root and referenced in two sites',
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
             'pid' => 3,
         ];
 
@@ -1959,7 +1956,7 @@ class RecordMonitorTest extends IntegrationTestBase
                     type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
-            }'
+            }',
         );
         $this->addTypoScriptToTemplateRecord(
             111,
@@ -1972,7 +1969,7 @@ class RecordMonitorTest extends IntegrationTestBase
                     type = tx_fakeextension_domain_model_foo
                     fields.title = title
                 }
-            }'
+            }',
         );
 
         $this->assertEmptyIndexQueue();
@@ -1985,7 +1982,7 @@ class RecordMonitorTest extends IntegrationTestBase
             'title' => 'i am in siteroot b but references also in siteroot a',
             'starttime' => 1000000,
             'endtime' => 1100000,
-            'tsstamp' => 1000000,
+            'tstamp' => 1000000,
             'pid' => 3,
         ];
 
@@ -2011,7 +2008,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
 
         $this->assertIndexQueueContainsItemAmount(1);
@@ -2071,7 +2068,7 @@ class RecordMonitorTest extends IntegrationTestBase
 
         $this->extensionConfiguration->set(
             'solr',
-            ['monitoringType' => $monitoringType, 'useConfigurationMonitorTables' => $useConfigurationMonitorTables]
+            ['monitoringType' => $monitoringType, 'useConfigurationMonitorTables' => $useConfigurationMonitorTables],
         );
 
         $status = 'update';
@@ -2086,7 +2083,7 @@ class RecordMonitorTest extends IntegrationTestBase
             $table,
             $uid,
             $fields,
-            $this->dataHandler
+            $this->dataHandler,
         );
     }
 
@@ -2142,23 +2139,10 @@ class RecordMonitorTest extends IntegrationTestBase
             [
                 'title' => 'Access restricted page',
             ],
-            $this->dataHandler
+            $this->dataHandler,
         );
 
         $this->assertIndexQueueContainsItemAmount(1);
-    }
-
-    /**
-     * Triggers event queue processing
-     */
-    protected function processEventQueue(): void
-    {
-        /** @var EventQueueWorkerTask $task */
-        $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
-
-        /** @var Scheduler $scheduler */
-        $scheduler = GeneralUtility::makeInstance(Scheduler::class);
-        $scheduler->executeTask($task);
     }
 
     /**

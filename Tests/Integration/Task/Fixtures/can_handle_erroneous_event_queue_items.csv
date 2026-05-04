@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","doktype","hidden","slug","title"
-,10,1,1,0,"/childpage","Childpage"
+,"uid","pid","doktype","hidden","slug","title","tstamp"
+,10,1,1,0,"/childpage","Childpage",1007007007
 "tx_solr_eventqueue_item",
 ,"uid","tstamp","event",,
 ,1,1641888246,"O:8:"stdClass":0:{}",,

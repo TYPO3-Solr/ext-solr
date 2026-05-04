@@ -95,7 +95,7 @@ class SearchResultSetService
 
     protected function getResultSetClassName(): string
     {
-        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] ?? SearchResultSet::class;
+        return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName'] ?? SearchResultSet::class;
     }
 
     /**
@@ -119,7 +119,7 @@ class SearchResultSetService
         $query = $this->queryBuilder->buildSearchQuery(
             $searchRequest->getRawUserQuery(),
             $searchRequest->getResultsPerPage(),
-            $searchRequest->getAdditionalFilters()
+            $searchRequest->getAdditionalFilters(),
         );
 
         $event = new AfterSearchQueryHasBeenPreparedEvent($query, $searchRequest, $this->search, $this->typoScriptConfiguration);
@@ -147,7 +147,7 @@ class SearchResultSetService
         $variantsProcessor = GeneralUtility::makeInstance(
             VariantsProcessor::class,
             $this->typoScriptConfiguration,
-            $this->searchResultBuilder
+            $this->searchResultBuilder,
         );
         $variantsProcessor->process($resultSet);
 
@@ -299,7 +299,10 @@ class SearchResultSetService
         $resultDocument = $parsedData->response->docs[0] ?? null;
 
         if (!$resultDocument instanceof Document) {
-            throw new UnexpectedValueException('Response did not contain a valid Document object');
+            throw new UnexpectedValueException(
+                'Response did not contain a valid Document object',
+                1113053393,
+            );
         }
 
         return $this->searchResultBuilder->fromApacheSolrDocument($resultDocument);

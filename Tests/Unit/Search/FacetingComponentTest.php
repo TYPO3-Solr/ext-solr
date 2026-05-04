@@ -50,7 +50,7 @@ class FacetingComponentTest extends SetUpUnitTestCase
         $queryBuilder = new QueryBuilder(
             $fakeConfiguration,
             $solrLogManagerMock,
-            $this->createMock(SiteHashService::class)
+            $this->createMock(SiteHashService::class),
         );
         $query = $queryBuilder->buildSearchQuery('test');
 
@@ -60,7 +60,7 @@ class FacetingComponentTest extends SetUpUnitTestCase
             $query,
             $fakeSearchRequest,
             $this->createMock(Search::class),
-            $fakeConfiguration
+            $fakeConfiguration,
         );
         $subject = new FacetingComponent($facetRegistry);
         $subject->__invoke($event);
@@ -588,10 +588,10 @@ class FacetingComponentTest extends SetUpUnitTestCase
                             ],
                         ],
                     ],
-                ]
+                ],
             ),
             'The assoc parameters/keys for parameters of selected facets are not as expected.' . PHP_EOL
-            . 'Probably they are not delegated to Apache Solr query, which leads to a non functional faceting.'
+            . 'Probably they are not delegated to Apache Solr query, which leads to a non functional faceting.',
         );
     }
 }

@@ -229,7 +229,7 @@ Date Range
 
 When you want to provide a range filter on a date field in EXT:solr, you can use the type **"dateRange"**.
 
-The default partial generates a markup with all needed values in data attributes. Together with the provided jQuery UI implementation you can
+The default partial generates a markup with all needed values in data attributes. Together with the native datepicker you can
 create an out-of-the-box date range facet.
 
 With the following TypoScript you create a date range facet:
@@ -247,7 +247,7 @@ With the following TypoScript you create a date range facet:
         }
     }
 
-In the extension we ship the TypoScript example **"Search - (Example) dateRange facet with jQuery UI datepicker on created field"** that shows how to
+In the extension we ship the TypoScript example **"Search - (Example) DateRange facet with datepicker on created field"** that shows how to
 configure a dateRange facet and load all required javascript files.
 
 When you include this template a date range facet will be shown in the frontend that we look like this:
@@ -256,19 +256,17 @@ When you include this template a date range facet will be shown in the frontend 
 
     EXT:solr dateRange facet
 
-As described before for the date range facet markup and javascript code is required, looking at the example template **"Search - (Example) dateRange facet with jQuery UI datepicker on created field"**
-in "Configuration/TypoScript/Examples/DateRange" you see that for the jQueryUi implementation the following files are included:
+As described before for the date range facet markup and javascript code is required, looking at the example template **"Search - (Example) DateRange facet with datepicker on created field"**
+in "Configuration/TypoScript/Examples/DateRange" you see the following files are included:
 
 .. code-block:: typoscript
 
     page.includeJSFooterlibs {
-        solr-jquery = EXT:solr/Resources/Public/JavaScript/JQuery/jquery.min.js
-        solr-ui = EXT:solr/Resources/Public/JavaScript/JQuery/jquery-ui.min.js
-        solr-daterange = EXT:solr/Resources/Public/JavaScript/facet_daterange.js
+        solr-daterange = EXT:solr/Resources/Public/JavaScript/facet_daterange_controller.js
     }
 
     page.includeCSS {
-        solr-ui = EXT:solr/Resources/Public/Css/JQueryUi/jquery-ui.custom.css
+        solr-daterange = EXT:solr/Resources/Public/StyleSheets/Frontend/daterange.css
     }
 
 Numeric Range
@@ -278,7 +276,7 @@ Beside dates ranges are also usefull for numeric values. A typical usecase could
 With the user interface you should be able to filter the documents for a certain price range.
 
 In the default partial, we also ship a partial with data attributes here to support any custom implementation.
-By default we will use the current implementation from EXT:solr based on jQueryUi.
+By default we will use the current implementation from EXT:solr.
 
 The following example configures a **numericRange** facet for the field **"pid"**:
 
@@ -300,8 +298,20 @@ The following example configures a **numericRange** facet for the field **"pid"*
         }
     }
 
-The numeric range facet requires beside the template also a javascript library to render the slider. The example TypoScript template **"Search - (Example) Fluid numericRange facet with jQuery UI slider on pid field"**
-can be used to see the range slider with jQuery UI for the Solr field pid by example.
+The numeric range facet requires beside the template also a javascript library to render the slider. The example TypoScript template **"Search - (Example) NumericRange facet with slider on pid field"**
+can be used to see the range slider for the Solr field pid by example.
+
+Looking at the example template in "Configuration/TypoScript/Examples/NumericRange" you see the following files are included:
+
+.. code-block:: typoscript
+
+    page.includeJSFooterlibs {
+        solr-numericrange = EXT:solr/Resources/Public/JavaScript/facet_numericrange_controller.js
+    }
+
+    page.includeCSS {
+        solr-numericrange = EXT:solr/Resources/Public/StyleSheets/Frontend/numericrange.css
+    }
 
 When you configure a facet on the pid field like this, the frontend will output the following facet:
 
@@ -309,7 +319,6 @@ When you configure a facet on the pid field like this, the frontend will output 
 
     Numeric range facet
 
-Beside the implementation with jQueryUi you are free to implement a range slider with any other javascript framework.
 
 Rendering with fluid
 ====================

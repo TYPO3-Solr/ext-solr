@@ -1,10 +1,11 @@
 {
   "name": "apache-solr-for-typo3/solr",
   "type": "typo3-cms-extension",
-  "description": "Apache Solr for TYPO3",
+  "description": "Apache Solr for TYPO3 - Apache Solr for TYPO3 is the enterprise search server you were looking for with special features such as Faceted Search or Synonym Support and incredibly fast response times of results within milliseconds.",
   "license": "GPL-3.0-or-later",
   "keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
   "homepage": "https://www.typo3-solr.com",
+  "version": "14.0.0-alpha2",
   "authors": [
     {
       "name": "dkd Internet Service GmbH",
@@ -27,9 +28,9 @@
     "ext-libxml": "*",
     "ext-pdo": "*",
     "ext-simplexml": "*",
-    "solarium/solarium": "6.3.7",
+    "solarium/solarium": "6.4.1",
     "typo3/cms-backend": "*",
-    "typo3/cms-core": "^v13.4.2",
+    "typo3/cms-core": "^v14.3.0",
     "typo3/cms-extbase": "*",
     "typo3/cms-fluid": "*",
     "typo3/cms-frontend": "*",
@@ -39,11 +40,12 @@
     "typo3/cms-tstemplate": "*"
   },
   "require-dev": {
-    "dg/bypass-finals": "^1.6",
-    "phpunit/phpunit": "^11.4",
+    "brianium/paratest": "^7.8.5",
+    "dg/bypass-finals": "^1.9",
+    "phpunit/phpunit": "^11.5.55",
     "typo3/cms-fluid-styled-content": "*",
     "typo3/coding-standards": "v0.8.0",
-    "typo3/testing-framework": "^9.0.1",
+    "typo3/testing-framework": "^9.5.0",
     "phpstan/phpstan": "^1.11",
     "phpstan/phpstan-phpunit": "^1.3"
   },
@@ -122,7 +124,7 @@
     ],
     "tests:integration": [
       "Composer\\Config::disableProcessTimeout",
-      "phpunit --config=Build/Test/IntegrationTests.xml"
+      "paratest --configuration=Build/Test/IntegrationTests.xml"
     ],
     "tests:phpstan": [
       "phpstan analyze -c Build/Test/phpstan.neon"
@@ -137,7 +139,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-main": "13.0.x-dev"
+      "dev-main": "14.0.x-dev"
     },
     "typo3/cms": {
       "extension-key": "solr",
@@ -145,16 +147,14 @@
     },
     "TYPO3-Solr": {
       "version-matrix": {
-        "ext-tika": "^13.0",
-        "ext-solrfal": "^13.0",
-        "ext-solrconsole": "^13.0",
-        "ext-solrdebugtools": "^13.0",
+        "ext-tika": "^14.0",
+        "ext-solrfal": "^14.0",
+        "ext-solrconsole": "^14.0",
+        "ext-solrdebugtools": "^14.0",
         "Apache-Solr": [
-          "9.8.1",
-          "9.8.0",
-          "9.7.0"
+          "10.0.0"
         ],
-        "configset": "ext_solr_13_0_0"
+        "configset": "ext_solr_14_0_0"
       },
       "ext-solrfal": {
       },

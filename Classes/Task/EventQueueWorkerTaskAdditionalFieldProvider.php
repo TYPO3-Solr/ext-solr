@@ -78,7 +78,7 @@ class EventQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
     ): bool {
         $submittedData['solr_eventqueueworkertask_limit'] = max(
             (int)($submittedData['solr_eventqueueworkertask_limit'] ?? EventQueueWorkerTask::DEFAULT_PROCESSING_LIMIT),
-            1
+            1,
         );
         return true;
     }

@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderInterface;
 use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
+use DateTime;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -47,13 +48,16 @@ class DateRangeUrlDecoder implements FacetUrlDecoderInterface
         $formatService = GeneralUtility::makeInstance(FormatService::class);
         $fromPart = '*';
         if ($dateRangeStart !== '') {
-            $fromPart = $formatService->timestampToIso(strtotime($dateRangeStart));
+            $date = DateTime::createFromFormat('Ymd', substr($dateRangeStart, 0, 8));
+            $date->setTime(0, 0, 0);
+            $fromPart = $formatService->timestampToIso($date->getTimestamp());
         }
 
         $toPart = '*';
         if ($dateRangeEnd !== '') {
-            $dateRangeEnd .= '59'; // adding 59 seconds
-            $toPart = $formatService->timestampToIso(strtotime($dateRangeEnd));
+            $date = DateTime::createFromFormat('Ymd', substr($dateRangeEnd, 0, 8));
+            $date->setTime(23, 59, 59);
+            $toPart = $formatService->timestampToIso($date->getTimestamp());
         }
 
         return '[' . $fromPart . ' TO ' . $toPart . ']';

@@ -53,15 +53,6 @@ class SearchControllerTest extends IntegrationTestBase
         $this->bootstrapSearchResultsPluginOnPage();
     }
 
-    /**
-     * Executed after each test. Empties solr and checks if the index is empty
-     */
-    protected function tearDown(): void
-    {
-        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
-        parent::tearDown();
-    }
-
     protected function bootstrapSearchResultsPluginOnPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/default_search_results_plugin.csv');
@@ -79,7 +70,7 @@ class SearchControllerTest extends IntegrationTestBase
               wrap >
             }
             [end]
-            '
+            ',
         );
     }
 
@@ -109,7 +100,7 @@ class SearchControllerTest extends IntegrationTestBase
         $this->indexPages([2, 3]);
 
         $result = (string)$this->executeFrontendSubRequest(
-            $this->getPreparedRequest()->withQueryParameter('q', 'prices')
+            $this->getPreparedRequest()->withQueryParameter('q', 'prices'),
         )->getBody();
 
         self::assertMatchesRegularExpression('/Found [0-9]+ results in [0-9]+ milliseconds/i', $result);
@@ -127,13 +118,13 @@ class SearchControllerTest extends IntegrationTestBase
             /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.results.resultsPerPageSwitchOptions = 5, 10, 25, 50
-            plugin.tx_solr.search.results.resultsPerPage = 5'
+            plugin.tx_solr.search.results.resultsPerPage = 5',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $resultPage1 = (string)$this->executeFrontendSubRequest(
-            $this->getPreparedRequest()->withQueryParameter('tx_solr[q]', '*')
+            $this->getPreparedRequest()->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         $this->assertPaginationVisible($resultPage1);
@@ -148,7 +139,7 @@ class SearchControllerTest extends IntegrationTestBase
         $resultPage2 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
                 ->withQueryParameter('tx_solr[q]', '*')
-                ->withQueryParameter('tx_solr[page]', 2)
+                ->withQueryParameter('tx_solr[page]', 2),
         )->getBody();
 
         self::assertStringContainsString('pages/8/0/0/0', $resultPage2, 'Could not find page(PID) 8 in result set.');
@@ -160,7 +151,7 @@ class SearchControllerTest extends IntegrationTestBase
         $resultPage = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
                 ->withQueryParameter('tx_solr[q]', '*')
-                ->withQueryParameter('tx_solr[resultsPerPage]', 10)
+                ->withQueryParameter('tx_solr[resultsPerPage]', 10),
         )->getBody();
 
         self::assertStringContainsString('Displaying results 1 to 8 of 8', $resultPage, '');
@@ -177,7 +168,7 @@ class SearchControllerTest extends IntegrationTestBase
             /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.spellchecking = 1
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -185,7 +176,7 @@ class SearchControllerTest extends IntegrationTestBase
         //not in the content but we expect to get shoes suggested
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', 'shoo')
+                ->withQueryParameter('tx_solr[q]', 'shoo'),
         )->getBody();
 
         self::assertStringContainsString('Did you mean', $resultPage1, 'Could not find did you mean in response');
@@ -206,7 +197,7 @@ class SearchControllerTest extends IntegrationTestBase
                 searchUsingSpellCheckerSuggestion = 1
                 numberOfSuggestionsToTry = 1
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -214,7 +205,7 @@ class SearchControllerTest extends IntegrationTestBase
         //not in the content but we expect to get shoes suggested
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', 'shoo')
+                ->withQueryParameter('tx_solr[q]', 'shoo'),
         )->getBody();
 
         self::assertStringContainsString('Nothing found for &quot;shoo&quot;', $resultPage1, 'Could not find nothing found message');
@@ -236,21 +227,21 @@ class SearchControllerTest extends IntegrationTestBase
                 label = Content Type
                 field = type
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2]);
 
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?<\/ul>/s', $resultPage1),
-            'Could not find facet option for pages'
+            'Could not find facet option for pages',
         );
     }
 
@@ -292,7 +283,7 @@ class SearchControllerTest extends IntegrationTestBase
                 label = Content Type
                 field = type
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2]);
@@ -304,12 +295,12 @@ class SearchControllerTest extends IntegrationTestBase
         self::assertEquals(
             $expectedMatchesDefaultUrl,
             preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?href="\/en\/search\?tx_solr.*?<\/ul>/s', $resultPage1),
-            'Could not find speaking facet url pages'
+            'Could not find speaking facet url pages',
         );
         self::assertEquals(
             $expectedMatchesSpeakingUrl,
             preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?href="\/en\/search\/contentType\/pages\?tx_solr.*?<\/ul>/s', $resultPage1),
-            'Could not find speaking facet url pages'
+            'Could not find speaking facet url pages',
         );
     }
 
@@ -349,7 +340,7 @@ class SearchControllerTest extends IntegrationTestBase
                     field = type
                 }
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -378,7 +369,7 @@ class SearchControllerTest extends IntegrationTestBase
                     field = type
                 }
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -407,7 +398,7 @@ class SearchControllerTest extends IntegrationTestBase
                     field = type
                 }
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -436,7 +427,7 @@ class SearchControllerTest extends IntegrationTestBase
                     field = type
                 }
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -463,7 +454,7 @@ class SearchControllerTest extends IntegrationTestBase
                     field = type
                 }
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -471,7 +462,7 @@ class SearchControllerTest extends IntegrationTestBase
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
                 ->withQueryParameter('tx_solr[q]', '*')
-                ->withQueryParameter('tx_solr[filter][0]', 'type:pages')
+                ->withQueryParameter('tx_solr[filter][0]', 'type:pages'),
         )->getBody();
 
         self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
@@ -494,7 +485,7 @@ class SearchControllerTest extends IntegrationTestBase
                     field = type
                 }
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -502,7 +493,7 @@ class SearchControllerTest extends IntegrationTestBase
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
                 ->withQueryParameter('tx_solr[q]', '*')
-                ->withQueryParameter('tx_solr[filter][0]', 'type:my_jobs')
+                ->withQueryParameter('tx_solr[filter][0]', 'type:my_jobs'),
         )->getBody();
 
         self::assertStringContainsString('remove-facet-option', $resultPage1, 'No link to remove facet option found');
@@ -518,14 +509,14 @@ class SearchControllerTest extends IntegrationTestBase
             /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.query.filter.__pageSections = 2,3
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         // we should only find 2 results since a __pageSections filter should be applied
@@ -539,7 +530,7 @@ class SearchControllerTest extends IntegrationTestBase
         // we expected that an exception will be thrown when a facet is rendered
         // where an unknown partialName is referenced
         $this->expectException(InvalidTemplateResourceException::class);
-        $this->expectExceptionMessageMatches('#(.*The partial files.*NotFound.*|.*The Fluid template files .*NotFound.*)#');
+        $this->expectExceptionMessageMatches('#(.*The partial files?.*NotFound.*|.*The Fluid template files? .*NotFound.*|.*Tried resolving a template file for partial "Facets/NotFound" in format.*)#');
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -554,14 +545,14 @@ class SearchControllerTest extends IntegrationTestBase
                     field = type
                 }
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         );
     }
 
@@ -579,7 +570,7 @@ class SearchControllerTest extends IntegrationTestBase
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
                 ->withQueryParameter('tx_solr[q]', '*'),
-            (new InternalRequestContext())->withBackendUserId(1)
+            (new InternalRequestContext())->withBackendUserId(1),
         )->getBody();
 
         self::assertStringContainsString('document-score-analysis', $resultPage1, 'No score analysis in response');
@@ -604,7 +595,7 @@ class SearchControllerTest extends IntegrationTestBase
                     sortBy = lex
                 }
             }
-            '
+            ',
         );
 
         $womanPages = [4, 5, 8];
@@ -614,29 +605,29 @@ class SearchControllerTest extends IntegrationTestBase
 
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="men".*?>.*?<span class="facet-result-count badge bg-info">1<\/span>.*?<\/li>/s', $resultPage1),
-            'Could not find count for "men"'
+            'Could not find count for "men"',
         );
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="woman".*?>.*?<span class="facet-result-count badge bg-info">3<\/span>.*?<\/li>/s', $resultPage1),
-            'Could not find count for "woman"'
+            'Could not find count for "woman"',
         );
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?data-facet-item-value="men".*?data-facet-item-value="woman".*?<\/ul>/s', $resultPage1),
-            'Could not find facet options in the right order'
+            'Could not find facet options in the right order',
         );
         self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?<\/ul>/s', $resultPage1),
-            'Could not find facet option for pages'
+            'Could not find facet option for pages',
         );
     }
 
@@ -657,7 +648,7 @@ class SearchControllerTest extends IntegrationTestBase
                     keepAllOptionsOnSelection = 1
                 }
             }
-            '
+            ',
         );
 
         $womanPages = [4, 5, 8];
@@ -667,30 +658,30 @@ class SearchControllerTest extends IntegrationTestBase
 
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="men".*?>.*?<span class="facet-result-count badge bg-info">1<\/span>.*?<\/li>/s', $resultPage1),
-            'Could not find count for "men"'
+            'Could not find count for "men"',
         );
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="woman".*?>.*?<span class="facet-result-count badge bg-info">3<\/span>.*?<\/li>/s', $resultPage1),
-            'Could not find count for "woman"'
+            'Could not find count for "woman"',
         );
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?data-facet-item-value="woman".*?data-facet-item-value="men".*?<\/ul>/s', $resultPage1),
-            'Could not find facet options in the right order'
+            'Could not find facet options in the right order',
         );
 
         self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?<\/ul>/s', $resultPage1),
-            'Could not find facet option for pages'
+            'Could not find facet option for pages',
         );
     }
 
@@ -741,14 +732,14 @@ class SearchControllerTest extends IntegrationTestBase
                     }
                 }
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         self::assertStringContainsString('Small (1 &amp; 2)', $resultPage1, 'Response did not contain expected small option of query facet');
@@ -787,7 +778,7 @@ class SearchControllerTest extends IntegrationTestBase
                     }
                 }
             }
-            '
+            ',
         );
     }
 
@@ -801,7 +792,7 @@ class SearchControllerTest extends IntegrationTestBase
 
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         self::assertStringContainsString('Found 8 results', $resultPage1, 'Assert to find 8 results without faceting');
@@ -822,7 +813,7 @@ class SearchControllerTest extends IntegrationTestBase
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
                 ->withQueryParameter('tx_solr[q]', '*')
-                ->withQueryParameter('tx_solr[filter][0]', 'pageHierarchy:/1/2/')
+                ->withQueryParameter('tx_solr[filter][0]', 'pageHierarchy:/1/2/'),
         )->getBody();
 
         self::assertStringContainsString('Found 1 result', $resultPage1, 'Assert to only find one result after faceting');
@@ -862,12 +853,12 @@ class SearchControllerTest extends IntegrationTestBase
                    }
                 }
             }
-            '
+            ',
         );
 
         $this->indexPages([2, 3, 4]);
         // we should have 3 documents in solr
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":3', $solrContent, 'Could not index document into solr');
 
         // but when we facet on the categoryPaths:/Men/Shoes \/ Socks/ we should only have one result since the others
@@ -875,7 +866,7 @@ class SearchControllerTest extends IntegrationTestBase
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
                 ->withQueryParameter('tx_solr[q]', '*')
-                ->withQueryParameter('tx_solr[filter][0]', 'categoryPaths:/Men/Shoes \/ Socks/')
+                ->withQueryParameter('tx_solr[filter][0]', 'categoryPaths:/Men/Shoes \/ Socks/'),
         )->getBody();
 
         self::assertStringContainsString('Found 1 result', $resultPage1, 'Assert to only find one result after faceting');
@@ -897,7 +888,7 @@ class SearchControllerTest extends IntegrationTestBase
                 keepAllOptionsOnSelection = 1
                 manualSortOrder = men, woman
             }
-            '
+            ',
         );
 
         $womanPages = [4, 5, 8];
@@ -907,30 +898,30 @@ class SearchControllerTest extends IntegrationTestBase
 
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="men".*?>.*?<span class="facet-result-count badge bg-info">1<\/span>.*?<\/li>/s', $resultPage1),
-            'Could not find count for "men"'
+            'Could not find count for "men"',
         );
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="woman".*?>.*?<span class="facet-result-count badge bg-info">3<\/span>.*?<\/li>/s', $resultPage1),
-            'Could not find count for "woman"'
+            'Could not find count for "woman"',
         );
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?data-facet-item-value="men".*?data-facet-item-value="woman".*?<\/ul>/s', $resultPage1),
-            'Could not find facet options in the right order'
+            'Could not find facet options in the right order',
         );
 
         self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
         self::assertEquals(
             1,
             preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?<\/ul>/s', $resultPage1),
-            'Could not find facet option for pages'
+            'Could not find facet option for pages',
         );
     }
 
@@ -944,7 +935,7 @@ class SearchControllerTest extends IntegrationTestBase
             /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.enableDebugMode = 1
-            '
+            ',
         );
         $this->indexPages([1, 2]);
 
@@ -953,7 +944,7 @@ class SearchControllerTest extends IntegrationTestBase
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
                 ->withQueryParameter('tx_solr[q]', '*'),
-            (new InternalRequestContext())->withBackendUserId(1)
+            (new InternalRequestContext())->withBackendUserId(1),
         )->getBody();
 
         self::assertStringContainsString('Parsed Query:', $resultPage1, 'No parsed query in response');
@@ -985,13 +976,13 @@ class SearchControllerTest extends IntegrationTestBase
                 'solr_scheme_read' => 'http',
                 'solr_host_read' => 'localhost',
                 'solr_port_read' => 4711,
-            ]
+            ],
         );
 
         $response = $this->executeFrontendSubRequest(
             $this->getPreparedRequest()
                 ->withQueryParameter('tx_solr[action]', $action)
-                ->withQueryParameter('tx_solr[' . key($getArguments) . ']', current($getArguments))
+                ->withQueryParameter('tx_solr[' . key($getArguments) . ']', current($getArguments)),
         );
 
         self::assertStringContainsString('Search is currently not available.', (string)$response->getBody(), 'Response did not contain solr unavailable error message');
@@ -1009,7 +1000,7 @@ class SearchControllerTest extends IntegrationTestBase
     {
         self::markTestIncomplete(
             'Last searches component seems to be fine, but the test does not fit that case currently.
-            The last-searches component is not rendered. See: https://github.com/TYPO3-Solr/ext-solr/issues/3160'
+            The last-searches component is not rendered. See: https://github.com/TYPO3-Solr/ext-solr/issues/3160',
         );
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
@@ -1021,18 +1012,18 @@ class SearchControllerTest extends IntegrationTestBase
                 limit = 10
                 mode = user
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $resultSearch1 = (string)$this->executeFrontendSubRequest(
-            $this->getPreparedRequest()->withQueryParameter('tx_solr[q]', 'shoe')
+            $this->getPreparedRequest()->withQueryParameter('tx_solr[q]', 'shoe'),
         )->getBody();
 
         $resultSearch2 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         $this->assertContainerByIdContains('>shoe</a>', $resultSearch2, 'tx-solr-lastsearches');
@@ -1052,17 +1043,17 @@ class SearchControllerTest extends IntegrationTestBase
                 limit = 10
                 mode = global
             }
-            '
+            ',
         );
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $resultSearch1 = (string)$this->executeFrontendSubRequest(
-            $this->getPreparedRequest()->withQueryParameter('tx_solr[q]', 'shoe')
+            $this->getPreparedRequest()->withQueryParameter('tx_solr[q]', 'shoe'),
         )->getBody();
 
         $resultSearch2 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         $this->assertContainerByIdContains('>shoe</a>', $resultSearch2, 'tx-solr-lastsearches');
@@ -1082,18 +1073,18 @@ class SearchControllerTest extends IntegrationTestBase
                 limit = 10
                 mode = global
             }
-            '
+            ',
         );
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $resultSearch1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', 'nothingwillbefound')
+                ->withQueryParameter('tx_solr[q]', 'nothingwillbefound'),
         )->getBody();
 
         $resultSearch2 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', 'nothingwillbefound')
+                ->withQueryParameter('tx_solr[q]', 'nothingwillbefound'),
         )->getBody();
 
         $this->assertContainerByIdNotContains('>nothingwillbefound</a>', $resultSearch2, 'tx-solr-lastsearches');
@@ -1110,12 +1101,12 @@ class SearchControllerTest extends IntegrationTestBase
         $connection->update(
             'tt_content',
             ['pi_flexform' => file_get_contents(__DIR__ . '/Fixtures/fakedFlexFormData.xml')],
-            ['uid' => 2022]
+            ['uid' => 2022],
         );
 
         $resultSearch = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         self::assertStringContainsString('Displaying results 1 to 4 of 4', $resultSearch);
@@ -1136,14 +1127,14 @@ class SearchControllerTest extends IntegrationTestBase
                 field = created
                 type = dateRange
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $resultSearch = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         self::assertStringContainsString('facet-type-dateRange', $resultSearch);
@@ -1169,14 +1160,14 @@ class SearchControllerTest extends IntegrationTestBase
                     field = type
                 }
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $resultSearch = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
 
         self::assertStringContainsString('id="facetmyType"', $resultSearch);
@@ -1205,7 +1196,7 @@ class SearchControllerTest extends IntegrationTestBase
                     sortBy = metrics_newest desc
                 }
             }
-            '
+            ',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
@@ -1215,7 +1206,7 @@ class SearchControllerTest extends IntegrationTestBase
 
         $content = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[q]', '*'),
         )->getBody();
         $pid1OptionPosition = strpos($content, $pid1Option);
         $pid2OptionPosition = strpos($content, $pid2Option);
@@ -1234,11 +1225,11 @@ class SearchControllerTest extends IntegrationTestBase
         $connection->update(
             'tt_content',
             ['CType' => 'solr_pi_search'],
-            ['uid' => 2022]
+            ['uid' => 2022],
         );
 
         $formContent = (string)$this->executeFrontendSubRequest(
-            $this->getPreparedRequest()
+            $this->getPreparedRequest(),
         )->getBody();
         self::assertStringContainsString('<div class="tx-solr-search-form">', $formContent);
         self::assertStringNotContainsString('id="tx-solr-search"', $formContent);
@@ -1260,12 +1251,12 @@ class SearchControllerTest extends IntegrationTestBase
             ->update(
                 'tt_content',
                 ['CType' => 'solr_pi_frequentlysearched'],
-                ['uid' => 2022]
+                ['uid' => 2022],
             );
 
         $resultPage = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', 'shoes')
+                ->withQueryParameter('tx_solr[q]', 'shoes'),
         )->getBody();
 
         $this->assertContainerByIdContains('>shoes</a>', $resultPage, 'tx-solr-frequent-searches');
@@ -1281,7 +1272,7 @@ class SearchControllerTest extends IntegrationTestBase
         $resultPage = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
                 ->withQueryParameter('tx_solr[action]', 'detail')
-                ->withQueryParameter('tx_solr[documentId]', '002de2729efa650191f82900ea02a0a3189dfabb/pages/2/0/0/0')
+                ->withQueryParameter('tx_solr[documentId]', '0213998bdee4e7dcc8ba05a598cabdadff322ad3/pages/2/0/0/0'),
         )->getBody();
 
         self::assertStringContainsString('<h1>Socks</h1>', $resultPage);
@@ -1304,11 +1295,11 @@ class SearchControllerTest extends IntegrationTestBase
                 templateRootPaths.20 = EXT:solr/Tests/Integration/Controller/Fixtures/customTemplates/
                 partialRootPaths.20 = EXT:solr/Tests/Integration/Controller/Fixtures/customPartials/
             }
-            '
+            ',
         );
 
         $result = (string)$this->executeFrontendSubRequest(
-            $this->getPreparedRequest()
+            $this->getPreparedRequest(),
         )->getBody();
 
         self::assertStringContainsString('<h1>From custom "Results" template</h1>', $result, 'Can not overwrite template path');
@@ -1330,11 +1321,11 @@ class SearchControllerTest extends IntegrationTestBase
                 templateRootPath = EXT:solr/Tests/Integration/Controller/Fixtures/customTemplates/
                 partialRootPath = EXT:solr/Tests/Integration/Controller/Fixtures/customPartials/
             }
-            '
+            ',
         );
 
         $result = (string)$this->executeFrontendSubRequest(
-            $this->getPreparedRequest()
+            $this->getPreparedRequest(),
         )->getBody();
 
         self::assertStringContainsString('<h1>From custom "Results" template</h1>', $result, 'Can not overwrite template path');
@@ -1356,11 +1347,11 @@ class SearchControllerTest extends IntegrationTestBase
                     partialRootPaths.20 = EXT:solr/Tests/Integration/Controller/Fixtures/customPartials/
                 }
             }
-            '
+            ',
         );
 
         $result = (string)$this->executeFrontendSubRequest(
-            $this->getPreparedRequest()
+            $this->getPreparedRequest(),
         )->getBody();
 
         self::assertStringContainsString('mytestsetting', $result, 'Can not output passed test setting');
@@ -1380,10 +1371,10 @@ class SearchControllerTest extends IntegrationTestBase
             plugin.tx_solr.view.templateFiles {
                 results = EXT:solr/Tests/Integration/Controller/Fixtures/customTemplates/Search/MyResults.html
             }
-            '
+            ',
         );
         $result = (string)$this->executeFrontendSubRequest(
-            $this->getPreparedRequest()
+            $this->getPreparedRequest(),
         )->getBody();
 
         self::assertStringContainsString('<h1>From custom entry template</h1>', $result, 'Can not set entry template file name in typoscript');

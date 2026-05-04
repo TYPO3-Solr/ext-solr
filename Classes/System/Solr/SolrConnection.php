@@ -133,9 +133,8 @@ class SolrConnection
     /**
      * Builds and returns Solr admin service
      */
-    protected function buildAdminService(): SolrAdminService
+    public function buildAdminService(string $endpointKey = 'admin'): SolrAdminService
     {
-        $endpointKey = 'admin';
         $client = $this->getClient($endpointKey);
         $this->initializeClient($client, $endpointKey);
         return GeneralUtility::makeInstance(
@@ -145,7 +144,7 @@ class SolrConnection
             $this->logger,
             $this->synonymParser,
             $this->stopWordParser,
-            $this->schemaParser
+            $this->schemaParser,
         );
     }
 

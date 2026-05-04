@@ -1,5 +1,14 @@
 <?php
 
+defined('TYPO3') or die('Access denied.');
+
+$isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
+if (!$isComposerMode) {
+    // we load the autoloader for our libraries
+    $dir = ExtensionManagementUtility::extPath('solr');
+    require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
+}
+
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\GroupedResultParser;
@@ -8,11 +17,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Eid\ApiEid;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+use ApacheSolrForTypo3\Solr\Middleware\AuthorizationService;
 use ApacheSolrForTypo3\Solr\Routing\Enhancer\SolrFacetMaskAndCombineEnhancer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
@@ -33,8 +39,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use TYPO3\CMS\Scheduler\Task\TableGarbageCollectionTask;
 
-defined('TYPO3') or die('Access denied.');
-
 // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 (static function () {
@@ -48,12 +52,6 @@ defined('TYPO3') or die('Access denied.');
     // hooking into TCE Main to monitor record updates that may require reindexing by the index queue
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['solr/recordmonitor'] = RecordMonitor::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['solr/recordmonitor'] = RecordMonitor::class;
-
-    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-    // registering Index Queue page indexer helpers
-    Manager::registerFrontendHelper('findUserGroups', UserGroupDetector::class);
-
-    Manager::registerFrontendHelper('indexPage', PageIndexer::class);
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -138,17 +136,17 @@ defined('TYPO3') or die('Access denied.');
                     'excludedParameters' => $extensionConfiguration->getCacheHashExcludedParameters(),
                 ],
             ],
-        ]
+        ],
     );
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-    if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '])) {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] = SearchResult::class;
+    if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName'])) {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName'] = SearchResult::class;
     }
 
-    if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '])) {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] = SearchResultSet::class;
+    if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName'])) {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName'] = SearchResultSet::class;
     }
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['writerConfiguration'])) {
@@ -180,7 +178,7 @@ defined('TYPO3') or die('Access denied.');
         [
             SearchController::class => 'results',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     ExtensionUtility::configurePlugin(
@@ -192,7 +190,7 @@ defined('TYPO3') or die('Access denied.');
         [
 
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     ExtensionUtility::configurePlugin(
@@ -204,7 +202,7 @@ defined('TYPO3') or die('Access denied.');
         [
             SearchController::class => 'frequentlySearched',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     ExtensionUtility::configurePlugin(
@@ -216,7 +214,7 @@ defined('TYPO3') or die('Access denied.');
         [
             SuggestController::class => 'suggest',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     // register the Fluid namespace 'solr' globally
@@ -253,7 +251,7 @@ defined('TYPO3') or die('Access denied.');
             'os' => '',
             'exec' => '',
             'className' => AuthorizationService::class,
-        ]
+        ],
     );
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
@@ -264,10 +262,3 @@ defined('TYPO3') or die('Access denied.');
         $parserRegistry->registerParser(GroupedResultParser::class, 200);
     }
 })();
-
-$isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
-if (!$isComposerMode) {
-    // we load the autoloader for our libraries
-    $dir = ExtensionManagementUtility::extPath('solr');
-    require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
-}

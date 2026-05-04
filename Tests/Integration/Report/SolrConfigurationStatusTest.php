@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Integration test for the Solr configuration status report
@@ -46,18 +45,18 @@ class SolrConfigurationStatusTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_green_solr_configuration_status_report.csv');
 
         /** @var SolrConfigurationStatus $solrConfigurationStatus */
-        $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
+        $solrConfigurationStatus = $this->get(SolrConfigurationStatus::class);
         $results = $solrConfigurationStatus->getStatus();
         self::assertCount(2, $results);
         self::assertEquals(
             $results[0]->getSeverity(),
             ContextualFeedbackSeverity::OK,
-            'We expect to get no violations concerning root page configurations'
+            'We expect to get no violations concerning root page configurations',
         );
         self::assertEquals(
             $results[1]->getSeverity(),
             ContextualFeedbackSeverity::OK,
-            'We expect to get no violations concerning index enable flags'
+            'We expect to get no violations concerning index enable flags',
         );
     }
 
@@ -67,7 +66,7 @@ class SolrConfigurationStatusTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_detect_missing_rootpage.csv');
 
         /** @var SolrConfigurationStatus $solrConfigurationStatus */
-        $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
+        $solrConfigurationStatus = $this->get(SolrConfigurationStatus::class);
         $results = $solrConfigurationStatus->getStatus();
 
         self::assertCount(1, $results);
@@ -82,19 +81,19 @@ class SolrConfigurationStatusTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_detect_indexing_disabled.csv');
 
         /** @var SolrConfigurationStatus $solrConfigurationStatus   */
-        $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
+        $solrConfigurationStatus = $this->get(SolrConfigurationStatus::class);
         $results = $solrConfigurationStatus->getStatus();
 
         self::assertCount(2, $results, 'Two test status are expected to be returned.');
         self::assertEquals(
             $results[0]->getSeverity(),
             ContextualFeedbackSeverity::OK,
-            'We expect to get no violations concerning root page configurations'
+            'We expect to get no violations concerning root page configurations',
         );
         self::assertStringContainsString(
             'Indexing is disabled',
             $results[1]->getValue(),
-            'Did not get an indexing disabled violation'
+            'Did not get an indexing disabled violation',
         );
     }
 }

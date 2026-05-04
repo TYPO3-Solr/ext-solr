@@ -205,7 +205,7 @@ class Relation extends AbstractContentObject
             $relatedItems[] = $contentObject->stdWrapValue(
                 'foreignLabel',
                 $this->configuration,
-                $contentObject->stdWrap($record[$foreignTableLabelField] ?? '', $this->configuration) ?? ''
+                $contentObject->stdWrap($record[$foreignTableLabelField] ?? '', $this->configuration) ?? '',
             );
         }
 
@@ -272,7 +272,7 @@ class Relation extends AbstractContentObject
                 $localFieldTca['config']['MM'],
                 $localRecordUid,
                 $localTableName,
-                $localFieldTca['config']
+                $localFieldTca['config'],
             );
         } else {
             $itemList = $parentContentObject->data[$localField] ?? '';
@@ -291,7 +291,7 @@ class Relation extends AbstractContentObject
                 $foreignTableTca,
                 $foreignTableLabelField,
                 $parentContentObject,
-                $foreignTableName
+                $foreignTableName,
             );
 
             foreach ($resolveRelatedValues as $resolveRelatedValue) {
@@ -330,7 +330,7 @@ class Relation extends AbstractContentObject
 
         $contentObject = clone $parentContentObject;
         $contentObject->start($relatedRecord, $foreignTableName);
-        $values = [$contentObject->stdWrapValue('foreignLabel', $this->configuration, $relatedRecord[$foreignTableLabelField])];
+        $values = [$contentObject->stdWrapValue('foreignLabel', $this->configuration, $relatedRecord[$foreignTableLabelField] ?? '')];
 
         if (
             !empty($foreignTableName)
@@ -348,7 +348,7 @@ class Relation extends AbstractContentObject
                 [, $this->configuration['foreignLabelField']] = explode(
                     '.',
                     $this->configuration['foreignLabelField'],
-                    2
+                    2,
                 );
             } else {
                 $this->configuration['foreignLabelField'] = '';
@@ -359,7 +359,7 @@ class Relation extends AbstractContentObject
                 $foreignTableName,
                 $relatedRecord['uid'],
                 $foreignTableTca['columns'][$foreignTableLabelField],
-                $parentContentObject
+                $parentContentObject,
             );
             $values = $relatedItemsFromForeignTable;
 

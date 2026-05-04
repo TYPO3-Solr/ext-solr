@@ -87,7 +87,7 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
 
         $requiredUpdateFields = array_unique(array_merge(
             DataUpdateHandler::getRequiredUpdatedFields(),
-            GarbageHandler::getRequiredUpdatedFields()
+            GarbageHandler::getRequiredUpdatedFields(),
         ));
         $this->fields = array_intersect_key($this->fields, array_flip($requiredUpdateFields));
 

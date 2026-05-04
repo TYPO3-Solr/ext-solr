@@ -55,7 +55,7 @@ class LastSearchesServiceTest extends SetUpUnitTestCase
         $fakedLastSearchesInSession = ['first search', 'second search'];
 
         $this->sessionMock->expects(self::once())->method('getLastSearches')->willReturn(
-            $fakedLastSearchesInSession
+            $fakedLastSearchesInSession,
         );
 
         $this->assertRepositoryWillNeverBeCalled();

@@ -54,7 +54,7 @@ abstract class SetUpSolrModuleControllerTestCase extends SetUpUnitTestCase
                     'siteFinder' => $this->createMock(SiteFinder::class),
                     'solrConnectionManager' => $this->connectionManagerMock = $this->createMock(ConnectionManager::class),
                     'indexQueue' => $this->createMock(Queue::class),
-                ]
+                ],
             )
             ->onlyMethods($mockMethods)
             ->getMock();

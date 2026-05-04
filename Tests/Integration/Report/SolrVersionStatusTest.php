@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Report\SolrVersionStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
 /**
@@ -39,15 +38,15 @@ class SolrVersionStatusTest extends IntegrationTestBase
     public function canGetAGreenSolrConfigStatusAgainstTestServer(): void
     {
         /** @var SolrVersionStatus $solrVersionStatus */
-        $solrVersionStatus = GeneralUtility::makeInstance(SolrVersionStatus::class);
+        $solrVersionStatus = $this->get(SolrVersionStatus::class);
         $results = $solrVersionStatus->getStatus();
         self::assertCount(6, $results);
         self::assertEmpty(
             array_filter(
                 $results,
-                static fn(Status $status): bool => $status->getSeverity() !== ContextualFeedbackSeverity::OK
+                static fn(Status $status): bool => $status->getSeverity() !== ContextualFeedbackSeverity::OK,
             ),
-            'We expect to get no violations against the test Solr server '
+            'We expect to get no violations against the test Solr server ',
         );
     }
 }

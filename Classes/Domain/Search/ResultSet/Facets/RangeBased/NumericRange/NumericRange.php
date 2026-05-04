@@ -49,7 +49,7 @@ class NumericRange extends AbstractRangeFacetItem
             $selected,
             [],
             $rangeCounts,
-            $gap
+            $gap,
         );
     }
 

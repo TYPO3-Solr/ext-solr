@@ -121,7 +121,7 @@ class UrlFacetService
             $value = str_replace(
                 urlencode($this->multiValueSeparator),
                 urlencode($this->multiValueEscapeCharacter),
-                $value
+                $value,
             );
         }
 
@@ -141,7 +141,7 @@ class UrlFacetService
             $value = str_replace(
                 urlencode($this->multiValueEscapeCharacter),
                 urlencode($this->multiValueSeparator),
-                $value
+                $value,
             );
         }
 

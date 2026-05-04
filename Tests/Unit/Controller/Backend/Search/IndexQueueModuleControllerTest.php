@@ -41,7 +41,7 @@ class IndexQueueModuleControllerTest extends SetUpSolrModuleControllerTestCase
     {
         parent::setUpConcreteModuleController(
             IndexQueueModuleController::class,
-            ['addIndexQueueFlashMessage']
+            ['addIndexQueueFlashMessage'],
         );
         $this->eventDispatcher = new NoopEventDispatcher();
         $this->indexQueueMock = $this->getMockBuilder(Queue::class)

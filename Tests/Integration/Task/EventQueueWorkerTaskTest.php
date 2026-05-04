@@ -21,9 +21,12 @@ use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\Log\NullLogger;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Domain\Repository\SchedulerTaskRepository;
 use TYPO3\CMS\Scheduler\Scheduler;
+use TYPO3\CMS\Scheduler\Task\TaskSerializer;
 
 /**
  * Test case to check if the scheduler task EventQueueWorkerTask can process
@@ -31,10 +34,6 @@ use TYPO3\CMS\Scheduler\Scheduler;
  */
 class EventQueueWorkerTaskTest extends IntegrationTestBase
 {
-    protected array $coreExtensionsToLoad = [
-        'typo3/cms-scheduler',
-    ];
-
     protected EventQueueItemRepository $eventQueue;
     protected Queue $indexQueue;
 
@@ -42,11 +41,14 @@ class EventQueueWorkerTaskTest extends IntegrationTestBase
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
-        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
-        $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
 
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        $extConf->set('solr', ['monitoringType' => 1]);
+        $extSolrConfigArray = $extConf->get('solr');
+        $extSolrConfigArray['monitoringType'] = 1;
+        $extConf->set('solr', $extSolrConfigArray);
+
+        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
+        $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
     }
 
     #[Test]
@@ -59,7 +61,12 @@ class EventQueueWorkerTaskTest extends IntegrationTestBase
         $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
 
         /** @var Scheduler $scheduler */
-        $scheduler = GeneralUtility::makeInstance(Scheduler::class);
+        $scheduler = GeneralUtility::makeInstance(
+            Scheduler::class,
+            $this->createMock(NullLogger::class),
+            $this->createMock(TaskSerializer::class),
+            $this->createMock(SchedulerTaskRepository::class),
+        );
         $scheduler->executeTask($task);
 
         self::assertEquals(1, $this->indexQueue->getAllItemsCount());
@@ -72,7 +79,12 @@ class EventQueueWorkerTaskTest extends IntegrationTestBase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_handle_erroneous_event_queue_items.csv');
 
         $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
-        $scheduler = GeneralUtility::makeInstance(Scheduler::class);
+        $scheduler = GeneralUtility::makeInstance(
+            Scheduler::class,
+            $this->createMock(NullLogger::class),
+            $this->createMock(TaskSerializer::class),
+            $this->createMock(SchedulerTaskRepository::class),
+        );
         $scheduler->executeTask($task);
 
         self::assertEquals(0, $this->indexQueue->getAllItemsCount());

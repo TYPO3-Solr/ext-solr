@@ -80,6 +80,16 @@ class Page extends AbstractInitializer
     }
 
     /**
+     * Initializes the pages of a single mount point
+     *
+     * @param int $mountPointId Uid of mount point (doktype = 7) to initialize
+     */
+    public function initializeMountPoint(int $mountPointId)
+    {
+        return $this->initializeMountPointPages($mountPointId);
+    }
+
+    /**
      * Initializes Mount Point(pages) to be indexed through the Index Queue. The Mount
      * Points are searched and their mounted virtual sub-trees are then resolved
      * and added to the Index Queue as if they were actually present below the
@@ -91,13 +101,14 @@ class Page extends AbstractInitializer
      * @throws DBALException
      * @throws UnexpectedTYPO3SiteInitializationException
      */
-    protected function initializeMountPointPages(): bool
+    protected function initializeMountPointPages(?int $restrictToMountPoint = null): bool
     {
         $mountPointsInitialized = false;
         $mountPoints = $this->pagesRepository->findAllMountPagesByWhereClause(
             $this->buildPagesClause()
             . $this->buildTcaWhereClause()
             . ' AND doktype = 7 AND no_search = 0'
+            . ($restrictToMountPoint !== null ? ' AND uid=' . $restrictToMountPoint : ''),
         );
 
         if (empty($mountPoints)) {
@@ -106,7 +117,7 @@ class Page extends AbstractInitializer
 
         $databaseConnection = $this->queueItemRepository->getConnectionForAllInTransactionInvolvedTables(
             'tx_solr_indexqueue_item',
-            'tx_solr_indexqueue_indexing_property'
+            'tx_solr_indexqueue_indexing_property',
         );
 
         foreach ($mountPoints as $mountPoint) {
@@ -145,7 +156,7 @@ class Page extends AbstractInitializer
                     'Index Queue initialization failed for mount pages',
                     [
                         $e->__toString(),
-                    ]
+                    ],
                 );
                 break;
             }
@@ -168,7 +179,7 @@ class Page extends AbstractInitializer
                 FlashMessage::class,
                 'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPoint['uid'] . '.',
                 'Failed to initialize Mount Page tree. ',
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
             // @extensionScannerIgnoreLine
             $this->flashMessageQueue->addMessage($flashMessage);
@@ -185,7 +196,7 @@ class Page extends AbstractInitializer
                 . $mountPoint['mountPageSource']
                 . ' is not accessible in the frontend.',
                 'Failed to initialize Mount Page tree. ',
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
             // @extensionScannerIgnoreLine
             $this->flashMessageQueue->addMessage($flashMessage);
@@ -235,7 +246,7 @@ class Page extends AbstractInitializer
                 foreach ($items as $item) {
                     $this->queueItemRepository->updateChangedTimeByItem($item, $tstamp);
                 }
-            }
+            },
         );
 
         // add new items if necessary
@@ -249,7 +260,7 @@ class Page extends AbstractInitializer
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
 
         $mountIdentifier = $this->getMountPointIdentifier($mountProperties);
-        $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier, errors) '
+        $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, item_pid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier, errors) '
             . $this->buildSelectStatement() . ', 1, ' . $connection->quote($mountIdentifier) . ',""'
             . 'FROM pages '
             . 'WHERE '
@@ -318,7 +329,14 @@ class Page extends AbstractInitializer
     {
         $mountPageSourceId = (int)$mountPage['mountPageSource'];
 
-        $mountPageTree = $this->site->getPages($mountPageSourceId, 'pages');
+        $mountPageTree = $this->site->getPages(
+            $mountPageSourceId,
+            'pages',
+            $this->site->getSolrConfiguration()->getValueByPathOrDefaultValue(
+                'plugin.tx_solr.index.queue.pages.additionalWhereClause',
+                '',
+            ),
+        );
 
         // Do not include $mountPageSourceId in tree, if the mount point is not set to overlay.
         if (!empty($mountPageTree) && !$mountPage['mountPageOverlayed']) {

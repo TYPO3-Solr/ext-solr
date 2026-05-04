@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Exception\RootPageRecordNotFoundException;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
@@ -39,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * The Queue makes it possible to decouple the direct indexing of changed records and index them time-delayed in standalone process.
  */
-class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
+class Queue implements QueueInterface
 {
     protected RootPageResolver $rootPageResolver;
 
@@ -50,8 +49,6 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
     protected QueueItemRepository $queueItemRepository;
 
     protected QueueStatisticsRepository $queueStatisticsRepository;
-
-    protected QueueInitializationService $queueInitializationService;
 
     protected FrontendEnvironment $frontendEnvironment;
 
@@ -107,43 +104,6 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
         }
 
         return $lastIndexedItemId;
-    }
-
-    public function setQueueInitializationService(QueueInitializationService $queueInitializationService): void
-    {
-        $this->queueInitializationService = $queueInitializationService;
-    }
-
-    /**
-     * Returns the QueueInitializationService
-     */
-    public function getQueueInitializationService(): QueueInitializationService
-    {
-        if (!isset($this->queueInitializationService)) {
-            trigger_error(
-                'queueInitializationService is no longer initalized automatically, till EXT:solr supports DI'
-                . ' the QueueInitializationService has to be set manually, fallback will be removed in v13.',
-                E_USER_DEPRECATED
-            );
-            $this->queueInitializationService = GeneralUtility::makeInstance(QueueInitializationService::class);
-        }
-
-        return $this->queueInitializationService;
-    }
-
-    /**
-     * @deprecated Queue->getInitializationService is deprecated and will be removed in v12.
-     *             Use Queue->getQueueInitializationService instead or create a fresh instance.
-     */
-    public function getInitializationService(): QueueInitializationService
-    {
-        trigger_error(
-            'Queue->getInitializationService is deprecated and will be removed in v13.'
-            . ' Use Queue->getQueueInitializationService instead or create a fresh instance.',
-            E_USER_DEPRECATED
-        );
-
-        return $this->getQueueInitializationService();
     }
 
     /**
@@ -282,8 +242,9 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
         }
 
         $changedTime = $this->getItemChangedTime($itemType, (int)$itemUid);
+        $itemPid = ($itemType === 'pages') ? (int)$itemUid : (int)($record['pid'] ?? 0);
 
-        return $this->queueItemRepository->add($itemType, (int)$itemUid, $rootPageId, $changedTime, $indexingConfiguration, $indexingPriority);
+        return $this->queueItemRepository->add($itemType, (int)$itemUid, $rootPageId, $changedTime, $indexingConfiguration, $indexingPriority, $itemPid);
     }
 
     /**
@@ -295,7 +256,7 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
         string $additionalRecordFields,
     ): ?array {
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
-        $cacheId = md5('Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . (string)$itemUid . ':' . 'pid' . $additionalRecordFields);
+        $cacheId = hash('md5', 'Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . (string)$itemUid . ':' . 'pid' . $additionalRecordFields);
 
         $record = $cache->get($cacheId);
         if (empty($record)) {
@@ -359,7 +320,7 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
             $itemChangedTime,
             $pageChangedTime,
             $localizationsChangedTime,
-            $startTime
+            $startTime,
         );
     }
 
@@ -515,7 +476,7 @@ class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
         return $this->queueStatisticsRepository
             ->findOneByRootPidAndOptionalIndexingConfigurationName(
                 $site->getRootPageId(),
-                $indexingConfigurationName
+                $indexingConfigurationName,
             );
     }
 

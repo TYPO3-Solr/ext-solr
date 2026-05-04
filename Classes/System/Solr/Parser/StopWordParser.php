@@ -54,6 +54,6 @@ class StopWordParser
         }
 
         $stopWords = array_values($stopWords);
-        return json_encode($stopWords);
+        return json_encode($stopWords, JSON_UNESCAPED_UNICODE);
     }
 }

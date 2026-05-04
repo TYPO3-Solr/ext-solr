@@ -1,9 +1,9 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title","sorting","no_search_sub_entries"
-,2,1,0,1,0,0,"/1st-subpage-in-root-1","1st subpage in root 1",10,0
-,3,1,0,1,0,0,"/2nd-subpage-in-root 1","2nd subpage in root 1",20,0
-,4,1,0,254,"sys_language_uid","l10n_parent","/sysfolder-with-set-option-no_search_sub_entries","sysfolder with set option no_search_sub_entries",99,1
-,10,1,0,1,0,0,"/root-of-subtree-to-be-moved","root of subtree to be moved",30,0
-,11,10,0,1,0,0,"/root-of-subtree-to-be-moved/first-child-of-subtree-to-be-moved","first child of subtree to be moved",10,0
-,12,10,0,1,0,0,"/root-of-subtree-to-be-moved/2nd-child-of-subtree-to-be-moved","2nd child of subtree to be moved",20,0
-,13,11,0,1,0,0,"/root-of-subtree-to-be-moved/first-child-of-subtree-to-be-moved/3rd-child-of-subtree-to-be-moved","3rd child of subtree to be moved",10,0
+,"uid","pid","is_siteroot","doktype","sys_language_uid","l10n_parent","slug","title","sorting","no_search_sub_entries","tstamp"
+,2,1,0,1,0,0,"/1st-subpage-in-root-1","1st subpage in root 1",10,0,1007007007
+,3,1,0,1,0,0,"/2nd-subpage-in-root 1","2nd subpage in root 1",20,0,1007007007
+,4,1,0,254,"sys_language_uid","l10n_parent","/sysfolder-with-set-option-no_search_sub_entries","sysfolder with set option no_search_sub_entries",99,1,1007007007
+,10,1,0,1,0,0,"/root-of-subtree-to-be-moved","root of subtree to be moved",30,0,1007007007
+,11,10,0,1,0,0,"/root-of-subtree-to-be-moved/first-child-of-subtree-to-be-moved","first child of subtree to be moved",10,0,1007007007
+,12,10,0,1,0,0,"/root-of-subtree-to-be-moved/2nd-child-of-subtree-to-be-moved","2nd child of subtree to be moved",20,0,1007007007
+,13,11,0,1,0,0,"/root-of-subtree-to-be-moved/first-child-of-subtree-to-be-moved/3rd-child-of-subtree-to-be-moved","3rd child of subtree to be moved",10,0,1007007007

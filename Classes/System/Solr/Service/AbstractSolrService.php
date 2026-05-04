@@ -274,14 +274,14 @@ abstract class AbstractSolrService
         } catch (HttpException $e) {
             throw new PingFailedException(
                 'Solr ping failed with unexpected response code: ' . $e->getCode(),
-                1645716101
+                1645716101,
             );
         }
 
         if ($httpResponse->getHttpStatus() !== 200) {
             throw new PingFailedException(
                 'Solr ping failed with unexpected response code: ' . $httpResponse->getHttpStatus(),
-                1645716102
+                1645716102,
             );
         }
 
@@ -315,7 +315,12 @@ abstract class AbstractSolrService
      */
     protected function getMilliseconds(): float
     {
-        return round(microtime(true) * 1000);
+        return microtime(true) * 1000;
+    }
+
+    protected function createRequest(QueryInterface $query): Request
+    {
+        return $this->client->createRequest($query);
     }
 
     /**
@@ -323,7 +328,7 @@ abstract class AbstractSolrService
      */
     protected function createAndExecuteRequest(QueryInterface $query): ResponseAdapter
     {
-        $request = $this->client->createRequest($query);
+        $request = $this->createRequest($query);
         return $this->executeRequest($request);
     }
 

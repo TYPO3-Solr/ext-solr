@@ -198,7 +198,7 @@ class SearchUriBuilder
             [],
             $contextPageUid,
             $contextSystemLanguage,
-            $contextConfiguration
+            $contextConfiguration,
         );
         $arguments = $request->setRawQueryString($queryString)->getAsArray();
 
@@ -268,7 +268,7 @@ class SearchUriBuilder
         $values = [];
         $structure = $arguments;
         $this->getSubstitution($structure, $values);
-        $hash = md5($pageUid . json_encode($structure));
+        $hash = hash('md5', $pageUid . json_encode($structure));
         if (isset(self::$preCompiledLinks[$hash])) {
             self::$hitCount++;
             $uriCacheTemplate = self::$preCompiledLinks[$hash];
@@ -284,7 +284,7 @@ class SearchUriBuilder
             } catch (InvalidParameterException $exception) {
                 // the placeholders may result in an exception when route enhancers with requirements are active
                 // In this case, try to build the URL with original arguments
-                $hash = md5($pageUid . json_encode($arguments));
+                $hash = hash('md5', $pageUid . json_encode($arguments));
                 if (isset(self::$preCompiledLinks[$hash])) {
                     self::$hitCount++;
                     $uriCacheTemplate = self::$preCompiledLinks[$hash];
@@ -315,7 +315,7 @@ class SearchUriBuilder
         /** @var Uri $uri */
         $uri = GeneralUtility::makeInstance(
             Uri::class,
-            $uriCacheTemplate
+            $uriCacheTemplate,
         );
 
         $urlEvent = new BeforeVariableInCachedUrlAreReplacedEvent($uri, $enhancedRouting);
@@ -327,7 +327,7 @@ class SearchUriBuilder
             $uri,
             $routingConfigurations,
             $keys,
-            $values
+            $values,
         );
         $this->eventDispatcher->dispatch($variableEvent);
 
@@ -337,13 +337,13 @@ class SearchUriBuilder
             if (!str_contains($value, '###')) {
                 return $value;
             }
-            return urlencode($value);
+            return rawurlencode($value);
         }, array_keys($values));
 
         $uri = str_replace($keys, $values, $uriCacheTemplate);
         $uri = GeneralUtility::makeInstance(
             Uri::class,
-            $uri
+            $uri,
         );
         $uriEvent = new AfterUriIsProcessedEvent($uri, $routingConfigurations);
         $this->eventDispatcher->dispatch($uriEvent);
@@ -436,7 +436,7 @@ class SearchUriBuilder
             if (!empty($arguments[$pluginNameSpace]['filter']) && is_array($arguments[$pluginNameSpace]['filter'])) {
                 $arguments[$pluginNameSpace]['filter'] = ParameterSortingUtility::sortByType(
                     $arguments[$pluginNameSpace]['filter'],
-                    $searchRequest->getActiveFacetsUrlParameterStyle()
+                    $searchRequest->getActiveFacetsUrlParameterStyle(),
                 );
             }
         }

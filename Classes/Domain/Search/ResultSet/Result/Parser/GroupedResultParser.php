@@ -211,7 +211,7 @@ class GroupedResultParser extends AbstractResultParser
             $rawGroup->doclist->numFound,
             $rawGroup->doclist->start,
             $rawGroup->doclist->maxScore,
-            $searchRequest
+            $searchRequest,
         );
 
         $currentPage = $searchRequest->getGroupItemPage($parentGroup->getGroupName(), $groupValue);

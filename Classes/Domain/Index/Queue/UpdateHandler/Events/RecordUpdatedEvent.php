@@ -18,6 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events;
 
 /**
- * Event fired if a record is created or updated
+ * Event fired if a record is updated
  */
 class RecordUpdatedEvent extends AbstractDataUpdateEvent {}

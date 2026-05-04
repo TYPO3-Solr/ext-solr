@@ -21,14 +21,15 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
@@ -40,6 +41,7 @@ class Builder
 {
     public function __construct(
         protected readonly IdBuilder $variantIdBuilder,
+        protected ExtensionConfiguration $extensionConfiguration,
     ) {}
 
     /**
@@ -49,7 +51,7 @@ class Builder
         PageInformation $pageInformation,
         PageArguments $pageArguments,
         SiteLanguage $siteLanguage,
-        TypoScriptFrontendController $tsfe,
+        string $pageContent,
         string $url,
         Rootline $pageAccessRootline,
         string $mountPointParameter = '',
@@ -64,8 +66,10 @@ class Builder
         $documentId = $this->getPageDocumentId($pageInformation, $pageArguments, $siteLanguage, $accessGroups, $mountPointParameter);
 
         $document->setField('id', $documentId);
-        $document->setField('site', $site->getDomain());
+        $document->setField('site', $site->getSiteIdentifier());
+        $document->setField('typo3Context_stringS', (string)Environment::getContext());
         $document->setField('siteHash', $site->getSiteHash());
+        $document->setField('domain_stringS', $site->getDomain());
         $document->setField('appKey', 'EXT:solr');
         $document->setField('type', 'pages');
 
@@ -89,8 +93,7 @@ class Builder
         $this->addEndtimeField($document, $pageRecord);
 
         // content
-        // @extensionScannerIgnoreLine
-        $contentExtractor = $this->getExtractorForPageContent($tsfe->content);
+        $contentExtractor = $this->getExtractorForPageContent($pageContent);
         $document->setField('title', $contentExtractor->getPageTitle());
         $document->setField('subTitle', $pageRecord['subtitle']);
         $document->setField('navTitle', $pageRecord['nav_title']);
@@ -125,9 +128,10 @@ class Builder
         $document->setField('type', $type);
         $document->setField('appKey', 'EXT:solr');
 
-        // site, siteHash
-        $document->setField('site', $site->getDomain());
+        $document->setField('site', $site->getSiteIdentifier());
+        $document->setField('typo3Context_stringS', (string)Environment::getContext());
         $document->setField('siteHash', $site->getSiteHash());
+        $document->setField('domain_stringS', $site->getDomain());
 
         // uid, pid
         $document->setField('uid', $itemRecord['uid']);

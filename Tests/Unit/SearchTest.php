@@ -37,6 +37,8 @@ class SearchTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $container = new Container();
         $container->set(SiteFinder::class, $this->createMock(SiteFinder::class));
         GeneralUtility::setContainer($container);
@@ -47,13 +49,12 @@ class SearchTest extends SetUpUnitTestCase
             ],
             [
                 $this->createMock(Client::class),
-            ]
+            ],
         );
 
         $this->solrConnectionMock = $this->createMock(SolrConnection::class);
         $this->solrConnectionMock->expects(self::any())->method('getReadService')->willReturn($this->solrReadServiceMock);
         $this->search = new Search($this->solrConnectionMock);
-        parent::setUp();
     }
 
     #[Test]
@@ -65,7 +66,7 @@ class SearchTest extends SetUpUnitTestCase
             function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
                 return $this->createMock(ResponseAdapter::class);
-            }
+            },
         );
 
         $this->search->search($query, 0, $limit);
@@ -82,7 +83,7 @@ class SearchTest extends SetUpUnitTestCase
             function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
                 return $this->createMock(ResponseAdapter::class);
-            }
+            },
         );
 
         $this->search->search($query, 0, null);

@@ -44,7 +44,7 @@ class LastSearchesViewHelper extends AbstractSolrViewHelper
         $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration();
         $lastSearchesService = GeneralUtility::makeInstance(
             LastSearchesService::class,
-            $typoScriptConfiguration
+            $typoScriptConfiguration,
         );
         $templateVariableContainer = $this->renderingContext->getVariableProvider();
         $templateVariableContainer->add('lastSearches', $lastSearchesService->getLastSearches());

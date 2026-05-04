@@ -99,14 +99,14 @@ class Rootline
             if ($this->rootlineElements[$lastElementIndex]->getType() == RootlineElement::ELEMENT_TYPE_CONTENT) {
                 throw new RootlineElementFormatException(
                     'Can not add an element to an Access Rootline whose\' last element is a content type element.',
-                    1294422132
+                    1294422132,
                 );
             }
 
             if ($this->rootlineElements[$lastElementIndex]->getType() == RootlineElement::ELEMENT_TYPE_RECORD) {
                 throw new RootlineElementFormatException(
                     'Can not add an element to an Access Rootline whose\' last element is a record type element.',
-                    1308343423
+                    1308343423,
                 );
             }
         }
@@ -142,7 +142,7 @@ class Rootline
             ) {
                 $accessRootline->push(GeneralUtility::makeInstance(
                     RootlineElement::class,
-                    $pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
+                    $pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group'],
                 ));
             }
         }
@@ -155,7 +155,7 @@ class Rootline
         if ($currentPageRecord['fe_group']) {
             $accessRootline->push(GeneralUtility::makeInstance(
                 RootlineElement::class,
-                $currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
+                $currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group'],
             ));
         }
 

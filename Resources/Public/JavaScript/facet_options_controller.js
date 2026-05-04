@@ -1,54 +1,76 @@
-/**
- * The Controller. Controller responds to user actions and
- * invokes changes on the model.
- */
-function OptionFacetController() {
-    var _this = this;
+class OptionFacetController {
+  constructor(toggles, filters) {
+    this.toggles = toggles
+    this.filters = filters
+    this.hiddenFacets = document.querySelectorAll('.tx-solr-facet-hidden')
+  }
 
-    this.init = function () {
-        _this.initToggle();
-        _this.initFilter();
-    };
+  /**
+   * Initialize toggle and filter functions
+   */
+  init() {
+    this.toggles.length ? this.initToggle() : null
+    this.filters.length ? this.initFilter() : null
+  }
 
-    this.initToggle = function () {
+  /**
+   * Initialize toggle functions (show more/less)
+   */
+  initToggle() {
+    this.hiddenFacets.forEach(el => {
+      el.style.display = 'none';
+    });
 
-        jQuery('.tx-solr-facet-hidden').hide();
-        jQuery('a.tx-solr-facet-show-all').click(function() {
-            if (jQuery(this).parent().siblings('.tx-solr-facet-hidden:visible').length == 0) {
-                jQuery(this).parent().siblings('.tx-solr-facet-hidden').show();
-                jQuery(this).text(jQuery(this).data('label-less'));
-            } else {
-                jQuery(this).parent().siblings('.tx-solr-facet-hidden').hide();
-                jQuery(this).text(jQuery(this).data('label-more'));
-            }
-
-            return false;
-        });
-    }
-
-    this.initFilter = function () {
-        filterableFacets = jQuery(".facet-filter-box").closest('.facet');
-        filterableFacets.each(
-            function () {
-                var searchBox = jQuery(this).find('.facet-filter-box');
-                var searchItems = jQuery(this).find('.facet-filter-item');
-                searchBox.on("keyup", function() {
-                    var value = searchBox.val().toLowerCase();
-                    searchItems.each(function() {
-                        var filteredItem = jQuery(this);
-                        filteredItem.toggle(filteredItem.text().toLowerCase().indexOf(value) > -1)
-                    });
-                });
-            }
+    this.toggles.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const parent = link.parentElement;
+        const hiddenSiblings = Array.from(parent.parentElement.children).filter(
+          sibling => sibling !== parent && sibling.classList.contains('tx-solr-facet-hidden')
         );
-    }
+
+        const anyVisible = hiddenSiblings.some(el => el.style.display !== 'none');
+
+        if (anyVisible) {
+          hiddenSiblings.forEach(el => el.style.display = 'none');
+          link.textContent = link.dataset.labelMore;
+        } else {
+          hiddenSiblings.forEach(el => el.style.display = '');
+          link.textContent = link.dataset.labelLess;
+        }
+      });
+    });
+  }
+
+  /**
+   * Initialize filter functions
+   */
+  initFilter() {
+    this.filters.forEach(searchBox => {
+      const facet = searchBox.closest('.facet');
+      const searchItems = facet.querySelectorAll('.facet-filter-item');
+
+      searchBox.addEventListener('keyup', () => {
+        const value = searchBox.value.toLowerCase();
+        searchItems.forEach(item => {
+          item.style.display = item.textContent.toLowerCase().includes(value) ? '' : 'none';
+        });
+      });
+    });
+  }
 }
 
-jQuery(document).ready(function () {
-    var optionsController = new OptionFacetController();
-    optionsController.init();
+const optionFacetControllers = [];
+const initFacetOptions = () => {
+  let toggles = document.querySelectorAll('a.tx-solr-facet-show-all');
+  let filters = document.querySelectorAll('.facet-filter-box');
 
-    jQuery("body").on("tx_solr_updated", function() {
-        optionsController.init();
-    });
-});
+  optionFacetControllers.length = 0;
+  if (toggles.length || filters.length) {
+    const optionFacetController = new OptionFacetController(toggles, filters);
+    optionFacetController.init();
+  }
+};
+
+initFacetOptions();
+document.body.addEventListener("tx_solr_updated", initFacetOptions);

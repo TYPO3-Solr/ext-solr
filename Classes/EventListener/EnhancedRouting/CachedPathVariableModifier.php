@@ -20,27 +20,29 @@ namespace ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting;
 use ApacheSolrForTypo3\Solr\Event\Routing\BeforeCachedVariablesAreProcessedEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use Psr\Http\Message\UriInterface;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Event listener to handle path elements containing placeholder
  *
- *
  * @noinspection PhpUnused Listener for {@link BeforeCachedVariablesAreProcessedEvent}
  */
-class CachedPathVariableModifier
+final readonly class CachedPathVariableModifier
 {
-    protected RoutingService $routingService;
-
+    #[AsEventListener(
+        identifier: 'solr.routing.cachedurl-modifier',
+    )]
     public function __invoke(BeforeCachedVariablesAreProcessedEvent $event): void
     {
         if (!$event->hasRouting()) {
             return;
         }
+
         $pathVariables = $this->getPathVariablesFromUri($event->getUri());
 
-        // No path variables exists .. skip processing
-        if (empty($pathVariables)) {
+        // No path variables exist. Skip processing
+        if ($pathVariables === []) {
             return;
         }
 
@@ -48,13 +50,12 @@ class CachedPathVariableModifier
         $variableValues = $event->getVariableValues();
         $enhancerConfiguration = $event->getRouterConfiguration();
 
-        $this->routingService = GeneralUtility::makeInstance(
-            RoutingService::class,
+        $routingService = $this->getRoutingService(
             $enhancerConfiguration['solr'] ?? [],
-            (string)$enhancerConfiguration['extensionKey']
+            (string)$enhancerConfiguration['extensionKey'],
         );
 
-        if (!$this->routingService->isRouteEnhancerForSolr((string)$enhancerConfiguration['type'])) {
+        if (!$routingService->isRouteEnhancerForSolr((string)$enhancerConfiguration['type'])) {
             return;
         }
 
@@ -63,14 +64,16 @@ class CachedPathVariableModifier
         $variableKeysCount = count($variableKeys);
         for ($i = 0; $i < $variableKeysCount; $i++) {
             $standardizedKey = $this->standardizeKey($variableKeys[$i]);
-            if (!$this->containsPathVariable($standardizedKey, $pathVariables) || empty($variableValues[$standardizedKey])) {
+            if (!$this->containsPathVariable($standardizedKey, $pathVariables, $routingService)
+                || empty($variableValues[$standardizedKey])
+            ) {
                 continue;
             }
             // Note: Some values contain the multi value separator
             if ($this->containsMultiValue()) {
-                // Note: if the customer configured a + as separator an additional check on the facet value is required!
-                $facets = $this->routingService->pathFacetStringToArray(
-                    $this->standardizeKey((string)$variableValues[$standardizedKey])
+                // Note: if the customer configured a + as a separator, an additional check on the facet value is required!
+                $facets = $routingService->pathFacetStringToArray(
+                    $this->standardizeKey((string)$variableValues[$standardizedKey]),
                 );
 
                 $singleValues = [];
@@ -84,12 +87,12 @@ class CachedPathVariableModifier
                         $singleValues[$index - 1] .= ' ' . $facet;
                     }
                 }
-                $value = $this->routingService->pathFacetsToString($singleValues);
+                $value = $routingService->pathFacetsToString($singleValues);
             } else {
                 $value = explode(
                     ':',
                     $this->standardizeKey((string)$variableValues[$standardizedKey]),
-                    2
+                    2,
                 )[1];
             }
             $standardizedKeys[$i] = $standardizedKey;
@@ -103,7 +106,7 @@ class CachedPathVariableModifier
     /**
      * Extract path variables from URI
      */
-    protected function getPathVariablesFromUri(UriInterface $uri): array
+    private function getPathVariablesFromUri(UriInterface $uri): array
     {
         $elements = explode('/', $uri->getPath());
         $variables = [];
@@ -124,9 +127,9 @@ class CachedPathVariableModifier
     }
 
     /**
-     * Standardize a given string in order to reduce the amount of if blocks
+     * Standardize a given string to reduce the number of if blocks
      */
-    protected function standardizeKey(string $key): string
+    private function standardizeKey(string $key): string
     {
         $map = [
             '%23' => '#',
@@ -136,15 +139,19 @@ class CachedPathVariableModifier
     }
 
     /**
-     * Check if the variable is includes within the path variables
+     * Check if the variable is included within the path variables
      */
-    protected function containsPathVariable(string $variableName, array $pathVariables): bool
-    {
+    private function containsPathVariable(
+        string $variableName,
+        array $pathVariables,
+        RoutingService $routingService,
+    ): bool {
         if (in_array($variableName, $pathVariables)) {
             return true;
         }
+
         foreach ($pathVariables as $value) {
-            $segments = explode($this->routingService->getUrlFacetPathService()->getMultiValueSeparator(), $value);
+            $segments = explode($routingService->getUrlFacetPathService()->getMultiValueSeparator(), $value);
             if (in_array($variableName, $segments)) {
                 return true;
             }
@@ -153,9 +160,18 @@ class CachedPathVariableModifier
         return false;
     }
 
-    protected function containsMultiValue(): bool
+    private function containsMultiValue(): bool
     {
         // @todo: implement the check, or remove contents of if statement.
         return false;
+    }
+
+    private function getRoutingService(array $solrEnhancerConfiguration, string $extensionKey): RoutingService
+    {
+        return GeneralUtility::makeInstance(
+            RoutingService::class,
+            $solrEnhancerConfiguration,
+            $extensionKey,
+        );
     }
 }

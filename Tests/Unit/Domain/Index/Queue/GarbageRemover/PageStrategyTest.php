@@ -30,7 +30,7 @@ class PageStrategyTest extends AbstractStrategyTestBase
             null,
             [],
             '',
-            false
+            false,
         );
     }
 }

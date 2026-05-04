@@ -69,7 +69,7 @@ class Multivalue extends AbstractContentObject
         $listAsArray = GeneralUtility::trimExplode(
             $conf['separator'],
             $data ?? '',
-            $removeEmptyValues
+            $removeEmptyValues,
         );
 
         if (!empty($conf['removeDuplicateValues'])) {

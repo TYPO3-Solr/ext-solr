@@ -16,15 +16,22 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingInstructions;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
+use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
+use Throwable;
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -34,6 +41,9 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Domain\Repository\SchedulerTaskRepository;
+use TYPO3\CMS\Scheduler\Scheduler;
+use TYPO3\CMS\Scheduler\Task\TaskSerializer;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -44,10 +54,13 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 abstract class IntegrationTestBase extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
-    private $previousErrorHandler;
+    private int $previousErrorReporting;
 
     protected array $coreExtensionsToLoad = [
+        'typo3/cms-install',
+        'typo3/cms-reports',
         'typo3/cms-scheduler',
+        'typo3/cms-tstemplate',
         'typo3/cms-fluid-styled-content',
     ];
 
@@ -57,11 +70,11 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     protected const LANGUAGE_PRESETS = [
         'EN' => ['id' => 0, 'title' => 'English', 'locale' => 'en_US.UTF8'],
         'DE' => ['id' => 1, 'title' => 'German', 'locale' => 'de_DE.UTF8', 'fallbackType' => 'fallback', 'fallbacks' => 'EN'],
-        'DA' => ['id' => 2, 'title' => 'Danish', 'locale' => 'da_DA.UTF8'],
+        'DA' => ['id' => 2, 'title' => 'Danish', 'locale' => 'da_DA.UTF8', 'fallbackType' => 'strict'],
     ];
 
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/solr',
+        'apache-solr-for-typo3/solr',
     ];
 
     protected array $testSolrCores = [
@@ -84,36 +97,77 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         //this is needed by the TYPO3 core.
         chdir(Environment::getPublicPath() . '/');
-        $this->instancePath = $this->getInstancePath();
-        $this->previousErrorHandler = $this->failWhenSolrDeprecationIsCreated();
+        $this->previousErrorReporting = error_reporting();
+        $this->failWhenSolrDeprecationIsCreated();
+
+        // Clean Solr cores at the START of each test to prevent cross-contamination from previous tests
+        $this->cleanUpAllCoresOnSolrServerAndAssertEmpty();
     }
 
     protected function tearDown(): void
     {
-        set_error_handler($this->previousErrorHandler);
+        restore_error_handler();
+        error_reporting($this->previousErrorReporting);
+
+        // Reset static caches that survive GeneralUtility::purgeInstances()
+        ConnectionManager::resetConnections();
+        SiteUtility::reset();
+        TwoLevelCache::flushAllCaches();
+
         parent::tearDown();
+    }
+
+    /**
+     * Override getInstanceIdentifier to support paratest worker-specific test instances.
+     * Each worker gets its own test instance directory to prevent site config and Solr core sharing.
+     */
+    protected static function getInstanceIdentifier(): string
+    {
+        $baseIdentifier = parent::getInstanceIdentifier();
+        $token = getenv('TEST_TOKEN');
+        if ($token !== false && $token !== '') {
+            // Paratest uses 1-based numbering; convert to 0-based worker index
+            $workerIndex = (int)$token - 1;
+            return $baseIdentifier . '_w' . $workerIndex;
+        }
+        return $baseIdentifier;
+    }
+
+    /**
+     * Override getInstancePath to ensure worker-specific paths are used.
+     * Necessary to guarantee $this->getInstancePath() (line 315 of FunctionalTestCase::setUp)
+     * returns the worker-specific path.
+     */
+    protected static function getInstancePath(): string
+    {
+        $identifier = static::getInstanceIdentifier();
+        return ORIGINAL_ROOT . 'typo3temp/var/tests/functional-' . $identifier;
     }
 
     /**
      * @throws InvalidArgumentException
      *
      * Please don't use that method, except you really want to clean a single core.
+     *
+     * @internal
      */
-    protected function cleanUpSolrServerAndAssertEmpty(?string $coreName = 'core_en'): void
+    protected function cleanUpSolrServerAndAssertEmpty(string $coreName = 'core_en'): void
     {
         $this->validateTestCoreName($coreName);
 
         // cleanup the solr server
+        $resolvedCoreName = $this->resolveCoreName($coreName);
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $response = $requestFactory->request(
-            $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update',
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $resolvedCoreName . '/update?commit=true',
             'POST',
             [
                 'headers' => ['Content-Type' => 'application/xml'],
                 'body' => '<delete><query>*:*</query></delete>',
-            ]
+            ],
         );
         $result = $response->getBody()->getContents();
 
@@ -121,10 +175,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
             self::fail('Could not empty solr test index');
         }
 
-        // we wait to make sure the document will be deleted in solr
-        $this->waitToBeVisibleInSolr();
-
-        $this->assertSolrIsEmpty();
+        $this->assertSolrIsEmpty($coreName);
     }
 
     protected function cleanUpAllCoresOnSolrServerAndAssertEmpty(): void
@@ -141,11 +192,19 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     /**
      * @throws InvalidArgumentException
      */
-    protected function waitToBeVisibleInSolr(?string $coreName = 'core_en'): array|false
+    protected function waitToBeVisibleInSolr(string $coreName = 'core_en'): void
     {
         $this->validateTestCoreName($coreName);
-        $url = $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?softCommit=true';
-        return get_headers($url);
+        $resolvedCoreName = $this->resolveCoreName($coreName);
+        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        $requestFactory->request(
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $resolvedCoreName . '/update?commit=true',
+            'POST',
+            [
+                'headers' => ['Content-Type' => 'application/xml'],
+                'body' => '<commit/>',
+            ],
+        );
     }
 
     /**
@@ -154,25 +213,38 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     protected function validateTestCoreName(string $coreName): void
     {
         if (!in_array($coreName, $this->testSolrCores, true)) {
-            throw new InvalidArgumentException('No valid test core passed');
+            throw new InvalidArgumentException(
+                'No valid test core passed',
+                1104133825,
+            );
         }
     }
 
     /**
      * Assertion to check if the solr server is empty.
      */
-    protected function assertSolrIsEmpty(): void
+    protected function assertSolrIsEmpty(string $coreName = 'core_en'): void
     {
-        $this->assertSolrContainsDocumentCount(0);
+        $this->assertSolrContainsDocumentCount(0, coreName: $coreName);
     }
 
     /**
      * Assertion to check if the solr server contains an expected count of documents.
      */
-    protected function assertSolrContainsDocumentCount(int $documentCount): void
-    {
-        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        self::assertStringContainsString('"numFound":' . $documentCount, $solrContent, 'Solr contains unexpected amount of documents');
+    protected function assertSolrContainsDocumentCount(
+        int $documentCount,
+        ?string $message = null,
+        string $coreName = 'core_en',
+    ): void {
+        $resolvedCoreName = $this->resolveCoreName($coreName);
+        $solrContent = file_get_contents(
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $resolvedCoreName . '/select?q=*:*',
+        );
+        self::assertStringContainsString(
+            '"numFound":' . $documentCount,
+            $solrContent,
+            $message ?? 'Solr contains unexpected amount of documents',
+        );
     }
 
     /**
@@ -191,8 +263,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort($solrConnectionInfo['scheme'], $solrConnectionInfo['host'], $solrConnectionInfo['port']);
     }
 
-    protected static string $lastSiteCreated = '';
-
     /**
      * @internal Don't use that method in tests, except you want to simulate the misconfiguration.
      */
@@ -202,23 +272,18 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         ?int $port = 8983,
         ?bool $disableDefaultLanguage = false,
     ): void {
-        $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage);
-        if (self::$lastSiteCreated === $siteCreatedHash) {
-            return;
-        }
-
         $defaultLanguage = $this->buildDefaultLanguageConfiguration('EN', '/en/');
-        $defaultLanguage['solr_core_read'] = 'core_en';
+        $defaultLanguage['solr_core_read'] = $this->resolveCoreName('core_en');
 
         if ($disableDefaultLanguage === true) {
             $defaultLanguage['enabled'] = 0;
         }
 
         $german = $this->buildLanguageConfiguration('DE', '/de/', ['EN'], 'fallback');
-        $german['solr_core_read'] = 'core_de';
+        $german['solr_core_read'] = $this->resolveCoreName('core_de');
 
         $danish = $this->buildLanguageConfiguration('DA', '/da/');
-        $danish['solr_core_read'] = 'core_da';
+        $danish['solr_core_read'] = $this->resolveCoreName('core_da');
 
         $this->writeSiteConfiguration(
             'integration_tree_one',
@@ -226,7 +291,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
             [
                 $defaultLanguage, $german, $danish,
             ],
-            $this->buildErrorHandlingConfiguration('Fluid', [404])
+            $this->buildErrorHandlingConfiguration('Fluid', [404]),
         );
 
         $this->writeSiteConfiguration(
@@ -235,13 +300,13 @@ abstract class IntegrationTestBase extends FunctionalTestCase
             [
                 $defaultLanguage, $german, $danish,
             ],
-            $this->buildErrorHandlingConfiguration('Fluid', [404])
+            $this->buildErrorHandlingConfiguration('Fluid', [404]),
         );
 
         $this->writeSiteConfiguration(
             'integration_tree_three',
             $this->buildSiteConfiguration(211, 'http://testthree.site/'),
-            [$defaultLanguage]
+            [$defaultLanguage],
         );
 
         $globalSolrSettings = [
@@ -260,8 +325,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $this->importRootPagesAndTemplatesForConfiguredSites();
 
         clearstatcache();
-        usleep(500);
-        self::$lastSiteCreated = $siteCreatedHash;
     }
 
     /**
@@ -273,6 +336,10 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      */
     private function importRootPagesAndTemplatesForConfiguredSites(): void
     {
+        if ($this->initializeDatabase === false) {
+            $this->skipImportRootPagesAndTemplatesForConfiguredSites = true;
+            return;
+        }
         if ($this->skipImportRootPagesAndTemplatesForConfiguredSites === true) {
             return;
         }
@@ -294,7 +361,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
                     $this->fail("Executed deprecated EXT:solr code: in $file:$line" . PHP_EOL . $msg);
                 }
                 return true;
-            }
+            },
         );
     }
 
@@ -315,6 +382,49 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     {
         $solrConnectionInfo = $this->getSolrConnectionInfo();
         return $solrConnectionInfo['scheme'] . '://' . $solrConnectionInfo['host'] . ':' . $solrConnectionInfo['port'];
+    }
+
+    /**
+     * Returns the paratest worker token (0-indexed), or null when not running in parallel.
+     */
+    protected function getParatestWorkerToken(): ?int
+    {
+        $token = getenv('TEST_TOKEN');
+        if ($token === false || $token === '') {
+            return null;
+        }
+        return (int)$token;
+    }
+
+    /**
+     * Maps a logical core name (e.g. 'core_en') to its worker-specific variant
+     * (e.g. 'core_en_3') when running under paratest. Worker 0 uses the base core
+     * without suffix. Returns the name unchanged for sequential runs (no TEST_TOKEN).
+     *
+     * Note: Paratest uses 1-based worker numbering (TEST_TOKEN=1-8 for 8 workers),
+     * so we subtract 1 to match our 0-based core naming (core_en is base, core_en_1-7 are workers).
+     */
+    protected function resolveCoreName(string $coreName): string
+    {
+        $token = $this->getParatestWorkerToken();
+        if ($token === null) {
+            return $coreName;
+        }
+        // Paratest uses 1-based numbering; subtract 1 to get 0-based worker index
+        $token = $token - 1;
+        if ($token === 0) {
+            return $coreName;  // Worker 0 uses the base core
+        }
+        return $coreName . '_' . $token;
+    }
+
+    /**
+     * Returns the full Solr core base URL, resolved to the current worker's core.
+     * Example: http://solr-tests:8985/solr/core_en_3
+     */
+    protected function getSolrCoreUrl(string $coreName = 'core_en'): string
+    {
+        return $this->getSolrConnectionUriAuthority() . '/solr/' . $this->resolveCoreName($coreName);
     }
 
     /**
@@ -374,7 +484,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $connection->update(
             'sys_template',
             $updateFields,
-            ['uid' => $template['uid']]
+            ['uid' => $template['uid']],
         );
     }
 
@@ -382,20 +492,85 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      * @throws InvalidArgumentException
      * @throws SiteNotFoundException
      * @throws DBALException
+     * @throws NoSuchCacheException
      */
     protected function indexPages(
         array $importPageIds,
         ?int $frontendUserId = null,
     ): void {
-        // Mark the pages as items to index
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         foreach ($importPageIds as $importPageId) {
             $site = $siteFinder->getSiteByPageId($importPageId);
             $queueItem = $this->addPageToIndexQueue($importPageId, $site);
             $frontendUrl = $site->getRouter()->generateUri($importPageId);
-            $this->executePageIndexer($frontendUrl, $queueItem, $frontendUserId);
+            $this->executePageIndexer((string)$frontendUrl, $queueItem, $frontendUserId);
         }
         $this->waitToBeVisibleInSolr();
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws DBALException
+     */
+    protected function indexPageQueueItem(Item $item, int $language = 0, string $coreName = 'core_en'): bool
+    {
+        $parameters = [];
+        if ($item->hasIndexingProperty('isMountedPage')) {
+            $parameters['MP'] = $item->getIndexingProperty('mountPageSource')
+                . '-' . $item->getIndexingProperty('mountPageDestination');
+        }
+
+        if ($language > 0) {
+            $parameters['_language'] = $language;
+        }
+
+        $frontendUrl = $item->getSite()->getTypo3SiteObject()->getRouter()->generateUri(
+            $item->getRecordUid(),
+            $parameters,
+        );
+
+        $response = $this->executePageIndexer((string)$frontendUrl, $item);
+
+        $connection = $this->getConnectionPool()->getConnectionForTable('sys_template');
+        $connection->update(
+            'tx_solr_indexqueue_item',
+            ['indexed' => time()],
+            ['uid' => $item->getIndexQueueUid()],
+        );
+
+        return $response->getStatusCode() === 200;
+    }
+
+    /**
+     * Executes a Frontend sub-request to trigger page indexing via the new
+     * IndexingInstructions pipeline (SolrIndexingMiddleware).
+     */
+    protected function executePageIndexer(string $url, Item $item, ?int $frontendUserId = null): ResponseInterface
+    {
+        $instructions = new IndexingInstructions(
+            items: [$item],
+            action: IndexingInstructions::ACTION_INDEX_PAGE,
+            language: 0,
+            accessRootline: (string)Rootline::getAccessRootlineByPageId($item->getRecordUid()),
+            parameters: ['item' => $item->getIndexQueueUid()],
+        );
+
+        $request = new InternalRequest($url);
+        $request = $request->withAttribute('solr.indexingInstructions', $instructions);
+
+        $requestContext = null;
+        if ($frontendUserId !== null) {
+            $requestContext = (new InternalRequestContext())->withFrontendUserId($frontendUserId);
+        }
+
+        $response = $this->executeFrontendSubRequest($request, $requestContext);
+
+        /** @var VariableFrontend $runtimeCache */
+        $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime');
+        $runtimeCache->flush();
+
+        $response->getBody()->rewind();
+        return $response;
     }
 
     /**
@@ -406,7 +581,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      */
     protected function addPageToIndexQueue(int $pageId, Site $site): Item
     {
-        $queueItem = [
+        $queueItemSearchCriteria = [
             'root' => $site->getRootPageId(),
             'item_type' => 'pages',
             'item_uid' => $pageId,
@@ -414,12 +589,32 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         ];
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
         // Check if item (type + Page ID) is already in index, if so update it
-        $row = $connection->select(['*'], 'tx_solr_indexqueue_item', $queueItem)->fetchAssociative();
+        $row = $connection->select(['*'], 'tx_solr_indexqueue_item', $queueItemSearchCriteria)->fetchAssociative();
         if (is_array($row)) {
-            $connection->update('tx_solr_indexqueue_item', $queueItem + ['errors' => ''], ['uid' => $row['uid']]);
-            $queueItem['uid'] = $row['uid'];
+            $connection->update(
+                'tx_solr_indexqueue_item',
+                [
+                    'changed' => 1007007007,
+                    'errors' => '',
+                ],
+                [
+                    'uid' => $row['uid'],
+                ],
+            );
+            $queueItem = array_merge(
+                $row,
+                [
+                    'changed' => 1007007007,
+                    'errors' => '',
+                ],
+            );
         } else {
-            $connection->insert('tx_solr_indexqueue_item', $queueItem + ['errors' => '']);
+            $queueItem = $queueItemSearchCriteria
+                + [
+                    'changed' => 1007007007,
+                    'errors' => '',
+                ];
+            $connection->insert('tx_solr_indexqueue_item', $queueItem);
             $queueItem['uid'] = (int)$connection->lastInsertId();
             $queueItem = $connection->select(['*'], 'tx_solr_indexqueue_item', ['uid' => $queueItem['uid']])->fetchAssociative();
         }
@@ -439,36 +634,24 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     }
 
     /**
-     * Executes a Frontend request within the same PHP process to trigger the indexing of a page.
+     * Triggers event queue processing
+     *
+     * @throws Throwable
      */
-    protected function executePageIndexer(string $url, Item $item, ?int $frontendUserId = null): ResponseInterface
+    protected function processEventQueue(): void
     {
-        $request = new InternalRequest($url);
-        $requestContext = null;
+        /** @var EventQueueWorkerTask $task */
+        $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
 
-        // Now add the headers for item to the request
-        $indexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class);
-        $indexerRequest->setIndexQueueItem($item);
-        $accessRootline = Rootline::getAccessRootlineByPageId($item->getRecordUid());
-        $indexerRequest->setParameter('accessRootline', (string)$accessRootline);
-        $indexerRequest->setParameter('item', $item->getIndexQueueUid());
-        $indexerRequest->addAction('indexPage');
-        $headers = $indexerRequest->getHeaders();
+        /** @var Scheduler $scheduler */
+        $scheduler = GeneralUtility::makeInstance(
+            Scheduler::class,
+            $this->createMock(NullLogger::class),
+            $this->createMock(TaskSerializer::class),
+            $this->createMock(SchedulerTaskRepository::class),
+        );
 
-        foreach ($headers as $header) {
-            [$headerName, $headerValue] = GeneralUtility::trimExplode(':', $header, true, 2);
-            $request = $request->withAddedHeader($headerName, $headerValue);
-        }
-        if ($frontendUserId !== null) {
-            $requestContext = (new InternalRequestContext())->withFrontendUserId($frontendUserId);
-        }
-        $response = $this->executeFrontendSubRequest($request, $requestContext);
-        /** @var VariableFrontend $runtimeCache */
-        $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime');
-        $runtimeCache->flush();
-
-        $response->getBody()->rewind();
-        return $response;
+        $scheduler->executeTask($task);
     }
 
     protected function addSimpleFrontendRenderingToTypoScriptRendering(int $templateRecord, string $additionalContent = ''): void

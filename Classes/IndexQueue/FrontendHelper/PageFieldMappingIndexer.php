@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\InvalidFieldNameException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -82,7 +83,7 @@ class PageFieldMappingIndexer
             if (!AbstractIndexer::isAllowedToOverrideField($mappedFieldName)) {
                 throw new InvalidFieldNameException(
                     'Must not overwrite field "type".',
-                    1435441863
+                    1435441863,
                 );
             }
             $fields[$mappedFieldName] = $this->resolveFieldValue($mappedFieldName, $pageDocument, $pageRecord);
@@ -98,29 +99,38 @@ class PageFieldMappingIndexer
      * Otherwise, the plain page record field value is used.
      *
      * @param string $solrFieldName The Solr field name to resolve the value from the item's record
-     * @return string|array The resolved value to be indexed
+     * @return array|float|int|string|null The resolved value to be indexed
      */
-    protected function resolveFieldValue(string $solrFieldName, Document $pageDocument, array $pageRecord): mixed
-    {
+    protected function resolveFieldValue(
+        string $solrFieldName,
+        Document $pageDocument,
+        array $pageRecord,
+    ): mixed {
         $pageIndexingConfiguration = $this->configuration->getIndexQueueFieldsConfigurationByConfigurationName($this->pageIndexingConfigurationName);
 
         if (isset($pageIndexingConfiguration[$solrFieldName . '.'])) {
             $pageRecord = AbstractIndexer::addVirtualContentFieldToRecord($pageDocument, $pageRecord);
 
             // configuration found => need to resolve a cObj
-            $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $GLOBALS['TSFE']);
+            $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $contentObject->start($pageRecord, 'pages');
 
             $fieldValue = $contentObject->cObjGetSingle(
                 $pageIndexingConfiguration[$solrFieldName],
-                $pageIndexingConfiguration[$solrFieldName . '.']
+                $pageIndexingConfiguration[$solrFieldName . '.'],
             );
 
-            if (AbstractIndexer::isSerializedValue($pageIndexingConfiguration, $solrFieldName)) {
-                $fieldValue = unserialize($fieldValue);
+            try {
+                $unserializedFieldValue = @unserialize($fieldValue);
+                if (is_array($unserializedFieldValue) || is_object($unserializedFieldValue)) {
+                    $fieldValue = $unserializedFieldValue;
+                }
+            } catch (Throwable) {
+                // Evil catch, but anyway do nothing to prevent fluting the logs on indexing.
+                // If the cObject implementation do not provide data the fields are not present in index, which will be noticed and fixed by devs/integrators.
             }
         } else {
-            $fieldValue = $pageRecord[$pageIndexingConfiguration[$solrFieldName]];
+            $fieldValue = $pageRecord[$pageIndexingConfiguration[$solrFieldName]] ?? null;
         }
 
         return $fieldValue;

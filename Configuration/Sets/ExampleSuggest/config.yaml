@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-suggest
+label: "Solr search - (Example) Suggest/autocomplete"
+dependencies:
+  - apache-solr-for-typo3/solr

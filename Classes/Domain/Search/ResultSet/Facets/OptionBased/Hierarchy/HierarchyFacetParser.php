@@ -143,14 +143,16 @@ class HierarchyFacetParser extends AbstractFacetParser
         $values = $resultSet->getUsedSearchRequest()->getActiveFacetValuesByName($facetName);
 
         foreach ($values as $valueFromRequest) {
-            // Attach the 'depth' param again to the value
-            if (!str_contains($valueFromRequest, '-')) {
-                $valueFromRequest = HierarchyTool::substituteSlashes($valueFromRequest);
-                $valueFromRequest = trim($valueFromRequest, '/');
-                $valueFromRequest = (count(explode('/', $valueFromRequest)) - 1) . '-' . $valueFromRequest . '/';
-                $valueFromRequest = HierarchyTool::unSubstituteSlashes($valueFromRequest);
+            if ($valueFromRequest) {
+                // Attach the 'depth' param again to the value
+                if (!str_contains((string)$valueFromRequest, '-')) {
+                    $valueFromRequest = HierarchyTool::substituteSlashes($valueFromRequest);
+                    $valueFromRequest = trim($valueFromRequest, '/');
+                    $valueFromRequest = (count(explode('/', $valueFromRequest)) - 1) . '-' . $valueFromRequest . '/';
+                    $valueFromRequest = HierarchyTool::unSubstituteSlashes($valueFromRequest);
+                }
+                $activeFacetValues[] = $valueFromRequest;
             }
-            $activeFacetValues[] = $valueFromRequest;
         }
         return $activeFacetValues;
     }

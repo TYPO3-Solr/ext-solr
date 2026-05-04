@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-open-search
+label: "Solr search - OpenSearch"
+dependencies:
+  - apache-solr-for-typo3/solr

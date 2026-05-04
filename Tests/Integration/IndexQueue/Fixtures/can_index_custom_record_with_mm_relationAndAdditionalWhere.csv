@@ -1,7 +1,7 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title"
-,1,0,1,1,"/","hello solr"
-,2,1,0,1,"/subpage","Sub page"
+,"uid","pid","is_siteroot","doktype","slug","title","tstamp"
+,1,0,1,1,"/","hello solr",1007007007
+,2,1,0,1,"/subpage","Sub page",1007007007
 "tx_fakeextension_domain_model_bar",
 ,"uid","pid","title"
 ,88,1,"testnews"

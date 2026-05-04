@@ -141,7 +141,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
             ->method('isEnableColumn')
             ->with(
                 'tx_foo_bar',
-                'fe_group'
+                'fe_group',
             )
             ->willReturn(true);
 
@@ -150,7 +150,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
             ->method('getRecordWithFieldRelevantForGarbageCollection')
             ->with(
                 'tx_foo_bar',
-                123
+                123,
             )
             ->willReturn($dummyRecord);
 
@@ -159,7 +159,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
             ->method('normalizeFrontendGroupField')
             ->with(
                 'tx_foo_bar',
-                $dummyRecord
+                $dummyRecord,
             )
             ->willReturn($dummyRecord);
 
@@ -167,7 +167,6 @@ class GarbageCollectorTest extends SetUpUnitTestCase
 
         $objectReflection = new ReflectionObject($this->garbageCollector);
         $property = $objectReflection->getProperty('trackedRecords');
-        $property->setAccessible(true);
         $trackedRecords = $property->getValue($this->garbageCollector);
 
         self::assertEquals($dummyRecord, $trackedRecords['tx_foo_bar'][123]);
@@ -197,7 +196,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
             ->method('getRecordWithFieldRelevantForGarbageCollection')
             ->with(
                 'tx_foo_bar',
-                123
+                123,
             )
             ->willReturn($dummyRecord);
 
@@ -214,7 +213,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
             'tx_foo_bar',
             123,
             ['uid' => 123, 'pid' => 1, 'title' => 'test'],
-            $dataHandlerMock
+            $dataHandlerMock,
         );
 
         self::assertTrue($dispatchedEvent instanceof RecordGarbageCheckEvent);
@@ -231,7 +230,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
             ->method('collectGarbage')
             ->with(
                 'pages',
-                123
+                123,
             );
 
         $this->garbageCollector->collectGarbage('pages', 123);

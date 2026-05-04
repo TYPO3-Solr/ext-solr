@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordInsertedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
@@ -67,7 +68,7 @@ class RecordMonitor
 
         if ($command === 'delete' && $table === 'tt_content') {
             $this->eventDispatcher->dispatch(
-                new ContentElementDeletedEvent($uid)
+                new ContentElementDeletedEvent($uid),
             );
         } elseif ($command === 'move' && $table === 'pages') {
             $pageRow = BackendUtility::getRecord('pages', $uid);
@@ -100,7 +101,7 @@ class RecordMonitor
         // command "version"
         if ($command === 'version' && $value['action'] === 'swap') {
             $this->eventDispatcher->dispatch(
-                new VersionSwappedEvent($uid, $table)
+                new VersionSwappedEvent($uid, $table),
             );
         }
 
@@ -139,7 +140,7 @@ class RecordMonitor
 
         $recordPid = $fields['pid'] ?? null;
         if (is_null($recordPid) && MathUtility::canBeInterpretedAsInteger($recordUid)) {
-            $recordInfo = $tceMain->recordInfo($table, (int)$recordUid);
+            $recordInfo = BackendUtility::getRecord($table, (int)$recordUid, '*', '', false);
             if (!is_null($recordInfo)) {
                 $recordPid = $recordInfo['pid'] ?? null;
             }
@@ -164,8 +165,13 @@ class RecordMonitor
             return;
         }
 
+        $eventClass = $status === 'new' ? RecordInsertedEvent::class : RecordUpdatedEvent::class;
         $this->eventDispatcher->dispatch(
-            new RecordUpdatedEvent((int)$recordUid, $table, $fields)
+            new $eventClass(
+                (int)$recordUid,
+                $table,
+                $fields,
+            ),
         );
     }
 }

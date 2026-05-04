@@ -160,6 +160,11 @@ class SearchResult extends Document
         return (float)($this->fields['score'] ?? 0.0);
     }
 
+    public function getVectorSimilarityScore(): float
+    {
+        return (float)($this->fields['$q_vector'] ?? 0.0);
+    }
+
     public function getUrl(): string
     {
         return $this->fields['url'] ?? '';

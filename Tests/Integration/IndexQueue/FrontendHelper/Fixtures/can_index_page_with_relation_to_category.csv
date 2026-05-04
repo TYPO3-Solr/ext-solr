@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title"
-,10,1,0,1,"/sub-page","Sub page"
+,"uid","pid","is_siteroot","doktype","slug","title","tstamp"
+,10,1,0,1,"/sub-page","Sub page",1007007007
 "tx_solr_indexqueue_item",
 ,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors"
 ,4711,1,"pages",10,"pages",1449151778,0,0,0,0,0

@@ -2,20 +2,20 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 
 /**
- * Helper class to set up a TSFE object
+ * Helper class to set up a ServerRequest for testing frontend scenarios
  */
 class TSFETestBootstrapper
 {
-    public function bootstrap(int $pageId): TypoScriptFrontendController
+    public function bootstrap(int $pageId): ServerRequest
     {
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
 
@@ -27,6 +27,7 @@ class TSFETestBootstrapper
         $pageInformation->setPageRecord(['uid' => $pageId]);
 
         $request = new ServerRequest($site->getRouter()->generateUri($site->getRootPageId()));
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
         $request = $request->withAttribute('site', $site);
         $request = $request->withAttribute('language', $siteLanguage);
         $request = $request->withAttribute('routing', $pageArguments);
@@ -34,12 +35,6 @@ class TSFETestBootstrapper
         $request = $request->withAttribute('frontend.page.information', $pageInformation);
         $GLOBALS['TYPO3_REQUEST'] = $request;
 
-        /** @var TypoScriptFrontendController $TSFE */
-        $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class);
-        $TSFE->set_no_cache();
-        $TSFE->id = $pageId;
-        $GLOBALS['TSFE'] = $TSFE;
-        $TSFE->newCObj($request);
-        return $TSFE;
+        return $request;
     }
 }

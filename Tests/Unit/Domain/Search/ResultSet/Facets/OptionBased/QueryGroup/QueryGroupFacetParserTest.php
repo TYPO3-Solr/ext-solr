@@ -49,7 +49,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
             ->willReturn($typoScriptConfiguration);
 
         $activeUrlFacets = new UrlFacetContainer(
-            new ArrayAccessor([ 'tx_solr' => ['filter' => $activeFilters] ])
+            new ArrayAccessor([ 'tx_solr' => ['filter' => $activeFilters] ]),
         );
 
         $searchRequestMock->expects(self::any())
@@ -87,7 +87,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_query_fields_facets_and_used_facet.json',
-            $facetConfiguration
+            $facetConfiguration,
         );
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
@@ -115,7 +115,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_query_fields_facets_and_used_facet.json',
-            $facetConfiguration
+            $facetConfiguration,
         );
 
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
@@ -145,7 +145,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_query_fields_facets_and_used_facet.json',
             $facetConfiguration,
-            ['age:week']
+            ['age:week'],
         );
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
@@ -174,7 +174,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_query_fields_facets_and_used_facet.json',
             $facetConfiguration,
-            ['age:week']
+            ['age:week'],
         );
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         /** @var QueryGroupFacet $facet */

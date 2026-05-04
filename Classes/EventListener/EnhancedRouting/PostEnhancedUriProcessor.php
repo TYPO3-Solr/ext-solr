@@ -19,25 +19,28 @@ namespace ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting;
 
 use ApacheSolrForTypo3\Solr\Event\Routing\AfterUriIsProcessedEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This event listener concat the filter if configured or masking is active.
  */
-class PostEnhancedUriProcessor
+final readonly class PostEnhancedUriProcessor
 {
+    #[AsEventListener(
+        identifier: 'solr.routing.postenhanceduriprocessor-modifier',
+    )]
     public function __invoke(AfterUriIsProcessedEvent $event): void
     {
         if (!$event->hasRouting()) {
             return;
         }
+
         $configuration = $event->getRouterConfiguration();
 
-        /** @var RoutingService $routingService */
-        $routingService = GeneralUtility::makeInstance(
-            RoutingService::class,
+        $routingService = $this->getRoutingService(
             $configuration['solr'] ?? [],
-            (string)$configuration['extensionKey']
+            (string)$configuration['extensionKey'],
         );
 
         $routingService->fromRoutingConfiguration($configuration);
@@ -63,6 +66,16 @@ class PostEnhancedUriProcessor
         $query = http_build_query($queryParameters);
         $uri = $uri->withQuery($query);
         $uri = $uri->withPath($path);
+
         $event->replaceUri($uri);
+    }
+
+    private function getRoutingService(array $solrEnhancerConfiguration, string $extensionKey): RoutingService
+    {
+        return GeneralUtility::makeInstance(
+            RoutingService::class,
+            $solrEnhancerConfiguration,
+            $extensionKey,
+        );
     }
 }

@@ -29,6 +29,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -65,7 +66,7 @@ class PagesRepository extends AbstractRepository
             ->from($this->table)
             ->where(
                 $queryBuilder->expr()->neq('pid', -1),
-                $queryBuilder->expr()->eq('is_siteroot', 1)
+                $queryBuilder->expr()->eq('is_siteroot', 1),
             );
 
         $this->addDefaultLanguageUidConstraint($queryBuilder);
@@ -121,7 +122,7 @@ class PagesRepository extends AbstractRepository
                 $queryBuilder->expr()->eq('doktype', 7),
                 $queryBuilder->expr()->eq('no_search', 0),
                 $queryBuilder->expr()->eq('mount_pid', $mountedPageUid),
-                $queryBuilder->expr()->eq('mount_pid_ol', 1)
+                $queryBuilder->expr()->eq('mount_pid_ol', 1),
             );
         } else {
             $queryBuilder->andWhere(
@@ -130,10 +131,10 @@ class PagesRepository extends AbstractRepository
                 $queryBuilder->expr()->or(
                     $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq('mount_pid', $mountedPageUid),
-                        $queryBuilder->expr()->eq('mount_pid_ol', 1)
+                        $queryBuilder->expr()->eq('mount_pid_ol', 1),
                     ),
-                    $queryBuilder->expr()->in('mount_pid', $rootLineParentPageIds)
-                )
+                    $queryBuilder->expr()->in('mount_pid', $rootLineParentPageIds),
+                ),
             );
         }
 
@@ -156,7 +157,7 @@ class PagesRepository extends AbstractRepository
         int $rootPageId,
         string $initialPagesAdditionalWhereClause = '',
     ): array {
-        $cacheIdentifier = sha1('getPages' . $rootPageId . $initialPagesAdditionalWhereClause);
+        $cacheIdentifier = hash('sha1', 'getPages' . $rootPageId . $initialPagesAdditionalWhereClause);
         if ($this->transientVariableCache->get($cacheIdentifier) !== false) {
             return $this->transientVariableCache->get($cacheIdentifier);
         }
@@ -194,8 +195,8 @@ class PagesRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->in(
                     'uid',
-                    $queryBuilder->createNamedParameter($pageIds, ArrayParameterType::INTEGER)
-                )
+                    $queryBuilder->createNamedParameter($pageIds, ArrayParameterType::INTEGER),
+                ),
             );
 
         $queryBuilder->andWhere(QueryHelper::stripLogicalOperatorPrefix($initialPagesAdditionalWhereClause));
@@ -218,7 +219,7 @@ class PagesRepository extends AbstractRepository
                 ->select('uid')
                 ->from($this->table)
                 ->where(
-                    $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, ParameterType::INTEGER))
+                    $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, ParameterType::INTEGER)),
                 )->executeQuery();
             while (($pageRow = $noSearchSubEntriesEnabledPagesStatement->fetchAssociative()) !== false) {
                 $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage((int)$pageRow['uid']));
@@ -232,11 +233,11 @@ class PagesRepository extends AbstractRepository
     /**
      * Finds translation overlays by given page Id.
      *
-     * @return array{array{
+     * @return array<int, array{
      *    'pid': int,
      *    'l10n_parent': int,
      *    'sys_language_uid': int,
-     * }}
+     * }>
      *
      * @throws DBALException
      */
@@ -251,7 +252,7 @@ class PagesRepository extends AbstractRepository
             ->from('pages')
             ->where(
                 $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, ParameterType::INTEGER))
-                . BackendUtility::BEenableFields('pages')
+                . BackendUtility::BEenableFields('pages'),
             )->executeQuery()
             ->fetchAllAssociative();
     }
@@ -262,7 +263,7 @@ class PagesRepository extends AbstractRepository
      * @param int $pageId UID of the page currently being updated
      * @return array{array{
      *    'uid': int
-     * }} with page Uids from pages, which are showing contents from given Page Id
+     * }} with page Uids from pages, which are showing contents from given Page ID
      *
      * @throws DBALException
      */
@@ -276,7 +277,7 @@ class PagesRepository extends AbstractRepository
             ->select('uid')
             ->from($this->table)
             ->where(
-                $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, ParameterType::INTEGER))
+                $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, ParameterType::INTEGER)),
             );
 
         $this->addDefaultLanguageUidConstraint($queryBuilder);
@@ -307,11 +308,11 @@ class PagesRepository extends AbstractRepository
                 'uid',
                 'mount_pid AS mountPageSource',
                 'uid AS mountPageDestination',
-                'mount_pid_ol AS mountPageOverlayed'
+                'mount_pid_ol AS mountPageOverlayed',
             )
             ->from($this->table)
             ->where(
-                QueryHelper::stripLogicalOperatorPrefix($whereClause)
+                QueryHelper::stripLogicalOperatorPrefix($whereClause),
             );
 
         $this->addDefaultLanguageUidConstraint($queryBuilder);
@@ -324,10 +325,10 @@ class PagesRepository extends AbstractRepository
     /**
      * Returns a specific page
      *
-     * @return null|array{
+     * @return array{
      *    'uid': int,
      *    'pid': int
-     * }
+     * }|null
      */
     public function getPage(
         int $uid,
@@ -386,7 +387,7 @@ class PagesRepository extends AbstractRepository
                 ->from('pages')
                 ->where(
                     $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($id, ParameterType::INTEGER)),
-                    $queryBuilder->expr()->eq('sys_language_uid', 0)
+                    $queryBuilder->expr()->eq('sys_language_uid', 0),
                 )
                 ->orderBy('uid');
             if ($permClause !== '') {
@@ -407,5 +408,48 @@ class PagesRepository extends AbstractRepository
             }
         }
         return (string)$theList;
+    }
+
+    /**
+     * Filters Solr connections based on page translation visibility settings (l18n_cfg).
+     *
+     * Removes connections for languages that should be hidden according to the
+     * page's l18n_cfg bitmask and available translation overlays.
+     *
+     * @param array $solrConnections Solr connections keyed by sys_language_uid
+     * @param array $page Page record with at least 'uid' and 'l18n_cfg'
+     * @param bool $forceHideTranslationIfNoTranslatedRecordExists Force filtering even without l18n_cfg flag
+     * @return array Filtered Solr connections
+     *
+     * @throws DBALException
+     */
+    public function filterSolrConnectionsByPageVisibility(
+        array $solrConnections,
+        array $page,
+        bool $forceHideTranslationIfNoTranslatedRecordExists = false,
+    ): array {
+        $pageTranslationVisibility = new PageTranslationVisibility((int)($page['l18n_cfg'] ?? 0));
+        if ($pageTranslationVisibility->shouldBeHiddenInDefaultLanguage()) {
+            unset($solrConnections[0]);
+        }
+
+        if ($forceHideTranslationIfNoTranslatedRecordExists
+            || $pageTranslationVisibility->shouldHideTranslationIfNoTranslatedRecordExists()
+        ) {
+            $accessibleConnections = [];
+            if (isset($solrConnections[0])) {
+                $accessibleConnections[0] = $solrConnections[0];
+            }
+            $translationOverlays = $this->findTranslationOverlaysByPageId((int)$page['uid']);
+            foreach ($translationOverlays as $overlay) {
+                $languageId = $overlay['sys_language_uid'];
+                if (array_key_exists($languageId, $solrConnections)) {
+                    $accessibleConnections[$languageId] = $solrConnections[$languageId];
+                }
+            }
+            $solrConnections = $accessibleConnections;
+        }
+
+        return $solrConnections;
     }
 }

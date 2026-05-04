@@ -33,6 +33,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrAdminServiceTest extends IntegrationTestBase
 {
+    protected bool $initializeDatabase = false;
+
     protected SolrAdminService $solrAdminService;
 
     /**
@@ -46,11 +48,11 @@ class SolrAdminServiceTest extends IntegrationTestBase
         $adapter = new Curl();
         $client = new Client(
             $adapter,
-            $eventDispatcher
+            $eventDispatcher,
         );
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'], true);
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => $this->resolveCoreName('core_en'), 'key' => 'admin'], true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
     }
@@ -60,13 +62,24 @@ class SolrAdminServiceTest extends IntegrationTestBase
         yield 'normal' => ['baseWord' => 'homepage', 'synonyms' => ['website']];
         yield 'umlaut' => ['baseWord' => 'früher', 'synonyms' => ['vergangenheit']];
         yield '"' => ['baseWord' => '"', 'synonyms' => ['quote mark']];
-        yield '%' => ['baseWord' => '%', 'synonyms' => ['percent']];
         yield '#' => ['baseWord' => '#', 'synonyms' => ['hashtag']];
         yield ':' => ['baseWord' => ':', 'synonyms' => ['colon']];
         yield ';' => ['baseWord' => ';', 'synonyms' => ['semicolon']];
 
-        // '/' still persists in https://issues.apache.org/jira/browse/SOLR-6853
-        //yield '/' => ['baseWord' => '/', 'synonyms' => ['slash']]
+        // The previous workaround in SolrAdminService using double rawurlencode() was introduced to prevent Jetty
+        // from interpreting encoded slashes (%2F) as path separators (see SOLR-6853).
+        // This workaround breaks Jetty 12 (bundled with Solr 10), which now strictly rejects
+        // ambiguous URI path encoding with HTTP 400.
+        //
+        // Removing the workaround restores basic functionallity (single rawurlencode()), but
+        // base words containing "%" or "/" still cannot be used:
+        // "%" encodes to "%25", which Jetty 12 rejects as potentially ambiguous,
+        // and "/" encodes to "%2F", which Solr interprets as a path separator.
+        // Both characters are therefore not supported as synonym base words.
+        //
+        // See: https://issues.apache.org/jira/browse/SOLR-6853
+        //yield '%' => ['baseWord' => '%', 'synonyms' => ['percent']];
+        //yield '/' => ['baseWord' => '/', 'synonyms' => ['slash']];
     }
 
     #[DataProvider('synonymDataProvider')]
@@ -145,7 +158,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
      * @throws PingFailedException
      */
     #[Test]
-    public function canGetPingRoundtrimRunTime(): void
+    public function canGetPingRoundtripRunTime(): void
     {
         $pingRuntime = $this->solrAdminService->getPingRoundTripRuntime();
         self::assertGreaterThan(0, $pingRuntime, 'Ping runtime should be larger then 0');
@@ -168,11 +181,12 @@ class SolrAdminServiceTest extends IntegrationTestBase
     }
 
     #[Test]
-    public function canGetPluginsInformation(): void
+    public function canGetCoreConfiguration(): void
     {
-        $result = $this->solrAdminService->getPluginsInformation();
+        $result = $this->solrAdminService->getCoreConfiguration();
         self::assertSame(0, $result->responseHeader->status);
         self::assertSame(2, count($result));
+        self::assertGreaterThanOrEqual(10, (float)$result->config->luceneMatchVersion); // @phpstan-ignore-line
     }
 
     /**
@@ -186,13 +200,14 @@ class SolrAdminServiceTest extends IntegrationTestBase
         $adapter = new Curl();
         $client = new Client(
             $adapter,
-            $eventDispatcher
+            $eventDispatcher,
         );
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_de', 'key' => 'admin'], true);
+        $resolvedCoreName = $this->resolveCoreName('core_de');
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => $resolvedCoreName, 'key' => 'admin'], true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
-        self::assertSame('core_de', $this->solrAdminService->getSchema()->getManagedResourceId(), 'Could not get the id of managed resources from core.');
+        self::assertSame($resolvedCoreName, $this->solrAdminService->getSchema()->getManagedResourceId(), 'Could not get the id of managed resources from core.');
     }
 }

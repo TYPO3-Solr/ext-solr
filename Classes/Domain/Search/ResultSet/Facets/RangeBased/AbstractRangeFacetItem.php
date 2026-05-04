@@ -39,13 +39,20 @@ abstract class AbstractRangeFacetItem extends AbstractFacetItem
             $this->label,
             $this->documentCount,
             $this->selected,
-            $this->metrics
+            $this->metrics,
         );
+    }
+
+    protected string $rawUrlValue = '';
+
+    public function setRawUrlValue(string $rawUrlValue): void
+    {
+        $this->rawUrlValue = $rawUrlValue;
     }
 
     public function getUriValue(): string
     {
-        return $this->getRangeString();
+        return $this->rawUrlValue !== '' ? $this->rawUrlValue : $this->getRangeString();
     }
 
     public function getCollectionKey(): string

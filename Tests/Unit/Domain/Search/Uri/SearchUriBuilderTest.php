@@ -197,7 +197,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
             ],
             0,
             0,
-            $configurationMock
+            $configurationMock,
         );
 
         // we expect that the filters are empty after remove
@@ -225,7 +225,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
             ],
             0,
             0,
-            $configurationMock
+            $configurationMock,
         );
 
         // we expect that the filters are empty after remove
@@ -265,7 +265,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
             ],
             0,
             0,
-            $configurationMock
+            $configurationMock,
         );
 
         $this->extBaseUriBuilderMock->expects(self::any())->method('setArguments')->willReturn($this->extBaseUriBuilderMock);
@@ -313,7 +313,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
             12,
             0,
             32,
-            $previousRequest
+            $previousRequest,
         );
 
         $this->extBaseUriBuilderMock->expects(self::once())->method('setArguments')->with($expectedArguments)->willReturn($this->extBaseUriBuilderMock);
@@ -504,7 +504,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
                 match ($matcher->numberOfInvocations()) {
                     1 => self::assertEquals($subsitutedQueryParameters, $arguments),
                     2 => self::assertEquals($queryParameters, $arguments),
-                    default => self::fail('Unexpected number of invocations: ' . $matcher->numberOfInvocations())
+                    default => self::fail('Unexpected number of invocations: ' . $matcher->numberOfInvocations()),
                 };
                 return $this->extBaseUriBuilderMock;
             });
@@ -513,7 +513,10 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
         $this->extBaseUriBuilderMock->expects(self::exactly(2))->method('build')
             ->willReturnCallback(function () use ($linkBuilderResult, &$buildCounter) {
                 if (++$buildCounter === 1) {
-                    throw new InvalidParameterException('First call fails, should reprocess with regular arguments');
+                    throw new InvalidParameterException(
+                        'First call fails, should reprocess with regular arguments',
+                        5962606500,
+                    );
                 }
                 return $linkBuilderResult;
             });

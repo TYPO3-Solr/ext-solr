@@ -22,10 +22,10 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Extbase\Mvc\Exception\InvalidArgumentNameException;
 use TYPO3\CMS\Extbase\Mvc\Web\RequestBuilder;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -33,42 +33,51 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
 {
-    protected static SearchUriBuilder $searchUriBuilder;
+    protected SearchUriBuilder $searchUriBuilder;
 
-    protected static RequestBuilder $requestBuilder;
+    protected RequestBuilder $requestBuilder;
+
+    protected UriBuilder $uriBuilder;
 
     public function injectSearchUriBuilder(SearchUriBuilder $searchUriBuilder): void
     {
-        self::$searchUriBuilder = $searchUriBuilder;
+        $this->searchUriBuilder = $searchUriBuilder;
     }
 
     public function injectRequestBuilder(RequestBuilder $requestBuilder): void
     {
-        self::$requestBuilder = $requestBuilder;
+        $this->requestBuilder = $requestBuilder;
     }
 
-    protected static function getSearchUriBuilder(?RenderingContextInterface $renderingContext = null): SearchUriBuilder
+    public function injectUriBuilder(UriBuilder $uriBuilder): void
     {
-        if (!isset(self::$searchUriBuilder)) {
-            self::$searchUriBuilder = GeneralUtility::makeInstance(SearchUriBuilder::class);
-        }
-        if (!isset(self::$requestBuilder)) {
-            self::$requestBuilder = GeneralUtility::makeInstance(RequestBuilder::class);
-        }
-
-        if ($renderingContext instanceof RenderingContext) {
-            $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-            $request = self::$requestBuilder->build($renderingContext->getRequest());
-            $uriBuilder->reset()->setRequest($request);
-            self::$searchUriBuilder->injectUriBuilder($uriBuilder);
-        }
-
-        return self::$searchUriBuilder;
+        $this->uriBuilder = $uriBuilder;
     }
 
-    protected static function getUsedSearchRequestFromRenderingContext(RenderingContextInterface $renderingContext): ?SearchRequest
+    /**
+     * @throws InvalidArgumentNameException
+     */
+    protected function getSearchUriBuilder(?RenderingContextInterface $renderingContext = null): SearchUriBuilder
     {
-        $resultSet = static::getUsedSearchResultSetFromRenderingContext($renderingContext);
+        if ($renderingContext !== null && isset($this->uriBuilder)) {
+            $serverRequest = $renderingContext->getAttribute(ServerRequestInterface::class);
+            if ($serverRequest instanceof ServerRequestInterface) {
+                $request = $this->requestBuilder->build($serverRequest);
+                $this->uriBuilder->reset()->setRequest($request);
+                $this->searchUriBuilder->injectUriBuilder($this->uriBuilder);
+            }
+        }
+
+        return $this->searchUriBuilder;
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function getUsedSearchRequestFromRenderingContext(
+        RenderingContextInterface $renderingContext,
+    ): ?SearchRequest {
+        $resultSet = $this->getUsedSearchResultSetFromRenderingContext($renderingContext);
         if (!$resultSet instanceof SearchResultSet) {
             throw new InvalidArgumentException('The variable resultSet need to be defined in the scope of ' . static::class, 1642765491);
         }

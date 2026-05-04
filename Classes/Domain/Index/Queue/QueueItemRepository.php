@@ -46,7 +46,7 @@ class QueueItemRepository extends AbstractRepository
     {
         $this->logger = $logManager ?? GeneralUtility::makeInstance(
             SolrLogManager::class,
-            __CLASS__
+            __CLASS__,
         );
         $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }
@@ -63,10 +63,10 @@ class QueueItemRepository extends AbstractRepository
             ->select('uid', 'indexed')
             ->from($this->table)
             ->where(
-                $queryBuilder->expr()->eq('root', $rootPageId)
+                $queryBuilder->expr()->eq('root', $rootPageId),
             )
             ->andWhere(
-                $queryBuilder->expr()->neq('indexed', 0)
+                $queryBuilder->expr()->neq('indexed', 0),
             )
             ->orderBy('indexed', 'DESC')
             ->setMaxResults(1)
@@ -87,7 +87,7 @@ class QueueItemRepository extends AbstractRepository
             ->from($this->table)
             ->andWhere(
                 $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter('')),
-                $queryBuilder->expr()->eq('root', $site->getRootPageId())
+                $queryBuilder->expr()->eq('root', $site->getRootPageId()),
             )->executeQuery()
             ->fetchAllAssociative();
     }
@@ -110,7 +110,7 @@ class QueueItemRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         return $this->getPreparedFlushErrorQuery($queryBuilder)
             ->andWhere(
-                $queryBuilder->expr()->eq('root', $site->getRootPageId())
+                $queryBuilder->expr()->eq('root', $site->getRootPageId()),
             )
             ->executeStatement();
     }
@@ -123,7 +123,7 @@ class QueueItemRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         return $this->getPreparedFlushErrorQuery($queryBuilder)
             ->andWhere(
-                $queryBuilder->expr()->eq('uid', $item->getIndexQueueUid())
+                $queryBuilder->expr()->eq('uid', $item->getIndexQueueUid()),
             )
             ->executeStatement();
     }
@@ -137,7 +137,7 @@ class QueueItemRepository extends AbstractRepository
             ->update($this->table)
             ->set('errors', '')
             ->where(
-                $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter(''))
+                $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter('')),
             );
     }
 
@@ -160,7 +160,7 @@ class QueueItemRepository extends AbstractRepository
             ->andWhere(
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter($itemType)),
                 $queryBuilder->expr()->eq('item_uid', $itemUid),
-                $queryBuilder->expr()->eq('root', $rootPageId)
+                $queryBuilder->expr()->eq('root', $rootPageId),
             );
 
         if (!empty($indexingConfiguration)) {
@@ -182,6 +182,7 @@ class QueueItemRepository extends AbstractRepository
         int $changedTime,
         string $indexingConfiguration,
         int $indexingPriority = 0,
+        int $itemPid = 0,
     ): int {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder
@@ -190,6 +191,7 @@ class QueueItemRepository extends AbstractRepository
                 'root' => $rootPageId,
                 'item_type' => $itemType,
                 'item_uid' => $itemUid,
+                'item_pid' => $itemPid,
                 'changed' => $changedTime,
                 'errors' => '',
                 'indexing_configuration' => $indexingConfiguration,
@@ -222,7 +224,7 @@ class QueueItemRepository extends AbstractRepository
             $indexQueueConfigurationList,
             $itemTypeList,
             $itemUids,
-            $uids
+            $uids,
         );
 
         return (int)$queryBuilderForCountingItems
@@ -244,7 +246,7 @@ class QueueItemRepository extends AbstractRepository
             ->selectLiteral($queryBuilder->expr()->max('tstamp', 'changed_time'))
             ->from('tt_content')
             ->where(
-                $queryBuilder->expr()->eq('pid', $pageUid)
+                $queryBuilder->expr()->eq('pid', $pageUid),
             )
             ->executeQuery()
             ->fetchAssociative();
@@ -273,7 +275,7 @@ class QueueItemRepository extends AbstractRepository
                 ->from($itemType)
                 ->orWhere(
                     $queryBuilder->expr()->eq('uid', $itemUid),
-                    $queryBuilder->expr()->eq($translationOriginalPointerField, $itemUid)
+                    $queryBuilder->expr()->eq($translationOriginalPointerField, $itemUid),
                 )
                 ->executeQuery()
                 ->fetchOne();
@@ -290,7 +292,7 @@ class QueueItemRepository extends AbstractRepository
         return $queryBuilder->count('uid')->from($this->table)
             ->andWhere(
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter($itemType)),
-                $queryBuilder->expr()->eq('item_uid', $itemUid)
+                $queryBuilder->expr()->eq('item_uid', $itemUid),
             );
     }
 
@@ -317,7 +319,7 @@ class QueueItemRepository extends AbstractRepository
         return (bool)$queryBuilder
             ->andWhere(
                 $queryBuilder->expr()->eq('root', $rootPageId),
-                $queryBuilder->expr()->eq('indexing_configuration', $queryBuilder->createNamedParameter($indexingConfiguration))
+                $queryBuilder->expr()->eq('indexing_configuration', $queryBuilder->createNamedParameter($indexingConfiguration)),
             )
             ->executeQuery()
             ->fetchOne();
@@ -419,7 +421,7 @@ class QueueItemRepository extends AbstractRepository
     ): QueryBuilder {
         if (!empty($rootPageIds)) {
             $queryBuilderForDeletingItems->andWhere(
-                $queryBuilderForDeletingItems->expr()->in('root', $rootPageIds)
+                $queryBuilderForDeletingItems->expr()->in('root', $rootPageIds),
             );
         }
 
@@ -427,8 +429,8 @@ class QueueItemRepository extends AbstractRepository
             $queryBuilderForDeletingItems->andWhere(
                 $queryBuilderForDeletingItems->expr()->in(
                     'indexing_configuration',
-                    $queryBuilderForDeletingItems->createNamedParameter($indexQueueConfigurationList)
-                )
+                    $queryBuilderForDeletingItems->createNamedParameter($indexQueueConfigurationList),
+                ),
             );
         }
 
@@ -436,20 +438,20 @@ class QueueItemRepository extends AbstractRepository
             $queryBuilderForDeletingItems->andWhere(
                 $queryBuilderForDeletingItems->expr()->in(
                     'item_type',
-                    $queryBuilderForDeletingItems->createNamedParameter($itemTypeList)
-                )
+                    $queryBuilderForDeletingItems->createNamedParameter($itemTypeList),
+                ),
             );
         }
 
         if (!empty($itemUids)) {
             $queryBuilderForDeletingItems->andWhere(
-                $queryBuilderForDeletingItems->expr()->in('item_uid', $itemUids)
+                $queryBuilderForDeletingItems->expr()->in('item_uid', $itemUids),
             );
         }
 
         if (!empty($uids)) {
             $queryBuilderForDeletingItems->andWhere(
-                $queryBuilderForDeletingItems->expr()->in('uid', $uids)
+                $queryBuilderForDeletingItems->expr()->in('uid', $uids),
             );
         }
 
@@ -483,8 +485,8 @@ class QueueItemRepository extends AbstractRepository
                     empty($indexQueueConfigurationList) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.indexing_configuration', $queryBuilderForSelectingProperties->createNamedParameter($indexQueueConfigurationList)),
                     empty($itemTypeList) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.item_type', $queryBuilderForSelectingProperties->createNamedParameter($itemTypeList)),
                     empty($itemUids) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.item_uid', $itemUids),
-                    empty($uids) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.uid', $uids)
-                )
+                    empty($uids) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.uid', $uids),
+                ),
             );
         $propertyEntriesToDelete = implode(
             ',',
@@ -492,8 +494,8 @@ class QueueItemRepository extends AbstractRepository
                 $queryBuilderForSelectingProperties
                     ->executeQuery()
                     ->fetchAllAssociative(),
-                'uid'
-            )
+                'uid',
+            ),
         );
 
         $queryBuilderForDeletingProperties = $queryBuilderForDeletingItems->getConnection()->createQueryBuilder();
@@ -504,7 +506,7 @@ class QueueItemRepository extends AbstractRepository
         }
 
         $queryBuilderForDeletingProperties->delete('tx_solr_indexqueue_indexing_property')->where(
-            $queryBuilderForDeletingProperties->expr()->in('item_id', $propertyEntriesToDelete)
+            $queryBuilderForDeletingProperties->expr()->in('item_id', $propertyEntriesToDelete),
         );
 
         return $queryBuilderForDeletingProperties;
@@ -552,7 +554,7 @@ class QueueItemRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         $compositeExpression = $queryBuilder->expr()->and(
             $queryBuilder->expr()->eq('item_type', $queryBuilder->getConnection()->quote($itemType)),
-            $queryBuilder->expr()->eq('item_uid', $itemUid)
+            $queryBuilder->expr()->eq('item_uid', $itemUid),
         );
         return $this->getItemsByCompositeExpression($compositeExpression, $queryBuilder);
     }
@@ -619,7 +621,7 @@ class QueueItemRepository extends AbstractRepository
                 $queryBuilder->expr()->eq('root', $site->getRootPageId()),
                 $queryBuilder->expr()->gt('changed', 'indexed'),
                 $queryBuilder->expr()->lte('changed', time()),
-                $queryBuilder->expr()->eq('errors', $queryBuilder->createNamedParameter(''))
+                $queryBuilder->expr()->eq('errors', $queryBuilder->createNamedParameter('')),
             )
             ->orderBy('indexing_priority', 'DESC')
             ->addOrderBy('changed', 'DESC')
@@ -728,18 +730,18 @@ class QueueItemRepository extends AbstractRepository
                 $indexQueueItems[] = GeneralUtility::makeInstance(
                     Item::class,
                     $indexQueueItemRecord,
-                    $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
+                    $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']],
                 );
             } else {
                 $this->logger->error(
                     'Record missing for Index Queue item. Item removed.',
                     [
                         $indexQueueItemRecord,
-                    ]
+                    ],
                 );
                 $this->deleteItem(
                     $indexQueueItemRecord['item_type'],
-                    $indexQueueItemRecord['item_uid']
+                    $indexQueueItemRecord['item_uid'],
                 );
             }
         }
@@ -782,12 +784,42 @@ class QueueItemRepository extends AbstractRepository
      */
     public function updateChangedTimeByItem(ItemInterface $item, int $changedTime = 0): int
     {
+        return $this->updateItemsChangedTime($changedTime, uids: [$item->getIndexQueueUid()]);
+    }
+
+    /**
+     * Updates items in the index queue filtered by the passed arguments.
+     *
+     * @throws DBALException
+     */
+    public function updateItemsChangedTime(
+        int $changedTime = 0,
+        array $sites = [],
+        array $indexQueueConfigurationNames = [],
+        array $itemTypes = [],
+        array $itemUids = [],
+        array $uids = [],
+    ): int {
+        $rootPageIds = SiteUtility::getRootPageIdsFromSites($sites);
+        $indexQueueConfigurationList = implode(',', $indexQueueConfigurationNames);
+        $itemTypeList = implode(',', $itemTypes);
+        $itemUids = array_map('intval', $itemUids);
+        $uids = array_map('intval', $uids);
+
         $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder
+        $queryBuilder
             ->update($this->table)
-            ->set('changed', $changedTime)
-            ->where($queryBuilder->expr()->eq('uid', $item->getIndexQueueUid()))
-            ->executeStatement();
+            ->set('changed', $changedTime);
+        $queryBuilder = $this->addItemWhereClauses(
+            $queryBuilder,
+            $rootPageIds,
+            $indexQueueConfigurationList,
+            $itemTypeList,
+            $itemUids,
+            $uids,
+        );
+
+        return $queryBuilder->executeStatement();
     }
 
     /**
@@ -808,6 +840,7 @@ class QueueItemRepository extends AbstractRepository
      * Retrieves an array of pageIds from mountPoints that already have a queue entry.
      *
      * @throws DBALException
+     * @return int[]
      */
     public function findPageIdsOfExistingMountPagesByMountIdentifier(string $mountPointIdentifier): array
     {
@@ -818,7 +851,7 @@ class QueueItemRepository extends AbstractRepository
             ->from($this->table)
             ->where(
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter('pages')),
-                $queryBuilder->expr()->eq('pages_mountidentifier', $queryBuilder->createNamedParameter($mountPointIdentifier))
+                $queryBuilder->expr()->eq('pages_mountidentifier', $queryBuilder->createNamedParameter($mountPointIdentifier)),
             )
             ->groupBy('item_uid')
             ->executeQuery();
@@ -826,7 +859,7 @@ class QueueItemRepository extends AbstractRepository
         $mountedPagesIdsWithQueueItems = [];
         while ($record = $resultSet->fetchAssociative()) {
             if ($record['queueItemCount'] > 0) {
-                $mountedPagesIdsWithQueueItems[] = $record['item_uid'];
+                $mountedPagesIdsWithQueueItems[] = (int)$record['item_uid'];
             }
         }
 
@@ -843,17 +876,42 @@ class QueueItemRepository extends AbstractRepository
         string $mountPointIdentifier,
         array $mountedPids,
     ): array {
+        return $this->findAllIndexQueueByMountIdentifier($rootPid, $mountPointIdentifier, $mountedPids);
+    }
+
+    /**
+     * Retrieves an array of items for mount destinations matched by root page ID and Mount Identifier
+     *
+     * @throws DBALException
+     */
+    public function findAllIndexQueueItemsByRootPidAndMountIdentifier(
+        int $rootPid,
+        string $mountPointIdentifier,
+    ): array {
+        return $this->findAllIndexQueueByMountIdentifier($rootPid, $mountPointIdentifier);
+    }
+
+    protected function findAllIndexQueueByMountIdentifier(
+        int $rootPid,
+        string $mountPointIdentifier,
+        ?array $mountedPids = null,
+    ): array {
         $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder
+        $queryBuilder = $queryBuilder
             ->select('*')
             ->from($this->table)
             ->where(
                 $queryBuilder->expr()->eq('root', $queryBuilder->createNamedParameter($rootPid, \Doctrine\DBAL\ParameterType::INTEGER)),
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter('pages')),
-                $queryBuilder->expr()->in('item_uid', $mountedPids),
                 $queryBuilder->expr()->eq('has_indexing_properties', $queryBuilder->createNamedParameter(1, \Doctrine\DBAL\ParameterType::INTEGER)),
-                $queryBuilder->expr()->eq('pages_mountidentifier', $queryBuilder->createNamedParameter($mountPointIdentifier))
-            )
+                $queryBuilder->expr()->eq('pages_mountidentifier', $queryBuilder->createNamedParameter($mountPointIdentifier)),
+            );
+
+        if ($mountedPids !== null) {
+            $queryBuilder->andWhere($queryBuilder->expr()->in('item_uid', $mountedPids));
+        }
+
+        return $queryBuilder
             ->executeQuery()
             ->fetchAllAssociative();
     }
@@ -867,12 +925,12 @@ class QueueItemRepository extends AbstractRepository
         return $queryBuilder
             ->update($this->table)
             ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($itemUid, \Doctrine\DBAL\ParameterType::INTEGER))
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($itemUid, \Doctrine\DBAL\ParameterType::INTEGER)),
             )
             ->set(
                 'has_indexing_properties',
                 $queryBuilder->createNamedParameter($hasIndexingPropertiesFlag, \Doctrine\DBAL\ParameterType::INTEGER),
-                false
+                false,
             )->executeStatement();
     }
 }

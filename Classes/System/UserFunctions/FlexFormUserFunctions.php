@@ -189,6 +189,9 @@ class FlexFormUserFunctions
         }
 
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+
+        $request = ($GLOBALS['TYPO3_REQUEST'])->withQueryParams(['id' => $pid]);
+        $configurationManager->setRequest($request);
         $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 
         return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $typoScript);

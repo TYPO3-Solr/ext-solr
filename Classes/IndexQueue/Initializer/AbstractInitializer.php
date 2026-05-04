@@ -142,8 +142,8 @@ abstract class AbstractInitializer implements IndexQueueInitializer
 
         try {
             if ($connectionPool->getConnectionForTable($this->type)->getParams() === $connectionPool->getConnectionForTable('tx_solr_indexqueue_item')->getParams()) {
-                // If both tables are in the same DB, send only one query to copy all datas from one table to the other
-                $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, errors) ' . $fetchItemsQuery;
+                // If both tables are in the same DB, send only one query to copy all data from one table to the other
+                $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, item_pid, indexing_configuration, indexing_priority, changed, errors) ' . $fetchItemsQuery;
                 $logData = ['query' => $initializationQuery];
                 $logData['rows'] = $this->queueItemRepository->initializeByNativeSQLStatement($initializationQuery);
             } else {
@@ -176,13 +176,25 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         if (!empty($GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['starttime'])) {
             $changedField = 'GREATEST(' . $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['starttime'] . ',' . $GLOBALS['TCA'][$this->type]['ctrl']['tstamp'] . ')';
         }
+        $itemPidExpression = $this->getItemPidExpression();
         return 'SELECT '
             . '\'' . $this->site->getRootPageId() . '\' as root, '
             . '\'' . $this->type . '\' AS item_type, '
             . 'uid AS item_uid, '
+            . $itemPidExpression . ' AS item_pid, '
             . '\'' . $this->indexingConfigurationName . '\' as indexing_configuration, '
             . $this->getIndexingPriority() . ' AS indexing_priority, '
             . $changedField . ' AS changed';
+    }
+
+    /**
+     * Returns the SQL expression for the item_pid column.
+     * For pages: item_pid = uid (the page's own uid)
+     * For records: item_pid = pid (the page where the record lives)
+     */
+    protected function getItemPidExpression(): string
+    {
+        return $this->type === 'pages' ? 'uid' : 'pid';
     }
 
     // initialization query building
@@ -288,7 +300,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
             }
             $conditions['languageField'] = '(' . implode(
                 ' OR ',
-                $conditions['languageField']
+                $conditions['languageField'],
             ) . ')';
         }
 

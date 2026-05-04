@@ -27,12 +27,17 @@ $config
                     'author', 'autor',
                     'copyright',
                 ]
+	    ],
+	    'trailing_comma_in_multiline' => [
+                'elements' => ['arguments', 'array_destructuring', 'arrays', 'match', 'parameters'],
             ],
         ],
     )
     ->getFinder()
     ->exclude([
-        '.Build'
+        '.Build',
+        'Build/Patches',
+        'var',
     ])
     ->in(__DIR__);
 return $config;

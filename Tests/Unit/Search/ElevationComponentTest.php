@@ -43,7 +43,7 @@ class ElevationComponentTest extends SetUpUnitTestCase
                 $this->createMock(TypoScriptConfiguration::class),
                 null,
                 $this->createMock(SiteHashService::class),
-            ]
+            ],
         );
         $queryBuilderMock->expects(self::once())->method('startFrom')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects(self::once())->method('useElevationFromTypoScript')->willReturn($queryBuilderMock);
@@ -51,7 +51,7 @@ class ElevationComponentTest extends SetUpUnitTestCase
 
         $modifier = new ElevationComponent($queryBuilderMock);
         $modifier->__invoke(
-            new AfterSearchQueryHasBeenPreparedEvent($query, $this->createMock(SearchRequest::class), $this->createMock(Search::class), $this->createMock(TypoScriptConfiguration::class))
+            new AfterSearchQueryHasBeenPreparedEvent($query, $this->createMock(SearchRequest::class), $this->createMock(Search::class), $this->createMock(TypoScriptConfiguration::class)),
         );
     }
 }

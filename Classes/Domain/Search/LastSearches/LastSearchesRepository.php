@@ -58,7 +58,7 @@ class LastSearchesRepository extends AbstractRepository
         return $queryBuilder
             ->select('keywords')
             ->addSelectLiteral(
-                $queryBuilder->expr()->max('tstamp', 'maxtstamp')
+                $queryBuilder->expr()->max('tstamp', 'maxtstamp'),
             )
             ->from($this->table)
             // There is no support for DISTINCT, a ->groupBy() has to be used instead.
@@ -133,7 +133,7 @@ class LastSearchesRepository extends AbstractRepository
         $affectedRows = $queryBuilder
             ->update($this->table)
             ->where(
-                $queryBuilder->expr()->eq('sequence_id', $queryBuilder->createNamedParameter($lastSearchesRow['sequence_id']))
+                $queryBuilder->expr()->eq('sequence_id', $queryBuilder->createNamedParameter($lastSearchesRow['sequence_id'])),
             )
             ->set('tstamp', time())
             ->set('keywords', $lastSearchesRow['keywords'])

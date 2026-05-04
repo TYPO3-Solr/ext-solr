@@ -43,7 +43,7 @@ class MultivalueTest extends SetUpContentObject
             [
                 'field' => 'list',
                 'separator' => ',',
-            ]
+            ],
         );
 
         self::assertEquals($expected, $actual);
@@ -62,7 +62,7 @@ class MultivalueTest extends SetUpContentObject
             [
                 'value' => $list,
                 'separator' => ',',
-            ]
+            ],
         );
 
         self::assertEquals($expected, $actual);

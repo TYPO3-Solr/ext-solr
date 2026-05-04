@@ -120,7 +120,7 @@ class SearchRequest
     {
         ArrayUtility::mergeRecursiveWithOverrule(
             $this->persistedArguments,
-            $argumentsToMerge
+            $argumentsToMerge,
         );
 
         $this->reset();
@@ -575,7 +575,7 @@ class SearchRequest
             $this->argumentNameSpace ?? self::DEFAULT_PLUGIN_NAMESPACE,
             $this->contextTypoScriptConfiguration === null ?
                 UrlFacetContainer::PARAMETER_STYLE_INDEX :
-                $this->contextTypoScriptConfiguration->getSearchFacetingUrlParameterStyle()
+                $this->contextTypoScriptConfiguration->getSearchFacetingUrlParameterStyle(),
         );
 
         // If the default of sorting parameter should be true, a modification of this condition is needed.
@@ -601,7 +601,7 @@ class SearchRequest
                 $argumentsArray,
                 $this->contextPageUid,
                 $this->contextSystemLanguageUid,
-                $this->contextTypoScriptConfiguration
+                $this->contextTypoScriptConfiguration,
             );
         }
 
@@ -616,7 +616,7 @@ class SearchRequest
             $arguments->getData(),
             $this->contextPageUid,
             $this->contextSystemLanguageUid,
-            $this->contextTypoScriptConfiguration
+            $this->contextTypoScriptConfiguration,
         );
     }
 

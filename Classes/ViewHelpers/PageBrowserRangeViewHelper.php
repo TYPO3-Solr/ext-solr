@@ -42,7 +42,7 @@ class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
         $to = $this->arguments['to'];
         $total = $this->arguments['total'];
 
-        $resultSet = self::getUsedSearchResultSetFromRenderingContext($this->renderingContext);
+        $resultSet = $this->getUsedSearchResultSetFromRenderingContext($this->renderingContext);
         $search = $resultSet->getUsedSearch();
         $variableProvider = $this->renderingContext->getVariableProvider();
 

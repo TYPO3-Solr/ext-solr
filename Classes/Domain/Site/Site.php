@@ -140,7 +140,7 @@ class Site
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
                 'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',
-                1552491117
+                1552491117,
             );
             $noSolrConnectionException->setRootPageId($this->getRootPageId());
             $noSolrConnectionException->setLanguageId($language);
@@ -255,6 +255,7 @@ class Site
      *
      * @param int|null $pageId Page ID from where to start collection sub-pages. Uses and includes the root page if none given.
      * @param string|null $indexQueueConfigurationName The name of index queue.
+     * @param string|null $additionalWhereClause
      *
      * @return int[] Array of pages (IDs) in this site
      *
@@ -263,6 +264,7 @@ class Site
     public function getPages(
         ?int $pageId = null,
         ?string $indexQueueConfigurationName = null,
+        ?string $additionalWhereClause = null,
     ): array {
         $pageId = $pageId ?? (int)$this->rootPageRecord['uid'];
 
@@ -272,19 +274,24 @@ class Site
             $solrConfiguration = $this->getSolrConfiguration();
             $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
         }
+
+        if ($additionalWhereClause !== null) {
+            $initialPagesAdditionalWhereClause .=
+                ($initialPagesAdditionalWhereClause !== '' ? ' AND ' : '')
+                . '(' . $additionalWhereClause . ')';
+        }
+
         return $this->pagesRepository->findAllSubPageIdsByRootPage($pageId, $initialPagesAdditionalWhereClause);
     }
 
-    /**
-     * Generates the site's unique Site Hash.
-     *
-     * The Site Hash is build from the site's main domain, the system encryption
-     * key, and the extension "tx_solr". These components are concatenated and
-     * sha1-hashed.
-     */
     public function getSiteHash(): string
     {
         return $this->siteHash;
+    }
+
+    public function getSiteIdentifier(): string
+    {
+        return $this->typo3SiteObject->getIdentifier();
     }
 
     /**

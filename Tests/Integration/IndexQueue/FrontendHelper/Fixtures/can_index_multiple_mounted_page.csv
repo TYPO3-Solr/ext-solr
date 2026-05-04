@@ -11,12 +11,12 @@
 #        |
 #        |—[24] Mount Point (to [44] to show contents from)
 "pages",
-,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title"
+,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title","tstamp"
 # Site tree a
-,14,1,0,7,44,1,"/mount-point","Mount Point"
-,24,1,0,7,44,1,"/mount-point-2","Mount Point 2"
+,14,1,0,7,44,1,"/mount-point","Mount Point",1007007007
+,24,1,0,7,44,1,"/mount-point-2","Mount Point 2",1007007007
 # Shared Pages tree
-,44,111,0,1,0,0,"/first-shared","FirstShared (Not root)"
+,44,111,0,1,0,0,"/first-shared","FirstShared (Not root)",1007007007
 "tt_content",
 ,"uid","pid","colPos","CType","bodytext"
 ,99,44,0,"text","Some Lorem Ipsum conteint!"

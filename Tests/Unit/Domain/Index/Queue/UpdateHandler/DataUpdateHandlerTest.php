@@ -26,6 +26,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -57,6 +59,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             DataUpdateHandler::class,
             [
                 'getRecord',
+                'getValidatedPid',
             ],
             [
                 $this->recordServiceMock,
@@ -77,11 +80,12 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
                 'uid' => self::DUMMY_PAGE_ID,
                 'title' => 'dummy page on which dummy ce is placed',
                 'sys_language_uid' => 0,
+                'doktype' => 1,
             ]);
-
-        $this->dataHandlerMock
+        // Mock getValidatedPid to return the dummy page ID (BackendUtility::getRecord is static and can't be mocked)
+        $this->dataUpdateHandler
             ->expects(self::any())
-            ->method('getPID')
+            ->method('getValidatedPid')
             ->willReturn(self::DUMMY_PAGE_ID);
     }
 
@@ -131,7 +135,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('updateItem')
             ->with(
                 'pages',
-                $dummyPageRecord['uid']
+                $dummyPageRecord['uid'],
             );
 
         $this->indexQueueMock
@@ -139,7 +143,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('deleteItem')
             ->with(
                 'pages',
-                $dummyPageRecord['uid']
+                $dummyPageRecord['uid'],
             );
 
         $this->typoScriptConfigurationMock
@@ -154,7 +158,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'pages',
                 $dummyPageRecord['uid'],
-                $this->typoScriptConfigurationMock
+                $this->typoScriptConfigurationMock,
             )
             ->willReturn($dummyPageRecord);
 
@@ -163,7 +167,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('isLocalizedRecord')
             ->with(
                 'pages',
-                $dummyPageRecord
+                $dummyPageRecord,
             )
             ->willReturn(false);
 
@@ -173,7 +177,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'pages',
                 $dummyPageRecord,
-                $dummyPageRecord['uid']
+                $dummyPageRecord['uid'],
             )
             ->willReturn($dummyPageRecord['uid']);
 
@@ -182,7 +186,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('isEnabledRecord')
             ->with(
                 'pages',
-                $dummyPageRecord
+                $dummyPageRecord,
             )
             ->willReturn(true);
 
@@ -225,7 +229,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'pages',
                 $dummyPageRecord['uid'],
-                $this->typoScriptConfigurationMock
+                $this->typoScriptConfigurationMock,
             )
             ->willReturn([]);
 
@@ -247,7 +251,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'pages',
                 self::DUMMY_PAGE_ID,
-                1641472388
+                1641472388,
             )
             ->willReturn(1);
 
@@ -279,7 +283,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('updateItem')
             ->with(
                 'pages',
-                $dummyPageRecord['uid']
+                $dummyPageRecord['uid'],
             );
 
         $this->inject($this->dataUpdateHandler, 'updateSubPagesRecursiveTriggerConfiguration', []);
@@ -299,7 +303,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('deleteItem')
             ->with(
                 'pages',
-                $dummyPageRecord['uid']
+                $dummyPageRecord['uid'],
             );
 
         $this->typoScriptConfigurationMock
@@ -314,7 +318,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'pages',
                 $dummyPageRecord['uid'],
-                $this->typoScriptConfigurationMock
+                $this->typoScriptConfigurationMock,
             )
             ->willReturn($dummyPageRecord);
 
@@ -323,7 +327,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('isLocalizedRecord')
             ->with(
                 'pages',
-                $dummyPageRecord
+                $dummyPageRecord,
             )
             ->willReturn(false);
 
@@ -333,7 +337,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'pages',
                 $dummyPageRecord,
-                $dummyPageRecord['uid']
+                $dummyPageRecord['uid'],
             )
             ->willReturn($dummyPageRecord['uid']);
 
@@ -342,7 +346,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('isEnabledRecord')
             ->with(
                 'pages',
-                $dummyPageRecord
+                $dummyPageRecord,
             )
             ->willReturn(true);
     }
@@ -373,6 +377,11 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManagerMock);
         GeneralUtility::addInstance(PageRepository::class, $this->createMock(PageRepository::class));
 
+        $queryBuilderMock = $this->createMock(QueryBuilder::class);
+        $connectionPoolMock = $this->createMock(ConnectionPool::class);
+        $connectionPoolMock->method('getQueryBuilderForTable')->willReturn($queryBuilderMock);
+        GeneralUtility::addInstance(ConnectionPool::class, $connectionPoolMock);
+
         $this->pagesRepositoryMock
             ->expects(self::any())
             ->method('getTreeList')
@@ -400,23 +409,23 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
                             'pages',
                             $dummyPageRecord['uid'],
                         ],
-                        [$type, $uid]
+                        [$type, $uid],
                     ),
                     2 => self::assertEquals(
                         [
                             'pages',
                             100,
                         ],
-                        [$type, $uid]
+                        [$type, $uid],
                     ),
                     3 => self::assertEquals(
                         [
                             'pages',
                             200,
                         ],
-                        [$type, $uid]
+                        [$type, $uid],
                     ),
-                    default => self::fail('Unexpected number of invocations: ' . $matcher->numberOfInvocations())
+                    default => self::fail('Unexpected number of invocations: ' . $matcher->numberOfInvocations()),
                 };
 
                 return 1;
@@ -444,7 +453,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'pages',
                 $dummyPageRecord['uid'],
-                $dummyPageRecord['uid']
+                $dummyPageRecord['uid'],
             )
             ->willReturn([]);
 
@@ -482,7 +491,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'tx_foo_bar',
                 $dummyRecord['uid'],
-                $this->typoScriptConfigurationMock
+                $this->typoScriptConfigurationMock,
             )
             ->willReturn($dummyRecord);
 
@@ -495,7 +504,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('isLocalizedRecord')
             ->with(
                 'tx_foo_bar',
-                $dummyRecord
+                $dummyRecord,
             )
             ->willReturn(false);
 
@@ -505,7 +514,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'tx_foo_bar',
                 $dummyRecord,
-                $dummyRecord['uid']
+                $dummyRecord['uid'],
             )
             ->willReturn($dummyRecord['uid']);
 
@@ -514,7 +523,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('isEnabledRecord')
             ->with(
                 'tx_foo_bar',
-                $dummyRecord
+                $dummyRecord,
             )
             ->willReturn(true);
 
@@ -523,7 +532,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('updateItem')
             ->with(
                 'tx_foo_bar',
-                $dummyRecord['uid']
+                $dummyRecord['uid'],
             );
 
         $this->dataUpdateHandler->handleRecordUpdate($dummyRecord['uid'], 'tx_foo_bar');
@@ -555,7 +564,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'tx_foo_bar',
                 $dummyRecord['uid'],
-                $this->typoScriptConfigurationMock
+                $this->typoScriptConfigurationMock,
             )
             ->willReturn([]);
 
@@ -581,7 +590,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('getResponsibleRootPageIds')
             ->with(
                 'tx_foo_bar',
-                $dummyRecord['uid']
+                $dummyRecord['uid'],
             )
             ->willReturn([self::DUMMY_PAGE_ID, 20]);
 
@@ -637,7 +646,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'pages',
                 $dummyPageRecord['uid'],
-                $this->typoScriptConfigurationMock
+                $this->typoScriptConfigurationMock,
             )
             ->willReturn($dummyPageRecord);
 
@@ -646,7 +655,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('isEnabledRecord')
             ->with(
                 'pages',
-                $dummyPageRecord
+                $dummyPageRecord,
             )
             ->willReturn(true);
 
@@ -680,7 +689,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'pages',
                 $dummyPageRecord['uid'],
-                $this->typoScriptConfigurationMock
+                $this->typoScriptConfigurationMock,
             )
             ->willReturn($dummyPageRecord);
 
@@ -689,7 +698,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('isEnabledRecord')
             ->with(
                 'pages',
-                $dummyPageRecord
+                $dummyPageRecord,
             )
             ->willReturn(true);
 
@@ -722,7 +731,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'pages',
                 $dummyPageRecord['uid'],
-                $this->typoScriptConfigurationMock
+                $this->typoScriptConfigurationMock,
             )
             ->willReturn([]);
 
@@ -736,7 +745,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('collectGarbage')
             ->with(
                 'pages',
-                $dummyPageRecord['uid']
+                $dummyPageRecord['uid'],
             );
         GeneralUtility::addInstance(GarbageHandler::class, $garbageHandlerMock);
 
@@ -764,7 +773,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'tx_foo_bar',
                 $dummyRecord['uid'],
-                $this->typoScriptConfigurationMock
+                $this->typoScriptConfigurationMock,
             )
             ->willReturn($dummyRecord);
 
@@ -773,7 +782,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('isEnabledRecord')
             ->with(
                 'tx_foo_bar',
-                $dummyRecord
+                $dummyRecord,
             )
             ->willReturn(true);
 
@@ -783,7 +792,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'tx_foo_bar',
                 $dummyRecord,
-                $dummyRecord['uid']
+                $dummyRecord['uid'],
             )
             ->willReturn($dummyRecord['uid']);
 
@@ -816,7 +825,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
         ->with(
             'tx_foo_bar',
             $dummyRecord['uid'],
-            $this->typoScriptConfigurationMock
+            $this->typoScriptConfigurationMock,
         )
         ->willReturn([]);
 
@@ -830,7 +839,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('collectGarbage')
             ->with(
                 'tx_foo_bar',
-                $dummyRecord['uid']
+                $dummyRecord['uid'],
             );
         GeneralUtility::addInstance(GarbageHandler::class, $garbageHandlerMock);
 
@@ -853,7 +862,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'pages',
                 $dummyPageRecord['uid'],
-                $this->typoScriptConfigurationMock
+                $this->typoScriptConfigurationMock,
             )
             ->willReturn($dummyPageRecord);
 
@@ -862,7 +871,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('isEnabledRecord')
             ->with(
                 'pages',
-                $dummyPageRecord
+                $dummyPageRecord,
             )
             ->willReturn(true);
 
@@ -900,7 +909,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'tx_foo_bar',
                 $dummyRecord['uid'],
-                $this->typoScriptConfigurationMock
+                $this->typoScriptConfigurationMock,
             )
             ->willReturn($dummyRecord);
 
@@ -909,7 +918,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->method('isEnabledRecord')
             ->with(
                 'tx_foo_bar',
-                $dummyRecord
+                $dummyRecord,
             )
             ->willReturn(true);
 
@@ -919,7 +928,7 @@ class DataUpdateHandlerTest extends SetUpUpdateHandler
             ->with(
                 'tx_foo_bar',
                 $dummyRecord,
-                $dummyRecord['uid']
+                $dummyRecord['uid'],
             )
             ->willReturn($dummyRecord['uid']);
 

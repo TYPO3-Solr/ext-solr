@@ -34,14 +34,16 @@ class SolrConfigurationStatusTest extends SetUpUnitTestCase
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         // we mock the methods to external dependencies.
 
-        $this->report = $this->getMockBuilder(SolrConfigurationStatus::class)->onlyMethods(
-            [
-                'getRootPages',
-                'getIsSolrEnabled',
-                'getIsIndexingEnabled',
-                'getRenderedReport',
-            ]
-        )->getMock();
+        $this->report = $this->getMockBuilder(SolrConfigurationStatus::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(
+                [
+                    'getRootPages',
+                    'getIsSolrEnabled',
+                    'getIsIndexingEnabled',
+                    'getRenderedReport',
+                ],
+            )->getMock();
         parent::setUp();
     }
 
@@ -74,7 +76,7 @@ class SolrConfigurationStatusTest extends SetUpUnitTestCase
         // one report should be rendered because solr is enabled but indexing not
         $this->report->expects(self::once())->method('getRenderedReport')->with(
             'SolrConfigurationStatusIndexing.html',
-            ['pages' => [$fakedRootPages[1]]]
+            ['pages' => [$fakedRootPages[1]]],
         )->willReturn('faked report output');
 
         $states = $this->report->getStatus();
@@ -86,14 +88,14 @@ class SolrConfigurationStatusTest extends SetUpUnitTestCase
         self::assertSame(
             ContextualFeedbackSeverity::OK,
             $firstState->getSeverity(),
-            'Expected to have no violation concerning root pages.'
+            'Expected to have no violation concerning root pages.',
         );
 
         $secondState = $states[1];
         self::assertSame(
             ContextualFeedbackSeverity::WARNING,
             $secondState->getSeverity(),
-            'Expected to have one violation concerning page indexing flag.'
+            'Expected to have one violation concerning page indexing flag.',
         );
     }
 }

@@ -15,57 +15,51 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr\Service;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Solarium\Client;
-use Solarium\Core\Client\Adapter\Psr18Adapter;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to check if the solr write service is working as expected.
  */
 class SolrWriteServiceTest extends IntegrationTestBase
 {
-    protected SolrWriteService|MockObject $solrWriteService;
+    protected SolrWriteService $solrWriteService;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        // @todo: Drop manual initialization of solr Connection and use provided EXT:Solr API.
-        $psr7Client = $this->get(ClientInterface::class);
-        $requestFactory = $this->get(RequestFactoryInterface::class);
-        $streamFactory = $this->get(StreamFactoryInterface::class);
-        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $adapter = new Psr18Adapter(
-            $psr7Client,
-            $requestFactory,
-            $streamFactory
-        );
-        $client = new Client($adapter, $eventDispatcher);
-
-        $client->clearEndpoints();
-        $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'], true);
-
-        $this->solrWriteService = GeneralUtility::makeInstance(SolrWriteService::class, $client, new TypoScriptConfiguration([]));
+        $this->writeDefaultSolrTestSiteConfiguration();
+        $this->solrWriteService = $this->get(ConnectionManager::class)
+            ->getConnectionByRootPageId(1)
+            ->getWriteService();
     }
 
     #[Test]
-    public function canExtractByQuery(): void
+    public function canWriteToSolr(): void
     {
-        $testFilePath = __DIR__ . '/Fixtures/testpdf.pdf';
-        $extractQuery = GeneralUtility::makeInstance(ExtractingQuery::class, $testFilePath);
-        $extractQuery->setExtractOnly(true);
-        $response = $this->solrWriteService->extractByQuery($extractQuery);
-        self::assertStringContainsString('PDF Test', $response[0], 'Could not extract text');
+        $this->assertSolrIsEmpty('core_en');
+
+        $document = new Document();
+        $document->setField('id', 'abcdefgh/pages/1/0/0/0');
+        $document->setField('appKey', 'EXT:solr');
+        $document->setField('type', 'pages');
+
+        $this->solrWriteService->addDocuments([$document]);
+        $this->solrWriteService->commit();
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not add documents');
+
+        $this->solrWriteService->deleteByType('pages', false);
+
+        // commit changes manually
+        // deleteByType() is performing a commit by default, but as deleteByType() is explicitly
+        // not waiting for a new searcher, issues might occur during testing.
+        $this->solrWriteService->commit();
+
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
+        self::assertStringContainsString('"numFound":0', $solrContent, 'Could not delete document');
     }
 }

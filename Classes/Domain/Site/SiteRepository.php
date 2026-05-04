@@ -19,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
-use ApacheSolrForTypo3\Solr\Event\Site\AfterDomainHasBeenDeterminedForSiteEvent;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
@@ -59,7 +58,7 @@ class SiteRepository
         ?SiteFinder $siteFinder = null,
         ?ExtensionConfiguration $extensionConfiguration = null,
         ?FrontendEnvironment $frontendEnvironment = null,
-        ?EventDispatcherInterface $eventDispatcherInterface = null
+        ?EventDispatcherInterface $eventDispatcherInterface = null,
     ) {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
@@ -222,7 +221,7 @@ class SiteRepository
                     throw new UnexpectedTYPO3SiteInitializationException(
                         'Something went wrong on TYPO3 site initialization. See stack trace for more information.',
                         1680859613,
-                        $e
+                        $e,
                     );
                 }
             }
@@ -241,7 +240,7 @@ class SiteRepository
         if (empty($rootPageRecord)) {
             throw new InvalidArgumentException(
                 "The rootPageRecord for the given rootPageRecord ID '$rootPageId' could not be found in the database and can therefore not be used as site root rootPageRecord.",
-                1487326416
+                1487326416,
             );
         }
 
@@ -251,13 +250,13 @@ class SiteRepository
     }
 
     /**
-     * Returns the site hash for given domain.
+     * Returns the site hash for given site.
      */
-    protected function getSiteHashForDomain(string $domain): string
+    protected function getSiteHash(CoreSite $site): string
     {
         /** @var SiteHashService $siteHashService */
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
-        return $siteHashService->getSiteHashForDomain($domain);
+        return $siteHashService->getSiteHash($site);
     }
 
     /**
@@ -275,7 +274,7 @@ class SiteRepository
         if (!SiteUtility::isRootPage($rootPageRecord)) {
             throw new InvalidArgumentException(
                 'The rootPageRecord for the given rootPageRecord ID \'' . $rootPageRecord['uid'] . '\' is not marked as root rootPageRecord and can therefore not be used as site root rootPageRecord.',
-                1309272922
+                1309272922,
             );
         }
     }
@@ -291,23 +290,17 @@ class SiteRepository
      */
     protected function buildTypo3ManagedSite(array $rootPageRecord): ?Site
     {
-        $typo3Site = $this->getTypo3Site($rootPageRecord['uid']);
-        if (!$typo3Site instanceof CoreSite) {
+        try {
+            $typo3Site = $this->siteFinder->getSiteByPageId((int)$rootPageRecord['uid']);
+        } catch (Throwable) {
             return null;
         }
 
-        $domain = $typo3Site->getBase()->getHost();
-        $event = $this->eventDispatcher->dispatch(
-            new AfterDomainHasBeenDeterminedForSiteEvent($domain, $rootPageRecord, $typo3Site, $this->extensionConfiguration)
-        );
-        $domain = $event->getDomain();
-
-        $siteHash = $this->getSiteHashForDomain($domain);
-        $defaultLanguage = $typo3Site->getDefaultLanguage()->getLanguageId();
+        $siteHash = $this->getSiteHash($typo3Site);
+        $availableLanguages = $typo3Site->getLanguages();
+        $defaultLanguage = reset($availableLanguages)->getLanguageId();
+        $availableLanguageIds = array_keys($availableLanguages);
         $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
-        $availableLanguageIds = array_map(static function ($language) {
-            return $language->getLanguageId();
-        }, $typo3Site->getLanguages());
 
         // Try to get first instantiable TSFE for one of site languages, to get TypoScript with `plugin.tx_solr.index.*`,
         // to be able to collect indexing configuration,
@@ -336,25 +329,13 @@ class SiteRepository
             Site::class,
             $solrConfiguration,
             $rootPageRecord,
-            $domain,
+            $typo3Site->getBase()->getHost(),
             $siteHash,
             $pageRepository,
             $defaultLanguage,
             $availableLanguageIds,
             $solrConnectionConfigurations,
-            $typo3Site
+            $typo3Site,
         );
-    }
-
-    /**
-     * Returns {@link CoreSite}.
-     */
-    protected function getTypo3Site(int $pageUid): ?CoreSite
-    {
-        try {
-            return $this->siteFinder->getSiteByPageId($pageUid);
-        } catch (Throwable) {
-        }
-        return null;
     }
 }

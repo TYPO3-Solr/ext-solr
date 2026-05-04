@@ -26,7 +26,9 @@ final class AddExampleDocumentsBeforePageIndexing
      */
     public function __invoke(BeforePageDocumentIsProcessedForIndexingEvent $event): void
     {
-        if (!($_GET['additionalTestPageIndexer'] ?? false)) {
+        $request = $event->getRequest();
+        $queryParams = $request->getQueryParams();
+        if (!($queryParams['additionalTestPageIndexer'] ?? false)) {
             return;
         }
         $pageDocument = $event->getDocument();

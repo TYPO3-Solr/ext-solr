@@ -1,6 +1,6 @@
 "pages",
-,"uid","pid","is_siteroot","doktype","slug","title"
-,1,0,1,1,"/","Hello Search Test"
+,"uid","pid","is_siteroot","doktype","slug","title","tstamp"
+,1,0,1,1,"/","Hello Search Test",1007007007
 "sys_template",
 ,"uid","pid","root","clear","sorting","config"
 ,1,1,1,3,100,"

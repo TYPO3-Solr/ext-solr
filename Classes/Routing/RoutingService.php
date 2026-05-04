@@ -235,7 +235,7 @@ class RoutingService implements LoggerAwareInterface
                 [$facetName, $facetValue] = explode(
                     $this->detectFacetAndValueSeparator($queryValues[$i]),
                     $queryValues[$i],
-                    2
+                    2,
                 );
 
                 if ($this->isPathArgument($facetName)) {
@@ -250,7 +250,7 @@ class RoutingService implements LoggerAwareInterface
         sort($queryValues);
         $pathSegments[] = implode(
             $this->urlFacetPathService->getMultiValueSeparator(),
-            $queryValues
+            $queryValues,
         );
         return implode('/', $pathSegments);
     }
@@ -313,7 +313,7 @@ class RoutingService implements LoggerAwareInterface
                 isset($newQueryParams[$queryParameterMap[$facetName]])) {
                 $this->logger->error(
                     'Mask error: Facet "' . $facetName . '" as "' . $queryParameterMap[$facetName] .
-                    '" already in query!'
+                    '" already in query!',
                 );
                 $keep = true;
             }
@@ -356,7 +356,7 @@ class RoutingService implements LoggerAwareInterface
                 if (isset($newQueryParams[$queryParamName])) {
                     $newQueryParams[$queryParamName] = array_merge_recursive(
                         $newQueryParams[$queryParamName],
-                        $queryParamValue
+                        $queryParamValue,
                     );
                 } else {
                     $newQueryParams[$queryParamName] = $queryParamValue;
@@ -415,7 +415,7 @@ class RoutingService implements LoggerAwareInterface
             $this->settings['query']['map'],
             static function ($value) use ($self) {
                 return !$self->isCoreParameter($value);
-            }
+            },
         );
     }
 
@@ -711,7 +711,7 @@ class RoutingService implements LoggerAwareInterface
 
         return $this->fetchEnhancerInSiteConfigurationByPageUid(
             $site,
-            $pageUid
+            $pageUid,
         );
     }
 
@@ -803,7 +803,7 @@ class RoutingService implements LoggerAwareInterface
             PageSlugCandidateProvider::class,
             $context,
             $site,
-            null
+            null,
         );
     }
 
@@ -815,7 +815,7 @@ class RoutingService implements LoggerAwareInterface
         try {
             return GeneralUtility::makeInstance(
                 Uri::class,
-                $base
+                $base,
             );
         } catch (InvalidArgumentException) {
             return null;
@@ -865,7 +865,7 @@ class RoutingService implements LoggerAwareInterface
                 $queryParams,
                 $fieldName,
                 $parameters,
-                $pathElements
+                $pathElements,
             );
         }
 
@@ -976,7 +976,7 @@ class RoutingService implements LoggerAwareInterface
                 $queryParams[$queryKey],
                 $fieldName,
                 $parameters,
-                $pathElements
+                $pathElements,
             );
         }
 

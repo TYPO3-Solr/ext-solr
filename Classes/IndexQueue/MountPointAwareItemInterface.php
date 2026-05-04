@@ -24,10 +24,8 @@ interface MountPointAwareItemInterface
 {
     /**
      * Returns mount point identifier
-     *
-     * @return string|null
      */
-    public function getMountPointIdentifier(): ?string;
+    public function getMountPointIdentifier(): string;
 
     /**
      * Stores the indexing properties.
@@ -35,19 +33,16 @@ interface MountPointAwareItemInterface
     public function storeIndexingProperties(): void;
 
     /**
-     * Indicatess if item has indexing properties
+     * Indicates if item has indexing properties
      *
      * @return bool
      */
     public function hasIndexingProperties(): bool;
 
     /**
-     * Indicatess if item has given indexing properties
-     *
-     * @param string $key
-     * @return bool
+     * Indicates if item has given indexing properties
      */
-    public function hasIndexingProperty(string $key): bool;
+    public function hasIndexingProperty(string $propertyName): bool;
 
     /**
      * Sets an indexing property for the item.
@@ -60,10 +55,9 @@ interface MountPointAwareItemInterface
     /**
      * Gets a specific indexing property by its name/key.
      *
-     * @param string $key Indexing property name/key.
-     * @return string
+     * @param string $propertyName Indexing property name/key.
      */
-    public function getIndexingProperty(string $key): string;
+    public function getIndexingProperty(string $propertyName): string;
 
     /**
      * Gets all indexing properties set for this item.

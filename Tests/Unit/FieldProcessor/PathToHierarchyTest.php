@@ -37,16 +37,16 @@ class PathToHierarchyTest extends SetUpUnitTestCase
     {
         self::assertEquals(
             $this->processor->process(['sport/cricket']),
-            ['0-sport/', '1-sport/cricket/']
+            ['0-sport/', '1-sport/cricket/'],
         );
         self::assertEquals(
             $this->processor->process(['sport/skateboarding']),
-            ['0-sport/', '1-sport/skateboarding/']
+            ['0-sport/', '1-sport/skateboarding/'],
         );
 
         self::assertEquals(
             $this->processor->process(['sport/skateboarding \/ snowboarding']),
-            ['0-sport/', '1-sport/skateboarding \/ snowboarding/']
+            ['0-sport/', '1-sport/skateboarding \/ snowboarding/'],
         );
 
         self::assertEquals(
@@ -55,7 +55,7 @@ class PathToHierarchyTest extends SetUpUnitTestCase
                 '0-sport/',
                 '1-sport/skateboarding/',
                 '2-sport/skateboarding/street/',
-            ]
+            ],
         );
         self::assertEquals(
             $this->processor->process(['/sport/skateboarding/street//']),
@@ -63,7 +63,7 @@ class PathToHierarchyTest extends SetUpUnitTestCase
                 '0-sport/',
                 '1-sport/skateboarding/',
                 '2-sport/skateboarding/street/',
-            ]
+            ],
         );
     }
 }

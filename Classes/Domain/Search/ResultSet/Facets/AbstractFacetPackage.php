@@ -33,7 +33,10 @@ abstract class AbstractFacetPackage
     {
         $parser = GeneralUtility::makeInstance($this->getParserClassName());
         if (!$parser instanceof FacetParserInterface) {
-            throw new InvalidFacetPackageException('Invalid parser for package ' . __CLASS__);
+            throw new InvalidFacetPackageException(
+                'Invalid parser for package ' . __CLASS__,
+                8634008284,
+            );
         }
 
         return $parser;
@@ -51,7 +54,10 @@ abstract class AbstractFacetPackage
     {
         $urlDecoder = GeneralUtility::makeInstance($this->getUrlDecoderClassName());
         if (!$urlDecoder instanceof FacetUrlDecoderInterface) {
-            throw new InvalidUrlDecoderException('Invalid url-decoder for package ' . __CLASS__);
+            throw new InvalidUrlDecoderException(
+                'Invalid url-decoder for package ' . __CLASS__,
+                9144462614,
+            );
         }
 
         return $urlDecoder;
@@ -69,7 +75,10 @@ abstract class AbstractFacetPackage
     {
         $facetQueryBuilder = GeneralUtility::makeInstance($this->getQueryBuilderClassName());
         if (!$facetQueryBuilder instanceof FacetQueryBuilderInterface) {
-            throw new InvalidQueryBuilderException('Invalid query-builder for package ' . __CLASS__);
+            throw new InvalidQueryBuilderException(
+                'Invalid query-builder for package ' . __CLASS__,
+                5405805432,
+            );
         }
 
         return $facetQueryBuilder;
