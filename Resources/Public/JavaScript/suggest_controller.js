@@ -271,7 +271,7 @@ class SuggestController {
     list.style.left = `${left}px`;
     list.style.width = `${input.offsetWidth}px`;
   }
-x
+
   /**
    * Build suggestion box with autoCompleteJS
    * https://tarekraafat.github.io/autoComplete.js/#/configuration
