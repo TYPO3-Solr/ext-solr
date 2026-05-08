@@ -86,7 +86,8 @@ class SuggestController {
     this.abortController = new AbortController();
 
     try {
-      const url = `${this.suggestURL}&tx_solr%5BqueryString%5D=${encodeURIComponent(query)}`;
+      const separator = this.suggestURL.includes('?') ? '&' : '?';
+      const url = `${this.suggestURL}${separator}tx_solr%5BqueryString%5D=${encodeURIComponent(query)}`;
       const response = await fetch(
         url,
         { signal: this.abortController.signal }
