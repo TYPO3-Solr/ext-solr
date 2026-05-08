@@ -270,12 +270,29 @@ readonly class IndexingService
             // Ensure CWD matches the document root so that third-party code
             // relying on relative paths (e.g. cache file checks) works the
             // same way as in a real web request served by the web server.
+            $hadBackendUser = array_key_exists('BE_USER', $GLOBALS);
+            $previousBackendUser = $GLOBALS['BE_USER'] ?? null;
+            $hadTypo3Request = array_key_exists('TYPO3_REQUEST', $GLOBALS);
+            $previousTypo3Request = $GLOBALS['TYPO3_REQUEST'] ?? null;
             $previousWorkingDirectory = getcwd();
+
             chdir(Environment::getPublicPath());
             try {
                 $response = $this->frontendApplication->handle($request);
             } finally {
                 chdir($previousWorkingDirectory);
+
+                if ($hadBackendUser) {
+                    $GLOBALS['BE_USER'] = $previousBackendUser;
+                } else {
+                    unset($GLOBALS['BE_USER']);
+                }
+
+                if ($hadTypo3Request) {
+                    $GLOBALS['TYPO3_REQUEST'] = $previousTypo3Request;
+                } else {
+                    unset($GLOBALS['TYPO3_REQUEST']);
+                }
             }
 
             $statusCode = $response->getStatusCode();
