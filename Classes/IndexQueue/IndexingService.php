@@ -39,6 +39,8 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Page\AssetCollector;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -267,15 +269,63 @@ readonly class IndexingService
             $request = $this->buildServerRequest($item, $language);
             $request = $request->withAttribute('solr.indexingInstructions', $instructions);
 
-            // Ensure CWD matches the document root so that third-party code
-            // relying on relative paths (e.g. cache file checks) works the
-            // same way as in a real web request served by the web server.
+            // Snapshot global/singleton state that the frontend sub-request
+            // would otherwise clobber, so the BE web context (e.g. scheduler
+            // module dispatching this task) survives the call (#4628).
+            // Inspired by TYPO3 testing-framework's FrameworkState (which the
+            // testing-framework uses around executeFrontendSubRequest), but
+            // limited to the state we actually observe getting tainted in
+            // production indexing — the testing-framework's full reset relies
+            // on re-bootstrapping a fresh DI container, which is not feasible
+            // here. Concretely:
+            // - BackendUserAuthenticator (frontend middleware) overwrites
+            //   $GLOBALS['BE_USER'] and $GLOBALS['LANG']; without restore the
+            //   BE response rendering crashes (TypeError on getBackendUser())
+            //   or loses its localisation.
+            // - The frontend RequestHandler reassigns $GLOBALS['TYPO3_REQUEST'].
+            // - AssetCollector and PageRenderer are shared singletons whose
+            //   state is mutated by the frontend rendering chain; without
+            //   restore the BE module loses its registered CSS/JS.
+            // CWD is also pinned to the document root so third-party code
+            // using relative paths behaves like in a real web request.
             $previousWorkingDirectory = getcwd();
+            // For $GLOBALS keys, distinguish "key was unset" from "key was null"
+            // so the restore preserves the original semantics — assigning null
+            // when the key was previously absent would change array_key_exists()
+            // results and could mislead downstream code (e.g. CLI runs where
+            // $GLOBALS['BE_USER'] is genuinely not set at all).
+            $hadBackendUser = array_key_exists('BE_USER', $GLOBALS);
+            $previousBackendUser = $GLOBALS['BE_USER'] ?? null;
+            $hadLanguageService = array_key_exists('LANG', $GLOBALS);
+            $previousLanguageService = $GLOBALS['LANG'] ?? null;
+            $hadRequest = array_key_exists('TYPO3_REQUEST', $GLOBALS);
+            $previousRequest = $GLOBALS['TYPO3_REQUEST'] ?? null;
+            $assetCollector = GeneralUtility::makeInstance(AssetCollector::class);
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $previousAssetCollectorState = $assetCollector->getState();
+            $previousPageRendererState = $pageRenderer->getState();
             chdir(Environment::getPublicPath());
             try {
                 $response = $this->frontendApplication->handle($request);
             } finally {
                 chdir($previousWorkingDirectory);
+                if ($hadBackendUser) {
+                    $GLOBALS['BE_USER'] = $previousBackendUser;
+                } else {
+                    unset($GLOBALS['BE_USER']);
+                }
+                if ($hadLanguageService) {
+                    $GLOBALS['LANG'] = $previousLanguageService;
+                } else {
+                    unset($GLOBALS['LANG']);
+                }
+                if ($hadRequest) {
+                    $GLOBALS['TYPO3_REQUEST'] = $previousRequest;
+                } else {
+                    unset($GLOBALS['TYPO3_REQUEST']);
+                }
+                $assetCollector->updateState($previousAssetCollectorState);
+                $pageRenderer->updateState($previousPageRendererState);
             }
 
             $statusCode = $response->getStatusCode();
