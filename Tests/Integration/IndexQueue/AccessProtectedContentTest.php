@@ -94,7 +94,7 @@ class AccessProtectedContentTest extends IntegrationTestBase
             true,
         );
 
-        self::assertEquals($expectedNumFound, $solrContent['response']['numFound'] ?? 0, 'Could not index documents into Solr');
+        self::assertEquals($expectedNumFound, $solrContent['response']['numFound'] ?? 0, 'Unexpected count of documents in Solr index.');
         foreach ($expectedAccessFieldValues as $index => $expectedAccessFieldValue) {
             self::assertEquals(
                 $expectedAccessFieldValue,
