@@ -6,6 +6,16 @@ Releases 13.1
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 13.1.2
+==============
+
+This is a bugfix release for TYPO3 13 LTS.
+
+All Changes
+-----------
+
+*   [BUGFIX] Prevent c:0 variant and content leakage on fe_group-restricted pages by @dkd-kaehm in `#4641 <https://github.com/TYPO3-Solr/ext-solr/pull/4641>`_
+
 Release 13.1.1
 ==============
 

@@ -67,8 +67,23 @@ class PageIndexer extends Indexer
             );
         }
 
+        $feGroupColumn = $GLOBALS['TCA']['pages']['ctrl']['enablecolumns']['fe_group'] ?? '';
+        $pageUserGroup = $feGroupColumn !== '' ? (int)($item->getRecord()[$feGroupColumn] ?? 0) : 0;
         foreach ($systemLanguageUids as $systemLanguageUid) {
             $contentAccessGroups = $this->getAccessGroupsFromContent($item, $systemLanguageUid);
+            if ($pageUserGroup > 0) {
+                // A page with fe_group restriction has no publicly-accessible content variants:
+                // remove group 0 (which may originate from global template CEs, not page content).
+                // Ensure the page's own group is in accessGroups so restricted-but-eligible users
+                // can still find the page in search results.
+                $contentAccessGroups = array_values(array_filter(
+                    $contentAccessGroups,
+                    static fn(int $group): bool => $group !== 0,
+                ));
+                if (!in_array($pageUserGroup, $contentAccessGroups, true)) {
+                    $contentAccessGroups[] = $pageUserGroup;
+                }
+            }
             foreach ($contentAccessGroups as $userGroup) {
                 $this->indexPage($item, $systemLanguageUid, (int)$userGroup);
             }
