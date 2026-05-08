@@ -105,7 +105,7 @@ class PageIndexerTest extends IntegrationTestBase
             true,
         );
 
-        self::assertEquals($expectedNumFound, $solrContent['response']['numFound'] ?? 0, 'Could not index documents into Solr');
+        self::assertEquals($expectedNumFound, $solrContent['response']['numFound'] ?? 0, 'Unexpected count of documents in Solr index.');
         foreach ($expectedAccessFieldValues as $index => $expectedAccessFieldValue) {
             self::assertEquals(
                 $expectedAccessFieldValue,
@@ -230,6 +230,20 @@ class PageIndexerTest extends IntegrationTestBase
             'expectedNumFoundAnonymousUser' => 1,
             'userGroupToCheckAccessFilter' => '0,1',
             'expectedNumFoundLoggedInUser' => 2,
+        ];
+
+        yield 'protected page: c:0 must not contain same-group protected content (isolation bug)' => [
+            'fixture' => 'can_index_protected_page_with_public_and_same_group_protected_content',
+            'expectedNumFound' => 1,
+            'expectedAccessFieldValues' => [
+                '2:1/c:1',
+            ],
+            'expectedContents' => [
+                'protected ce protected bodytext',
+            ],
+            'expectedNumFoundAnonymousUser' => 0,
+            'userGroupToCheckAccessFilter' => '0,1',
+            'expectedNumFoundLoggedInUser' => 1,
         ];
 
         yield 'page protected by extend to subpages' => [
