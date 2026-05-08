@@ -86,7 +86,9 @@ class FrontendGroupsModifier
             );
         }
 
-        if ((int)$pageIndexerRequest->getParameter('pageUserGroup') > 0) {
+        if ((int)$pageIndexerRequest->getParameter('userGroup') > 0
+            && (int)$pageIndexerRequest->getParameter('pageUserGroup') > 0
+        ) {
             $groups[] = (int)$pageIndexerRequest->getParameter('pageUserGroup');
         }
         $groupData = [];
