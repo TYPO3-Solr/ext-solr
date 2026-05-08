@@ -106,6 +106,37 @@ As a result, pages with ``fe_group`` restriction no longer produce a
 ``c:0`` Solr document. Instead, the page's own group (e.g. ``c:1``) is
 used as the base content access variant.
 
+Bugfix: BE Web Context Preservation During Indexing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When the ``IndexQueueWorker`` scheduler task is dispatched from the BE
+web context (Scheduler module) or chained on the CLI via
+``scheduler:run``, the frontend sub-request executed during indexing
+replaced global state that the caller relies on:
+
+*  ``$GLOBALS['BE_USER']`` and ``$GLOBALS['LANG']`` are overridden by
+   the frontend ``BackendUserAuthenticator`` middleware.
+*  ``$GLOBALS['TYPO3_REQUEST']`` is reassigned by the frontend
+   ``RequestHandler``.
+*  ``AssetCollector`` and ``PageRenderer`` singleton state is mutated
+   by the frontend rendering chain.
+
+The Scheduler module then crashed when rendering its task-list view
+after the task (``TypeError`` on ``ModuleTemplate::getBackendUser()``,
+or broken BE styles), and ``scheduler:run`` chaining multiple tasks
+crashed in ``DataHandler`` because the next task expected a real
+``BackendUserAuthentication`` instance.
+
+Fix: ``IndexingService::executeSubRequest()`` now snapshots all of
+this state before the sub-request and restores it in the ``finally``
+block — for ``$GLOBALS`` keys preserving the "absent vs. ``null``"
+distinction. The pattern is inspired by the testing-framework's
+``FrameworkState`` class, scoped to the production state we observe
+getting tainted.
+
+See `#4628 <https://github.com/TYPO3-Solr/ext-solr/issues/4628>`_
+and `#4647 <https://github.com/TYPO3-Solr/ext-solr/pull/4647>`_.
+
 
 Breaking Changes
 ----------------
@@ -370,6 +401,25 @@ Since EXT:solr 9 and Apache Solr 7 dynamic fields based on trie fields are marke
 All Changes
 -----------
 
+*   [BUGFIX] Preserve BE web context across indexing sub-request by @dkd-kaehm in `#4647 <https://github.com/TYPO3-Solr/ext-solr/pull/4647>`_
+*   [BUGFIX] fix suggestion query if routeEnhancer is set by @dkd-lehnebach in `#4644 <https://github.com/TYPO3-Solr/ext-solr/pull/4644>`_
+*   [BUGFIX] Improve assertion message in AccessProtectedContentTest by @dkd-kaehm in `#4643 <https://github.com/TYPO3-Solr/ext-solr/pull/4643>`_
+*   [BUGFIX] v14: remove extra x character in suggest_controller.js by @dkd-kaehm in `3c7cd960a <https://github.com/TYPO3-Solr/ext-solr/commit/3c7cd960a93f74305e006a5466d63d8c0b09c6da>`_
+*   [BUGFIX] facet URL encoding mismatch (spaces) when using urlParameterStyle=assoc by @dkd-hauser in `#4610 <https://github.com/TYPO3-Solr/ext-solr/pull/4610>`_
+*   [BUGFIX] Correct field name casing for subTitle and navTitle in TypoScript queryFields by @amirarends in `#4618 <https://github.com/TYPO3-Solr/ext-solr/pull/4618>`_
+*   [FEATURE] Add site sets for all registered TypoScript templates by @dmitryd in `#4622 <https://github.com/TYPO3-Solr/ext-solr/pull/4622>`_
+*   [DOCS] Add documentation about site sets by @dmitryd in `#4622 <https://github.com/TYPO3-Solr/ext-solr/pull/4622>`_
+*   [DOCS] Update DynamicFieldTypes.rst by @daylightsoftware in `#4512 <https://github.com/TYPO3-Solr/ext-solr/pull/4512>`_
+*   [TASK] switch to stable/dev TYPO3 14.3.x by @dkd-kaehm in `#4620 <https://github.com/TYPO3-Solr/ext-solr/pull/4620>`_
+*   [TASK] replace backend module icons with TYPO3 14 style by @konradmichalik in `#4611 <https://github.com/TYPO3-Solr/ext-solr/pull/4611>`_
+*   [BUGFIX] Fix managed synonyms and stopwords API compatibility with Solr 10 by @dkd-dobberkau in `#4562 <https://github.com/TYPO3-Solr/ext-solr/pull/4562>`_
+*   [TASK] Drop deprecated Solr fields by @dkd-dobberkau in `#4562 <https://github.com/TYPO3-Solr/ext-solr/pull/4562>`_
+*   [TASK] Drop ExtractingRequestHandler for Solr 10 by @dkd-dobberkau in `#4562 <https://github.com/TYPO3-Solr/ext-solr/pull/4562>`_
+*   [TASK] Update solr-typo3-plugin to 7.0.0 for Solr 10 by @dkd-dobberkau in `#4562 <https://github.com/TYPO3-Solr/ext-solr/pull/4562>`_
+*   [TASK] Update Dockerfile and solr.xml for Solr 10 compatibility by @dkd-dobberkau in `#4562 <https://github.com/TYPO3-Solr/ext-solr/pull/4562>`_
+*   [TASK] Apache Solr 10 compatibility for configset by @dkd-dobberkau in `#4562 <https://github.com/TYPO3-Solr/ext-solr/pull/4562>`_
+*   [TASK] Adjust reports and status checks by @dkd-dobberkau in `#4562 <https://github.com/TYPO3-Solr/ext-solr/pull/4562>`_
+*   [TASK] Increase tmpfs size by @dkd-dobberkau in `#4562 <https://github.com/TYPO3-Solr/ext-solr/pull/4562>`_
 *   [!!!][BUGFIX] Remove space in ``searchResultClassName`` and ``searchResultSetClassName`` configuration keys by @beardcoder in `#4226 <https://github.com/TYPO3-Solr/ext-solr/pull/4226>`_
 *   [!!!][TASK] Remove jQuery dependency from frontend JavaScript by @dkd-lehnebach in `#4619 <https://github.com/TYPO3-Solr/ext-solr/pull/4619>`_
 *   [BUGFIX] Prevent c:0 variant and content leakage on fe_group-restricted pages by @dkd-kaehm in `#4559 <https://github.com/TYPO3-Solr/ext-solr/pull/4559>`_
@@ -450,12 +500,17 @@ awesome community. Here are the contributors to this release.
 - `Amir Arends <https://github.com/amirarends>`_
 - `@beardcoder <https://github.com/beardcoder>`_
 - `Benni Mack <https://github.com/bmack>`_
+- `@daylightsoftware <https://github.com/daylightsoftware>`_
+- `Dmitry Dulepov <https://github.com/dmitryd>`_
 - `Florian Lehnebach <https://github.com/dkd-lehnebach>`_
 - `@garfieldius <https://github.com/garfieldius>`_
 - `Helmut Hummel <https://github.com/helhum>`_
 - `@jschlier <https://github.com/jschlier>`_
+- `Konrad Michalik <https://github.com/konradmichalik>`_
 - `Markus Friedrich <https://github.com/dkd-friedrich>`_
 - `Mikel Wohlschlegel <https://github.com/mikelwohlschlegel>`_
+- `Oliver Hauser <https://github.com/dkd-hauser>`_
+- `Olivier Dobberkau <https://github.com/dkd-dobberkau>`_
 - `Philipp Kitzberger <https://github.com/kitzberger>`_
 - `Rafael Kähm <https://github.com/dkd-kaehm>`_
 - `Sascha Nowak <https://github.com/SaschaNoLe>`_
