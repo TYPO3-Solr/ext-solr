@@ -317,7 +317,8 @@ class QueryBuilderTest extends SetUpUnitTestCase
         $query = $this->builder->buildSearchQuery('hybrid term', 10);
         $params = $query->getParams();
 
-        self::assertSame('hybrid term', $query->getQuery(), 'Hybrid uses the search term as query string');
+        self::assertTrue($query instanceof SearchQuery);
+        self::assertSame('hybrid term', $query->getRawSearchTerm());
         self::assertNotSame('*:*', $query->getQuery(), 'Hybrid uses classical query, not match-all');
 
         self::assertArrayHasKey('rq', $params, 'reRank parameter missing');
