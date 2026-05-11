@@ -258,19 +258,11 @@ class SuggestController {
     document.body.appendChild(list);
 
     const input = this.autoCompleteInstance.input;
-    let top = 0;
-    let left = 0;
-    let element = input;
+    const inputRect = input.getBoundingClientRect();
 
-    while (element) {
-      top += element.offsetTop;
-      left += element.offsetLeft;
-      element = element.offsetParent;
-    }
-
-    list.style.top = `${top + input.offsetHeight}px`;
-    list.style.left = `${left}px`;
-    list.style.width = `${input.offsetWidth}px`;
+    list.style.top = `${inputRect.bottom + window.scrollY}px`;
+    list.style.left = `${inputRect.left + window.scrollX}px`;
+    list.style.width = `${inputRect.width}px`;
   }
 
   /**
@@ -356,6 +348,7 @@ class SuggestController {
             },
             open: () => {
               this.lastSelectedIndex = null
+              this.setSuggestionBoxWidthAndPosition();
             },
             close: () => {
               this.lastSelectedIndex = null
