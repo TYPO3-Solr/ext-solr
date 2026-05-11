@@ -164,7 +164,7 @@ class QueryBuilder extends AbstractQueryBuilder
         $topK = $this->typoScriptConfiguration->getTopKClosestVectorLimit();
         // Use the smaller of topK (KNN candidate pool) and reRankDocs so
         // the KNN side never returns fewer docs than the re-ranker needs.
-        $knnTopK = min($topK, $reRankDocs);
+        $knnTopK = max(1, min($topK, $reRankDocs));
 
         $weightForSolr = rtrim(rtrim(sprintf('%F', $reRankWeight), '0'), '.');
         if ($weightForSolr === '' || $weightForSolr === '-') {

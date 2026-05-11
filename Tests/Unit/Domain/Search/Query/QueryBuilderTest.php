@@ -334,6 +334,25 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
+    public function canBuildSearchQueryForHybridVectorSearchClampsKnnTopKToReRankDocs(): void
+    {
+        $this->configurationMock->method('isPureVectorSearchEnabled')->willReturn(false);
+        $this->configurationMock->method('isHybridVectorSearchEnabled')->willReturn(true);
+        $this->configurationMock->method('getVectorReRankDocs')->willReturn(50);
+        $this->configurationMock->method('getVectorReRankWeight')->willReturn(2.0);
+        $this->configurationMock->method('getTopKClosestVectorLimit')->willReturn(1000);
+
+        $query = $this->builder->buildSearchQuery('term', 10);
+        $params = $query->getParams();
+
+        self::assertSame(
+            '{!knn_text_to_vector model=llm f=vector topK=50}term',
+            $params['rqq'],
+            'KNN topK should be clamped to the smaller of getTopKClosestVectorLimit and getVectorReRankDocs',
+        );
+    }
+
+    #[Test]
     public function canEnableHighlighting(): void
     {
         $query = $this->getInitializedTestSearchQuery();
