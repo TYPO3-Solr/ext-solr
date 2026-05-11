@@ -306,6 +306,34 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
+    public function canBuildSearchQueryForHybridVectorSearch(): void
+    {
+        $this->configurationMock->method('isPureVectorSearchEnabled')->willReturn(false);
+        $this->configurationMock->method('isHybridVectorSearchEnabled')->willReturn(true);
+        $this->configurationMock->method('getVectorReRankDocs')->willReturn(200);
+        $this->configurationMock->method('getVectorReRankWeight')->willReturn(2.0);
+        $this->configurationMock->method('getTopKClosestVectorLimit')->willReturn(200);
+
+        $query = $this->builder->buildSearchQuery('hybrid term', 10);
+        $params = $query->getParams();
+
+        self::assertSame('hybrid term', $query->getRawSearchTerm());
+        self::assertNotSame('*:*', $query->getQuery(), 'Hybrid uses classical query, not match-all');
+
+        self::assertArrayHasKey('rq', $params, 'reRank parameter missing');
+        self::assertSame(
+            '{!rerank reRankQuery=$rqq reRankDocs=200 reRankWeight=2}',
+            $params['rq'],
+        );
+
+        self::assertArrayHasKey('rqq', $params, 'reRank inner query missing');
+        self::assertSame(
+            '{!knn_text_to_vector model=llm f=vector topK=200}hybrid term',
+            $params['rqq'],
+        );
+    }
+
+    #[Test]
     public function canEnableHighlighting(): void
     {
         $query = $this->getInitializedTestSearchQuery();
