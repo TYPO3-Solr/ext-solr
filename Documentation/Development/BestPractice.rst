@@ -20,7 +20,7 @@ non-content elements. Like this for example:
 
 .. code-block:: typoscript
 
-    [request && traverse(request.getHeaders(), 'x-tx-solr-iq/0')]
+    [request && traverse(request.getHeaders(), 'X-Tx-Solr-Iq/0')]
     page.10.dataProcessing >
     page.10.variables >
     page.10.variables {
