@@ -182,7 +182,7 @@ class SuggestController {
     // If nothing is selected or suggestion box is closed then submit form
     if ((cursor === undefined || cursor === -1) || !this.autoCompleteInstance.isOpen) {
       if (this.autoCompleteInstance.input.value.length) {
-        this.form.submit()
+        this.form.requestSubmit()
       }
     } else {
       this.autoCompleteInstance.select(cursor)
@@ -333,7 +333,7 @@ class SuggestController {
                 // Get href from selected item and open it
                 window.location.href = resultItems[selectionIndex].children[0].href
               } else {
-                this.form.submit()
+                this.form.requestSubmit()
               }
             },
             navigate: (event) => {
