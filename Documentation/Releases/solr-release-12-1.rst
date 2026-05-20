@@ -6,6 +6,27 @@ Releases 12.1
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 12.1.3
+==============
+
+This is a maintenance release for TYPO3 12 LTS that removes the
+temporary `guzzlehttp/psr7 <2.10.0` pin introduced in 12.1.2, now
+that the upstream fix is available.
+
+.. note::
+
+   This is the **final regular release on the 12.1.x line before
+   the transition to EXT:solr ELTS 12** (if sufficiently funded).
+   Subsequent maintenance for TYPO3 12 LTS will be delivered through
+   the EXT:solr ELTS program. See https://www.typo3-solr.com for
+   ELTS subscription details.
+
+All Changes
+-----------
+
+*   [TASK] Remove guzzlehttp/psr7 <2.10.0 pin (upstream fix in guzzlehttp/guzzle 7.10.2) by @dkd-kaehm in `#4660 <https://github.com/TYPO3-Solr/ext-solr/issues/4660>`_
+
+
 Release 12.1.2
 ==============
 
