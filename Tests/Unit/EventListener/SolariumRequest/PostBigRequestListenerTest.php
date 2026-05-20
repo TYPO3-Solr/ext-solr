@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\EventListener\SolariumRequest;
 
 use ApacheSolrForTypo3\Solr\EventListener\SolariumRequest\PostBigRequestListener;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Solarium\Core\Client\Endpoint;
@@ -27,9 +28,20 @@ use Solarium\Core\Event\PreExecuteRequest;
 final class PostBigRequestListenerTest extends SetUpUnitTestCase
 {
     #[Test]
+    public function disabledListenerDoesNotRewriteLongRequest(): void
+    {
+        $listener = new PostBigRequestListener($this->extensionConfiguration(false), maxQueryStringLength: 16);
+        $request = $this->makeRequest(Request::METHOD_GET, ['q' => 'something_quite_long_indeed_xxxxxxxxxxxxxxxxxxxxxxxx']);
+
+        ($listener)(new PreExecuteRequest($request, new Endpoint()));
+
+        self::assertSame(Request::METHOD_GET, $request->getMethod());
+    }
+
+    #[Test]
     public function shortGetRequestIsNotRewritten(): void
     {
-        $listener = new PostBigRequestListener(maxQueryStringLength: 1024);
+        $listener = new PostBigRequestListener($this->extensionConfiguration(true), maxQueryStringLength: 1024);
         $request = $this->makeRequest(Request::METHOD_GET, ['q' => '*:*', 'rows' => '0']);
 
         ($listener)(new PreExecuteRequest($request, new Endpoint()));
@@ -42,7 +54,7 @@ final class PostBigRequestListenerTest extends SetUpUnitTestCase
     #[Test]
     public function longGetRequestBecomesPostWithBodyAndClearedParams(): void
     {
-        $listener = new PostBigRequestListener(maxQueryStringLength: 32);
+        $listener = new PostBigRequestListener($this->extensionConfiguration(true), maxQueryStringLength: 32);
         $params = [
             'q' => '*:*',
             'facet.field' => array_map(static fn(int $i): string => 'someFacetableField_' . $i, range(1, 50)),
@@ -62,7 +74,7 @@ final class PostBigRequestListenerTest extends SetUpUnitTestCase
     #[Test]
     public function postRequestIsLeftUntouchedRegardlessOfBodyLength(): void
     {
-        $listener = new PostBigRequestListener(maxQueryStringLength: 16);
+        $listener = new PostBigRequestListener($this->extensionConfiguration(true), maxQueryStringLength: 16);
         $request = $this->makeRequest(Request::METHOD_POST, ['q' => 'something_quite_long_indeed_xxxxxxxxxxxxxxxxxxxxxxxx']);
 
         ($listener)(new PreExecuteRequest($request, new Endpoint()));
@@ -78,5 +90,13 @@ final class PostBigRequestListenerTest extends SetUpUnitTestCase
         $request->setParams($params);
 
         return $request;
+    }
+
+    private function extensionConfiguration(bool $enabled): ExtensionConfiguration
+    {
+        $mock = $this->createMock(ExtensionConfiguration::class);
+        $mock->method('getIsPostBigRequestEnabled')->willReturn($enabled);
+
+        return $mock;
     }
 }
