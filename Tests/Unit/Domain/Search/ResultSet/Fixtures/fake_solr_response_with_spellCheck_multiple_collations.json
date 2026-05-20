@@ -1,0 +1,38 @@
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 5,
+        "params": {
+            "spellcheck": "true",
+            "spellcheck.collate": "true",
+            "spellcheck.maxCollations": "2",
+            "json.nl": "flat",
+            "q": "hello formuller"
+        }
+    },
+    "response": {
+        "numFound": 0,
+        "start": 0,
+        "maxScore": 0.0,
+        "docs": []
+    },
+    "spellcheck": {
+        "suggestions": [
+            "formuller", {
+                "numFound": 2,
+                "startOffset": 6,
+                "endOffset": 15,
+                "suggestion": [
+                    "formular",
+                    "formula"
+                ]
+            }
+        ],
+        "collations": [
+            "collation",
+            "hello formular",
+            "collation",
+            "hello formula"
+        ]
+    }
+}

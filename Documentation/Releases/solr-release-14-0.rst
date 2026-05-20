@@ -151,6 +151,20 @@ getting tainted.
 See `#4628 <https://github.com/TYPO3-Solr/ext-solr/issues/4628>`_
 and `#4647 <https://github.com/TYPO3-Solr/ext-solr/pull/4647>`_.
 
+Bugfix: Spellchecking Dropped Correctly-Spelled Terms From Corrections
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The "did you mean" link and the spellchecker auto-correction used to drop every correctly-spelled term from a multi-word query,
+leaving only the suggested replacement word — so a search for "hello formuller" would offer "formular" instead of "hello formular".
+
+Fix: The primary path now uses Solr's ``spellcheck.collations`` field, which already contains the full corrected query.
+When Solr discards the collation (e.g. because ``spellcheck.maxCollationTries=1`` filters out collations that match no documents),
+a per-suggestion ``fullQuery`` falls back to reconstructing the query from the suggestion's ``startOffset``/``endOffset``
+against ``responseHeader.params.q``, with a word-boundary ``preg_replace`` as a last-resort fallback.
+This also fixes a latent bug where the misspelled term was captured from the array index instead of the actual string in the alternating flat NamedList.
+
+See `#4659 <https://github.com/TYPO3-Solr/ext-solr/issues/4659>`_.
+
 
 Breaking Changes
 ----------------

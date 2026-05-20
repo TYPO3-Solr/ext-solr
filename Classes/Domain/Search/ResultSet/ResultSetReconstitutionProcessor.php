@@ -127,10 +127,14 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             return $resultSet;
         }
 
+        $originalQuery = $this->resolveOriginalQuery($resultSet);
+
         $misspelledTerm = '';
-        foreach ($response->spellcheck->suggestions as $key => $suggestionData) {
+        foreach ($response->spellcheck->suggestions as $suggestionData) {
             if (is_string($suggestionData)) {
-                $misspelledTerm = $key;
+                // Flat NamedList alternates misspelled-term strings and suggestion objects;
+                // capture the term string so we can pair it with the next object.
+                $misspelledTerm = $suggestionData;
                 continue;
             }
 
@@ -146,13 +150,52 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             }
 
             foreach ($suggestionData->suggestion as $suggestedTerm) {
-                $suggestion = $this->createSuggestionFromResponseFragment($suggestionData, $suggestedTerm, $misspelledTerm);
+                $suggestion = $this->createSuggestionFromResponseFragment($suggestionData, $suggestedTerm, $misspelledTerm, $originalQuery);
                 //add it to the resultSet
                 $resultSet->addSpellCheckingSuggestion($suggestion);
             }
         }
 
+        foreach ($this->extractCollations($response->spellcheck->collations ?? []) as $collation) {
+            $resultSet->addSpellCheckingCollation($collation);
+        }
+
         return $resultSet;
+    }
+
+    /**
+     * Extracts collated full-query strings from the spellcheck response.
+     *
+     * Solr returns collations as a NamedList. With json.nl=flat (EXT:solr default) it is a
+     * flat array of alternating "collation"/value entries. With other formats it can be an
+     * array of strings or — when spellcheck.collateExtendedResults=true — an array of objects
+     * carrying the corrected query under "collationQuery". All shapes are normalized here.
+     *
+     * @param array<int|string, mixed> $collations
+     * @return list<string>
+     */
+    private function extractCollations(array $collations): array
+    {
+        $extracted = [];
+        $expectLabel = true;
+        foreach ($collations as $entry) {
+            if ($expectLabel && $entry === 'collation') {
+                $expectLabel = false;
+                continue;
+            }
+            $expectLabel = true;
+
+            if (is_string($entry) && $entry !== '' && $entry !== 'collation') {
+                $extracted[] = $entry;
+                continue;
+            }
+
+            if (is_object($entry) && isset($entry->collationQuery) && is_string($entry->collationQuery) && $entry->collationQuery !== '') {
+                $extracted[] = $entry->collationQuery;
+            }
+        }
+
+        return $extracted;
     }
 
     /**
@@ -162,14 +205,71 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
         stdClass $suggestionData,
         string $suggestedTerm,
         string $misspelledTerm,
+        string $originalQuery,
     ): Suggestion {
-        $numFound = $suggestionData->numFound ?? 0;
-        $startOffset = $suggestionData->startOffset ?? 0;
-        $endOffset = $suggestionData->endOffset ?? 0;
+        $numFound = (int)($suggestionData->numFound ?? 0);
+        $startOffset = (int)($suggestionData->startOffset ?? 0);
+        $endOffset = (int)($suggestionData->endOffset ?? 0);
+
+        $fullQuery = $this->buildSuggestionFullQuery(
+            $originalQuery,
+            $misspelledTerm,
+            $suggestedTerm,
+            $startOffset,
+            $endOffset,
+        );
 
         // by now we avoid to use GeneralUtility::makeInstance, since we only create a value object
         // and the usage might be an overhead.
-        return new Suggestion($suggestedTerm, $misspelledTerm, $numFound, $startOffset, $endOffset);
+        return new Suggestion($suggestedTerm, $misspelledTerm, $numFound, $startOffset, $endOffset, $fullQuery);
+    }
+
+    /**
+     * Resolves the original user query that Solr saw when computing spellcheck offsets.
+     *
+     * Prefers `responseHeader.params.q` because the start/end offsets returned per suggestion
+     * are relative to that exact string. Falls back to the SearchRequest's raw user query
+     * (useful when tests only provide a request mock).
+     */
+    private function resolveOriginalQuery(SearchResultSet $resultSet): string
+    {
+        $response = $resultSet->getResponse();
+        $paramsQuery = $response->responseHeader->params->q ?? null;
+        if (is_string($paramsQuery) && $paramsQuery !== '') {
+            return $paramsQuery;
+        }
+
+        $searchRequest = $resultSet->getUsedSearchRequest();
+        return $searchRequest !== null ? $searchRequest->getRawUserQuery() : '';
+    }
+
+    /**
+     * Builds the full follow-up query by replacing only the misspelled term inside the
+     * original query, keeping every other (correctly spelled) term intact.
+     */
+    private function buildSuggestionFullQuery(
+        string $originalQuery,
+        string $misspelledTerm,
+        string $suggestedTerm,
+        int $startOffset,
+        int $endOffset,
+    ): string {
+        if ($originalQuery === '') {
+            return $suggestedTerm;
+        }
+
+        if ($endOffset > $startOffset && $endOffset <= strlen($originalQuery)) {
+            return substr($originalQuery, 0, $startOffset) . $suggestedTerm . substr($originalQuery, $endOffset);
+        }
+
+        if ($misspelledTerm === '') {
+            return $suggestedTerm;
+        }
+
+        $pattern = '/(?<![\\w-])' . preg_quote($misspelledTerm, '/') . '(?![\\w-])/u';
+        $replaced = preg_replace($pattern, $suggestedTerm, $originalQuery, 1);
+
+        return is_string($replaced) && $replaced !== '' ? $replaced : $suggestedTerm;
     }
 
     /**
