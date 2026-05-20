@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRe
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -31,6 +32,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionMethod;
 use Solarium\Component\Grouping;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -230,6 +232,55 @@ final class SearchResultSetServiceTest extends SetUpUnitTestCase
             $searchResultSet->getSearchResults()->getCount(),
             'There should be a 7 search results when they are fetched without groups',
         );
+    }
+
+    #[Test]
+    public function autoCorrectionCandidatesPreferCollationsOverPerSuggestionFullQuery(): void
+    {
+        $resultSet = new SearchResultSet();
+        $resultSet->addSpellCheckingSuggestion(new Suggestion('formular', 'formuller', 1, 6, 15, 'hello formular'));
+        $resultSet->addSpellCheckingCollation('hello formular');
+
+        $candidates = $this->invokeCollectAutoCorrectionCandidates($resultSet);
+
+        self::assertSame(
+            ['hello formular'],
+            $candidates,
+            'Collation and per-suggestion fullQuery happen to match here, and duplicates must collapse to one candidate.',
+        );
+    }
+
+    #[Test]
+    public function autoCorrectionCandidatesUseFullQueryFromSuggestionWhenNoCollationIsAvailable(): void
+    {
+        $resultSet = new SearchResultSet();
+        $resultSet->addSpellCheckingSuggestion(new Suggestion('formular', 'formuller', 1, 6, 15, 'hello formular'));
+
+        $candidates = $this->invokeCollectAutoCorrectionCandidates($resultSet);
+
+        // The per-suggestion fullQuery is what preserves the correctly-spelled "hello" from the original query.
+        self::assertSame(['hello formular'], $candidates);
+    }
+
+    #[Test]
+    public function autoCorrectionCandidatesAreDeduplicatedAndFreeOfEmptyEntries(): void
+    {
+        $resultSet = new SearchResultSet();
+        $resultSet->setSpellCheckingCollations(['hello formular', '', 'hello formular']);
+        $resultSet->addSpellCheckingSuggestion(new Suggestion('formula', 'formuller', 1, 6, 15, 'hello formula'));
+
+        $candidates = $this->invokeCollectAutoCorrectionCandidates($resultSet);
+
+        self::assertSame(['hello formular', 'hello formula'], $candidates);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function invokeCollectAutoCorrectionCandidates(SearchResultSet $resultSet): array
+    {
+        $method = new ReflectionMethod(SearchResultSetService::class, 'collectAutoCorrectionCandidates');
+        return $method->invoke($this->searchResultSetService, $resultSet);
     }
 
     protected function assertAllInitialSearchesAreDisabled(): void
