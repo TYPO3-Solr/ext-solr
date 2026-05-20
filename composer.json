@@ -28,6 +28,7 @@
     "ext-libxml": "*",
     "ext-pdo": "*",
     "ext-simplexml": "*",
+    "guzzlehttp/psr7": "<2.10.0",
     "solarium/solarium": "6.4.1",
     "typo3/cms-backend": "*",
     "typo3/cms-core": "^v14.3.0",
