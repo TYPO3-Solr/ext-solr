@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\System\Solr;
 
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseStructure\SpellcheckSection;
 use Countable;
 use stdClass;
 
@@ -34,7 +35,7 @@ use stdClass;
  *
  * @property stdClass|null $facet_counts
  * @property stdClass|null $facets
- * @property stdClass|null $spellcheck
+ * @property SpellcheckSection|null $spellcheck
  * @property stdClass|null $response
  * @property stdClass|null $responseHeader
  * @property stdClass|null $highlighting

@@ -32,18 +32,22 @@ class Suggestion
 
     protected int $endOffset = 0;
 
+    protected string $fullQuery = '';
+
     public function __construct(
         string $suggestion = '',
         string $missSpelled = '',
         int $numFound = 1,
         int $startOffset = 0,
         int $endOffset = 0,
+        string $fullQuery = '',
     ) {
         $this->suggestion = $suggestion;
         $this->missSpelled = $missSpelled;
         $this->numFound = $numFound;
         $this->startOffset = $startOffset;
         $this->endOffset = $endOffset;
+        $this->fullQuery = $fullQuery !== '' ? $fullQuery : $suggestion;
     }
 
     public function getEndOffset(): int
@@ -69,5 +73,17 @@ class Suggestion
     public function getMissSpelled(): string
     {
         return $this->missSpelled;
+    }
+
+    /**
+     * Returns the original user query with the misspelled term replaced by the suggestion,
+     * so the other correctly-spelled terms are preserved when this suggestion is offered
+     * as a follow-up search. Falls back to the bare suggestion when no original query is known.
+     *
+     * @noinspection PhpUnused Used in Fluid-Templates/Partials {suggestion.fullQuery}
+     */
+    public function getFullQuery(): string
+    {
+        return $this->fullQuery;
     }
 }

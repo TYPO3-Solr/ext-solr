@@ -60,6 +60,11 @@ class SearchResultSet
      */
     protected array $spellCheckingSuggestions = [];
 
+    /**
+     * @var string[]
+     */
+    protected array $spellCheckingCollations = [];
+
     protected FacetCollection $facets;
 
     protected SortingCollection $sortings;
@@ -115,6 +120,37 @@ class SearchResultSet
     public function getSpellCheckingSuggestions(): array
     {
         return $this->spellCheckingSuggestions;
+    }
+
+    public function addSpellCheckingCollation(string $collation): void
+    {
+        if ($collation === '' || in_array($collation, $this->spellCheckingCollations, true)) {
+            return;
+        }
+        $this->spellCheckingCollations[] = $collation;
+    }
+
+    public function getHasSpellCheckingCollations(): bool
+    {
+        return $this->spellCheckingCollations !== [];
+    }
+
+    /**
+     * @param string[] $spellCheckingCollations
+     *
+     * @noinspection PhpUnused Used in Fluid-Templates/Partials {resultSet.spellCheckingCollations}
+     */
+    public function setSpellCheckingCollations(array $spellCheckingCollations): void
+    {
+        $this->spellCheckingCollations = $spellCheckingCollations;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getSpellCheckingCollations(): array
+    {
+        return $this->spellCheckingCollations;
     }
 
     public function getFacets(): FacetCollection

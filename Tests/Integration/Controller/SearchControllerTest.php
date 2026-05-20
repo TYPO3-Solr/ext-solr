@@ -194,6 +194,36 @@ class SearchControllerTest extends IntegrationTestBase
 
     #[Group('frontend')]
     #[Test]
+    public function didYouMeanLinkContainsAllSearchTermsForMultiWordQueryWithSingleTypo(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            /* @lang TYPO3_TypoScript */
+            '
+            plugin.tx_solr.search.spellchecking = 1
+            ',
+        );
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+        $resultPage = (string)$this->executeFrontendSubRequest(
+            $this->getPreparedRequest()
+                ->withQueryParameter('tx_solr[q]', 'men shoo'),
+        )->getBody();
+
+        self::assertStringContainsString('Did you mean', $resultPage, 'Could not find did you mean in response');
+        // Issue #4659: the suggestion link must rebuild the full query including the correct terms,
+        // not drop them in favour of the corrected word alone.
+        self::assertMatchesRegularExpression(
+            '/q=men[^"\'<>]*shoes/',
+            $resultPage,
+            'The "did you mean" link must keep the correct term "men" alongside the corrected "shoes".',
+        );
+    }
+
+    #[Group('frontend')]
+    #[Test]
     public function canAutoCorrectATypo(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
