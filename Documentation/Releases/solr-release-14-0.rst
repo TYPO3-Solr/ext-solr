@@ -401,6 +401,11 @@ Since EXT:solr 9 and Apache Solr 7 dynamic fields based on trie fields are marke
 All Changes
 -----------
 
+*   [BUGFIX] Pin guzzlehttp/psr7 to <2.10.0 by @dkd-kaehm in `#4661 <https://github.com/TYPO3-Solr/ext-solr/pull/4661>`_
+*   [BUGFIX] Do not resolve TypoScriptConfiguration for deleted page in WS by @amirarends in `#4603 <https://github.com/TYPO3-Solr/ext-solr/pull/4603>`_
+*   [BUGFIX] Make suggest widget form submission preventable by @danilovq in `#4657 <https://github.com/TYPO3-Solr/ext-solr/pull/4657>`_
+*   [BUGFIX] Use more robust way to calculate suggest dropdown position that works also with mobile/offcanvas layouts by @dmitryd in `#4652 <https://github.com/TYPO3-Solr/ext-solr/pull/4652>`_
+*   [DOCS] Fix case-sensitive X-Tx-Solr-Iq header in BestPractice.rst by @hnadler in `#4656 <https://github.com/TYPO3-Solr/ext-solr/pull/4656>`_
 *   [BUGFIX] Preserve BE web context across indexing sub-request by @dkd-kaehm in `#4647 <https://github.com/TYPO3-Solr/ext-solr/pull/4647>`_
 *   [BUGFIX] fix suggestion query if routeEnhancer is set by @dkd-lehnebach in `#4644 <https://github.com/TYPO3-Solr/ext-solr/pull/4644>`_
 *   [BUGFIX] Improve assertion message in AccessProtectedContentTest by @dkd-kaehm in `#4643 <https://github.com/TYPO3-Solr/ext-solr/pull/4643>`_
