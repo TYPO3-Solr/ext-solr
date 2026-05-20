@@ -158,6 +158,17 @@ class ExtensionConfiguration
         return (bool)$this->getConfigurationOrDefaultValue('enableRouteEnhancer', false);
     }
 
+    /**
+     * Get configuration for enablePostBigRequest
+     *
+     * When enabled, long Solr GET requests are converted to POST to avoid HTTP 414.
+     * Disabled by default because Apache Solr does not cache POST requests.
+     */
+    public function getIsPostBigRequestEnabled(): bool
+    {
+        return (bool)$this->getConfigurationOrDefaultValue('enablePostBigRequest', false);
+    }
+
     protected function getConfigurationOrDefaultValue(string $key, mixed $defaultValue = null): mixed
     {
         return $this->configuration[$key] ?? $defaultValue;

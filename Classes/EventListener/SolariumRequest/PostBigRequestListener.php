@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\EventListener\SolariumRequest;
 
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use Solarium\Core\Client\Request;
 use Solarium\Core\Event\PreExecuteRequest;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
@@ -32,6 +33,9 @@ use function strlen;
  * silent no-op. This listener performs the same conversion (GET to POST when the
  * query string exceeds the threshold) and works directly with TYPO3's dispatcher.
  *
+ * Disabled by default; opt in via the "enablePostBigRequest" extension setting.
+ * Apache Solr does not cache POST requests, so enabling this can reduce cache hits.
+ *
  * @noinspection PhpUnused Listener for {@link PreExecuteRequest}
  */
 final readonly class PostBigRequestListener
@@ -39,6 +43,7 @@ final readonly class PostBigRequestListener
     public const DEFAULT_MAX_QUERY_STRING_LENGTH = 1024;
 
     public function __construct(
+        private ExtensionConfiguration $extensionConfiguration,
         private int $maxQueryStringLength = self::DEFAULT_MAX_QUERY_STRING_LENGTH,
     ) {}
 
@@ -47,6 +52,10 @@ final readonly class PostBigRequestListener
     )]
     public function __invoke(PreExecuteRequest $event): void
     {
+        if (!$this->extensionConfiguration->getIsPostBigRequestEnabled()) {
+            return;
+        }
+
         $request = $event->getRequest();
 
         if ($request->getMethod() !== Request::METHOD_GET) {
