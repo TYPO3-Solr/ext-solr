@@ -114,3 +114,20 @@ allowSelfSignedCertificates
 
 Can be used to allow self signed certificates - when using the SSL protocol.
 
+enablePostBigRequest
+~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:Since: 14.0
+:Default: 0
+
+When enabled, long Solr GET requests are converted to POST so they no longer hit
+the web server's URI length limit (HTTP 414). Useful for installations with many
+or large facets that produce long query strings.
+
+..  note::
+    Enabling this is **not recommended** by default. Apache Solr does not cache
+    POST requests, so converting requests to POST reduces the effectiveness of
+    Solr's query result cache. Only enable this if you actually run into HTTP 414
+    errors that cannot be solved by increasing the web server's URI length limit.
+

@@ -24,3 +24,6 @@ enableRouteEnhancer = 0
 
 # cat=advanced/enable/e; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.allowSelfSignedCertificates
 allowSelfSignedCertificates = 0
+
+# cat=advanced/enable/f; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.enablePostBigRequest
+enablePostBigRequest = 0
