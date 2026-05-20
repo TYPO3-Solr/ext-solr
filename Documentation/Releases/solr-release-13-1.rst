@@ -9,12 +9,25 @@ Releases 13.1
 Release 13.1.2
 ==============
 
-This is a bugfix release for TYPO3 13 LTS.
+This is a bugfix release for TYPO3 13 LTS, primarily restoring Solr
+write functionality after a regression introduced by an upstream PSR-7
+library update.
 
 All Changes
 -----------
 
+*   [BUGFIX] Pin guzzlehttp/psr7 to <2.10.0 by @dkd-kaehm in `#4662 <https://github.com/TYPO3-Solr/ext-solr/pull/4662>`_
 *   [BUGFIX] Prevent c:0 variant and content leakage on fe_group-restricted pages by @dkd-kaehm in `#4641 <https://github.com/TYPO3-Solr/ext-solr/pull/4641>`_
+*   [BUGFIX] facet URL encoding mismatch (spaces) when using urlParameterStyle=assoc by @dkd-hauser in `#4626 <https://github.com/TYPO3-Solr/ext-solr/pull/4626>`_
+*   [BUGFIX] Correct field name casing for subTitle and navTitle in TypoScript queryFields by @amirarends in `#4624 <https://github.com/TYPO3-Solr/ext-solr/pull/4624>`_
+*   [TASK] Add PHP 8.5 to version matrix on TYPO3 13 by @dkd-kaehm in `#4599 <https://github.com/TYPO3-Solr/ext-solr/pull/4599>`_
+*   [TASK] Upgrade GitHub Actions to latest versions by @dkd-kaehm in `#4599 <https://github.com/TYPO3-Solr/ext-solr/pull/4599>`_
+*   [BUGFIX] GeneralUtility::trimExplode(): Argument #2 ($string) must be of type string, int given by @kitzberger in `#4586 <https://github.com/TYPO3-Solr/ext-solr/pull/4586>`_
+*   [BUGFIX] Cast result offset to integer by @SaschaNoLe in `#4585 <https://github.com/TYPO3-Solr/ext-solr/pull/4585>`_
+*   [BUGFIX] Respect plugin TS in RelevanceComponent by @helhum in `#4538 <https://github.com/TYPO3-Solr/ext-solr/pull/4538>`_
+*   [BUGFIX] Catch InvalidArgumentException for missing site languages in GarbageHandler by @mikelwohlschlegel in `#4537 <https://github.com/TYPO3-Solr/ext-solr/pull/4537>`_
+*   [BUGFIX] Add headers palette to solr plugin CType TCA definitions by @dkd-kaehm in `#4535 <https://github.com/TYPO3-Solr/ext-solr/pull/4535>`_
+*   [BUGFIX] CS issues 2026.02.05 by @dkd-kaehm in `#4535 <https://github.com/TYPO3-Solr/ext-solr/pull/4535>`_
 
 Release 13.1.1
 ==============
