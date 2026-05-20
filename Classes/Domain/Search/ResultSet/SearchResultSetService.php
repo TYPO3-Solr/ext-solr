@@ -244,7 +244,7 @@ class SearchResultSetService
         }
 
         // no corrections present
-        if (!$searchResultSet->getHasSpellCheckingSuggestions()) {
+        if (!$searchResultSet->getHasSpellCheckingCollations() && !$searchResultSet->getHasSpellCheckingSuggestions()) {
             return $searchResultSet;
         }
 
@@ -259,15 +259,14 @@ class SearchResultSetService
     protected function performAutoCorrection(SearchResultSet $searchResultSet): SearchResultSet
     {
         $searchRequest = $searchResultSet->getUsedSearchRequest();
-        $suggestions = $searchResultSet->getSpellCheckingSuggestions();
+        $corrections = $this->collectAutoCorrectionCandidates($searchResultSet);
 
         $maximumRuns = $this->typoScriptConfiguration->getSearchSpellcheckingNumberOfSuggestionsToTry();
         $runs = 0;
 
-        foreach ($suggestions as $suggestion) {
+        foreach ($corrections as $correction) {
             $runs++;
 
-            $correction = $suggestion->getSuggestion();
             $initialQuery = $searchRequest->getRawUserQuery();
 
             $searchRequest->setRawQueryString($correction);
@@ -284,6 +283,24 @@ class SearchResultSetService
             }
         }
         return $searchResultSet;
+    }
+
+    /**
+     * Returns the candidate queries to retry after a zero-hit search,
+     * preferring Solr's collations (the full query with all misspelled terms replaced)
+     * over per-suggestion full queries (original query with a single misspelled term replaced),
+     * so the correct terms from the original query are not dropped.
+     *
+     * @return string[]
+     */
+    protected function collectAutoCorrectionCandidates(SearchResultSet $searchResultSet): array
+    {
+        $candidates = $searchResultSet->getSpellCheckingCollations();
+        foreach ($searchResultSet->getSpellCheckingSuggestions() as $suggestion) {
+            $candidates[] = $suggestion->getFullQuery();
+        }
+
+        return array_values(array_unique(array_filter($candidates, static fn(string $candidate): bool => $candidate !== '')));
     }
 
     /**

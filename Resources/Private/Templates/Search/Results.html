@@ -67,13 +67,21 @@
 					</f:else>
 				</f:if>
 
-				<f:if condition="{resultSet.hasSpellCheckingSuggestions}">
+				<f:if condition="{resultSet.hasSpellCheckingCollations}">
 					<f:then>
 						<f:translate key="didYouMean" extensionName="solr">Did you mean</f:translate>
-						<f:for each="{resultSet.spellCheckingSuggestions}" as="suggestion">
-							<f:link.page additionalParams="{q: suggestion.suggestion}">{suggestion.suggestion}</f:link.page>
+						<f:for each="{resultSet.spellCheckingCollations}" as="collation">
+							<f:link.page additionalParams="{q: collation}">{collation}</f:link.page>
 						</f:for> ?
 					</f:then>
+					<f:else>
+						<f:if condition="{resultSet.hasSpellCheckingSuggestions}">
+							<f:translate key="didYouMean" extensionName="solr">Did you mean</f:translate>
+							<f:for each="{resultSet.spellCheckingSuggestions}" as="suggestion">
+								<f:link.page additionalParams="{q: suggestion.fullQuery}">{suggestion.fullQuery}</f:link.page>
+							</f:for> ?
+						</f:if>
+					</f:else>
 				</f:if>
 
 				<f:if condition="{resultSet.allResultCount}">

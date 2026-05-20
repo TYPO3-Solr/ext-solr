@@ -54,12 +54,110 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         // before the reconstitution of the domain object from the response we expect that no spelling suggestions
         // are present
         self::assertFalse($searchResultSet->getHasSpellCheckingSuggestions());
+        self::assertFalse($searchResultSet->getHasSpellCheckingCollations());
 
         $processor = new ResultSetReconstitutionProcessor();
         $processor->process($searchResultSet);
 
         // after the reconstitution they should be present
         self::assertTrue($searchResultSet->getHasSpellCheckingSuggestions());
+        self::assertTrue($searchResultSet->getHasSpellCheckingCollations());
+        self::assertSame(['typo3'], $searchResultSet->getSpellCheckingCollations());
+    }
+
+    #[Test]
+    public function canReconstituteSpellCheckingCollationsForMultiWordQuery(): void
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_spellCheck_multiword.json');
+
+        $processor = new ResultSetReconstitutionProcessor();
+        $processor->process($searchResultSet);
+
+        self::assertTrue($searchResultSet->getHasSpellCheckingCollations());
+        self::assertSame(
+            ['hello formular'],
+            $searchResultSet->getSpellCheckingCollations(),
+            'Collation must contain the full query with the misspelled term replaced, not just the suggestion',
+        );
+    }
+
+    #[Test]
+    public function canReconstituteMultipleSpellCheckingCollations(): void
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_spellCheck_multiple_collations.json');
+
+        $processor = new ResultSetReconstitutionProcessor();
+        $processor->process($searchResultSet);
+
+        self::assertSame(
+            ['hello formular', 'hello formula'],
+            $searchResultSet->getSpellCheckingCollations(),
+        );
+    }
+
+    #[Test]
+    public function spellCheckingCollationsAreEmptyWhenNotProvidedInResponse(): void
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_spellCheck_without_collations.json');
+
+        $processor = new ResultSetReconstitutionProcessor();
+        $processor->process($searchResultSet);
+
+        self::assertTrue($searchResultSet->getHasSpellCheckingSuggestions());
+        self::assertFalse($searchResultSet->getHasSpellCheckingCollations());
+    }
+
+    #[Test]
+    public function spellCheckingSuggestionExposesFullQueryReconstructedFromOffsets(): void
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_spellCheck_multiword.json');
+
+        $processor = new ResultSetReconstitutionProcessor();
+        $processor->process($searchResultSet);
+
+        $suggestions = array_values($searchResultSet->getSpellCheckingSuggestions());
+        self::assertCount(1, $suggestions);
+        // Issue #4659: the fallback link must keep the correctly-spelled "hello"
+        // and only replace the misspelled "formuller" with the suggested "formular".
+        self::assertSame('hello formular', $suggestions[0]->getFullQuery());
+    }
+
+    #[Test]
+    public function spellCheckingSuggestionFullQueryFallsBackToWordReplacementWhenOffsetsMissing(): void
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_spellCheck_without_offsets.json');
+
+        $processor = new ResultSetReconstitutionProcessor();
+        $processor->process($searchResultSet);
+
+        $suggestions = array_values($searchResultSet->getSpellCheckingSuggestions());
+        self::assertCount(1, $suggestions);
+        self::assertSame('hello formular', $suggestions[0]->getFullQuery());
+    }
+
+    #[Test]
+    public function spellCheckingSuggestionFullQueryDefaultsToSuggestionWhenOriginalQueryUnknown(): void
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_spellCheck.json');
+
+        $processor = new ResultSetReconstitutionProcessor();
+        $processor->process($searchResultSet);
+
+        $suggestions = array_values($searchResultSet->getSpellCheckingSuggestions());
+        // Original query "tipo3" is a single token; correcting it yields the bare suggestion.
+        self::assertSame('typo3', $suggestions[0]->getFullQuery());
+    }
+
+    #[Test]
+    public function spellCheckingSuggestionMissSpelledHoldsTheActualTermNotTheArrayIndex(): void
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_spellCheck.json');
+
+        $processor = new ResultSetReconstitutionProcessor();
+        $processor->process($searchResultSet);
+
+        $suggestions = array_values($searchResultSet->getSpellCheckingSuggestions());
+        self::assertSame('tipo3', $suggestions[0]->getMissSpelled());
     }
 
     #[Test]
