@@ -6,6 +6,26 @@ Releases 12.1
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 12.1.2
+==============
+
+This is a bugfix release for TYPO3 12 LTS, primarily restoring Solr
+write functionality after a regression introduced by an upstream PSR-7
+library update.
+
+All Changes
+-----------
+
+*   [BUGFIX] Pin guzzlehttp/psr7 to <2.10.0 by @dkd-kaehm in `#4663 <https://github.com/TYPO3-Solr/ext-solr/pull/4663>`_
+*   [BUGFIX] facet URL encoding mismatch (spaces) when using urlParameterStyle=assoc by @dkd-hauser in `#4625 <https://github.com/TYPO3-Solr/ext-solr/pull/4625>`_
+*   [BUGFIX] Correct field name casing for subTitle and navTitle in TypoScript queryFields by @amirarends in `#4623 <https://github.com/TYPO3-Solr/ext-solr/pull/4623>`_
+*   [TASK] Upgrade GitHub Actions to latest versions by @dkd-kaehm in `#4600 <https://github.com/TYPO3-Solr/ext-solr/pull/4600>`_
+*   [BUGFIX] Cast result offset to integer by @SaschaNoLe in `#4584 <https://github.com/TYPO3-Solr/ext-solr/pull/4584>`_
+*   [TASK] fix CS 2026.03.08 by @dkd-kaehm in `#4579 <https://github.com/TYPO3-Solr/ext-solr/pull/4579>`_
+*   [BUGFIX] pass a request with page id to Configuration manager by @WebsiteDeveloper in `#4579 <https://github.com/TYPO3-Solr/ext-solr/pull/4579>`_
+*   [BUGFIX] Add checks for flexParentDatabaseRow key in methods by @Myrmod in `#4579 <https://github.com/TYPO3-Solr/ext-solr/pull/4579>`_
+
+
 Release 12.1.1
 ==============
 
