@@ -401,6 +401,7 @@ Since EXT:solr 9 and Apache Solr 7 dynamic fields based on trie fields are marke
 All Changes
 -----------
 
+*   [TASK] Remove guzzlehttp/psr7 <2.10.0 pin (upstream fix in guzzlehttp/guzzle 7.10.2) by @dkd-kaehm in `#4660 <https://github.com/TYPO3-Solr/ext-solr/issues/4660>`_
 *   [BUGFIX] Pin guzzlehttp/psr7 to <2.10.0 by @dkd-kaehm in `#4661 <https://github.com/TYPO3-Solr/ext-solr/pull/4661>`_
 *   [BUGFIX] Do not resolve TypoScriptConfiguration for deleted page in WS by @amirarends in `#4603 <https://github.com/TYPO3-Solr/ext-solr/pull/4603>`_
 *   [BUGFIX] Make suggest widget form submission preventable by @danilovq in `#4657 <https://github.com/TYPO3-Solr/ext-solr/pull/4657>`_
