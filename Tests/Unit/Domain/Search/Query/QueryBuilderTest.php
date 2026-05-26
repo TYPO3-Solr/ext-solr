@@ -343,69 +343,38 @@ class QueryBuilderTest extends SetUpUnitTestCase
         $highlighting->setIsEnabled(true);
         $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        self::assertSame('[A]', $queryParameters['hl.tag.pre'], 'Can set highlighting hl.tag.pre');
-        self::assertSame('[B]', $queryParameters['hl.tag.post'], 'Can set highlighting hl.tag.post');
-        self::assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting hl.tag.pre');
-        self::assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting hl.tag.post');
+        self::assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting hl.simple.pre');
+        self::assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting hl.simple.post');
     }
 
     #[Test]
-    public function simplePreAndPostIsUsedWhenFastVectorHighlighterCouldNotBeUsed(): void
+    public function unifiedHighlighterIsUsedWhenHighlightingIsEnabled(): void
     {
-        $fakeConfigurationArray = [];
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting'] = 1;
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['wrap'] = '[A]|[B]';
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
-        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
-
-        $highlighting = Highlighting::fromTypoScriptConfiguration($fakeConfiguration);
-        $highlighting->setIsEnabled(true);
-        // fragSize 10 is to small for FastVectorHighlighter
-        $highlighting->setFragmentSize(17);
-        $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
-        $queryParameters = $this->getAllQueryParameters($query);
-
-        self::assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting field list');
-        self::assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting field list');
-        self::assertEmpty($queryParameters['hl.tag.pre'], 'When the highlighting fragment size is to small hl.tag.pre should not be used because FastVectoreHighlighter will not be used');
-        self::assertEmpty($queryParameters['hl.tag.post'], 'When the highlighting fragment size is to small hl.tag.post should not be used because FastVectoreHighlighter will not be used');
-    }
-
-    #[Test]
-    public function canUseFastVectorHighlighting(): void
-    {
-        $fakeConfigurationArray = [];
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
+        $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $highlighting = Highlighting::fromTypoScriptConfiguration($fakeConfiguration);
         $highlighting->setIsEnabled(true);
-        // fragSize 10 is to small for FastVectorHighlighter
         $highlighting->setFragmentSize(200);
         $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
         self::assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
-        self::assertSame('true', $queryParameters['hl.useFastVectorHighlighter'], 'Enable highlighting did not set the "hl.useFastVectorHighlighter" query parameter');
+        self::assertSame('unified', $queryParameters['hl.method'], 'Enable highlighting did not set the "hl.method" query parameter to "unified"');
     }
 
     #[Test]
-    public function fastVectorHighlighterIsDisabledWhenFragSizeIsLessThen18(): void
+    public function unifiedHighlighterIsUsedEvenForSmallFragmentSize(): void
     {
-        $fakeConfigurationArray = [];
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
+        $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $highlighting = Highlighting::fromTypoScriptConfiguration($fakeConfiguration);
         $highlighting->setIsEnabled(true);
-        // fragSize 10 is to small for FastVectorHighlighter
         $highlighting->setFragmentSize(0);
         $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
         self::assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
-        self::assertSame('false', $queryParameters['hl.useFastVectorHighlighter'], 'FastVectorHighlighter was disabled but still requested');
+        self::assertSame('unified', $queryParameters['hl.method'], 'Highlighting did not stay on the Unified highlighter for small fragmentSize');
     }
 
     #[Test]
