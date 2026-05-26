@@ -6,6 +6,32 @@ Releases 13.1
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 13.1.4
+==============
+
+This is a security release for TYPO3 13 LTS.
+
+
+!!! Recommendation: align existing Solr volumes with the new configset
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``ext_solr_13_1_0`` configset now sets the Unified Highlighter as default on both the ``/select`` and ``/browse`` request handlers.
+Solr volumes created from older configsets default to the legacy highlighter and remain vulnerable to the ``FieldExistsQuery`` HTTP 500 oracle
+when queried directly (bypassing EXT:solr).
+Run the bundled migration script against the existing configset to align the defaults;
+the script is idempotent and writes a ``solrconfig.xml.Backup-SST-235567`` backup next to the modified file:
+
+*   ``Docker/SolrServer/docker-entrypoint-initdb.d-as-sudo/fix-SST-235567-2026050810000025-highlighter-defaults.sh``
+
+EXT:solr itself enforces the Unified Highlighter unconditionally in PHP, so this configset alignment is a defence-in-depth measure
+for clients that query Solr directly.
+
+All Changes
+-----------
+
+(filled at release time)
+
+
 Release 13.1.3
 ==============
 
