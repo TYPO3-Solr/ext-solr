@@ -5,7 +5,10 @@ services:
 
   ApacheSolrForTypo3\Solr\:
     resource: '../Classes/*'
-    exclude: '../Classes/Eid/*'
+    exclude:
+      - '../Classes/Eid/*'
+      # Upgrade wizards depend on EXT:install and are registered conditionally in Services.php
+      - '../Classes/Updates/*'
 
   backend_controller:
     namespace: ApacheSolrForTypo3\Solr\Controller\Backend\Search\
@@ -381,10 +384,3 @@ services:
     resource: '../Classes/Report/*'
     autoconfigure: true
     autowire: true
-
-  # Upgrade wizards
-  ApacheSolrForTypo3\Solr\Updates\:
-    resource: '../Classes/Updates/*'
-    autoconfigure: true
-    autowire: true
-    shared: false
