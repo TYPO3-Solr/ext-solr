@@ -112,6 +112,32 @@ class QueryBuilderTest extends SetUpUnitTestCase
     }
 
     #[Test]
+    public function buildSearchQueryDerivesUserFieldsFromQueryFieldsByDefault(): void
+    {
+        $this->configurationMock->expects(self::once())->method('getSearchQueryQueryFields')->willReturn('title^10, content^123');
+        $query = $this->builder->buildSearchQuery('foo');
+        self::assertSame('title content', $this->getAllQueryParameters($query)['uf'], 'The userFields default did not derive the qf field names without boosts');
+    }
+
+    #[Test]
+    public function buildSearchQueryRespectsScalarUserFieldsOverride(): void
+    {
+        $this->configurationMock->expects(self::once())->method('getSearchQueryQueryFields')->willReturn('title^10, content^123');
+        $this->configurationMock->expects(self::once())->method('getSearchQueryUserFields')->willReturn('description teaser');
+        $query = $this->builder->buildSearchQuery('foo');
+        self::assertSame('description teaser', $this->getAllQueryParameters($query)['uf'], 'The userFields scalar override was not applied as the full whitelist');
+    }
+
+    #[Test]
+    public function buildSearchQueryAppliesAddAndRemoveSubKeysToQueryFieldDerivedUserFields(): void
+    {
+        $this->configurationMock->expects(self::once())->method('getSearchQueryQueryFields')->willReturn('title^10, content^123');
+        $this->configurationMock->expects(self::once())->method('getSearchQueryUserFieldsConfiguration')->willReturn(['add' => 'description', 'remove' => 'title']);
+        $query = $this->builder->buildSearchQuery('foo');
+        self::assertSame('content description', $this->getAllQueryParameters($query)['uf'], 'The userFields add/remove deltas were not applied on top of the qf-derived base list');
+    }
+
+    #[Test]
     public function buildSearchQueryInitializesTrigramPhraseFields(): void
     {
         $this->configurationMock->expects(self::once())->method('getTrigramPhraseSearchIsEnabled')->willReturn(true);

@@ -439,6 +439,8 @@ abstract class AbstractQueryBuilder
 
     abstract public function useQueryFieldsFromTypoScript(): self;
 
+    abstract public function useUserFieldsFromTypoScript(): self;
+
     abstract public function useFiltersFromTypoScript(): self;
 
     abstract public function useHighlightingFromTypoScript(): self;
