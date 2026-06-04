@@ -105,6 +105,7 @@ class QueryBuilder extends AbstractQueryBuilder
             $this->newSearchQuery($rawQuery)
                 ->useReturnFieldsFromTypoScript()
                 ->useQueryFieldsFromTypoScript()
+                ->useUserFieldsFromTypoScript()
                 ->useInitialQueryFromTypoScript()
                 ->useFiltersFromTypoScript()
                 ->useHighlightingFromTypoScript()
@@ -275,6 +276,39 @@ class QueryBuilder extends AbstractQueryBuilder
     public function useQueryFieldsFromTypoScript(): AbstractQueryBuilder
     {
         return $this->useQueryFields(QueryFields::fromString($this->typoScriptConfiguration->getSearchQueryQueryFields()));
+    }
+
+    /**
+     * Whitelist the fields a Solr field-selector (`field:value`) may target.
+     * Defaults to the `qf` field list so non-whitelisted fields cannot disclose
+     * arbitrary schema fields. Reads qf back from the query rather than
+     * re-fetching it from TypoScript to avoid a second configuration lookup.
+     *
+     * A scalar `userFields = ...` replaces the derived list outright. When the
+     * scalar is empty, `userFields.add` and `userFields.remove` are applied as
+     * comma-separated deltas on top of the qf-derived base list.
+     */
+    public function useUserFieldsFromTypoScript(): AbstractQueryBuilder
+    {
+        $explicit = $this->typoScriptConfiguration->getSearchQueryUserFields();
+        if ($explicit !== '') {
+            $this->queryToBuild->getEDisMax()->setUserFields($explicit);
+            return $this;
+        }
+
+        $qfString = (string)$this->queryToBuild->getEDisMax()->getQueryFields();
+        $base = $qfString === '' ? [] : QueryFields::fromString($qfString, ' ')->getFieldNames();
+
+        $config = $this->typoScriptConfiguration->getSearchQueryUserFieldsConfiguration();
+        $add = GeneralUtility::trimExplode(',', (string)($config['add'] ?? ''), true);
+        $remove = GeneralUtility::trimExplode(',', (string)($config['remove'] ?? ''), true);
+
+        $fields = array_values(array_diff(array_unique(array_merge($base, $add)), $remove));
+
+        if ($fields !== []) {
+            $this->queryToBuild->getEDisMax()->setUserFields(implode(' ', $fields));
+        }
+        return $this;
     }
 
     /**
