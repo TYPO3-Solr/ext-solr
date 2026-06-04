@@ -93,6 +93,44 @@ class QueryInjectionViaRawSolrSyntaxTest extends IntegrationTestBase
         }
     }
 
+    /** PDF §3.2 — prefix wildcard must not enable per-character value extraction. */
+    #[Test]
+    public function prefixWildcardOperatorMustNotEnableBlindValueExtraction(): void
+    {
+        $response = $this->executeSearch('title:markeralpha*');
+        self::assertStringNotContainsString(
+            'markeralpha235567',
+            $response,
+            'SST 235567 / PDF §3.2: prefix-wildcard (title:markeralpha*) leaked the alpha document.',
+        );
+    }
+
+    /** PDF §3.3 — `?` wildcard must not enable length detection on indexed values. */
+    #[Test]
+    public function singleCharWildcardOperatorMustNotEnableLengthDetection(): void
+    {
+        $response = $this->executeSearch('title:markeralpha?35567');
+        self::assertStringNotContainsString(
+            'markeralpha235567',
+            $response,
+            'SST 235567 / PDF §3.3: single-character wildcard (?) leaked the alpha document.',
+        );
+    }
+
+    /** PDF §3.4 — range query must not enable binary-search value extraction. */
+    #[Test]
+    public function rangeQueryOperatorMustNotEnableBinarySearchExtraction(): void
+    {
+        $response = $this->executeSearch('title:[m TO n]');
+        foreach (['markeralpha235567', 'markerbeta235567', 'markergamma235567'] as $marker) {
+            self::assertStringNotContainsString(
+                $marker,
+                $response,
+                'SST 235567 / PDF §3.4: range query (title:[m TO n]) leaked ' . $marker,
+            );
+        }
+    }
+
     /** Combined field-selector + range against the hex-hash siteHash field must not match the test corpus. */
     #[Test]
     public function fieldSelectorOperatorMustNotTargetArbitraryIndexedField(): void
