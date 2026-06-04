@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Elevation;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
@@ -96,7 +97,11 @@ class QueryBuilder extends AbstractQueryBuilder
         if ($this->typoScriptConfiguration->isPureVectorSearchEnabled()) {
             $this->preparePureVectorSearch($rawQuery);
         } else {
-            $this->newSearchQuery($rawQuery)
+            $escapedQuery = $rawQuery === '' ? '' : (string)EscapeService::escape(
+                $rawQuery,
+                $this->typoScriptConfiguration->getSearchQueryAllowSolrOperatorSyntax(),
+            );
+            $this->newSearchQuery($escapedQuery)
                 ->useReturnFieldsFromTypoScript()
                 ->useQueryFieldsFromTypoScript()
                 ->useUserFieldsFromTypoScript()
