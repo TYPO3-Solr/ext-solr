@@ -1127,6 +1127,21 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns whether the well-known Lucene operators `+ - && || ! * ?` pass
+     * through `tx_solr[q]`. Default 1 — selector (`:`), range (`[ ]`) and
+     * grouping (`( ) { } ^ " ~ \ /`) characters are still escaped, so field
+     * enumeration and range injection cannot reach Solr; only wildcard and
+     * boolean operator syntax survives. Set to 0 for strict mode.
+     *
+     * plugin.tx_solr.search.query.allowSolrOperatorSyntax
+     */
+    public function getSearchQueryAllowSolrOperatorSyntax(string $defaultIfEmpty = '1'): bool
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.allowSolrOperatorSyntax', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
      * Returns the filter configuration array
      *
      * plugin.tx_solr.search.query.filter.
