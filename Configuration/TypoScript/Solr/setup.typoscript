@@ -75,6 +75,10 @@ plugin.tx_solr {
       type = 0
       allowEmptyQuery = 0
 
+      // 1 (default): `+ - && || ! * ?` pass through; 0: also escape `| & ;`.
+      // Selector/range chars (`: [ ] ( ) { } ^ " ~ \ /`) are escaped in both.
+      allowSolrOperatorSyntax = 1
+
       allowedSites = __solr_current_site
 
       // qf parameter http://wiki.apache.org/solr/DisMaxQParserPlugin#qf_.28Query_Fields.29
