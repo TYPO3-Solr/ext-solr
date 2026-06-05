@@ -124,6 +124,17 @@ readonly class IndexingService
         $success = true;
         $pageUserGroup = (int)($this->buildPageParameters($item)['pageUserGroup'] ?? 0);
         foreach ($solrConnections as $languageUid => $solrConnection) {
+            if (!$this->isLanguageApplicableForPage($item, $languageUid)) {
+                $this->logger->info(
+                    'Skipping language not configured on the resolved site',
+                    [
+                        'indexQueueItem' => $item->getIndexQueueUid(),
+                        'queueItemRootPageUid' => $item->getRootPageUid(),
+                        'language' => $languageUid,
+                    ],
+                );
+                continue;
+            }
             $accessGroups = $this->findUserGroupsForPage($item, $languageUid);
             if ($pageUserGroup > 0) {
                 // A page with fe_group restriction has no publicly-accessible content variants:
@@ -144,6 +155,17 @@ readonly class IndexingService
         }
 
         return $success;
+    }
+
+    protected function isLanguageApplicableForPage(Item $item, int $language): bool
+    {
+        try {
+            $pageSite = $this->siteFinder->getSiteByPageId($this->resolvePageUid($item));
+            $pageSite->getLanguageById($language);
+            return true;
+        } catch (\InvalidArgumentException | SiteNotFoundException) {
+            return false;
+        }
     }
 
     /**
