@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\NullLogger;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -66,6 +67,7 @@ class EventQueueWorkerTaskTest extends IntegrationTestBase
             $this->createMock(NullLogger::class),
             $this->createMock(TaskSerializer::class),
             $this->createMock(SchedulerTaskRepository::class),
+            $this->createMock(EventDispatcherInterface::class),
         );
         $scheduler->executeTask($task);
 
@@ -84,6 +86,7 @@ class EventQueueWorkerTaskTest extends IntegrationTestBase
             $this->createMock(NullLogger::class),
             $this->createMock(TaskSerializer::class),
             $this->createMock(SchedulerTaskRepository::class),
+            $this->createMock(EventDispatcherInterface::class),
         );
         $scheduler->executeTask($task);
 

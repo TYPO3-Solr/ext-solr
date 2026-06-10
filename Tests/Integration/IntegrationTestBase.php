@@ -24,6 +24,7 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\NullLogger;
 use ReflectionClass;
@@ -649,6 +650,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
             $this->createMock(NullLogger::class),
             $this->createMock(TaskSerializer::class),
             $this->createMock(SchedulerTaskRepository::class),
+            $this->createMock(EventDispatcherInterface::class),
         );
 
         $scheduler->executeTask($task);
