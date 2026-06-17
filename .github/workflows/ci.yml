@@ -1,4 +1,5 @@
 name: build
+run-name: "${{ inputs.runName || github.event.pull_request.title || github.event.head_commit.message }}"
 
 on:
   push:
@@ -7,13 +8,17 @@ on:
       - "**"
   pull_request:
     branches: [ main, release-13.1.x, release-12.1.x, task/*_compatibility ]
-
-  # Run tests daily at 19:23 to get TYPO3 changes and fix them immediately.
-  # @todo:
-  #   * run only on dev-<TYPO3-LTS-branch/alias>
-  #   * create issue on GH or message via TYPO3 Slack bot, if tests failed
-  schedule:
-    - cron:  '23 19 * * *'
+  workflow_dispatch:
+    inputs:
+      purpose:
+        description: 'Purpose of this manual run.'
+        required: false
+        type: string
+      runName:
+        description: 'Run name to show in actions'
+        default: 'EXT:solr build for main branch.'
+        required: false
+        type: string
 
 env:
   IS_ON_GITHUB_ACTIONS: 'true'
@@ -45,7 +50,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v6
       # End: Workaround for issue with actions/checkout...
       -
@@ -104,7 +109,7 @@ jobs:
           fetch-depth: 2
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Checkout current state of Branch
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v6
         with:
           fetch-depth: 2
@@ -141,7 +146,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v6
         with:
           fetch-depth: 2
