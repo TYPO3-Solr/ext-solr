@@ -14,6 +14,16 @@ on:
   #   * create issue on GH or message via TYPO3 Slack bot, if tests failed
   schedule:
     - cron:  '23 19 * * *'
+  workflow_dispatch:
+    inputs:
+      purpose:
+        description: 'Purpose of this manual run.'
+        required: false
+        type: string
+      runName:
+        description: 'Run name to show in actions'
+        required: false
+        type: string
 
 env:
   IS_ON_GITHUB_ACTIONS: 'true'
@@ -27,6 +37,23 @@ env:
   BRANCH_NAME: 'main'
 
 jobs:
+  trigger-build-on-release-branches:
+    name: "Trigger build on release branches"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    permissions:
+      actions: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - name: Remote-Workflow on release-13.1.x
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run .github/workflows/ci.yml \
+            --ref release-13.1.x \
+            -f purpose="Test EXT:solr on release-13.1.x with the current state of TYPO3 13 to identify potential new issues."
+
   ci_bootstrapping:
     name: "Build and test docker image + Collect build matrix"
     runs-on: ubuntu-latest
@@ -45,7 +72,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v6
       # End: Workaround for issue with actions/checkout...
       -
@@ -104,7 +131,7 @@ jobs:
           fetch-depth: 2
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Checkout current state of Branch
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v6
         with:
           fetch-depth: 2
@@ -141,7 +168,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v6
         with:
           fetch-depth: 2
