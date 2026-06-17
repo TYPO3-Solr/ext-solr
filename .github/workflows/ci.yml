@@ -14,6 +14,7 @@ on:
   #   * create issue on GH or message via TYPO3 Slack bot, if tests failed
   schedule:
     - cron:  '23 19 * * *'
+  workflow_dispatch:
 
 env:
   IS_ON_GITHUB_ACTIONS: 'true'
@@ -27,6 +28,21 @@ env:
   BRANCH_NAME: 'main'
 
 jobs:
+  trigger-build-on-release-branches:
+    name: "Trigger build on release branches"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    permissions:
+      actions: write
+    steps:
+      - name: Remote-Workflow on release-13.1.x
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run ci.yml \
+            --ref release-13.1.x \
+            -f purpose="Test EXT:solr on release-13.1.x with the current state of TYPO3 13 to identify potential new issues."
+
   ci_bootstrapping:
     name: "Build and test docker image + Collect build matrix"
     runs-on: ubuntu-latest
