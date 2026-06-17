@@ -1,4 +1,5 @@
 name: build
+run-name: "${{ inputs.runName || github.event.pull_request.title || github.event.head_commit.message }}"
 
 on:
   push:
@@ -7,6 +8,17 @@ on:
       - "**"
   pull_request:
     branches: [ main, release-13.1.x ]
+  workflow_dispatch:
+    inputs:
+      purpose:
+        description: 'Purpose of this manual run'
+        required: false
+        type: string
+      runName:
+        description: 'Run name to show in actions'
+        default: 'EXT:solr build for release-13.1.x branch.'
+        required: false
+        type: string
 
 env:
   IS_ON_GITHUB_ACTIONS: 'true'
@@ -38,7 +50,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v6
       # End: Workaround for issue with actions/checkout...
       -
@@ -97,7 +109,7 @@ jobs:
           fetch-depth: 2
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Checkout current state of Branch
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v6
         with:
           fetch-depth: 2
@@ -132,7 +144,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v6
         with:
           fetch-depth: 2
