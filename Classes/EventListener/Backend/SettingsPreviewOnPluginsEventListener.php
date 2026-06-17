@@ -47,6 +47,7 @@ final readonly class SettingsPreviewOnPluginsEventListener
         if (
             $event->getTable() !== 'tt_content'
             || !str_starts_with($pluginsTtContentRecord['CType'], 'solr_pi_')
+            || !isset($pluginsTtContentRecord['pi_flexform'])
         ) {
             return;
         }
