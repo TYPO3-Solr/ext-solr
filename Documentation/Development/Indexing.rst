@@ -155,10 +155,12 @@ If external data should be indexed or the RecordIndexer is not required, it is p
         * @throws \ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException
         */
        public function clearIndex() {
+           $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+           $site = $siteRepository->getSiteByRootPageId($rootPageId);
            $connections = $this->connectionManager->getAllConnections();
            foreach ($connections as $connectionLanguage => $connection) {
                /** @var SolrConnection */
-               $connection->getWriteService()->deleteByType('custom_type');
+               $connection->getWriteService()->deleteByQuery('type:custom_type,site:'.$site->getDomain());
            }
        }
 
