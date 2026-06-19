@@ -22,6 +22,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
+use function json_encode;
+
 /**
  * Tests for the SOLR_CLASSIFICATION cObj.
  */
@@ -53,7 +55,7 @@ class ClassificationTest extends SetUpContentObject
         ];
 
         $actual = $this->contentObjectRenderer->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
-        $expected = serialize(['cms']);
+        $expected = json_encode(['cms']);
         self::assertEquals($expected, $actual);
     }
 
@@ -87,7 +89,7 @@ class ClassificationTest extends SetUpContentObject
         ];
 
         $actual = $this->contentObjectRenderer->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
-        $expected = serialize($expectedOutput);
+        $expected = json_encode($expectedOutput);
         self::assertEquals($expected, $actual);
     }
 }
