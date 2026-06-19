@@ -41,6 +41,20 @@ Two new TypoScript settings govern how user input on ``tx_solr[q]`` is parsed:
 
 See :ref:`configuration.reference.solrsearch` for full reference details.
 
+
+!!! Breaking: multi-value cObjs now use JSON transport
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``SOLR_MULTIVALUE``, ``SOLR_RELATION`` and ``SOLR_CLASSIFICATION`` content objects now return their
+multi-value payload as ``json_encode($array)`` instead of ``serialize($array)``, and the indexer decodes
+it with ``json_decode()`` instead of ``unserialize()``.
+Because ``json_decode()`` never reconstructs PHP objects, the indexer can no longer be turned into a PHP
+object-injection sink by an attacker who can influence an indexed record field.
+
+Third-party content objects that returned ``serialize($array)`` for a multi-value Solr field must switch
+to ``json_encode($array)``; no other change is required.
+
+
 All Changes
 -----------
 

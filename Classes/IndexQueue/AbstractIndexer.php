@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use Doctrine\DBAL\Exception as DBALException;
 use JsonException;
-use Throwable;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -34,6 +33,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+
+use function json_decode;
 
 /**
  * An abstract indexer class to collect a few common methods shared with other
@@ -181,14 +182,13 @@ abstract class AbstractIndexer
                 $indexingConfiguration[$solrFieldName . '.'],
             );
 
-            try {
-                $unserializedFieldValue = @unserialize($fieldValue);
-                if (is_array($unserializedFieldValue) || is_object($unserializedFieldValue)) {
-                    $fieldValue = $unserializedFieldValue;
-                }
-            } catch (Throwable) {
-                // Evil catch, but anyway do nothing to prevent fluting the logs on indexing.
-                // If the cObject implementation do not provide data the fields are not present in index, which will be noticed and fixed by devs/integrators.
+            // SOLR_MULTIVALUE / SOLR_RELATION / SOLR_CLASSIFICATION return their multi-value payload as a JSON-encoded array.
+            $decodedFieldValue = json_decode(
+                $fieldValue,
+                true,
+            );
+            if (is_array($decodedFieldValue)) {
+                $fieldValue = $decodedFieldValue;
             }
         } else {
             $indexingFieldName = $indexingConfiguration[$solrFieldName] ?? null;

@@ -30,6 +30,8 @@ use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException;
 
+use function json_encode;
+
 /**
  * A content object (cObj) to resolve relations between database records
  *
@@ -91,8 +93,11 @@ class Relation extends AbstractContentObject
             $singleValueGlue = !empty($conf['singleValueGlue']) ? trim($conf['singleValueGlue'], '|') : ', ';
             $result = implode($singleValueGlue, $relatedItems);
         } else {
-            // multi value, need to serialize as content objects must return strings
-            $result = serialize($relatedItems);
+            // multi value, need to JSON-encode as content objects must return strings
+            $result = json_encode(
+                $relatedItems,
+                JSON_THROW_ON_ERROR,
+            );
         }
 
         return $result;

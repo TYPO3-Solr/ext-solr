@@ -21,6 +21,8 @@ use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 
+use function json_encode;
+
 /**
  * A content object (cObj) to classify content based on a configuration.
  *
@@ -73,7 +75,13 @@ class Classification extends AbstractContentObject
         /** @var ClassificationService $classificationService */
         $classificationService = GeneralUtility::makeInstance(ClassificationService::class);
 
-        return serialize($classificationService->getMatchingClassNames((string)$data, $classifications));
+        return json_encode(
+            $classificationService->getMatchingClassNames(
+                (string)$data,
+                $classifications,
+            ),
+            JSON_THROW_ON_ERROR,
+        );
     }
 
     /**
