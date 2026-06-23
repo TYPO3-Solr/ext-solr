@@ -43,16 +43,17 @@ class ScoreCalculationService
         foreach ($highScores as $highScore) {
             /** @var Score $highScore */
             $scores[] =
-                '<td>+ ' . htmlspecialchars(number_format($highScore->getScore(), 9)) . '</td>'
+                '<td>+ ' . htmlspecialchars(number_format($highScore->getScore() * $highScore->getBoost(), 3)) . '</td>'
                 . '<td>' . htmlspecialchars($highScore->getFieldName()) . '</td>'
-                . '<td>' . htmlspecialchars(number_format($highScore->getBoost(), 9)) . '</td>';
-            $totalScore += $highScore->getScore();
+                . '<td>' . htmlspecialchars(number_format($highScore->getScore(), 3)) . '</td>'
+                . '<td>' . htmlspecialchars(number_format($highScore->getBoost(), 3)) . '</td>';
+            $totalScore += $highScore->getScore() * $highScore->getBoost();
         }
 
         return '<table class="table">'
-            . '<thead><tr><th>Score</th><th>Field</th><th>Boost</th></tr></thead>'
+            . '<thead><tr><th>Total</th><th>Field</th><th>Score</th><th>Boost</th></tr></thead>'
             . '<tbody><tr>' . implode('</tr><tr>', $scores) . '</tbody></tr>'
-            . '<tfoot><tr><td colspan="3">= ' . $totalScore . ' (Inaccurate analysis! Not all parts of the score have been taken into account.)</td></tr></tfoot>'
+            . '<tfoot><tr><td colspan="4">= ' . $totalScore . ' (Inaccurate analysis! Not all parts of the score have been taken into account.)</td></tr></tfoot>'
             . '</table>';
     }
 
