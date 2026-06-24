@@ -202,10 +202,9 @@ final class SettingsPreviewOnPluginsEventListenerTest extends IntegrationTestBas
     {
         $recordMock = $this->createMock(RecordInterface::class);
         $recordMock
-            ->expects(self::atLeastOnce())
+            ->expects(self::atMost(1))
             ->method('toArray')
             ->willReturn($record);
-
         $requestMock = $this->createMock(ServerRequestInterface::class);
 
         $pageLayoutContextMock = $this->createMock(PageLayoutContext::class);
@@ -216,7 +215,7 @@ final class SettingsPreviewOnPluginsEventListenerTest extends IntegrationTestBas
 
         return new PageContentPreviewRenderingEvent(
             'tt_content',
-            (string)($record[(string)($GLOBALS['TCA']['tt_content']['ctrl']['type'] ?? '')] ?? ''),
+            (string)$record['CType'] ?: '',
             $recordMock,
             $pageLayoutContextMock,
         );

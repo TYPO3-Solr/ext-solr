@@ -42,14 +42,14 @@ final readonly class SettingsPreviewOnPluginsEventListener
     )]
     public function __invoke(PageContentPreviewRenderingEvent $event): void
     {
-        $pluginsTtContentRecord = $event->getRecord()->toArray();
-
         if (
             $event->getTable() !== 'tt_content'
-            || !str_starts_with($pluginsTtContentRecord['CType'], 'solr_pi_')
+            || !str_starts_with($event->getRecordType(), 'solr_pi_')
         ) {
             return;
         }
+
+        $pluginsTtContentRecord = $event->getRecord()->toArray();
 
         $event->setPreviewContent(
             $this->getPreviewContent($event, $pluginsTtContentRecord),
