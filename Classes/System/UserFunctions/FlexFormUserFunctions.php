@@ -42,7 +42,7 @@ class FlexFormUserFunctions
      */
     public function getFacetFieldsFromSchema(array &$parentInformation): void
     {
-        $pageRecord = $parentInformation['flexParentDatabaseRow'];
+        $pageRecord = $parentInformation['flexParentDatabaseRow'] ?? '';
         // @todo: Fix type hinting issue properly on whole call chain.
         $configuredFacets = $this->getConfiguredFacetsForPage($pageRecord['pid'] ?? null);
 
@@ -139,7 +139,7 @@ class FlexFormUserFunctions
      */
     public function getAvailableTemplates(array &$parentInformation): void
     {
-        $pageRecord = $parentInformation['flexParentDatabaseRow'];
+        $pageRecord = $parentInformation['flexParentDatabaseRow'] ?? '';
         if (!is_array($pageRecord) || !isset($pageRecord['pid'])) {
             $parentInformation['items'] = [];
             return;
