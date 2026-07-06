@@ -86,6 +86,21 @@ The response is uniform, so it cannot be used to probe whether a restricted docu
 As defence in depth, review whether your templates still expose ``data-document-id`` and mask it where the document id should not be publicly visible.
 
 
+!!! Security: page indexer no longer poisons the rootline cache (CVE-2026-56092)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+During a page-indexer sub-request, EXT:solr forced ``fe_group`` and ``extendToSubpages`` to public
+values on every ``pages`` record it touched, so the indexer itself would not be blocked by access
+restrictions. TYPO3 Core persists that same record into the shared, cross-request ``rootline`` cache.
+
+An anonymous visitor could therefore reach a page whose access restriction was only inherited via
+``extendToSubpages`` from an ancestor page, for as long as the poisoned cache entry survived —
+the restricted area's own root page (which carries its ``fe_group`` directly) was not affected.
+
+The indexer no longer forges these fields. The access bypass it needed during indexing was already
+provided safely, without touching any persisted cache, by EXT:solr's other, unaffected listeners.
+
+
 All Changes
 -----------
 

@@ -1,0 +1,15 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title","fe_group","extendToSubpages","module"
+,3,1,0,1,"/parent-restricted-area","ParentRestrictedAreaCVE202656092","1","1",""
+,5,3,0,1,"/parent-restricted-area/child","ChildPageInRestrictedAreaCVE202656092","0","0",""
+,4,1,0,254,"/fe-users-cve202656092","FE Users Folder CVE-2026-56092",,"0","fe_users"
+"tt_content",
+,"uid","pid","colPos","CType","header","bodytext","fe_group","sorting"
+,301,3,0,"text","Parent restricted CVE-2026-56092 header","ROOTLINE_POISON_PARENT_MARKER_PQR234 — parent page content",0,10
+,501,5,0,"text","Child restricted CVE-2026-56092 header","ROOTLINE_POISON_CHILD_MARKER_STU567 — only visible because parent page extendToSubpages=1 + fe_group=1",0,10
+"fe_groups",
+,"uid","pid","title"
+,1,4,"RestrictedReadersCVE202656092"
+"fe_users",
+,"uid","pid","username","password","usergroup"
+,1,4,"member_cve202656092","dummy_password_hash","1"
