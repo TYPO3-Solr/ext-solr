@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Domain\Access\RecordAccessGrantedEvent;
 use TYPO3\CMS\Core\Domain\Event\BeforePageIsRetrievedEvent;
-use TYPO3\CMS\Core\Domain\Event\BeforeRecordLanguageOverlayEvent;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\Event\AfterContentObjectRendererInitializedEvent;
@@ -120,25 +119,6 @@ class UserGroupDetector implements FrontendHelper, SingletonInterface
         if ($this->activated) {
             $event->skipGroupAccessCheck();
         }
-    }
-
-    /**
-     * Modifies page records so that when checking for access through fe groups
-     * no groups or extendToSubpages flag is found and thus access is granted.
-     */
-    #[AsEventListener]
-    public function getPageOverlay_preProcess(BeforeRecordLanguageOverlayEvent $event): void
-    {
-        if (!$this->activated) {
-            return;
-        }
-        if ($event->getTable() !== 'pages') {
-            return;
-        }
-        $pageInput = $event->getRecord();
-        $pageInput['fe_group'] = '';
-        $pageInput['extendToSubpages'] = '0';
-        $event->setRecord($pageInput);
     }
 
     // execution
