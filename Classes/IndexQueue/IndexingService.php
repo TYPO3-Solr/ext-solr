@@ -41,6 +41,7 @@ use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\PageTitle\PageTitleProviderManager;
 use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -286,6 +287,10 @@ readonly class IndexingService
             // - AssetCollector and PageRenderer are shared singletons whose
             //   state is mutated by the frontend rendering chain; without
             //   restore the BE module loses its registered CSS/JS.
+            // - PageTitleProviderManager is a shared singleton whose
+            //   per-provider title cache is filled during rendering; without
+            //   a reset, the next sub-request can fall back to the previous
+            //   page's titles and index them into the wrong document.
             // CWD is also pinned to the document root so third-party code
             // using relative paths behaves like in a real web request.
             $previousWorkingDirectory = getcwd();
@@ -304,6 +309,9 @@ readonly class IndexingService
             $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
             $previousAssetCollectorState = $assetCollector->getState();
             $previousPageRendererState = $pageRenderer->getState();
+            $pageTitleProviderManager = GeneralUtility::makeInstance(PageTitleProviderManager::class);
+            $previousPageTitleCache = $pageTitleProviderManager->getPageTitleCache();
+            $pageTitleProviderManager->setPageTitleCache([]);
             chdir(Environment::getPublicPath());
             try {
                 $response = $this->frontendApplication->handle($request);
@@ -326,6 +334,7 @@ readonly class IndexingService
                 }
                 $assetCollector->updateState($previousAssetCollectorState);
                 $pageRenderer->updateState($previousPageRendererState);
+                $pageTitleProviderManager->setPageTitleCache($previousPageTitleCache);
             }
 
             $statusCode = $response->getStatusCode();
