@@ -48,6 +48,14 @@ use TYPO3\CMS\Frontend\Page\PageInformation;
 class Tsfe implements SingletonInterface
 {
     /**
+     * Maximum number of TSFE/ServerRequest instances kept in the runtime
+     * caches below. Each cached TSFE holds a full unserialized TypoScript
+     * setup (easily ~10 MB per page), so an unbounded cache exhausts
+     * memory_limit during CLI indexing of record items spread over many pages.
+     */
+    protected const MAX_CACHED_INSTANCES = 10;
+
+    /**
      * @var TypoScriptFrontendController[]
      */
     protected array $tsfeCache = [];
@@ -81,6 +89,19 @@ class Tsfe implements SingletonInterface
     protected function initializeTsfe(int $pageId, int $language = 0, ?int $rootPageId = null): void
     {
         $cacheIdentifier = $this->getCacheIdentifier($pageId, $language, $rootPageId);
+
+        // Evict the oldest cached instances before a new entry is added, to
+        // keep memory usage bounded. Evicted instances remain fully usable
+        // for any code still holding a reference to them.
+        if (!isset($this->tsfeCache[$cacheIdentifier])) {
+            while (count($this->tsfeCache) >= self::MAX_CACHED_INSTANCES) {
+                $oldestCacheIdentifier = array_key_first($this->tsfeCache);
+                unset(
+                    $this->tsfeCache[$oldestCacheIdentifier],
+                    $this->serverRequestCache[$oldestCacheIdentifier],
+                );
+            }
+        }
 
         // Handle spacer and sys-folders, since they are not accessible in frontend, and TSFE can not be fully initialized on them.
         // Apart from this, the plugin.tx_solr.index.queue.[indexConfig].additionalPageIds is handled as well.
