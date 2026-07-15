@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for the dateRange queryBuilder
  */
-class DateRangeFacetQueryBuilderTest extends SetUpUnitTestCase
+final class DateRangeFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canBuild(): void

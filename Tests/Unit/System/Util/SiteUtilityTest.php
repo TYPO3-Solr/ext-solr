@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 /**
  * Testcase for the SiteUtilityTest helper class.
  */
-class SiteUtilityTest extends SetUpUnitTestCase
+final class SiteUtilityTest extends SetUpUnitTestCase
 {
     protected function tearDown(): void
     {

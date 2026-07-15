@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\LogLevel;
 
-class DebugWriterTest extends SetUpUnitTestCase
+final class DebugWriterTest extends SetUpUnitTestCase
 {
     #[Test]
     public function testDebugMessageIsWrittenForMessageFromSolr(): void

@@ -39,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * configuration.
  * This testcase checks if the SummaryController produces the expected output.
  */
-class SettingsPreviewOnPluginsEventListenerTest extends IntegrationTestBase
+final class SettingsPreviewOnPluginsEventListenerTest extends IntegrationTestBase
 {
     private const FLEX_FORM_ARRAY = [
         'search' => [
@@ -97,9 +97,7 @@ class SettingsPreviewOnPluginsEventListenerTest extends IntegrationTestBase
     }
 
     #[Test]
-    #[DataProvider(
-        methodName: 'invalidCTypeDataProvider',
-    )]
+    #[DataProvider('invalidCTypeDataProvider')]
     public function previewWithInvalidCTypeWillNotBeRendered(string $cType): void
     {
         $subject = new SettingsPreviewOnPluginsEventListener(

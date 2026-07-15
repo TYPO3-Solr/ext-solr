@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class PageUriBuilderTest extends SetUpUnitTestCase
+final class PageUriBuilderTest extends SetUpUnitTestCase
 {
     #[Test]
     public function testPageIndexingUriFromPageItemAndLanguageId(): void

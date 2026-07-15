@@ -30,7 +30,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 /**
  * Tests for the SOLR_CLASSIFICATION cObj.
  */
-class ClassificationTest extends IntegrationTestBase
+final class ClassificationTest extends IntegrationTestBase
 {
     protected ContentObjectRenderer $contentObjectRenderer;
 
@@ -89,9 +89,7 @@ class ClassificationTest extends IntegrationTestBase
     }
 
     #[Test]
-    #[DataProvider(
-        methodName: 'excludePatternDataProvider',
-    )]
+    #[DataProvider('excludePatternDataProvider')]
     public function canExcludePatterns($input, $expectedOutput): void
     {
         $this->contentObjectRenderer->start(['content' => $input]);

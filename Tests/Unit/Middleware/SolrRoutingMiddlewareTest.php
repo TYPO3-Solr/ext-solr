@@ -41,7 +41,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
  * Test case to validate the behaviour of the middle ware
  */
 #[CoversClass(SolrRoutingMiddleware::class)]
-class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
+final class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
 {
     protected RoutingService|MockObject $routingServiceMock;
     protected $responseOutputHandler;

@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\SetFacetItemViewHelper;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
-class SetFacetItemViewHelperTest extends SetUpFacetItemViewHelper
+final class SetFacetItemViewHelperTest extends SetUpFacetItemViewHelper
 {
     #[Test]
     public function setFacetItemWillUseUriBuilderAsExpected(): void

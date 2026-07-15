@@ -29,7 +29,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\View\ViewFactoryInterface;
 
-class SiteHandlingStatusTest extends SetUpUnitTestCase
+final class SiteHandlingStatusTest extends SetUpUnitTestCase
 {
     /**
      * Creates a SiteHandlingStatus instance with mocked dependencies.

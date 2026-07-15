@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for the RecordGarbageCheckEvent
  */
-class RecordGarbageCheckEventTest extends SetUpDataUpdateEvent
+final class RecordGarbageCheckEventTest extends SetUpDataUpdateEvent
 {
     protected const EVENT_CLASS = RecordGarbageCheckEvent::class;
     protected const EVENT_TEST_TABLE = 'tx_foo_bar';

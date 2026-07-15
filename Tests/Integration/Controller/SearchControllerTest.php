@@ -34,7 +34,7 @@ use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
 /**
  * Integration testcase to test for the SearchController
  */
-class SearchControllerTest extends IntegrationTestBase
+final class SearchControllerTest extends IntegrationTestBase
 {
     /**
      * @var SearchController

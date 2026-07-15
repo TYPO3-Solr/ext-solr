@@ -21,7 +21,7 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ApacheSolrDocumentRepositoryTest extends IntegrationTestBase
+final class ApacheSolrDocumentRepositoryTest extends IntegrationTestBase
 {
     /**
      * @var Repository|null
@@ -47,6 +47,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTestBase
 
         self::assertIsArray($apacheSolrDocumentsCollection, 'Repository did not get Document collection from pageId 3.');
         self::assertNotEmpty($apacheSolrDocumentsCollection, 'Repository did not get apache solr documents from pageId 3.');
+        // @phpstan-ignore staticMethod.alreadyNarrowedType (Document[] is only guaranteed by @return docblock, not the native array return type)
         self::assertInstanceOf(Document::class, $apacheSolrDocumentsCollection[0], 'ApacheSolrDocumentRepository returned not an array of type Document.');
     }
 

@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 /**
  * Integration test for the Solr status report
  */
-class SolrStatusTest extends IntegrationTestBase
+final class SolrStatusTest extends IntegrationTestBase
 {
     #[Test]
     public function allStatusChecksShouldBeOkForValidSolrConnection(): void

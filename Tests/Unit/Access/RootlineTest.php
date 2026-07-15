@@ -24,7 +24,7 @@ use Traversable;
 /**
  * Testcase to verify the functionality of the Rootline
  */
-class RootlineTest extends SetUpUnitTestCase
+final class RootlineTest extends SetUpUnitTestCase
 {
     /**
      * @return Traversable<string, array{
@@ -52,9 +52,7 @@ class RootlineTest extends SetUpUnitTestCase
      * @param list<int> $expectedGroups
      */
     #[Test]
-    #[DataProvider(
-        methodName: 'rootLineDataProvider',
-    )]
+    #[DataProvider('rootLineDataProvider')]
     public function canParse(string $rootLineString, array $expectedGroups): void
     {
         $rootLine = new Rootline($rootLineString);

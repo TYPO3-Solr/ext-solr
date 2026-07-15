@@ -29,7 +29,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Elevation class
  */
-class ElevationComponentTest extends SetUpUnitTestCase
+final class ElevationComponentTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canModifyQuery(): void

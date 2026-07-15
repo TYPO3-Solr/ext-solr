@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Site class tests
  */
-class SiteTest extends IntegrationTestBase
+final class SiteTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {

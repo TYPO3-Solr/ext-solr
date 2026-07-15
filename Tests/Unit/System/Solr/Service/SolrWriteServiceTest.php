@@ -32,7 +32,7 @@ use Traversable;
 /**
  * Tests the ApacheSolrForTypo3\Solr\SolrService class
  */
-class SolrWriteServiceTest extends SetUpUnitTestCase
+final class SolrWriteServiceTest extends SetUpUnitTestCase
 {
     protected Response|MockObject $responseMock;
     protected Result|MockObject $resultMock;

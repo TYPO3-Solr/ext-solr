@@ -25,7 +25,7 @@ use Traversable;
 /**
  * Testcase for the dateRange queryBuilder
  */
-class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
+final class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canBuildSortParameter(): void

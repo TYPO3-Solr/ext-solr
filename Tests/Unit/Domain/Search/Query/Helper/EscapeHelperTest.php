@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
-class EscapeHelperTest extends SetUpUnitTestCase
+final class EscapeHelperTest extends SetUpUnitTestCase
 {
     public static function escapeQueryDataProvider(): Traversable
     {

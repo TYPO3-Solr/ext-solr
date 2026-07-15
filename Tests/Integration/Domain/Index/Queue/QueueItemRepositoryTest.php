@@ -29,7 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase for the QueueItemRepository
  */
-class QueueItemRepositoryTest extends IntegrationTestBase
+final class QueueItemRepositoryTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {

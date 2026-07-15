@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase to test the TCAService.
  */
-class TCAServiceTest extends SetUpUnitTestCase
+final class TCAServiceTest extends SetUpUnitTestCase
 {
     /**
      * When a deleted record is passed (has 1 in the TCA deleted field, this should be detected).

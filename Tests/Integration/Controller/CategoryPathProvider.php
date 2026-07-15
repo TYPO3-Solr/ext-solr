@@ -11,7 +11,7 @@ use TYPO3\CMS\Frontend\Page\PageInformation;
  *
  * Test class that returns a fixture path list just for testing.
  */
-class CategoryPathProvider
+final class CategoryPathProvider
 {
     /**
      * Returns a list of paths concatenated with , only for testing

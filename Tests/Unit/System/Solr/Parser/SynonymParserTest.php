@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for StopWordParser
  */
-class SynonymParserTest extends SetUpUnitTestCase
+final class SynonymParserTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canParseSynonyms(): void

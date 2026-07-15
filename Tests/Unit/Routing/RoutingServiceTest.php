@@ -31,7 +31,7 @@ use TYPO3\CMS\Core\Site\Entity\Site;
  * Unit test to cover functions inside the routing service
  */
 #[CoversClass(RoutingService::class)]
-class RoutingServiceTest extends SetUpUnitTestCase
+final class RoutingServiceTest extends SetUpUnitTestCase
 {
     protected Site $site;
 

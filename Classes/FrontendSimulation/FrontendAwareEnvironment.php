@@ -293,7 +293,7 @@ class FrontendAwareEnvironment implements SingletonInterface
         }
 
         // TYPO3 core also checks site config before sys_template handling
-        $siteIsTypoScriptRoot = $site instanceof Site && $site->isTypoScriptRoot();
+        $siteIsTypoScriptRoot = $site->isTypoScriptRoot();
         if ($siteIsTypoScriptRoot) {
             return $site->getRootPageId();
         }

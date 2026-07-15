@@ -44,7 +44,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class IndexerTest
  */
-class IndexerTest extends SetUpUnitTestCase
+final class IndexerTest extends SetUpUnitTestCase
 {
     protected function tearDown(): void
     {
@@ -201,7 +201,7 @@ class IndexerTest extends SetUpUnitTestCase
             {
                 $this->site = $site;
             }
-            public function getSite(): ?Site
+            public function getSite(): Site
             {
                 return $this->site;
             }

@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 /**
  * Unit testcase to check if the two level cache is working as expected.
  */
-class TwoLevelCacheTest extends SetUpUnitTestCase
+final class TwoLevelCacheTest extends SetUpUnitTestCase
 {
     protected TwoLevelCache $twoLevelCache;
     protected FrontendInterface|MockObject $secondLevelCacheMock;

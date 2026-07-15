@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for the ArrayAccessor helper class.
  */
-class RootlineTest extends SetUpUnitTestCase
+final class RootlineTest extends SetUpUnitTestCase
 {
     #[Test]
     public function getRootPageIdReturnUidOfRootPage(): void

@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Extbase\Mvc\Web\RequestBuilder;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
-class AddFacetItemViewHelperTest extends SetUpFacetItemViewHelper
+final class AddFacetItemViewHelperTest extends SetUpFacetItemViewHelper
 {
     #[Test]
     public function addFacetItemWillUseUriBuilderAsExpected(): void

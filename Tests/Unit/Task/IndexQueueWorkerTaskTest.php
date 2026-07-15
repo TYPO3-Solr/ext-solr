@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for IndexQueueWorkerTask
  */
-class IndexQueueWorkerTaskTest extends SetUpUnitTestCase
+final class IndexQueueWorkerTaskTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable(): void

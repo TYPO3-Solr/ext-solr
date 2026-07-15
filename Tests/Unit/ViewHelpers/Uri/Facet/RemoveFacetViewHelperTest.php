@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveFacetViewHelper;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
-class RemoveFacetViewHelperTest extends SetUpFacetItemViewHelper
+final class RemoveFacetViewHelperTest extends SetUpFacetItemViewHelper
 {
     #[Test]
     public function removeFacetWillUseUriBuilderAsExpected(): void

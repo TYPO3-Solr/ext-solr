@@ -31,7 +31,7 @@ use Solarium\QueryType\Select\RequestBuilder;
 /**
  * Testcase for RelevanceComponent
  */
-class RelevanceComponentTest extends SetUpUnitTestCase
+final class RelevanceComponentTest extends SetUpUnitTestCase
 {
     /**
      * @param $query

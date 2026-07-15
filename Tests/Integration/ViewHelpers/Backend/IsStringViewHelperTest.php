@@ -28,7 +28,7 @@ use TYPO3Fluid\Fluid\View\TemplateView;
 /**
  * Testcase for the IsStringViewHelper
  */
-class IsStringViewHelperTest extends IntegrationTestBase
+final class IsStringViewHelperTest extends IntegrationTestBase
 {
     protected bool $initializeDatabase = false;
     protected RenderingContextFactory $renderingContextFactory;
@@ -55,9 +55,7 @@ class IsStringViewHelperTest extends IntegrationTestBase
     }
 
     #[Test]
-    #[DataProvider(
-        methodName: 'stringDataProvider',
-    )]
+    #[DataProvider('stringDataProvider')]
     public function isStringRendersThenOrElse(string|int|array $value, string $expectedString): void
     {
         $templateSource = sprintf('

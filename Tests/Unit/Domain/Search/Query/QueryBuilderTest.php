@@ -52,7 +52,7 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 use function str_starts_with;
 
-class QueryBuilderTest extends SetUpUnitTestCase
+final class QueryBuilderTest extends SetUpUnitTestCase
 {
     protected TypoScriptConfiguration|MockObject $configurationMock;
     protected SolrLogManager|MockObject $loggerMock;

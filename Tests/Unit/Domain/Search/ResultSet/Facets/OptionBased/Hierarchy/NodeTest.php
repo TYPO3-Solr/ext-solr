@@ -26,7 +26,7 @@ use function array_map;
 /**
  * Testcase to test the Node class
  */
-class NodeTest extends SetUpUnitTestCase
+final class NodeTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGetHasParentNode(): void

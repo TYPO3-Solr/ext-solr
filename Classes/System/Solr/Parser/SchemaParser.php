@@ -53,7 +53,7 @@ class SchemaParser
     protected function parseManagedResourceId(stdClass $schema): ?string
     {
         $managedResourceId = null;
-        if (!is_object($schema) || !isset($schema->fieldTypes)) {
+        if (!isset($schema->fieldTypes)) {
             return null;
         }
 

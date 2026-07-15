@@ -22,7 +22,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use PHPUnit\Framework\Attributes\Test;
@@ -35,7 +34,7 @@ use TYPO3\CMS\Frontend\Page\PageInformation;
 /**
  * Testcase for the Builder of ApacheSolrDocument
  */
-class BuilderTest extends SetUpUnitTestCase
+final class BuilderTest extends SetUpUnitTestCase
 {
     public const FAKE_PAGE_RECORD = [
         'pid' => 4710,
@@ -95,7 +94,6 @@ class BuilderTest extends SetUpUnitTestCase
         $pageContent = '<html><body>Test content</body></html>';
         $document = $this->documentBuilder->fromPage($pageInformation, $pageArguments, $siteLanguage, $pageContent, 'http://www.typo3-solr.com', $fakeRootLine);
 
-        self::assertInstanceOf(Document::class, $document, 'Expect to get an ' . Document::class . ' back');
         self::assertSame('siteHash/pages/4711', $document['id'], 'Builder did not use documentId from mock');
     }
 

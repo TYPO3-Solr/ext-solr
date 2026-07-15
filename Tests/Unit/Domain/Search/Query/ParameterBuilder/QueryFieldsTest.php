@@ -19,7 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-class QueryFieldsTest extends SetUpUnitTestCase
+final class QueryFieldsTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canBuildFromString(): void

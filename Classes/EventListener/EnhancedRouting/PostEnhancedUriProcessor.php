@@ -52,7 +52,7 @@ final readonly class PostEnhancedUriProcessor
         $uri = $event->getUri();
         parse_str($uri->getQuery(), $queryParameters);
 
-        if (empty($queryParameters) || !is_array($queryParameters)) {
+        if (empty($queryParameters)) {
             $queryParameters = [];
         }
 

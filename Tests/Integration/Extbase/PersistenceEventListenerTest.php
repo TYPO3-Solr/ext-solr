@@ -33,7 +33,7 @@ use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
-class PersistenceEventListenerTest extends IntegrationTestBase
+final class PersistenceEventListenerTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
         'apache-solr-for-typo3/solr',

@@ -32,7 +32,7 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
  */
-class SearchUriBuilderTest extends SetUpUnitTestCase
+final class SearchUriBuilderTest extends SetUpUnitTestCase
 {
     protected SearchUriBuilder|MockObject $searchUrlBuilder;
     protected UriBuilder|MockObject $extBaseUriBuilderMock;

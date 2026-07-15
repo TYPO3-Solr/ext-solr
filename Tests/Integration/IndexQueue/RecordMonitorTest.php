@@ -43,7 +43,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase for the record monitor
  */
-class RecordMonitorTest extends IntegrationTestBase
+final class RecordMonitorTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
         'apache-solr-for-typo3/solr',

@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Class DefaultUrlEncoderTest
  */
-class DefaultUrlDecoderTest extends SetUpUnitTestCase
+final class DefaultUrlDecoderTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canDecode(): void

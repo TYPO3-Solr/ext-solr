@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for the ContentElementDeletedEvent
  */
-class ContentElementDeletedEventTest extends SetUpDataUpdateEvent
+final class ContentElementDeletedEventTest extends SetUpDataUpdateEvent
 {
     protected const EVENT_CLASS = ContentElementDeletedEvent::class;
     protected const EVENT_TEST_TABLE = 'tt_content';

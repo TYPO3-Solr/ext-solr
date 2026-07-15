@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class TypoScriptConfigurationTest extends IntegrationTestBase
+final class TypoScriptConfigurationTest extends IntegrationTestBase
 {
     protected bool $initializeDatabase = false;
 

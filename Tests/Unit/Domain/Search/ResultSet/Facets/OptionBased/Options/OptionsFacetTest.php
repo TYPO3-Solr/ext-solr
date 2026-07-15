@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Unit test for the OptionsFacet
  */
-class OptionsFacetTest extends SetUpUnitTestCase
+final class OptionsFacetTest extends SetUpUnitTestCase
 {
     protected function tearDown(): void
     {

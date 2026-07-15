@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase to test the page queue initializer
  */
-class PageTest extends IntegrationTestBase
+final class PageTest extends IntegrationTestBase
 {
     /**
      * @var Page

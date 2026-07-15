@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class LastSearchesServiceTest extends SetUpUnitTestCase
+final class LastSearchesServiceTest extends SetUpUnitTestCase
 {
     protected LastSearchesService|MockObject $lastSearchesService;
     protected FrontendUserSession|MockObject $sessionMock;

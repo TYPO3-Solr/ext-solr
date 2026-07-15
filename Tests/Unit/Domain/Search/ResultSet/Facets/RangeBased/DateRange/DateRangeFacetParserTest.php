@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Class DateRangeFacetParserTest
  */
-class DateRangeFacetParserTest extends SetUpFacetParser
+final class DateRangeFacetParserTest extends SetUpFacetParser
 {
     #[Test]
     public function facetIsCreated(): void

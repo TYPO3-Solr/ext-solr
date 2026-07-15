@@ -33,7 +33,7 @@ use TYPO3\CMS\Scheduler\Task\TaskSerializer;
  * Test case to check if the scheduler task EventQueueWorkerTask can process
  * event queue entries
  */
-class EventQueueWorkerTaskTest extends IntegrationTestBase
+final class EventQueueWorkerTaskTest extends IntegrationTestBase
 {
     protected EventQueueItemRepository $eventQueue;
     protected Queue $indexQueue;

@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-class SearchRequestTest extends SetUpUnitTestCase
+final class SearchRequestTest extends SetUpUnitTestCase
 {
     protected SearchRequest $searchRequest;
 

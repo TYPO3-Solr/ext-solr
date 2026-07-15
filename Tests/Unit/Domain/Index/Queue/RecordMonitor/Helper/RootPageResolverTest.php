@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class RootPageResolverTest extends SetUpUnitTestCase
+final class RootPageResolverTest extends SetUpUnitTestCase
 {
     protected TwoLevelCache|MockObject $cacheMock;
     protected ConfigurationAwareRecordService|MockObject $recordServiceMock;

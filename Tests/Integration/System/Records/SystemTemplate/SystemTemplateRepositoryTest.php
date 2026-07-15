@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Integration test for the SystemTemplateRepository
  */
-class SystemTemplateRepositoryTest extends IntegrationTestBase
+final class SystemTemplateRepositoryTest extends IntegrationTestBase
 {
     #[Test]
     public function canFindOneClosestPageIdWithActiveTemplateByRootLine(): void

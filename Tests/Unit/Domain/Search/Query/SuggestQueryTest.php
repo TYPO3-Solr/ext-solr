@@ -25,7 +25,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Tests the ApacheSolrForTypo3\Solr\SuggestQuery class
  */
-class SuggestQueryTest extends SetUpUnitTestCase
+final class SuggestQueryTest extends SetUpUnitTestCase
 {
     #[Test]
     public function testSuggestQueryDoesNotUseFieldCollapsing(): void

@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for the dateRange queryBuilder
  */
-class QueryGroupFacetQueryBuilderTest extends SetUpUnitTestCase
+final class QueryGroupFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canBuildQueryGroupFacetWithKeepAllOptionsOnSelection(): void

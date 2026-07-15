@@ -28,7 +28,7 @@ use Solarium\Core\Client\Endpoint;
  *
  * @property IndexAdministrationModuleController|MockObject $controller
  */
-class IndexAdministrationModuleControllerTest extends SetUpSolrModuleControllerTestCase
+final class IndexAdministrationModuleControllerTest extends SetUpSolrModuleControllerTestCase
 {
     protected function setUp(): void
     {

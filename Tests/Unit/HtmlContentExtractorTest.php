@@ -23,7 +23,7 @@ use Traversable;
 /**
  * Tests the HtmlContentExtractor
  */
-class HtmlContentExtractorTest extends SetUpUnitTestCase
+final class HtmlContentExtractorTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGetTagContent(): void

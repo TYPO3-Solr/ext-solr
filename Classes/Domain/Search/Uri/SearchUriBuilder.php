@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\Event\Routing\AfterUriIsProcessedEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\BeforeCachedVariablesAreProcessedEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -108,7 +107,6 @@ class SearchUriBuilder
         $additionalArguments = [];
         if (
             ($typoScriptConfiguration = $previousSearchRequest->getContextTypoScriptConfiguration())
-            && $typoScriptConfiguration instanceof TypoScriptConfiguration
             && $typoScriptConfiguration->getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl()
         ) {
             $additionalArguments = $this->getAdditionalArgumentsFromRequestConfiguration($previousSearchRequest);
@@ -130,7 +128,6 @@ class SearchUriBuilder
         $additionalArguments = [];
         if (
             ($typoScriptConfiguration = $previousSearchRequest->getContextTypoScriptConfiguration())
-            && $typoScriptConfiguration instanceof TypoScriptConfiguration
             && $typoScriptConfiguration->getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl()
         ) {
             $additionalArguments = $this->getAdditionalArgumentsFromRequestConfiguration($previousSearchRequest);
@@ -153,7 +150,6 @@ class SearchUriBuilder
         $additionalArguments = [];
         if (
             ($typoScriptConfiguration = $previousSearchRequest->getContextTypoScriptConfiguration())
-            && $typoScriptConfiguration instanceof TypoScriptConfiguration
             && $typoScriptConfiguration->getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl()
         ) {
             $additionalArguments = $this->getAdditionalArgumentsFromRequestConfiguration($previousSearchRequest);
@@ -428,10 +424,7 @@ class SearchUriBuilder
             return;
         }
 
-        if (
-            ($typoScriptConfiguration = $searchRequest->getContextTypoScriptConfiguration())
-            && $typoScriptConfiguration instanceof TypoScriptConfiguration
-        ) {
+        if ($typoScriptConfiguration = $searchRequest->getContextTypoScriptConfiguration()) {
             $pluginNameSpace = $typoScriptConfiguration->getSearchPluginNamespace();
             if (!empty($arguments[$pluginNameSpace]['filter']) && is_array($arguments[$pluginNameSpace]['filter'])) {
                 $arguments[$pluginNameSpace]['filter'] = ParameterSortingUtility::sortByType(

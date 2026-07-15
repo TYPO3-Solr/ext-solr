@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 /**
  * Integration test for the Solr Access Filter status report
  */
-class AccessFilterPluginInstalledStatusTest extends IntegrationTestBase
+final class AccessFilterPluginInstalledStatusTest extends IntegrationTestBase
 {
     protected bool $initializeDatabase = false;
 

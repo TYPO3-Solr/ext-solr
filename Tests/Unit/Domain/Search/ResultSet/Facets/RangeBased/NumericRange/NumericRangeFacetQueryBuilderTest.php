@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for the numericRange queryBuilder
  */
-class NumericRangeFacetQueryBuilderTest extends SetUpUnitTestCase
+final class NumericRangeFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canBuild(): void

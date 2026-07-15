@@ -36,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Faceting class
  */
-class FacetingComponentTest extends SetUpUnitTestCase
+final class FacetingComponentTest extends SetUpUnitTestCase
 {
     private function getQueryParametersFromExecutedFacetingModifier(
         TypoScriptConfiguration $fakeConfiguration,

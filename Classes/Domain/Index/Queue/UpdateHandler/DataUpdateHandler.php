@@ -439,7 +439,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
             // Clear existing index queue items to prevent mount point duplicates.
             // This needs to be done before the overlay handling, because handling an overlay record should
             // not trigger a deletion.
-            $isTranslation = !empty($record['sys_language_uid']) && $record['sys_language_uid'] !== 0;
+            $isTranslation = !empty($record['sys_language_uid']);
             if ($recordTable === 'pages' && !$isTranslation) {
                 $this->indexQueue->deleteItem('pages', $recordUid);
             }

@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class QueueStatisticTest extends SetUpUnitTestCase
+final class QueueStatisticTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGetFailedPercentage(): void

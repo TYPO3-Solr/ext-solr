@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Integration test for the CategoryUidToHierarchy
  */
-class CategoryUidToHierarchyTest extends IntegrationTestBase
+final class CategoryUidToHierarchyTest extends IntegrationTestBase
 {
     #[Test]
     public function canConvertToCategoryIdToHierarchy(): void

@@ -25,7 +25,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Unit test case for the Group class
  */
-class GroupItemTest extends SetUpUnitTestCase
+final class GroupItemTest extends SetUpUnitTestCase
 {
     protected GroupItem $groupItem;
     protected Group $parentGroup;

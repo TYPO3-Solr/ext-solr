@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for AbstractIndexer
  */
-class AbstractIndexerTest extends SetUpUnitTestCase
+final class AbstractIndexerTest extends SetUpUnitTestCase
 {
     #[Test]
     public function testTypeIsNotAllowedOverride(): void

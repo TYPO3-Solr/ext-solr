@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Class SortingHelperTest
  */
-class SortingHelperTest extends SetUpUnitTestCase
+final class SortingHelperTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGetSortFieldFromUrlParameter(): void

@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ConfigurationServiceTest extends SetUpUnitTestCase
+final class ConfigurationServiceTest extends SetUpUnitTestCase
 {
     public static function escapeFilterDataProvider(): Traversable
     {

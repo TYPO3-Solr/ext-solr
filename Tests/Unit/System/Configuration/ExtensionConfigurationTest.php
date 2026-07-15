@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExis
  *
  * ext_conf_template.txt
  */
-class ExtensionConfigurationTest extends SetUpUnitTestCase
+final class ExtensionConfigurationTest extends SetUpUnitTestCase
 {
     protected function setUp(): void
     {

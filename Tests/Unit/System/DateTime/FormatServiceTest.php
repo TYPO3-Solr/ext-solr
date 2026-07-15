@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for FormatService
  */
-class FormatServiceTest extends SetUpUnitTestCase
+final class FormatServiceTest extends SetUpUnitTestCase
 {
     protected FormatService $formatService;
 

@@ -33,7 +33,7 @@ use TYPO3Fluid\Fluid\View\AbstractTemplateView;
 /**
  * Class SearchController
  *
- * @property AbstractTemplateView $view {@link AbstractTemplateView} is used in this scope. Line required by PhpStan.
+ * @property FluidViewAdapter $view {@link AbstractTemplateView} is used in this scope. Line required by PhpStan.
  */
 class SearchController extends AbstractBaseController
 {

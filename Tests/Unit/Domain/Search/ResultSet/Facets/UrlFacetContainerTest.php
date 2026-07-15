@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcases for the url data bag
  */
-class UrlFacetContainerTest extends SetUpUnitTestCase
+final class UrlFacetContainerTest extends SetUpUnitTestCase
 {
     /**
      * Test data for index based url parameters

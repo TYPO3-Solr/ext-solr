@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class LastSearchesRepositoryTest extends IntegrationTestBase
+final class LastSearchesRepositoryTest extends IntegrationTestBase
 {
     protected LastSearchesRepository $lastSearchesRepository;
 

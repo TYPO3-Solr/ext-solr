@@ -31,7 +31,7 @@ use Solarium\Component\Grouping;
 /**
  * Unit test case for the SearchResult.
  */
-class DefaultParserTest extends SetUpUnitTestCase
+final class DefaultParserTest extends SetUpUnitTestCase
 {
     protected TypoScriptConfiguration|MockObject $configurationMock;
     protected DefaultResultParser $parser;

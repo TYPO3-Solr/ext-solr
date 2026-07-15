@@ -29,7 +29,7 @@ use function json_encode;
 /**
  * Tests the SolrAdminService class
  */
-class SolrAdminServiceTest extends SetUpUnitTestCase
+final class SolrAdminServiceTest extends SetUpUnitTestCase
 {
     protected SolrAdminService|MockObject $adminService;
     protected Client|MockObject $clientMock;

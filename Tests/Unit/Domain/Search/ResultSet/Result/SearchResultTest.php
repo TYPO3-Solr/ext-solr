@@ -24,7 +24,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Unit test case for the SearchResult.
  */
-class SearchResultTest extends SetUpUnitTestCase
+final class SearchResultTest extends SetUpUnitTestCase
 {
     protected SearchResult $searchResult;
 

@@ -24,7 +24,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Unit test for the QueryGroupFacet options collection
  */
-class OptionCollectionTest extends SetUpUnitTestCase
+final class OptionCollectionTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGetManualSortedCopy(): void

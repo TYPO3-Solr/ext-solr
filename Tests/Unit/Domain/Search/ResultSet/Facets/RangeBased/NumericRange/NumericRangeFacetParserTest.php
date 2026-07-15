@@ -27,7 +27,7 @@ use Traversable;
 /**
  * Class DateRangeFacetParserTest
  */
-class NumericRangeFacetParserTest extends SetUpFacetParser
+final class NumericRangeFacetParserTest extends SetUpFacetParser
 {
     /**
      * Returns a basic facet configuration

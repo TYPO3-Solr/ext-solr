@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for the PageMovedEvent
  */
-class PageMovedEventTest extends SetUpDataUpdateEvent
+final class PageMovedEventTest extends SetUpDataUpdateEvent
 {
     protected const EVENT_CLASS = PageMovedEvent::class;
     protected const EVENT_TEST_TABLE = 'pages';

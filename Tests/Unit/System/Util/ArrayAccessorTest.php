@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for the ArrayAccessor helper class.
  */
-class ArrayAccessorTest extends SetUpUnitTestCase
+final class ArrayAccessorTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGet(): void

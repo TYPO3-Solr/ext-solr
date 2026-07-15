@@ -18,16 +18,17 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 use ApacheSolrForTypo3\Solr\Task\OptimizeIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Testcase for OptimizeIndexTask
  */
-class OptimizeIndexTaskTest extends SetUpUnitTestCase
+final class OptimizeIndexTaskTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable(): void
     {
-        /** @var OptimizeIndexTask $indexQueuerWorker */
+        /** @var OptimizeIndexTask&MockObject $indexQueuerWorker */
         $indexQueuerWorker = $this->getMockBuilder(OptimizeIndexTask::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getSite'])

@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase for the record indexer
  */
-class IndexerTest extends IntegrationTestBase
+final class IndexerTest extends IntegrationTestBase
 {
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 

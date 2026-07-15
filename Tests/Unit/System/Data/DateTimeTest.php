@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use DateTimeZone;
 use PHPUnit\Framework\Attributes\Test;
 
-class DateTimeTest extends SetUpUnitTestCase
+final class DateTimeTest extends SetUpUnitTestCase
 {
     #[Test]
     public function testCanWrapDateTimeAndConvertToString(): void

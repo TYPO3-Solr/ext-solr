@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ConfigurationPageResolverTest extends IntegrationTestBase
+final class ConfigurationPageResolverTest extends IntegrationTestBase
 {
     #[Test]
     public function canGetClosestPageIdWithActiveTemplate(): void

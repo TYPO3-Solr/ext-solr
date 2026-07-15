@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
  *
  * @property IndexQueueModuleController|MockObject $controller
  */
-class IndexQueueModuleControllerTest extends SetUpSolrModuleControllerTestCase
+final class IndexQueueModuleControllerTest extends SetUpSolrModuleControllerTestCase
 {
     protected Queue|MockObject $indexQueueMock;
     protected EventDispatcherInterface|MockObject $eventDispatcher;

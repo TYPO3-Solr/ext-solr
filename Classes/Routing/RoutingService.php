@@ -575,7 +575,7 @@ class RoutingService implements LoggerAwareInterface
                 $newQueryParams[] = $facetName . $separator . $facetValue;
             }
         }
-        $queryParams[$this->getPluginNamespace()]['filter'] = array_values($newQueryParams);
+        $queryParams[$this->getPluginNamespace()]['filter'] = $newQueryParams;
 
         return $this->cleanUpQueryParameters($queryParams);
     }

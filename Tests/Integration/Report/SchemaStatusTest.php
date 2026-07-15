@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 /**
  * Integration test for the schema status report
  */
-class SchemaStatusTest extends IntegrationTestBase
+final class SchemaStatusTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {

@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Event
 /**
  * Testcase for the ProcessingFinishedEvent
  */
-class ProcessingFinishedEventTest extends SetUpProcessingFinishedEvent
+final class ProcessingFinishedEventTest extends SetUpProcessingFinishedEvent
 {
     protected const EVENT_CLASS = ProcessingFinishedEvent::class;
 }

@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Class RootlineTest
  */
-class RootlineTest extends IntegrationTestBase
+final class RootlineTest extends IntegrationTestBase
 {
     #[Test]
     public function canGetAccessRootlineByPageId(): void

@@ -29,7 +29,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Class QueryGroupFacetParserTest
  */
-class QueryGroupFacetParserTest extends SetUpFacetParser
+final class QueryGroupFacetParserTest extends SetUpFacetParser
 {
     protected function initializeSearchResultSetFromFakeResponse(string $fixtureFile, array $facetConfiguration, array $activeFilters = []): SearchResultSet
     {

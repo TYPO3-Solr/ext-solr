@@ -31,7 +31,7 @@ use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
-class SearchResultSetServiceTest extends IntegrationTestBase
+final class SearchResultSetServiceTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {

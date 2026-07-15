@@ -24,7 +24,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
  */
-class SortingTest extends SetUpUnitTestCase
+final class SortingTest extends SetUpUnitTestCase
 {
     protected Sorting $sorting;
     protected SearchResultSet $resultSetMock;

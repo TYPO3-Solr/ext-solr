@@ -24,7 +24,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase to check if the solr write service is working as expected.
  */
-class SolrWriteServiceTest extends IntegrationTestBase
+final class SolrWriteServiceTest extends IntegrationTestBase
 {
     protected SolrWriteService $solrWriteService;
 

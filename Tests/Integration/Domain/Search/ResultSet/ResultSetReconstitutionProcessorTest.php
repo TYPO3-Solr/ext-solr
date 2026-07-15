@@ -28,7 +28,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
 
-class ResultSetReconstitutionProcessorTest extends IntegrationTestBase
+final class ResultSetReconstitutionProcessorTest extends IntegrationTestBase
 {
     protected bool $initializeDatabase = false;
 

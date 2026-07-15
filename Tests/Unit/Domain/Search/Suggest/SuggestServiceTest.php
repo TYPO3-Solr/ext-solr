@@ -48,7 +48,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class SuggestServiceTest extends SetUpUnitTestCase
+final class SuggestServiceTest extends SetUpUnitTestCase
 {
     protected SuggestService|MockObject $suggestService;
     protected SearchResultSetService|MockObject $searchResultSetServiceMock;
@@ -125,9 +125,9 @@ class SuggestServiceTest extends SetUpUnitTestCase
 
         $searchStub = new class ($this->createMock(SolrConnection::class)) extends Search implements SingletonInterface {
             public static SuggestServiceTest $suggestServiceTest;
-            public function search(Query $query, $offset = 0, $limit = 10): ?ResponseAdapter
+            public function search(Query $query, $offset = 0, $limit = 10): ResponseAdapter
             {
-                /** @var ResponseAdapter|MockBuilder $mockObject */
+                /** @var ResponseAdapter|MockObject $mockObject */
                 $mockObject = self::$suggestServiceTest->provideMockBuilderInObjectsScope(ResponseAdapter::class)
                     ->onlyMethods([])->disableOriginalConstructor()->getMock();
                 return $mockObject;
@@ -149,7 +149,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
         self::assertSame($expectedSuggestions, $suggestions, 'Suggest did not return status false');
     }
 
-    public function provideMockBuilderInObjectsScope(string $className): ResponseAdapter|MockBuilder
+    public function provideMockBuilderInObjectsScope(string $className): MockBuilder
     {
         return parent::getMockBuilder($className);
     }

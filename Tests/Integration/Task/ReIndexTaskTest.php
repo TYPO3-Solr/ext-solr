@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * TestCase to check if the index queue can be initialized by the ReIndex Task
  */
-class ReIndexTaskTest extends IntegrationTestBase
+final class ReIndexTaskTest extends IntegrationTestBase
 {
     /**
      * @inheritdoc

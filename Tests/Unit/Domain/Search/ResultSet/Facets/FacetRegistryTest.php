@@ -26,7 +26,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 /**
  * Testcases for the Facet parser registry
  */
-class FacetRegistryTest extends SetUpUnitTestCase
+final class FacetRegistryTest extends SetUpUnitTestCase
 {
     /**
      * Initialize a RendererRegistry and mock createRendererInstance()

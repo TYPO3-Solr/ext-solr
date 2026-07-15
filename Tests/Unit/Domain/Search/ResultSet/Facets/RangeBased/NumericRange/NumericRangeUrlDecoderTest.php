@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase for query parser range
  */
-class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
+final class NumericRangeUrlDecoderTest extends SetUpUnitTestCase
 {
     protected NumericRangeUrlDecoder $rangeParser;
 

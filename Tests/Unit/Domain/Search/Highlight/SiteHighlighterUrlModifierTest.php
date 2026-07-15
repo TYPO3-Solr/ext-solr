@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
-class SiteHighlighterUrlModifierTest extends SetUpUnitTestCase
+final class SiteHighlighterUrlModifierTest extends SetUpUnitTestCase
 {
     public static function canModifyDataProvider(): Traversable
     {

@@ -26,7 +26,7 @@ use Traversable;
 /**
  * Testcase to check if the configuration object can be used as expected
  */
-class TypoScriptConfigurationTest extends SetUpUnitTestCase
+final class TypoScriptConfigurationTest extends SetUpUnitTestCase
 {
     protected TypoScriptConfiguration $configuration;
 
