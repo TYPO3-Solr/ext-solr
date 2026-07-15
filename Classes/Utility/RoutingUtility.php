@@ -40,7 +40,7 @@ class RoutingUtility
         // Symfony Route Compiler requires first literal to be non-integer
         if ($hash[0] === (string)(int)$hash[0]) {
             $hash[0] = str_replace(
-                range('0', '9'),
+                str_split('0123456789'),
                 range('o', 'x'),
                 $hash[0],
             );
