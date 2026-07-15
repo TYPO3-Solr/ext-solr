@@ -34,6 +34,21 @@ class ReIndexTask extends AbstractSolrTask
      */
     protected array $indexingConfigurationsToReIndex = [];
 
+    public function getTaskParameters(): array
+    {
+        $taskParameters = parent::getTaskParameters();
+        $taskParameters['indexingConfigurationsToReIndex'] = $this->indexingConfigurationsToReIndex;
+        return $taskParameters;
+    }
+
+    public function setTaskParameters(array $parameters): void
+    {
+        parent::setTaskParameters($parameters);
+        if (isset($parameters['indexingConfigurationsToReIndex'])) {
+            $this->indexingConfigurationsToReIndex = $parameters['indexingConfigurationsToReIndex'];
+        }
+    }
+
     /**
      * Purges/commits all Solr indexes, initializes the Index Queue
      * and returns TRUE if the execution was successful

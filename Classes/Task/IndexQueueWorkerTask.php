@@ -32,6 +32,21 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
 {
     protected ?int $documentsToIndexLimit = null;
 
+    public function getTaskParameters(): array
+    {
+        $taskParameters = parent::getTaskParameters();
+        $taskParameters['documentsToIndexLimit'] = $this->documentsToIndexLimit;
+        return $taskParameters;
+    }
+
+    public function setTaskParameters(array $parameters): void
+    {
+        parent::setTaskParameters($parameters);
+        if (isset($parameters['documentsToIndexLimit'])) {
+            $this->documentsToIndexLimit = (int)$parameters['documentsToIndexLimit'];
+        }
+    }
+
     /**
      * Works through the indexing queue and indexes the queued items into Solr and returns TRUE on success,
      * FALSE if no items were indexed or none were found.

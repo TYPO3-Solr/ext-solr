@@ -41,6 +41,21 @@ final class EventQueueWorkerTask extends AbstractTask
      */
     protected int $limit = self::DEFAULT_PROCESSING_LIMIT;
 
+    public function getTaskParameters(): array
+    {
+        $taskParameters = parent::getTaskParameters();
+        $taskParameters['limit'] = $this->limit;
+        return $taskParameters;
+    }
+
+    public function setTaskParameters(array $parameters): void
+    {
+        parent::setTaskParameters($parameters);
+        if (isset($parameters['limit'])) {
+            $this->limit = (int)$parameters['limit'];
+        }
+    }
+
     /**
      * Works through the indexing queue and indexes the queued items into Solr.
      *

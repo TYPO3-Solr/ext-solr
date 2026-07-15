@@ -42,6 +42,20 @@ Parallel Solr Worker Cores for Integration Tests
 Integration tests now use parallel Solr worker cores via paratest, significantly
 improving test execution speed.
 
+Scheduler Tasks Support TYPO3 14 Migration to New Task Storage
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+EXT:solr's scheduler tasks (``EventQueueWorkerTask``, ``IndexQueueWorkerTask``, ``OptimizeIndexTask``, ``ReIndexTask``)
+now implement :php:`getTaskParameters()` / :php:`setTaskParameters()`,
+so TYPO3 core's :php:`\TYPO3\CMS\Scheduler\Migration\SchedulerDatabaseStorageMigration`
+can migrate them to the new task storage without failing.
+
+.. important::
+   If your EXT:solr scheduler tasks were not yet migrated before updating to EXT:solr 14.0.0-RC1,
+   mark ``schedulerDatabaseStorageMigration`` as undone in the Upgrade module and run it again.
+
+See `#4525 <https://github.com/TYPO3-Solr/ext-solr/issues/4525>`_.
+
 Event Listener Migration to PHP Attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

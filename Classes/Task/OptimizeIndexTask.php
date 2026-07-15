@@ -32,6 +32,21 @@ class OptimizeIndexTask extends AbstractSolrTask
      */
     protected array $coresToOptimizeIndex = [];
 
+    public function getTaskParameters(): array
+    {
+        $taskParameters = parent::getTaskParameters();
+        $taskParameters['coresToOptimizeIndex'] = $this->coresToOptimizeIndex;
+        return $taskParameters;
+    }
+
+    public function setTaskParameters(array $parameters): void
+    {
+        parent::setTaskParameters($parameters);
+        if (isset($parameters['coresToOptimizeIndex'])) {
+            $this->coresToOptimizeIndex = $parameters['coresToOptimizeIndex'];
+        }
+    }
+
     /**
      * Optimizes all Solr indexes for selected cores and returns TRUE if the execution was successful
      *
