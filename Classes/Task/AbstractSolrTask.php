@@ -41,6 +41,20 @@ abstract class AbstractSolrTask extends AbstractTask
      */
     protected string|int|null $rootPageId = null;
 
+    public function getTaskParameters(): array
+    {
+        return [
+            'rootPageId' => $this->rootPageId,
+        ];
+    }
+
+    public function setTaskParameters(array $parameters): void
+    {
+        if (isset($parameters['rootPageId'])) {
+            $this->rootPageId = (int)$parameters['rootPageId'];
+        }
+    }
+
     public function getRootPageId(): string|int|null
     {
         return $this->rootPageId;
