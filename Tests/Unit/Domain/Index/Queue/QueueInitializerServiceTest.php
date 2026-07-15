@@ -25,7 +25,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class QueueInitializerServiceTest extends SetUpUnitTestCase
+final class QueueInitializerServiceTest extends SetUpUnitTestCase
 {
     #[\PHPUnit\Framework\Attributes\Test]
     public function allIndexConfigurationsAreUsedWhenWildcardIsPassed(): void

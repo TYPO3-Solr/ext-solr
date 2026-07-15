@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Unit test case for the GroupCollection class
  */
-class GroupCollectionTest extends SetUpUnitTestCase
+final class GroupCollectionTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGetByGroupName(): void

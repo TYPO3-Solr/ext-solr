@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase for query parser range
  */
-class DateRangeUrlDecoderTest extends SetUpUnitTestCase
+final class DateRangeUrlDecoderTest extends SetUpUnitTestCase
 {
     protected DateRangeUrlDecoder $rangeParser;
 

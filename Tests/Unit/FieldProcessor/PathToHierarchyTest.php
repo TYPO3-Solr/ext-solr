@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * tests the path to hierarchy processing
  */
-class PathToHierarchyTest extends SetUpUnitTestCase
+final class PathToHierarchyTest extends SetUpUnitTestCase
 {
     protected PathToHierarchy $processor;
 

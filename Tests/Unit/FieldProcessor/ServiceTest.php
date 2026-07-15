@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * tests the processing Service class
  */
-class ServiceTest extends SetUpUnitTestCase
+final class ServiceTest extends SetUpUnitTestCase
 {
     protected Document $documentMock;
     protected Service $service;

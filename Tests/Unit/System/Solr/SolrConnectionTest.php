@@ -37,7 +37,7 @@ use Traversable;
 /**
  * Class SolrConnectionTest
  */
-class SolrConnectionTest extends SetUpUnitTestCase
+final class SolrConnectionTest extends SetUpUnitTestCase
 {
     /**
      * @param Endpoint|null $readEndpoint

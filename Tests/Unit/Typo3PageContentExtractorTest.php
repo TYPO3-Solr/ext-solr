@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Tests the TYPO3 page content extractor
  */
-class Typo3PageContentExtractorTest extends SetUpUnitTestCase
+final class Typo3PageContentExtractorTest extends SetUpUnitTestCase
 {
     protected TypoScriptConfiguration|MockObject $typoScripConfigurationMock;
 

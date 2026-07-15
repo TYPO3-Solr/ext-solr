@@ -25,7 +25,7 @@ use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
-class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
+final class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGetPrefixesSortedByOrderInCollection(): void

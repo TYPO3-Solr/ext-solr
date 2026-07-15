@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Class DateRangeTest
  */
-class DateRangeTest extends SetUpUnitTestCase
+final class DateRangeTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canHandleHalfOpenDateRanges(): void

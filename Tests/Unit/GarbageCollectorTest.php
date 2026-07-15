@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase for the GarbageCollector class.
  */
-class GarbageCollectorTest extends SetUpUnitTestCase
+final class GarbageCollectorTest extends SetUpUnitTestCase
 {
     protected GarbageCollector $garbageCollector;
     protected TCAService|MockObject $tcaServiceMock;

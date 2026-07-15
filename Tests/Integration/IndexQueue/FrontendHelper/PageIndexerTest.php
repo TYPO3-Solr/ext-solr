@@ -28,7 +28,7 @@ use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 /**
  * Testcase to check if we can index page documents using the SolrIndexingMiddleware
  */
-class PageIndexerTest extends IntegrationTestBase
+final class PageIndexerTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
         'apache-solr-for-typo3/solr',

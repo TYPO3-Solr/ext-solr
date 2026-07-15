@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @property DelayedProcessingEventListener $listener
  */
-class DelayedProcessingEventListenerTest extends SetUpEventListener
+final class DelayedProcessingEventListenerTest extends SetUpEventListener
 {
     #[Test]
     public function canHandleEvents(): void

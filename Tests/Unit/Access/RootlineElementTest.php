@@ -25,7 +25,7 @@ use Traversable;
 /**
  * Testcase to verify the functionality of the RootlineElement
  */
-class RootlineElementTest extends SetUpUnitTestCase
+final class RootlineElementTest extends SetUpUnitTestCase
 {
     /**
      * @return Traversable<string, array{
@@ -115,9 +115,7 @@ class RootlineElementTest extends SetUpUnitTestCase
      * @throws RootlineElementFormatException
      */
     #[Test]
-    #[DataProvider(
-        methodName: 'validRootLineRePresentations',
-    )]
+    #[DataProvider('validRootLineRePresentations')]
     public function canParse(
         string $stringRepresentation,
         int $expectedType,

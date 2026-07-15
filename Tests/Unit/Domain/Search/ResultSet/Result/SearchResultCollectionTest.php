@@ -24,7 +24,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Unit test case for the SearchResultCollection.
  */
-class SearchResultCollectionTest extends SetUpUnitTestCase
+final class SearchResultCollectionTest extends SetUpUnitTestCase
 {
     protected SearchResultCollection $searchResultCollection;
 

@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 /**
  * Fake test parser
  */
-class TestResultParser extends AbstractResultParser
+final class TestResultParser extends AbstractResultParser
 {
     /**
      * @inheritDoc

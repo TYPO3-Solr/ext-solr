@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class LastSearchesRepositoryTest extends SetUpUnitTestCase
+final class LastSearchesRepositoryTest extends SetUpUnitTestCase
 {
     protected LastSearchesRepository|MockObject $lastSearchesRepositoryMock;
 

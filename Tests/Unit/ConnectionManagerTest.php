@@ -37,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * PHP Unit test for connection manager
  */
-class ConnectionManagerTest extends SetUpUnitTestCase
+final class ConnectionManagerTest extends SetUpUnitTestCase
 {
     protected ConnectionManager|MockObject $connectionManager;
     protected SolrLogManager|MockObject $logManagerMock;

@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-class OptionsFacetParserTest extends SetUpUnitTestCase
+final class OptionsFacetParserTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canListFloatValuesAsOptionsFromSolrResponse(): void

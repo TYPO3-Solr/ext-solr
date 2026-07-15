@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase to test the Queue
  */
-class QueueTest extends IntegrationTestBase
+final class QueueTest extends IntegrationTestBase
 {
     /**
      * @var Queue

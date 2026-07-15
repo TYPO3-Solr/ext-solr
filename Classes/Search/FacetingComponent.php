@@ -211,7 +211,6 @@ class FacetingComponent implements LoggerAwareInterface
         $filtersByFacetName = [];
         if (
             ($typoScriptConfiguration = $searchRequest->getContextTypoScriptConfiguration())
-            && $typoScriptConfiguration instanceof TypoScriptConfiguration
             && $typoScriptConfiguration->getSearchFacetingUrlParameterStyle() === UrlFacetContainer::PARAMETER_STYLE_ASSOC
         ) {
             $filters = array_keys($filters);

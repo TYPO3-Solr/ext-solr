@@ -97,7 +97,7 @@ class StatisticsWriterProcessor
             // @extensionScannerIgnoreLine
             'time_processing' => $response->debug->timing->process->time ?? 0,
             /** @phpstan-ignore nullCoalesce.expr */
-            'feuser_id' => isset($frontendUser?->user) ? (int)$frontendUser->user['uid'] ?? 0 : 0,
+            'feuser_id' => isset($frontendUser->user) ? (int)$frontendUser->user['uid'] ?? 0 : 0,
             'ip' => IpAnonymizationUtility::anonymizeIp($this->getUserIp(), $ipMaskLength),
             'page' => $page,
             'keywords' => $keywords,

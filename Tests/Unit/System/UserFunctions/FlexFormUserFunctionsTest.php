@@ -19,7 +19,7 @@ use ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-class FlexFormUserFunctionsTest extends SetUpUnitTestCase
+final class FlexFormUserFunctionsTest extends SetUpUnitTestCase
 {
     #[Test]
     public function whenNoFacetsAreConfiguredAllSolrFieldsShouldBeAvailableAsFilter(): void

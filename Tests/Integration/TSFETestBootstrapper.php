@@ -13,7 +13,7 @@ use TYPO3\CMS\Frontend\Page\PageInformation;
 /**
  * Helper class to set up a ServerRequest for testing frontend scenarios
  */
-class TSFETestBootstrapper
+final class TSFETestBootstrapper
 {
     public function bootstrap(int $pageId): ServerRequest
     {

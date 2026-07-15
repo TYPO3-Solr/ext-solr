@@ -25,7 +25,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Unit test case for the Group class
  */
-class GroupTest extends SetUpUnitTestCase
+final class GroupTest extends SetUpUnitTestCase
 {
     #[Test]
     public function testCanGroupName(): void

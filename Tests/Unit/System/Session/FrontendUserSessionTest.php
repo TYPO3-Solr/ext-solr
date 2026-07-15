@@ -24,7 +24,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 /**
  * Testcase for the SchemaParser class.
  */
-class FrontendUserSessionTest extends SetUpUnitTestCase
+final class FrontendUserSessionTest extends SetUpUnitTestCase
 {
     protected FrontendUserAuthentication|MockObject $feUserMock;
     protected FrontendUserSession $session;

@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class SearchRequestBuilderTest extends SetUpUnitTestCase
+final class SearchRequestBuilderTest extends SetUpUnitTestCase
 {
     protected FrontendUserSession|MockObject $sessionMock;
     protected TypoScriptConfiguration|MockObject $configurationMock;

@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase for query parser range
  */
-class HierarchyUrlDecoderTest extends SetUpUnitTestCase
+final class HierarchyUrlDecoderTest extends SetUpUnitTestCase
 {
     protected HierarchyUrlDecoder $parser;
 

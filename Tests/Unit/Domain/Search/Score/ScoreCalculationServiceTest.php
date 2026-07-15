@@ -19,7 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-class ScoreCalculationServiceTest extends SetUpUnitTestCase
+final class ScoreCalculationServiceTest extends SetUpUnitTestCase
 {
     protected ScoreCalculationService $scoreCalculationService;
 

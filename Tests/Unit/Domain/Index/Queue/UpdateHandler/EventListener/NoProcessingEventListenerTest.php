@@ -24,7 +24,7 @@ use PHPUnit\Framework\Attributes\Test;
  *
  * @property NoProcessingEventListener $listener;
  */
-class NoProcessingEventListenerTest extends SetUpEventListener
+final class NoProcessingEventListenerTest extends SetUpEventListener
 {
     #[Test]
     public function canHandleEvents(): void

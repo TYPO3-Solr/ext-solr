@@ -35,7 +35,7 @@ use Solarium\Component\Grouping;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class SearchResultSetServiceTest extends SetUpUnitTestCase
+final class SearchResultSetServiceTest extends SetUpUnitTestCase
 {
     protected SearchResultSetService $searchResultSetService;
     protected TypoScriptConfiguration|MockObject $configurationMock;

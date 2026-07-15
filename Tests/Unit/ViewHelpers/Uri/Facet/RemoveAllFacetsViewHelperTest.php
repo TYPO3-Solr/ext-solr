@@ -28,7 +28,7 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
-class RemoveAllFacetsViewHelperTest extends SetUpFacetItemViewHelper
+final class RemoveAllFacetsViewHelperTest extends SetUpFacetItemViewHelper
 {
     #[Test]
     public function setFacetItemWillUseUriBuilderAsExpected(): void

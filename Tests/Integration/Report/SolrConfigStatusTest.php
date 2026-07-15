@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 /**
  * Integration test for the config status report
  */
-class SolrConfigStatusTest extends IntegrationTestBase
+final class SolrConfigStatusTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {

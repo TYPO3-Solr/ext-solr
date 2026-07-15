@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class SolrConnectionTest
  */
-class SolrConnectionTest extends IntegrationTestBase
+final class SolrConnectionTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {

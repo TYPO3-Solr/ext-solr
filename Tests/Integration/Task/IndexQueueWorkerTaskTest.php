@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * TestCase to check if we can index from index queue worker task into a solr server
  */
-class IndexQueueWorkerTaskTest extends IntegrationTestBase
+final class IndexQueueWorkerTaskTest extends IntegrationTestBase
 {
     /**
      * @inheritdoc

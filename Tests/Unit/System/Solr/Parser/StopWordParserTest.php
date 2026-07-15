@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for StopWordParser
  */
-class StopWordParserTest extends SetUpUnitTestCase
+final class StopWordParserTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canParseStopWords(): void

@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase for the GarbageHandler class.
  */
-class GarbageHandlerTest extends SetUpUpdateHandler
+final class GarbageHandlerTest extends SetUpUpdateHandler
 {
     protected GarbageHandler $garbageHandler;
 

@@ -29,7 +29,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
  */
-class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
+final class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
 {
     protected function initializeSearchResultSetFromFakeResponse(string $fixtureFile): SearchResultSet
     {

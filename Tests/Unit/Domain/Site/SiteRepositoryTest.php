@@ -36,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * The unit test is used to make sure that the SiteRepository works as expected
  */
-class SiteRepositoryTest extends SetUpUnitTestCase
+final class SiteRepositoryTest extends SetUpUnitTestCase
 {
     protected TwoLevelCache|MockObject $cacheMock;
     protected RootPageResolver|MockObject $rootPageResolverMock;

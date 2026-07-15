@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Site\SiteFinder;
  *
  * The unit test is used to make sure that the SiteHashService works as expected when the calls to Site:: are mocked
  */
-class SiteHashServiceTest extends SetUpUnitTestCase
+final class SiteHashServiceTest extends SetUpUnitTestCase
 {
     protected EventDispatcherInterface|MockObject $eventDispatcherMock;
 

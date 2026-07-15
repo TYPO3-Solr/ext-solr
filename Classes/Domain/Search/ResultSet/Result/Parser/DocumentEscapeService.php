@@ -51,7 +51,7 @@ class DocumentEscapeService
             $fieldNames = array_keys($document->getFields() ?? []);
 
             foreach ($fieldNames as $fieldName) {
-                if (is_array($trustedSolrFields) && in_array($fieldName, $trustedSolrFields)) {
+                if (in_array($fieldName, $trustedSolrFields)) {
                     // we skip this field, since it was marked as secure
                     continue;
                 }

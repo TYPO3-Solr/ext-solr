@@ -26,7 +26,7 @@ use TYPO3\CMS\Reports\Status;
 /**
  * Integration test for the Solr version test
  */
-class SolrVersionStatusTest extends IntegrationTestBase
+final class SolrVersionStatusTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {

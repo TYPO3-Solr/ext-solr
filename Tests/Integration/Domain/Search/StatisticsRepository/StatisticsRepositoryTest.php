@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class StatisticsRepositoryTest extends IntegrationTestBase
+final class StatisticsRepositoryTest extends IntegrationTestBase
 {
     #[Test]
     public function canGetTopKeywordsWithHits(): void

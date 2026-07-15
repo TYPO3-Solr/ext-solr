@@ -35,7 +35,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 /**
  * Unit test case for the StatisticsWriterProcessor.
  */
-class StatisticsWriterProcessorTest extends SetUpUnitTestCase
+final class StatisticsWriterProcessorTest extends SetUpUnitTestCase
 {
     protected StatisticsRepository|MockObject $statisticsRepositoryMock;
     protected SiteRepository|MockObject $siteRepositoryMock;

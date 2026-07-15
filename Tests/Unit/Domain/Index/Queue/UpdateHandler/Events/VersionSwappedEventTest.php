@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwapp
 /**
  * Testcase for the VersionSwappedEvent
  */
-class VersionSwappedEventTest extends SetUpDataUpdateEvent
+final class VersionSwappedEventTest extends SetUpDataUpdateEvent
 {
     protected const EVENT_CLASS = VersionSwappedEvent::class;
     protected const EVENT_TEST_TABLE = 'tx_foo_bar';

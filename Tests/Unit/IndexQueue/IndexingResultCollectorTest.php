@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
-class IndexingResultCollectorTest extends SetUpUnitTestCase
+final class IndexingResultCollectorTest extends SetUpUnitTestCase
 {
     #[Test]
     public function finalizeUserGroupsReturnsPublicGroupWhenNoGroupsCollected(): void

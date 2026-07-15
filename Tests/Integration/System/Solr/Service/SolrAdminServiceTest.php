@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception as MockObjectException;
+use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Curl;
 use Traversable;
@@ -31,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase to check if the solr admin service is working as expected.
  */
-class SolrAdminServiceTest extends IntegrationTestBase
+final class SolrAdminServiceTest extends IntegrationTestBase
 {
     protected bool $initializeDatabase = false;
 
@@ -43,7 +44,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
     protected function setUp(): void
     {
         parent::setUp();
-        /** @var EventDispatcher $eventDispatcher */
+        /** @var EventDispatcher&MockObject $eventDispatcher */
         $eventDispatcher = $this->createMock(EventDispatcher::class);
         $adapter = new Curl();
         $client = new Client(
@@ -162,7 +163,6 @@ class SolrAdminServiceTest extends IntegrationTestBase
     {
         $pingRuntime = $this->solrAdminService->getPingRoundTripRuntime();
         self::assertGreaterThan(0, $pingRuntime, 'Ping runtime should be larger then 0');
-        self::assertTrue(is_float($pingRuntime), 'Ping runtime should be an integer');
     }
 
     #[Test]
@@ -195,7 +195,7 @@ class SolrAdminServiceTest extends IntegrationTestBase
     #[Test]
     public function canParseLanguageFromSchema(): void
     {
-        /** @var EventDispatcher $eventDispatcher */
+        /** @var EventDispatcher&MockObject $eventDispatcher */
         $eventDispatcher = $this->createMock(EventDispatcher::class);
         $adapter = new Curl();
         $client = new Client(

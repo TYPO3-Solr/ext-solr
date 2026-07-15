@@ -4,7 +4,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\FieldProcessor;
 
 use ApacheSolrForTypo3\Solr\FieldProcessor\FieldProcessor;
 
-class TestFieldProcessor implements FieldProcessor
+final class TestFieldProcessor implements FieldProcessor
 {
     public function process(array $values): array
     {

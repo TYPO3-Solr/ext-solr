@@ -25,7 +25,7 @@ use TYPO3\CMS\Reports\Status;
 /**
  * Testcase for the SolrConfigurationStatus class.
  */
-class SolrConfigurationStatusTest extends SetUpUnitTestCase
+final class SolrConfigurationStatusTest extends SetUpUnitTestCase
 {
     protected SolrConfigurationStatus|MockObject $report;
 

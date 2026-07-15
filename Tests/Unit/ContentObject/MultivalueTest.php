@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Tests for the SOLR_MULTIVALUE cObj.
  */
-class MultivalueTest extends SetUpContentObject
+final class MultivalueTest extends SetUpContentObject
 {
     protected function getTestableContentObjectClassName(): string
     {

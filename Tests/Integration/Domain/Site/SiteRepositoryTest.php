@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase to check if the SiteRepository class works as expected.
  */
-class SiteRepositoryTest extends IntegrationTestBase
+final class SiteRepositoryTest extends IntegrationTestBase
 {
     /**
      * @var SiteRepository

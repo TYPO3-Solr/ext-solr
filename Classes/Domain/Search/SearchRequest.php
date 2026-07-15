@@ -572,7 +572,7 @@ class SearchRequest
         $this->stateChanged = false;
         $this->activeFacetContainer = new UrlFacetContainer(
             $this->argumentsAccessor,
-            $this->argumentNameSpace ?? self::DEFAULT_PLUGIN_NAMESPACE,
+            $this->argumentNameSpace,
             $this->contextTypoScriptConfiguration === null ?
                 UrlFacetContainer::PARAMETER_STYLE_INDEX :
                 $this->contextTypoScriptConfiguration->getSearchFacetingUrlParameterStyle(),

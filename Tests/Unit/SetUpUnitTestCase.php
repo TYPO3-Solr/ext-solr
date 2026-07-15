@@ -16,7 +16,6 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
-use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
@@ -134,17 +133,12 @@ abstract class SetUpUnitTestCase extends UnitTestCase
      * @param string $name Name of the property to be injected
      * @param mixed $dependency The dependency to inject – usually an object but can also be any other type
      * @throws RuntimeException
-     * @throws InvalidArgumentException
      */
     protected function inject(
         object $target,
         string $name,
         mixed $dependency,
     ): void {
-        if (!is_object($target)) {
-            throw new InvalidArgumentException('Wrong type for argument $target, must be object.', 1476107338);
-        }
-
         $objectReflection = new ReflectionObject($target);
         $methodNamePart = strtoupper($name[0]) . substr($name, 1);
         if ($objectReflection->hasMethod('set' . $methodNamePart)) {

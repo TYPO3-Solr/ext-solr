@@ -32,7 +32,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 /**
  * Class RelationTest
  */
-class RelationTest extends IntegrationTestBase
+final class RelationTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
         'apache-solr-for-typo3/solr',

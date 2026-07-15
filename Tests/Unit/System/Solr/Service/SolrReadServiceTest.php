@@ -36,7 +36,7 @@ use Traversable;
 /**
  * Tests the ApacheSolrForTypo3\Solr\SolrService class
  */
-class SolrReadServiceTest extends SetUpUnitTestCase
+final class SolrReadServiceTest extends SetUpUnitTestCase
 {
     protected Request|MockObject $requestMock;
     protected Response|MockObject $responseMock;

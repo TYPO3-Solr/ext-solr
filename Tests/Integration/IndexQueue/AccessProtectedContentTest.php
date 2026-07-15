@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Verifies that the unified sub-request pipeline (IndexingService + SolrIndexingMiddleware)
  * correctly handles fe_group restrictions via UserGroupDetector and FrontendGroupsModifier.
  */
-class AccessProtectedContentTest extends IntegrationTestBase
+final class AccessProtectedContentTest extends IntegrationTestBase
 {
     protected ?Queue $indexQueue = null;
 

@@ -16,14 +16,13 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Parser;
 
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
-use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Testcase for the SchemaParser class.
  */
-class SchemaParserTest extends SetUpUnitTestCase
+final class SchemaParserTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canParseLanguage(): void
@@ -46,6 +45,7 @@ class SchemaParserTest extends SetUpUnitTestCase
     {
         $parser = new SchemaParser();
         $schema = $parser->parseJson('{}');
-        self::assertInstanceOf(Schema::class, $schema, 'Can not get schema object from empty response');
+        self::assertSame('core_en', $schema->getManagedResourceId(), 'Expected default managed resource id when no schema property in response.');
+        self::assertSame('', $schema->getName(), 'Expected default empty name when no schema property in response.');
     }
 }

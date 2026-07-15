@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Event
 /**
  * Testcase for the DelayedProcessingFinishedEvent
  */
-class DelayedProcessingFinishedEventTest extends SetUpProcessingFinishedEvent
+final class DelayedProcessingFinishedEventTest extends SetUpProcessingFinishedEvent
 {
     protected const EVENT_CLASS = DelayedProcessingFinishedEvent::class;
 }

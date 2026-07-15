@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase for ReIndexTask
  */
-class ReIndexTaskTest extends SetUpUnitTestCase
+final class ReIndexTaskTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable(): void

@@ -21,7 +21,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ConfigurationManagerTest extends SetUpUnitTestCase
+final class ConfigurationManagerTest extends SetUpUnitTestCase
 {
     protected function tearDown(): void
     {

@@ -34,7 +34,7 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 /**
  * Class IndexAdministrationModuleControllerTest
  */
-class IndexAdministrationModuleControllerTest extends IntegrationTestBase
+final class IndexAdministrationModuleControllerTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {

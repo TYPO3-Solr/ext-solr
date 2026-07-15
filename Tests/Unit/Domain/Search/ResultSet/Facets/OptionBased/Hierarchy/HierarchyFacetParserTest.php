@@ -26,7 +26,7 @@ use Traversable;
 /**
  * Class HierarchyFacetParserTest
  */
-class HierarchyFacetParserTest extends SetUpFacetParser
+final class HierarchyFacetParserTest extends SetUpFacetParser
 {
     #[Test]
     public function facetIsCreated(): void

@@ -35,7 +35,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectFactory;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 
-class AbstractIndexerTest extends SetUpUnitTestCase
+final class AbstractIndexerTest extends SetUpUnitTestCase
 {
     protected ContentObjectFactory|MockObject $contentObjectFactoryMock;
     protected ContentObjectRenderer $contentObjectRenderer;

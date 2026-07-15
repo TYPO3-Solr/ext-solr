@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Integration test for the SystemCategoryRepository
  */
-class SystemCategoryRepositoryTest extends IntegrationTestBase
+final class SystemCategoryRepositoryTest extends IntegrationTestBase
 {
     #[Test]
     public function canFindOneByParentCategory(): void

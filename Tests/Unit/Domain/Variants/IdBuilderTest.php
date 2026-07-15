@@ -29,7 +29,7 @@ use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 /**
  * Testcase to check if the IdBuilder can be used to build proper variantIds.
  */
-class IdBuilderTest extends SetUpUnitTestCase
+final class IdBuilderTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canBuildVariantId(): void

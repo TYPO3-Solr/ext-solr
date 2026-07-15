@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Classification\ClassificationService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-class ClassificationServiceTest extends SetUpUnitTestCase
+final class ClassificationServiceTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canGetMatchingClassifications(): void

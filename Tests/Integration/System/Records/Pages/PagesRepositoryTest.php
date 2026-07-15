@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Integration tests for PagesRepository.
  */
-class PagesRepositoryTest extends IntegrationTestBase
+final class PagesRepositoryTest extends IntegrationTestBase
 {
     /**
      * @var PagesRepository

@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 
-class ItemTest extends SetUpUnitTestCase
+final class ItemTest extends SetUpUnitTestCase
 {
     /**
      * Returns minimal valid metadata for creating an Item

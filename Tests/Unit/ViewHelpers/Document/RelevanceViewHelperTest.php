@@ -25,7 +25,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
-class RelevanceViewHelperTest extends SetUpUnitTestCase
+final class RelevanceViewHelperTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canCalculateRelevance(): void

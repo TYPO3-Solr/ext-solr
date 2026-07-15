@@ -26,7 +26,7 @@ use Traversable;
 /**
  * Unit test for the SortingExpression
  */
-class SortingExpressionTest extends SetUpUnitTestCase
+final class SortingExpressionTest extends SetUpUnitTestCase
 {
     public static function canBuildSortExpressionDataProvider(): Traversable
     {

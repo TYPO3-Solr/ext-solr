@@ -24,7 +24,7 @@ use Traversable;
 /**
  * Testcase to check the functionallity of the UrlHelper
  */
-class UrlHelperTest extends SetUpUnitTestCase
+final class UrlHelperTest extends SetUpUnitTestCase
 {
     /**
      * Note: TYPO3 14.0 Breaking Change #108084 changed URI behavior - rootless paths

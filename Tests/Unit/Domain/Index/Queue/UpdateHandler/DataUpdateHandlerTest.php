@@ -36,7 +36,7 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
 /**
  * Testcase for the DataUpdateHandler class.
  */
-class DataUpdateHandlerTest extends SetUpUpdateHandler
+final class DataUpdateHandlerTest extends SetUpUpdateHandler
 {
     private const DUMMY_PAGE_ID = 10;
 

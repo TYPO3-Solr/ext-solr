@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Class DefaultFacetQueryBuilderTest
  */
-class DefaultFacetQueryBuilderTest extends SetUpUnitTestCase
+final class DefaultFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     /**
      * Whe nothing is set, no exclude tags should be set.

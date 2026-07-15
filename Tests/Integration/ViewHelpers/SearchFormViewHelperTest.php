@@ -34,7 +34,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 use TYPO3Fluid\Fluid\View\TemplateView;
 
-class SearchFormViewHelperTest extends IntegrationTestBase
+final class SearchFormViewHelperTest extends IntegrationTestBase
 {
     protected RenderingContextFactory $renderingContextFactory;
     protected MockObject|TypoScriptConfiguration $typoScriptConfigurationMock;
@@ -90,9 +90,7 @@ class SearchFormViewHelperTest extends IntegrationTestBase
     }
 
     #[Test]
-    #[DataProvider(
-        methodName: 'methodDataProvider',
-    )]
+    #[DataProvider('methodDataProvider')]
     public function methodArgumentWillBePassedToFormTag(string $method, string $expectedString): void
     {
         $templateSource = sprintf('
@@ -129,9 +127,7 @@ class SearchFormViewHelperTest extends IntegrationTestBase
     }
 
     #[Test]
-    #[DataProvider(
-        methodName: 'pageUidDataProvider',
-    )]
+    #[DataProvider('pageUidDataProvider')]
     public function pageUidArgumentWillBeUsedToBuildActionUri(
         string $pageUidArgument,
         int $searchTargetPageUid,

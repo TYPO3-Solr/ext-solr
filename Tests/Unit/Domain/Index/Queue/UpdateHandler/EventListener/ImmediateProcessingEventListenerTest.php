@@ -39,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @property ImmediateProcessingEventListener $listener
  */
-class ImmediateProcessingEventListenerTest extends SetUpEventListener
+final class ImmediateProcessingEventListenerTest extends SetUpEventListener
 {
     protected function setUp(): void
     {
@@ -117,7 +117,7 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
         $this->listener->__invoke($event);
         if ($eventHandled) {
             self::assertTrue($dispatchedEvent instanceof ProcessingFinishedEvent);
-            /** @var DataUpdateEventInterface|StoppableEventInterface $dataUpdateEvent */
+            /** @var DataUpdateEventInterface&StoppableEventInterface $dataUpdateEvent */
             $dataUpdateEvent = $dispatchedEvent->getDataUpdateEvent();
             self::assertEquals($dataUpdateEvent, $event);
             self::assertTrue($dataUpdateEvent->isPropagationStopped());

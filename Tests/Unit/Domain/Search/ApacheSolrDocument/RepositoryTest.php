@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Test cases for ApacheSolrDocumentRepository
  */
-class RepositoryTest extends SetUpUnitTestCase
+final class RepositoryTest extends SetUpUnitTestCase
 {
     protected Search $search;
     protected ConnectionManager $solrConnectionManager;

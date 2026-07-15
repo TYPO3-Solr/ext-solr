@@ -29,7 +29,7 @@ use Symfony\Component\DependencyInjection\Container;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class SearchTest extends SetUpUnitTestCase
+final class SearchTest extends SetUpUnitTestCase
 {
     protected SolrConnection|MockObject $solrConnectionMock;
     protected SolrReadService|MockObject $solrReadServiceMock;

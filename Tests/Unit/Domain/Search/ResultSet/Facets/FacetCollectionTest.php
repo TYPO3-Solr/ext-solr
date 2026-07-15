@@ -24,7 +24,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Class FacetCollectionTest
  */
-class FacetCollectionTest extends SetUpUnitTestCase
+final class FacetCollectionTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canAddAndRetrieveFacetByKey(): void

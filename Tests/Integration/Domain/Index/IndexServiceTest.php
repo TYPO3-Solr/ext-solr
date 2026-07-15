@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase for the record indexer
  */
-class IndexServiceTest extends IntegrationTestBase
+final class IndexServiceTest extends IntegrationTestBase
 {
     /**
      * @inheritdoc
@@ -169,12 +169,14 @@ class IndexServiceTest extends IntegrationTestBase
 
             self::assertSame(
                 $sentinelBackendUser,
+                // @phpstan-ignore nullCoalesce.offset (indexItems() can unset this key on regression, PHPStan can't see that)
                 $GLOBALS['BE_USER'] ?? null,
                 '$GLOBALS[\'BE_USER\'] was not restored after sub-request indexing — '
                 . 'breaks scheduler module list rendering in BE web context (#4628).',
             );
             self::assertSame(
                 $sentinelRequest,
+                // @phpstan-ignore nullCoalesce.offset (indexItems() can unset this key on regression, PHPStan can't see that)
                 $GLOBALS['TYPO3_REQUEST'] ?? null,
                 '$GLOBALS[\'TYPO3_REQUEST\'] was not restored after sub-request indexing.',
             );
@@ -236,6 +238,7 @@ class IndexServiceTest extends IntegrationTestBase
             );
             self::assertSame(
                 $sentinelLanguageService,
+                // @phpstan-ignore nullCoalesce.offset (indexItems() can unset this key on regression, PHPStan can't see that)
                 $GLOBALS['LANG'] ?? null,
                 '$GLOBALS[\'LANG\'] was not restored after sub-request — '
                 . 'breaks BE module label localisation (#4628 follow-up).',
@@ -287,6 +290,7 @@ class IndexServiceTest extends IntegrationTestBase
             $indexService->indexItems(1);
 
             self::assertFalse(
+                // @phpstan-ignore function.impossibleType (indexItems() can re-add this key on regression, PHPStan can't see that)
                 array_key_exists('BE_USER', $GLOBALS),
                 '$GLOBALS[\'BE_USER\'] was unset before the sub-request and must remain absent afterwards '
                 . '(not be assigned null) — otherwise CLI multi-task scheduler runs see a fake null value '

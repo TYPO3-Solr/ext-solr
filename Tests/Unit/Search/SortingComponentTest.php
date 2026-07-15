@@ -31,7 +31,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 /**
  * Testcase for SortingComponent
  */
-class SortingComponentTest extends SetUpUnitTestCase
+final class SortingComponentTest extends SetUpUnitTestCase
 {
     protected Query|MockObject $query;
     protected SearchRequest|MockObject $searchRequestMock;

@@ -29,7 +29,7 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Testcase to test the GroupedResultsParser.
  */
-class GroupedResultsParserTest extends SetUpUnitTestCase
+final class GroupedResultsParserTest extends SetUpUnitTestCase
 {
     protected GroupedResultParser $parser;
 

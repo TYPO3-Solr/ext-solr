@@ -8,7 +8,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 /**
  * Class TestGarbageCollectorPostProcessor
  */
-class TestGarbageCollectorPostProcessor implements SingletonInterface, GarbageCollectorPostProcessor
+final class TestGarbageCollectorPostProcessor implements SingletonInterface, GarbageCollectorPostProcessor
 {
     protected bool $hookWasCalled = false;
 

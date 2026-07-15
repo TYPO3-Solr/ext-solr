@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Test class to perform a search on a real solr server
  */
-class SearchTest extends IntegrationTestBase
+final class SearchTest extends IntegrationTestBase
 {
     protected QueryBuilder $queryBuilder;
 

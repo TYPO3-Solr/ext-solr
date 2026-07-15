@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Tests for checking if the uri is built for a page
  */
-class PageUriBuilderTest extends IntegrationTestBase
+final class PageUriBuilderTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
         'apache-solr-for-typo3/solr',

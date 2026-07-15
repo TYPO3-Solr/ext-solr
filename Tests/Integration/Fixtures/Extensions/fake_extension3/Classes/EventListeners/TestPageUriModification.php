@@ -19,7 +19,7 @@ namespace ApacheSolrForTypo3\SolrFakeExtension3\EventListeners;
 
 use ApacheSolrForTypo3\Solr\Event\Indexing\AfterFrontendPageUriForIndexingHasBeenGeneratedEvent;
 
-class TestPageUriModification
+final class TestPageUriModification
 {
     public function __invoke(AfterFrontendPageUriForIndexingHasBeenGeneratedEvent $event): void
     {

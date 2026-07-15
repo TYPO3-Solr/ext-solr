@@ -31,7 +31,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 
-class FrequentSearchesServiceTest extends SetUpUnitTestCase
+final class FrequentSearchesServiceTest extends SetUpUnitTestCase
 {
     protected FrequentSearchesService|MockObject $frequentSearchesService;
     protected AbstractFrontend|MockObject $cacheMock;

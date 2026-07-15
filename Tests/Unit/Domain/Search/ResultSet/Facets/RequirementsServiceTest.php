@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase to test the RequirementsService
  */
-class RequirementsServiceTest extends SetUpUnitTestCase
+final class RequirementsServiceTest extends SetUpUnitTestCase
 {
     protected function tearDown(): void
     {

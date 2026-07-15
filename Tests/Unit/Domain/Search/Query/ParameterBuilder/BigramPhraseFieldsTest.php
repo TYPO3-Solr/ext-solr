@@ -19,7 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFie
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-class BigramPhraseFieldsTest extends SetUpUnitTestCase
+final class BigramPhraseFieldsTest extends SetUpUnitTestCase
 {
     #[Test]
     public function buildFromEmptyStringCreatesEmptyArrayOnBuild(): void

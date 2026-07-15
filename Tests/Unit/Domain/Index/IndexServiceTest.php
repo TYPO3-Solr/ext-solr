@@ -31,7 +31,7 @@ use RuntimeException;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class IndexServiceTest extends SetUpUnitTestCase
+final class IndexServiceTest extends SetUpUnitTestCase
 {
     protected Site|MockObject $siteMock;
     protected Queue|MockObject $queueMock;

@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedE
 /**
  * Testcase for the RecordMovedEvent
  */
-class RecordMovedEventTest extends SetUpDataUpdateEvent
+final class RecordMovedEventTest extends SetUpDataUpdateEvent
 {
     protected const EVENT_CLASS = RecordMovedEvent::class;
     protected const EVENT_TEST_TABLE = 'tx_foo_bar';

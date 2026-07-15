@@ -360,7 +360,7 @@ readonly class SolrIndexingMiddleware implements MiddlewareInterface
 
             // free content mode language
             $site = $item->getSite();
-            if ($site instanceof Site && $language > 0 && $language !== -1) {
+            if ($site instanceof Site && $language > 0) {
                 $typo3site = $site->getTypo3SiteObject();
                 try {
                     $siteLanguage = $typo3site->getLanguageById($language);
@@ -477,7 +477,7 @@ readonly class SolrIndexingMiddleware implements MiddlewareInterface
     protected function processDocuments(array $documents, TypoScriptConfiguration $configuration): void
     {
         $processingInstructions = $configuration->getIndexFieldProcessingInstructionsConfiguration();
-        if (is_array($processingInstructions) && $processingInstructions !== []) {
+        if ($processingInstructions !== []) {
             $service = GeneralUtility::makeInstance(FieldProcessorService::class);
             $service->processDocuments($documents, $processingInstructions);
         }

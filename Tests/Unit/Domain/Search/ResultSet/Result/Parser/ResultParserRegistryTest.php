@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Unit test case for the ResultParserRegistryTest.
  */
-class ResultParserRegistryTest extends SetUpUnitTestCase
+final class ResultParserRegistryTest extends SetUpUnitTestCase
 {
     protected ResultParserRegistry $registry;
 

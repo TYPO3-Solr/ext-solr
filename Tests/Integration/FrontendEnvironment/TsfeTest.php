@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class TsfeTest extends IntegrationTestBase
+final class TsfeTest extends IntegrationTestBase
 {
     #[Test]
     public function canInitializeFrontendEnvironmentForPageWithDifferentFeGroupsSettings(): void

@@ -26,7 +26,7 @@ use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
-class GroupViewHelperTest extends SetUpUnitTestCase
+final class GroupViewHelperTest extends SetUpUnitTestCase
 {
     /**
      * @throws MockObjectException

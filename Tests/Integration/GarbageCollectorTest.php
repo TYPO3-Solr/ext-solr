@@ -41,7 +41,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * This testcase is used to check if the GarbageCollector can delete garbage from the
  * solr server as expected
  */
-class GarbageCollectorTest extends IntegrationTestBase
+final class GarbageCollectorTest extends IntegrationTestBase
 {
     protected array $testExtensionsToLoad = [
         'apache-solr-for-typo3/solr',

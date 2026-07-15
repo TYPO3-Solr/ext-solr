@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Testcase for the Path helper class.
  */
-class PathTest extends SetUpUnitTestCase
+final class PathTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canIsValidSolrPathisValidPath(): void

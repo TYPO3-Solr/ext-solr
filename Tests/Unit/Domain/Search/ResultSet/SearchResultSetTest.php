@@ -38,7 +38,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\Container;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class SearchResultSetTest extends SetUpUnitTestCase
+final class SearchResultSetTest extends SetUpUnitTestCase
 {
     protected TypoScriptConfiguration|MockObject $configurationMock;
     protected Search|MockObject $searchMock;

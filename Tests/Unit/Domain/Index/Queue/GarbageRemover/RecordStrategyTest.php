@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\RecordStrategy;
 /**
  * RecordStrategy tests
  */
-class RecordStrategyTest extends AbstractStrategyTestBase
+final class RecordStrategyTest extends AbstractStrategyTestBase
 {
     protected function setUp(): void
     {

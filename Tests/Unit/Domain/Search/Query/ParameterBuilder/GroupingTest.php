@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-class GroupingTest extends SetUpUnitTestCase
+final class GroupingTest extends SetUpUnitTestCase
 {
     #[Test]
     public function canBuildSortingFromConfiguration(): void

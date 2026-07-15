@@ -26,7 +26,7 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
  * Integration testcase to test for {@link SuggestController}
  */
 #[Group('frontend')]
-class SuggestControllerTest extends IntegrationTestBase
+final class SuggestControllerTest extends IntegrationTestBase
 {
     protected function setUp(): void
     {

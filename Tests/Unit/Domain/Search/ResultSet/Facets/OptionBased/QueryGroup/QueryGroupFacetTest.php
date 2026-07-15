@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Unit test for the QueryGroupFacet
  */
-class QueryGroupFacetTest extends SetUpUnitTestCase
+final class QueryGroupFacetTest extends SetUpUnitTestCase
 {
     protected function setUp(): void
     {
