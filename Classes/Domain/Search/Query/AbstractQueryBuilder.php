@@ -97,7 +97,7 @@ abstract class AbstractQueryBuilder
      */
     public function removeQueryType(): self
     {
-        $this->queryToBuild->addParam('qt', null);
+        $this->queryToBuild->removeParam('qt');
         return $this;
     }
 
@@ -151,15 +151,6 @@ abstract class AbstractQueryBuilder
     public function useOperator(Operator $operator): self
     {
         $this->queryToBuild->setQueryDefaultOperator($operator->getOperator());
-        return $this;
-    }
-
-    /**
-     * Remove the default query operator.
-     */
-    public function removeOperator(): self
-    {
-        $this->queryToBuild->setQueryDefaultOperator('');
         return $this;
     }
 
@@ -331,15 +322,6 @@ abstract class AbstractQueryBuilder
     public function useAlternativeQuery(string $query): self
     {
         $this->queryToBuild->getEDisMax()->setQueryAlternative($query);
-        return $this;
-    }
-
-    /**
-     * Remove the alternative query from the SolariumQuery.
-     */
-    public function removeAlternativeQuery(): self
-    {
-        $this->queryToBuild->getEDisMax()->setQueryAlternative(null);
         return $this;
     }
 

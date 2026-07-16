@@ -1081,10 +1081,6 @@ final class QueryBuilderTest extends SetUpUnitTestCase
         $this->builder->startFrom($query)->useOperator(Operator::getAnd());
         $queryParameters = $this->getAllQueryParameters($query);
         self::assertEquals(Operator::OPERATOR_AND, $queryParameters['q.op'], 'The queryParameter q.op should be AND');
-
-        $this->builder->startFrom($query)->removeOperator();
-        $queryParameters = $this->getAllQueryParameters($query);
-        self::assertEmpty($queryParameters['q.op'], 'The queryParameter q.op should be null because operator was resetted');
     }
 
     #[Test]
@@ -1100,11 +1096,6 @@ final class QueryBuilderTest extends SetUpUnitTestCase
         $this->builder->startFrom($query)->useAlternativeQuery('alt query');
         $queryParameters = $this->getAllQueryParameters($query);
         self::assertEquals('alt query', $queryParameters['q.alt'], 'Could not get passed alternative query');
-
-        // can we reset it?
-        $this->builder->startFrom($query)->removeAlternativeQuery();
-        $queryParameters = $this->getAllQueryParameters($query);
-        self::assertArrayNotHasKey('q.alt', $queryParameters, 'We expect alternative query is null after reset');
     }
 
     #[Test]
