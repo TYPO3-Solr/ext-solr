@@ -333,6 +333,7 @@ readonly class IndexingService
                 $this->logger->error(
                     'Sub-request returned error status',
                     [
+                        'pid' => $item->getItemPid(),
                         'statusCode' => $statusCode,
                         'item' => $item->getIndexQueueUid(),
                         'action' => $instructions->getAction(),
