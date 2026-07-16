@@ -111,6 +111,10 @@ class QueryBuilder extends AbstractQueryBuilder
                 ->usePhraseFieldsFromTypoScript()
                 ->useBigramPhraseFieldsFromTypoScript()
                 ->useTrigramPhraseFieldsFromTypoScript();
+
+            if ($this->typoScriptConfiguration->isHybridVectorSearchEnabled()) {
+                $this->attachHybridVectorReRanking($rawQuery);
+            }
         }
 
         return $this
@@ -141,6 +145,47 @@ class QueryBuilder extends AbstractQueryBuilder
         $this->queryToBuild->addParam(
             'q_vector',
             '{!knn_text_to_vector model=llm f=vector topK=' . $topK . '}' . $rawQuery,
+        );
+
+        return $this;
+    }
+
+    /**
+     * Attaches a KNN re-rank stage on top of the classical edismax query.
+     *
+     * The classical query produces the candidate set (recall); Solr's
+     * reRank query parser then orders the top-N candidates by combining
+     * bm25 with a weighted cosine similarity score.
+     */
+    protected function attachHybridVectorReRanking(string $rawQuery): self
+    {
+        $reRankDocs = $this->typoScriptConfiguration->getVectorReRankDocs();
+        $reRankWeight = $this->typoScriptConfiguration->getVectorReRankWeight();
+        $topK = $this->typoScriptConfiguration->getTopKClosestVectorLimit();
+        // Use the smaller of topK (KNN candidate pool) and reRankDocs so
+        // the KNN side never returns fewer docs than the re-ranker needs.
+        $knnTopK = max(1, min($topK, $reRankDocs));
+
+        $weightForSolr = rtrim(rtrim(sprintf('%F', $reRankWeight), '0'), '.');
+        if ($weightForSolr === '' || $weightForSolr === '-') {
+            $weightForSolr = '0';
+        }
+
+        $this->queryToBuild->addParam(
+            'rq',
+            sprintf(
+                '{!rerank reRankQuery=$rqq reRankDocs=%d reRankWeight=%s}',
+                $reRankDocs,
+                $weightForSolr,
+            ),
+        );
+        $this->queryToBuild->addParam(
+            'rqq',
+            sprintf(
+                '{!knn_text_to_vector model=llm f=vector topK=%d}%s',
+                $knnTopK,
+                $rawQuery,
+            ),
         );
 
         return $this;

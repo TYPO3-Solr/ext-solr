@@ -1078,8 +1078,9 @@ class TypoScriptConfiguration
     /**
      * Returns the configured query type
      *
-     * 0 = default
-     * 1 = vector (requires additional configuration)
+     * 0 = default (classical edismax)
+     * 1 = pure vector (requires additional configuration and an LLM)
+     * 2 = hybrid (classical edismax + KNN re-rank on top-N)
      */
     public function getSearchQueryType(): int
     {
@@ -1103,6 +1104,38 @@ class TypoScriptConfiguration
     public function isPureVectorSearchEnabled(): bool
     {
         return $this->getSearchQueryType() === 1;
+    }
+
+    /**
+     * Indicates if hybrid vector + classical re-ranking is enabled
+     * (query.type = 2). The classical edismax pipeline still produces
+     * the candidate set; KNN is attached via Solr's reRank query parser
+     * to refine the top-N ordering.
+     */
+    public function isHybridVectorSearchEnabled(): bool
+    {
+        return $this->getSearchQueryType() === 2;
+    }
+
+    /**
+     * Number of candidate documents the KNN re-ranker considers.
+     *
+     * plugin.tx_solr.search.vectorSearch.reRank.docs
+     */
+    public function getVectorReRankDocs(): int
+    {
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.vectorSearch.reRank.docs', 200);
+    }
+
+    /**
+     * Multiplier applied to the cosine similarity in the final
+     * reRanked score: bm25 + (weight * cosine).
+     *
+     * plugin.tx_solr.search.vectorSearch.reRank.weight
+     */
+    public function getVectorReRankWeight(): float
+    {
+        return (float)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.vectorSearch.reRank.weight', 2.0);
     }
 
     public function getMinimumVectorSimilarity(): float

@@ -922,4 +922,61 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
         ]);
         self::assertEquals(9999, $configuration->getTopKClosestVectorLimit());
     }
+
+    #[Test]
+    public function isHybridVectorSearchEnabledReturnsTrueForQueryTypeTwo(): void
+    {
+        $config = new TypoScriptConfiguration([
+            'plugin.' => ['tx_solr.' => ['search.' => ['query.' => ['type' => 2]]]],
+        ]);
+        self::assertTrue($config->isHybridVectorSearchEnabled());
+        self::assertFalse($config->isPureVectorSearchEnabled());
+        self::assertTrue($config->isVectorSearchEnabled());
+    }
+
+    #[Test]
+    public function isHybridVectorSearchEnabledReturnsFalseForOtherQueryTypes(): void
+    {
+        foreach ([0, 1, 3] as $type) {
+            $config = new TypoScriptConfiguration([
+                'plugin.' => ['tx_solr.' => ['search.' => ['query.' => ['type' => $type]]]],
+            ]);
+            self::assertFalse(
+                $config->isHybridVectorSearchEnabled(),
+                'Expected hybrid=false for query.type=' . $type,
+            );
+        }
+    }
+
+    #[Test]
+    public function getVectorReRankDocsReturnsConfiguredValue(): void
+    {
+        $config = new TypoScriptConfiguration([
+            'plugin.' => ['tx_solr.' => ['search.' => ['vectorSearch.' => ['reRank.' => ['docs' => 500]]]]],
+        ]);
+        self::assertSame(500, $config->getVectorReRankDocs());
+    }
+
+    #[Test]
+    public function getVectorReRankDocsReturnsDefaultWhenUnset(): void
+    {
+        $config = new TypoScriptConfiguration([]);
+        self::assertSame(200, $config->getVectorReRankDocs());
+    }
+
+    #[Test]
+    public function getVectorReRankWeightReturnsConfiguredValue(): void
+    {
+        $config = new TypoScriptConfiguration([
+            'plugin.' => ['tx_solr.' => ['search.' => ['vectorSearch.' => ['reRank.' => ['weight' => '3.5']]]]],
+        ]);
+        self::assertSame(3.5, $config->getVectorReRankWeight());
+    }
+
+    #[Test]
+    public function getVectorReRankWeightReturnsDefaultWhenUnset(): void
+    {
+        $config = new TypoScriptConfiguration([]);
+        self::assertSame(2.0, $config->getVectorReRankWeight());
+    }
 }

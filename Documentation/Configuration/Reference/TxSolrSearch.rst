@@ -101,13 +101,14 @@ query.type
 :Type: Boolean
 :TS Path: plugin.tx_solr.search.query.type
 :Default: 0
-:Options: 0,1
+:Options: 0,1,2
 :Since: 12.1.0, 13.1.0
 
 Allows to configure the query type that should be configured
 
 *   0: default score based Solr search (= well-known behaviour since EXT:solr started)
 *   1: pure vector based search (requires additional configuration and an LLM)
+*   2: hybrid search — classical edismax produces the candidate set, KNN re-ranks the top-N by ``bm25 + weight * cosine`` (requires the same vector configuration as type 1)
 
 ..  note::
     A full reindex is required if vector search is enabled, as vectors are only created if vector search is active
@@ -522,7 +523,7 @@ By default only documents with at least 0.75 of vector similarity score are retu
 The calculated vector similarity score is returned in field `$q_vector`
 
 ..  note::
-    This setting is only relevant if pure vector queries are used (query.type = 1).
+    This setting is only relevant if pure vector queries are used (query.type = 1). It has no effect on the hybrid path (query.type = 2), which uses Solr's reRank scoring instead of a similarity cutoff.
 
 
 query.vectorSearch.topK
@@ -536,7 +537,40 @@ query.vectorSearch.topK
 Number of documents to return in vector search.
 
 ..  note::
-    This setting is only relevant if pure vector queries are used (query.type = 1).
+    This setting is only relevant if pure vector queries are used (query.type = 1). For hybrid search (query.type = 2) the effective KNN topK is capped at ``vectorSearch.reRank.docs``.
+
+
+query.vectorSearch.reRank.docs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.vectorSearch.reRank.docs
+:Default: 200
+:Since: 14.0.0
+
+Number of top candidate documents the hybrid re-ranker considers. The
+classical edismax query produces up to this many results before the KNN
+re-ranking step combines bm25 with cosine similarity.
+
+..  note::
+    This setting is only relevant for hybrid search (query.type = 2).
+
+
+query.vectorSearch.reRank.weight
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Float
+:TS Path: plugin.tx_solr.search.vectorSearch.reRank.weight
+:Default: 2.0
+:Since: 14.0.0
+
+Multiplier applied to the cosine similarity in the re-ranked score:
+``final_score = bm25_score + weight * cosine``. Higher values give the
+embedding more influence; values close to zero collapse to plain
+classical relevance.
+
+..  note::
+    This setting is only relevant for hybrid search (query.type = 2).
 
 
 results
