@@ -128,11 +128,20 @@ readonly class IndexingService
         $pageUserGroup = (int)($this->buildPageParameters($item)['pageUserGroup'] ?? 0);
         foreach ($solrConnections as $languageUid => $solrConnection) {
             $accessGroups = $this->findUserGroupsForPage($item, $languageUid);
-            if ($pageUserGroup > 0) {
-                // A page with fe_group restriction has no publicly-accessible content variants:
-                // remove group 0 (which may originate from global template CEs, not page content).
-                // Ensure the page's own group is in accessGroups so restricted-but-eligible users
-                // can still find the page in search results.
+            // Only drop the public (c:0) content variant when the page actually contains
+            // access-restricted content. When the content is public, the page access element
+            // alone (e.g. "2:1,2", OR semantics over all page groups) already restricts the
+            // document; forcing the page's own group into the content access element instead
+            // would, for a multi-value fe_group, keep only the first group (via the (int) cast
+            // in buildPageParameters()) and exclude every other eligible group from the search
+            // results, because the content access element is matched with AND semantics.
+            $contentIsRestricted = array_filter($accessGroups, static fn(int $g): bool => $g > 0) !== [];
+            if ($pageUserGroup > 0 && $contentIsRestricted) {
+                // A page with fe_group restriction and access-restricted content has no
+                // publicly-accessible content variant: remove group 0 (which may originate from
+                // global template CEs, not page content). Ensure the page's own group is in
+                // accessGroups so restricted-but-eligible users can still find the page in search
+                // results, and no public (c:0) variant leaks the restricted content.
                 $accessGroups = array_values(array_filter($accessGroups, static fn(int $g): bool => $g !== 0));
                 if (!in_array($pageUserGroup, $accessGroups, true)) {
                     $accessGroups[] = $pageUserGroup;
