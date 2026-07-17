@@ -438,7 +438,18 @@ Since EXT:solr 9 and Apache Solr 7 dynamic fields based on trie fields are marke
 All Changes
 -----------
 
+*   [BUGFIX] Fix leaked language Context aspect between indexing sub-requests by @BastiLu in `#4703 <https://github.com/TYPO3-Solr/ext-solr/issues/4703>`_
 *   [TASK] Finalize site hash by site-identifier: add ``domain``/``typo3Context`` schema fields, drop ``_stringS`` suffixes in Builder by @dkd-kaehm in `#4411 <https://github.com/TYPO3-Solr/ext-solr/issues/4411>`_
+*   !!![TASK] Update solarium/solarium requirement from 6.4.1 to 7.0.0 — removes ``AbstractQueryBuilder::removeOperator()`` and ``removeAlternativeQuery()`` without alternatives by @dependabot in `#4713 <https://github.com/TYPO3-Solr/ext-solr/pull/4713>`_
+*   [TASK] Prevent unnecessary complete loading of record in SettingsPreviewOnPluginsEventListener by @un3us in `#4691 <https://github.com/TYPO3-Solr/ext-solr/pull/4691>`_
+*   [BUGFIX] Fix undefined array key exception in flexParentDatabaseRow by @BastiLu in `#4698 <https://github.com/TYPO3-Solr/ext-solr/pull/4698>`_
+*   [BUGFIX] Don't leak page title state between indexing sub-requests by @amirarends in `#4700 <https://github.com/TYPO3-Solr/ext-solr/issues/4700>`_
+*   [FEATURE] Log the PID where the request failed by @guelzow in `#4711 <https://github.com/TYPO3-Solr/ext-solr/issues/4711>`_
+*   [BUGFIX] Spellchecking: keep correct terms when offering corrections by @dkd-kaehm in `#4659 <https://github.com/TYPO3-Solr/ext-solr/issues/4659>`_
+*   [TASK] Refactor scheduler tasks to TYPO3 14 API and allow migration by @dkd-kaehm in `#4525 <https://github.com/TYPO3-Solr/ext-solr/issues/4525>`_
+*   [TASK] Update to PHPStan 2 by @dkd-kaehm in `#4710 <https://github.com/TYPO3-Solr/ext-solr/pull/4710>`_
+*   [DOCS] Update Indexing.rst: clearing documents only for current site by @pi-phi in `#4672 <https://github.com/TYPO3-Solr/ext-solr/pull/4672>`_
+*   [BUGFIX] Fix Scheduler::__construct() call with missing 4th arg in integration tests by @dkd-kaehm in `#4678 <https://github.com/TYPO3-Solr/ext-solr/pull/4678>`_
 *   [TASK] Remove guzzlehttp/psr7 <2.10.0 pin (upstream fix in guzzlehttp/guzzle 7.10.2) by @dkd-kaehm in `#4660 <https://github.com/TYPO3-Solr/ext-solr/issues/4660>`_
 *   [BUGFIX] Pin guzzlehttp/psr7 to <2.10.0 by @dkd-kaehm in `#4661 <https://github.com/TYPO3-Solr/ext-solr/pull/4661>`_
 *   [BUGFIX] Do not resolve TypoScriptConfiguration for deleted page in WS by @amirarends in `#4603 <https://github.com/TYPO3-Solr/ext-solr/pull/4603>`_
