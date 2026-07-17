@@ -34,6 +34,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -62,6 +63,7 @@ readonly class IndexingService
         private SolrLogManager $logger,
         private IndexingResultCollector $resultCollector,
         private SiteFinder $siteFinder,
+        private Context $context,
     ) {}
 
     /**
@@ -312,6 +314,18 @@ readonly class IndexingService
             $pageTitleProviderManager = GeneralUtility::makeInstance(PageTitleProviderManager::class);
             $previousPageTitleCache = $pageTitleProviderManager->getPageTitleCache();
             $pageTitleProviderManager->setPageTitleCache([]);
+            // The 'language' Context aspect is set by PageInformationFactory::settingLanguage()
+            // only *after* the page record itself has already been fetched (and possibly
+            // language-overlaid) in PageInformationFactory::setPageAndRootline(). In a normal
+            // request, the aspect is still unset at that point, so no (wrong) overlay happens.
+            // Here, since multiple sub-requests run in the same PHP process, the aspect set by
+            // the *previous* sub-request is still on the singleton Context when the next one's
+            // setPageAndRootline() runs, causing that page to be fetched with a leaked language
+            // overlay (see WhiteLabelPageTitleProvider::getTitle() for a documented symptom of
+            // this: translated titles ending up on default-language page documents in Solr).
+            // Unsetting the aspect makes each sub-request start exactly like a fresh request.
+            $previousLanguageAspect = $this->context->getAspect('language');
+            $this->context->unsetAspect('language');
             chdir(Environment::getPublicPath());
             try {
                 $response = $this->frontendApplication->handle($request);
@@ -335,6 +349,7 @@ readonly class IndexingService
                 $assetCollector->updateState($previousAssetCollectorState);
                 $pageRenderer->updateState($previousPageRendererState);
                 $pageTitleProviderManager->setPageTitleCache($previousPageTitleCache);
+                $this->context->setAspect('language', $previousLanguageAspect);
             }
 
             $statusCode = $response->getStatusCode();

@@ -8,6 +8,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use Closure;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 
 /**
@@ -44,6 +45,7 @@ readonly class IndexingServiceForTesting extends IndexingService
                 $source->logger,
                 $source->resultCollector,
                 $source->siteFinder,
+                $source->context,
             );
         }, null, IndexingService::class)();
     }
