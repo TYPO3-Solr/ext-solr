@@ -129,15 +129,34 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
     }
 
     /**
-     * Retrieves the page's title by checking the indexedDocTitle, altPageTitle,
-     * and regular page title - in that order.
+     * Retrieves the page's title from the PageTitleProviderManager, seeded
+     * with the current page's persisted title state.
+     *
+     * The PageTitleProviderManager is a stateful singleton. During in-process
+     * indexing many pages are rendered within the same PHP process, so its
+     * internal per-provider cache still holds the titles of the previously
+     * indexed page. Without re-seeding, getTitle() would fall back to that
+     * stale state whenever a provider yields no title for the current page —
+     * e.g. when the page was served from the page cache (so
+     * generatePageTitle() never ran) and has no own seo_title — indexing
+     * another page's title into this page's document.
+     *
+     * Seeding from the "frontend.page.parts" request attribute mirrors what
+     * core's RequestHandler::generatePageTitle() does before consulting the
+     * manager: for freshly rendered pages it contains the titles generated
+     * during this sub-request, for cached pages the state restored from the
+     * page's own cache row.
      *
      * @return string the page's title
      */
     public function getPageTitle(): string
     {
+        $request = $GLOBALS['TYPO3_REQUEST'];
         $providerManager = GeneralUtility::makeInstance(PageTitleProviderManager::class);
-        return $providerManager->getTitle($GLOBALS['TYPO3_REQUEST']);
+        $providerManager->setPageTitleCache(
+            $request->getAttribute('frontend.page.parts')?->getPageTitle() ?? [],
+        );
+        return $providerManager->getTitle($request);
     }
 
     /**
