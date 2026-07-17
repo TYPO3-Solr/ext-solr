@@ -67,9 +67,9 @@ class Builder
 
         $document->setField('id', $documentId);
         $document->setField('site', $site->getSiteIdentifier());
-        $document->setField('typo3Context_stringS', (string)Environment::getContext());
+        $document->setField('typo3Context', (string)Environment::getContext());
         $document->setField('siteHash', $site->getSiteHash());
-        $document->setField('domain_stringS', $site->getDomain());
+        $document->setField('domain', $site->getDomain());
         $document->setField('appKey', 'EXT:solr');
         $document->setField('type', 'pages');
 
@@ -129,9 +129,9 @@ class Builder
         $document->setField('appKey', 'EXT:solr');
 
         $document->setField('site', $site->getSiteIdentifier());
-        $document->setField('typo3Context_stringS', (string)Environment::getContext());
+        $document->setField('typo3Context', (string)Environment::getContext());
         $document->setField('siteHash', $site->getSiteHash());
-        $document->setField('domain_stringS', $site->getDomain());
+        $document->setField('domain', $site->getDomain());
 
         // uid, pid
         $document->setField('uid', $itemRecord['uid']);
