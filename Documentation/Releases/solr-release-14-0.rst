@@ -214,6 +214,15 @@ removed, as it has been superseded by
 If you upgrade from < 13.1, it is recommended to re-index all solr cores
 completely.
 
+Finalization: the ``domain_stringS`` and ``typo3Context_stringS`` dynamic fields
+previously written by :php:`Builder` have been replaced by dedicated schema fields
+``domain`` and ``typo3Context``. The ``domain`` field allows building inter-site
+URLs without bootstrapping TYPO3 sites within search contexts, and ``typo3Context``
+distinguishes documents by the environment they were indexed from. Re-index to
+populate the new fields.
+
+See `#4411 <https://github.com/TYPO3-Solr/ext-solr/issues/4411>`_.
+
 
 !!! QueueInitializationServiceAwareInterface and related Queue methods removed
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -429,6 +438,7 @@ Since EXT:solr 9 and Apache Solr 7 dynamic fields based on trie fields are marke
 All Changes
 -----------
 
+*   [TASK] Finalize site hash by site-identifier: add ``domain``/``typo3Context`` schema fields, drop ``_stringS`` suffixes in Builder by @dkd-kaehm in `#4411 <https://github.com/TYPO3-Solr/ext-solr/issues/4411>`_
 *   [TASK] Remove guzzlehttp/psr7 <2.10.0 pin (upstream fix in guzzlehttp/guzzle 7.10.2) by @dkd-kaehm in `#4660 <https://github.com/TYPO3-Solr/ext-solr/issues/4660>`_
 *   [BUGFIX] Pin guzzlehttp/psr7 to <2.10.0 by @dkd-kaehm in `#4661 <https://github.com/TYPO3-Solr/ext-solr/pull/4661>`_
 *   [BUGFIX] Do not resolve TypoScriptConfiguration for deleted page in WS by @amirarends in `#4603 <https://github.com/TYPO3-Solr/ext-solr/pull/4603>`_

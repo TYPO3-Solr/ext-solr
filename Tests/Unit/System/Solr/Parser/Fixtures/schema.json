@@ -3,7 +3,7 @@
     "status":0,
     "QTime":0},
   "schema":{
-    "name":"tx_solr-14-0-0--20260123",
+    "name":"tx_solr-14-0-0--20260717",
     "version":1.6,
     "uniqueKey":"id",
     "fieldTypes":[{
