@@ -5,7 +5,9 @@ services:
 
   ApacheSolrForTypo3\Solr\:
     resource: '../Classes/*'
-    exclude: '../Classes/Eid/*'
+    exclude:
+      - '../Classes/Eid/*'
+      - '../Classes/IndexQueue/PageIndexerResponse.php'
 
   backend_controller:
     namespace: ApacheSolrForTypo3\Solr\Controller\Backend\Search\
@@ -38,6 +40,12 @@ services:
     public: true
     autowire: true
     shared: false
+
+  middlewares:
+    namespace: ApacheSolrForTypo3\Solr\Middleware\
+    resource: '../Classes/Middleware/*'
+    autowire: true
+    autoconfigure: true
 
   viewhelper:
     namespace: ApacheSolrForTypo3\Solr\ViewHelpers\
