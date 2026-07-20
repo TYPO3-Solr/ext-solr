@@ -46,6 +46,7 @@ use TYPO3\CMS\Core\PageTitle\PageTitleProviderManager;
 use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Cache\CacheInstruction;
 use TYPO3\CMS\Frontend\Http\Application as FrontendApplication;
 
 /**
@@ -271,6 +272,13 @@ readonly class IndexingService
 
             $request = $this->buildServerRequest($item, $language);
             $request = $request->withAttribute('solr.indexingInstructions', $instructions);
+
+            // Disable the page cache BEFORE the frontend middleware chain runs.
+            // PrepareTypoScriptFrontendRendering reads this attribute to decide
+            // whether the page may be served from the page cache.
+            $cacheInstruction = new CacheInstruction();
+            $cacheInstruction->disableCache('Apache Solr for TYPO3 page indexing requires full TypoScript');
+            $request = $request->withAttribute('frontend.cache.instruction', $cacheInstruction);
 
             // Snapshot global/singleton state that the frontend sub-request
             // would otherwise clobber, so the BE web context (e.g. scheduler
