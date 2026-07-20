@@ -328,6 +328,10 @@ class Relation extends AbstractContentObject
             $relatedRecord = $this->getFrontendOverlayService($parentContentObject)->getOverlay($foreignTableName, $relatedRecord);
         }
 
+        if ($relatedRecord === null) {
+            return [];
+        }
+
         $contentObject = clone $parentContentObject;
         $contentObject->start($relatedRecord, $foreignTableName);
         $values = [$contentObject->stdWrapValue('foreignLabel', $this->configuration, $relatedRecord[$foreignTableLabelField] ?? '')];
