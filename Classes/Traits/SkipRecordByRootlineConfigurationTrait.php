@@ -36,7 +36,7 @@ trait SkipRecordByRootlineConfigurationTrait
             return true;
         }
         foreach ($rootline as $page) {
-            if (isset($page['no_search_sub_entries']) && $page['no_search_sub_entries']) {
+            if (isset($page['no_search_sub_entries']) && $page['no_search_sub_entries'] && $pid !== $page['uid']) {
                 return true;
             }
         }
