@@ -175,6 +175,47 @@ final class AccessProtectedContentTest extends IntegrationTestBase
             'expectedNumFoundLoggedInUser' => 1,
         ];
 
+        // A page restricted to several groups ("1,2") whose content is public EXCEPT for one
+        // element restricted to a subset (group 2) must be findable by every page group through
+        // a public (c:0) variant, while the restricted element stays on its own c:2 variant.
+        // The c:0 variant must not leak the restricted element. Two documents are produced with
+        // distinct ids (the content access group is part of the id), so this does not reintroduce
+        // the leak #4641 guarded against.
+        yield 'mixed page: page group without own restricted content finds public variant only' => [
+            'fixture' => 'can_index_multi_group_access_protected_page_with_protected_content',
+            'expectedNumFound' => 2,
+            'expectedAccessFieldValues' => [
+                '2:1,2/c:0',
+                '2:1,2/c:2',
+            ],
+            'expectedContents' => [
+                'public content of protected page',
+                'public content of protected pageprotected content of protected page',
+            ],
+            'expectedNumFoundAnonymousUser' => 0,
+            // group 1 has no own restricted content -> matches only the public (c:0) variant,
+            // not the group-2 content (c:2)
+            'userGroupToCheckAccessFilter' => '0,1',
+            'expectedNumFoundLoggedInUser' => 1,
+        ];
+
+        yield 'mixed page: restricted group finds public and restricted variant' => [
+            'fixture' => 'can_index_multi_group_access_protected_page_with_protected_content',
+            'expectedNumFound' => 2,
+            'expectedAccessFieldValues' => [
+                '2:1,2/c:0',
+                '2:1,2/c:2',
+            ],
+            'expectedContents' => [
+                'public content of protected page',
+                'public content of protected pageprotected content of protected page',
+            ],
+            'expectedNumFoundAnonymousUser' => 0,
+            // group 2 additionally matches its c:2 variant -> finds both documents
+            'userGroupToCheckAccessFilter' => '0,2',
+            'expectedNumFoundLoggedInUser' => 2,
+        ];
+
         yield 'page for any login(-2)' => [
             'fixture' => 'can_index_access_protected_page_show_at_any_login',
             'expectedNumFound' => 1,
@@ -193,7 +234,10 @@ final class AccessProtectedContentTest extends IntegrationTestBase
             'fixture' => 'can_index_access_protected_page_with_protected_contents',
             'expectedNumFound' => 2,
             'expectedAccessFieldValues' => [
-                '2:1/c:1',
+                // public content keeps the c:0 variant (consistent with the plain "protected
+                // page" and "extend to subpages" cases); the page access element ("2:1") alone
+                // gates it. The group-2 element gets its own c:2 variant.
+                '2:1/c:0',
                 '2:1/c:2',
             ],
             'expectedContents' => [
@@ -209,7 +253,7 @@ final class AccessProtectedContentTest extends IntegrationTestBase
             'fixture' => 'can_index_access_protected_page_with_protected_contents',
             'expectedNumFound' => 2,
             'expectedAccessFieldValues' => [
-                '2:1/c:1',
+                '2:1/c:0',
                 '2:1/c:2',
             ],
             'expectedContents' => [
