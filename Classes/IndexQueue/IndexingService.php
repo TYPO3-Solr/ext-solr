@@ -125,22 +125,55 @@ readonly class IndexingService
         }
 
         $success = true;
-        $pageUserGroup = (int)($this->buildPageParameters($item)['pageUserGroup'] ?? 0);
+        $pageUserGroups = $this->buildPageParameters($item)['pageUserGroups'] ?? [];
+        $pageIsRestricted = $pageUserGroups !== [];
         foreach ($solrConnections as $languageUid => $solrConnection) {
             $accessGroups = $this->findUserGroupsForPage($item, $languageUid);
-            if ($pageUserGroup > 0) {
-                // A page with fe_group restriction has no publicly-accessible content variants:
-                // remove group 0 (which may originate from global template CEs, not page content).
-                // Ensure the page's own group is in accessGroups so restricted-but-eligible users
-                // can still find the page in search results.
-                $accessGroups = array_values(array_filter($accessGroups, static fn(int $g): bool => $g !== 0));
-                if (!in_array($pageUserGroup, $accessGroups, true)) {
-                    $accessGroups[] = $pageUserGroup;
+            $contentRestrictedGroups = array_values(array_filter(
+                $accessGroups,
+                static fn(int $group): bool => $group > 0,
+            ));
+            $contentIsRestricted = $contentRestrictedGroups !== [];
+
+            // Content-restricted groups whose content must be kept out of the public
+            // (c:0) variant of a mixed page. Empty unless we build such a variant below.
+            $renderRestrictedGroups = [];
+
+            if ($pageIsRestricted && $contentIsRestricted) {
+                // Mixed page: restricted to several groups on page level, content public
+                // except for elements restricted to a subset of those groups. Index the
+                // restricted content variant(s) and - when there are page groups without
+                // own restricted content - an additional public (c:0) variant, so those
+                // groups still find the page's public content while the restricted content
+                // stays on its c:<group> variant.
+                //
+                // This does not reintroduce the leak #4641 guarded against: each
+                // content-access group produces its own document id, so there is no
+                // collision, and the c:0 variant is rendered without the restricted
+                // content (see FrontendGroupsModifier, which trims the faked render groups
+                // for this variant). When every page group also carries restricted content
+                // ($publicRenderGroups === []) no public variant is emitted, matching the
+                // previous behaviour.
+                $publicRenderGroups = array_diff($pageUserGroups, $contentRestrictedGroups);
+                $accessGroups = $contentRestrictedGroups;
+                if ($publicRenderGroups !== []) {
+                    array_unshift($accessGroups, 0);
                 }
+                $renderRestrictedGroups = $contentRestrictedGroups;
             }
+            // Public content on a restricted page keeps its c:0 variant (see #4706);
+            // unrestricted pages are unchanged.
+
             foreach ($accessGroups as $userGroup) {
+                $userGroup = (int)$userGroup;
                 $accessRootline = $this->buildAccessRootline($item, $languageUid, $userGroup);
-                if (!$this->executePageIndexingSubRequest($item, $languageUid, $userGroup, $accessRootline)) {
+                if (!$this->executePageIndexingSubRequest(
+                    $item,
+                    $languageUid,
+                    $userGroup,
+                    $accessRootline,
+                    $renderRestrictedGroups,
+                )) {
                     $success = false;
                 }
             }
@@ -215,14 +248,21 @@ readonly class IndexingService
         int $language,
         int $userGroup,
         string $accessRootline,
+        array $contentRestrictedGroups = [],
     ): bool {
+        $parameters = $this->buildPageParameters($item);
+        if ($contentRestrictedGroups !== []) {
+            // Read by FrontendGroupsModifier to trim the faked render groups for this
+            // variant, so a public (c:0) variant renders no access-restricted content.
+            $parameters['contentRestrictedGroups'] = $contentRestrictedGroups;
+        }
         $instructions = new IndexingInstructions(
             items: [$item],
             action: IndexingInstructions::ACTION_INDEX_PAGE,
             language: $language,
             userGroup: $userGroup,
             accessRootline: $accessRootline,
-            parameters: $this->buildPageParameters($item),
+            parameters: $parameters,
         );
 
         $response = $this->executeSubRequest($item, $language, $instructions);
@@ -470,6 +510,14 @@ readonly class IndexingService
             $pageRecord = $item->getRecord();
             if (!empty($pageRecord[$feGroupColumn])) {
                 $params['pageUserGroup'] = (int)$pageRecord[$feGroupColumn];
+                // Full multi-value fe_group list. The single (int) pageUserGroup above keeps
+                // only the first group; indexPageItem() needs the complete list to decide
+                // which page groups have no own restricted content and therefore require a
+                // public (c:0) content variant.
+                $params['pageUserGroups'] = array_values(array_filter(
+                    GeneralUtility::intExplode(',', (string)$pageRecord[$feGroupColumn], true),
+                    static fn(int $group): bool => $group > 0,
+                ));
             }
         }
 
