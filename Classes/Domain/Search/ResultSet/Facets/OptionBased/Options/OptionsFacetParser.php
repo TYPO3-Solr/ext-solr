@@ -73,6 +73,9 @@ class OptionsFacetParser extends AbstractFacetParser
 
         $optionsToCreate = $this->getMergedFacetValueFromSearchRequestAndSolrResponse($optionsFromSolrResponse, $optionsFromRequest);
         foreach ($optionsToCreate as $optionsValue => $count) {
+            if (!$this->getIsIncludedFacetValue($optionsValue, $facetConfiguration)) {
+                continue;
+            }
             if ($this->getIsExcludedFacetValue($optionsValue, $facetConfiguration)) {
                 continue;
             }

@@ -80,6 +80,18 @@
         {
           "val": "event",
           "count": 1
+        },
+        {
+          "val": "news",
+          "count": 5
+        },
+        {
+          "val": "projects",
+          "count": 3
+        },
+        {
+          "val": "members",
+          "count": 2
         }
       ]
     },
