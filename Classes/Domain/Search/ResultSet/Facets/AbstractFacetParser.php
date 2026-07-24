@@ -156,4 +156,18 @@ abstract class AbstractFacetParser implements FacetParserInterface
         $excludedValue = GeneralUtility::trimExplode(',', $facetConfiguration['excludeValues']);
         return in_array((string)$value, $excludedValue);
     }
+
+    /**
+     * Checks whether the facet value is included (whitelist).
+     * If includeValues is not configured, all values are considered included.
+     */
+    protected function getIsIncludedFacetValue(string|int $value, array $facetConfiguration): bool
+    {
+        if (!isset($facetConfiguration['includeValues'])) {
+            return true;
+        }
+
+        $includedValues = GeneralUtility::trimExplode(',', $facetConfiguration['includeValues']);
+        return in_array((string)$value, $includedValues);
+    }
 }

@@ -73,6 +73,9 @@ class QueryGroupFacetParser extends AbstractFacetParser
                     continue;
                 }
 
+                if (!$this->getIsIncludedFacetValue($query, $facetConfiguration)) {
+                    continue;
+                }
                 if ($this->getIsExcludedFacetValue($query, $facetConfiguration)) {
                     continue;
                 }

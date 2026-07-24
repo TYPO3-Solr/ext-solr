@@ -67,6 +67,9 @@ class HierarchyFacetParser extends AbstractFacetParser
         }
 
         foreach ($nodesToCreate as $value => $count) {
+            if (!$this->getIsIncludedFacetValue($value, $facetConfiguration)) {
+                continue;
+            }
             if ($this->getIsExcludedFacetValue($value, $facetConfiguration)) {
                 continue;
             }
