@@ -1207,6 +1207,19 @@ Defines a comma separated list of options that are excluded (The value needs to 
 
 Important: This setting only makes sense for option based facets (option, query, hierarchy)
 
+faceting.facets.[facetName].allowedValues
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].allowedValues
+:Since: 13.0
+:Required: no
+
+Defines a comma separated list of options that should be the only ones included in the facet.
+All other options will be hidden.
+
+Important: This setting only makes sense for option based facets (option, query, hierarchy)
+
 
 faceting.facets.[facetName].facetLimit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
