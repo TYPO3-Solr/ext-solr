@@ -266,7 +266,7 @@ final class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
                 'type.' => [
                     'label' => 'My Type',
                     'field' => 'type_stringS',
-                    'excludeValues' => 'somethingelse, page, whatever',
+                    'excludeValues' => 'somethingelse, page, whatever, news, projects, members',
                 ],
             ],
         ];
@@ -280,6 +280,36 @@ final class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
         self::assertCount(1, $optionFacet->getOptions());
         self::assertSame('event', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Skipping configured value not working as expected');
+    }
+
+    #[Test]
+    public function canFilterOptionsWithAllowedValues(): void
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
+
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+
+        $facetConfiguration = [
+            'showEmptyFacets' => 1,
+            'facets.' => [
+                'type.' => [
+                    'label' => 'My Type',
+                    'field' => 'type_stringS',
+                    'allowedValues' => 'page, event',
+                ],
+            ],
+        ];
+
+        $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
+        $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
+        $processor->process($searchResultSet);
+
+        self::assertCount(1, $searchResultSet->getFacets());
+
+        $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
+        self::assertCount(2, $optionFacet->getOptions());
+        self::assertSame('page', $optionFacet->getOptions()->getByPosition(0)->getValue());
+        self::assertSame('event', $optionFacet->getOptions()->getByPosition(1)->getValue());
     }
 
     #[Test]
@@ -400,6 +430,15 @@ final class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
 
         $option2 = $optionFacet->getOptions()->getByPosition(1);
         self::assertSame('event', $option2->getValue());
+
+        $option3 = $optionFacet->getOptions()->getByPosition(2);
+        self::assertSame('news', $option3->getValue());
+
+        $option4 = $optionFacet->getOptions()->getByPosition(3);
+        self::assertSame('projects', $option4->getValue());
+
+        $option5 = $optionFacet->getOptions()->getByPosition(4);
+        self::assertSame('members', $option5->getValue());
     }
 
     #[Test]
@@ -428,10 +467,13 @@ final class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
 
         $option1 = $optionFacet->getOptions()->getByPosition(0);
-        self::assertSame('event', $option1->getValue());
+        self::assertSame('members', $option1->getValue());
 
         $option2 = $optionFacet->getOptions()->getByPosition(1);
-        self::assertSame('page', $option2->getValue());
+        self::assertSame('projects', $option2->getValue());
+
+        $option3 = $optionFacet->getOptions()->getByPosition(2);
+        self::assertSame('news', $option3->getValue());
     }
 
     #[Test]
@@ -501,7 +543,7 @@ final class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         self::assertCount(3, $searchResultSet->getFacets());
 
         $facets = $searchResultSet->getFacets();
-        self::assertCount(2, $facets->getByPosition(0)->getOptions());
+        self::assertCount(5, $facets->getByPosition(0)->getOptions());
     }
 
     #[Test]
