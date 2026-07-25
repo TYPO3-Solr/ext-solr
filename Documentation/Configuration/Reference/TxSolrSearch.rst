@@ -203,6 +203,11 @@ The boost take influence on what score a document gets when searching and thus h
 
 By default if a search term is found in the content field the documents gets scored / ranked higher as if a term was found in the title or keywords field. Although the default should provide a good setting, you can play around with the boost values to find the best ranking for your content.
 
+..  note::
+    Fields must be of a Solr ``text`` type — either the predefined ``title`` or ``content`` fields, or dynamic fields like ``*_textS`` / ``*_textM``. These types are tokenized, stemmed, and analyzed for full-text search.
+    ``string`` type fields (e.g. ``*_stringS``) store raw, unprocessed values and only support exact, case-sensitive matches — they are **not** suitable for user-facing search.
+    See :ref:`appendix-dynamic-fields` for available field types and the :ref:`faq-index` section on ``stringS`` vs ``textS`` for more details.
+
 query.returnFields
 ~~~~~~~~~~~~~~~~~~
 
