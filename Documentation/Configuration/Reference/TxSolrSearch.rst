@@ -372,15 +372,20 @@ query.sortBy
 :TS Path: plugin.tx_solr.search.query.sortBy
 :Since: 1.0
 
-Allows to set a custom sorting for the query. By default Solr will sort by relevance, using this setting you can sort by any sortable field.
+Allows to set a custom sorting for the query. By default Solr will sort by relevance, using this setting you can sort by a custom field.
 
 Needs a Solr field name followed by asc for ascending order or desc for descending.
+
+..  note::
+    The field must be a sort-compatible Solr type: ``string`` (with ``docValues``), ``int``, ``long``, ``float``, ``double``, or ``date``.
+    ``text`` type fields (like ``title``) are tokenized and **cannot** be used for sorting — use dedicated sort fields like ``sortTitle`` instead.
+    See :ref:`appendix-dynamic-fields` for which field types support sorting.
 
 Example:
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.search.query.sortBy = title asc
+    plugin.tx_solr.search.query.sortBy = sortTitle asc
 
 query.phrase
 ~~~~~~~~~~~~
