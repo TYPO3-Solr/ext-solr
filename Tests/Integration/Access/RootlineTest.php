@@ -23,4 +23,15 @@ final class RootlineTest extends IntegrationTestBase
         $accessRootline = Rootline::getAccessRootlineByPageId(1);
         self::assertSame('', (string)$accessRootline, 'Access rootline for non protected page should be empty');
     }
+
+    #[Test]
+    public function canGetAccessRootlineByPageIdForDeletedPage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/deleted_page.csv');
+
+        // getPage() returns an empty array for a deleted page, this must not
+        // trigger a PHP warning for the missing "fe_group" array key.
+        $accessRootline = Rootline::getAccessRootlineByPageId(10);
+        self::assertSame('', (string)$accessRootline, 'Access rootline for a deleted page should be empty');
+    }
 }
