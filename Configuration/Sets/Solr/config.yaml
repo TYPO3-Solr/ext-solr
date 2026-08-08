@@ -1,4 +1,2 @@
 name: apache-solr-for-typo3/solr
 label: "Solr search - Base Configuration"
-dependencies:
-  - typo3/fluid-styled-content
