@@ -21,10 +21,16 @@ use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Tests\Integration\Fixtures\IndexingServiceForTesting;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
+use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\DateTimeAspect;
+use TYPO3\CMS\Core\Context\UserAspect;
+use TYPO3\CMS\Core\Context\VisibilityAspect;
+use TYPO3\CMS\Core\Context\WorkspaceAspect;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -315,5 +321,112 @@ final class IndexServiceTest extends IntegrationTestBase
                 $GLOBALS['TYPO3_REQUEST'] = $previousRequest;
             }
         }
+    }
+
+    /**
+     * Regression test for the Context aspect restore: the frontend sub-request
+     * (TYPO3\CMS\Frontend\Http\Application::initializeContext()) overwrites the
+     * 'date', 'visibility', 'workspace', 'backend.user' and 'frontend.user'
+     * aspects on the shared Context singleton. Without the save/restore in
+     * IndexingService, a BE-triggered indexing run leaves a logged-out
+     * 'backend.user' aspect behind, so BackendUserAuthenticator expires the
+     * be_typo_user cookie and logs the editor out of the backend.
+     */
+    #[Test]
+    public function subRequestsRestoreContextAspects(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_withBasePrefix_foo.csv');
+
+        $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
+
+        // Resolve the site and IndexService *before* installing the sentinel
+        // aspects — site building evaluates TypoScript conditions against the
+        // Context and would silently skip sites with a mocked BE user aspect.
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
+
+        $context = GeneralUtility::makeInstance(Context::class);
+
+        // Sentinel aspect instances that must be back on the Context singleton
+        // after the sub-request returns.
+        $sentinelAspects = [
+            'date' => new DateTimeAspect(new DateTimeImmutable('2024-06-15T12:00:00+00:00')),
+            'visibility' => new VisibilityAspect(true, true),
+            'workspace' => new WorkspaceAspect(0),
+            'backend.user' => new UserAspect($this->createLoggedInBackendUserMock()),
+            'frontend.user' => new UserAspect(),
+        ];
+        $previousAspects = [];
+        foreach ($sentinelAspects as $aspectName => $sentinelAspect) {
+            $previousAspects[$aspectName] = $context->getAspect($aspectName);
+            $context->setAspect($aspectName, $sentinelAspect);
+        }
+
+        try {
+            $indexService->indexItems(1);
+
+            foreach ($sentinelAspects as $aspectName => $sentinelAspect) {
+                self::assertSame(
+                    $sentinelAspect,
+                    $context->getAspect($aspectName),
+                    'Context aspect \'' . $aspectName . '\' was not restored after sub-request indexing — '
+                    . 'e.g. a clobbered \'backend.user\' aspect makes BackendUserAuthenticator expire the '
+                    . 'be_typo_user cookie and log the editor out of the backend.',
+                );
+            }
+        } finally {
+            foreach ($previousAspects as $aspectName => $previousAspect) {
+                $context->setAspect($aspectName, $previousAspect);
+            }
+        }
+    }
+
+    /**
+     * Symptom-level companion to subRequestsRestoreContextAspects: after a
+     * BE-triggered indexing run, the 'backend.user' aspect must still report
+     * a logged-in user — this is exactly the condition
+     * TYPO3\CMS\Backend\Middleware\BackendUserAuthenticator evaluates before
+     * expiring the be_typo_user cookie.
+     */
+    #[Test]
+    public function subRequestsKeepBackendUserLoggedInInContext(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_withBasePrefix_foo.csv');
+
+        $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
+
+        // Resolve the site and IndexService before installing the sentinel
+        // aspect (see subRequestsRestoreContextAspects for reasoning).
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
+
+        $context = GeneralUtility::makeInstance(Context::class);
+        $previousBackendUserAspect = $context->getAspect('backend.user');
+        $context->setAspect('backend.user', new UserAspect($this->createLoggedInBackendUserMock()));
+
+        try {
+            $indexService->indexItems(1);
+
+            self::assertTrue(
+                $context->getPropertyFromAspect('backend.user', 'isLoggedIn'),
+                'The \'backend.user\' aspect no longer reports a logged-in user after sub-request '
+                . 'indexing — BackendUserAuthenticator would expire the be_typo_user cookie and '
+                . 'log the editor out of the backend.',
+            );
+        } finally {
+            $context->setAspect('backend.user', $previousBackendUserAspect);
+        }
+    }
+
+    /**
+     * Creates a BE user mock that UserAspect::isLoggedIn() recognises as logged in.
+     */
+    private function createLoggedInBackendUserMock(): BackendUserAuthentication
+    {
+        $backendUser = $this->createMock(BackendUserAuthentication::class);
+        $backendUser->user = ['uid' => 1, 'username' => 'sentinel-admin'];
+        return $backendUser;
     }
 }

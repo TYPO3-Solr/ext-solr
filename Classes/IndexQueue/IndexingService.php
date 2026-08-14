@@ -326,6 +326,18 @@ readonly class IndexingService
             // Unsetting the aspect makes each sub-request start exactly like a fresh request.
             $previousLanguageAspect = $this->context->getAspect('language');
             $this->context->unsetAspect('language');
+            // TYPO3\CMS\Frontend\Http\Application::initializeContext() overwrites these
+            // aspects on the shared Context singleton. Restore them afterwards, otherwise
+            // e.g. TYPO3\CMS\Backend\Middleware\BackendUserAuthenticator sees a logged-out
+            // 'backend.user' aspect after a BE-triggered indexing run and expires the
+            // be_typo_user cookie, logging the user out of the backend.
+            $clobberedAspects = ['date', 'visibility', 'workspace', 'backend.user', 'frontend.user'];
+            $previousAspects = [];
+            foreach ($clobberedAspects as $aspectName) {
+                if ($this->context->hasAspect($aspectName)) {
+                    $previousAspects[$aspectName] = $this->context->getAspect($aspectName);
+                }
+            }
             chdir(Environment::getPublicPath());
             try {
                 $response = $this->frontendApplication->handle($request);
@@ -350,6 +362,13 @@ readonly class IndexingService
                 $pageRenderer->updateState($previousPageRendererState);
                 $pageTitleProviderManager->setPageTitleCache($previousPageTitleCache);
                 $this->context->setAspect('language', $previousLanguageAspect);
+                foreach ($clobberedAspects as $aspectName) {
+                    if (isset($previousAspects[$aspectName])) {
+                        $this->context->setAspect($aspectName, $previousAspects[$aspectName]);
+                    } else {
+                        $this->context->unsetAspect($aspectName);
+                    }
+                }
             }
 
             $statusCode = $response->getStatusCode();
