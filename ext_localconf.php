@@ -225,13 +225,6 @@ use TYPO3\CMS\Scheduler\Task\TableGarbageCollectionTask;
      */
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers']['SolrFacetMaskAndCombineEnhancer'] = SolrFacetMaskAndCombineEnhancer::class;
 
-    // add solr field to rootline fields
-    if (($GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] ?? '') === '') {
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] = 'no_search_sub_entries';
-    } else {
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] .= ',no_search_sub_entries';
-    }
-
     /**
      * Registers an authentication service to authorize / grant the indexer to
      * access protected pages.
