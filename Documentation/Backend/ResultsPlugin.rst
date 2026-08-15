@@ -132,8 +132,8 @@ This could be done with:
 
 See also:
 
-https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebf%28BoostFunctions%29Parameter
-https://cwiki.apache.org/confluence/display/solr/Function+Queries
+https://solr.apache.org/guide/solr/10_0/query-guide/dismax-query-parser.html#bf-boost-functions-parameter
+https://solr.apache.org/guide/solr/10_0/query-guide/function-queries.html
 
 **"Boost Query"**:
 
@@ -153,4 +153,4 @@ An example could be to boost documents based on a certain field value:
 
 See also:
 
-https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebq%28BoostQuery%29Parameter
+https://solr.apache.org/guide/solr/10_0/query-guide/dismax-query-parser.html#bq-boost-query-parameter

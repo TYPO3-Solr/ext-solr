@@ -35,7 +35,7 @@ enableDebugMode
 :Default: 0
 :Options: 0, 1
 :Since: 1.0
-:See: http://wiki.apache.org/solr/CommonQueryParameters#debugQuery
+:See: https://solr.apache.org/guide/solr/10_0/query-guide/common-query-parameters.html#debug-parameter
 
 If enabled, the debugQuery query parameter is added to the Solr queries. Solr
 will then return additional information explaining the the query, scoring,
