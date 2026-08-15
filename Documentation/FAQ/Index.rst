@@ -9,7 +9,7 @@ What does the term "Core" mean?
 
 This term relates to Apache Solr indexes and means a single distinct part of an index. It is possible to use multiple cores on one single Apache Solr instance.
 Good examples are using a different Apache Solr core for each language or of course a separate core for each website.
-For more information please refer to the `Apache Solr documentation for "Core" explanation <https://cwiki.apache.org/confluence/display/solr/Solr+Cores+and+solr.xml>`_.
+For more information please refer to the `Apache Solr Reference Guide / Core Discovery <https://solr.apache.org/guide/solr/10_0/configuration-guide/core-discovery.html>`_.
 
 |
 
@@ -737,7 +737,7 @@ I want to use the vector search, how can I define a large language model
 
 To use the vector search introduced in 13.1 a large language model has to be connected and and is used to encode text to vectors.
 
-Details about the configuration can be found in the `Apache Solr Reference Guide 9.9: Text to Vector <https://solr.apache.org/guide/solr/latest/query-guide/text-to-vector.html>`_
+Details about the configuration can be found in the `Apache Solr Reference Guide 10.0: Text to Vector <https://solr.apache.org/guide/solr/10_0/query-guide/text-to-vector.html>`_
 
 Uploading a model
 ~~~~~~~~~~~~~~~~~

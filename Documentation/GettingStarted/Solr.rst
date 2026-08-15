@@ -197,7 +197,7 @@ This is the recommended workflow, so you can deploy the Solr server in an Infras
 
 Alternatively Create a core with the rest api **(not recommended)**:
 
-See: "V2 API" on https://solr.apache.org/guide/solr/latest/configuration-guide/coreadmin-api.html#coreadmin-create
+See: "V2 API" on https://solr.apache.org/guide/solr/10_0/configuration-guide/coreadmin-api.html#coreadmin-create
 
 .. code-block:: bash
 

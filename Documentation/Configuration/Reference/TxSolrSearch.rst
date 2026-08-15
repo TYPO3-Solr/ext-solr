@@ -225,7 +225,7 @@ query.minimumMatch
 :TS Path: plugin.tx_solr.search.query.minimumMatch
 :Since: 1.2, 2.0
 :Default: (empty)
-:See: `Apache Solr Wiki mm / Minimum Should Match <http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29>`_
+:See: `Apache Solr Reference Guide / mm (Minimum Should Match) Parameter <https://solr.apache.org/guide/solr/10_0/query-guide/dismax-query-parser.html#mm-minimum-should-match-parameter>`_
 
 Sets the minimum match mm query parameter.
 By default the mm query parameter is set in solrconfig.xml as 2<-35%. This means that for queries with less than three words they all must match the searched fields of a document. For queries with three or more words at least 65% of them must match rounded up.
@@ -241,8 +241,8 @@ query.boostFunction
 :TS Path: plugin.tx_solr.search.query.boostFunction
 :Since: 1.2, 2.0
 :Default: (empty)
-:See: `Apache Solr Wiki / TheDisMaxQueryParser BoostFunction <https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebf%28BoostFunctions%29Parameter>`_
-:See: `Apache Solr Wiki / Function Queries <https://cwiki.apache.org/confluence/display/solr/Function+Queries>`_
+:See: `Apache Solr Reference Guide / bf (Boost Functions) Parameter <https://solr.apache.org/guide/solr/10_0/query-guide/dismax-query-parser.html#bf-boost-functions-parameter>`_
+:See: `Apache Solr Reference Guide / Function Queries <https://solr.apache.org/guide/solr/10_0/query-guide/function-queries.html>`_
 :Example: recip(ms(NOW,created),3.16e-11,1,1)
 
 A boost function can be useful to influence the relevance calculation and boost some documents to appear more at the beginning of the result list.
@@ -276,7 +276,7 @@ query.boostQuery
 :TS Path: plugin.tx_solr.search.query.boostQuery
 :Since: 2.0
 :Default: (empty)
-:See: `Apache Solr Wiki / TheDisMaxQueryParser BoostQuery <https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebq%28BoostQuery%29Parameter>`_
+:See: `Apache Solr Reference Guide / bq (Boost Query) Parameter <https://solr.apache.org/guide/solr/10_0/query-guide/dismax-query-parser.html#bq-boost-query-parameter>`_
 
 Sets the boost function **bq** query parameter.
 
@@ -297,7 +297,7 @@ query.tieParameter
 :Type: String
 :TS Path: plugin.tx_solr.search.query.tieParameter
 :Since: 8.0
-:See: `Lucene Documentation / TheDisMaxQueryParser TieParameter <http://lucene.apache.org/solr/guide/7_0/the-dismax-query-parser.html#the-tie-tie-breaker-parameter>`
+:See: `Apache Solr Reference Guide / tie (Tie Breaker) Parameter <https://solr.apache.org/guide/solr/10_0/query-guide/dismax-query-parser.html#the-tie-tie-breaker-parameter>`_
 
 This parameter ties the scores together. Setting is to "0" (default) uses the maximum score of all computed scores.
 A value of "1.0" adds all scores. The value is a number between "0.0" and "1.0".
@@ -309,7 +309,7 @@ query.filter
 :Type: Array
 :TS Path: plugin.tx_solr.search.query.filter
 :Since: 1.0
-:See: `Lucene Documentation / Query Parser Syntax <http://lucene.apache.org/core/old_versioned_docs/versions/3_0_0/queryparsersyntax.html>`_
+:See: `Apache Solr Reference Guide / Standard Query Parser <https://solr.apache.org/guide/solr/10_0/query-guide/standard-query-parser.html>`_
 
 Allows to predefine filters to apply to a search query. You can add multiple filters through a name to Lucene filter mapping. The filters support stdWrap.
 
@@ -394,7 +394,7 @@ query.phrase
 :TS Path: plugin.tx_solr.search.query.phrase
 :Since: 8.0
 :Default: 0
-:See: "pf", "ps", "qs" https://lucene.apache.org/solr/guide/6_6/the-dismax-query-parser.html#TheDisMaxQueryParser-Thepf_PhraseFields_Parameter
+:See: "pf", "ps", "qs" https://solr.apache.org/guide/solr/10_0/query-guide/dismax-query-parser.html#pf-phrase-fields-parameter
 
 This parameter enables the phrase search feature from Apache Solr. Setting is to "0" (default) does not change behaviour from Apache Solr if user searches for two and more words.
 Enabling phrase search feature influences the document set and/or the scores of documents.
@@ -406,7 +406,7 @@ query.phrase.fields
 :TS Path: plugin.tx_solr.search.query.phrase.fields
 :Since: 8.0
 :Default: content^10.0, title^10.0, tagsH1^10.0, tagsH2H3^10.0, tagsH4H5H6^10.0, tagsInline^10.0, description^10.0, abstract^10.0, subtitle^10.0, navtitle^10.0
-:See: "pf" parameter https://lucene.apache.org/solr/guide/6_6/the-dismax-query-parser.html#TheDisMaxQueryParser-Thepf_PhraseFields_Parameter
+:See: "pf" parameter https://solr.apache.org/guide/solr/10_0/query-guide/dismax-query-parser.html#pf-phrase-fields-parameter
 
 This parameter defines what fields should be used to search in the given phrase. Matched documents will be boosted according to fields boost value.
 Fields are defined as a comma separated list and same way as queryFields.
@@ -420,7 +420,7 @@ query.phrase.slop
 :TS Path: plugin.tx_solr.search.query.phrase.slop
 :Since: 8.0
 :Default: 0
-:See: "ps" parameter https://lucene.apache.org/solr/guide/6_6/the-dismax-query-parser.html#TheDisMaxQueryParser-Theps_PhraseSlop_Parameter
+:See: "ps" parameter https://solr.apache.org/guide/solr/10_0/query-guide/dismax-query-parser.html#ps-phrase-slop-parameter
 
 This parameter defines the "phrase slop" value, which represents the number of positions one word needs to be moved in relation to another word in order to match a phrase specified in a query.
 
@@ -433,7 +433,7 @@ query.phrase.querySlop
 :TS Path: plugin.tx_solr.search.query.phrase.querySlop
 :Since: 8.0
 :Default: 0
-:See: "qs" parameter https://lucene.apache.org/solr/guide/6_6/the-dismax-query-parser.html#TheDisMaxQueryParser-Theqs_QueryPhraseSlop_Parameter
+:See: "qs" parameter https://solr.apache.org/guide/solr/10_0/query-guide/dismax-query-parser.html#qs-query-phrase-slop-parameter
 
 This parameter defines the "phrase slop" value, which represents the number of positions one word needs to be moved in relation to another word in order to match a phrase specified in a explicit phrase search query.
 Note: On explicit("double quoted" phrase) phrase search Apache Solr searches in "qf" queryFields
@@ -448,7 +448,7 @@ query.bigramPhrase
 :TS Path: plugin.tx_solr.search.query.bigramPhrase
 :Since: 8.0
 :Default: 0
-:See: "pf2", "ps2" https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Thepf2Parameter
+:See: "pf2", "ps2" https://solr.apache.org/guide/solr/10_0/query-guide/edismax-query-parser.html#extended-dismax-parameters
 
 This parameter enables the bigram phrase search feature from Apache Solr. Setting is to "0" (default) does not change behaviour from Apache Solr if user searches for three and more words.
 Enabling bigram phrase search feature influences the scores of documents with phrase occurrences.
@@ -460,7 +460,7 @@ query.bigramPhrase.fields
 :TS Path: plugin.tx_solr.search.query.bigramPhrase.fields
 :Since: 8.0
 :Default: content^10.0, title^10.0, tagsH1^10.0, tagsH2H3^10.0, tagsH4H5H6^10.0, tagsInline^10.0, description^10.0, abstract^10.0, subtitle^10.0, navtitle^10.0
-:See: "pf2" parameter https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Thepf2Parameter
+:See: "pf2" parameter https://solr.apache.org/guide/solr/10_0/query-guide/edismax-query-parser.html#extended-dismax-parameters
 
 This parameter defines what fields should be used to search in the given sentence(three+ words). Matched documents will be boosted according to fields boost value.
 Fields are defined as a comma separated list and same way as queryFields.
@@ -474,7 +474,7 @@ query.bigramPhrase.slop
 :TS Path: plugin.tx_solr.search.query.bigramPhrase.slop
 :Since: 8.0
 :Default: 0
-:See: "ps2" parameter https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Theps2Parameter
+:See: "ps2" parameter https://solr.apache.org/guide/solr/10_0/query-guide/edismax-query-parser.html#extended-dismax-parameters
 
 This parameter defines the "bigram phrase slop" value, which represents the number of positions one word needs to be moved in relation to another word in order to match a phrase specified in a query.
 
@@ -487,7 +487,7 @@ query.trigramPhrase
 :TS Path: plugin.tx_solr.search.query.trigramPhrase
 :Since: 8.0
 :Default: 0
-:See: "pf3", "ps3" https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Thepf3Parameter
+:See: "pf3", "ps3" https://solr.apache.org/guide/solr/10_0/query-guide/edismax-query-parser.html#extended-dismax-parameters
 
 This parameter enables the phrase search feature from Apache Solr. Setting is to "0" (default) does not change behaviour from Apache Solr if user searches for two and more words.
 Enabling phrase search feature influences the scores of documents with phrase occurrences.
@@ -499,7 +499,7 @@ query.trigramPhrase.fields
 :TS Path: plugin.tx_solr.search.query.trigramPhrase.fields
 :Since: 8.0
 :Default: content^10.0, title^10.0, tagsH1^10.0, tagsH2H3^10.0, tagsH4H5H6^10.0, tagsInline^10.0, description^10.0, abstract^10.0, subtitle^10.0, navtitle^10.0
-:See: "pf3" parameter https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Thepf3Parameter
+:See: "pf3" parameter https://solr.apache.org/guide/solr/10_0/query-guide/edismax-query-parser.html#extended-dismax-parameters
 
 This parameter defines what fields should be used to search in the given phrase. Matched documents will be boosted according to fields boost value.
 Fields are defined as a comma separated list and same way as queryFields.
@@ -513,7 +513,7 @@ query.trigramPhrase.slop
 :TS Path: plugin.tx_solr.search.query.trigramPhrase.slop
 :Since: 8.0
 :Default: 0
-:See: "ps3" parameter https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Theps3Parameter
+:See: "ps3" parameter https://solr.apache.org/guide/solr/10_0/query-guide/edismax-query-parser.html#extended-dismax-parameters
 
 This parameter defines the "trigram phrase slop" value, which represents the number of positions one word needs to be moved in relation to another word in order to match a phrase specified in a query.
 
@@ -559,7 +559,7 @@ results.resultsHighlighting
 :TS Path: plugin.tx_solr.search.results.resultsHighlighting
 :Since: 1.0
 :Default: 0
-:See: `Apache Solr Wiki / FastVectorHighlighter <https://cwiki.apache.org/confluence/display/solr/FastVector+Highlighter>`_
+:See: `Apache Solr Reference Guide / FastVector Highlighter <https://solr.apache.org/guide/solr/10_0/query-guide/highlighting.html#fastvector-highlighter>`_
 
 En-/disables search term highlighting on the results page.
 
@@ -886,7 +886,7 @@ faceting.minimumCount
 :TS Path: plugin.tx_solr.search.faceting.minimumCount
 :Since: 1.0
 :Default: 1
-:See: `Apache Solr Wiki / Faceting mincount Parameter <https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Thefacet.mincountParameter>`_
+:See: `Apache Solr Reference Guide / facet.mincount Parameter <https://solr.apache.org/guide/solr/10_0/query-guide/faceting.html#field-value-faceting-parameters>`_
 
 This indicates the minimum counts for facet fields should be included in the response.
 
@@ -898,7 +898,7 @@ faceting.sortBy
 :Since: 1.0
 :Default: count
 :Options: count, index, 1, 0, true, false, alpha (1.2, 2.0), lex (1.2, 2.0)
-:See: `Apache Solr Wiki / Faceting sortParameter Parameter <https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Thefacet.sortParameter>`_
+:See: `Apache Solr Reference Guide / facet.sort Parameter <https://solr.apache.org/guide/solr/10_0/query-guide/faceting.html#field-value-faceting-parameters>`_
 
 Defines how facet options are sorted, by default they are sorted by count of results, highest on top. count, 1, true are aliases for each other.
 
@@ -1042,7 +1042,7 @@ faceting.facets
 :TS Path: plugin.tx_solr.search.faceting.facets
 :Since: 1.0
 :Default: type
-:See: `Apache Solr Wiki / Faceting Overview <http://wiki.apache.org/solr/SolrFacetingOverview>`_
+:See: `Apache Solr Reference Guide / Faceting <https://solr.apache.org/guide/solr/10_0/query-guide/faceting.html>`_
 
 Defines which fields you want to use for faceting. It's a list of facet configurations.
 
