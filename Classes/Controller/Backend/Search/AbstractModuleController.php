@@ -20,16 +20,19 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializat
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Backend\Template\Components\ComponentFactory;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -67,6 +70,7 @@ abstract class AbstractModuleController extends ActionController
         protected readonly SiteFinder $siteFinder,
         protected readonly ConnectionManager $solrConnectionManager,
         protected QueueInterface $indexQueue,
+        protected readonly ComponentFactory $componentFactory,
         protected ?int $selectedPageUID = null,
     ) {
         $this->selectedPageUID = $selectedPageUID ?? 0;
@@ -89,8 +93,9 @@ abstract class AbstractModuleController extends ActionController
     /**
      * Initializes the controller and sets needed vars.
      *
-     * @throws UnexpectedTYPO3SiteInitializationException
      * @throws DBALException
+     * @throws SiteNotFoundException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function initializeAction(): void
     {
@@ -166,11 +171,13 @@ abstract class AbstractModuleController extends ActionController
         if ($pageRecord === false) {
             throw new InvalidArgumentException(vsprintf('There is something wrong with permissions for page "%s" for backend user "%s".', [$this->selectedSite->getRootPageId(), $beUser->user['username']]), 1496146317);
         }
-        $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation($pageRecord);
+        $this->moduleTemplate->getDocHeaderComponent()->setPageBreadcrumb($pageRecord);
     }
 
     /**
      * Generates selector menu in backends doc header using selected page from page tree.
+     *
+     * @throws InvalidConnectionException
      */
     public function generateCoreSelectorMenuUsingPageTree(?string $uriToRedirectTo = null): void
     {
@@ -183,10 +190,12 @@ abstract class AbstractModuleController extends ActionController
 
     /**
      * Generates Core selector Menu for given Site.
+     *
+     * @throws InvalidConnectionException
      */
     protected function generateCoreSelectorMenu(Site $site, ?string $uriToRedirectTo = null): void
     {
-        $this->coreSelectorMenu = $this->moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
+        $this->coreSelectorMenu = $this->componentFactory->createMenu();
         $this->coreSelectorMenu->setIdentifier('component_core_selector_menu');
 
         if (!isset($uriToRedirectTo)) {
@@ -197,7 +206,7 @@ abstract class AbstractModuleController extends ActionController
         $cores = $this->solrConnectionManager->getConnectionsBySite($site);
         foreach ($cores as $core) {
             $coreAdmin = $core->getAdminService();
-            $menuItem = $this->coreSelectorMenu->makeMenuItem();
+            $menuItem = $this->componentFactory->createMenuItem();
             $menuItem->setTitle($coreAdmin->getCorePath());
             $uri = $this->uriBuilder->reset()->uriFor(
                 'switchCore',
@@ -256,6 +265,8 @@ abstract class AbstractModuleController extends ActionController
     /**
      * Initializes the solr core connection considerately to the components state.
      * Uses and persists default core connection if persisted core in Site does not exist.
+     *
+     * @throws InvalidConnectionException
      */
     private function initializeSelectedSolrCoreConnection(): void
     {
