@@ -151,8 +151,11 @@ class Rootline
         $pageSelector = GeneralUtility::makeInstance(PageRepository::class);
 
         // current page
+        // getPage() returns an empty array if the page does not match the enable-fields
+        // constraint (e.g. deleted, hidden or outside its start-/endtime), which is expected
+        // for Index Queue items that have not been garbage collected yet.
         $currentPageRecord = $pageSelector->getPage($pageId, true);
-        if ($currentPageRecord['fe_group']) {
+        if (!empty($currentPageRecord['fe_group'])) {
             $accessRootline->push(GeneralUtility::makeInstance(
                 RootlineElement::class,
                 $currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group'],
