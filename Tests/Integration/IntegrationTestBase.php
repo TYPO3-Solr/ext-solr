@@ -99,8 +99,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     {
         parent::setUp();
 
-        //this is needed by the TYPO3 core.
-        chdir(Environment::getPublicPath() . '/');
         $this->previousErrorReporting = error_reporting();
         $this->failWhenSolrDeprecationIsCreated();
 
