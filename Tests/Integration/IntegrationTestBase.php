@@ -34,7 +34,6 @@ use Throwable;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -99,8 +98,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     {
         parent::setUp();
 
-        //this is needed by the TYPO3 core.
-        chdir(Environment::getPublicPath() . '/');
         $this->previousErrorReporting = error_reporting();
         $this->failWhenSolrDeprecationIsCreated();
 
