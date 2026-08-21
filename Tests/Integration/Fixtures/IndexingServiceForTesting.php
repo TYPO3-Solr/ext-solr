@@ -42,9 +42,9 @@ readonly class IndexingServiceForTesting extends IndexingService
                 $source->connectionManager,
                 $source->pagesRepository,
                 $source->logger,
-                $source->resultCollector,
                 $source->siteFinder,
                 $source->context,
+                $source->eventDispatcher,
             );
         }, null, IndexingService::class)();
     }

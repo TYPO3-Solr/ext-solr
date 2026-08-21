@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexingSubRequestIsPreparedEvent;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\Exception\SolrIndexRuntimeException;
@@ -30,6 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
@@ -62,9 +64,9 @@ readonly class IndexingService
         private ConnectionManager $connectionManager,
         private PagesRepository $pagesRepository,
         private SolrLogManager $logger,
-        private IndexingResultCollector $resultCollector,
         private SiteFinder $siteFinder,
         private Context $context,
+        private EventDispatcherInterface $eventDispatcher,
     ) {}
 
     /**
@@ -268,7 +270,10 @@ readonly class IndexingService
         IndexingInstructions $instructions,
     ): ?ResponseInterface {
         try {
-            $this->resultCollector->reset();
+            // Primarily to reset shared services, which still carry the state of the previous sub-request.
+            $this->eventDispatcher->dispatch(
+                new BeforeIndexingSubRequestIsPreparedEvent($item, $language, $instructions),
+            );
 
             $request = $this->buildServerRequest($item, $language);
             $request = $request->withAttribute('solr.indexingInstructions', $instructions);
