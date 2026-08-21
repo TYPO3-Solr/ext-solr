@@ -438,16 +438,52 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     {
         $reflection = new ReflectionClass($object);
         try {
-            $property = $reflection->getProperty($property);
-        } catch (ReflectionException) {
-            return null;
+            return $reflection->getProperty($property)->getValue($object);
+        } catch (ReflectionException $exception) {
+            self::fail(sprintf(
+                'Can not read property "%s" from object of type "%s": %s',
+                $property,
+                $object::class,
+                $exception->getMessage(),
+            ));
         }
-        return $property->getValue($object);
     }
 
     /*
         Nimut testing framework goodies, copied from https://github.com/Nimut/testing-framework
      */
+
+    /**
+     * Injects $dependency into property $name of $target
+     *
+     * This is a convenience method for setting a protected or private property in
+     * a test subject for the purpose of injecting a dependency.
+     *
+     * Copied from https://github.com/Nimut/testing-framework/blob/3d0573b23fe16157460b4e73e51e1cc0903ea35c/src/TestingFramework/TestCase/AbstractTestCase.php#L247-L284
+     *
+     * @param object $target The instance which needs the dependency
+     * @param string $name Name of the property to be injected
+     * @param mixed $dependency The dependency to inject - usually an object but can also be any other type
+     */
+    protected function inject(
+        object $target,
+        string $name,
+        mixed $dependency,
+    ): void {
+        $objectReflection = new ReflectionObject($target);
+        $methodNamePart = strtoupper($name[0]) . substr($name, 1);
+        if ($objectReflection->hasMethod('set' . $methodNamePart)) {
+            $methodName = 'set' . $methodNamePart;
+            $target->$methodName($dependency);
+        } elseif ($objectReflection->hasMethod('inject' . $methodNamePart)) {
+            $methodName = 'inject' . $methodNamePart;
+            $target->$methodName($dependency);
+        } elseif ($objectReflection->hasProperty($name)) {
+            $objectReflection->getProperty($name)->setValue($target, $dependency);
+        } else {
+            self::fail('Could not inject ' . $name . ' into object of type ' . $target::class);
+        }
+    }
 
     /**
      * Helper function to call protected or private methods
