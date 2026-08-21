@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Backend\Template\Components\ComponentFactory;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -54,6 +55,7 @@ abstract class SetUpSolrModuleControllerTestCase extends SetUpUnitTestCase
                     'siteFinder' => $this->createMock(SiteFinder::class),
                     'solrConnectionManager' => $this->connectionManagerMock = $this->createMock(ConnectionManager::class),
                     'indexQueue' => $this->createMock(Queue::class),
+                    'componentFactory' => $this->createMock(ComponentFactory::class),
                 ],
             )
             ->onlyMethods($mockMethods)

@@ -17,12 +17,17 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexingSubRequestIsPreparedEvent;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\IndexingInstructions;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
+use ApacheSolrForTypo3\Solr\Tests\Integration\Fixtures\IndexingServiceForTesting;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -30,11 +35,11 @@ use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
+use Symfony\Component\DependencyInjection\Container;
 use Throwable;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -99,8 +104,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     {
         parent::setUp();
 
-        //this is needed by the TYPO3 core.
-        chdir(Environment::getPublicPath() . '/');
         $this->previousErrorReporting = error_reporting();
         $this->failWhenSolrDeprecationIsCreated();
 
@@ -435,16 +438,52 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     {
         $reflection = new ReflectionClass($object);
         try {
-            $property = $reflection->getProperty($property);
-        } catch (ReflectionException) {
-            return null;
+            return $reflection->getProperty($property)->getValue($object);
+        } catch (ReflectionException $exception) {
+            self::fail(sprintf(
+                'Can not read property "%s" from object of type "%s": %s',
+                $property,
+                $object::class,
+                $exception->getMessage(),
+            ));
         }
-        return $property->getValue($object);
     }
 
     /*
         Nimut testing framework goodies, copied from https://github.com/Nimut/testing-framework
      */
+
+    /**
+     * Injects $dependency into property $name of $target
+     *
+     * This is a convenience method for setting a protected or private property in
+     * a test subject for the purpose of injecting a dependency.
+     *
+     * Copied from https://github.com/Nimut/testing-framework/blob/3d0573b23fe16157460b4e73e51e1cc0903ea35c/src/TestingFramework/TestCase/AbstractTestCase.php#L247-L284
+     *
+     * @param object $target The instance which needs the dependency
+     * @param string $name Name of the property to be injected
+     * @param mixed $dependency The dependency to inject - usually an object but can also be any other type
+     */
+    protected function inject(
+        object $target,
+        string $name,
+        mixed $dependency,
+    ): void {
+        $objectReflection = new ReflectionObject($target);
+        $methodNamePart = strtoupper($name[0]) . substr($name, 1);
+        if ($objectReflection->hasMethod('set' . $methodNamePart)) {
+            $methodName = 'set' . $methodNamePart;
+            $target->$methodName($dependency);
+        } elseif ($objectReflection->hasMethod('inject' . $methodNamePart)) {
+            $methodName = 'inject' . $methodNamePart;
+            $target->$methodName($dependency);
+        } elseif ($objectReflection->hasProperty($name)) {
+            $objectReflection->getProperty($name)->setValue($target, $dependency);
+        } else {
+            self::fail('Could not inject ' . $name . ' into object of type ' . $target::class);
+        }
+    }
 
     /**
      * Helper function to call protected or private methods
@@ -572,6 +611,53 @@ abstract class IntegrationTestBase extends FunctionalTestCase
 
         $response->getBody()->rewind();
         return $response;
+    }
+
+    /**
+     * Indexes queued items through the production pipeline, which runs one real frontend
+     * sub-request per item, unlike indexPages(), which fakes that sub-request.
+     *
+     * IndexingService is swapped for a test subclass providing the typo3.testing.context
+     * attribute that the testing-framework's FrontendUserHandler middleware expects.
+     *
+     * @throws DBALException
+     */
+    protected function indexQueuedItems(int $limit, int $rootPageId = 1): void
+    {
+        /** @var Container $container */
+        $container = $this->getContainer();
+        GeneralUtility::setContainer($container);
+        $container->set(
+            IndexingService::class,
+            IndexingServiceForTesting::fromProductionService($container->get(IndexingService::class)),
+        );
+
+        $site = GeneralUtility::makeInstance(SiteRepository::class)->getSiteByRootPageId($rootPageId);
+        GeneralUtility::makeInstance(IndexService::class, $site)->indexItems($limit);
+    }
+
+    /**
+     * Does what IndexingService does before every sub-request, so that shared services can be
+     * asserted to drop the state of the previous one.
+     */
+    protected function dispatchBeforeIndexingSubRequestIsPreparedEvent(): void
+    {
+        $item = new Item([
+            'uid' => 1,
+            'root' => 1,
+            'item_type' => 'pages',
+            'item_uid' => 1,
+            'changed' => 1,
+            'indexing_configuration' => 'pages',
+        ]);
+
+        $this->get(EventDispatcherInterface::class)->dispatch(
+            new BeforeIndexingSubRequestIsPreparedEvent(
+                $item,
+                0,
+                new IndexingInstructions([$item], IndexingInstructions::ACTION_INDEX_PAGE),
+            ),
+        );
     }
 
     /**

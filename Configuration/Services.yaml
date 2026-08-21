@@ -307,12 +307,13 @@ services:
         class: ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
         arguments:
           $className: 'ApacheSolrForTypo3\Solr\IndexQueue\IndexingService'
-      $resultCollector: '@ApacheSolrForTypo3\Solr\IndexQueue\IndexingResultCollector'
       $siteFinder: '@TYPO3\CMS\Core\Site\SiteFinder'
 
   ApacheSolrForTypo3\Solr\IndexQueue\IndexingResultCollector:
     public: true
     shared: true
+    autoconfigure: true
+    autowire: true
 
   ApacheSolrForTypo3\Solr\Middleware\UserGroupDetectionMiddleware:
     public: true
