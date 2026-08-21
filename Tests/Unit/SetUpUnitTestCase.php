@@ -21,7 +21,6 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
-use RuntimeException;
 use Symfony\Component\DependencyInjection\Container;
 use TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
@@ -124,6 +123,24 @@ abstract class SetUpUnitTestCase extends UnitTestCase
     }
 
     /**
+     * Returns inaccessible(private/protected/etc.) property from given object.
+     */
+    protected function getInaccessiblePropertyFromObject(object $object, string $property): mixed
+    {
+        $reflection = new ReflectionObject($object);
+        try {
+            return $reflection->getProperty($property)->getValue($object);
+        } catch (ReflectionException $exception) {
+            self::fail(sprintf(
+                'Can not read property "%s" from object of type "%s": %s',
+                $property,
+                $object::class,
+                $exception->getMessage(),
+            ));
+        }
+    }
+
+    /**
      * Injects $dependency into property $name of $target
      *
      * This is a convenience method for setting a protected or private property in
@@ -132,7 +149,6 @@ abstract class SetUpUnitTestCase extends UnitTestCase
      * @param object $target The instance which needs the dependency
      * @param string $name Name of the property to be injected
      * @param mixed $dependency The dependency to inject – usually an object but can also be any other type
-     * @throws RuntimeException
      */
     protected function inject(
         object $target,
@@ -148,13 +164,9 @@ abstract class SetUpUnitTestCase extends UnitTestCase
             $methodName = 'inject' . $methodNamePart;
             $target->$methodName($dependency);
         } elseif ($objectReflection->hasProperty($name)) {
-            $property = $objectReflection->getProperty($name);
-            $property->setValue($target, $dependency);
+            $objectReflection->getProperty($name)->setValue($target, $dependency);
         } else {
-            throw new RuntimeException(
-                'Could not inject ' . $name . ' into object of type ' . get_class($target),
-                1476107339,
-            );
+            self::fail('Could not inject ' . $name . ' into object of type ' . $target::class);
         }
     }
 
