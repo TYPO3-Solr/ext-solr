@@ -17,12 +17,17 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexingSubRequestIsPreparedEvent;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\IndexingInstructions;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
+use ApacheSolrForTypo3\Solr\Tests\Integration\Fixtures\IndexingServiceForTesting;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -30,6 +35,7 @@ use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
+use Symfony\Component\DependencyInjection\Container;
 use Throwable;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
@@ -569,6 +575,53 @@ abstract class IntegrationTestBase extends FunctionalTestCase
 
         $response->getBody()->rewind();
         return $response;
+    }
+
+    /**
+     * Indexes queued items through the production pipeline, which runs one real frontend
+     * sub-request per item, unlike indexPages(), which fakes that sub-request.
+     *
+     * IndexingService is swapped for a test subclass providing the typo3.testing.context
+     * attribute that the testing-framework's FrontendUserHandler middleware expects.
+     *
+     * @throws DBALException
+     */
+    protected function indexQueuedItems(int $limit, int $rootPageId = 1): void
+    {
+        /** @var Container $container */
+        $container = $this->getContainer();
+        GeneralUtility::setContainer($container);
+        $container->set(
+            IndexingService::class,
+            IndexingServiceForTesting::fromProductionService($container->get(IndexingService::class)),
+        );
+
+        $site = GeneralUtility::makeInstance(SiteRepository::class)->getSiteByRootPageId($rootPageId);
+        GeneralUtility::makeInstance(IndexService::class, $site)->indexItems($limit);
+    }
+
+    /**
+     * Does what IndexingService does before every sub-request, so that shared services can be
+     * asserted to drop the state of the previous one.
+     */
+    protected function dispatchBeforeIndexingSubRequestIsPreparedEvent(): void
+    {
+        $item = new Item([
+            'uid' => 1,
+            'root' => 1,
+            'item_type' => 'pages',
+            'item_uid' => 1,
+            'changed' => 1,
+            'indexing_configuration' => 'pages',
+        ]);
+
+        $this->get(EventDispatcherInterface::class)->dispatch(
+            new BeforeIndexingSubRequestIsPreparedEvent(
+                $item,
+                0,
+                new IndexingInstructions([$item], IndexingInstructions::ACTION_INDEX_PAGE),
+            ),
+        );
     }
 
     /**
