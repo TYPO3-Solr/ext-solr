@@ -45,7 +45,8 @@ class GroupViewHelperTest extends UnitTest
         $testArguments['facets'] = $facetCollection;
         $testArguments['groupName'] = 'left';
 
-        GroupViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
+        GroupViewHelper::renderStatic($testArguments, function () {
+        }, $renderingContextMock);
         self::assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
 
         /** @var  $facetCollection FacetCollection */

@@ -55,7 +55,8 @@ class LabelFilterViewHelperTest extends UnitTest
         $testArguments['options'] = $optionCollection;
         $testArguments['prefix'] = 'p';
 
-        LabelFilterViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
+        LabelFilterViewHelper::renderStatic($testArguments, function () {
+        }, $renderingContextMock);
         self::assertTrue($variableContainer->exists('filteredOptions'), 'Expected that filteredOptions has been set');
 
         /** @var  $optionCollection OptionCollection */
@@ -85,7 +86,8 @@ class LabelFilterViewHelperTest extends UnitTest
         $testArguments['options'] = $optionCollection;
         $testArguments['prefix'] = 'ø';
 
-        LabelFilterViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
+        LabelFilterViewHelper::renderStatic($testArguments, function () {
+        }, $renderingContextMock);
         self::assertTrue($variableContainer->exists('filteredOptions'), 'Expected that filteredOptions has been set');
 
         /** @var  $optionCollection OptionCollection */

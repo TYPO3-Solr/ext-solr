@@ -55,7 +55,9 @@ class SortingHelper
         $sortFields = [];
         $sortParameters = GeneralUtility::trimExplode(',', $urlParameters);
 
-        $removeTsKeyDot = function ($sortingKey) { return trim($sortingKey, '.'); };
+        $removeTsKeyDot = function ($sortingKey) {
+            return trim($sortingKey, '.');
+        };
         $configuredSortingName = array_map($removeTsKeyDot, array_keys($this->configuration));
 
         foreach ($sortParameters as $sortParameter) {
