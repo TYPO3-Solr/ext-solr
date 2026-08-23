@@ -2,11 +2,11 @@ name: build
 
 on:
   push:
-    branches: [ release-11.6.x, release-11.2.x ]
+    branches: [ release-11.6.x ]
     tags:
       - "**"
   pull_request:
-    branches: [ release-11.6.x, release-11.2.x ]
+    branches: [ release-11.6.x ]
 
 env:
   CI_BUILD_DIRECTORY: '/home/runner/work/ext-solr/ext-solr/.Build'
@@ -32,13 +32,13 @@ jobs:
       -
         name: Checkout current state of Pull Request
         if: github.event_name == 'pull_request'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
         if: github.event_name == 'push'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       # End: Workaround for issue with actions/checkout...
       -
         name: "Resolve target branch of pull request."
@@ -74,10 +74,10 @@ jobs:
           echo "matrix=$(echo $matrix)" >> $GITHUB_OUTPUT
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       -
         name: Build Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Docker/SolrServer/Dockerfile
@@ -93,13 +93,13 @@ jobs:
           ./Build/Test/cibuild_docker.sh
       -
         name: Upload Docker Image
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: solrci-image
           path: /tmp/solrci-image.tar
       -
         name: Upload Solr-Server containers logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: solrci-logs
@@ -124,14 +124,14 @@ jobs:
       -
         name: Checkout current state of Pull Request
         if: github.event_name == 'pull_request'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2
           ref: ${{ github.event.pull_request.head.sha }}
       -
         name: Checkout current state of Branch
         if: github.event_name == 'push'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2
       # End: Workaround for issue with actions/checkout...
@@ -145,10 +145,10 @@ jobs:
             && sudo chown 8983:8983 ${{ env.CI_BUILD_DIRECTORY }}/data-solr
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       -
         name: Download solrci-image from "ci_bootstrapping" job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: solrci-image
           path: /tmp
@@ -171,7 +171,7 @@ jobs:
         with:
           php-version: ${{ matrix.PHP }}
           coverage: pcov
-          tools: composer:2.5.5
+          tools: composer:2
       -
         name: CI-Bootstrap
         run: |
@@ -207,7 +207,7 @@ jobs:
       DOCKER_REGISTRY_IMAGE_NAME: "registry.dkd.de/dkd/hosted-solr/solr/elts-solr"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: enrich Environment Variables
         id: env
@@ -218,7 +218,7 @@ jobs:
 
       - name: Docker metadata AMD64
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: |
             ${{ env.DOCKER_REGISTRY_IMAGE_NAME }}
@@ -242,7 +242,7 @@ jobs:
 
       - name: Docker metadata ARM64
         id: meta-ARM64
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: |
             ${{ env.DOCKER_REGISTRY_IMAGE_NAME }}
@@ -266,15 +266,15 @@ jobs:
 
       -
         name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v4
 
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       -
         name: Login to Docker Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         with:
           registry: registry.dkd.de
           username: ${{ secrets.DKD_DOCKER_REGISTRY_USERNAME }}
@@ -282,7 +282,7 @@ jobs:
 
       -
         name: Build and push AMD64
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Docker/SolrServer/Dockerfile
@@ -293,7 +293,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Build and push ARM64
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Docker/SolrServer/Dockerfile
@@ -311,7 +311,7 @@ jobs:
     steps:
       -
         name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       -
         name: Build EXT as ZIP for TER
         run: |
