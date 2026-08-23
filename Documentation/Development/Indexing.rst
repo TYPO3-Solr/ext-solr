@@ -1,5 +1,3 @@
-.. This file will be replaced from solrfluid later
-
 ========
 Indexing
 ========

@@ -1,6 +1,3 @@
-.. include:: /Includes.rst.txt
-
-
 tx_solr
 =======
 

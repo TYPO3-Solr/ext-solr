@@ -1,6 +1,3 @@
-.. include:: /Includes.rst.txt
-
-
 .. _conf-logging:
 
 Logging

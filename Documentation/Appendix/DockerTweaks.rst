@@ -1,6 +1,3 @@
-.. include:: /Includes.rst.txt
-
-
 .. _appendix-docker-tweaks:
 
 Appendix - Docker Tweaks

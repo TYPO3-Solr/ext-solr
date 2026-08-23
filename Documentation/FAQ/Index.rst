@@ -1,4 +1,3 @@
-.. include:: /Includes.rst.txt
 .. _faq-index:
 
 FAQ - Frequently Asked Questions

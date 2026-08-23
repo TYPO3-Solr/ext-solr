@@ -1,6 +1,4 @@
-.. include:: ../Includes.rst.txt
-
-
+..  index:: Releases
 .. _releases-11-2:
 
 =============

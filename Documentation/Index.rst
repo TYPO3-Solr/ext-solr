@@ -1,4 +1,3 @@
-.. include:: /Includes.rst.txt
 
 =====================
 Apache Solr for TYPO3

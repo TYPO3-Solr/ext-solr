@@ -1,6 +1,5 @@
 .. highlight:: bash
 
-
 .. _started-install-extension:
 
 Install EXT:solr

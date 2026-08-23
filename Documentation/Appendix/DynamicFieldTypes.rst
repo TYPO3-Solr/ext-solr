@@ -1,6 +1,3 @@
-.. include:: /Includes.rst.txt
-
-
 .. _appendix-dynamic-fields:
 
 Appendix - Dynamic Fields

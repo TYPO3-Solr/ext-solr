@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<guides
+	xmlns="https://www.phpdoc.org/guides"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://www.phpdoc.org/guides ../vendor/phpdocumentor/guides-cli/resources/schema/guides.xsd"
+	links-are-relative="true"
+>
+  <extension
+	  class="\T3Docs\Typo3DocsTheme\DependencyInjection\Typo3DocsThemeExtension"
+	  project-home="https://www.typo3-solr.com"
+	  project-contact="https://typo3.slack.com/archives/C02FF05Q4"
+	  project-repository="https://github.com/TYPO3-Solr/ext-solr"
+	  project-issues="https://github.com/TYPO3-Solr/ext-solr/issues"
+	  edit-on-github-branch="main"
+	  edit-on-github="TYPO3-Solr/ext-solr"
+	  typo3-core-preferred="stable"
+  />
+  <project
+	  title="Apache Solr for TYPO3"
+	  release="13.0.0"
+	  version="13.0"
+	  copyright="since 2009 by dkd &amp; contributors"
+  />
+</guides>
