@@ -66,7 +66,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     protected array $testSolrCores = [
         'core_en',
         'core_de',
-        'core_dk',
+        'core_da',
     ];
 
     protected array $configurationToUseInTestInstance = [
