@@ -324,7 +324,80 @@ jobs:
           tags: ${{ steps.meta-ARM64.outputs.tags }}
           labels: ${{ steps.meta-ARM64.outputs.labels }}
 
-  publish:
+  publish-docker-hub:
+    name: Publish docker-image to docker-hub
+    needs: tests
+    if: |
+      (
+        github.ref == 'refs/heads/main' ||
+        startsWith(github.ref, 'refs/heads/release-') ||
+        startsWith(github.ref, 'refs/tags/')
+      )
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_PLATFORMS: "linux/amd64,linux/arm64,linux/ppc64le"
+      DOCKER_HUB_IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/ext-solr"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: enrich Environment Variables
+        id: env
+        run: |
+          echo "NOW=$(date +'%F %Z %T')" >> $GITHUB_ENV
+          echo "BRANCH_TAG=$(jq -r '.extra."branch-alias" | to_entries | .[0].key' composer.json)" >> $GITHUB_ENV
+          echo "BRANCH_ALIAS_TAG=$(jq -r '.extra."branch-alias" | to_entries | .[0].value' composer.json)" >> $GITHUB_ENV
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: |
+            ${{ env.DOCKER_HUB_IMAGE_NAME }}
+
+          tags: |
+            type=raw,value=${{ env.BRANCH_TAG }}
+            type=raw,value=${{ env.BRANCH_ALIAS_TAG }}
+            # Only the newest major EXT:solr branch can become the latest tag.
+            # So if main branch becomes dev state for next TYPO3 LTS, the latest tag must be commented there.
+            type=raw,value=latest,enable=${{ (startsWith(github.ref, 'refs/tags/')) && (env.IS_LATEST_VERSION == true) }}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          labels: |
+            org.opencontainers.image.title=${{github.event.repository.name}}
+            org.opencontainers.image.description=Docker image for Apache Solr for TYPO3 CMS EXT:solr extension
+            org.opencontainers.image.vendor=${{github.repository_owner}}
+            org.opencontainers.image.licenses=GPL-3.0,APACHE
+            org.opencontainers.image.version=${{github.ref_name}}
+            org.opencontainers.image.created=${{ env.NOW }}
+            org.opencontainers.image.source=${{github.server_url}}/${{github.repository}}
+            org.opencontainers.image.revision=${{github.sha}}
+            org.opencontainers.image.url=https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/Appendix/DockerTweaks.html
+            org.opencontainers.image.documentation=https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/Index.html
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Docker/SolrServer/Dockerfile
+          platforms: ${{ env.DOCKER_PLATFORMS }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  publish-to-release:
     name: Publish on Release as attachment
     needs: tests
     if: startsWith(github.ref, 'refs/tags/')
@@ -336,7 +409,18 @@ jobs:
       -
         name: Build EXT as ZIP for TER
         run: |
-          TYPO3_VERSION=$STANDARD_TYPO3_VERSION composer ext:build:for-ter
+          export RELEASE_VERSION=${GITHUB_REF/refs\/tags\//}
+          export TER_COMMENT=$(git tag -n99 -l "$RELEASE_VERSION" | sed "s/^[0-9.]*[ ]*//g")
+          if [[ -z "${TER_COMMENT// }" ]]; then
+            export TER_COMMENT="Released version $RELEASE_VERSION of EXT:solr"
+          fi
+          echo "Following message will be printed in TER as release description:"
+          echo -e "$TER_COMMENT"
+          if ! composer extension-build; then
+            >&2 echo -e "Something went wrong on building EXT:solr for NON-Composer mode. Please look in the job."
+            exit 13
+          fi
+          php ~/.composer/vendor/bin/tailor ter:publish --comment "$TER_COMMENT" "$RELEASE_VERSION"
 
       -
         name: Upload EXT for TER on release
@@ -345,3 +429,50 @@ jobs:
         with:
           files: |
             .Build/archive/solr.zip
+
+  publish-ter:
+    name: Publish new version to TER
+    needs: tests
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    env:
+      TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Check tag
+        run: |
+          TAGGED_VERSION=$(echo "${{ github.ref }}" | awk '{print tolower($0)}')
+          if ! [[ "${TAGGED_VERSION}" =~ ^refs/tags/[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}((-pre)?-(alpha|beta|rc)(-?[0-9]{1,3})?)?$ ]]; then
+            >&2 echo -e "Non-stable releases can not be published to TER. The tag ${TAGGED_VERSION} is invalid for TER."
+            exit 0
+          fi
+      - name: Resolve PHP version to use
+        run: |
+          export PHP_VERSION_TO_USE=$(cat Resources/Private/Php/ComposerLibraries/composer.json | jq --raw-output '.config.platform.php')
+          echo "PHP_VERSION_TO_USE=$PHP_VERSION_TO_USE" >> $GITHUB_ENV
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION_TO_USE }}
+          extensions: intl, mbstring, json, zip, curl
+          tools: composer:v2
+      - name: Install tailor
+        run: composer global require typo3/tailor --prefer-dist --no-progress
+
+      - name: Publish EXT:solr to TER
+        run: |
+          export RELEASE_VERSION=${GITHUB_REF/refs\/tags\//}
+          export TER_COMMENT=$(git tag -n99 -l "$RELEASE_VERSION" | sed "s/^[0-9.]*[ ]*//g")
+          if [[ -z "${TER_COMMENT// }" ]]; then
+            export TER_COMMENT="Released version $RELEASE_VERSION of EXT:solr"
+          fi
+          echo "Following message will be printed in TER as release description:"
+          echo -e "$TER_COMMENT"
+          if ! composer extension-build; then
+            >&2 echo -e "Something went wrong on building EXT:solr for NON-Composer mode. Please look in the job."
+            exit 13
+          fi
+          php ~/.composer/vendor/bin/tailor ter:publish --comment "$TER_COMMENT" "$RELEASE_VERSION"
