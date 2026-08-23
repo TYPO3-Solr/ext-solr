@@ -3,11 +3,11 @@ run-name: "${{ inputs.runName || github.event.pull_request.title || github.event
 
 on:
   push:
-    branches: [ main, release-13.1.x, release-12.1.x, task/*_compatibility ]
+    branches: [ main, release-13.1.x, release-12.1.x, release-11.6.x, task/*_compatibility, security/* ]
     tags:
       - "**"
   pull_request:
-    branches: [ main, release-13.1.x, release-12.1.x, task/*_compatibility ]
+    branches: [ main, release-13.1.x, release-12.1.x, release-11.6.x, task/*_compatibility, security/* ]
   workflow_dispatch:
     inputs:
       purpose:
