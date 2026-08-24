@@ -25,11 +25,15 @@ use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
+use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3\CMS\Frontend\Controller\ErrorController;
 use TYPO3Fluid\Fluid\View\AbstractTemplateView;
 use TYPO3Fluid\Fluid\View\ViewInterface;
+use UnexpectedValueException;
 
 /**
  * Class SearchController
@@ -225,6 +229,9 @@ class SearchController extends AbstractBaseController
      * This action allows to render a detailView with data from solr.
      *
      * @noinspection PhpUnused Is used by plugin.
+     *
+     * @throws PropagateResponseException
+     * @throws PageNotFoundException
      */
     public function detailAction(string $documentId = ''): ResponseInterface
     {
@@ -241,6 +248,13 @@ class SearchController extends AbstractBaseController
             $this->view->assignMultiple($values);
         } catch (SolrUnavailableException) {
             return $this->handleSolrUnavailable();
+        } catch (UnexpectedValueException) {
+            $response = GeneralUtility::makeInstance(ErrorController::class)
+                ->pageNotFoundAction(
+                    $this->request,
+                    'The requested document was not found.',
+                );
+            throw new PropagateResponseException($response, 1750684800);
         }
         return $this->htmlResponse();
     }
