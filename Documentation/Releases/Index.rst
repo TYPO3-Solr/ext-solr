@@ -13,5 +13,4 @@ Releases
     :glob:
 
     solr-release-11-6
-    solr-release-11-2
     Archive/Index

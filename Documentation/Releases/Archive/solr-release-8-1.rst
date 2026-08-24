@@ -1,3 +1,4 @@
+..  index:: Archive
 .. _releases-archive-8.1:
 
 ============
