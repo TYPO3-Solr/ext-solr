@@ -146,6 +146,11 @@ Version 3.0 introduced a couple more magic keywords that get replaced:
 - **__all** Adds all domains as allowed sites
 - \* (asterisk character) Everything is allowed as siteHash (same as no siteHash check). This option should only be used when you need a search across multiple system and you know the impact of turning of the siteHash check.
 
+**Security note (since fix for CVE-2026-56094):** the ``siteHash`` filter is a security boundary, not a user-facing search option.
+It cannot be set or overridden through request-provided ``tx_solr[additionalFilters]`` — the reserved names ``siteHash`` and ``access`` are stripped from request input before the query is built.
+To search across sites, use the ``allowedSites`` setting above; passing a ``siteHash`` filter from the frontend has no effect.
+
+
 query.allowSolrOperatorSyntax
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -160,6 +165,7 @@ Selector, range, grouping and metacharacters (``: [ ] ( ) { } ^ " ~ \ /``) are a
 
 * ``1`` (default) — the well-known Lucene operators ``+ - && || ! * ?`` pass through, so the documented wildcard and boolean operator UX (``apple*``, ``+foo -bar``) keeps working.
 * ``0`` — strict mode; the additional SolrJ specials ``| & ;`` are also escaped. ``+ - ! * ?`` and whitespace stay literal, so required/prohibited terms, ``NOT`` and the wildcard UX still function.
+
 
 query.getParameter
 ~~~~~~~~~~~~~~~~~~
