@@ -43,6 +43,21 @@ EXT:solr itself enforces the Unified Highlighter unconditionally in PHP, so this
 for clients that query Solr directly.
 
 
+!!! New: TypoScript settings for query-syntax handling
+-------------------------------------------------------
+
+Two new TypoScript settings govern how user input on ``tx_solr[q]`` is parsed:
+
+* ``plugin.tx_solr.search.query.userFields`` — whitelist of fields a Solr field-selector (``field:value``) may target.
+  By default derived from ``query.queryFields``; selectors against other fields are now treated as literal terms and silently miss.
+  Sites that rely on selectors against non-``qf`` fields must extend the whitelist via a scalar override or the ``add`` / ``remove`` sub-keys.
+* ``plugin.tx_solr.search.query.allowSolrOperatorSyntax`` — toggle for operator-syntax passthrough.
+  Default ``1`` keeps the documented ``+ - && || ! * ?`` UX functional; set to ``0`` for strict mode (additionally escapes ``| & ;``).
+  Selector, range and grouping characters (``: [ ] ( ) { } ^ " ~ \ /``) are always escaped regardless.
+
+See :ref:`configuration.reference.solrsearch` for full reference details.
+
+
 All Changes
 -----------
 (filled at release time)

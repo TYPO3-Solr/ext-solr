@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Elevation;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
@@ -127,7 +128,12 @@ class QueryBuilder extends AbstractQueryBuilder
             $this->logger->log(SolrLogManager::INFO, 'Received search query', [$rawQuery]);
         }
 
-        return $this->newSearchQuery($rawQuery)
+        $escapedQuery = $rawQuery === '' ? '' : (string)EscapeService::escape(
+            $rawQuery,
+            $this->typoScriptConfiguration->getSearchQueryAllowSolrOperatorSyntax()
+        );
+
+        return $this->newSearchQuery($escapedQuery)
                 ->useResultsPerPage($resultsPerPage)
                 ->useReturnFieldsFromTypoScript()
                 ->useQueryFieldsFromTypoScript()
