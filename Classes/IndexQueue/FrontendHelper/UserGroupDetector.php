@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use TYPO3\CMS\Core\Domain\Access\RecordAccessGrantedEvent;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -117,24 +116,6 @@ class UserGroupDetector implements
         PageRepository $parentObject,
     ): void {
         $disableGroupAccessCheck = true;
-    }
-
-    /**
-     * Modifies page records so that when checking for access through fe groups
-     * no groups or extendToSubpages flag is found and thus access is granted.
-     */
-    public function getPageOverlay_preProcess(RecordAccessGrantedEvent $event): void
-    {
-        if (!$this->activated) {
-            return;
-        }
-        if ($event->getTable() !== 'pages') {
-            return;
-        }
-        $pageInput = $event->getRecord();
-        $pageInput['fe_group'] = '';
-        $pageInput['extendToSubpages'] = '0';
-        $event->updateRecord($pageInput);
     }
 
     // execution
