@@ -27,12 +27,13 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper;
 class EscapeService
 {
     /**
-     * Quote and escape search strings
+     * Escapes Lucene syntax in $string. $allowOperatorSyntax=false also
+     * escapes the SolrJ-special chars `| & ;`.
      *
      * @param string|int|float $string String to escape
      * @return string|int|float The escaped/quoted string
      */
-    public static function escape($string)
+    public static function escape($string, bool $allowOperatorSyntax = true)
     {
         // when we have a numeric string only, nothing needs to be done
         if (is_numeric($string)) {
@@ -41,16 +42,16 @@ class EscapeService
 
         // when no whitespaces are in the query we can also just escape the special characters
         if (preg_match('/\W/', $string) != 1) {
-            return static::escapeSpecialCharacters($string);
+            return static::escapeSpecialCharacters($string, $allowOperatorSyntax);
         }
 
         // when there are no quotes inside the query string we can also just escape the whole string
         $hasQuotes = strrpos($string, '"') !== false;
         if (!$hasQuotes) {
-            return static::escapeSpecialCharacters($string);
+            return static::escapeSpecialCharacters($string, $allowOperatorSyntax);
         }
 
-        $result = static::tokenizeByQuotesAndEscapeDependingOnContext($string);
+        $result = static::tokenizeByQuotesAndEscapeDependingOnContext($string, $allowOperatorSyntax);
 
         return $result;
     }
@@ -74,8 +75,10 @@ class EscapeService
      * @param string $string
      * @return string
      */
-    protected static function tokenizeByQuotesAndEscapeDependingOnContext(string $string): string
-    {
+    protected static function tokenizeByQuotesAndEscapeDependingOnContext(
+        string $string,
+        bool $allowOperatorSyntax = true
+    ): string {
         $result = '';
         $quotesCount = substr_count($string, '"');
         $isEvenAmountOfQuotes = $quotesCount % 2 === 0;
@@ -95,7 +98,7 @@ class EscapeService
             if ($isInQuote && !$isLastQuote) {
                 $result .= static::escapePhrase($segment);
             } else {
-                $result .= static::escapeSpecialCharacters($segment);
+                $result .= static::escapeSpecialCharacters($segment, $allowOperatorSyntax);
             }
 
             $segmentsIndex++;
@@ -120,20 +123,32 @@ class EscapeService
     }
 
     /**
-     * Escapes characters with special meanings in Lucene query syntax.
-     *
-     * @param string $value Unescaped - "dirty" - string
-     * @return string Escaped - "clean" - string
+     * Escapes Lucene special chars. Legacy mode keeps `+ - && || ! * ?`;
+     * strict mode additionally escapes `| & ;`. `+ - ! * ?` and whitespace
+     * stay literal in both modes.
      */
-    protected static function escapeSpecialCharacters(string $value): string
+    protected static function escapeSpecialCharacters(string $value, bool $allowOperatorSyntax = true): string
     {
-        // list taken from http://lucene.apache.org/core/4_4_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description
-        // which mentions: + - && || ! ( ) { } [ ] ^ " ~ * ? : \ /
-        // of which we escape: ( ) { } [ ] ^ " ~ : \ /
-        // and explicitly don't escape: + - && || ! * ?
-        $pattern = '/(\\(|\\)|\\{|\\}|\\[|\\]|\\^|"|~|\:|\\\\|\\/)/';
-        $replace = '\\\$1';
+        if ($allowOperatorSyntax) {
+            // list taken from https://lucene.apache.org/core/9_10_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Escaping_Special_Characters
+            // which mentions: + - && || ! ( ) { } [ ] ^ " ~ * ? : \ /
+            // of which we escape: ( ) { } [ ] ^ " ~ : \ /
+            // and explicitly don't escape: + - && || ! * ?
+            $pattern = '/(\\(|\\)|\\{|\\}|\\[|\\]|\\^|"|~|\:|\\\\|\\/)/';
+            return preg_replace($pattern, '\\\$1', $value);
+        }
 
-        return preg_replace($pattern, $replace, $value);
+        $escapeChars = '\\():^[]"{}~|&;/';
+        $result = '';
+        $length = strlen($value);
+        for ($i = 0; $i < $length; $i++) {
+            $char = $value[$i];
+            // @TODO: With only PHP 8 support, replace this with str_contains()
+            if (strpos($escapeChars, $char) !== false) {
+                $result .= '\\';
+            }
+            $result .= $char;
+        }
+        return $result;
     }
 }

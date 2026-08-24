@@ -42,6 +42,8 @@ class EscapeHelperTest extends UnitTest
             '&& character is kept' => ['input' => 'hello && world', 'expectedOutput' => 'hello && world'],
             '! character is kept' => ['input' => 'hello !world', 'expectedOutput' => 'hello !world'],
             '* character is kept' => ['input' => 'hello *world', 'expectedOutput' => 'hello *world'],
+            'lone asterisk match-all stays literal' => ['input' => '*', 'expectedOutput' => '*'],
+            '*:* match-all gets colon escaped' => ['input' => '*:*', 'expectedOutput' => '*\:*'],
             '? character is kept' => ['input' => 'hello ?world', 'expectedOutput' => 'hello ?world'],
             'ö character is kept' => ['input' => 'schöner tag', 'expectedOutput' => 'schöner tag'],
             'numeric is kept' => ['input' => 42, 'expectedOutput' => 42],
@@ -55,10 +57,68 @@ class EscapeHelperTest extends UnitTest
      * @dataProvider escapeQueryDataProvider
      * @test
      */
-    public function canEscapeAsExpected($input, $expectedOutput)
+    public function escapesOnlySelectorAndRangeCharactersWhenOperatorSyntaxIsAllowed($input, $expectedOutput)
     {
-        $escapeHelper = new EscapeService();
-        $output = $escapeHelper::escape($input);
-        self::assertSame($expectedOutput, $output, 'Query was not escaped as expected');
+        self::assertSame(
+            $expectedOutput,
+            EscapeService::escape($input, true),
+            'Legacy-mode escape (allowOperatorSyntax=true) did not produce expected output'
+        );
+    }
+
+    /**
+     * @dataProvider escapeQueryDataProvider
+     * @test
+     */
+    public function escapeDefaultMirrorsAllowedOperatorSyntaxMode($input, $expectedOutput)
+    {
+        self::assertSame(
+            $expectedOutput,
+            EscapeService::escape($input),
+            'Default escape() call must behave as legacy mode (allowOperatorSyntax=true)'
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function escapeQueryWithoutOperatorSyntaxDataProvider()
+    {
+        return [
+            'empty stays empty' => ['input' => '', 'expectedOutput' => ''],
+            'plain word stays plain' => ['input' => 'foo', 'expectedOutput' => 'foo'],
+            'numeric is kept' => ['input' => 42, 'expectedOutput' => 42],
+            'whitespace is preserved literally' => ['input' => 'foo bar baz', 'expectedOutput' => 'foo bar baz'],
+            'umlaut is preserved' => ['input' => 'schöner tag', 'expectedOutput' => 'schöner tag'],
+            'plus operator passes through (required term)' => ['input' => '+foo', 'expectedOutput' => '+foo'],
+            'minus operator passes through (prohibited term)' => ['input' => '-foo', 'expectedOutput' => '-foo'],
+            'bang operator passes through (NOT)' => ['input' => '!foo', 'expectedOutput' => '!foo'],
+            'asterisk wildcard passes through (prefix search)' => ['input' => 'foo*', 'expectedOutput' => 'foo*'],
+            'lone asterisk match-all stays literal' => ['input' => '*', 'expectedOutput' => '*'],
+            '*:* match-all has only colon escaped' => ['input' => '*:*', 'expectedOutput' => '*\:*'],
+            'question mark wildcard passes through (single-char)' => ['input' => 'foo?', 'expectedOutput' => 'foo?'],
+            'double ampersand is escaped char by char' => ['input' => 'a && b', 'expectedOutput' => 'a \&\& b'],
+            'double pipe is escaped char by char' => ['input' => 'a || b', 'expectedOutput' => 'a \|\| b'],
+            'single ampersand is escaped' => ['input' => 'a&b', 'expectedOutput' => 'a\&b'],
+            'single pipe is escaped' => ['input' => 'a|b', 'expectedOutput' => 'a\|b'],
+            'semicolon is escaped' => ['input' => 'a;b', 'expectedOutput' => 'a\;b'],
+            'field selector wildcard has only colon escaped' => ['input' => 'siteHash:*', 'expectedOutput' => 'siteHash\:*'],
+            'range query is fully escaped' => ['input' => 'title:[a TO z]', 'expectedOutput' => 'title\:\[a TO z\]'],
+            'rounded brackets are escaped' => ['input' => 'hello (world)', 'expectedOutput' => 'hello \(world\)'],
+            'tilde is escaped' => ['input' => 'foo~2', 'expectedOutput' => 'foo\~2'],
+            'backslash is escaped' => ['input' => 'a\b', 'expectedOutput' => 'a\\\\b'],
+            'slash is escaped' => ['input' => 'a/b', 'expectedOutput' => 'a\/b'],
+            'quoted phrase keeps inner operator literal' => ['input' => '"foo *bar"', 'expectedOutput' => '"foo *bar"'],
+        ];
+    }
+
+    /**
+     * @dataProvider escapeQueryWithoutOperatorSyntaxDataProvider
+     * @test
+     */
+    public function escapesEveryLuceneSpecialCharacterWhenOperatorSyntaxIsDisallowed($input, $expectedOutput)
+    {
+        $output = EscapeService::escape($input, false);
+        self::assertSame($expectedOutput, $output, 'Strict-mode escape did not produce expected output');
     }
 }
