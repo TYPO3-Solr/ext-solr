@@ -22,13 +22,17 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
+use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
 use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3\CMS\Frontend\Controller\ErrorController;
 use TYPO3Fluid\Fluid\View\ViewInterface;
+use UnexpectedValueException;
 
 /**
  * Class SearchController
@@ -199,6 +203,8 @@ class SearchController extends AbstractBaseController
      *
      * @param string $documentId
      * @return ResponseInterface
+     * @throws PropagateResponseException
+     * @throws PageNotFoundException
      */
     public function detailAction(string $documentId = ''): ResponseInterface
     {
@@ -211,6 +217,13 @@ class SearchController extends AbstractBaseController
             $this->view->assign('document', $document);
         } catch (SolrUnavailableException $e) {
             return $this->handleSolrUnavailable();
+        } catch (UnexpectedValueException $e) {
+            $response = GeneralUtility::makeInstance(ErrorController::class)
+                ->pageNotFoundAction(
+                    $GLOBALS['TYPO3_REQUEST'],
+                    'The requested document was not found.'
+                );
+            throw new PropagateResponseException($response, 1750684800);
         }
         return $this->htmlResponse();
     }
