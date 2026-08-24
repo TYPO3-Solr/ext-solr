@@ -52,6 +52,14 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class QueryBuilder extends AbstractQueryBuilder
 {
     /**
+     * System-owned filter names that request additionalFilters must not set.
+     */
+    protected const RESERVED_FILTER_NAMES_FROM_REQUEST = [
+        'siteHash',
+        'access',
+    ];
+
+    /**
      * Additional filters, which will be added to the query, as well as to
      * suggest queries.
      *
@@ -140,7 +148,7 @@ class QueryBuilder extends AbstractQueryBuilder
                 ->useUserFieldsFromTypoScript()
                 ->useInitialQueryFromTypoScript()
                 ->useFiltersFromTypoScript()
-                ->useFilterArray($additionalFiltersFromRequest)
+                ->useFilterArray($this->removeReservedFiltersFromRequest($additionalFiltersFromRequest))
                 ->useFacetingFromTypoScript()
                 ->useVariantsFromTypoScript()
                 ->useGroupingFromTypoScript()
@@ -172,10 +180,23 @@ class QueryBuilder extends AbstractQueryBuilder
             ->useOmitHeader();
 
         if (!empty($additionalFilters)) {
-            $this->useFilterArray($additionalFilters);
+            $this->useFilterArray($this->removeReservedFiltersFromRequest($additionalFilters));
         }
 
         return $this->queryToBuild;
+    }
+
+    /**
+     * Strips system-owned filter names from request additionalFilters so
+     * frontend input cannot preempt the siteHash/access boundary.
+     */
+    protected function removeReservedFiltersFromRequest(array $additionalFilters): array
+    {
+        return array_filter(
+            $additionalFilters,
+            static fn ($filterName): bool => !in_array($filterName, self::RESERVED_FILTER_NAMES_FROM_REQUEST, true),
+            ARRAY_FILTER_USE_KEY
+        );
     }
 
     /**
@@ -388,6 +409,7 @@ class QueryBuilder extends AbstractQueryBuilder
         }
 
         $siteHashFilterString = implode(' OR ', $filters);
+        $this->queryToBuild->removeFilterQuery('siteHash');
         return $this->useFilter($siteHashFilterString, 'siteHash');
     }
 
