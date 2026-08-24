@@ -48,6 +48,17 @@ class QueryFields implements ParameterBuilderInterface
     }
 
     /**
+     * Field names without boost factors — for parameters that accept a plain
+     * field list (e.g. edismax `uf`), where boost suffixes are invalid.
+     *
+     * @return string[]
+     */
+    public function getFieldNames(): array
+    {
+        return array_keys($this->queryFields);
+    }
+
+    /**
      * Creates the string representation
      *
      * @param string $delimiter
