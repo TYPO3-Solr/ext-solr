@@ -83,6 +83,22 @@ The response is uniform, so it cannot be used to probe whether a restricted docu
 As defence in depth, review whether your templates still expose ``data-document-id`` and mask it where the document id should not be publicly visible.
 
 
+!!! Security: page indexer no longer forges access fields on page records (CVE-2026-56092)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+During a page-indexer sub-request, EXT:solr forced ``fe_group`` and ``extendToSubpages`` to public
+values on every ``pages`` record it touched, so the indexer itself would not be blocked by access
+restrictions.
+
+On TYPO3 12 that override was applied where TYPO3 Core discards it again, so it never reached the
+shared ``rootline`` cache and no access bypass resulted. On TYPO3 13 the same override was
+persisted, letting anonymous visitors reach pages restricted only by an ancestor page's
+``extendToSubpages``.
+
+The indexer no longer forges these fields. The access bypass it needed during indexing was already
+provided safely, without touching any persisted cache, by EXT:solr's other, unaffected listeners.
+
+
 All Changes
 -----------
 (filled at release time)
