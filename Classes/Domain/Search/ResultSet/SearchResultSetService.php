@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Domain\Variants\VariantsProcessor;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Search\AccessComponent;
 use ApacheSolrForTypo3\Solr\Search\QueryAware;
 use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\Search\SearchComponentManager;
@@ -99,6 +100,8 @@ class SearchResultSetService
      */
     protected ObjectManagerInterface $objectManager;
 
+    protected AccessComponent $accessComponent;
+
     /**
      * @param TypoScriptConfiguration $configuration
      * @param Search $search
@@ -106,6 +109,7 @@ class SearchResultSetService
      * @param SearchResultBuilder|null $resultBuilder
      * @param QueryBuilder|null $queryBuilder
      * @param ObjectManagerInterface|null $objectManager
+     * @param AccessComponent|null $accessComponent
      */
     public function __construct(
         TypoScriptConfiguration $configuration,
@@ -113,7 +117,8 @@ class SearchResultSetService
         ?SolrLogManager $solrLogManager = null,
         ?SearchResultBuilder $resultBuilder = null,
         ?QueryBuilder $queryBuilder = null,
-        ?ObjectManagerInterface $objectManager = null
+        ?ObjectManagerInterface $objectManager = null,
+        ?AccessComponent $accessComponent = null
     ) {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
@@ -121,6 +126,7 @@ class SearchResultSetService
         $this->searchResultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
         $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, $configuration, $solrLogManager);
         $this->objectManager = $objectManager ?? GeneralUtility::makeInstance(ObjectManager::class);
+        $this->accessComponent = $accessComponent ?? GeneralUtility::makeInstance(AccessComponent::class, $this->queryBuilder);
     }
 
     /**
@@ -424,6 +430,13 @@ class SearchResultSetService
     {
         /* @var $query SearchQuery */
         $query = $this->queryBuilder->newSearchQuery($documentId)->useQueryFields(QueryFields::fromString('id'))->getQuery();
+
+        // Enforce the same siteHash and frontend user access filters as the regular search path:
+        //   the by-id lookup must not be less restricted than resultsAction.
+        $this->accessComponent->setSearchConfiguration($this->typoScriptConfiguration->getSearchConfiguration());
+        $this->accessComponent->setQuery($query);
+        $this->accessComponent->initializeSearchComponent();
+
         $response = $this->search->search($query, 0, 1);
         $parsedData = $response->getParsedData();
         // @extensionScannerIgnoreLine
