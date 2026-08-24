@@ -12,7 +12,8 @@ Release 12.1.4
 This is a security release for TYPO3 12 LTS.
 
 !!! Recommendation: align existing Solr volumes with the new configset
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The ``ext_solr_12_1_0`` configset now sets the Unified Highlighter as default on both the ``/select`` and ``/browse`` request handlers.
 Solr volumes created from older configsets default to the legacy highlighter and remain vulnerable to the ``FieldExistsQuery`` HTTP 500 oracle
 when queried directly (bypassing EXT:solr).
@@ -36,6 +37,19 @@ Two new TypoScript settings govern how user input on ``tx_solr[q]`` is parsed:
   Selector, range and grouping characters (``: [ ] ( ) { } ^ " ~ \ /``) are always escaped regardless.
 
 See :ref:`configuration.reference.solrsearch` for full reference details.
+
+
+!!! Breaking: multi-value cObjs now use JSON transport
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``SOLR_MULTIVALUE``, ``SOLR_RELATION`` and ``SOLR_CLASSIFICATION`` content objects now return their
+multi-value payload as ``json_encode($array)`` instead of ``serialize($array)``, and the indexer decodes
+it with ``json_decode()`` instead of ``unserialize()``.
+Because ``json_decode()`` never reconstructs PHP objects, the indexer can no longer be turned into a PHP
+object-injection sink by an attacker who can influence an indexed record field.
+
+Third-party content objects that returned ``serialize($array)`` for a multi-value Solr field must switch
+to ``json_encode($array)``; no other change is required.
 
 All Changes
 -----------
