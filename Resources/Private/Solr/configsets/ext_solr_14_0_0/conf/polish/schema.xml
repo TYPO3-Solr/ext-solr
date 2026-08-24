@@ -62,8 +62,8 @@
 			<filter class="solr.FlattenGraphFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
-			<filter class="solr.StempelPolishStemFilterFactory"/>
 			<filter class="solr.ASCIIFoldingFilterFactory"/>
+			<filter class="solr.StempelPolishStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -85,8 +85,8 @@
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
-			<filter class="solr.StempelPolishStemFilterFactory"/>
 			<filter class="solr.ASCIIFoldingFilterFactory"/>
+			<filter class="solr.StempelPolishStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -115,8 +115,8 @@
 			/>
 			<filter class="solr.FlattenGraphFilterFactory"/>
 
-			<filter class="solr.StempelPolishStemFilterFactory"/>
 			<filter class="solr.ASCIIFoldingFilterFactory"/>
+			<filter class="solr.StempelPolishStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -136,8 +136,8 @@
 					preserveOriginal="1"
 					protected="polish/protwords.txt"
 			/>
-			<filter class="solr.StempelPolishStemFilterFactory"/>
 			<filter class="solr.ASCIIFoldingFilterFactory"/>
+			<filter class="solr.StempelPolishStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
