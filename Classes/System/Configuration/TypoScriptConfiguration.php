@@ -1411,6 +1411,29 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Whitelist of fields a Solr field-selector (`field:value`) may target.
+     * Empty value defers to the edismax default, which is the `qf` field list.
+     *
+     * plugin.tx_solr.search.query.userFields
+     */
+    public function getSearchQueryUserFields(string $defaultIfEmpty = ''): string
+    {
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.userFields', $defaultIfEmpty);
+    }
+
+    /**
+     * Returns the userFields sub-key configuration (`add`, `remove`) used to
+     * derive the edismax `uf` list from the `qf` defaults when no scalar
+     * override is given.
+     *
+     * plugin.tx_solr.search.query.userFields.
+     */
+    public function getSearchQueryUserFieldsConfiguration(array $defaultIfEmpty = []): array
+    {
+        return $this->getObjectByPathOrDefault('plugin.tx_solr.search.query.userFields.', $defaultIfEmpty);
+    }
+
+    /**
      * This method is used to check if a phrase search is enabled or not
      *
      * plugin.tx_solr.search.query.phrase = 1

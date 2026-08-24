@@ -74,6 +74,58 @@ class QueryInjectionViaRawSolrSyntaxTest extends AbstractFrontendControllerTest
     }
 
     /**
+     * Second control: a selector against a field that *is* in `qf` must keep working.
+     * The literal-token control above never parses a `field:value` selector, so it cannot
+     * tell "selector neutralised into a literal term" apart from "selectors stopped working" —
+     * i.e. a `uf` whitelist set too narrowly. Green before and after the fix.
+     *
+     * @test
+     */
+    public function fieldSelectorOnWhitelistedFieldStillReturnsExpectedDocument(): void
+    {
+        $response = $this->executeSearch('title:markeralpha235567');
+        self::assertStringContainsString(
+            'markeralpha235567',
+            $response,
+            'Selector on the whitelisted field "title" no longer returns the alpha document — the uf whitelist is too narrow.'
+        );
+    }
+
+    /**
+     * PDF §3.1 — `siteHash:*` must not enumerate documents via field selector.
+     *
+     * @test
+     */
+    public function wildcardFieldEnumerationOperatorMustNotEnumerateIndexedDocuments(): void
+    {
+        $response = $this->executeSearch('siteHash:*');
+        foreach (['markeralpha235567', 'markerbeta235567', 'markergamma235567'] as $marker) {
+            self::assertStringNotContainsString(
+                $marker,
+                $response,
+                'SST 235567 / PDF §3.1: siteHash:* field enumeration leaked ' . $marker
+            );
+        }
+    }
+
+    /**
+     * Combined field-selector + range against the hex-hash siteHash field must not match the test corpus.
+     *
+     * @test
+     */
+    public function fieldSelectorOperatorMustNotTargetArbitraryIndexedField(): void
+    {
+        $response = $this->executeSearch('siteHash:[0 TO 9]');
+        foreach (['markeralpha235567', 'markerbeta235567', 'markergamma235567'] as $marker) {
+            self::assertStringNotContainsString(
+                $marker,
+                $response,
+                'SST 235567: field-selector range query against siteHash leaked ' . $marker
+            );
+        }
+    }
+
+    /**
      * @test
      */
     public function existingFieldWildcardMustNotTriggerSolrCommunicationException(): void
