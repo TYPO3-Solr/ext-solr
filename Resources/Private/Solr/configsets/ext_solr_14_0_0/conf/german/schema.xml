@@ -70,9 +70,9 @@
 				onlyLongestMatch="false"
 			/>
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.GermanNormalizationFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
-			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -93,9 +93,9 @@
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.GermanNormalizationFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
-			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -131,9 +131,9 @@
 			/>
 			<filter class="solr.FlattenGraphFilterFactory"/>
 
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.GermanNormalizationFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
-			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -159,9 +159,9 @@
 					preserveOriginal="1"
 					protected="german/protwords.txt"
 			/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.GermanNormalizationFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
-			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
