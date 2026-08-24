@@ -1,9 +1,11 @@
-..  index:: Archive
+..  index:: Releases
 .. _releases-11-6:
 
 =============
 Releases 11.6
 =============
+
+..  include:: HintAboutOutdatedChangelog.rst.txt
 
 Release 11.6.5 ELTS
 ===================

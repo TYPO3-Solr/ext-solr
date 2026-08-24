@@ -1,3 +1,4 @@
+..  index:: Archive
 .. _releases-archive-5-0:
 
 ============

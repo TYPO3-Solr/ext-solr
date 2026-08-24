@@ -1,4 +1,4 @@
-..  index:: Releases
+..  index:: Archive
 .. _releases-11:
 
 =============
