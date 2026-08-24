@@ -159,7 +159,11 @@ abstract class AbstractIndexer
                 $solrFieldName
             )
             ) {
-                $fieldValue = unserialize($fieldValue);
+                // SOLR_MULTIVALUE / SOLR_RELATION / SOLR_CLASSIFICATION return their multi-value payload as a JSON-encoded array.
+                $decodedFieldValue = json_decode($fieldValue, true);
+                if (is_array($decodedFieldValue)) {
+                    $fieldValue = $decodedFieldValue;
+                }
             }
         } elseif (
             substr($indexingConfiguration[$solrFieldName], 0, 1) === '<'
@@ -187,7 +191,11 @@ abstract class AbstractIndexer
                 $solrFieldName
             )
             ) {
-                $fieldValue = unserialize($fieldValue);
+                // SOLR_MULTIVALUE / SOLR_RELATION / SOLR_CLASSIFICATION return their multi-value payload as a JSON-encoded array.
+                $decodedFieldValue = json_decode($fieldValue, true);
+                if (is_array($decodedFieldValue)) {
+                    $fieldValue = $decodedFieldValue;
+                }
             }
         } else {
             $indexingFieldName = $indexingConfiguration[$solrFieldName] ?? null;
