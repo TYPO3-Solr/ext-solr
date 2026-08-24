@@ -114,13 +114,13 @@ jobs:
       # Workaround for issue with actions/checkout "wrong PR commit checkout". See: ci_bootstrapping job
       - name: Checkout current state of Pull Request
         if: github.event_name == 'pull_request'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Checkout current state of Branch
         if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2
       # End: Workaround for issue with actions/checkout...
