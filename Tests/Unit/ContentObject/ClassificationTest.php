@@ -56,7 +56,7 @@ class ClassificationTest extends UnitTest
         ];
 
         $actual = $this->contentObject->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
-        $expected = serialize(['cms']);
+        $expected = json_encode(['cms']);
         self::assertEquals($expected, $actual);
     }
 
@@ -98,7 +98,7 @@ class ClassificationTest extends UnitTest
         ];
 
         $actual = $this->contentObject->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
-        $expected = serialize($expectedOutput);
+        $expected = json_encode($expectedOutput);
         self::assertEquals($expected, $actual);
     }
 

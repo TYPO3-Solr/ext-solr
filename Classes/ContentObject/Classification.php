@@ -71,7 +71,13 @@ class Classification extends AbstractContentObject
         /** @var $classificationService ClassificationService */
         $classificationService = GeneralUtility::makeInstance(ClassificationService::class);
 
-        return serialize($classificationService->getMatchingClassNames((string)$data, $classifications));
+        return json_encode(
+            $classificationService->getMatchingClassNames(
+                (string)$data,
+                $classifications
+            ),
+            JSON_THROW_ON_ERROR
+        );
     }
 
     /**

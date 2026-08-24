@@ -145,7 +145,11 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
             );
 
             if (AbstractIndexer::isSerializedValue($pageIndexingConfiguration, $solrFieldName)) {
-                $fieldValue = unserialize($fieldValue);
+                // SOLR_MULTIVALUE / SOLR_RELATION / SOLR_CLASSIFICATION return their multi-value payload as a JSON-encoded array.
+                $decodedFieldValue = json_decode($fieldValue, true);
+                if (is_array($decodedFieldValue)) {
+                    $fieldValue = $decodedFieldValue;
+                }
             }
         } else {
             $fieldValue = $pageRecord[$pageIndexingConfiguration[$solrFieldName]];

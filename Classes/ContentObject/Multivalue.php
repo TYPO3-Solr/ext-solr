@@ -43,7 +43,7 @@ class Multivalue extends AbstractContentObject
      *
      * Turns a list of values into an array that can then be used to fill
      * multivalued fields in a Solr document. The array is returned in
-     * serialized form as content objects are expected to return strings.
+     * JSON-encoded form as content objects are expected to return strings.
      *
      * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
@@ -79,6 +79,9 @@ class Multivalue extends AbstractContentObject
             $listAsArray = array_unique($listAsArray);
         }
 
-        return serialize($listAsArray);
+        return json_encode(
+            $listAsArray,
+            JSON_THROW_ON_ERROR
+        );
     }
 }
