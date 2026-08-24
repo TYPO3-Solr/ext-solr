@@ -92,7 +92,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected array $testSolrCores = [
         'core_en',
         'core_de',
-        'core_dk',
+        'core_da',
     ];
 
     /**
