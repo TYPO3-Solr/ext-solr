@@ -7,6 +7,47 @@ Releases 11.6
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 11.6.6 ELTS
+===================
+
+This is a security release for TYPO3 11.5 ELTS.
+
+!!! All earlier 11.6.x releases stay vulnerable and will not be re-published
+-----------------------------------------------------------------------------
+
+11.6.6 is the only release of this branch that is published publicly.
+Releases 11.6.0 to 11.6.5 are affected by the CVEs fixed in this release and will **not** be
+re-published with a fix, so there is no patched 11.6.5 or earlier to move to — upgrade to 11.6.6.
+
+!!! Solarium raised to 6.2.4
+-----------------------------
+
+``solarium/solarium`` is raised from 6.2.3 to 6.2.4. This branch needs it to enforce the fix in PHP at all:
+6.2.3 ships no ``HighlightingInterface``, no ``setOffsetSource()`` and no ``setFragsizeIsMinimum()``,
+and its request builder emits ``h1.method`` instead of ``hl.method``, so the Unified Highlighter
+never reached Solr. Composer resolves this on update; installations that pin ``solarium/solarium``
+themselves must allow 6.2.4.
+
+!!! Recommendation: align existing Solr volumes with the new configset
+----------------------------------------------------------------------
+
+The ``ext_solr_11_6_0_elts`` configset now sets the Unified Highlighter as default on both the ``/select`` and ``/browse`` request handlers.
+Solr volumes created from older configsets default to the legacy highlighter and remain vulnerable to the ``FieldExistsQuery`` HTTP 500 oracle
+when queried directly (bypassing EXT:solr).
+Run the bundled migration script against the existing configset to align the defaults;
+the script is idempotent and writes a ``solrconfig.xml.Backup-SST-235567`` backup next to the modified file:
+
+*   ``Docker/SolrServer/docker-entrypoint-initdb.d-as-sudo/fix-SST-235567-2026050810000025-highlighter-defaults.sh``
+
+EXT:solr itself enforces the Unified Highlighter unconditionally in PHP, so this configset alignment is a defence-in-depth measure
+for clients that query Solr directly.
+
+
+All Changes
+-----------
+(filled at release time)
+
+
 Release 11.6.5 ELTS
 ===================
 
