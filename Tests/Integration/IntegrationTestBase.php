@@ -124,6 +124,17 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         $this->assertSolrIsEmpty($coreName);
     }
 
+    protected function cleanUpAllCoresOnSolrServerAndAssertEmpty(): void
+    {
+        foreach ($this->testSolrCores as $coreName) {
+            try {
+                $this->cleanUpSolrServerAndAssertEmpty($coreName);
+            } catch (InvalidArgumentException) {
+                // no wrong cores can be passed there, nothing to do.
+            }
+        }
+    }
+
     /**
      * @param string $coreName
      * @return array|false
