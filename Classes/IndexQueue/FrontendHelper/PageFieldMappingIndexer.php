@@ -23,9 +23,10 @@ use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\InvalidFieldNameException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+
+use function json_decode;
 
 /**
  * Indexer to add / overwrite page document fields as defined in
@@ -120,14 +121,13 @@ class PageFieldMappingIndexer
                 $pageIndexingConfiguration[$solrFieldName . '.']
             );
 
-            try {
-                $unserializedFieldValue = @unserialize($fieldValue);
-                if (is_array($unserializedFieldValue) || is_object($unserializedFieldValue)) {
-                    $fieldValue = $unserializedFieldValue;
-                }
-            } catch (Throwable) {
-                // Evil catch, but anyway do nothing to prevent fluting the logs on indexing.
-                // If the cObject implementation do not provide data the fields are not present in index, which will be noticed and fixed by devs/integrators.
+            // SOLR_MULTIVALUE / SOLR_RELATION / SOLR_CLASSIFICATION return their multi-value payload as a JSON-encoded array.
+            $decodedFieldValue = json_decode(
+                $fieldValue,
+                true,
+            );
+            if (is_array($decodedFieldValue)) {
+                $fieldValue = $decodedFieldValue;
             }
         } else {
             $fieldValue = $pageRecord[$pageIndexingConfiguration[$solrFieldName]] ?? null;
