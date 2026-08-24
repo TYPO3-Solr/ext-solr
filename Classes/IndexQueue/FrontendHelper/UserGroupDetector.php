@@ -74,27 +74,11 @@ class UserGroupDetector implements
     {
         $this->activated = true;
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = UserGroupDetector::class . '->deactivateTcaFrontendGroupEnableFields';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = UserGroupDetector::class . '->checkEnableFields';
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__] = UserGroupDetector::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__] = UserGroupDetector::class;
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
-    }
-
-    /**
-     * Disables the group access check by resetting the fe_group field in the given page table row.
-     * Will be called by the hook in the TypoScriptFrontendController in the checkEnableFields() method.
-     * @see TypoScriptFrontendController::checkEnableFields
-     *
-     * @noinspection PhpUnusedParameterInspection
-     *               PhpUnused used in {@link self::activate()} "hook_checkEnableFields"
-     */
-    public function checkEnableFields(
-        array &$parameters,
-        TypoScriptFrontendController $tsfe,
-    ): void {
-        $parameters['row']['fe_group'] = '';
     }
 
     /**
