@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface;
-use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageOverlayHookInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
@@ -35,8 +34,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class UserGroupDetector extends AbstractFrontendHelper implements
     SingletonInterface,
     ContentObjectPostInitHookInterface,
-    PageRepositoryGetPageHookInterface,
-    PageRepositoryGetPageOverlayHookInterface
+    PageRepositoryGetPageHookInterface
 {
     /**
      * This frontend helper's executed action.
@@ -73,7 +71,6 @@ class UserGroupDetector extends AbstractFrontendHelper implements
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = UserGroupDetector::class . '->checkEnableFields';
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__] = UserGroupDetector::class;
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__] = UserGroupDetector::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__] = UserGroupDetector::class;
     }
@@ -132,26 +129,6 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     ) {
         $disableGroupAccessCheck = true;
         $parentObject->where_groupAccess = ''; // just to be on the safe side
-    }
-
-    /**
-     * Modifies page records so that when checking for access through fe groups
-     * no groups or extendToSubpages flag is found and thus access is granted.
-     *
-     * @param array $pageInput Page record
-     * @param int $lUid Overlay language ID
-     * @param PageRepository $parent Parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
-     */
-    public function getPageOverlay_preProcess(
-        &$pageInput,
-        &$lUid,
-        PageRepository $parent
-    ) {
-        if (!is_array($pageInput)) {
-            return;
-        }
-        $pageInput['fe_group'] = '';
-        $pageInput['extendToSubpages'] = '0';
     }
 
     // execution

@@ -105,6 +105,28 @@ The response is uniform, so it cannot be used to probe whether a restricted docu
 As defence in depth, review whether your templates still expose ``data-document-id`` and mask it where the document id should not be publicly visible.
 
 
+!!! Security: page indexer no longer forges access fields on page records (CVE-2026-56092)
+-------------------------------------------------------------------------------------------
+
+During a page-indexer sub-request, EXT:solr forced ``fe_group`` and ``extendToSubpages`` to public
+values on every ``pages`` record it touched, so the indexer itself would not be blocked by access
+restrictions.
+
+On TYPO3 11 those forged values were written into the shared ``rootline`` cache. No anonymous-access
+bypass could be reproduced on this branch: the override only applies while a translated view is being
+resolved, whereas a visitor of an untranslated page is served — and cached — from the original record,
+and where a translation does exist the language overlay replaces the forged fields with the translated
+page's own values. The corrupted entries are wrong regardless, and a manually corrupted entry *is*
+honoured by the frontend access check, so this is fixed rather than tolerated. On TYPO3 13 the same
+override reached the entries visitors do read, which is where the reported disclosure occurred.
+
+The indexer no longer forges these fields. The access bypass it needs during indexing was already
+provided safely, without touching any persisted cache, by EXT:solr's other, unaffected mechanisms.
+
+**Flush the rootline cache after updating.** Entries written by earlier 11.6.x releases keep the forged
+values until they are rebuilt.
+
+
 All Changes
 -----------
 (filled at release time)
