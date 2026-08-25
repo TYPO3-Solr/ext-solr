@@ -153,7 +153,7 @@ jobs:
         name: Mount RAMFS
         run: |
           mkdir -p ${{ env.CI_BUILD_DIRECTORY }}
-          sudo mount -t tmpfs -o size=1G none ${{ env.CI_BUILD_DIRECTORY }}
+          sudo mount -t tmpfs -o size=2G none ${{ env.CI_BUILD_DIRECTORY }}
           sudo mkdir -p ${{ env.CI_BUILD_DIRECTORY }}/data-{solr,mysql} \
             && sudo chown $USER ${{ env.CI_BUILD_DIRECTORY }}/data-mysql \
             && sudo chown 8983:8983 ${{ env.CI_BUILD_DIRECTORY }}/data-solr
@@ -194,11 +194,20 @@ jobs:
             && sudo du -sh "${{ env.CI_BUILD_DIRECTORY }}"
       -
         name: CI-Build
+        run: ./Build/Test/cibuild.sh
+      -
+        # Must run on failure too: a full RAMFS surfaces as unrelated-looking test
+        # errors ("Can not link extension folder", dangling error handlers), so the
+        # report has to outlive the failure it explains.
+        name: Disk report
+        if: always()
+        continue-on-error: true
         run: |
-          ./Build/Test/cibuild.sh
-          echo "Current Size of EXT:Solr build Artefacts after run: " \
-            && sudo du -sh "${{ env.CI_BUILD_DIRECTORY }}" \
-            && sudo du -sh ${{ env.CI_BUILD_DIRECTORY }}/*
+          echo "RAMFS usage (mounted with size=2G): "
+          df -h "${{ env.CI_BUILD_DIRECTORY }}"
+          echo "Current Size of EXT:Solr build Artefacts after run: "
+          sudo du -sh "${{ env.CI_BUILD_DIRECTORY }}"
+          sudo du -sh "${{ env.CI_BUILD_DIRECTORY }}"/* | sort -rh
       -
         name: Clean up
         run: |
