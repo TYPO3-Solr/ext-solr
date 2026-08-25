@@ -101,7 +101,16 @@ provided safely, without touching any persisted cache, by EXT:solr's other, unaf
 
 All Changes
 -----------
-(filled at release time)
+
+*   [SECURITY] Fix CVE-2026-56096 — close FVH FieldExistsQuery HTTP 500 oracle by @dkd-kaehm in `73c4a52af <https://github.com/TYPO3-Solr/ext-solr/commit/73c4a52afb9fcd341656d2a3af546413d6f081a1>`_
+*   [SECURITY] Fix CVE-2026-56096 — edismax uf whitelist by @dkd-kaehm in `918c4c957 <https://github.com/TYPO3-Solr/ext-solr/commit/918c4c957f3aa1a8c4d66a38fc7218a31bcb1477>`_
+*   [SECURITY] Fix CVE-2026-56096 — escape user query syntax by @dkd-kaehm in `a63c3e586 <https://github.com/TYPO3-Solr/ext-solr/commit/a63c3e586fbdb7885b50666a5101b1716e4d9d6f>`_
+*   !!![SECURITY] Fix CVE-2026-56095 — JSON transport for multi-value cObjs by @dkd-kaehm in `268bc8124 <https://github.com/TYPO3-Solr/ext-solr/commit/268bc812417be83a536055109ab41df269f608c2>`_
+*   [SECURITY] Fix CVE-2026-56094 — Prevent request additionalFilters from preempting siteHash filter by @dkd-kaehm in `925596ac2 <https://github.com/TYPO3-Solr/ext-solr/commit/925596ac2e8d88cad86f5009eec7dd95345fbfe1>`_
+*   [SECURITY] Fix CVE-2026-56093 — Enforce siteHash and access filters in detailAction lookup by @dkd-kaehm in `058af60ac <https://github.com/TYPO3-Solr/ext-solr/commit/058af60acd8a18588daff51954e8e67ca50a9943>`_
+*   [TASK] Drop dead checkEnableFields() hook from UserGroupDetector by @dkd-kaehm in `17292d950 <https://github.com/TYPO3-Solr/ext-solr/commit/17292d950086d30899d6f05fb6af2f5e511f31d6>`_
+*   [SECURITY] Fix CVE-2026-56092 — Stop rootline cache poisoning via forged fe_group/extendToSubpages by @dkd-kaehm in `796e9a87f <https://github.com/TYPO3-Solr/ext-solr/commit/796e9a87f9f830f080419e24f952a087076953f0>`_
+
 
 Release 12.1.3
 ==============
