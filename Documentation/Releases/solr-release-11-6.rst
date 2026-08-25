@@ -129,7 +129,19 @@ values until they are rebuilt.
 
 All Changes
 -----------
-(filled at release time)
+
+*   [DOCS] Fix 11.6 docs metadata, archive Releases 11.2, align index directives by @dkd-kaehm in `294833d7a <https://github.com/TYPO3-Solr/ext-solr/commit/294833d7ae28f6022bcef6e3f88becb0e3c145df>`_
+*   [SECURITY] Fix CVE-2026-56096 — close FVH FieldExistsQuery HTTP 500 oracle by @dkd-kaehm in `2ca0e8b47 <https://github.com/TYPO3-Solr/ext-solr/commit/2ca0e8b47ee36f2e06237b1db6235495b5151be1>`_
+*   [SECURITY] Fix CVE-2026-56096 — edismax uf whitelist by @dkd-kaehm in `fc0381c96 <https://github.com/TYPO3-Solr/ext-solr/commit/fc0381c964674f576bf5ff2bd48b0694613426c1>`_
+*   [SECURITY] Fix CVE-2026-56096 — escape user query syntax by @dkd-kaehm in `9cc887eb4 <https://github.com/TYPO3-Solr/ext-solr/commit/9cc887eb4a4b3f3118c541044efc527679539758>`_
+*   !!![SECURITY] Fix CVE-2026-56095 — JSON transport for multi-value cObjs by @dkd-kaehm in `6fd773ed7 <https://github.com/TYPO3-Solr/ext-solr/commit/6fd773ed73cb9f32d2f58f14ac4d52454a00a47f>`_
+*   [TASK] fix Github Actions warnings by @dkd-kaehm in `b663d4ff8 <https://github.com/TYPO3-Solr/ext-solr/commit/b663d4ff8c947050756983909aa4ea40e0206b9b>`_
+*   [SECURITY] Fix CVE-2026-56094 — Prevent request additionalFilters from preempting siteHash filter by @dkd-kaehm in `114b4a90f <https://github.com/TYPO3-Solr/ext-solr/commit/114b4a90f77099c2c458ecb67312f44fbe3aed87>`_
+*   [SECURITY] Fix CVE-2026-56093 — Enforce siteHash and access filters in detailAction lookup by @dkd-kaehm in `a30973356 <https://github.com/TYPO3-Solr/ext-solr/commit/a30973356ea6b9a0f86ff0c39b6d2c35fb7be4de>`_
+*   [SECURITY] Fix CVE-2026-56092 — Stop rootline cache poisoning via forged fe_group/extendToSubpages by @dkd-kaehm in `40ab4e9b8 <https://github.com/TYPO3-Solr/ext-solr/commit/40ab4e9b8e82519afe66eb9be4f9ce175c415806>`_
+*   [BUGFIX] Check rootline for feGroups from page with extendToSubpages set by Tim Horstmann in `33698d117 <https://github.com/TYPO3-Solr/ext-solr/commit/33698d117a6d083a9e2f63131ebb03ad7517d770>`_
+*   [BUGFIX] Log TSFE initialization failures instead of swallowing them by @kitzberger in `e0658a644 <https://github.com/TYPO3-Solr/ext-solr/commit/e0658a6441d38bbe07a92befd52738dc04f5bbf4>`_
+*   [BUGFIX] Fallback for failed TSFE initialization when determining isAllowedPageType() by @kitzberger in `fd8fd96a5 <https://github.com/TYPO3-Solr/ext-solr/commit/fd8fd96a5ac4f25281ac574b378481dc7d1b285f>`_
 
 
 Release 11.6.5 ELTS
