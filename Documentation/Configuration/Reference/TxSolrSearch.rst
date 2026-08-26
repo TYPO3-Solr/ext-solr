@@ -618,12 +618,12 @@ results.resultsHighlighting
 :TS Path: plugin.tx_solr.search.results.resultsHighlighting
 :Since: 1.0
 :Default: 0
-:See: `Apache Solr Wiki / FastVectorHighlighter <https://cwiki.apache.org/confluence/display/solr/FastVector+Highlighter>`_
+:See: `Apache Solr Reference Guide / Highlighting <https://solr.apache.org/guide/solr/9_10/query-guide/highlighting.html>`_
 
 En-/disables search term highlighting on the results page.
 
 ..  note::
-    The FastVectorHighlighter is used by default (Since 4.0) if fragmentSize is set to at least 18 (this is required by the FastVectorHighlighter to work).
+    Since 13.1.4 the Unified Highlighter is used unconditionally, regardless of fragmentSize. If Solr cannot generate a highlighted snippet for a field, it returns a leading-text default summary of approximately hl.snippets * fragmentSize characters.
 
 ..  note::
     The highlighting component will not work for vector search (`query.type=1`), as no classic search term is used/available to be highlighted. Using the siteHighlighting and an adjusted JavaScript could be an alternative approach.
@@ -638,8 +638,8 @@ results.resultsHighlighting.highlightFields
 
 A comma-separated list of fields to highlight.
 
-Note: The highlighting in Solr (based on FastVectorHighlighter requires a field datatype with **termVectors=on**, **termPositions=on** and **termOffsets=on** which is the case for the content field).
-If you add other fields here, make sure that you are using a datatype where this is configured.
+Note: The Unified Highlighter uses **hl.offsetSource=ANALYSIS**, so term vectors are not required.
+Highlighted fields must be stored, and their analysis should be compatible with the queried fields.
 
 results.resultsHighlighting.fragmentSize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
