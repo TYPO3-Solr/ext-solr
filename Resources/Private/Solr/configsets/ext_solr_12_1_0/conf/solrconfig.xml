@@ -151,8 +151,7 @@
 			<str name="hl.bs.type">WORD</str>
 			<str name="hl.fragsizeIsMinimum">false</str>
 
-			<str name="f.content.hl.alternateField">content</str>
-			<str name="f.content.hl.maxAlternateFieldLength">200</str>
+			<str name="f.content.hl.defaultSummary">true</str>
 
 			<str name="spellcheck">false</str>
 			<str name="spellcheck.onlyMorePopular">false</str>

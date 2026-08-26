@@ -44,3 +44,21 @@ if ! grep -q "${PATCH_MARKER}" "${PATH_AND_FILENAME_SOLRCONFIG}" \
 			<str name=\"hl.bs.type\">WORD</str>\\
 			<str name=\"hl.fragsizeIsMinimum\">false</str>" "${PATH_AND_FILENAME_SOLRCONFIG}"
 fi
+
+# The Unified Highlighter does not support hl.alternateField: replace the
+# leading-text fallback with its hl.defaultSummary equivalent.
+# Runs independently of the block above so that cores migrated by an earlier
+# version of this script are aligned as well. All checks and edits are scoped
+# to the /select request handler to leave customized handlers untouched.
+PATH_AND_FILENAME_BACKUP_SUMMARY="${PATH_SOLRCONFIG}/solrconfig.xml.Backup-unified-defaultSummary"
+SELECT_HANDLER_RANGE='/<requestHandler name="\/select"/,/<\/requestHandler>/'
+
+if sed -n "${SELECT_HANDLER_RANGE}p" "${PATH_AND_FILENAME_SOLRCONFIG}" | grep -q '<str name="f.content.hl.alternateField">content</str>' \
+	&& ! sed -n "${SELECT_HANDLER_RANGE}p" "${PATH_AND_FILENAME_SOLRCONFIG}" | grep -q 'f.content.hl.defaultSummary'; then
+	echo "  replacing f.content.hl.alternateField by f.content.hl.defaultSummary in the /select handler (alternateField is ignored by the Unified Highlighter)"
+
+	cp "${PATH_AND_FILENAME_SOLRCONFIG}" "${PATH_AND_FILENAME_BACKUP_SUMMARY}"
+
+	sed -i "${SELECT_HANDLER_RANGE} s|<str name=\"f.content.hl.alternateField\">content</str>|<str name=\"f.content.hl.defaultSummary\">true</str>|" "${PATH_AND_FILENAME_SOLRCONFIG}"
+	sed -i "${SELECT_HANDLER_RANGE} {/<str name=\"f.content.hl.maxAlternateFieldLength\">/d}" "${PATH_AND_FILENAME_SOLRCONFIG}"
+fi
