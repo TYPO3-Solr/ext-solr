@@ -196,6 +196,7 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilderInte
         $highlighting->setOffsetSource(SolariumHighlightingInterface::OFFSETSOURCE_ANALYSIS);
         $highlighting->setBoundaryScannerType('WORD');
         $highlighting->setFragsizeIsMinimum(false);
+        $highlighting->setDefaultSummary(true);
 
         if ($this->getPrefix() !== '' && $this->getPostfix() !== '') {
             $highlighting->setSimplePrefix($this->getPrefix());
