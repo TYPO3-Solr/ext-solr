@@ -433,7 +433,22 @@ class QueryBuilderTest extends UnitTest
     /**
      * @test
      */
-    public function canSetQueryString()
+    public function defaultSummaryIsRequestedWhenHighlightingIsEnabled(): void
+    {
+        $fakeConfiguration = new TypoScriptConfiguration([]);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
+        $highlighting = Highlighting::fromTypoScriptConfiguration($fakeConfiguration);
+        $highlighting->setIsEnabled(true);
+        $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
+        $queryParameters = $this->getAllQueryParameters($query);
+
+        self::assertSame('true', $queryParameters['hl.defaultSummary'], 'Highlighting did not request hl.defaultSummary, the Unified Highlighter replacement for hl.alternateField');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetQueryString(): void
     {
         $query = $this->getInitializedTestSearchQuery('i like solr');
         self::assertSame('i like solr', $query->getQuery(), 'Can not set and get query string');
