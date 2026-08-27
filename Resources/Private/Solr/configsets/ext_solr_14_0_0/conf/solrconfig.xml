@@ -146,10 +146,12 @@
 			<int name="hl.snippets">3</int>
 			<str name="hl.mergeContiguous">true</str>
 			<str name="hl.requireFieldMatch">true</str>
-			<str name="hl.method">original</str>
+			<str name="hl.method">unified</str>
+			<str name="hl.offsetSource">ANALYSIS</str>
+			<str name="hl.bs.type">WORD</str>
+			<str name="hl.fragsizeIsMinimum">false</str>
 
-			<str name="f.content.hl.alternateField">content</str>
-			<str name="f.content.hl.maxAlternateFieldLength">200</str>
+			<str name="f.content.hl.defaultSummary">true</str>
 
 			<str name="spellcheck">false</str>
 			<str name="spellcheck.onlyMorePopular">false</str>
@@ -218,6 +220,10 @@
 			<str name="hl.encoder">html</str>
 			<str name="hl.simple.pre">&lt;b&gt;</str>
 			<str name="hl.simple.post">&lt;/b&gt;</str>
+			<str name="hl.method">unified</str>
+			<str name="hl.offsetSource">ANALYSIS</str>
+			<str name="hl.bs.type">WORD</str>
+			<str name="hl.fragsizeIsMinimum">false</str>
 		</lst>
 		<arr name="last-components">
 			<str>spellcheck</str>
