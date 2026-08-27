@@ -87,7 +87,8 @@ final class SearchTest extends IntegrationTestBase
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $this->indexPages(range(2, 16));
 
-        // fragmentSize 50 => fastVector
+        // The Unified Highlighter keeps fragmentSize as a soft upper bound,
+        // so decreasing it must shorten the returned fragment: 50 > 20 > 10.
         $typoScriptConfiguration = new TypoScriptConfiguration([
             'plugin.' => [
                 'tx_solr.' => [
@@ -109,7 +110,7 @@ final class SearchTest extends IntegrationTestBase
         $parsedData = $this->searchInstance->search($query)->getParsedData();
         $highlightString = current((array)$parsedData->highlighting)?->title[0];
 
-        // fragmentSize 20 => fastVector
+        // fragmentSize 20
         $typoScriptConfiguration->mergeSolrConfiguration([
             'search.' => [
                 'results.' => [
@@ -123,7 +124,7 @@ final class SearchTest extends IntegrationTestBase
         $parsedData = $this->searchInstance->search($query)->getParsedData();
         $highlightString2 = current((array)$parsedData->highlighting)?->title[0];
 
-        // fragmentSize 10 => original
+        // fragmentSize 10
         $typoScriptConfiguration->mergeSolrConfiguration([
             'search.' => [
                 'results.' => [
