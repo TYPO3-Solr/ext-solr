@@ -559,12 +559,14 @@ results.resultsHighlighting
 :TS Path: plugin.tx_solr.search.results.resultsHighlighting
 :Since: 1.0
 :Default: 0
-:See: `Apache Solr Reference Guide / FastVector Highlighter <https://solr.apache.org/guide/solr/10_0/query-guide/highlighting.html#fastvector-highlighter>`_
+:See: `Apache Solr Reference Guide / Unified Highlighter <https://solr.apache.org/guide/solr/10_0/query-guide/highlighting.html#the-unified-highlighter>`_
 
 En-/disables search term highlighting on the results page.
 
 ..  note::
-    The FastVectorHighlighter is used by default (Since 4.0) if fragmentSize is set to at least 18 (this is required by the FastVectorHighlighter to work).
+    The Unified Highlighter is used unconditionally (Since 14.0, and 13.1.4).
+    It replaces the FastVectorHighlighter, which crashed with HTTP 500 on ``field:*`` queries
+    and thereby exposed a field-existence oracle on the indexed schema (CVE-2026-56096).
 
 ..  note::
     The highlighting component will not work for vector search (`query.type=1`), as no classic search term is used/available to be highlighted. Using the siteHighlighting and an adjusted JavaScript could be an alternative approach.
@@ -579,8 +581,11 @@ results.resultsHighlighting.highlightFields
 
 A comma-separated list of fields to highlight.
 
-Note: The highlighting in Solr (based on FastVectorHighlighter requires a field datatype with **termVectors=on**, **termPositions=on** and **termOffsets=on** which is the case for the content field).
-If you add other fields here, make sure that you are using a datatype where this is configured.
+Note: The Unified Highlighter is requested with ``hl.offsetSource=ANALYSIS``, so it re-analyzes the stored
+field value at query time instead of reading offsets from the index.
+Highlighted fields therefore only need to be **stored=true**;
+**termVectors**, **termPositions** and **termOffsets** are no longer required.
+If you add other fields here, make sure that they are stored.
 
 results.resultsHighlighting.fragmentSize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

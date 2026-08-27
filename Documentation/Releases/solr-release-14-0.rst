@@ -166,6 +166,43 @@ This also fixes a latent bug where the misspelled term was captured from the arr
 See `#4659 <https://github.com/TYPO3-Solr/ext-solr/issues/4659>`_.
 
 
+Security: CVE-2026-56096 — FieldExistsQuery HTTP 500 Oracle Closed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A stand-alone ``field:*`` query was forwarded through the FastVector Highlighter (FVH).
+Lucene rewrote it to a ``FieldExistsQuery``, which FVH could not handle, and the request failed with HTTP 500 —
+turning the response status into a field-existence oracle on the indexed schema.
+
+Fix: EXT:solr now requests the Unified Highlighter unconditionally, with ``hl.offsetSource=ANALYSIS``
+so that highlighted fields do not need ``storeOffsetsWithPositions``.
+``hl.bs.type=WORD`` and ``hl.fragsizeIsMinimum=false`` are kept,
+so ``fragmentSize`` retains its soft upper bound.
+``hl.defaultSummary=true`` replaces the ``hl.alternateField`` teaser fallback,
+which the Unified Highlighter ignores.
+
+The shipped ``ext_solr_14_0_0`` configset sets the same defaults on the ``/select`` and ``/browse`` request handlers.
+
+..  attention::
+    **Docker users:** the configset is copied into the Solr data volume on first container start,
+    so pulling a new EXT:solr version does not refresh an existing volume.
+    If you already run a Solr container seeded from a pre-release ``ext_solr_14_0_0`` configset,
+    its ``/select`` and ``/browse`` handlers still default to the legacy highlighter
+    and stay vulnerable when queried directly, bypassing EXT:solr.
+    Remove the Solr data volume and restart the container so the patched configset is seeded,
+    then re-index — dropping the volume also drops the index.
+
+    EXT:solr itself enforces the Unified Highlighter in PHP,
+    so this configset alignment is a defence-in-depth measure for clients that query Solr directly.
+
+No stable 14.0.0 release shipped the vulnerable configset,
+so the ``fix-SST-235567-2026050810000025-highlighter-defaults.sh`` migration script
+that accompanies the 13.1.4 release is not part of 14.0.0.
+
+Also released for TYPO3 13 LTS as EXT:solr 13.1.4.
+
+SST ticket: #2026050810000025, dkd: #235567
+
+
 Breaking Changes
 ----------------
 
@@ -433,6 +470,21 @@ Since EXT:solr 9 and Apache Solr 7 dynamic fields based on trie fields are marke
 *   *_tDouble4 (-> _double4M)
 *   *_tDate (-> _dateS)
 *   *_tDate (-> _dateM)
+
+
+!!! Highlighting::getUseFastVectorHighlighter() removed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:php:`ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Highlighting::getUseFastVectorHighlighter()`
+returned whether ``fragmentSize`` was large enough (``>= 18``) for the FastVector Highlighter.
+Since the Unified Highlighter is now used unconditionally (see CVE-2026-56096 above),
+the method had no effect on the built query.
+It was deprecated in 13.1.4 and is removed in 14.0.0.
+
+The related query parameter ``hl.useFastVectorHighlighter`` is no longer sent;
+``hl.method=unified`` is sent instead.
+
+*Migration:* Drop the call. There is no replacement — the highlighter is no longer switchable via ``fragmentSize``.
 
 
 All Changes
