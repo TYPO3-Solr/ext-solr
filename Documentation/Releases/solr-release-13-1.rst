@@ -54,6 +54,63 @@ object-injection sink by an attacker who can influence an indexed record field.
 Third-party content objects that returned ``serialize($array)`` for a multi-value Solr field must switch
 to ``json_encode($array)``; no other change is required.
 
+For custom indexing implementations that populate a multi-value Solr field directly, the same principle
+applies. The value assigned to the field must be JSON-encoded rather than PHP-serialized.
+
+For example, a custom ``BeforeDocumentsAreIndexedEvent`` listener may extract one or more coordinate
+sets from the indexed record and assign them to a Solr field:
+
+.. code-block:: php
+
+   public function __invoke(BeforeDocumentsAreIndexedEvent $event): void
+   {
+       $indexQueueItem = $event->getIndexQueueItem();
+
+       $coordinates = json_encode(
+           $this->extractCoordinatesFromRecord(
+               $indexQueueItem->getRecord(),
+               $indexQueueItem->getType()
+           ),
+           JSON_UNESCAPED_UNICODE
+       );
+
+       $event->getDocument()->setField('###solr-field-name-here###', $coordinates);
+   }
+
+The important part of the migration is that the complete multi-value array returned by the custom
+extraction logic is passed to ``json_encode()`` before it is assigned to the Solr field.
+
+For example, an extracted value such as:
+
+.. code-block:: php
+
+   [
+       [
+           'latitude' => 48.135125,
+           'longitude' => 11.581981,
+       ],
+   ]
+
+is transported as JSON:
+
+.. code-block:: json
+
+   [{"latitude":48.135125,"longitude":11.581981}]
+
+Multiple values are represented by additional objects in the same JSON array:
+
+.. code-block:: json
+
+   [
+       {"latitude":48.135125,"longitude":11.581981,"city":"Munich"},
+       {"latitude":50.110924,"longitude":8.682127,"city":"Frankfurt"},
+       {"latitude":53.551086,"longitude":9.993682,"city":"Hamburg"}
+   ]
+
+No change to the underlying extraction logic or to the structure of the PHP array is required.
+The required change is solely the transport format: replace ``serialize($array)`` with
+``json_encode($array)`` when assigning the multi-value payload to the Solr field.
+
 
 !!! Security: additionalFilters can no longer preempt the siteHash filter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
