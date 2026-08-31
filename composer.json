@@ -132,6 +132,14 @@
     "tests:phpstan": [
       "phpstan analyze -c Build/Test/phpstan.neon"
     ],
+    "tests:known-tests": [
+      "Composer\\Config::disableProcessTimeout",
+      "@php Build/Test/known-tests.php"
+    ],
+    "tests:known-tests:update": [
+      "Composer\\Config::disableProcessTimeout",
+      "@php Build/Test/known-tests.php --update"
+    ],
     "t3:standards:fix": [
       "php-cs-fixer fix"
     ],
