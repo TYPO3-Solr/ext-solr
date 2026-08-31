@@ -230,11 +230,9 @@ final class QueueTest extends IntegrationTestBase
         $availableSites = $this->siteRepository->getAvailableSites();
         $this->indexQueue->deleteAllItems();
 
-        if (is_array($availableSites)) {
-            foreach ($availableSites as $site) {
-                if ($site instanceof Site) {
-                    $this->queueInitializationService->initializeBySiteAndIndexConfiguration($site);
-                }
+        foreach ($availableSites as $site) {
+            if ($site instanceof Site) {
+                $this->queueInitializationService->initializeBySiteAndIndexConfiguration($site);
             }
         }
 
