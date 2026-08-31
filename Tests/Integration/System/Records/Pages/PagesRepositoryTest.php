@@ -25,10 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 final class PagesRepositoryTest extends IntegrationTestBase
 {
-    /**
-     * @var PagesRepository
-     */
-    protected $repository;
+    protected PagesRepository $repository;
 
     protected function setUp(): void
     {
