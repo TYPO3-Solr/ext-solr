@@ -30,15 +30,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 final class PageTest extends IntegrationTestBase
 {
-    /**
-     * @var Page
-     */
-    protected $pageInitializer;
+    protected Page $pageInitializer;
 
-    /**
-     * @var Queue
-     */
-    protected $indexQueue;
+    protected Queue $indexQueue;
 
     protected function setUp(): void
     {

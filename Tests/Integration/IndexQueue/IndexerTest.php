@@ -44,14 +44,8 @@ final class IndexerTest extends IntegrationTestBase
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension2',
     ];
 
-    /**
-     * @var Queue|null
-     */
     protected ?Queue $indexQueue = null;
 
-    /**
-     * @var Indexer|null
-     */
     protected ?Indexer $indexer = null;
 
     protected function setUp(): void

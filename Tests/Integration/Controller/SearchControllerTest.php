@@ -36,15 +36,9 @@ use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
  */
 final class SearchControllerTest extends IntegrationTestBase
 {
-    /**
-     * @var SearchController
-     */
-    protected $searchController;
+    protected SearchController $searchController;
 
-    /**
-     * @var Response
-     */
-    protected $searchResponse;
+    protected Response $searchResponse;
 
     protected function setUp(): void
     {

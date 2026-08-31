@@ -28,17 +28,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 final class QueueTest extends IntegrationTestBase
 {
-    /**
-     * @var Queue
-     */
-    protected $indexQueue;
+    protected Queue $indexQueue;
 
     protected QueueInitializationService $queueInitializationService;
 
-    /**
-     * @var SiteRepository
-     */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
     protected function setUp(): void
     {
