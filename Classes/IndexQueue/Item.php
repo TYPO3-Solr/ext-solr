@@ -93,11 +93,6 @@ class Item implements ItemInterface, MountPointAwareItemInterface
      */
     protected int $itemPid = 0;
 
-    /**
-     * The indexing priority
-     *
-     * @var int
-     */
     protected int $indexingPriority = 0;
 
     /**
