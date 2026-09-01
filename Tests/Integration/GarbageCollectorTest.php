@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\ItemInterface;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -52,7 +51,6 @@ final class GarbageCollectorTest extends IntegrationTestBase
     protected DataHandler $dataHandler;
     protected Queue $indexQueue;
     protected GarbageCollector $garbageCollector;
-    protected Indexer $indexer;
     protected ExtensionConfiguration $extensionConfiguration;
     protected EventQueueItemRepository $eventQueue;
     protected BackendUserAuthentication $backendUser;
@@ -77,7 +75,6 @@ final class GarbageCollectorTest extends IntegrationTestBase
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
-        $this->indexer = GeneralUtility::makeInstance(Indexer::class);
         $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
@@ -96,7 +93,6 @@ final class GarbageCollectorTest extends IntegrationTestBase
             $this->dataHandler,
             $this->indexQueue,
             $this->garbageCollector,
-            $this->indexer,
             $this->extensionConfiguration,
             $this->extSolrExtensionConfigurationObject,
             $this->eventQueue,
@@ -182,6 +178,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     protected function prepareQueueItemStaysWhenOverlayIsSetToHidden(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/queue_item_stays_when_overlay_set_to_hidden.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         $this->assertIndexQueueContainsItemAmount(1);
 
@@ -192,6 +189,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     public function canQueueAPageAndRemoveItWithTheGarbageCollector(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/subpage.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -237,6 +235,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     protected function prepareCanCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/page_hidden_and_extendtosubpages.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -289,6 +288,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     {
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/page_hidden_and_extendtosubpages_multiple_subpages.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -315,6 +315,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     public function canCollectGarbageIfPageTreeIsMoved(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_collect_garbage_if_page_tree_is_moved.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         $this->assertEmptyIndexQueue();
         $this->addToQueueAndIndexRecord('pages', 10);
@@ -339,6 +340,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     public function canCollectGarbageIfPageTreeIsMovedToSysfolderWithDisabledOptionIncludeSubEntriesInSearch(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_collect_garbage_if_page_tree_is_moved.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         $this->assertEmptyIndexQueue();
         $this->addToQueueAndIndexRecord('pages', 10);
@@ -362,6 +364,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     public function canCollectGarbageIfPageTreeIsMovedButStaysOnSamePage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_collect_garbage_if_page_tree_is_moved.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         $this->assertEmptyIndexQueue();
         $this->addToQueueAndIndexRecord('pages', 10);
@@ -404,6 +407,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     protected function prepareCanCollectGarbageEvenIfNotInIndexQueue(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/subpage.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         $this->assertEmptyIndexQueue();
         $this->addToQueueAndIndexRecord('pages', 2);
@@ -451,6 +455,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     protected function prepareCanCollectGarbageOfDeletedRecordEvenIfNotInIndexQueue(bool $forceHardDelete): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/subpage.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         $this->assertEmptyIndexQueue();
         $this->addToQueueAndIndexRecord('pages', 2);
@@ -724,6 +729,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     {
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexed_content.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         // we index a page with two content elements and expect solr contains the content of both
         $this->indexPages([1]);
@@ -915,6 +921,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     {
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture);
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         // we index a page with two content elements and expect solr contains the content of both
         $this->indexPages($indexPageIds);
@@ -1017,6 +1024,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     {
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/deleted_page_and_content.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $cmdMap = ['tt_content' => [321 => ['delete' => 1 ]]];
 
         $this->dataHandler->start([], $cmdMap, $this->backendUser);
@@ -1036,6 +1044,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     {
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/deleted_page_and_content.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $cmdMap = ['tt_content' => [432 => ['delete' => 1 ]]];
 
         $this->dataHandler->start([], $cmdMap, $this->backendUser);
@@ -1057,6 +1066,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
         self::assertEquals(1, $connection->update('pages', ['deleted' => 1], ['uid' => 1]));
 
         $this->importCSVDataSet(__DIR__ . '/Fixtures/deleted_page_and_content.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $cmdMap = ['tt_content' => [321 => ['delete' => 1 ]]];
 
         $this->dataHandler->start([], $cmdMap, $this->backendUser);
@@ -1080,6 +1090,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
     {
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_remove_page.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         // we index two pages and check that both are visible
         $this->indexPages([1, 2]);
@@ -1172,7 +1183,7 @@ final class GarbageCollectorTest extends IntegrationTestBase
         // run the indexer
         $items = $this->indexQueue->getItems($table, $uid);
         foreach ($items as $item) {
-            $result = $this->indexer->index($item);
+            $result = $this->indexQueuedItem($item);
             if ($result === false) {
                 break;
             }
