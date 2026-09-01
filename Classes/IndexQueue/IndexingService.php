@@ -408,7 +408,17 @@ readonly class IndexingService
                     'exception' => $e->__toString(),
                 ],
             );
-            return null;
+
+            // Returning null here would reach the caller as "not indexed" and leave nothing but
+            // this log entry behind. Handing the throwable on lets IndexService record it on the
+            // queue item, so the reason is visible where the failure is.
+            throw new SolrIndexRuntimeException(
+                'The "' . $instructions->getAction() . '" sub-request for Index Queue item '
+                . $item->getIndexQueueUid() . ' (' . $item->getType() . ':' . $item->getRecordUid()
+                . ', language ' . $language . ') failed: ' . $e->getMessage(),
+                1788263400,
+                $e,
+            );
         }
     }
 
