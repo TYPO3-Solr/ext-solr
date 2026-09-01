@@ -692,6 +692,59 @@ the payload with ``json_decode()`` only.
 field has to switch to ``json_encode($array)``. Nothing else changes, the decoded payload still has
 to be an array to be taken over.
 
+The same principle applies to a custom indexing implementation that populates a multi-value Solr
+field directly: the value assigned to the field has to be JSON-encoded rather than PHP-serialized.
+A listener on :php:`BeforeDocumentsAreIndexedEvent` that derives one or more coordinate sets from
+the indexed record assigns them like this:
+
+..  code-block:: php
+
+    public function __invoke(BeforeDocumentsAreIndexedEvent $event): void
+    {
+        $indexQueueItem = $event->getIndexQueueItem();
+
+        $coordinates = json_encode(
+            $this->extractCoordinatesFromRecord(
+                $indexQueueItem->getRecord(),
+                $indexQueueItem->getType(),
+            ),
+            JSON_UNESCAPED_UNICODE,
+        );
+
+        $event->getDocument()->setField('###solr-field-name-here###', $coordinates);
+    }
+
+What matters is that the complete multi-value array coming out of the extraction logic goes through
+``json_encode()`` before it is assigned to the Solr field. An extracted value such as
+
+..  code-block:: php
+
+    [
+        [
+            'latitude' => 48.135125,
+            'longitude' => 11.581981,
+        ],
+    ]
+
+is transported as JSON:
+
+..  code-block:: json
+
+    [{"latitude":48.135125,"longitude":11.581981}]
+
+Multiple values become additional objects in the same JSON array:
+
+..  code-block:: json
+
+    [
+        {"latitude":48.135125,"longitude":11.581981,"city":"Munich"},
+        {"latitude":50.110924,"longitude":8.682127,"city":"Frankfurt"},
+        {"latitude":53.551086,"longitude":9.993682,"city":"Hamburg"}
+    ]
+
+Neither the extraction logic nor the structure of the PHP array has to change. The transport format
+is the whole migration: ``json_encode($array)`` where ``serialize($array)`` used to stand.
+
 
 All Changes
 -----------
