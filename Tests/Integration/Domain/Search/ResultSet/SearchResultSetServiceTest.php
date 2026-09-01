@@ -89,21 +89,21 @@ final class SearchResultSetServiceTest extends IntegrationTestBase
         $searchResults = $this->doSearchWithResultSetService($typoScriptConfiguration);
         self::assertSame(4, count($searchResults), 'There should be three results at all');
 
-        // We assume that the first result (pid=0) has no variants.
-        $firstResult = $searchResults[0];
+        // We assume that the result for pid=0 has no variants.
+        $firstResult = $this->getSearchResultCollapsedOn($searchResults, '0');
         self::assertSame(0, count($firstResult->getVariants()));
 
-        // We assume that the second result (pid=1) has 6 variants.
-        $secondResult = $searchResults[1];
+        // We assume that the result for pid=1 has 6 variants.
+        $secondResult = $this->getSearchResultCollapsedOn($searchResults, '1');
         self::assertSame(6, count($secondResult->getVariants()));
 
-        // We assume that the third result (pid=3) has no variants.
-        $thirdResult = $searchResults[2];
+        // We assume that the result for pid=3 has no variants.
+        $thirdResult = $this->getSearchResultCollapsedOn($searchResults, '3');
         self::assertSame(0, count($thirdResult->getVariants()));
         self::assertSame('Men Sweatshirts', $thirdResult->getTitle());
 
         // And every variant is indicated to be a variant.
-        foreach ($thirdResult->getVariants() as $variant) {
+        foreach ($secondResult->getVariants() as $variant) {
             self::assertTrue($variant->getIsVariant(), 'Document should be a variant');
         }
     }
@@ -140,24 +140,23 @@ final class SearchResultSetServiceTest extends IntegrationTestBase
         $searchResults = $this->doSearchWithResultSetService($typoScriptConfiguration);
         self::assertSame(3, count($searchResults), 'There should be three results at all');
 
-        // We assume that the first result has 6 variants.
-        $firstResult = $searchResults[0];
+        // We assume that the result for "Jane Doe" has 2 variants.
+        $firstResult = $this->getSearchResultCollapsedOn($searchResults, 'Jane Doe');
         self::assertSame(2, count($firstResult->getVariants()));
-        self::assertSame('Jane Doe', $firstResult->getAuthor());
+        self::assertSame('Jane Doe', $firstResult['author']);
         self::assertSame(2, $firstResult->getVariantsNumFound());
         self::assertSame('Jane Doe', $firstResult->getVariantFieldValue());
 
-        // We assume that the second result has 5 variants.
-        $secondResult = $searchResults[1];
+        // We assume that the result for "John Doe" has 5 variants.
+        $secondResult = $this->getSearchResultCollapsedOn($searchResults, 'John Doe');
         self::assertSame(5, count($secondResult->getVariants()));
-        self::assertSame('John Doe', $secondResult->getAuthor());
+        self::assertSame('John Doe', $secondResult['author']);
         self::assertSame(5, $secondResult->getVariantsNumFound());
 
-        // We assume that the third result has no variants.
-        /** @var SearchResult $secondResult */
-        $thirdResult = $searchResults[2];
+        // We assume that the result for "Baby Doe" has no variants.
+        $thirdResult = $this->getSearchResultCollapsedOn($searchResults, 'Baby Doe');
         self::assertSame(0, count($thirdResult->getVariants()));
-        self::assertSame('Baby Doe', $thirdResult->getAuthor());
+        self::assertSame('Baby Doe', $thirdResult['author']);
         self::assertSame(0, $thirdResult->getVariantsNumFound());
         self::assertSame('Baby Doe', $thirdResult->getVariantFieldValue());
 
@@ -234,6 +233,25 @@ final class SearchResultSetServiceTest extends IntegrationTestBase
         $this->indexPages([1, 2, 3], 1);
         $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":3', $solrContent);
+    }
+
+    /**
+     * These queries score every document equally, so Solr returns the collapsed results in
+     * document insertion order, which follows the index queue. Address them by the value they
+     * were collapsed on instead of by position.
+     */
+    protected function getSearchResultCollapsedOn(
+        SearchResultCollection $searchResults,
+        string $variantFieldValue,
+    ): SearchResult {
+        foreach ($searchResults as $searchResult) {
+            /** @var SearchResult $searchResult */
+            if ($searchResult->getVariantFieldValue() === $variantFieldValue) {
+                return $searchResult;
+            }
+        }
+
+        self::fail(sprintf('No search result collapsed on "%s".', $variantFieldValue));
     }
 
     protected function doSearchWithResultSetService(TypoScriptConfiguration $typoScriptConfiguration, string $queryString = '*'): SearchResultCollection

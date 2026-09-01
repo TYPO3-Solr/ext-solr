@@ -112,7 +112,10 @@ final class SearchControllerTest extends IntegrationTestBase
             /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.results.resultsPerPageSwitchOptions = 5, 10, 25, 50
-            plugin.tx_solr.search.results.resultsPerPage = 5',
+            plugin.tx_solr.search.results.resultsPerPage = 5
+            // Every page matches "*" equally, so which page lands on which result page would
+            // otherwise depend on the order the index queue was worked off in.
+            plugin.tx_solr.search.query.sortBy = score desc, uid asc',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
