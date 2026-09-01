@@ -640,12 +640,12 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function indexQueuedItems(int $limit, int $rootPageId = 1): void
+    protected function indexQueuedItems(int $limit, int $rootPageId = 1): bool
     {
         $this->useIndexingServiceForTesting();
 
         $site = GeneralUtility::makeInstance(SiteRepository::class)->getSiteByRootPageId($rootPageId);
-        GeneralUtility::makeInstance(IndexService::class, $site)->indexItems($limit);
+        return GeneralUtility::makeInstance(IndexService::class, $site)->indexItems($limit);
     }
 
     /**

@@ -500,9 +500,10 @@ final class GarbageCollectorTest extends IntegrationTestBase
         $this->assertEmptyEventQueue();
 
         // index all queue items
-        foreach ($this->indexQueue->getAllItems() as $item) {
-            self::assertTrue($this->indexPageQueueItem($item), 'Queue item failed to be indexed.');
-        }
+        self::assertTrue(
+            $this->indexQueuedItems(count($this->indexQueue->getAllItems())),
+            'Queue items failed to be indexed.',
+        );
         $this->waitToBeVisibleInSolr();
         self::assertSolrContainsDocumentCount(2, 'Initial number of documents in index not as expected');
 
@@ -607,14 +608,11 @@ final class GarbageCollectorTest extends IntegrationTestBase
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $this->assertEmptyEventQueue();
 
-        // index all queue items
-        foreach ($this->indexQueue->getAllItems() as $item) {
-            self::assertTrue($this->indexPageQueueItem($item), 'Queue item failed to be indexed in default language.');
-            self::assertTrue(
-                $this->indexPageQueueItem($item, 1, 'core_de'),
-                'Queue item failed to be indexed in german translation.',
-            );
-        }
+        // index all queue items, one pass covering every language they are indexable in
+        self::assertTrue(
+            $this->indexQueuedItems(count($this->indexQueue->getAllItems())),
+            'Queue items failed to be indexed.',
+        );
         $this->waitToBeVisibleInSolr();
         $this->waitToBeVisibleInSolr('core_de');
         self::assertSolrContainsDocumentCount(2, 'Initial number of documents in english index not as expected', 'core_en');
