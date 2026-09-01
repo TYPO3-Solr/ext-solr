@@ -520,7 +520,7 @@ final class IndexerTest extends IntegrationTestBase
         // run the indexer
         $items = $this->indexQueue->getItems($table, $uid);
         foreach ($items as $item) {
-            $result = $this->indexer->index($item);
+            $result = $this->indexQueuedItem($item);
         }
 
         return $result;
