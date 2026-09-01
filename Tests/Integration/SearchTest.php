@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFie
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\PhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Slops;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
@@ -37,6 +38,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 final class SearchTest extends IntegrationTestBase
 {
+    /**
+     * Every document of the phrase fixtures matches these queries with the same score, so the
+     * ranking among them is decided by Solr's document insertion order, which follows the index
+     * queue. Sorting on uid as the secondary criterion pins the asserted positions without
+     * touching the relevance order the tests are about.
+     */
+    private const TIE_BREAKING_SORTING = 'score desc, uid asc';
+
     protected QueryBuilder $queryBuilder;
 
     protected Search $searchInstance;
@@ -159,6 +168,7 @@ final class SearchTest extends IntegrationTestBase
 
         $query = $this->queryBuilder
             ->newSearchQuery('Hello World')
+            ->useSortings(Sortings::fromString(self::TIE_BREAKING_SORTING))
             ->getQuery();
 
         $searchResponse = $this->searchInstance->search($query);
@@ -194,6 +204,7 @@ final class SearchTest extends IntegrationTestBase
 
         $query = $this->queryBuilder
             ->newSearchQuery('Hello World')
+            ->useSortings(Sortings::fromString(self::TIE_BREAKING_SORTING))
             ->getQuery();
 
         // Boost the document with query to make it first.
@@ -266,7 +277,9 @@ final class SearchTest extends IntegrationTestBase
         $this->switchPhraseSearchFeature('bigramPhrase', 1);
 
         $this->getSearchQueryForSolr();
-        $this->queryBuilder->useQueryString('Bigram Phrase Search');
+        $this->queryBuilder
+            ->useQueryString('Bigram Phrase Search')
+            ->useSortings(Sortings::fromString(self::TIE_BREAKING_SORTING));
 
         // Boost the document with query to make it first.
         $this->queryBuilder->useBigramPhraseFields(BigramPhraseFields::fromString('title^100.0'));
@@ -353,6 +366,7 @@ final class SearchTest extends IntegrationTestBase
         $this->getSearchQueryForSolr();
         $this->queryBuilder
             ->useQueryString('Awesome Trigram Phrase Search')
+            ->useSortings(Sortings::fromString(self::TIE_BREAKING_SORTING))
             // Boost the document with query to make it first.
             ->useTrigramPhraseFields(TrigramPhraseFields::fromString('title^100.0'));
 
