@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexingSubRequestIsPreparedEvent;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\IndexQueue\IndexingInstructions;
 use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
@@ -29,6 +30,8 @@ use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\Fixtures\IndexingServiceForTesting;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\NullLogger;
@@ -621,16 +624,26 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      * attribute that the testing-framework's FrontendUserHandler middleware expects.
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
+     * @throws SiteNotFoundException
+     * @throws InvalidConnectionException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function indexQueuedItems(int $limit, int $rootPageId = 1): void
     {
         /** @var Container $container */
         $container = $this->getContainer();
         GeneralUtility::setContainer($container);
-        $container->set(
-            IndexingService::class,
-            IndexingServiceForTesting::fromProductionService($container->get(IndexingService::class)),
-        );
+        $indexingService = $container->get(IndexingService::class);
+        // The container refuses to replace an already initialized service, and a test may index
+        // more than once.
+        if (!$indexingService instanceof IndexingServiceForTesting) {
+            $container->set(
+                IndexingService::class,
+                IndexingServiceForTesting::fromProductionService($indexingService),
+            );
+        }
 
         $site = GeneralUtility::makeInstance(SiteRepository::class)->getSiteByRootPageId($rootPageId);
         GeneralUtility::makeInstance(IndexService::class, $site)->indexItems($limit);
