@@ -271,6 +271,29 @@ Also released for TYPO3 13 LTS as EXT:solr 13.1.4.
 SST ticket: #2026052010000029, dkd: #235572
 
 
+Security: CVE-2026-56093 — Detail View Enforces Site and Access Restrictions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``detail`` action of the ``pi_results`` plugin looked a document up by its ``documentId``
+without applying the current site's ``siteHash`` filter or the frontend user-group access filter.
+An anonymous visitor who knew or guessed a valid ``documentId`` could pull access-restricted
+documents out of the detail view, a path that was less restricted than the regular search.
+
+Fix: :php:`SearchResultSetService::getDocumentById()` runs the by-id query through
+:php:`AccessComponent`, the same listener the regular search path uses, so both apply the same
+``siteHash`` and user-group filters. A ``documentId`` that resolves to no accessible document —
+unknown, belonging to another site, or restricted for the current visitor — makes ``detailAction``
+fail closed with the site's configured 404 page, propagated as the whole response. That response is
+uniform, so it cannot be used to probe whether a restricted document exists.
+
+As defence in depth, review whether your templates still expose ``data-document-id`` and mask it
+where the document id should not be publicly visible.
+
+Also released for TYPO3 13 LTS as EXT:solr 13.1.4.
+
+SST ticket: #2026052010000011, dkd: #235573
+
+
 Breaking Changes
 ----------------
 
@@ -777,6 +800,19 @@ input, so a filter passed under either name is silently ignored rather than appl
 ``plugin.tx_solr.search.query.allowedSites``, documented in
 :ref:`configuration.reference.solrsearch`. Any other filter name keeps working from the request
 exactly as before.
+
+
+!!! The detail action answers 404 for an inaccessible document
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``detailAction`` used to render its template whatever the ``documentId`` resolved to (see
+CVE-2026-56093 above). It now propagates the site's configured 404 response when the lookup finds
+no document the current visitor may see — unknown id, another site's document, or one restricted to
+a frontend user group the visitor is not in.
+
+*Migration:* A template or integration that relied on the detail view rendering an empty document
+has to handle the 404 instead. Linking to a document from the result list is unaffected, since the
+visitor who saw it in the results may see it in the detail view too.
 
 
 All Changes
