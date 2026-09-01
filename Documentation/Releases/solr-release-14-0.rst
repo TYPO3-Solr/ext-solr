@@ -232,6 +232,25 @@ Also released for TYPO3 13 LTS as EXT:solr 13.1.4.
 SST ticket: #2026050810000025, dkd: #235567
 
 
+Security: CVE-2026-56095 — No Object Injection Through Indexed Record Fields
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The indexer ran ``unserialize()`` over whatever a multi-value ``cObj`` returned for a Solr field.
+Anyone able to influence an indexed record field could put serialized bytes there and have the
+indexing run reconstruct arbitrary PHP objects, which turned the indexer into an object-injection
+sink.
+
+Fix: ``SOLR_MULTIVALUE``, ``SOLR_RELATION`` and ``SOLR_CLASSIFICATION`` return their payload as
+``json_encode($array)``, and :php:`AbstractIndexer` together with :php:`PageFieldMappingIndexer`
+decodes it using ``json_decode($string, true)``, keeping the result only when it is an array.
+``json_decode()`` never reconstructs PHP objects, so the sink is gone rather than filtered, and the
+``try``/``catch`` that used to swallow ``@unserialize()`` failures is removed with it.
+
+Also released for TYPO3 13 LTS as EXT:solr 13.1.4.
+
+SST ticket: #2026011610000017, dkd: #235568
+
+
 Breaking Changes
 ----------------
 
@@ -660,6 +679,18 @@ or that relies on ``[a TO b]`` ranges in ``tx_solr[q]``, now misses silently ins
 ``plugin.tx_solr.search.query.userFields`` — either as a scalar override or through the ``add``
 sub-key. Range and grouping syntax in the user query has no replacement; express such
 constraints as integrator-controlled ``plugin.tx_solr.search.query.filter`` entries instead.
+
+
+!!! Multi-value cObjs use JSON transport
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``SOLR_MULTIVALUE``, ``SOLR_RELATION`` and ``SOLR_CLASSIFICATION`` return ``json_encode($array)``
+where they used to return ``serialize($array)`` (see CVE-2026-56095 above), and the indexer decodes
+the payload with ``json_decode()`` only.
+
+*Migration:* A third-party content object that returns ``serialize($array)`` for a multi-value Solr
+field has to switch to ``json_encode($array)``. Nothing else changes, the decoded payload still has
+to be an array to be taken over.
 
 
 All Changes
