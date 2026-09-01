@@ -402,6 +402,40 @@ should check the ``solr.indexingInstructions`` request attribute instead.
 those calls — the sub-request pipeline handles CWD automatically.
 
 
+!!! The ``indexer`` Index Queue setting has been removed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``plugin.tx_solr.index.queue.[indexConfig].indexer`` and its options array
+``indexer.`` no longer exist, together with the accessors
+:php:`TypoScriptConfiguration::getIndexQueueIndexerByConfigurationName()` and
+:php:`TypoScriptConfiguration::getIndexQueueIndexerConfigurationByConfigurationName()`.
+
+The setting was honoured up to and including 13.1.x. It stopped taking effect
+during 14 development, when the legacy page indexer was removed: no code read
+either accessor any more, while the shipped default still named
+:php:`ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer`, a class that removal had
+deleted. Removing the setting outright replaces that silence with a documented
+migration path.
+
+Impact
+""""""
+
+**Upgrading from 13.1.x with a custom** ``indexer`` **is a breaking change.** The
+class was called there and is not called any more, and leaving it configured
+produces no error -- the records it used to index simply stop being indexed the
+way it indexed them. Move its logic into event listeners as part of the upgrade.
+
+**Coming from a 14 development state**, the lines can be dropped without any
+further change: no released 14 version ever honoured them.
+
+**Custom indexer classes** are replaced by event listeners, the same ones that
+replace a :php:`PageIndexer` subclass: :php:`AfterPageDocumentIsCreatedForIndexingEvent`
+and :php:`BeforeDocumentIsProcessedForIndexingEvent` to shape a document,
+:php:`BeforeItemsAreIndexedEvent` and :php:`BeforeDocumentsAreIndexedEvent` to act on
+a whole batch. Field mapping stays in
+``plugin.tx_solr.index.queue.[indexConfig].fields``.
+
+
 !!! Trailing Space Removed from ``searchResultClassName`` and ``searchResultSetClassName`` Keys
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
