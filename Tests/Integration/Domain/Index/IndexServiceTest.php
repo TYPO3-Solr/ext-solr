@@ -80,6 +80,32 @@ final class IndexServiceTest extends IntegrationTestBase
         $this->indexQueue->updateItem($table, $uid, time());
     }
 
+    #[Test]
+    public function itemIsMarkedAsFailedWhenIndexingReturnsFalse(): void
+    {
+        // The queued page is hidden, so IndexingService reports the item as not indexed without
+        // raising an exception. The page record itself exists, so the item is not dropped as an
+        // orphan before it reaches IndexService.
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_returns_false_for_hidden_page.csv');
+
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
+        GeneralUtility::makeInstance(IndexService::class, $site)->indexItems(1);
+
+        $row = $this->getConnectionPool()
+            ->getConnectionForTable('tx_solr_indexqueue_item')
+            ->select(['uid', 'changed', 'indexed', 'errors'], 'tx_solr_indexqueue_item', ['uid' => 4711])
+            ->fetchAssociative();
+
+        self::assertIsArray($row, 'The queue item was removed instead of being marked as failed');
+        self::assertNotSame(
+            '',
+            (string)$row['errors'],
+            'An item that failed to index keeps no error, so it is fetched again on every run'
+            . ' and the queue stops making progress without showing a reason',
+        );
+    }
+
     public static function canResolveBaseAsPrefixDataProvider(): Traversable
     {
         yield 'absRefPrefixIsFoo' => [

@@ -124,6 +124,14 @@ class IndexService
                         if ($itemChangedDateAfterIndex > $itemToIndex->getChanged() && $itemChangedDateAfterIndex > time()) {
                             $this->indexQueue->setForcedChangeTimeByItem($itemToIndex, $itemChangedDateAfterIndex);
                         }
+                    } else {
+                        // Without this the item keeps changed > indexed and errors = '', so it is
+                        // fetched again on every run and the queue stops making progress silently.
+                        $errors++;
+                        $this->indexQueue->markItemAsFailed(
+                            $itemToIndex,
+                            'Indexing returned false without raising an exception, see the TYPO3 log for the reason.',
+                        );
                     }
 
                     $afterIndexItemEvent = new AfterItemHasBeenIndexedEvent($itemToIndex, $this->getContextTask(), $indexRunId);
