@@ -34,11 +34,6 @@ plugin.tx_solr {
 
         indexingPriority = 0
 
-        indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
-        indexer {
-          // add options for the indexer here
-        }
-
         // Only index standard pages and mount points that are not overlayed.
         additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
 
