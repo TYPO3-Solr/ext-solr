@@ -230,13 +230,14 @@ final class PageIndexerTest extends IntegrationTestBase
             1,
             /* @lang TYPO3_TypoScript */
             '
+            plugin.tx_solr.index.queue.pages.addExampleDocuments = 1
             plugin.tx_solr.index.queue.pages.fields {
               custom_stringS = TEXT
               custom_stringS.value = my text
             }
             ',
         );
-        $this->indexQueuedPage(4711, 0, ['additionalTestPageIndexer' => 1]);
+        $this->indexQueuedPage();
 
         $this->waitToBeVisibleInSolr();
 
