@@ -203,12 +203,12 @@ abstract class SetUpUnitTestCase extends UnitTestCase
             },
         );
         // Configure basic cObjGetSingle behavior for tests
-        // Returns serialized empty array for SOLR_* content objects (like SOLR_RELATION with multiValue)
+        // Returns JSON-encoded empty array for SOLR_* content objects (like SOLR_RELATION with multiValue)
         $mock->method('cObjGetSingle')->willReturnCallback(
             function (string $name, array $conf) {
-                // For SOLR_* content objects with multiValue, return serialized empty array
+                // For SOLR_* content objects with multiValue, return JSON-encoded empty array
                 if (str_starts_with($name, 'SOLR_') && !empty($conf['multiValue'])) {
-                    return serialize([]);
+                    return json_encode([]);
                 }
                 return '';
             },
