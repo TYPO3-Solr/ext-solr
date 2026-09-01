@@ -532,22 +532,32 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     }
 
     /**
+     * Queues the given pages and indexes them the way the scheduler task does, so that
+     * everything between IndexService and the sub-request is covered by the test.
+     *
      * @throws InvalidArgumentException
      * @throws SiteNotFoundException
      * @throws DBALException
      * @throws NoSuchCacheException
+     * @throws InvalidConnectionException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    protected function indexPages(
-        array $importPageIds,
-        ?int $frontendUserId = null,
-    ): void {
+    protected function indexPages(array $importPageIds): void
+    {
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        $queuedItemsPerRootPage = [];
         foreach ($importPageIds as $importPageId) {
             $site = $siteFinder->getSiteByPageId($importPageId);
-            $queueItem = $this->addPageToIndexQueue($importPageId, $site);
-            $frontendUrl = $site->getRouter()->generateUri($importPageId);
-            $this->executePageIndexer((string)$frontendUrl, $queueItem, $frontendUserId);
+            $this->addPageToIndexQueue($importPageId, $site);
+            $rootPageId = $site->getRootPageId();
+            $queuedItemsPerRootPage[$rootPageId] = ($queuedItemsPerRootPage[$rootPageId] ?? 0) + 1;
         }
+
+        foreach ($queuedItemsPerRootPage as $rootPageId => $queuedItems) {
+            $this->indexQueuedItems($queuedItems, $rootPageId);
+        }
+
         $this->waitToBeVisibleInSolr();
     }
 
