@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
@@ -397,30 +396,6 @@ class TypoScriptConfiguration
     public function getIndexQueueIsMonitoredTable(string $tableName): bool
     {
         return in_array($tableName, $this->getIndexQueueMonitoredTables(), true);
-    }
-
-    /**
-     * Returns the configured indexer class that should be used for a certain indexingConfiguration.
-     * By default, "ApacheSolrForTypo3\Solr\IndexQueue\Indexer" will be returned.
-     *
-     * plugin.tx_solr.index.queue.<configurationName>.indexer
-     */
-    public function getIndexQueueIndexerByConfigurationName(string $configurationName, string $defaultIfEmpty = Indexer::class): string
-    {
-        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.indexer';
-        return (string)$this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
-    }
-
-    /**
-     * Returns the configuration of an indexer for a special indexingConfiguration.
-     * By default, an empty array is returned.
-     *
-     * plugin.tx_solr.index.queue.<configurationName>.indexer.
-     */
-    public function getIndexQueueIndexerConfigurationByConfigurationName(string $configurationName, array $defaultIfEmpty = []): array
-    {
-        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.indexer.';
-        return $this->getObjectByPathOrDefault($path, $defaultIfEmpty);
     }
 
     /**
