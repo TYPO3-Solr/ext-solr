@@ -522,6 +522,14 @@ and :php:`BeforeDocumentIsProcessedForIndexingEvent` to shape a document,
 a whole batch. Field mapping stays in
 ``plugin.tx_solr.index.queue.[indexConfig].fields``.
 
+:php:`ApacheSolrForTypo3\Solr\IndexQueue\Indexer` **is removed with the setting**,
+since it was the class the setting named and nothing else referenced it. A
+subclass of it stops being instantiated, so the same migration to event listeners
+applies. What it did lives in the sub-request pipeline:
+:php:`IndexingService` builds the request and resolves the Solr connections,
+:php:`SolrIndexingMiddleware` creates, processes and submits the documents and
+fires the events above, and :php:`RecordFieldMapper` maps the fields.
+
 
 !!! Trailing Space Removed from ``searchResultClassName`` and ``searchResultSetClassName`` Keys
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
