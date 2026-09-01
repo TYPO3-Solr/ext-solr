@@ -557,7 +557,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
 
     /**
      * Indexes queued items through the production pipeline, which runs one real frontend
-     * sub-request per item, unlike indexPages(), which fakes that sub-request.
+     * sub-request per item.
      *
      * IndexingService is swapped for a test subclass providing the typo3.testing.context
      * attribute that the testing-framework's FrontendUserHandler middleware expects.
