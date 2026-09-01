@@ -642,6 +642,34 @@ abstract class IntegrationTestBase extends FunctionalTestCase
      */
     protected function indexQueuedItems(int $limit, int $rootPageId = 1): void
     {
+        $this->useIndexingServiceForTesting();
+
+        $site = GeneralUtility::makeInstance(SiteRepository::class)->getSiteByRootPageId($rootPageId);
+        GeneralUtility::makeInstance(IndexService::class, $site)->indexItems($limit);
+    }
+
+    /**
+     * Indexes one queue item the way IndexService does it, so that the item's indexing
+     * instructions come from production: the access rootline including the mount point
+     * parameter, and one sub-request per language and content access group.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function indexQueuedItem(Item $item): bool
+    {
+        return $this->useIndexingServiceForTesting()->indexItems([$item]);
+    }
+
+    /**
+     * Replaces IndexingService with the test subclass that supplies the typo3.testing.context
+     * attribute the testing-framework's FrontendUserHandler middleware expects.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private function useIndexingServiceForTesting(): IndexingService
+    {
         /** @var Container $container */
         $container = $this->getContainer();
         GeneralUtility::setContainer($container);
@@ -649,14 +677,11 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         // The container refuses to replace an already initialized service, and a test may index
         // more than once.
         if (!$indexingService instanceof IndexingServiceForTesting) {
-            $container->set(
-                IndexingService::class,
-                IndexingServiceForTesting::fromProductionService($indexingService),
-            );
+            $indexingService = IndexingServiceForTesting::fromProductionService($indexingService);
+            $container->set(IndexingService::class, $indexingService);
         }
 
-        $site = GeneralUtility::makeInstance(SiteRepository::class)->getSiteByRootPageId($rootPageId);
-        GeneralUtility::makeInstance(IndexService::class, $site)->indexItems($limit);
+        return $indexingService;
     }
 
     /**
