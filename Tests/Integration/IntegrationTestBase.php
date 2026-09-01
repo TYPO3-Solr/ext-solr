@@ -15,7 +15,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
-use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
@@ -33,16 +32,13 @@ use Doctrine\DBAL\Exception as DBALException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
 use Symfony\Component\DependencyInjection\Container;
 use Throwable;
-use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -53,8 +49,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Domain\Repository\SchedulerTaskRepository;
 use TYPO3\CMS\Scheduler\Scheduler;
 use TYPO3\CMS\Scheduler\Task\TaskSerializer;
-use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
-use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -559,71 +553,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         }
 
         $this->waitToBeVisibleInSolr();
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     * @throws DBALException
-     */
-    protected function indexPageQueueItem(Item $item, int $language = 0, string $coreName = 'core_en'): bool
-    {
-        $parameters = [];
-        if ($item->hasIndexingProperty('isMountedPage')) {
-            $parameters['MP'] = $item->getIndexingProperty('mountPageSource')
-                . '-' . $item->getIndexingProperty('mountPageDestination');
-        }
-
-        if ($language > 0) {
-            $parameters['_language'] = $language;
-        }
-
-        $frontendUrl = $item->getSite()->getTypo3SiteObject()->getRouter()->generateUri(
-            $item->getRecordUid(),
-            $parameters,
-        );
-
-        $response = $this->executePageIndexer((string)$frontendUrl, $item);
-
-        $connection = $this->getConnectionPool()->getConnectionForTable('sys_template');
-        $connection->update(
-            'tx_solr_indexqueue_item',
-            ['indexed' => time()],
-            ['uid' => $item->getIndexQueueUid()],
-        );
-
-        return $response->getStatusCode() === 200;
-    }
-
-    /**
-     * Executes a Frontend sub-request to trigger page indexing via the new
-     * IndexingInstructions pipeline (SolrIndexingMiddleware).
-     */
-    protected function executePageIndexer(string $url, Item $item, ?int $frontendUserId = null): ResponseInterface
-    {
-        $instructions = new IndexingInstructions(
-            items: [$item],
-            action: IndexingInstructions::ACTION_INDEX_PAGE,
-            language: 0,
-            accessRootline: (string)Rootline::getAccessRootlineByPageId($item->getRecordUid()),
-            parameters: ['item' => $item->getIndexQueueUid()],
-        );
-
-        $request = new InternalRequest($url);
-        $request = $request->withAttribute('solr.indexingInstructions', $instructions);
-
-        $requestContext = null;
-        if ($frontendUserId !== null) {
-            $requestContext = (new InternalRequestContext())->withFrontendUserId($frontendUserId);
-        }
-
-        $response = $this->executeFrontendSubRequest($request, $requestContext);
-
-        /** @var VariableFrontend $runtimeCache */
-        $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime');
-        $runtimeCache->flush();
-
-        $response->getBody()->rewind();
-        return $response;
     }
 
     /**
