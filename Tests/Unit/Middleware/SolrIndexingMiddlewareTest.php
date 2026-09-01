@@ -26,6 +26,9 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Middleware\SolrIndexingMiddleware;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Closure;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -51,14 +54,7 @@ final class SolrIndexingMiddlewareTest extends SetUpUnitTestCase
             $eventDispatcher->expects(self::once())->method('dispatch')->willReturnArgument(0);
         }
 
-        $middleware = new SolrIndexingMiddleware(
-            $eventDispatcher,
-            $this->createMock(IndexingResultCollector::class),
-            $this->createMock(ConnectionManager::class),
-            $this->createMock(SolrLogManager::class),
-            $this->createMock(SiteRepository::class),
-            $this->createMock(FrontendEnvironment::class),
-        );
+        $middleware = $this->buildMiddleware($eventDispatcher);
 
         $documents = (new ReflectionMethod($middleware, 'getAdditionalDocuments'))->invoke(
             $middleware,
@@ -68,6 +64,42 @@ final class SolrIndexingMiddlewareTest extends SetUpUnitTestCase
         );
 
         self::assertCount($expectedResultCount, $documents);
+    }
+
+    #[DataProvider('addDocumentsToSolrDataProvider')]
+    #[Test]
+    public function canIndicateIndexStatusFromTheSolrWriteResponse(int $httpStatus, bool $expectedToBeIndexed): void
+    {
+        $response = $this->createMock(ResponseAdapter::class);
+        $response->method('getHttpStatus')->willReturn($httpStatus);
+
+        $writeService = $this->createMock(SolrWriteService::class);
+        $writeService->expects(self::once())->method('addDocuments')->willReturn($response);
+
+        $solrConnection = $this->createMock(SolrConnection::class);
+        $solrConnection->method('getWriteService')->willReturn($writeService);
+
+        $middleware = $this->buildMiddleware($this->createMock(EventDispatcherInterface::class));
+
+        $indexed = (new ReflectionMethod($middleware, 'addDocumentsToSolr'))->invoke(
+            $middleware,
+            [new Document()],
+            $solrConnection,
+        );
+
+        self::assertSame($expectedToBeIndexed, $indexed);
+    }
+
+    public static function addDocumentsToSolrDataProvider(): Traversable
+    {
+        yield 'Item could be indexed' => [
+            'httpStatus' => 200,
+            'expectedToBeIndexed' => true,
+        ];
+        yield 'Item could not be indexed' => [
+            'httpStatus' => 500,
+            'expectedToBeIndexed' => false,
+        ];
     }
 
     public static function getAdditionalDocumentsDataProvider(): Traversable
@@ -89,5 +121,17 @@ final class SolrIndexingMiddlewareTest extends SetUpUnitTestCase
             },
             'expectedResultCount' => 2,
         ];
+    }
+
+    protected function buildMiddleware(EventDispatcherInterface $eventDispatcher): SolrIndexingMiddleware
+    {
+        return new SolrIndexingMiddleware(
+            $eventDispatcher,
+            $this->createMock(IndexingResultCollector::class),
+            $this->createMock(ConnectionManager::class),
+            $this->createMock(SolrLogManager::class),
+            $this->createMock(SiteRepository::class),
+            $this->createMock(FrontendEnvironment::class),
+        );
     }
 }
