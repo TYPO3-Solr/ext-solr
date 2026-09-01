@@ -825,6 +825,8 @@ ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexingResultCollectorTest::final
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexingResultCollectorTest::finalizeUserGroupsReturnsPublicGroupWhenNoGroupsCollected	1
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexingResultCollectorTest::finalizeUserGroupsSortsDescending	1
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexingResultCollectorTest::resetClearsAllState	1
+ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexingServiceTest::subRequestForAMountedPageIsBuiltForTheMountDestination	1
+ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexingServiceTest::subRequestForAPageIsBuiltForThatPageAndNotForItsRootPage	1
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\ItemTest::canGetErrors	1
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\ItemTest::canGetState	3
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\ItemTest::canGetType	1
