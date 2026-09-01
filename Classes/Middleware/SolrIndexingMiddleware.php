@@ -317,10 +317,7 @@ readonly class SolrIndexingMiddleware implements MiddlewareInterface
             $language,
         );
 
-        // Dispatch BeforeDocumentIsProcessedForIndexingEvent
-        $event = new BeforeDocumentIsProcessedForIndexingEvent($document, $item, $request);
-        $event = $this->eventDispatcher->dispatch($event);
-        $documents = $event->getDocuments();
+        $documents = $this->getAdditionalDocuments($document, $item, $request);
 
         // Process field processors
         $solrConfiguration = $this->siteRepository->getSiteByPageId($item->getRootPageUid())->getSolrConfiguration();
@@ -333,6 +330,20 @@ readonly class SolrIndexingMiddleware implements MiddlewareInterface
 
         // Send to Solr
         return $this->addDocumentsToSolr($documents, $solrConnection);
+    }
+
+    /**
+     * The documents to index for an item: the one built from the item, plus whatever listeners of
+     * BeforeDocumentIsProcessedForIndexingEvent add to it.
+     *
+     * @return Document[]
+     */
+    protected function getAdditionalDocuments(Document $document, Item $item, ServerRequestInterface $request): array
+    {
+        $event = new BeforeDocumentIsProcessedForIndexingEvent($document, $item, $request);
+        $event = $this->eventDispatcher->dispatch($event);
+
+        return $event->getDocuments();
     }
 
     /**
