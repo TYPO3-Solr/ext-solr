@@ -402,6 +402,47 @@ should check the ``solr.indexingInstructions`` request attribute instead.
 those calls — the sub-request pipeline handles CWD automatically.
 
 
+!!! A failed Index Queue item states why it failed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+An item whose indexing failed without an exception kept ``changed > indexed`` and no error,
+so every run fetched it again and the Index Queue stopped making progress without showing a
+reason. Such an item is now marked as failed.
+
+The reason is recorded as well. Executing an indexing sub-request caught every throwable,
+wrote one log entry and reported the item as "not indexed", so the cause was only in the
+TYPO3 log. It is handed on now and ends up on the item, naming the sub-request action, the
+item and the language.
+
+``tx_solr_indexqueue_item.errors`` is a ``mediumtext`` for that. The messages of the whole
+exception chain are recorded, the stack traces stay in the TYPO3 log: a sub-request nests
+the same throwable several times, and all of its traces together exceeded the previous
+column, which turned marking an item as failed into a "Data too long" error.
+
+Impact
+""""""
+
+**The column change needs a database update**, so this does not take effect by updating the
+extension alone. Until the update ran, an item that fails with a long enough reason still
+aborts the indexing run:
+
+#.  Run *Analyze Database Structure* in the Upgrade module, or
+    ``vendor/bin/typo3 extension:setup``.
+#.  Empty ``tx_solr_indexqueue_item``.
+#.  Re-initialize the Index Queue, which also takes care of the items described in the next
+    section.
+
+.. note::
+   One reason that becomes visible with this is a TYPO3 issue rather than one of EXT:solr.
+   Indexing from the Index Queue module can fail on an installation with a single site, where
+   the module selects that site by itself and the page tree has page ``0`` selected while
+   *Index Now* is clicked. Fluid then aborts with "No Content Object definition found at
+   TypoScript object path", because ``f:cObject`` took the TypoScript from the backend context
+   instead of the indexing sub-request. TYPO3 solves it in
+   `6ceccf85 <https://github.com/TYPO3/typo3/commit/6ceccf85b31389c193dfd7feb97b3ff8b39ba1ce>`_,
+   part of TYPO3 14.3.7.
+
+
 !!! Index Queue initialization stops at nested site roots
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

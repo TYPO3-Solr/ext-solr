@@ -138,7 +138,7 @@ class IndexService
                     $this->eventDispatcher->dispatch($afterIndexItemEvent);
                 } catch (Throwable $e) {
                     $errors++;
-                    $this->indexQueue->markItemAsFailed($itemToIndex, $e->getCode() . ': ' . $e->__toString());
+                    $this->indexQueue->markItemAsFailed($itemToIndex, $this->buildItemErrorMessage($e));
                     $this->generateIndexingErrorLog($itemToIndex, $e);
                 }
             }
@@ -192,6 +192,28 @@ class IndexService
     /**
      * Generates a message in the error log when an error occurred.
      */
+    /**
+     * The message the Index Queue module shows on a failed item: the messages of the whole
+     * exception chain, without the stack traces.
+     *
+     * `Throwable::__toString()` puts the traces of every exception in the chain into one string
+     * and starts with the innermost one, so the sentence naming the item and the action ends up
+     * last. An indexing sub-request nests the same throwable several times, which made that
+     * string exceed what the column can hold. The traces stay in the log, see
+     * generateIndexingErrorLog().
+     */
+    protected function buildItemErrorMessage(Throwable $e): string
+    {
+        $messages = [];
+        $cause = $e;
+        while ($cause !== null) {
+            $messages[] = $cause::class . ' (' . $cause->getCode() . '): ' . $cause->getMessage();
+            $cause = $cause->getPrevious();
+        }
+
+        return implode("\n\nCaused by: ", $messages);
+    }
+
     protected function generateIndexingErrorLog(Item $itemToIndex, Throwable $e): void
     {
         $message = 'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid();

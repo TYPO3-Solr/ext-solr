@@ -106,6 +106,32 @@ final class IndexServiceTest extends IntegrationTestBase
         );
     }
 
+    #[Test]
+    public function theCauseOfAFailedSubRequestIsRecordedOnTheItem(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/subrequest_failure_cause_is_recorded.csv');
+
+        // A base without a host makes buildServerRequest() throw inside executeSubRequest().
+        $this->mergeSiteConfiguration('integration_tree_one', ['base' => '/']);
+
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
+        GeneralUtility::makeInstance(IndexService::class, $site)->indexItems(1);
+
+        $row = $this->getConnectionPool()
+            ->getConnectionForTable('tx_solr_indexqueue_item')
+            ->select(['uid', 'errors'], 'tx_solr_indexqueue_item', ['uid' => 4712])
+            ->fetchAssociative();
+
+        self::assertIsArray($row, 'The queue item is gone instead of carrying the failure');
+        self::assertStringContainsString(
+            'generated a URI without host',
+            (string)$row['errors'],
+            'The reason the sub-request failed has to reach the queue item, otherwise the Index'
+            . ' Queue module shows a failure with no way to tell what caused it',
+        );
+    }
+
     public static function canResolveBaseAsPrefixDataProvider(): Traversable
     {
         yield 'absRefPrefixIsFoo' => [
