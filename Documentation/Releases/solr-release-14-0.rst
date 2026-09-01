@@ -402,6 +402,52 @@ should check the ``solr.indexingInstructions`` request attribute instead.
 those calls — the sub-request pipeline handles CWD automatically.
 
 
+!!! Index Queue initialization stops at nested site roots
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Initializing the Index Queue no longer collects the pages, and the records
+stored on them, of a site nested inside another site's page tree. A page
+carrying ``is_siteroot`` starts a site of its own, so its subtree belongs to
+that site's Index Queue alone.
+
+Until now the traversal ran through the whole subtree, so an outer site's queue
+also held the inner site's pages, with the outer site's root page written into
+``tx_solr_indexqueue_item.root``. Indexing such an item took the Solr
+connections from the outer site while the page itself resolved to the inner one.
+TYPO3 assigns language ids per site, the two sets need not agree, and core will
+not reconcile them -- see the closing of
+`forge #95688 <https://forge.typo3.org/issues/95688>`__ and its conclusion that
+"the only real solution is to define languages per page tree root". Such an item
+either failed with "Language X does not exist on site Y", or produced a document
+carrying one site's ``siteHash`` in another site's core, where neither site
+could find it.
+
+:php:`Site::getPagesWithinSite()` and
+:php:`PagesRepository::findAllSubPageIdsByRootPageWithinSite()` are new.
+:php:`Site::getPages()` and :php:`PagesRepository::getTreeList()` keep their
+previous behaviour, so mount point resolution and garbage collection are
+unaffected.
+
+Impact
+""""""
+
+**Re-initialize the Index Queue after updating.** Items written before this
+release still carry the outer site's root page and are not corrected
+automatically.
+
+**A site that relied on indexing a nested site's pages loses those documents**
+from its own cores; the nested site indexes them into its cores instead. Two
+supported ways to keep the previous search results:
+
+*   ``plugin.tx_solr.search.query.allowedSites`` lets one search span several
+    sites. This is the intended way to search across a shared page tree, and it
+    keeps each site's documents in its own cores.
+*   ``plugin.tx_solr.index.queue.[indexConfig].additionalPageIds`` still adds
+    individual pages explicitly, a nested site's pages included. It stays the
+    opt-in for an outer site that really has to index foreign pages, and the
+    language ids of the sites involved have to match for that to work.
+
+
 !!! The ``indexer`` Index Queue setting has been removed
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
