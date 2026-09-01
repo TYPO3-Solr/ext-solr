@@ -230,7 +230,7 @@ final class SearchResultSetServiceTest extends IntegrationTestBase
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/fe_user_page.csv');
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
-        $this->indexPages([1, 2, 3], 1);
+        $this->indexPages([1, 2, 3]);
         $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
         self::assertStringContainsString('"numFound":3', $solrContent);
     }

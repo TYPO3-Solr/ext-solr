@@ -9,6 +9,3 @@
 "fe_groups",
 ,"uid","pid","title"
 ,1,4,"Secret"
-"fe_users",
-,"uid","pid","username","password","usergroup"
-,1,4,"test","blablabla","1"
