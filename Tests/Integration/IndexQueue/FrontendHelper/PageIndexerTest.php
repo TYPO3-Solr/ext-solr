@@ -17,13 +17,8 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
-use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\PageUriBuilder;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
-use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Http\Uri;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
 /**
  * Testcase to check if we can index page documents using the SolrIndexingMiddleware
@@ -114,8 +109,8 @@ final class PageIndexerTest extends IntegrationTestBase
             ',
         );
 
-        $this->indexQueuedPage(4711, 0);
-        $this->indexQueuedPage(4711, 1);
+        // One pass covers every language the page is indexable in.
+        $this->indexQueuedPage();
 
         $this->waitToBeVisibleInSolr('core_en');
         $this->waitToBeVisibleInSolr('core_de');
@@ -301,55 +296,19 @@ final class PageIndexerTest extends IntegrationTestBase
     public function phpProcessDoesNotDieIfPageIsNotAvailable(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/does_not_die_if_page_not_available.csv');
-        $response = $this->indexQueuedPage(forceUrl: 'http://testone.site/?id=1636120156');
 
-        // The new sub-request pipeline returns an error status for unavailable pages
-        // instead of a JSON response — the important thing is that the process doesn't die.
-        self::assertGreaterThanOrEqual(400, $response->getStatusCode(), 'Expected error status for unavailable page');
+        // The queued item points at a page that does not exist. IndexService reports it as not
+        // indexed instead of letting the sub-request take the process down with it.
+        self::assertFalse($this->indexQueuedPage());
     }
 
     /**
-     * Executes a Frontend request to trigger page indexing via SolrIndexingMiddleware.
+     * Indexes the queued page the way the scheduler task does, so the indexing instructions --
+     * the access rootline including the mount point parameter, the languages and the content
+     * access groups -- are the ones production builds.
      */
-    protected function indexQueuedPage(
-        int $indexQueueItem = 4711,
-        int $siteLanguageUid = 0,
-        array $additionalQueryParams = [],
-        string $forceUrl = '',
-    ): ResponseInterface {
-        $item = $this->getIndexQueueItem($indexQueueItem);
-
-        if ($forceUrl !== '') {
-            return $this->executePageIndexer($forceUrl, $item);
-        }
-
-        $uriBuilder = GeneralUtility::makeInstance(PageUriBuilder::class);
-        $mountPointParameter = '';
-        if ($item->hasIndexingProperty('isMountedPage')) {
-            $mountPointParameter = $item->getIndexingProperty('mountPageSource')
-                . '-' . $item->getIndexingProperty('mountPageDestination');
-        }
-        $url = $uriBuilder->getPageIndexingUriFromPageItemAndLanguageId(
-            $item,
-            $siteLanguageUid,
-            $mountPointParameter,
-        );
-
-        if ($additionalQueryParams !== []) {
-            $url = new Uri($url);
-            $queryString = ltrim(
-                $url->getQuery()
-                    . '&id=' . $item->getRecordUid()
-                    . GeneralUtility::implodeArrayForUrl('', $additionalQueryParams),
-                '&',
-            );
-            $cacheHash = GeneralUtility::makeInstance(CacheHashCalculator::class)->generateForParameters($queryString);
-            if ($cacheHash) {
-                $queryString .= '&cHash=' . $cacheHash;
-            }
-            $url = (string)$url->withQuery($queryString);
-        }
-
-        return $this->executePageIndexer($url, $item);
+    protected function indexQueuedPage(int $indexQueueItem = 4711): bool
+    {
+        return $this->indexQueuedItem($this->getIndexQueueItem($indexQueueItem));
     }
 }
