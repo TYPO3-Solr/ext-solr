@@ -16,7 +16,6 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
@@ -134,15 +133,14 @@ final class ReIndexTaskTest extends IntegrationTestBase
     public function solrIsEmptyAfterCleanup(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
 
         // fill the solr
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
         $this->indexQueue->updateItem('pages', 1);
         $items = $this->indexQueue->getItems('pages', 1);
-        /** @var Indexer $indexer */
-        $indexer = GeneralUtility::makeInstance(Indexer::class);
-        $indexer->index($items[0]);
+        $this->indexQueuedItem($items[0]);
         $this->waitToBeVisibleInSolr();
 
         $this->assertSolrContainsDocumentCount(1);
