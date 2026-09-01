@@ -22,10 +22,23 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 
 final class AddAdditionalTestDocumentsToIndexer
 {
+    /**
+     * Gated on the record's title rather than on a flag, so it can be triggered by a fixture:
+     * the record reaching this event during indexing is the one that is stored.
+     */
     public function __invoke(BeforeDocumentIsProcessedForIndexingEvent $event): void
     {
-        if (($event->getIndexQueueItem()->getRecord()['activate-event-listener'] ?? '') === true) {
-            $event->addDocuments([new Document(['can-be-an-alternative-record' => 'additional-test-document'])]);
+        if (($event->getIndexQueueItem()->getRecord()['title'] ?? '') !== 'activate-event-listener') {
+            return;
         }
+
+        // Derived from the document being indexed, because this one reaches Solr now and needs
+        // the fields the schema requires, with an id of its own.
+        $fields = $event->getDocument()->getFields();
+        $additionalDocument = new Document($fields);
+        $additionalDocument->setField('id', $fields['id'] . '/additional');
+        $additionalDocument->setField('alternativeRecord_stringS', 'additional-test-document');
+
+        $event->addDocuments([$additionalDocument]);
     }
 }
