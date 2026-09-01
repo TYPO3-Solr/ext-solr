@@ -678,10 +678,14 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         // Check if item (type + Page ID) is already in index, if so update it
         $row = $connection->select(['*'], 'tx_solr_indexqueue_item', $queueItemSearchCriteria)->fetchAssociative();
         if (is_array($row)) {
+            // Resetting "indexed" is what makes the item pending again: IndexService picks up
+            // items with changed > indexed, and an item queued here may already carry the
+            // timestamp of an earlier indexing run.
             $connection->update(
                 'tx_solr_indexqueue_item',
                 [
                     'changed' => 1007007007,
+                    'indexed' => 0,
                     'errors' => '',
                 ],
                 [
@@ -692,6 +696,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
                 $row,
                 [
                     'changed' => 1007007007,
+                    'indexed' => 0,
                     'errors' => '',
                 ],
             );
