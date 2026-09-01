@@ -251,6 +251,26 @@ Also released for TYPO3 13 LTS as EXT:solr 13.1.4.
 SST ticket: #2026011610000017, dkd: #235568
 
 
+Security: CVE-2026-56094 — Request Filters Can No Longer Preempt the siteHash Filter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Request-provided ``tx_solr[additionalFilters]`` could register a named ``siteHash`` filter, and
+:php:`AbstractQueryBuilder::useFilter()` refused to overwrite an existing name — so the system
+``siteHash`` filter that :php:`AccessComponent` adds later was dropped. On an installation where
+several sites share one Solr core, that let an anonymous visitor of one site read the public
+documents of another.
+
+Fix: the reserved names ``siteHash`` and ``access`` are stripped from request-provided
+``additionalFilters`` before the query is built, and the system ``siteHash`` filter is applied with
+remove-then-set semantics, symmetric with what :php:`useUserAccessGroups()` already did. Filters an
+integrator sets server-side are unaffected — TypoScript ``plugin.tx_solr.search.query.filter``,
+plugin and FlexForm settings, and PSR-14 events all still apply.
+
+Also released for TYPO3 13 LTS as EXT:solr 13.1.4.
+
+SST ticket: #2026052010000029, dkd: #235572
+
+
 Breaking Changes
 ----------------
 
@@ -744,6 +764,19 @@ Multiple values become additional objects in the same JSON array:
 
 Neither the extraction logic nor the structure of the PHP array has to change. The transport format
 is the whole migration: ``json_encode($array)`` where ``serialize($array)`` used to stand.
+
+
+!!! ``tx_solr[additionalFilters]`` can no longer set siteHash or access
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A frontend request can no longer reach the ``siteHash`` and ``access`` filters through
+``tx_solr[additionalFilters]`` (see CVE-2026-56094 above). Both names are stripped from request
+input, so a filter passed under either name is silently ignored rather than applied.
+
+*Migration:* Configure cross-site search server-side through
+``plugin.tx_solr.search.query.allowedSites``, documented in
+:ref:`configuration.reference.solrsearch`. Any other filter name keeps working from the request
+exactly as before.
 
 
 All Changes
