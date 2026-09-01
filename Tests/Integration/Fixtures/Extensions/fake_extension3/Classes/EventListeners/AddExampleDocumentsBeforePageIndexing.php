@@ -18,17 +18,22 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\SolrFakeExtension3\EventListeners;
 
 use ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndexingEvent;
+use ApacheSolrForTypo3\Solr\Util;
 
 final class AddExampleDocumentsBeforePageIndexing
 {
     /**
      * Provides additional documents that should be indexed together with a page.
+     *
+     * Enabled per test through TypoScript, the way a real listener would be configured, because
+     * the production pipeline builds the indexing sub-request itself and carries no query
+     * parameters a test could switch on.
      */
     public function __invoke(BeforePageDocumentIsProcessedForIndexingEvent $event): void
     {
-        $request = $event->getRequest();
-        $queryParams = $request->getQueryParams();
-        if (!($queryParams['additionalTestPageIndexer'] ?? false)) {
+        $isEnabled = Util::getSolrConfiguration()
+            ->getValueByPathOrDefaultValue('plugin.tx_solr.index.queue.pages.addExampleDocuments', 0);
+        if (!$isEnabled) {
             return;
         }
         $pageDocument = $event->getDocument();
