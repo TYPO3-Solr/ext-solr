@@ -817,9 +817,6 @@ ApacheSolrForTypo3\Solr\Tests\Unit\HtmlContentExtractorTest::canUnifyWhitespaces
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\AbstractIndexerTest::canEnrichVectorContent	3
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\AbstractIndexerTest::resolveFieldValue	5
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\FrontendHelper\PageFieldMappingIndexerTest::resolveFieldValue	5
-ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexerTest::canGetAdditionalDocuments	3
-ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexerTest::canTriggerIndexingAndIndicateIndexStatus	2
-ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexerTest::indexerAlwaysInitializesRequest	1
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexingResultCollectorTest::finalizeUserGroupsDeduplicatesGroups	1
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexingResultCollectorTest::finalizeUserGroupsFilterOutsHideAtLoginGroup	1
 ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\IndexingResultCollectorTest::finalizeUserGroupsHandlesCommaDelimitedValues	1

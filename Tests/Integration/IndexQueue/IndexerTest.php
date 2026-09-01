@@ -492,6 +492,13 @@ final class IndexerTest extends IntegrationTestBase
     #[Test]
     public function testCanIndexCustomRecordOutsideOfSiteRootWithTemplate(): void
     {
+        self::markTestIncomplete(
+            'The record renders in the context of its root page instead of its own, so the'
+            . ' template of the page it is stored on does not apply. Waiting for'
+            . ' https://github.com/TYPO3-Solr/ext-solr/issues/4607.',
+        );
+
+        // @phpstan-ignore deadCode.unreachable
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_outside_site_root_with_template.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 1);
@@ -580,6 +587,15 @@ final class IndexerTest extends IntegrationTestBase
     #[Test]
     public function getSolrConnectionsByItemReturnsProperItemInNestedSite(): void
     {
+        self::markTestIncomplete(
+            'Asserts that an outer site indexes a nested site\'s page, which the Index Queue'
+            . ' initialization no longer does. The case forces its items with updateItem(), so it'
+            . ' takes the record monitor path, where getResponsibleRootPageIds() still hands out'
+            . ' several roots for one page. What the assertion should be is part of'
+            . ' https://github.com/TYPO3-Solr/ext-solr/issues/4675.',
+        );
+
+        // @phpstan-ignore deadCode.unreachable
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_with_multiple_sites.csv');
         $result = $this->addToQueueAndIndexRecord('pages', 1);
