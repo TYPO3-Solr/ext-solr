@@ -628,9 +628,12 @@ results.resultsHighlighting
 En-/disables search term highlighting on the results page.
 
 ..  note::
-    The Unified Highlighter is used unconditionally (Since 14.0, and 13.1.4).
+    The Unified Highlighter is used unconditionally (Since 14.0, and 13.1.4), regardless of ``fragmentSize``.
     It replaces the FastVectorHighlighter, which crashed with HTTP 500 on ``field:*`` queries
     and thereby exposed a field-existence oracle on the indexed schema (CVE-2026-56096).
+    When Solr cannot build a highlighted snippet for a field, it returns a leading-text default summary
+    of approximately ``hl.snippets * fragmentSize`` characters instead, so a result that matched only in
+    ``title``, ``keywords`` or a heading field still gets a teaser.
 
 ..  note::
     The highlighting component will not work for vector search (`query.type=1`), as no classic search term is used/available to be highlighted. Using the siteHighlighting and an adjusted JavaScript could be an alternative approach.
