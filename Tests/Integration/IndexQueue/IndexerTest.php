@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
@@ -541,7 +542,11 @@ final class IndexerTest extends IntegrationTestBase
         ];
         $item = new Item($itemMetaData);
 
-        $result = $this->callInaccessibleMethod($this->indexer, 'getSolrConnectionsByItem', $item);
+        $result = $this->callInaccessibleMethod(
+            $this->get(IndexingService::class),
+            'getPageSolrConnections',
+            $item,
+        );
 
         self::assertInstanceOf(SolrConnection::class, $result[1], 'Expect SolrConnection object in connection array item with key 1.');
         self::assertCount(1, $result, 'Expect only one SOLR connection.');
@@ -564,7 +569,11 @@ final class IndexerTest extends IntegrationTestBase
         ];
         $item = new Item($itemMetaData);
 
-        $result = $this->callInaccessibleMethod($this->indexer, 'getSolrConnectionsByItem', $item);
+        $result = $this->callInaccessibleMethod(
+            $this->get(IndexingService::class),
+            'getPageSolrConnections',
+            $item,
+        );
 
         self::assertEmpty($result[0], 'Connection for default language was expected to be empty');
         self::assertInstanceOf(SolrConnection::class, $result[1], 'Expect SolrConnection object in connection array item with key 1.');
