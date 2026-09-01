@@ -9,11 +9,195 @@ Release 14.0.0
 
 This is a new major release for TYPO3 14 LTS.
 
+Highlights
+----------
+
+Everything announced during the 14.0.0 pre-release cycle — 14.0.0-alpha1, -beta1,
+-beta2, -beta3 and -RC1 — collected for the stable release, together with the changes
+that landed after the release candidate. The sections further down describe the
+individual changes in detail.
+
+Security
+~~~~~~~~
+
+*   CVE-2026-56092 to CVE-2026-56096, reported through the TYPO3 Security Team. Field
+    selectors in ``tx_solr[q]`` are whitelisted and the query syntax is escaped,
+    multi-value cObjs use JSON transport instead of object deserialization,
+    ``tx_solr[additionalFilters]`` can no longer preempt the siteHash or access filter,
+    the detail action enforces site and access restrictions, and the
+    ``fe_group``/``extendToSubpages``-forging listener is removed. Installations on
+    14.0.0-RC1 or earlier should update.
+    (`#4751 <https://github.com/TYPO3-Solr/ext-solr/pull/4751>`__,
+    `#4763 <https://github.com/TYPO3-Solr/ext-solr/pull/4763>`__ / @dkd-kaehm)
+
+TYPO3 14 and the platform
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*   !!! Full TYPO3 14 LTS compatibility, on stable TYPO3 14.3.x.
+    (`#4620 <https://github.com/TYPO3-Solr/ext-solr/pull/4620>`__ / @dkd-kaehm)
+*   !!! Apache Solr 10 / Lucene 10 is now required. The configset and the
+    managed-resources API were adapted for Jetty 12, deprecated trie-based dynamic
+    fields were removed, and ``ExtractingRequestHandler`` was dropped in favour of
+    EXT:tika 14+.
+    (`#4562 <https://github.com/TYPO3-Solr/ext-solr/pull/4562>`__ / @dkd-dobberkau)
+*   !!! solarium/solarium 7.0.0 removes :php:`AbstractQueryBuilder::removeOperator()`
+    and :php:`removeAlternativeQuery()` without alternatives.
+    (`#4713 <https://github.com/TYPO3-Solr/ext-solr/pull/4713>`__ / @dependabot)
+*   All language files were migrated to XLIFF 2.0, and event listeners moved to the
+    :php:`#[AsEventListener]` PHP attribute.
+    (`#4575 <https://github.com/TYPO3-Solr/ext-solr/pull/4575>`__,
+    `#4588 <https://github.com/TYPO3-Solr/ext-solr/pull/4588>`__ / @sfroemkenjw)
+*   The scheduler tasks implement :php:`getTaskParameters()` /
+    :php:`setTaskParameters()`, so TYPO3 core's
+    :php:`SchedulerDatabaseStorageMigration` can migrate them. Re-run that migration if
+    your EXT:solr tasks were not migrated before this release.
+    (`#4715 <https://github.com/TYPO3-Solr/ext-solr/pull/4715>`__ / @dkd-kaehm)
+*   EXT:install became an optional dependency.
+    (`#4676 <https://github.com/TYPO3-Solr/ext-solr/pull/4676>`__ / @wazum)
+*   Static analysis moved to PHPStan 2, which also uncovered a :php:`str_replace()`
+    search-array type mismatch in :php:`RoutingUtility::buildHash()`.
+    (`#4710 <https://github.com/TYPO3-Solr/ext-solr/pull/4710>`__ / @dkd-kaehm)
+
+Indexing
+~~~~~~~~
+
+*   !!! Unified sub-request indexing pipeline. Indexing no longer makes HTTP
+    round-trips to itself, which makes it significantly faster. (@dkd-kaehm)
+*   !!! The ``indexer`` Index Queue setting and the Index Queue Indexer are retired.
+    Indexing runs through :php:`IndexingService` and the PSR-14 indexing events, which
+    is where integrators who replaced the indexer now hook in.
+    (`#4758 <https://github.com/TYPO3-Solr/ext-solr/pull/4758>`__,
+    `#4760 <https://github.com/TYPO3-Solr/ext-solr/pull/4760>`__ / @dkd-kaehm)
+*   !!! :php:`RecordInsertedEvent` was introduced and the ``isNewRecord`` flag was
+    dropped from :php:`RecordUpdatedEvent`. (@dkd-friedrich)
+*   !!! A failed Index Queue item now records why it failed, and Index Queue
+    initialization stops at nested site roots instead of crossing into them.
+    (`#4759 <https://github.com/TYPO3-Solr/ext-solr/pull/4759>`__ / @dkd-kaehm)
+*   The new :php:`BeforeIndexingSubRequestIsPreparedEvent` lets listeners reset state
+    that must not leak between indexing sub-requests.
+    (`#4738 <https://github.com/TYPO3-Solr/ext-solr/pull/4738>`__ / @dkd-kaehm)
+*   The site hash is finalized by site identifier: dedicated ``domain`` and
+    ``typo3Context`` schema fields replace the ad-hoc ``_stringS`` fields that
+    :php:`Builder` used to write, and the recommended schema/solrconfig version stamp
+    was bumped.
+    (`#4719 <https://github.com/TYPO3-Solr/ext-solr/pull/4719>`__ / @dkd-kaehm)
+*   No ``c:0`` variant and no content leakage on ``fe_group``-restricted pages.
+    Changing permissions cascades through ``extendToSubpages``, so outdated access
+    variants are reindexed and cleaned up. (@dkd-kaehm)
+*   State no longer leaks between indexing sub-requests. Fixed for the language
+    Context aspect (`#4717 <https://github.com/TYPO3-Solr/ext-solr/pull/4717>`__ /
+    @BastiLu), the page title
+    (`#4701 <https://github.com/TYPO3-Solr/ext-solr/pull/4701>`__ / @amirarends),
+    Context aspects in general
+    (`#4733 <https://github.com/TYPO3-Solr/ext-solr/pull/4733>`__ / @hdj-typoconsult),
+    the page cache (@amirarends) and the backend web context
+    (`#4628 <https://github.com/TYPO3-Solr/ext-solr/pull/4628>`__ / @dkd-kaehm, with
+    patterns from @dmitryd). The last one fixes the Scheduler-module crash and CLI
+    multi-task chaining when indexing runs in a backend web context.
+*   Site processing uses a PHP generator, which lowers memory use. (@sfroemkenjw)
+*   The PID where a request failed is logged.
+    (`#4712 <https://github.com/TYPO3-Solr/ext-solr/pull/4712>`__ / @guelzow)
+*   No PHP warning when the access rootline is built for Index Queue pages that were
+    not collected.
+    (`#4728 <https://github.com/TYPO3-Solr/ext-solr/pull/4728>`__ / @konradmichalik)
+*   :php:`TypoScriptConfiguration` is no longer resolved for a page deleted in a
+    workspace.
+    (`#4603 <https://github.com/TYPO3-Solr/ext-solr/pull/4603>`__ / @amirarends)
+*   The obsolete ``addRootLineFields`` setting was removed.
+    (`#4735 <https://github.com/TYPO3-Solr/ext-solr/pull/4735>`__ / @tillhoerner)
+
+Search and frontend
+~~~~~~~~~~~~~~~~~~~
+
+*   !!! jQuery is gone from the frontend JavaScript. The search, suggest, facet and
+    range controllers were rewritten in vanilla JavaScript, and ``autoComplete.js``
+    drives the autosuggest.
+    (`#4619 <https://github.com/TYPO3-Solr/ext-solr/pull/4619>`__ / @dkd-lehnebach)
+*   Site sets are registered for all TypoScript templates.
+    (`#4622 <https://github.com/TYPO3-Solr/ext-solr/pull/4622>`__ / @dmitryd)
+*   Spellchecking keeps correctly-spelled terms when offering corrections. The "did you
+    mean" link and the auto-correction used to drop every correctly-spelled term from a
+    multi-word query.
+    (`#4671 <https://github.com/TYPO3-Solr/ext-solr/pull/4671>`__ / @dkd-kaehm)
+*   Suggest fixes: the form submission can be prevented because
+    :code:`form.requestSubmit()` replaced :code:`form.submit()`
+    (`#4657 <https://github.com/TYPO3-Solr/ext-solr/pull/4657>`__ / @danilovq), the
+    dropdown positions itself correctly in mobile and offcanvas layouts
+    (`#4652 <https://github.com/TYPO3-Solr/ext-solr/pull/4652>`__ / @dmitryd), the
+    suggestion query respects a configured ``routeEnhancer``
+    (`#4644 <https://github.com/TYPO3-Solr/ext-solr/pull/4644>`__ / @dkd-lehnebach),
+    and several search forms on one page initialize correctly
+    (`#4747 <https://github.com/TYPO3-Solr/ext-solr/pull/4747>`__ / @dkd-lehnebach).
+*   Facet URL encoding no longer mismatches on spaces when
+    ``urlParameterStyle=assoc`` is used.
+    (`#4610 <https://github.com/TYPO3-Solr/ext-solr/pull/4610>`__ / @dkd-hauser)
+*   ``subTitle`` and ``navTitle`` use the correct field-name casing in the TypoScript
+    ``queryFields``.
+    (`#4618 <https://github.com/TYPO3-Solr/ext-solr/pull/4618>`__ / @amirarends)
+*   Long Solr GET requests are converted to POST on the PSR-14 dispatcher, and the
+    ``PostBigRequest`` listener became opt-in through the extension configuration.
+    (`#4631 <https://github.com/TYPO3-Solr/ext-solr/pull/4631>`__ / @wazum)
+*   ASCII folding is applied before stemming in all language schemas.
+    (`#4741 <https://github.com/TYPO3-Solr/ext-solr/pull/4741>`__ / @tgaertner)
+*   The backend module icons were replaced with the TYPO3 14 style.
+    (`#4611 <https://github.com/TYPO3-Solr/ext-solr/pull/4611>`__ / @konradmichalik)
+*   No undefined array key exception for ``flexParentDatabaseRow``, which is not always
+    set — for example when the record history of a just-edited search flexform element
+    is opened.
+    (`#4698 <https://github.com/TYPO3-Solr/ext-solr/pull/4698>`__ / @BastiLu)
+*   A record is no longer loaded completely when
+    :php:`SettingsPreviewOnPluginsEventListener` only needs part of it, and it no longer
+    warns about an undefined array key.
+    (`#4691 <https://github.com/TYPO3-Solr/ext-solr/pull/4691>`__ / @un3us,
+    `#4686 <https://github.com/TYPO3-Solr/ext-solr/pull/4686>`__ / @mschwemer)
+
+Removed API
+~~~~~~~~~~~
+
+*   !!! :php:`DataUpdateHandler::removeFromIndexAndQueueWhenItemInQueue()`,
+    :php:`PageIndexer::isPageIndexable()`,
+    :php:`QueueInitializationServiceAwareInterface` and the related Queue API are
+    removed. (@dkd-friedrich)
+*   !!! The legacy PageIndexer system is removed and replaced by
+    ``IndexingInstructions``. (@dkd-kaehm)
+*   !!! The site hash strategy flag is removed.
+    (`#4546 <https://github.com/TYPO3-Solr/ext-solr/pull/4546>`__ / @bmack)
+*   !!! The trailing space is removed from the ``searchResultClassName`` and
+    ``searchResultSetClassName`` configuration keys.
+    (`#4226 <https://github.com/TYPO3-Solr/ext-solr/pull/4226>`__ / @beardcoder)
+*   !!! :php:`Highlighting::getUseFastVectorHighlighter()` is removed together with the
+    FastVector Highlighter selection rule. (@dkd-kaehm)
+
+Housekeeping during the pre-releases
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*   The ``guzzlehttp/psr7 < 2.10.0`` pin that 14.0.0-beta2 had to introduce is gone
+    again as of 14.0.0-beta3. ``guzzlehttp/psr7`` 2.10.0 made
+    :php:`Utils::modifyRequest()` mutate the original :php:`RequestInterface`, which
+    together with Guzzle's :php:`PrepareBodyMiddleware` passing ``Content-Length`` as an
+    :php:`int` broke every Solr write request through Solarium's :php:`Psr18Adapter` on
+    spec-compliant PSR-7 implementations such as :php:`TYPO3\CMS\Core\Http\Message`.
+    ``guzzlehttp/guzzle`` 7.10.2 fixed it upstream, so nothing needs to be pinned when
+    upgrading from 13.x.
+    (`#4660 <https://github.com/TYPO3-Solr/ext-solr/issues/4660>`__ / @dkd-kaehm)
+*   Extensive ViewHelper and dependency-injection refactoring across
+    :php:`SearchFormViewHelper`, the facet ViewHelpers (now sharing a trait),
+    Classification handling, :php:`FrequentSearchesService` and
+    :php:`SettingsPreviewOnPlugins`. (@sfroemkenjw)
+*   The dependency on EXT:fluid_styled_content was dropped.
+    (`#4729 <https://github.com/TYPO3-Solr/ext-solr/pull/4729>`__ / @dmitryd)
+*   Documentation fixes: the case-sensitive ``X-Tx-Solr-Iq`` header in
+    :file:`BestPractice.rst`
+    (`#4656 <https://github.com/TYPO3-Solr/ext-solr/pull/4656>`__ / @hnadler), clearing
+    documents only for the current site in :file:`Indexing.rst`
+    (`#4672 <https://github.com/TYPO3-Solr/ext-solr/pull/4672>`__ / @pi-phi), the
+    requirements for searchable and sortable fields
+    (`#4726 <https://github.com/TYPO3-Solr/ext-solr/pull/4726>`__ / @kitzberger) and
+    updated links to the Apache Solr Reference Guide
+    (`#4736 <https://github.com/TYPO3-Solr/ext-solr/pull/4736>`__ / @tillhoerner).
+
 New in this release
 -------------------
-
-.. note::
-   This section will be extended as features are finalized.
 
 TYPO3 14 LTS Compatibility
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -167,7 +351,7 @@ See `#4659 <https://github.com/TYPO3-Solr/ext-solr/issues/4659>`_.
 
 
 Security: CVE-2026-56096 — FieldExistsQuery HTTP 500 Oracle Closed
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A stand-alone ``field:*`` query was forwarded through the FastVector Highlighter (FVH).
 Lucene rewrote it to a ``FieldExistsQuery``, which FVH could not handle, and the request failed with HTTP 500 —
@@ -642,7 +826,7 @@ fires the events above, and :php:`RecordFieldMapper` maps the fields.
 
 
 !!! Trailing Space Removed from ``searchResultClassName`` and ``searchResultSetClassName`` Keys
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The configuration keys
 ``$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName ']`` and
@@ -712,7 +896,7 @@ Since EXT:solr 9 and Apache Solr 7 dynamic fields based on trie fields are marke
 
 
 !!! Highlighting::getUseFastVectorHighlighter() removed
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :php:`ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Highlighting::getUseFastVectorHighlighter()`
 returned whether ``fragmentSize`` was large enough (``>= 18``) for the FastVector Highlighter.
@@ -849,6 +1033,67 @@ needs is granted by the remaining listeners, which never reach a persisted cache
 All Changes
 -----------
 
+*   [SECURITY] Remove fe_group/extendToSubpages-forging listener (CVE-2026-56092) by @dkd-kaehm in `#4763 <https://github.com/TYPO3-Solr/ext-solr/pull/4763>`_
+*   [SECURITY] Fix CVE-2026-56093 — Enforce siteHash and access filters in detailAction lookup by @dkd-kaehm in `#4763 <https://github.com/TYPO3-Solr/ext-solr/pull/4763>`_
+*   [SECURITY] Fix CVE-2026-56094 — Prevent request additionalFilters from preempting siteHash filter by @dkd-kaehm in `#4763 <https://github.com/TYPO3-Solr/ext-solr/pull/4763>`_
+*   [DOCS] Expand multi-value cObjs section with an example by @dkd-kaehm in `#4763 <https://github.com/TYPO3-Solr/ext-solr/pull/4763>`_
+*   [!!!][SECURITY] Fix CVE-2026-56095 — JSON transport for multi-value cObjs by @dkd-kaehm in `#4763 <https://github.com/TYPO3-Solr/ext-solr/pull/4763>`_
+*   [DOCS] Document the Unified Highlighter default summary by @dkd-kaehm in `#4763 <https://github.com/TYPO3-Solr/ext-solr/pull/4763>`_
+*   [SECURITY] Fix CVE-2026-56096 — escape user query syntax by @dkd-kaehm in `#4763 <https://github.com/TYPO3-Solr/ext-solr/pull/4763>`_
+*   [SECURITY] Fix CVE-2026-56096 — edismax uf whitelist by @dkd-kaehm in `#4763 <https://github.com/TYPO3-Solr/ext-solr/pull/4763>`_
+*   [TASK] Move the request initialization case to IndexingService by @dkd-kaehm in `#4760 <https://github.com/TYPO3-Solr/ext-solr/pull/4760>`_
+*   [TASK] Move the Solr write status case, and assert a status code again by @dkd-kaehm in `#4760 <https://github.com/TYPO3-Solr/ext-solr/pull/4760>`_
+*   [TASK] Move the added documents case to the middleware by @dkd-kaehm in `#4760 <https://github.com/TYPO3-Solr/ext-solr/pull/4760>`_
+*   [!!!][TASK] Remove the Index Queue Indexer by @dkd-kaehm in `#4760 <https://github.com/TYPO3-Solr/ext-solr/pull/4760>`_
+*   [TASK] Assert the added documents event through the indexing pipeline by @dkd-kaehm in `#4760 <https://github.com/TYPO3-Solr/ext-solr/pull/4760>`_
+*   [TASK] Fill Solr through the production pipeline in the remaining tests by @dkd-kaehm in `#4760 <https://github.com/TYPO3-Solr/ext-solr/pull/4760>`_
+*   [TASK] Assert connection resolution against IndexingService by @dkd-kaehm in `#4760 <https://github.com/TYPO3-Solr/ext-solr/pull/4760>`_
+*   [TASK] Index records through the production pipeline in IndexerTest by @dkd-kaehm in `#4760 <https://github.com/TYPO3-Solr/ext-solr/pull/4760>`_
+*   [TASK] Drop the claim that indexPages() fakes a sub-request by @dkd-kaehm in `#4760 <https://github.com/TYPO3-Solr/ext-solr/pull/4760>`_
+*   [!!!][BUGFIX] Hand on why an indexing sub-request failed by @dkd-kaehm in `#4759 <https://github.com/TYPO3-Solr/ext-solr/pull/4759>`_
+*   [!!!][BUGFIX] Stop Index Queue initialization at nested site roots by @dkd-kaehm in `#4759 <https://github.com/TYPO3-Solr/ext-solr/pull/4759>`_
+*   [TASK] Explain why a language is missing on the page's site by @dkd-kaehm in `#4759 <https://github.com/TYPO3-Solr/ext-solr/pull/4759>`_
+*   [BUGFIX] Mark index queue items as failed when indexing returns false by @dkd-kaehm in `#4759 <https://github.com/TYPO3-Solr/ext-solr/pull/4759>`_
+*   [DOCS] Point integrators at the indexing events instead of the indexer setting by @dkd-kaehm in `#4758 <https://github.com/TYPO3-Solr/ext-solr/pull/4758>`_
+*   [TASK] Retire the indexer Index Queue setting by @dkd-kaehm in `#4758 <https://github.com/TYPO3-Solr/ext-solr/pull/4758>`_
+*   [TASK] Drop the dead indexer setting from the integration fixtures by @dkd-kaehm in `#4758 <https://github.com/TYPO3-Solr/ext-solr/pull/4758>`_
+*   [TASK] Stop shipping an indexer default that names a removed class by @dkd-kaehm in `#4758 <https://github.com/TYPO3-Solr/ext-solr/pull/4758>`_
+*   [TASK] Retire the hand-built IndexingInstructions from the test base by @dkd-kaehm in `#4756 <https://github.com/TYPO3-Solr/ext-solr/pull/4756>`_
+*   [TASK] Index the garbage collector fixtures through IndexService by @dkd-kaehm in `#4756 <https://github.com/TYPO3-Solr/ext-solr/pull/4756>`_
+*   [TASK] Index queued pages through the production pipeline in PageIndexerTest by @dkd-kaehm in `#4756 <https://github.com/TYPO3-Solr/ext-solr/pull/4756>`_
+*   [TASK] Enable the example page indexer through TypoScript by @dkd-kaehm in `#4756 <https://github.com/TYPO3-Solr/ext-solr/pull/4756>`_
+*   [TASK] Add a production entry for indexing a single queue item by @dkd-kaehm in `#4756 <https://github.com/TYPO3-Solr/ext-solr/pull/4756>`_
+*   [TASK] Index pages through the production pipeline in integration tests by @dkd-kaehm in `#4755 <https://github.com/TYPO3-Solr/ext-solr/pull/4755>`_
+*   [TASK] Address tied search results by value instead of by position by @dkd-kaehm in `#4755 <https://github.com/TYPO3-Solr/ext-solr/pull/4755>`_
+*   [TASK] Swap the testing IndexingService only once per test by @dkd-kaehm in `#4755 <https://github.com/TYPO3-Solr/ext-solr/pull/4755>`_
+*   [TASK] Reset the index time when requeueing a page in integration tests by @dkd-kaehm in `#4755 <https://github.com/TYPO3-Solr/ext-solr/pull/4755>`_
+*   [TASK] Guard against silently losing a test case by @dkd-kaehm in `#4754 <https://github.com/TYPO3-Solr/ext-solr/pull/4754>`_
+*   [TASK] Drop @var docblocks that restate the property type by @dkd-kaehm in `#4754 <https://github.com/TYPO3-Solr/ext-solr/pull/4754>`_
+*   [TASK] Declare test class properties with native types by @dkd-kaehm in `#4754 <https://github.com/TYPO3-Solr/ext-solr/pull/4754>`_
+*   [TASK] Drop the always-true array guard in QueueTest by @dkd-kaehm in `#4754 <https://github.com/TYPO3-Solr/ext-solr/pull/4754>`_
+*   [TASK] Align the inaccessible property helpers of both test bases by @dkd-kaehm in `#4738 <https://github.com/TYPO3-Solr/ext-solr/pull/4738>`_
+*   [FEATURE] Add BeforeIndexingSubRequestIsPreparedEvent by @dkd-kaehm in `#4738 <https://github.com/TYPO3-Solr/ext-solr/pull/4738>`_
+*   [BUGFIX] Remove not needed chdir in IntegrationTestBase::setUp() by @dkd-kaehm in `#4738 <https://github.com/TYPO3-Solr/ext-solr/pull/4738>`_
+*   [TASK] Replace deprecated DocHeader APIs in AbstractModuleController by @dkd-kaehm in `#4738 <https://github.com/TYPO3-Solr/ext-solr/pull/4738>`_
+*   [BUGFIX] Replace deprecated GeneralUtility::getIndpEnv() calls by @dkd-kaehm in `#4738 <https://github.com/TYPO3-Solr/ext-solr/pull/4738>`_
+*   [TASK] Minor housekeeping in issue template and CI matrix by @dkd-kaehm in `#4738 <https://github.com/TYPO3-Solr/ext-solr/pull/4738>`_
+*   [SECURITY] Fix CVE-2026-56096 — close FVH FieldExistsQuery HTTP 500 oracle by @dkd-kaehm in `#4751 <https://github.com/TYPO3-Solr/ext-solr/pull/4751>`_
+*   [BUGFIX] Prevent undefined array key warning in SettingsPreviewOnPluginsEventListener by @mschwemer in `#4686 <https://github.com/TYPO3-Solr/ext-solr/pull/4686>`_
+*   [BUGFIX] Apply ASCII folding before stemming in all language schemas by @tgaertner in `#4741 <https://github.com/TYPO3-Solr/ext-solr/pull/4741>`_
+*   [BUGFIX] fix autosuggestion initialization for multiple search forms on one page by @dkd-lehnebach in `#4747 <https://github.com/TYPO3-Solr/ext-solr/pull/4747>`_
+*   [TASK] allow GH Actions on security releases relevant branches and PRs by @dkd-kaehm in `d0d1164b8 <https://github.com/TYPO3-Solr/ext-solr/commit/d0d1164b896a14732de21d687daef135507eda84>`_
+*   [TASK] Remove obsolete "addRootLineFields" setting by @tillhoerner in `#4735 <https://github.com/TYPO3-Solr/ext-solr/pull/4735>`_
+*   [BUGFIX] Disable page cache before page indexing sub-requests by @amirarends in `d36c876c4 <https://github.com/TYPO3-Solr/ext-solr/commit/d36c876c44a8ae77027a88583b7051bd7c341c7f>`_
+*   [BUGFIX] Restore Context aspects after indexing sub-request by @hdj-typoconsult in `#4733 <https://github.com/TYPO3-Solr/ext-solr/pull/4733>`_
+*   [BUGFIX] Prevent PHP warning when building the access rootline for un-collected Index Queue pages by @konradmichalik in `#4728 <https://github.com/TYPO3-Solr/ext-solr/pull/4728>`_
+*   [DOCS] Update links to Apache Solr Reference Guide by @tillhoerner in `#4736 <https://github.com/TYPO3-Solr/ext-solr/pull/4736>`_
+*   [BUGFIX] Make PostBigRequest listener opt-in via extension config by @wazum in `#4631 <https://github.com/TYPO3-Solr/ext-solr/pull/4631>`_
+*   [BUGFIX] Convert long Solr GET requests to POST on PSR-14 dispatcher by @wazum in `#4631 <https://github.com/TYPO3-Solr/ext-solr/pull/4631>`_
+*   [TASK] Make EXT:install an optional dependency by @wazum in `#4676 <https://github.com/TYPO3-Solr/ext-solr/pull/4676>`_
+*   [BUGFIX] PHPStan issues 2026.08.12 by @dkd-kaehm in `#4731 <https://github.com/TYPO3-Solr/ext-solr/pull/4731>`_
+*   [DOCS] Mention requirements for sortable fields by @kitzberger in `#4726 <https://github.com/TYPO3-Solr/ext-solr/pull/4726>`_
+*   [DOCS] Mention requirements for searchable fields by @kitzberger in `#4726 <https://github.com/TYPO3-Solr/ext-solr/pull/4726>`_
+*   [CLEANUP] Remove unneeded dependency on fluid-styled-content by @dmitryd in `#4729 <https://github.com/TYPO3-Solr/ext-solr/pull/4729>`_
 *   [BUGFIX] Fix leaked language Context aspect between indexing sub-requests by @BastiLu in `#4703 <https://github.com/TYPO3-Solr/ext-solr/issues/4703>`_
 *   [TASK] Finalize site hash by site-identifier: add ``domain``/``typo3Context`` schema fields, drop ``_stringS`` suffixes in Builder by @dkd-kaehm in `#4411 <https://github.com/TYPO3-Solr/ext-solr/issues/4411>`_
 *   !!![TASK] Update solarium/solarium requirement from 6.4.1 to 7.0.0 — removes ``AbstractQueryBuilder::removeOperator()`` and ``removeAlternativeQuery()`` without alternatives by @dependabot in `#4713 <https://github.com/TYPO3-Solr/ext-solr/pull/4713>`_
@@ -901,7 +1146,7 @@ All Changes
 *   [TASK] Convert AbstractUriViewHelper to instance properties by @dkd-kaehm in `#4594 <https://github.com/TYPO3-Solr/ext-solr/pull/4594>`_
 *   [TASK] Refactor event listeners with AsEventListener attribute by @sfroemkenjw in `#4588 <https://github.com/TYPO3-Solr/ext-solr/pull/4588>`_
 *   [BUGFIX] GeneralUtility::trimExplode(): Argument #2 ($string) must be of type string, int given by @kitzberger in `#4511 <https://github.com/TYPO3-Solr/ext-solr/pull/4511>`_
-*   [BUGFIX] Cast result offset to integer by @Nowak in `#4529 <https://github.com/TYPO3-Solr/ext-solr/pull/4529>`_
+*   [BUGFIX] Cast result offset to integer by @saschanowak in `#4529 <https://github.com/TYPO3-Solr/ext-solr/pull/4529>`_
 *   [TASK] Refactor and optimize Classification handling by @sfroemkenjw in `#4583 <https://github.com/TYPO3-Solr/ext-solr/pull/4583>`_
 *   [TASK] Migrate xlf files of TYPO3 modules to XLIFF format 2.0 by @sfroemkenjw in `#4575 <https://github.com/TYPO3-Solr/ext-solr/pull/4575>`_
 *   [TASK] Refactor SettingsPreviewOnPlugins to EventListener by @sfroemkenjw in `#4576 <https://github.com/TYPO3-Solr/ext-solr/pull/4576>`_
@@ -926,7 +1171,7 @@ All Changes
 *   [BUGFIX] Adapt tests by @bmack in `#4546 <https://github.com/TYPO3-Solr/ext-solr/pull/4546>`_
 *   [TASK] Remove PSR-14 event, and update RST file by @bmack in `#4546 <https://github.com/TYPO3-Solr/ext-solr/pull/4546>`_
 *   [!!!][TASK] Remove site hash strategy flag by @bmack in `#4546 <https://github.com/TYPO3-Solr/ext-solr/pull/4546>`_
-*   [BUGFIX] Polish infobox to align with current ContextualFeedbackSeverity by @aarends in `#4551 <https://github.com/TYPO3-Solr/ext-solr/pull/4551>`_
+*   [BUGFIX] Polish infobox to align with current ContextualFeedbackSeverity by @amirarends in `#4551 <https://github.com/TYPO3-Solr/ext-solr/pull/4551>`_
 *   [TASK] Prepare v14 release notes by @dkd-friedrich in `#4547 <https://github.com/TYPO3-Solr/ext-solr/pull/4547>`_
 *   [BUGFIX] Remove TSFE from access component by @garfieldius in `#4544 <https://github.com/TYPO3-Solr/ext-solr/pull/4544>`_
 *   [BUGFIX] Allow GroupItemPaginateViewHelper template to be overridden by @jschlier in `#4542 <https://github.com/TYPO3-Solr/ext-solr/pull/4542>`_
@@ -944,7 +1189,7 @@ All Changes
 *   [TASK] Prepare schema/configset for dev-14.0.x by @dkd-kaehm in `#4528 <https://github.com/TYPO3-Solr/ext-solr/pull/4528>`_
 *   [TASK] Remove ext_econf.php file by @dkd-kaehm in `#4528 <https://github.com/TYPO3-Solr/ext-solr/pull/4528>`_
 *   [BUGFIX] Respect plugin TS in RelevanceComponent by @helhum in `#4532 <https://github.com/TYPO3-Solr/ext-solr/pull/4532>`_
-*   [BUGFIX] Catch InvalidArgumentException for missing site languages in GarbageHandler by @mwohlschlegel in `#4534 <https://github.com/TYPO3-Solr/ext-solr/pull/4534>`_
+*   [BUGFIX] Catch InvalidArgumentException for missing site languages in GarbageHandler by @mikelwohlschlegel in `#4534 <https://github.com/TYPO3-Solr/ext-solr/pull/4534>`_
 *   [BUGFIX] Add headers palette to solr plugin CType TCA definitions by @dkd-kaehm in `#4536 <https://github.com/TYPO3-Solr/ext-solr/pull/4536>`_
 *   [BUGFIX] CS issues 2026.02.05 by @dkd-kaehm in `#4526 <https://github.com/TYPO3-Solr/ext-solr/pull/4526>`_
 *   [DOCS] Update version matrix by @dkd-friedrich in `#4518 <https://github.com/TYPO3-Solr/ext-solr/pull/4518>`_
@@ -955,35 +1200,55 @@ All Changes
 Contributors
 ============
 
-.. note::
-      239 -   Contributors will be listed here once the release is finalized.
-
 Like always this release would not have been possible without the help from our
 awesome community. Here are the contributors to this release.
 
 (patches, comments, bug reports, reviews, ... in alphabetical order)
 
 - `Amir Arends <https://github.com/amirarends>`_
+- `Andreas Häfner <https://github.com/un3us>`_
+- `Anton Danilov <https://github.com/danilovq>`_
+- `@BastiLu <https://github.com/BastiLu>`_
 - `@beardcoder <https://github.com/beardcoder>`_
 - `Benni Mack <https://github.com/bmack>`_
+- `Bernd Wilke <https://github.com/pi-phi>`_
 - `@daylightsoftware <https://github.com/daylightsoftware>`_
 - `Dmitry Dulepov <https://github.com/dmitryd>`_
 - `Florian Lehnebach <https://github.com/dkd-lehnebach>`_
 - `@garfieldius <https://github.com/garfieldius>`_
+- `@hdj-typoconsult <https://github.com/hdj-typoconsult>`_
 - `Helmut Hummel <https://github.com/helhum>`_
+- `@hnadler <https://github.com/hnadler>`_
 - `@jschlier <https://github.com/jschlier>`_
 - `Konrad Michalik <https://github.com/konradmichalik>`_
+- `Marcus Schwemer <https://github.com/mschwemer>`_
 - `Markus Friedrich <https://github.com/dkd-friedrich>`_
 - `Mikel Wohlschlegel <https://github.com/mikelwohlschlegel>`_
 - `Oliver Hauser <https://github.com/dkd-hauser>`_
 - `Olivier Dobberkau <https://github.com/dkd-dobberkau>`_
 - `Philipp Kitzberger <https://github.com/kitzberger>`_
 - `Rafael Kähm <https://github.com/dkd-kaehm>`_
-- `Sascha Nowak <https://github.com/SaschaNoLe>`_
+- `Sascha Nowak <https://github.com/saschanowak>`_
 - `Stefan Frömken <https://github.com/sfroemkenjw>`_
+- `@tillhoerner <https://github.com/tillhoerner>`_
+- `Tobias Gaertner <https://github.com/tgaertner>`_
+- `Tobias Gülzow <https://github.com/guelzow>`_
+- `Wolfgang Klinger <https://github.com/wazum>`_
 
 Also a big thank you to our partners who have already concluded one of our new development participation packages such
-as Apache Solr EB for TYPO3 14 LTS (Feature).
+as Apache Solr EB for TYPO3 14 LTS (Feature):
+
+*   CS2 AG
+*   digit.ly
+*   fixpunkt werbeagentur gmbh
+*   in2code GmbH
+*   L.N. Schaffrath DigitalMedien GmbH
+*   LOUIS INTERNET GmbH
+*   queo GmbH
+*   toco3 GmbH & Co. KG
+*   Umweltbundesamt GmbH
+*   Universität für Musik und darstellende Kunst Wien
+*   Universität Regensburg
 
 
 How to Get Involved
