@@ -208,6 +208,55 @@ By default if a search term is found in the content field the documents gets sco
     ``string`` type fields (e.g. ``*_stringS``) store raw, unprocessed values and only support exact, case-sensitive matches — they are **not** suitable for user-facing search.
     See :ref:`appendix-dynamic-fields` for available field types and the :ref:`faq-index` section on ``stringS`` vs ``textS`` for more details.
 
+query.userFields
+~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.userFields
+:Default: (empty — derived from ``query.queryFields``)
+:Since: 13.1.4, 14.0
+
+Whitelist of fields that a Solr field-selector (``field:value``) in ``tx_solr[q]`` may target.
+By default the whitelist is derived from ``query.queryFields`` — only fields listed in ``qf`` are addressable via selector.
+Selectors against fields outside the whitelist are treated as literal terms and silently miss.
+
+A scalar value replaces the derived whitelist with a whitespace-separated list of field names:
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.query.userFields = title content fileExtension
+
+Alternatively the ``add`` and ``remove`` sub-keys apply comma-separated deltas on top of the qf-derived base list (used only when the scalar value is empty):
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.query.userFields {
+        add = customField, fileExtension
+        remove = abstract
+    }
+
+query.userFields.add
+~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.userFields.add
+:Default: (empty)
+:Since: 13.1.4, 14.0
+
+Comma-separated list of field names to add to the qf-derived user-field whitelist.
+Applied only when the scalar ``query.userFields`` value is empty.
+
+query.userFields.remove
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.userFields.remove
+:Default: (empty)
+:Since: 13.1.4, 14.0
+
+Comma-separated list of field names to remove from the qf-derived user-field whitelist.
+Applied only when the scalar ``query.userFields`` value is empty.
+
 query.returnFields
 ~~~~~~~~~~~~~~~~~~
 
