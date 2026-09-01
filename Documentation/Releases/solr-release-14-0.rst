@@ -294,6 +294,25 @@ Also released for TYPO3 13 LTS as EXT:solr 13.1.4.
 SST ticket: #2026052010000011, dkd: #235573
 
 
+Security: CVE-2026-56092 — No Forged fe_group/extendToSubpages on Pages Records
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On TYPO3 13 (EXT:solr 13.1.x), a page-indexer sub-request forced ``fe_group`` and
+``extendToSubpages`` to public values on every ``pages`` record it touched, and TYPO3 Core's
+``RootlineUtility`` persisted that forged record into the shared, cross-request ``rootline``
+cache — letting an anonymous visitor reach a page whose access restriction was only inherited
+via ``extendToSubpages`` from an ancestor page (CVE-2026-56092, fixed in 13.1.4).
+
+EXT:solr's TYPO3 14 indexing pipeline was already unaffected in practice, due to its two-phase
+sub-request design. The same listener has been removed here too, as a hardening measure: the
+access bypass it needed during indexing is already provided safely, without touching any
+persisted cache, by EXT:solr's other listeners.
+
+Also released for TYPO3 13 LTS as EXT:solr 13.1.4.
+
+SST ticket: #2026052210000016, dkd: #235574
+
+
 Breaking Changes
 ----------------
 
@@ -813,6 +832,18 @@ a frontend user group the visitor is not in.
 *Migration:* A template or integration that relied on the detail view rendering an empty document
 has to handle the 404 instead. Linking to a document from the result list is unaffected, since the
 visitor who saw it in the results may see it in the detail view too.
+
+
+!!! UserGroupDetector::clearPageOverlayAccessRestrictions() removed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:php:`ApacheSolrForTypo3\Solr\Middleware\UserGroupDetector::clearPageOverlayAccessRestrictions()`
+listened to :php:`BeforeRecordLanguageOverlayEvent` and stripped ``fe_group`` and
+``extendToSubpages`` from ``pages`` records during indexing sub-requests
+(see CVE-2026-56092 above). The method and its listener registration are removed.
+
+*Migration:* Drop any call or override. There is no replacement — the access bypass the indexer
+needs is granted by the remaining listeners, which never reach a persisted cache.
 
 
 All Changes

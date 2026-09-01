@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\IndexingResultCollector;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Domain\Access\RecordAccessGrantedEvent;
 use TYPO3\CMS\Core\Domain\Event\BeforePageIsRetrievedEvent;
-use TYPO3\CMS\Core\Domain\Event\BeforeRecordLanguageOverlayEvent;
 use TYPO3\CMS\Core\Domain\Event\ModifyDefaultConstraintsForDatabaseQueryEvent;
 use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
 use TYPO3\CMS\Core\Schema\Exception\UndefinedSchemaException;
@@ -94,27 +93,6 @@ readonly class UserGroupDetector
             return;
         }
         $event->skipGroupAccessCheck();
-    }
-
-    /**
-     * Removes fe_group and extendToSubpages from page overlay records
-     * so that access-restricted pages and their subpages are accessible.
-     *
-     * @noinspection PhpUnused Dispatched by {@see \TYPO3\CMS\Core\Domain\Repository\PageRepository::getLanguageOverlay()}
-     */
-    #[AsEventListener]
-    public function clearPageOverlayAccessRestrictions(BeforeRecordLanguageOverlayEvent $event): void
-    {
-        if (!$this->isActive()) {
-            return;
-        }
-        if ($event->getTable() !== 'pages') {
-            return;
-        }
-        $pageInput = $event->getRecord();
-        $pageInput['fe_group'] = '';
-        $pageInput['extendToSubpages'] = '0';
-        $event->setRecord($pageInput);
     }
 
     /**
