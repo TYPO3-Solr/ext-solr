@@ -203,6 +203,35 @@ Also released for TYPO3 13 LTS as EXT:solr 13.1.4.
 SST ticket: #2026050810000025, dkd: #235567
 
 
+Security: CVE-2026-56096 — Field Selectors and Query Syntax Restricted
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``tx_solr[q]`` reached the edismax parser unescaped and without a field whitelist,
+so a visitor could aim Lucene selector, range and grouping syntax at any field of the index
+and read back values that the search interface itself never exposes.
+
+The fix adds two layers, each governed by a new TypoScript setting:
+
+*   ``plugin.tx_solr.search.query.userFields`` sets the edismax ``uf`` parameter,
+    derived from ``query.queryFields`` by default.
+    A selector aimed at a field outside that whitelist is parsed as a literal term and misses.
+    Sites that rely on selectors against non-``qf`` fields extend the whitelist
+    with a scalar override or with the ``add`` / ``remove`` sub-keys.
+*   ``plugin.tx_solr.search.query.allowSolrOperatorSyntax`` escapes the user input itself.
+    Selector, range and grouping characters (``: [ ] ( ) { } ^ " ~ \ /``)
+    are escaped no matter how the setting is configured.
+    The default ``1`` lets the documented ``+ - && || ! * ?`` operator UX pass through,
+    ``0`` escapes the SolrJ specials ``| & ;`` on top of that.
+
+The pure vector search path is unaffected, because it never carries a user query term.
+
+See :ref:`configuration.reference.solrsearch` for the full reference of both settings.
+
+Also released for TYPO3 13 LTS as EXT:solr 13.1.4.
+
+SST ticket: #2026050810000025, dkd: #235567
+
+
 Breaking Changes
 ----------------
 
@@ -614,6 +643,23 @@ The related query parameter ``hl.useFastVectorHighlighter`` is no longer sent;
 ``hl.method=unified`` is sent instead.
 
 *Migration:* Drop the call. There is no replacement — the highlighter is no longer switchable via ``fragmentSize``.
+
+
+!!! Query syntax in ``tx_solr[q]`` is escaped and field selectors are whitelisted
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Raw Lucene syntax typed by a visitor no longer reaches Solr verbatim (see CVE-2026-56096 above).
+Selector, range and grouping characters are escaped at the input boundary, and ``field:value``
+only resolves for fields on the edismax ``uf`` whitelist, which defaults to the field list of
+``plugin.tx_solr.search.query.queryFields``.
+
+A frontend that lets visitors type ``field:value`` against fields outside ``queryFields``,
+or that relies on ``[a TO b]`` ranges in ``tx_solr[q]``, now misses silently instead of matching.
+
+*Migration:* Put the fields a visitor may address into
+``plugin.tx_solr.search.query.userFields`` — either as a scalar override or through the ``add``
+sub-key. Range and grouping syntax in the user query has no replacement; express such
+constraints as integrator-controlled ``plugin.tx_solr.search.query.filter`` entries instead.
 
 
 All Changes

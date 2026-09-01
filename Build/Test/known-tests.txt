@@ -460,7 +460,9 @@ ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Highlight\SiteHighlighterUrlMod
 ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\LastSearches\LastSearchesRepositoryTest::findAllKeywordsWillDecoteKeywordsAsHTMLEntities	1
 ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\LastSearches\LastSearchesServiceTest::canGetLastSearchesFromDatabaseInGlobalMode	1
 ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\LastSearches\LastSearchesServiceTest::canGetLastSearchesFromSessionInUserMode	1
-ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\Helper\EscapeHelperTest::canEscapeAsExpected	19
+ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\Helper\EscapeHelperTest::escapeDefaultMirrorsAllowedOperatorSyntaxMode	21
+ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\Helper\EscapeHelperTest::escapesEveryLuceneSpecialCharacterWhenOperatorSyntaxIsDisallowed	24
+ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\Helper\EscapeHelperTest::escapesOnlySelectorAndRangeCharactersWhenOperatorSyntaxIsAllowed	21
 ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\ParameterBuilder\BigramPhraseFieldsTest::buildFromEmptyStringCreatesEmptyArrayOnBuild	1
 ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\ParameterBuilder\GroupingTest::canBuildSortingFromConfiguration	1
 ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\ParameterBuilder\QueryFieldsTest::canBuildFromString	1
