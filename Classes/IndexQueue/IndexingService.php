@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AfterFrontendSubrequestHasBeenGeneratedEvent;
 use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexingSubRequestIsPreparedEvent;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
@@ -276,6 +277,10 @@ readonly class IndexingService
             );
 
             $request = $this->buildServerRequest($item, $language);
+            $event = new AfterFrontendSubrequestHasBeenGeneratedEvent($item, $request);
+            $this->eventDispatcher->dispatch($event);
+            $request = $event->getRequest();
+
             $request = $request->withAttribute('solr.indexingInstructions', $instructions);
 
             // Disable the page cache BEFORE the frontend middleware chain runs.
