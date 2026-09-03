@@ -105,11 +105,30 @@
     "t3:docs:clean": [
       "rm -Rf Documentation-GENERATED-temp/ $(readlink -f Documentation.HTML) Documentation.HTML"
     ],
-    "extension-create-libs": [
+    "extension-build": [
+      "@extension-build:clean",
       "@composer req -d Resources/Private/Php/ComposerLibraries solarium/solarium:$(Build/Helpers/GET_LOCAL_PACKAGE_VERSION_CONSTRAINT.sh solarium/solarium)"
     ],
-    "extension-build": [
-      "@extension-create-libs"
+    "extension-build:clean": [
+      "rm -Rf Resources/Private/Php/ComposerLibraries/vendor Resources/Private/Php/ComposerLibraries/composer.lock",
+      "git checkout -- Resources/Private/Php/ComposerLibraries/composer.json"
+    ],
+    "ext:env": [
+      "@putenv EXT_ARCHIVE_DIR=.Build/archive"
+    ],
+    "ext:version": [
+      "echo ${EXT_VERSION:-$(git show HEAD:composer.json | Build/Helpers/GET_TER_BUILD_INPUTS.sh | sed -n 's/^version=//p')}"
+    ],
+    "ext:archive:path": [
+      "@ext:env",
+      "echo ${EXT_ARCHIVE_DIR}/$(git show HEAD:composer.json | Build/Helpers/GET_TER_BUILD_INPUTS.sh | sed -n 's/^key=//p')_${EXT_VERSION:-$(git show HEAD:composer.json | Build/Helpers/GET_TER_BUILD_INPUTS.sh | sed -n 's/^version=//p')}.zip"
+    ],
+    "ext:build:for-ter": [
+      "@ext:env",
+      "Build/Helpers/BUILD_TER_ZIP.sh"
+    ],
+    "ext:release:prepare": [
+      "Build/Helpers/PREPARE_RELEASE.sh"
     ],
     "tests:restore-git": "echo \"Retore composer.json to initial state:\" && git checkout composer.json",
     "tests:env": [
@@ -120,6 +139,10 @@
       "@tests:env",
       "@composer req --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
       "@tests:restore-git"
+    ],
+    "tests:setup:for-ddev-ter": [
+      "@extension-build",
+      "git checkout -- Resources/Private/Php/ComposerLibraries/composer.json"
     ],
     "tests:unit": [
       "phpunit --config=Build/Test/UnitTests.xml"
@@ -153,7 +176,7 @@
     },
     "typo3/cms": {
       "extension-key": "solr",
-      "version": "14.0.0",
+      "version": "14.0.x-dev",
       "Package": {
         "providesPackages": {
           "solarium/solarium": "Resources/Private/Php/ComposerLibraries/vendor",
