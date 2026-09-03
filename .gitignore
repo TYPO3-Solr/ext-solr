@@ -11,6 +11,7 @@ Documentation-GENERATED-temp
 Documentation.HTML
 Documentation/_make
 index.php
+Resources/Private/Php/ComposerLibraries/vendor/
 Resources/Public/Documentation
 typo3
 typo3_src
@@ -18,4 +19,3 @@ typo3conf
 typo3temp
 uploads
 var
-vendor
