@@ -5,7 +5,6 @@
   "license": "GPL-3.0-or-later",
   "keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
   "homepage": "https://www.typo3-solr.com",
-  "version": "14.0.0",
   "authors": [
     {
       "name": "dkd Internet Service GmbH",
@@ -154,6 +153,13 @@
     },
     "typo3/cms": {
       "extension-key": "solr",
+      "version": "14.0.0",
+      "Package": {
+        "providesPackages": {
+          "solarium/solarium": "Resources/Private/Php/ComposerLibraries/vendor",
+          "halaxa/json-machine": "Resources/Private/Php/ComposerLibraries/vendor"
+        }
+      },
       "web-dir": ".Build/Web"
     },
     "TYPO3-Solr": {
