@@ -35,18 +35,29 @@ class SystemTemplateRepository extends AbstractRepository
      */
     public function findOneClosestPageIdWithActiveTemplateByRootLine(array $rootLine): ?int
     {
-        $rootLinePageIds = [0];
+        // rootline always is given in reverse order, so iterate over, as it will go to top of rootline
+        // from the current called pid
         foreach ($rootLine as $rootLineItem) {
-            $rootLinePageIds[] = (int)$rootLineItem['uid'];
+            $foundPage = $this->getTemplateIdForGivenPageId($rootLineItem['uid']);
+            if ($foundPage !== null) {
+                return $foundPage;
+            }
         }
+        return null;
+    }
 
+    /**
+     * @throws DBALException
+     */
+    private function getTemplateIdForGivenPageId(int $pageId): ?int
+    {
         $queryBuilder = $this->getQueryBuilder();
 
         $result = $queryBuilder
             ->select('uid', 'pid')
             ->from($this->table)
             ->where(
-                $queryBuilder->expr()->in('pid', $rootLinePageIds),
+                $queryBuilder->expr()->eq('pid', $pageId)
             )
             ->executeQuery()
             ->fetchAssociative();
