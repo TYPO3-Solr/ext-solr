@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
@@ -397,30 +396,6 @@ class TypoScriptConfiguration
     public function getIndexQueueIsMonitoredTable(string $tableName): bool
     {
         return in_array($tableName, $this->getIndexQueueMonitoredTables(), true);
-    }
-
-    /**
-     * Returns the configured indexer class that should be used for a certain indexingConfiguration.
-     * By default, "ApacheSolrForTypo3\Solr\IndexQueue\Indexer" will be returned.
-     *
-     * plugin.tx_solr.index.queue.<configurationName>.indexer
-     */
-    public function getIndexQueueIndexerByConfigurationName(string $configurationName, string $defaultIfEmpty = Indexer::class): string
-    {
-        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.indexer';
-        return (string)$this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
-    }
-
-    /**
-     * Returns the configuration of an indexer for a special indexingConfiguration.
-     * By default, an empty array is returned.
-     *
-     * plugin.tx_solr.index.queue.<configurationName>.indexer.
-     */
-    public function getIndexQueueIndexerConfigurationByConfigurationName(string $configurationName, array $defaultIfEmpty = []): array
-    {
-        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.indexer.';
-        return $this->getObjectByPathOrDefault($path, $defaultIfEmpty);
     }
 
     /**
@@ -1127,6 +1102,21 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns whether the well-known Lucene operators `+ - && || ! * ?` pass
+     * through `tx_solr[q]`. Default 1 — selector (`:`), range (`[ ]`) and
+     * grouping (`( ) { } ^ " ~ \ /`) characters are still escaped, so field
+     * enumeration and range injection cannot reach Solr; only wildcard and
+     * boolean operator syntax survives. Set to 0 for strict mode.
+     *
+     * plugin.tx_solr.search.query.allowSolrOperatorSyntax
+     */
+    public function getSearchQueryAllowSolrOperatorSyntax(string $defaultIfEmpty = '1'): bool
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.allowSolrOperatorSyntax', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
      * Returns the filter configuration array
      *
      * plugin.tx_solr.search.query.filter.
@@ -1162,6 +1152,29 @@ class TypoScriptConfiguration
     public function getSearchQueryQueryFields(string $defaultIfEmpty = ''): string
     {
         return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.queryFields', $defaultIfEmpty);
+    }
+
+    /**
+     * Whitelist of fields a Solr field-selector (`field:value`) may target.
+     * Empty value defers to the edismax default, which is the `qf` field list.
+     *
+     * plugin.tx_solr.search.query.userFields
+     */
+    public function getSearchQueryUserFields(string $defaultIfEmpty = ''): string
+    {
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.userFields', $defaultIfEmpty);
+    }
+
+    /**
+     * Returns the userFields sub-key configuration (`add`, `remove`) used to
+     * derive the edismax `uf` list from the `qf` defaults when no scalar
+     * override is given.
+     *
+     * plugin.tx_solr.search.query.userFields.
+     */
+    public function getSearchQueryUserFieldsConfiguration(array $defaultIfEmpty = []): array
+    {
+        return $this->getObjectByPathOrDefault('plugin.tx_solr.search.query.userFields.', $defaultIfEmpty);
     }
 
     /**

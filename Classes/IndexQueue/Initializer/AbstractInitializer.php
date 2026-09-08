@@ -240,7 +240,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      */
     protected function getPages(): array
     {
-        $pages = $this->site->getPages(null, $this->indexingConfigurationName);
+        $pages = $this->site->getPagesWithinSite($this->indexingConfigurationName);
         $additionalPageIds = [];
         if (!empty($this->indexingConfiguration['additionalPageIds'])) {
             $additionalPageIds = GeneralUtility::intExplode(',', $this->indexingConfiguration['additionalPageIds']);

@@ -27,10 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 final class SiteRepositoryTest extends IntegrationTestBase
 {
-    /**
-     * @var SiteRepository
-     */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
     protected function setUp(): void
     {

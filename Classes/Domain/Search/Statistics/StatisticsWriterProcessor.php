@@ -25,6 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\IpAnonymizationUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -144,7 +145,8 @@ class StatisticsWriterProcessor
 
     protected function getUserIp(): string
     {
-        return GeneralUtility::getIndpEnv('REMOTE_ADDR');
+        $normalizedParams = $this->getServerRequest()?->getAttribute('normalizedParams');
+        return $normalizedParams instanceof NormalizedParams ? $normalizedParams->getRemoteAddress() : '';
     }
 
     /**

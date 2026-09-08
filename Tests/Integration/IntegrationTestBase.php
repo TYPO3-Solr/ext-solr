@@ -15,26 +15,30 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
-use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexingSubRequestIsPreparedEvent;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\IndexQueue\IndexingInstructions;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
+use ApacheSolrForTypo3\Solr\Tests\Integration\Fixtures\IndexingServiceForTesting;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
+use Symfony\Component\DependencyInjection\Container;
 use Throwable;
-use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -45,8 +49,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Domain\Repository\SchedulerTaskRepository;
 use TYPO3\CMS\Scheduler\Scheduler;
 use TYPO3\CMS\Scheduler\Task\TaskSerializer;
-use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
-use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -99,8 +101,6 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     {
         parent::setUp();
 
-        //this is needed by the TYPO3 core.
-        chdir(Environment::getPublicPath() . '/');
         $this->previousErrorReporting = error_reporting();
         $this->failWhenSolrDeprecationIsCreated();
 
@@ -435,16 +435,52 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     {
         $reflection = new ReflectionClass($object);
         try {
-            $property = $reflection->getProperty($property);
-        } catch (ReflectionException) {
-            return null;
+            return $reflection->getProperty($property)->getValue($object);
+        } catch (ReflectionException $exception) {
+            self::fail(sprintf(
+                'Can not read property "%s" from object of type "%s": %s',
+                $property,
+                $object::class,
+                $exception->getMessage(),
+            ));
         }
-        return $property->getValue($object);
     }
 
     /*
         Nimut testing framework goodies, copied from https://github.com/Nimut/testing-framework
      */
+
+    /**
+     * Injects $dependency into property $name of $target
+     *
+     * This is a convenience method for setting a protected or private property in
+     * a test subject for the purpose of injecting a dependency.
+     *
+     * Copied from https://github.com/Nimut/testing-framework/blob/3d0573b23fe16157460b4e73e51e1cc0903ea35c/src/TestingFramework/TestCase/AbstractTestCase.php#L247-L284
+     *
+     * @param object $target The instance which needs the dependency
+     * @param string $name Name of the property to be injected
+     * @param mixed $dependency The dependency to inject - usually an object but can also be any other type
+     */
+    protected function inject(
+        object $target,
+        string $name,
+        mixed $dependency,
+    ): void {
+        $objectReflection = new ReflectionObject($target);
+        $methodNamePart = strtoupper($name[0]) . substr($name, 1);
+        if ($objectReflection->hasMethod('set' . $methodNamePart)) {
+            $methodName = 'set' . $methodNamePart;
+            $target->$methodName($dependency);
+        } elseif ($objectReflection->hasMethod('inject' . $methodNamePart)) {
+            $methodName = 'inject' . $methodNamePart;
+            $target->$methodName($dependency);
+        } elseif ($objectReflection->hasProperty($name)) {
+            $objectReflection->getProperty($name)->setValue($target, $dependency);
+        } else {
+            self::fail('Could not inject ' . $name . ' into object of type ' . $target::class);
+        }
+    }
 
     /**
      * Helper function to call protected or private methods
@@ -490,88 +526,115 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     }
 
     /**
+     * Queues the given pages and indexes them the way the scheduler task does, so that
+     * everything between IndexService and the sub-request is covered by the test.
+     *
      * @throws InvalidArgumentException
      * @throws SiteNotFoundException
      * @throws DBALException
      * @throws NoSuchCacheException
+     * @throws InvalidConnectionException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    protected function indexPages(
-        array $importPageIds,
-        ?int $frontendUserId = null,
-    ): void {
+    protected function indexPages(array $importPageIds): void
+    {
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        $queuedItemsPerRootPage = [];
         foreach ($importPageIds as $importPageId) {
             $site = $siteFinder->getSiteByPageId($importPageId);
-            $queueItem = $this->addPageToIndexQueue($importPageId, $site);
-            $frontendUrl = $site->getRouter()->generateUri($importPageId);
-            $this->executePageIndexer((string)$frontendUrl, $queueItem, $frontendUserId);
+            $this->addPageToIndexQueue($importPageId, $site);
+            $rootPageId = $site->getRootPageId();
+            $queuedItemsPerRootPage[$rootPageId] = ($queuedItemsPerRootPage[$rootPageId] ?? 0) + 1;
         }
+
+        foreach ($queuedItemsPerRootPage as $rootPageId => $queuedItems) {
+            $this->indexQueuedItems($queuedItems, $rootPageId);
+        }
+
         $this->waitToBeVisibleInSolr();
     }
 
     /**
-     * @throws InvalidArgumentException
+     * Indexes queued items through the production pipeline, which runs one real frontend
+     * sub-request per item.
+     *
+     * IndexingService is swapped for a test subclass providing the typo3.testing.context
+     * attribute that the testing-framework's FrontendUserHandler middleware expects.
+     *
      * @throws DBALException
+     * @throws InvalidArgumentException
+     * @throws SiteNotFoundException
+     * @throws InvalidConnectionException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    protected function indexPageQueueItem(Item $item, int $language = 0, string $coreName = 'core_en'): bool
+    protected function indexQueuedItems(int $limit, int $rootPageId = 1): bool
     {
-        $parameters = [];
-        if ($item->hasIndexingProperty('isMountedPage')) {
-            $parameters['MP'] = $item->getIndexingProperty('mountPageSource')
-                . '-' . $item->getIndexingProperty('mountPageDestination');
-        }
+        $this->useIndexingServiceForTesting();
 
-        if ($language > 0) {
-            $parameters['_language'] = $language;
-        }
-
-        $frontendUrl = $item->getSite()->getTypo3SiteObject()->getRouter()->generateUri(
-            $item->getRecordUid(),
-            $parameters,
-        );
-
-        $response = $this->executePageIndexer((string)$frontendUrl, $item);
-
-        $connection = $this->getConnectionPool()->getConnectionForTable('sys_template');
-        $connection->update(
-            'tx_solr_indexqueue_item',
-            ['indexed' => time()],
-            ['uid' => $item->getIndexQueueUid()],
-        );
-
-        return $response->getStatusCode() === 200;
+        $site = GeneralUtility::makeInstance(SiteRepository::class)->getSiteByRootPageId($rootPageId);
+        return GeneralUtility::makeInstance(IndexService::class, $site)->indexItems($limit);
     }
 
     /**
-     * Executes a Frontend sub-request to trigger page indexing via the new
-     * IndexingInstructions pipeline (SolrIndexingMiddleware).
+     * Indexes one queue item the way IndexService does it, so that the item's indexing
+     * instructions come from production: the access rootline including the mount point
+     * parameter, and one sub-request per language and content access group.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    protected function executePageIndexer(string $url, Item $item, ?int $frontendUserId = null): ResponseInterface
+    protected function indexQueuedItem(Item $item): bool
     {
-        $instructions = new IndexingInstructions(
-            items: [$item],
-            action: IndexingInstructions::ACTION_INDEX_PAGE,
-            language: 0,
-            accessRootline: (string)Rootline::getAccessRootlineByPageId($item->getRecordUid()),
-            parameters: ['item' => $item->getIndexQueueUid()],
-        );
+        return $this->useIndexingServiceForTesting()->indexItems([$item]);
+    }
 
-        $request = new InternalRequest($url);
-        $request = $request->withAttribute('solr.indexingInstructions', $instructions);
-
-        $requestContext = null;
-        if ($frontendUserId !== null) {
-            $requestContext = (new InternalRequestContext())->withFrontendUserId($frontendUserId);
+    /**
+     * Replaces IndexingService with the test subclass that supplies the typo3.testing.context
+     * attribute the testing-framework's FrontendUserHandler middleware expects.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private function useIndexingServiceForTesting(): IndexingService
+    {
+        /** @var Container $container */
+        $container = $this->getContainer();
+        GeneralUtility::setContainer($container);
+        $indexingService = $container->get(IndexingService::class);
+        // The container refuses to replace an already initialized service, and a test may index
+        // more than once.
+        if (!$indexingService instanceof IndexingServiceForTesting) {
+            $indexingService = IndexingServiceForTesting::fromProductionService($indexingService);
+            $container->set(IndexingService::class, $indexingService);
         }
 
-        $response = $this->executeFrontendSubRequest($request, $requestContext);
+        return $indexingService;
+    }
 
-        /** @var VariableFrontend $runtimeCache */
-        $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime');
-        $runtimeCache->flush();
+    /**
+     * Does what IndexingService does before every sub-request, so that shared services can be
+     * asserted to drop the state of the previous one.
+     */
+    protected function dispatchBeforeIndexingSubRequestIsPreparedEvent(): void
+    {
+        $item = new Item([
+            'uid' => 1,
+            'root' => 1,
+            'item_type' => 'pages',
+            'item_uid' => 1,
+            'changed' => 1,
+            'indexing_configuration' => 'pages',
+        ]);
 
-        $response->getBody()->rewind();
-        return $response;
+        $this->get(EventDispatcherInterface::class)->dispatch(
+            new BeforeIndexingSubRequestIsPreparedEvent(
+                $item,
+                0,
+                new IndexingInstructions([$item], IndexingInstructions::ACTION_INDEX_PAGE),
+            ),
+        );
     }
 
     /**
@@ -592,10 +655,14 @@ abstract class IntegrationTestBase extends FunctionalTestCase
         // Check if item (type + Page ID) is already in index, if so update it
         $row = $connection->select(['*'], 'tx_solr_indexqueue_item', $queueItemSearchCriteria)->fetchAssociative();
         if (is_array($row)) {
+            // Resetting "indexed" is what makes the item pending again: IndexService picks up
+            // items with changed > indexed, and an item queued here may already carry the
+            // timestamp of an earlier indexing run.
             $connection->update(
                 'tx_solr_indexqueue_item',
                 [
                     'changed' => 1007007007,
+                    'indexed' => 0,
                     'errors' => '',
                 ],
                 [
@@ -606,6 +673,7 @@ abstract class IntegrationTestBase extends FunctionalTestCase
                 $row,
                 [
                     'changed' => 1007007007,
+                    'indexed' => 0,
                     'errors' => '',
                 ],
             );

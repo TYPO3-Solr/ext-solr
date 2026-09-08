@@ -275,7 +275,7 @@ class SuggestController {
     }
     this.autoCompleteInstance = new autoComplete(
       {
-        selector: ".tx-solr-suggest",
+        selector: () => this.form.querySelector('.tx-solr-suggest'),
         data: {
           src: async (query) => {
             const formattedQuery = this.formatQuery(query)

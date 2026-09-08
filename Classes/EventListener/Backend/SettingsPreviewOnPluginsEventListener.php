@@ -50,6 +50,9 @@ final readonly class SettingsPreviewOnPluginsEventListener
         }
 
         $pluginsTtContentRecord = $event->getRecord()->toArray();
+        if (!isset($pluginsTtContentRecord['pi_flexform'])) {
+            return;
+        }
 
         $event->setPreviewContent(
             $this->getPreviewContent($event, $pluginsTtContentRecord),

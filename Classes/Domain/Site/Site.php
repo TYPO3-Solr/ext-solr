@@ -284,6 +284,37 @@ class Site
         return $this->pagesRepository->findAllSubPageIdsByRootPage($pageId, $initialPagesAdditionalWhereClause);
     }
 
+    /**
+     * Same as getPages(), except that the pages of sites nested into this one are left out.
+     *
+     * Used when initializing the Index Queue: a nested site's pages belong to that site's queue.
+     *
+     * @return int[]
+     *
+     * @throws DBALException
+     */
+    public function getPagesWithinSite(
+        ?string $indexQueueConfigurationName = null,
+        ?string $additionalWhereClause = null,
+    ): array {
+        $initialPagesAdditionalWhereClause = '';
+        if ($indexQueueConfigurationName !== null) {
+            $initialPagesAdditionalWhereClause = $this->getSolrConfiguration()
+                ->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
+        }
+
+        if ($additionalWhereClause !== null) {
+            $initialPagesAdditionalWhereClause .=
+                ($initialPagesAdditionalWhereClause !== '' ? ' AND ' : '')
+                . '(' . $additionalWhereClause . ')';
+        }
+
+        return $this->pagesRepository->findAllSubPageIdsByRootPageWithinSite(
+            (int)$this->rootPageRecord['uid'],
+            $initialPagesAdditionalWhereClause,
+        );
+    }
+
     public function getSiteHash(): string
     {
         return $this->siteHash;

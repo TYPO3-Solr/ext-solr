@@ -29,13 +29,16 @@ use ApacheSolrForTypo3\Solr\Domain\Variants\VariantsProcessor;
 use ApacheSolrForTypo3\Solr\Event\Search\AfterInitialSearchResultSetHasBeenCreatedEvent;
 use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchHasBeenExecutedEvent;
 use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Search\AccessComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrIncompleteResponseException;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
 
@@ -61,6 +64,8 @@ class SearchResultSetService
 
     protected EventDispatcherInterface $eventDispatcher;
 
+    protected AccessComponent $accessComponent;
+
     public function __construct(
         TypoScriptConfiguration $configuration,
         Search $search,
@@ -68,6 +73,7 @@ class SearchResultSetService
         ?SearchResultBuilder $resultBuilder = null,
         ?QueryBuilder $queryBuilder = null,
         ?EventDispatcherInterface $eventDispatcher = null,
+        ?AccessComponent $accessComponent = null,
     ) {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
@@ -75,6 +81,7 @@ class SearchResultSetService
         $this->searchResultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
         $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, $configuration, $solrLogManager);
         $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
+        $this->accessComponent = $accessComponent ?? GeneralUtility::makeInstance(AccessComponent::class, $this->queryBuilder);
     }
 
     public function getIsSolrAvailable(bool $useCache = true): bool
@@ -305,11 +312,31 @@ class SearchResultSetService
 
     /**
      * Retrieves a single document from solr by document id.
+     *
+     * @throws AspectNotFoundException
+     * @throws InvalidArgumentException
      */
     public function getDocumentById(string $documentId): SearchResult
     {
         /** @var SearchQuery $query */
         $query = $this->queryBuilder->newSearchQuery($documentId)->useQueryFields(QueryFields::fromString('id'))->getQuery();
+
+        // Enforce the same siteHash and frontend user access filters as the regular search path:
+        //   the by-id lookup must not be less restricted than resultsAction.
+        // AccessComponent skips a request without a context page, which keeps this a no-op outside
+        // a frontend request, where there is no user to scope the lookup to anyway.
+        $contextPageUid = (int)(($GLOBALS['TYPO3_REQUEST'] ?? null)
+            ?->getAttribute('routing')
+            ?->getPageId() ?? 0);
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            GeneralUtility::makeInstance(SearchRequest::class, [], $contextPageUid, 0, $this->typoScriptConfiguration),
+            $this->search,
+            $this->typoScriptConfiguration,
+        );
+        ($this->accessComponent)($event);
+        $query = $event->getQuery();
+
         $response = $this->search->search($query, 0, 1);
         $parsedData = $response->getParsedData();
         // @extensionScannerIgnoreLine

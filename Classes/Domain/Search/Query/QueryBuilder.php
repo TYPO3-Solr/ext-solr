@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Elevation;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
@@ -47,6 +48,14 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class QueryBuilder extends AbstractQueryBuilder
 {
+    /**
+     * System-owned filter names that request additionalFilters must not set.
+     */
+    protected const RESERVED_FILTER_NAMES_FROM_REQUEST = [
+        'siteHash',
+        'access',
+    ];
+
     /**
      * Additional filters, which will be added to the query, as well as to suggest queries.
      */
@@ -102,9 +111,14 @@ class QueryBuilder extends AbstractQueryBuilder
         if ($this->typoScriptConfiguration->isPureVectorSearchEnabled()) {
             $this->preparePureVectorSearch($rawQuery);
         } else {
-            $this->newSearchQuery($rawQuery)
+            $escapedQuery = $rawQuery === '' ? '' : (string)EscapeService::escape(
+                $rawQuery,
+                $this->typoScriptConfiguration->getSearchQueryAllowSolrOperatorSyntax(),
+            );
+            $this->newSearchQuery($escapedQuery)
                 ->useReturnFieldsFromTypoScript()
                 ->useQueryFieldsFromTypoScript()
+                ->useUserFieldsFromTypoScript()
                 ->useInitialQueryFromTypoScript()
                 ->useFiltersFromTypoScript()
                 ->useHighlightingFromTypoScript()
@@ -116,7 +130,7 @@ class QueryBuilder extends AbstractQueryBuilder
         return $this
                 ->setRawQueryTerm($rawQuery)
                 ->useResultsPerPage($resultsPerPage)
-                ->useFilterArray($additionalFiltersFromRequest)
+                ->useFilterArray($this->removeReservedFiltersFromRequest($additionalFiltersFromRequest))
                 ->useFacetingFromTypoScript()
                 ->useVariantsFromTypoScript()
                 ->useGroupingFromTypoScript()
@@ -162,10 +176,23 @@ class QueryBuilder extends AbstractQueryBuilder
             ->useOmitHeader();
 
         if (!empty($additionalFilters)) {
-            $this->useFilterArray($additionalFilters);
+            $this->useFilterArray($this->removeReservedFiltersFromRequest($additionalFilters));
         }
 
         return $this->queryToBuild;
+    }
+
+    /**
+     * Strips system-owned filter names from request additionalFilters so
+     * frontend input cannot preempt the siteHash/access boundary.
+     */
+    protected function removeReservedFiltersFromRequest(array $additionalFilters): array
+    {
+        return array_filter(
+            $additionalFilters,
+            static fn(int|string $filterName): bool => !in_array($filterName, self::RESERVED_FILTER_NAMES_FROM_REQUEST, true),
+            ARRAY_FILTER_USE_KEY,
+        );
     }
 
     /**
@@ -278,6 +305,39 @@ class QueryBuilder extends AbstractQueryBuilder
     }
 
     /**
+     * Whitelist the fields a Solr field-selector (`field:value`) may target.
+     * Defaults to the `qf` field list so non-whitelisted fields cannot disclose
+     * arbitrary schema fields. Reads qf back from the query rather than
+     * re-fetching it from TypoScript to avoid a second configuration lookup.
+     *
+     * A scalar `userFields = ...` replaces the derived list outright. When the
+     * scalar is empty, `userFields.add` and `userFields.remove` are applied as
+     * comma-separated deltas on top of the qf-derived base list.
+     */
+    public function useUserFieldsFromTypoScript(): AbstractQueryBuilder
+    {
+        $explicit = $this->typoScriptConfiguration->getSearchQueryUserFields();
+        if ($explicit !== '') {
+            $this->queryToBuild->getEDisMax()->setUserFields($explicit);
+            return $this;
+        }
+
+        $qfString = (string)$this->queryToBuild->getEDisMax()->getQueryFields();
+        $base = $qfString === '' ? [] : QueryFields::fromString($qfString, ' ')->getFieldNames();
+
+        $config = $this->typoScriptConfiguration->getSearchQueryUserFieldsConfiguration();
+        $add = GeneralUtility::trimExplode(',', (string)($config['add'] ?? ''), true);
+        $remove = GeneralUtility::trimExplode(',', (string)($config['remove'] ?? ''), true);
+
+        $fields = array_values(array_diff(array_unique(array_merge($base, $add)), $remove));
+
+        if ($fields !== []) {
+            $this->queryToBuild->getEDisMax()->setUserFields(implode(' ', $fields));
+        }
+        return $this;
+    }
+
+    /**
      * Applies the configured return fields from the typoscript configuration.
      */
     public function useReturnFieldsFromTypoScript(): AbstractQueryBuilder
@@ -315,6 +375,7 @@ class QueryBuilder extends AbstractQueryBuilder
         }
 
         $siteHashFilterString = implode(' OR ', $filters);
+        $this->queryToBuild->removeFilterQuery('siteHash');
         return $this->useFilter($siteHashFilterString, 'siteHash');
     }
 

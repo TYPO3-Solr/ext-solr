@@ -23,12 +23,12 @@ use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Backend\Template\Components\ComponentFactory;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 /**
@@ -39,7 +39,7 @@ final class IndexAdministrationModuleControllerTest extends IntegrationTestBase
     protected function setUp(): void
     {
         parent::setUp();
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
+        $GLOBALS['LANG'] = $this->get(LanguageServiceFactory::class)->create('default');
 
         $this->writeDefaultSolrTestSiteConfiguration();
     }
@@ -49,13 +49,14 @@ final class IndexAdministrationModuleControllerTest extends IntegrationTestBase
         $controller = $this->getMockBuilder(IndexAdministrationModuleController::class)
             ->setConstructorArgs(
                 [
-                    'moduleTemplateFactory' => $this->getContainer()->get(ModuleTemplateFactory::class),
-                    'iconFactory' =>  GeneralUtility::makeInstance(IconFactory::class),
-                    'moduleDataStorageService' => GeneralUtility::makeInstance(ModuleDataStorageService::class),
-                    'siteRepository' => GeneralUtility::makeInstance(SiteRepository::class),
-                    'siteFinder' => GeneralUtility::makeInstance(SiteFinder::class),
-                    'solrConnectionManager' => GeneralUtility::makeInstance(ConnectionManager::class),
-                    'indexQueue' => GeneralUtility::makeInstance(Queue::class),
+                    'moduleTemplateFactory' => $this->get(ModuleTemplateFactory::class),
+                    'iconFactory' => $this->get(IconFactory::class),
+                    'moduleDataStorageService' => $this->get(ModuleDataStorageService::class),
+                    'siteRepository' => $this->get(SiteRepository::class),
+                    'siteFinder' => $this->get(SiteFinder::class),
+                    'solrConnectionManager' => $this->get(ConnectionManager::class),
+                    'indexQueue' => $this->get(Queue::class),
+                    'componentFactory' => $this->get(ComponentFactory::class),
                 ],
             )
             ->onlyMethods(['addFlashMessage'])
@@ -73,7 +74,7 @@ final class IndexAdministrationModuleControllerTest extends IntegrationTestBase
     public function testReloadIndexConfigurationAction(): void
     {
         /** @var SiteRepository $siteRepository */
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $siteRepository = $this->get(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $controller = $this->getControllerMockObject();
         $controller->setSelectedSite($selectedSite);
@@ -95,7 +96,7 @@ final class IndexAdministrationModuleControllerTest extends IntegrationTestBase
     public function testEmptyIndexAction(): void
     {
         /** @var SiteRepository $siteRepository */
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $siteRepository = $this->get(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $controller = $this->getControllerMockObject();
         $controller->setSelectedSite($selectedSite);

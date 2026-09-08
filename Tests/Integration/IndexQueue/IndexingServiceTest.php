@@ -2,14 +2,9 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
-use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
-use ApacheSolrForTypo3\Solr\Tests\Integration\Fixtures\IndexingServiceForTesting;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class IndexingServiceTest extends IntegrationTestBase
@@ -55,20 +50,7 @@ class IndexingServiceTest extends IntegrationTestBase
         $cache = $this->get(CacheManager::class)->getCache('pages')->get($cacheIdentifier);
         self::assertStringContainsString('Subsubpage in site 1', $cache['content']);
 
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $site = $siteRepository->getSiteByRootPageId(1);
-
-        GeneralUtility::setContainer($this->getContainer());
-        /**
-         * @noinspection PhpPossiblePolymorphicInvocationInspection
-         * @phpstan-ignore method.notFound
-         */
-        $this->getContainer()->set(
-            IndexingService::class,
-            IndexingServiceForTesting::fromProductionService($this->getContainer()->get(IndexingService::class)),
-        );
-        $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
-        $indexService->indexItems(1);
+        $this->indexQueuedItems(1);
 
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');

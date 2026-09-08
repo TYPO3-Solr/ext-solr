@@ -38,6 +38,8 @@ final class EscapeHelperTest extends SetUpUnitTestCase
         yield '&& character is kept' => ['input' => 'hello && world', 'expectedOutput' => 'hello && world'];
         yield '! character is kept' => ['input' => 'hello !world', 'expectedOutput' => 'hello !world'];
         yield '* character is kept' => ['input' => 'hello *world', 'expectedOutput' => 'hello *world'];
+        yield 'lone asterisk match-all stays literal' => ['input' => '*', 'expectedOutput' => '*'];
+        yield '*:* match-all gets colon escaped' => ['input' => '*:*', 'expectedOutput' => '*\:*'];
         yield '? character is kept' => ['input' => 'hello ?world', 'expectedOutput' => 'hello ?world'];
         yield 'ö character is kept' => ['input' => 'schöner tag', 'expectedOutput' => 'schöner tag'];
         yield 'numeric is kept' => ['input' => 42, 'expectedOutput' => 42];
@@ -48,10 +50,59 @@ final class EscapeHelperTest extends SetUpUnitTestCase
 
     #[DataProvider('escapeQueryDataProvider')]
     #[Test]
-    public function canEscapeAsExpected($input, $expectedOutput): void
+    public function escapesOnlySelectorAndRangeCharactersWhenOperatorSyntaxIsAllowed($input, $expectedOutput): void
     {
-        $escapeHelper = new EscapeService();
-        $output = $escapeHelper::escape($input);
-        self::assertSame($expectedOutput, $output, 'Query was not escaped as expected');
+        self::assertSame(
+            $expectedOutput,
+            EscapeService::escape($input, true),
+            'Legacy-mode escape (allowOperatorSyntax=true) did not produce expected output',
+        );
+    }
+
+    #[DataProvider('escapeQueryDataProvider')]
+    #[Test]
+    public function escapeDefaultMirrorsAllowedOperatorSyntaxMode($input, $expectedOutput): void
+    {
+        self::assertSame(
+            $expectedOutput,
+            EscapeService::escape($input),
+            'Default escape() call must behave as legacy mode (allowOperatorSyntax=true)',
+        );
+    }
+
+    public static function escapeQueryWithoutOperatorSyntaxDataProvider(): Traversable
+    {
+        yield 'empty stays empty' => ['input' => '', 'expectedOutput' => ''];
+        yield 'plain word stays plain' => ['input' => 'foo', 'expectedOutput' => 'foo'];
+        yield 'numeric is kept' => ['input' => 42, 'expectedOutput' => 42];
+        yield 'whitespace is preserved literally' => ['input' => 'foo bar baz', 'expectedOutput' => 'foo bar baz'];
+        yield 'umlaut is preserved' => ['input' => 'schöner tag', 'expectedOutput' => 'schöner tag'];
+        yield 'plus operator passes through (required term)' => ['input' => '+foo', 'expectedOutput' => '+foo'];
+        yield 'minus operator passes through (prohibited term)' => ['input' => '-foo', 'expectedOutput' => '-foo'];
+        yield 'bang operator passes through (NOT)' => ['input' => '!foo', 'expectedOutput' => '!foo'];
+        yield 'asterisk wildcard passes through (prefix search)' => ['input' => 'foo*', 'expectedOutput' => 'foo*'];
+        yield 'lone asterisk match-all stays literal' => ['input' => '*', 'expectedOutput' => '*'];
+        yield '*:* match-all has only colon escaped' => ['input' => '*:*', 'expectedOutput' => '*\:*'];
+        yield 'question mark wildcard passes through (single-char)' => ['input' => 'foo?', 'expectedOutput' => 'foo?'];
+        yield 'double ampersand is escaped char by char' => ['input' => 'a && b', 'expectedOutput' => 'a \&\& b'];
+        yield 'double pipe is escaped char by char' => ['input' => 'a || b', 'expectedOutput' => 'a \|\| b'];
+        yield 'single ampersand is escaped' => ['input' => 'a&b', 'expectedOutput' => 'a\&b'];
+        yield 'single pipe is escaped' => ['input' => 'a|b', 'expectedOutput' => 'a\|b'];
+        yield 'semicolon is escaped' => ['input' => 'a;b', 'expectedOutput' => 'a\;b'];
+        yield 'field selector wildcard has only colon escaped' => ['input' => 'siteHash:*', 'expectedOutput' => 'siteHash\:*'];
+        yield 'range query is fully escaped' => ['input' => 'title:[a TO z]', 'expectedOutput' => 'title\:\[a TO z\]'];
+        yield 'rounded brackets are escaped' => ['input' => 'hello (world)', 'expectedOutput' => 'hello \(world\)'];
+        yield 'tilde is escaped' => ['input' => 'foo~2', 'expectedOutput' => 'foo\~2'];
+        yield 'backslash is escaped' => ['input' => 'a\b', 'expectedOutput' => 'a\\\\b'];
+        yield 'slash is escaped' => ['input' => 'a/b', 'expectedOutput' => 'a\/b'];
+        yield 'quoted phrase keeps inner operator literal' => ['input' => '"foo *bar"', 'expectedOutput' => '"foo *bar"'];
+    }
+
+    #[DataProvider('escapeQueryWithoutOperatorSyntaxDataProvider')]
+    #[Test]
+    public function escapesEveryLuceneSpecialCharacterWhenOperatorSyntaxIsDisallowed($input, $expectedOutput): void
+    {
+        $output = EscapeService::escape($input, false);
+        self::assertSame($expectedOutput, $output, 'Strict-mode escape did not produce expected output');
     }
 }

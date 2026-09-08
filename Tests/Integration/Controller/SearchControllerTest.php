@@ -36,15 +36,9 @@ use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
  */
 final class SearchControllerTest extends IntegrationTestBase
 {
-    /**
-     * @var SearchController
-     */
-    protected $searchController;
+    protected SearchController $searchController;
 
-    /**
-     * @var Response
-     */
-    protected $searchResponse;
+    protected Response $searchResponse;
 
     protected function setUp(): void
     {
@@ -118,7 +112,10 @@ final class SearchControllerTest extends IntegrationTestBase
             /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.results.resultsPerPageSwitchOptions = 5, 10, 25, 50
-            plugin.tx_solr.search.results.resultsPerPage = 5',
+            plugin.tx_solr.search.results.resultsPerPage = 5
+            // Every page matches "*" equally, so which page lands on which result page would
+            // otherwise depend on the order the index queue was worked off in.
+            plugin.tx_solr.search.query.sortBy = score desc, uid asc',
         );
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -990,10 +987,7 @@ final class SearchControllerTest extends IntegrationTestBase
      * @param string $action
      * @param array $getArguments
      *
-     * @todo: See: https://github.com/TYPO3/testing-framework/issues/324
-     * Notes:
-     * Fits removed frontendWillRenderErrorMessageForSolrNotAvailableAction() test case as well.
-     * Removed code: https://github.com/TYPO3-Solr/ext-solr/blob/03080d4d55eeb9d50b15348f445d23e57e34e461/Tests/Integration/Controller/SearchControllerTest.php#L729-L747
+     * Covers the removed frontendWillRenderErrorMessageForSolrNotAvailableAction() case as well.
      */
     #[DataProvider('frontendWillRenderErrorMessageIfSolrNotAvailableDataProvider')]
     #[Group('frontend')]
@@ -1016,8 +1010,7 @@ final class SearchControllerTest extends IntegrationTestBase
         );
 
         self::assertStringContainsString('Search is currently not available.', (string)$response->getBody(), 'Response did not contain solr unavailable error message');
-        self::markTestIncomplete('The status code can not be checked currently. See: https://github.com/TYPO3/testing-framework/issues/324');
-        //self::assertEquals(503, $response->getStatusCode());
+        self::assertEquals(503, $response->getStatusCode(), 'Response did not carry the "service unavailable" status');
     }
 
     /**
@@ -1266,14 +1259,17 @@ final class SearchControllerTest extends IntegrationTestBase
         self::assertStringNotContainsString('id="tx-solr-search-functions"', $formContent);
     }
 
-    /**
-     * @todo : https://github.com/TYPO3-Solr/ext-solr/issues/3166
-     */
     #[Group('frontend')]
     #[Test]
     public function searchingAndRenderingFrequentSearchesIsShowingTheTermAsFrequentSearch(): void
     {
-        self::markTestIncomplete('See: https://github.com/TYPO3-Solr/ext-solr/issues/3166');
+        self::markTestIncomplete(
+            'The frequent searches container renders empty, so the searched term does not appear in'
+            . ' it. See https://github.com/TYPO3-Solr/ext-solr/issues/4762, which replaces the'
+            . ' closed #3166 this case used to refer to.',
+        );
+
+        // @phpstan-ignore deadCode.unreachable
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([2]);
 

@@ -18,6 +18,8 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 
+use function json_encode;
+
 /**
  * A content object (cObj) to turn comma separated strings into an array to be
  * used in a multi value field in a Solr document.
@@ -41,7 +43,7 @@ class Multivalue extends AbstractContentObject
      *
      * Turns a list of values into an array that can then be used to fill
      * multivalued fields in a Solr document. The array is returned in
-     * serialized form as content objects are expected to return strings.
+     * JSON-encoded form as content objects are expected to return strings.
      *
      * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
@@ -76,6 +78,9 @@ class Multivalue extends AbstractContentObject
             $listAsArray = array_unique($listAsArray);
         }
 
-        return serialize($listAsArray);
+        return json_encode(
+            $listAsArray,
+            JSON_THROW_ON_ERROR,
+        );
     }
 }

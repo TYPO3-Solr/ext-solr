@@ -24,8 +24,6 @@ abstract class AbstractRecordMovedEvent extends AbstractDataUpdateEvent
 {
     /**
      * pid of the record prior moving
-     *
-     * @var int|null
      */
     protected ?int $previousParentId = null;
 

@@ -174,6 +174,82 @@ class PagesRepository extends AbstractRepository
     }
 
     /**
+     * Same as findAllSubPageIdsByRootPage(), except that pages starting a site of their own, and
+     * their subtrees, are left out.
+     *
+     * A nested site's pages belong to that site's Index Queue. Collecting them for the outer site
+     * produces items whose "root" is the outer site while the page itself resolves to the inner
+     * one, and the two sites' language sets then disagree during indexing.
+     *
+     * @return int[]
+     *
+     * @throws DBALException
+     */
+    public function findAllSubPageIdsByRootPageWithinSite(
+        int $rootPageId,
+        string $initialPagesAdditionalWhereClause = '',
+    ): array {
+        $cacheIdentifier = hash('sha1', 'getPagesWithinSite' . $rootPageId . $initialPagesAdditionalWhereClause);
+        if ($this->transientVariableCache->get($cacheIdentifier) !== false) {
+            return $this->transientVariableCache->get($cacheIdentifier);
+        }
+
+        $pageIds = $this->getSubPageIdsWithoutNestedSites($rootPageId);
+
+        if (!empty($initialPagesAdditionalWhereClause)) {
+            $pageIds = $this->filterPageIdsByInitialPagesAdditionalWhereClause($pageIds, $initialPagesAdditionalWhereClause);
+        }
+
+        $this->transientVariableCache->set($cacheIdentifier, $pageIds);
+        return $pageIds;
+    }
+
+    /**
+     * Collects the given page and its descendants, stopping at every page that carries
+     * is_siteroot, because such a page starts a site of its own.
+     *
+     * Deliberately not folded into getTreeList(): that helper is also used for garbage
+     * collection and mount page resolution, which must keep seeing the whole tree.
+     *
+     * @return int[]
+     *
+     * @throws DBALException
+     */
+    protected function getSubPageIdsWithoutNestedSites(int $rootPageId, int $depth = 9999): array
+    {
+        $pageIds = [$rootPageId];
+        if ($depth <= 0) {
+            return $pageIds;
+        }
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+        $childPages = $queryBuilder
+            ->select('uid', 'is_siteroot')
+            ->from($this->table)
+            ->where(
+                $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($rootPageId, ParameterType::INTEGER)),
+                $queryBuilder->expr()->eq('sys_language_uid', 0),
+            )
+            ->orderBy('uid')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        foreach ($childPages as $childPage) {
+            if ((int)$childPage['is_siteroot'] === 1) {
+                continue;
+            }
+
+            $pageIds = array_merge(
+                $pageIds,
+                $this->getSubPageIdsWithoutNestedSites((int)$childPage['uid'], $depth - 1),
+            );
+        }
+
+        return $pageIds;
+    }
+
+    /**
      * This method retrieves the pages ids from the current tree level a calls getPages recursive,
      * when the maxDepth has not been reached.
      *

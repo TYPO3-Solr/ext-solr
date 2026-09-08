@@ -518,41 +518,6 @@ final class TypoScriptConfigurationTest extends SetUpUnitTestCase
     }
 
     #[Test]
-    public function canGetIndexQueueIndexerByConfigurationName(): void
-    {
-        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
-            'index.' => [
-                'queue.' => [
-                    'pages.' => [
-                        'indexer' => 'Foobar',
-                    ],
-                ],
-            ],
-        ];
-        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $configuredIndexer = $configuration->getIndexQueueIndexerByConfigurationName('pages');
-        self::assertSame('Foobar', $configuredIndexer, 'Retrieved unexpected indexer from typoscript configuration');
-    }
-
-    #[Test]
-    public function canGetIndexQueueIndexerConfigurationByConfigurationName(): void
-    {
-        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
-            'index.' => [
-                'queue.' => [
-                    'pages.' => [
-                        'indexer' => 'Foobar',
-                        'indexer.' => ['configuration' => 'test'],
-                    ],
-                ],
-            ],
-        ];
-        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $configuredIndexer = $configuration->getIndexQueueIndexerConfigurationByConfigurationName('pages');
-        self::assertSame(['configuration' => 'test'], $configuredIndexer, 'Retrieved unexpected indexer configuration from typoscript configuration');
-    }
-
-    #[Test]
     public function canGetIndexQueuePagesExcludeContentByClassArray(): void
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [

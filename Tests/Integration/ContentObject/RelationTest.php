@@ -29,6 +29,8 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
+use function json_encode;
+
 /**
  * Class RelationTest
  */
@@ -173,21 +175,37 @@ final class RelationTest extends IntegrationTestBase
         ];
 
         yield 'Can resolve titles of the main categories of the related records in m:n relation' => [
-            serialize(['Third category', 'Second category']),
+            json_encode(
+                [
+                    'Third category',
+                    'Second category',
+                ],
+            ),
             'tx_fakeextension_domain_model_foo',
             2,
             ['localField' => 'mm_assignments', 'foreignLabelField' => 'main_category', 'multiValue' => 1],
         ];
 
         yield 'Can resolve titles of the main categories of the related records in m:n relation and keep duplicates' => [
-            serialize(['Third category', 'Second category', 'Second category']),
+            json_encode(
+                [
+                    'Third category',
+                    'Second category',
+                    'Second category',
+                ],
+            ),
             'tx_fakeextension_domain_model_foo',
             3,
             ['localField' => 'mm_assignments', 'foreignLabelField' => 'main_category', 'multiValue' => 1],
         ];
 
         yield 'Can resolve titles of the main categories of the related records in m:n relation and remove duplicates' => [
-            serialize(['Third category', 'Second category']),
+            json_encode(
+                [
+                    'Third category',
+                    'Second category',
+                ],
+            ),
             'tx_fakeextension_domain_model_foo',
             3,
             ['localField' => 'mm_assignments', 'foreignLabelField' => 'main_category', 'multiValue' => 1, 'removeDuplicateValues' => 1],
@@ -201,7 +219,12 @@ final class RelationTest extends IntegrationTestBase
         ];
 
         yield 'Can resolve uids of m:n relation for multi value field, with 2 items' => [
-            serialize(['11', '10']),
+            json_encode(
+                [
+                    '11',
+                    '10',
+                ],
+            ),
             'tx_fakeextension_domain_model_foo',
             2,
             ['localField' => 'mm_assignments', 'foreignLabelField' => 'uid', 'multiValue' => 1],
@@ -267,7 +290,12 @@ final class RelationTest extends IntegrationTestBase
         ];
 
         yield 'Can resolve related categories of related records 1:n relation (multi value)' => [
-            serialize(['Second category', 'Second category']),
+            json_encode(
+                [
+                    'Second category',
+                    'Second category',
+                ],
+            ),
             'tx_fakeextension_domain_model_foo',
             1,
             ['localField' => 'inline_relations', 'foreignLabelField' => 'mm_assignments.main_category', 'multiValue' => 1],

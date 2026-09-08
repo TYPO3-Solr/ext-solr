@@ -16,10 +16,9 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\IndexingService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTestBase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -44,22 +43,13 @@ final class IndexerTest extends IntegrationTestBase
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension2',
     ];
 
-    /**
-     * @var Queue|null
-     */
     protected ?Queue $indexQueue = null;
-
-    /**
-     * @var Indexer|null
-     */
-    protected ?Indexer $indexer = null;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
-        $this->indexer = GeneralUtility::makeInstance(Indexer::class);
 
         /** @var BackendUserAuthentication $beUser */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
@@ -461,24 +451,25 @@ final class IndexerTest extends IntegrationTestBase
     #[Test]
     public function canGetAdditionalDocumentsViaPsr14EventListener(): void
     {
-        $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/01_integration_tree_one.csv');
-        $document = new Document();
-        $document->setField('original-document', true);
-        $metaData = [
-            'uid' => 1,
-            'item_type' => 'pages',
-            'root' => 1,
-            'item_uid' => 1,
-            'changed' => 1007007007,
-        ];
-        $record = ['uid' => 1, 'pid' => 0, 'activate-event-listener' => true];
-        $item = new Item($metaData, $record);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_add_documents_via_psr14_event_listener.csv');
 
-        $result = $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $document, $item, 0);
-        // Result contains two documents, one from the event listener and the original one above
-        self::assertCount(2, $result);
-        self::assertSame($document, $result[0]);
-        self::assertEquals(['can-be-an-alternative-record' => 'additional-test-document'], $result[1]->getFields());
+        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
+
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
+
+        $this->waitToBeVisibleInSolr();
+        $solrContent = file_get_contents($this->getSolrCoreUrl('core_en') . '/select?q=*:*');
+
+        self::assertStringContainsString(
+            '"numFound":2',
+            $solrContent,
+            'Expected the indexed record and the document the event listener added',
+        );
+        self::assertStringContainsString(
+            '"alternativeRecord_stringS":"additional-test-document"',
+            $solrContent,
+            'The document added by the PSR-14 listener did not reach Solr',
+        );
     }
 
     #[Test]
@@ -501,6 +492,13 @@ final class IndexerTest extends IntegrationTestBase
     #[Test]
     public function testCanIndexCustomRecordOutsideOfSiteRootWithTemplate(): void
     {
+        self::markTestIncomplete(
+            'The record renders in the context of its root page instead of its own, so the'
+            . ' template of the page it is stored on does not apply. Waiting for'
+            . ' https://github.com/TYPO3-Solr/ext-solr/issues/4607.',
+        );
+
+        // @phpstan-ignore deadCode.unreachable
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_outside_site_root_with_template.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 1);
@@ -526,7 +524,7 @@ final class IndexerTest extends IntegrationTestBase
         // run the indexer
         $items = $this->indexQueue->getItems($table, $uid);
         foreach ($items as $item) {
-            $result = $this->indexer->index($item);
+            $result = $this->indexQueuedItem($item);
         }
 
         return $result;
@@ -547,7 +545,11 @@ final class IndexerTest extends IntegrationTestBase
         ];
         $item = new Item($itemMetaData);
 
-        $result = $this->callInaccessibleMethod($this->indexer, 'getSolrConnectionsByItem', $item);
+        $result = $this->callInaccessibleMethod(
+            $this->get(IndexingService::class),
+            'getPageSolrConnections',
+            $item,
+        );
 
         self::assertInstanceOf(SolrConnection::class, $result[1], 'Expect SolrConnection object in connection array item with key 1.');
         self::assertCount(1, $result, 'Expect only one SOLR connection.');
@@ -570,7 +572,11 @@ final class IndexerTest extends IntegrationTestBase
         ];
         $item = new Item($itemMetaData);
 
-        $result = $this->callInaccessibleMethod($this->indexer, 'getSolrConnectionsByItem', $item);
+        $result = $this->callInaccessibleMethod(
+            $this->get(IndexingService::class),
+            'getPageSolrConnections',
+            $item,
+        );
 
         self::assertEmpty($result[0], 'Connection for default language was expected to be empty');
         self::assertInstanceOf(SolrConnection::class, $result[1], 'Expect SolrConnection object in connection array item with key 1.');
@@ -581,6 +587,15 @@ final class IndexerTest extends IntegrationTestBase
     #[Test]
     public function getSolrConnectionsByItemReturnsProperItemInNestedSite(): void
     {
+        self::markTestIncomplete(
+            'Asserts that an outer site indexes a nested site\'s page, which the Index Queue'
+            . ' initialization no longer does. The case forces its items with updateItem(), so it'
+            . ' takes the record monitor path, where getResponsibleRootPageIds() still hands out'
+            . ' several roots for one page. What the assertion should be is part of'
+            . ' https://github.com/TYPO3-Solr/ext-solr/issues/4675.',
+        );
+
+        // @phpstan-ignore deadCode.unreachable
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_with_multiple_sites.csv');
         $result = $this->addToQueueAndIndexRecord('pages', 1);

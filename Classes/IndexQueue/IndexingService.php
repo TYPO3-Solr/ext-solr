@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexingSubRequestIsPreparedEvent;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\Exception\SolrIndexRuntimeException;
@@ -30,6 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
@@ -62,9 +64,9 @@ readonly class IndexingService
         private ConnectionManager $connectionManager,
         private PagesRepository $pagesRepository,
         private SolrLogManager $logger,
-        private IndexingResultCollector $resultCollector,
         private SiteFinder $siteFinder,
         private Context $context,
+        private EventDispatcherInterface $eventDispatcher,
     ) {}
 
     /**
@@ -268,7 +270,10 @@ readonly class IndexingService
         IndexingInstructions $instructions,
     ): ?ResponseInterface {
         try {
-            $this->resultCollector->reset();
+            // Primarily to reset shared services, which still carry the state of the previous sub-request.
+            $this->eventDispatcher->dispatch(
+                new BeforeIndexingSubRequestIsPreparedEvent($item, $language, $instructions),
+            );
 
             $request = $this->buildServerRequest($item, $language);
             $request = $request->withAttribute('solr.indexingInstructions', $instructions);
@@ -403,7 +408,17 @@ readonly class IndexingService
                     'exception' => $e->__toString(),
                 ],
             );
-            return null;
+
+            // Returning null here would reach the caller as "not indexed" and leave nothing but
+            // this log entry behind. Handing the throwable on lets IndexService record it on the
+            // queue item, so the reason is visible where the failure is.
+            throw new SolrIndexRuntimeException(
+                'The "' . $instructions->getAction() . '" sub-request for Index Queue item '
+                . $item->getIndexQueueUid() . ' (' . $item->getType() . ':' . $item->getRecordUid()
+                . ', language ' . $language . ') failed: ' . $e->getMessage(),
+                1788263400,
+                $e,
+            );
         }
     }
 
@@ -420,7 +435,25 @@ readonly class IndexingService
     {
         $pageUid = $this->resolvePageUid($item);
         $site = $this->siteFinder->getSiteByPageId($pageUid);
-        $siteLanguage = $site->getLanguageById($language);
+
+        try {
+            $siteLanguage = $site->getLanguageById($language);
+        } catch (\InvalidArgumentException $languageDoesNotExist) {
+            // The languages come from the Solr connections of the site the queue item belongs to,
+            // while the page resolves to a site of its own. TYPO3 assigns language ids per site,
+            // so the two sets need not agree, and it will not reconcile them: see the closing of
+            // https://forge.typo3.org/issues/95688.
+            throw new SolrIndexRuntimeException(
+                'Language ' . $language . ' is configured for the Solr connections of the Index Queue'
+                . ' item\'s site (root page ' . $item->getRootPageUid() . '), but site "'
+                . $site->getIdentifier() . '", which owns page ' . $pageUid . ', does not define it.'
+                . ' Give every site that shares a page tree the same language ids, or index those'
+                . ' pages from their own site. See the note on'
+                . ' useConfigurationTrackRecordsOutsideSiteroot in the documentation.',
+                1788259200,
+                $languageDoesNotExist,
+            );
+        }
 
         $uri = $site->getRouter()->generateUri($pageUid, $language > 0 ? ['_language' => $language] : []);
 

@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\System\Logging;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
@@ -60,7 +61,15 @@ class DebugWriter
 
     protected function getIsAllowedByDevIPMask(): bool
     {
-        return GeneralUtility::cmpIP(GeneralUtility::getIndpEnv('REMOTE_ADDR'), $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask']);
+        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
+        if (!$request instanceof ServerRequestInterface) {
+            return false;
+        }
+        $normalizedParams = $request->getAttribute('normalizedParams');
+        if (!$normalizedParams instanceof NormalizedParams) {
+            return false;
+        }
+        return GeneralUtility::cmpIP($normalizedParams->getRemoteAddress(), $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask']);
     }
 
     /**

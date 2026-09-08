@@ -17,16 +17,18 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
-use TYPO3\CMS\Core\SingletonInterface;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexingSubRequestIsPreparedEvent;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Singleton that bridges the middleware (inside sub-request) with the IndexingService (outside).
+ * Shared service that bridges the middleware (inside sub-request) with the IndexingService
+ * (outside).
  *
  * During a sub-request, the middleware and event listeners write results here.
  * After the sub-request completes, IndexingService reads results from here.
  */
-class IndexingResultCollector implements SingletonInterface
+class IndexingResultCollector
 {
     /**
      * @var int[] Finalized user groups from findUserGroups action
@@ -48,6 +50,12 @@ class IndexingResultCollector implements SingletonInterface
         $this->userGroups = [];
         $this->frontendGroups = [];
         $this->userGroupDetectionActive = false;
+    }
+
+    #[AsEventListener]
+    public function resetOn(BeforeIndexingSubRequestIsPreparedEvent $event): void
+    {
+        $this->reset();
     }
 
     /**

@@ -28,17 +28,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 final class QueueTest extends IntegrationTestBase
 {
-    /**
-     * @var Queue
-     */
-    protected $indexQueue;
+    protected Queue $indexQueue;
 
     protected QueueInitializationService $queueInitializationService;
 
-    /**
-     * @var SiteRepository
-     */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
     protected function setUp(): void
     {
@@ -162,7 +156,6 @@ final class QueueTest extends IntegrationTestBase
                 custom_page_type = 1
                 custom_page_type {
                     initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
-                    indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
                     type = pages
                     allowedPageTypes = 130
                     additionalWhereClause = doktype = 130 AND no_search = 0
@@ -230,11 +223,9 @@ final class QueueTest extends IntegrationTestBase
         $availableSites = $this->siteRepository->getAvailableSites();
         $this->indexQueue->deleteAllItems();
 
-        if (is_array($availableSites)) {
-            foreach ($availableSites as $site) {
-                if ($site instanceof Site) {
-                    $this->queueInitializationService->initializeBySiteAndIndexConfiguration($site);
-                }
+        foreach ($availableSites as $site) {
+            if ($site instanceof Site) {
+                $this->queueInitializationService->initializeBySiteAndIndexConfiguration($site);
             }
         }
 

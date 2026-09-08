@@ -27,6 +27,8 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
+use function json_encode;
+
 /**
  * Tests for the SOLR_CLASSIFICATION cObj.
  */
@@ -71,7 +73,7 @@ final class ClassificationTest extends IntegrationTestBase
         );
 
         self::assertEquals(
-            serialize(['cms']),
+            json_encode(['cms']),
             $actual,
         );
     }
@@ -111,7 +113,7 @@ final class ClassificationTest extends IntegrationTestBase
         );
 
         self::assertEquals(
-            serialize($expectedOutput),
+            json_encode($expectedOutput),
             $actual,
         );
     }

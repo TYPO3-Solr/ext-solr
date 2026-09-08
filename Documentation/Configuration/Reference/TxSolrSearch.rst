@@ -169,6 +169,25 @@ Version 3.0 introduced a couple more magic keywords that get replaced:
 - **__all** Adds all domains as allowed sites
 - \* (asterisk character) Everything is allowed as siteHash (same as no siteHash check). This option should only be used when you need a search across multiple system and you know the impact of turning of the siteHash check.
 
+**Security note (since fix for CVE-2026-56094):** the ``siteHash`` filter is a security boundary, not a user-facing search option.
+It cannot be set or overridden through request-provided ``tx_solr[additionalFilters]`` — the reserved names ``siteHash`` and ``access`` are stripped from request input before the query is built.
+To search across sites, use the ``allowedSites`` setting above; passing a ``siteHash`` filter from the frontend has no effect.
+
+query.allowSolrOperatorSyntax
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.query.allowSolrOperatorSyntax
+:Default: 1
+:Options: 0,1
+:Since: 13.1.4, 14.0
+
+Controls how much Solr/Lucene query syntax survives in ``tx_solr[q]``.
+Selector, range, grouping and metacharacters (``: [ ] ( ) { } ^ " ~ \ /``) are always escaped at the user-input boundary regardless of this setting, so field-targeted enumeration and range injection cannot reach Solr.
+
+* ``1`` (default) — the well-known Lucene operators ``+ - && || ! * ?`` pass through, so the documented wildcard and boolean operator UX (``apple*``, ``+foo -bar``) keeps working.
+* ``0`` — strict mode; the additional SolrJ specials ``| & ;`` are also escaped. ``+ - ! * ?`` and whitespace stay literal, so required/prohibited terms, ``NOT`` and the wildcard UX still function.
+
 query.getParameter
 ~~~~~~~~~~~~~~~~~~
 
@@ -207,6 +226,55 @@ By default if a search term is found in the content field the documents gets sco
     Fields must be of a Solr ``text`` type — either the predefined ``title`` or ``content`` fields, or dynamic fields like ``*_textS`` / ``*_textM``. These types are tokenized, stemmed, and analyzed for full-text search.
     ``string`` type fields (e.g. ``*_stringS``) store raw, unprocessed values and only support exact, case-sensitive matches — they are **not** suitable for user-facing search.
     See :ref:`appendix-dynamic-fields` for available field types and the :ref:`faq-index` section on ``stringS`` vs ``textS`` for more details.
+
+query.userFields
+~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.userFields
+:Default: (empty — derived from ``query.queryFields``)
+:Since: 13.1.4, 14.0
+
+Whitelist of fields that a Solr field-selector (``field:value``) in ``tx_solr[q]`` may target.
+By default the whitelist is derived from ``query.queryFields`` — only fields listed in ``qf`` are addressable via selector.
+Selectors against fields outside the whitelist are treated as literal terms and silently miss.
+
+A scalar value replaces the derived whitelist with a whitespace-separated list of field names:
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.query.userFields = title content fileExtension
+
+Alternatively the ``add`` and ``remove`` sub-keys apply comma-separated deltas on top of the qf-derived base list (used only when the scalar value is empty):
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.query.userFields {
+        add = customField, fileExtension
+        remove = abstract
+    }
+
+query.userFields.add
+~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.userFields.add
+:Default: (empty)
+:Since: 13.1.4, 14.0
+
+Comma-separated list of field names to add to the qf-derived user-field whitelist.
+Applied only when the scalar ``query.userFields`` value is empty.
+
+query.userFields.remove
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.userFields.remove
+:Default: (empty)
+:Since: 13.1.4, 14.0
+
+Comma-separated list of field names to remove from the qf-derived user-field whitelist.
+Applied only when the scalar ``query.userFields`` value is empty.
 
 query.returnFields
 ~~~~~~~~~~~~~~~~~~
@@ -559,12 +627,17 @@ results.resultsHighlighting
 :TS Path: plugin.tx_solr.search.results.resultsHighlighting
 :Since: 1.0
 :Default: 0
-:See: `Apache Solr Reference Guide / FastVector Highlighter <https://solr.apache.org/guide/solr/10_0/query-guide/highlighting.html#fastvector-highlighter>`_
+:See: `Apache Solr Reference Guide / Unified Highlighter <https://solr.apache.org/guide/solr/10_0/query-guide/highlighting.html#the-unified-highlighter>`_
 
 En-/disables search term highlighting on the results page.
 
 ..  note::
-    The FastVectorHighlighter is used by default (Since 4.0) if fragmentSize is set to at least 18 (this is required by the FastVectorHighlighter to work).
+    The Unified Highlighter is used unconditionally (Since 14.0, and 13.1.4), regardless of ``fragmentSize``.
+    It replaces the FastVectorHighlighter, which crashed with HTTP 500 on ``field:*`` queries
+    and thereby exposed a field-existence oracle on the indexed schema (CVE-2026-56096).
+    When Solr cannot build a highlighted snippet for a field, it returns a leading-text default summary
+    of approximately ``hl.snippets * fragmentSize`` characters instead, so a result that matched only in
+    ``title``, ``keywords`` or a heading field still gets a teaser.
 
 ..  note::
     The highlighting component will not work for vector search (`query.type=1`), as no classic search term is used/available to be highlighted. Using the siteHighlighting and an adjusted JavaScript could be an alternative approach.
@@ -579,8 +652,11 @@ results.resultsHighlighting.highlightFields
 
 A comma-separated list of fields to highlight.
 
-Note: The highlighting in Solr (based on FastVectorHighlighter requires a field datatype with **termVectors=on**, **termPositions=on** and **termOffsets=on** which is the case for the content field).
-If you add other fields here, make sure that you are using a datatype where this is configured.
+Note: The Unified Highlighter is requested with ``hl.offsetSource=ANALYSIS``, so it re-analyzes the stored
+field value at query time instead of reading offsets from the index.
+Highlighted fields therefore only need to be **stored=true**;
+**termVectors**, **termPositions** and **termOffsets** are no longer required.
+If you add other fields here, make sure that they are stored.
 
 results.resultsHighlighting.fragmentSize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

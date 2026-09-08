@@ -1,0 +1,6 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title","description"
+,2,1,0,1,"/payload-host","PayloadHostPageSST235568","REPLACED-AT-RUNTIME-WITH-SERIALIZED-GADGET-BYTES"
+"tt_content",
+,"uid","pid","colPos","CType","header","bodytext","sorting"
+,201,2,0,"text","Plain header SST 235568","Plain bodytext of the payload host page",10

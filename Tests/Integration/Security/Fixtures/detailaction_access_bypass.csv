@@ -1,0 +1,15 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title","fe_group","module"
+,2,1,0,1,"/public-baseline","PublicBaselinePage",,""
+,3,1,0,1,"/classified-area","RestrictedSecretAreaLoggedInOnly","1",""
+,4,1,0,254,"/restricted-fe-users","FE Users Folder",,"fe_users"
+"tt_content",
+,"uid","pid","colPos","CType","header","bodytext","fe_group","sorting"
+,21,2,0,"text","Public baseline content","Open to anyone visiting the public baseline page",0,10
+,31,3,0,"text","Classified header for logged-in users","CLASSIFIED_BANK_DETAILS_MARKER_ABC123 content must never be visible to anonymous visitors",0,10
+"fe_groups",
+,"uid","pid","title"
+,1,4,"RestrictedReaders"
+"fe_users",
+,"uid","pid","username","password","usergroup"
+,1,4,"restricted_member","dummy_password_hash","1"

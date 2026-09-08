@@ -54,6 +54,15 @@ then
 fi
 
 echo -e "\n\n"
+echo "Check that no test case was lost"
+if ! composer tests:known-tests
+then
+  EXIT_CODE=8
+  echo "Tip for working on them: "
+  echo "  TYPO3_VERSION=\"${TYPO3_VERSION}\" composer tests:setup && composer tests:known-tests"
+fi
+
+echo -e "\n\n"
 echo "Run unit tests"
 if ! composer tests:unit
 then

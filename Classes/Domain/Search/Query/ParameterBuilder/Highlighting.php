@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use Solarium\Component\Highlighting\HighlightingInterface as SolariumHighlightingInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -92,11 +93,6 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilderInte
         $this->postfix = $postfix;
     }
 
-    public function getUseFastVectorHighlighter(): bool
-    {
-        return $this->fragmentSize >= 18;
-    }
-
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Highlighting
     {
         $isEnabled = $solrConfiguration->getIsSearchResultsHighlightingEnabled();
@@ -126,23 +122,18 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilderInte
             return $parentBuilder;
         }
 
-        $query->getHighlighting()->setFragSize($this->getFragmentSize());
-        $query->getHighlighting()->setFields(GeneralUtility::trimExplode(',', $this->getHighlightingFieldList()));
-
-        if ($this->getUseFastVectorHighlighter()) {
-            $query->getHighlighting()->setUseFastVectorHighlighter(true);
-            $query->getHighlighting()->setTagPrefix($this->getPrefix());
-            $query->getHighlighting()->setTagPostfix($this->getPostfix());
-            $query->getHighlighting()->setMethod('fastVector');
-        } else {
-            $query->getHighlighting()->setUseFastVectorHighlighter(false);
-            $query->getHighlighting()->setTagPrefix('');
-            $query->getHighlighting()->setTagPostfix('');
-        }
+        $highlighting = $query->getHighlighting();
+        $highlighting->setFragSize($this->getFragmentSize());
+        $highlighting->setFields(GeneralUtility::trimExplode(',', $this->getHighlightingFieldList()));
+        $highlighting->setMethod(SolariumHighlightingInterface::METHOD_UNIFIED);
+        $highlighting->setOffsetSource(SolariumHighlightingInterface::OFFSETSOURCE_ANALYSIS);
+        $highlighting->setBoundaryScannerType('WORD');
+        $highlighting->setFragsizeIsMinimum(false);
+        $highlighting->setDefaultSummary(true);
 
         if ($this->getPrefix() !== '' && $this->getPostfix() !== '') {
-            $query->getHighlighting()->setSimplePrefix($this->getPrefix());
-            $query->getHighlighting()->setSimplePostfix($this->getPostfix());
+            $highlighting->setSimplePrefix($this->getPrefix());
+            $highlighting->setSimplePostfix($this->getPostfix());
         }
 
         return $parentBuilder;
