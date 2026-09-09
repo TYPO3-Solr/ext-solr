@@ -4,6 +4,18 @@
 Releases 14.0
 =============
 
+Release 14.0.1
+==============
+
+This release solves the troubles within TER/classic-mode TYPO3 instances and is only relevant for classic-mode installations.
+
+All Changes
+-----------
+
+*   [FEATURE] simplify release process by @dkd-kaehm in `#4769 <https://github.com/TYPO3-Solr/ext-solr/pull/4769>`_
+*   [BUGFIX] Make EXT:solr compatible with non-Composer/classic TYPO3 instances by @dkd-kaehm in `#4768 <https://github.com/TYPO3-Solr/ext-solr/pull/4768>`_
+
+
 Release 14.0.0
 ==============
 
