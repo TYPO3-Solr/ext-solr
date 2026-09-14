@@ -177,7 +177,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-release-11.2.x": "11.2.x-dev-elts"
+      "dev-release-11.2.x": "11.2.x-dev"
     },
     "typo3/cms": {
       "extension-key": "solr",

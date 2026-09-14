@@ -61,8 +61,6 @@ echo "Using database password: $TYPO3_DATABASE_PASSWORD"
 # shellcheck disable=SC2034
 COMPOSER_NO_INTERACTION=1
 
-composer config repositories.elts composer https://elts.typo3.com
-
 echo "Installing test environment"
 if ! composer tests:setup
 then
