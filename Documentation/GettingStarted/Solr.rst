@@ -17,13 +17,6 @@ Docker
 
 You can use our official docker image to start and maintain solr server with a small effort.
 
-To build the TYPO3 Solr ELTS image, simply type the following in command line:
-
-.. code-block:: bash
-
-    cd <EXT:solr 11.2.x>/
-    docker build --file Docker/SolrServer/Dockerfile --tag=typo3solr/elts-solr:11.2.x .
-
 Persistent Data
 ^^^^^^^^^^^^^^^
 
