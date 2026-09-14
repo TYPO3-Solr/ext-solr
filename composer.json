@@ -120,6 +120,9 @@
       "@composer req --working-dir=\"${EXT_TMP_BUILD_PATH}/Resources/Private/Php/ComposerLibraries\" solarium/solarium:`\"Build/Helpers/GET_LOCAL_PACKAGE_VERSION_CONSTRAINT.sh\" \"solarium/solarium\"`",
       "@composer archive --working-dir=\"${EXT_TMP_BUILD_PATH}\" --format=zip --dir=\"$(pwd -P)/${EXT_ARCHIVE_DIR}\" --file=\"solr_$($COMPOSER_BINARY ext:version)\""
     ],
+    "ext:release:prepare": [
+      "Build/Helpers/PREPARE_RELEASE.sh"
+    ],
     "t3:docs:build": [
       "rm -Rf Documentation-GENERATED-temp/",
       "./Build/generate_documentation.sh"
