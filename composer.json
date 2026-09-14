@@ -50,9 +50,6 @@
     "typo3-ter/solrfluid": "*"
   },
   "autoload": {
-    "classmap": [
-      "Resources/Private/Php/"
-    ],
     "psr-4": {
       "ApacheSolrForTypo3\\Solr\\": "Classes/"
     }
@@ -63,6 +60,7 @@
       "TYPO3\\CMS\\Core\\Tests\\": ".Build/Web/typo3/sysext/core/Tests/"
     }
   },
+  "minimum-stability": "stable",
   "prefer-stable": true,
   "config": {
     "allow-plugins": true,
@@ -133,7 +131,7 @@
       "rm -Rf Documentation-GENERATED-temp/ $(readlink -f Documentation.HTML) Documentation.HTML"
     ],
     "extension-create-libs": [
-      "@composer install -d Resources/Private/Php/ComposerLibraries"
+      "@composer req -d Resources/Private/Php/ComposerLibraries solarium/solarium:$(Build/Helpers/GET_LOCAL_PACKAGE_VERSION_CONSTRAINT.sh solarium/solarium)"
     ],
     "extension-build": [
       "@extension-create-libs"
@@ -168,15 +166,10 @@
     "t3:standards:fix": [
       "php-cs-fixer fix"
     ],
-    "lint:xlf": [
-      "xmllint Resources/Private/Language/ -p '*.xlf'"
+    "tests:lint-xml": [
+      "echo \"Run XML Lint\"",
+      "if ! $($COMPOSER_BINARY config home)/vendor/bin/xmllint Resources/Private/Language/ --pattern='*.xlf' --exclude=.Build/*; then echo \"Some XML files are not valid\" && echo \"Please fix the files listed above\" && export EXIT_CODE=4; else echo \"No syntax errors! Great job!\"; fi"
     ]
-  },
-  "scripts-descriptions": {
-    "tests:unit": "Run unit tests",
-    "tests:integration": "Run all intgration tests",
-    "@tests:integration:be":  "Run integration tests for backend/indexing",
-    "@tests:integration:fe": "Run integration tests for frontend"
   },
   "extra": {
     "branch-alias": {
@@ -184,7 +177,6 @@
     },
     "typo3/cms": {
       "extension-key": "solr",
-      "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
     },
     "TYPO3-Solr": {
@@ -201,6 +193,9 @@
         "configset": "ext_solr_11_2_0_elts"
       },
       "ext-solrfal": {
+      },
+      "stack-for-ci": {
+        "sclable/xml-lint": "*"
       }
     }
   }
