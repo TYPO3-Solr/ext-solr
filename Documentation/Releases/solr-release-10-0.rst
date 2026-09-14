@@ -1,6 +1,3 @@
-.. include:: /Includes.rst.txt
-
-
 .. _releases-10:
 
 ============================

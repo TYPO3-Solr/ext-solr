@@ -1,4 +1,4 @@
-.. include:: /Includes.rst.txt
+.. _releases-archive-8:
 
 
 .. _releases-8:
