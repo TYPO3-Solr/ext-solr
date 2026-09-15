@@ -66,6 +66,25 @@ Two new TypoScript settings govern how user input on ``tx_solr[q]`` is parsed:
 
 See :ref:`configuration.reference.solrsearch` for full reference details.
 
+!!! Not applicable: CVE-2026-56095 (insecure deserialization in the cObj indexer pipeline)
+------------------------------------------------------------------------------------------
+
+This CVE (SST #2026011610000017), fixed on other branches by migrating the ``SOLR_MULTIVALUE`` /
+``SOLR_RELATION`` / ``SOLR_CLASSIFICATION`` content objects from ``serialize()``/``unserialize()`` to
+``json_encode()``/``json_decode()``, does **not** apply to 11.2.x and was deliberately **not** ported here.
+
+The underlying vulnerability is a regression introduced by a later commit that made the indexer's
+``unserialize()`` call unconditional on every cObj output. That commit was never applied to this branch:
+``AbstractIndexer::isSerializedValue()`` here still gates ``unserialize()`` behind either a registered
+``detectSerializedValue`` hook (opt-in, and no known extension in the wild registers one) or one of the
+three built-in multi-value cObjs — whose own ``serialize()`` output only ever nests attacker-influenced
+bytes as a plain string *inside* an array, which plain ``unserialize()`` does not recursively re-parse
+into an object. Without the regression, there is no reachable PHP object-injection sink to fix here.
+
+Applying the JSON migration anyway would have been a needless breaking change (third-party content
+objects returning ``serialize($array)`` would stop working) for a version this old with no corresponding
+vulnerability, so it was left out of this release.
+
 
 All Changes
 -----------
