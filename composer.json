@@ -21,12 +21,12 @@
     "docs": "https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/"
   },
   "require": {
-    "php": ">=7.2.0",
+    "php": "^7.3 || ^7.4",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-simplexml": "*",
-    "solarium/solarium": "6.0.4",
+    "solarium/solarium": "6.2.8",
     "typo3/cms-backend": "*",
     "typo3/cms-core": "^10.4.10",
     "typo3/cms-extbase": "*",
