@@ -85,6 +85,20 @@ Applying the JSON migration anyway would have been a needless breaking change (t
 objects returning ``serialize($array)`` would stop working) for a version this old with no corresponding
 vulnerability, so it was left out of this release.
 
+!!! Security: additionalFilters can no longer preempt the siteHash filter
+-------------------------------------------------------------------------
+
+Request-provided ``tx_solr[additionalFilters]`` could register a named ``siteHash`` filter that ``AbstractQueryBuilder::useFilter()`` refused to overwrite,
+so the system ``siteHash`` filter added later by ``AccessComponent`` was dropped.
+In a shared-Solr-core multi-site installation this let an anonymous visitor of one site read public documents of another site sharing the same core (CVE-2026-56094).
+
+EXT:solr now strips the reserved filter names ``siteHash`` and ``access`` from request-provided ``additionalFilters`` before they reach the query,
+and applies the system ``siteHash`` filter with remove-then-set semantics so request input can no longer preempt it.
+Filters that integrators set server-side — TypoScript ``plugin.tx_solr.search.query.filter.`` or plugin/FlexForm — are unaffected.
+
+**Impact for integrators:** a frontend request can no longer override ``siteHash`` (or ``access``) through ``tx_solr[additionalFilters]``.
+Cross-site search must be configured server-side via ``plugin.tx_solr.search.query.allowedSites`` as documented in :ref:`configuration.reference.solrsearch`.
+
 
 All Changes
 -----------
