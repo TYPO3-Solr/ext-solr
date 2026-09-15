@@ -170,6 +170,12 @@ class SearchController extends AbstractBaseController
             $this->view->assign('document', $document);
         } catch (SolrUnavailableException $e) {
             $this->handleSolrUnavailable();
+        } catch (\UnexpectedValueException $e) {
+            // Thrown alike for an unknown, a cross-site or an access-restricted documentId,
+            // so the response gives no indication which of those applies.
+            if ($this->response instanceof Response) {
+                $this->response->setStatus(404, 'Not Found');
+            }
         }
     }
 
