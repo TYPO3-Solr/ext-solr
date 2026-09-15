@@ -99,6 +99,21 @@ Filters that integrators set server-side — TypoScript ``plugin.tx_solr.search.
 **Impact for integrators:** a frontend request can no longer override ``siteHash`` (or ``access``) through ``tx_solr[additionalFilters]``.
 Cross-site search must be configured server-side via ``plugin.tx_solr.search.query.allowedSites`` as documented in :ref:`configuration.reference.solrsearch`.
 
+!!! Security: detailAction enforces siteHash and access-group filters (CVE-2026-56093)
+--------------------------------------------------------------------------------------
+
+``SearchResultSetService::getDocumentById()`` built the by-id lookup query used by the cacheable
+``detail`` action directly, without running any search component, so neither the ``siteHash`` nor the
+frontend user access-group filter that ``AccessComponent`` applies on the normal search path ever
+applied to it. An anonymous visitor who obtained a document's id — publicly exposed via
+``data-document-id`` in the default templates — could fetch an access-restricted or cross-site
+document's full title, content and metadata through the detail view.
+
+``getDocumentById()`` now applies ``AccessComponent`` to the lookup query before executing it, so a
+restricted or foreign-site document is excluded the same way it already is from search results.
+``detailAction`` responds with a plain 404 status when the lookup then finds nothing, indistinguishable
+from a genuinely unknown documentId.
+
 
 All Changes
 -----------
