@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+#
+# Thin `php` shim that runs everything under php7.3 instead of whatever
+# `php` the container's default alternatives point at (typically a PHP 8.x
+# meant for the TYPO3 14 `main` branch sharing this same DDEV container).
+# Put on PATH via .envrc, ahead of the real `php`.
+#
+
+exec php7.3 "$@"

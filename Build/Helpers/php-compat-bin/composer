@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+#
+# Runs the container's real composer.phar under php7.3 rather than the
+# container's default PHP. Composer's phar is PHP-version-agnostic across
+# this range, so no separate composer install is needed - only the PHP
+# running it changes.
+#
+# Deliberately does not resolve `composer` via PATH: this script's own
+# directory is on PATH ahead of the real composer, so `command -v composer`
+# from in here would find itself and recurse.
+#
+
+set -euo pipefail
+
+for candidate in /usr/local/bin/composer /usr/bin/composer "$HOME/.composer/composer.phar" "$HOME/bin/composer"; do
+  if [ -x "$candidate" ]; then
+    exec php7.3 "$candidate" "$@"
+  fi
+done
+
+echo "php-compat-bin/composer: no composer binary found in the usual locations" >&2
+exit 1
