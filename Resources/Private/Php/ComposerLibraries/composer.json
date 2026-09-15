@@ -3,13 +3,13 @@
   "description": "This file contains the wanted by EXT:solr libraries. Note: in replace defined libs are provided by TYPO3 source.",
   "config": {
     "platform": {
-      "php": "7.2"
+      "php": "7.3"
     },
     "classmap-authoritative": true,
     "prepend-autoloader": false
   },
   "require": {
-    "php": "^7.2"
+    "php": "^7.3 || ^7.4"
   },
   "replace": {
     "psr/event-dispatcher": "*",

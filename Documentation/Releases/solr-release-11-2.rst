@@ -5,6 +5,73 @@
 Apache Solr for TYPO3 11.2
 ==========================
 
+Apache Solr for TYPO3 11.2.8 ELTS
+=================================
+
+This is a security release for TYPO3 10.4 ELTS.
+
+!!! All earlier 11.2.x releases stay vulnerable and will not be re-published
+----------------------------------------------------------------------------
+
+11.2.8 is the only release of this branch that fixes the vulnerabilities listed below.
+Releases 11.2.0 to 11.2.7 remain affected and will **not** be re-published with a fix,
+so there is no patched 11.2.7 or earlier to move to — upgrade to 11.2.8.
+
+!!! Solarium raised to 6.2.8, PHP 7.2 no longer supported
+---------------------------------------------------------
+
+``solarium/solarium`` is raised from 6.0.4 to 6.2.8, and the minimum PHP version from 7.2 to 7.3.
+This branch needs it to enforce the Unified Highlighter fix below in PHP at all: earlier Solarium
+versions ship no ``HighlightingInterface``, no ``setOffsetSource()`` and no ``setFragsizeIsMinimum()``.
+Composer resolves this on update; installations that pin ``solarium/solarium`` themselves must allow
+6.2.8, and PHP 7.2 is no longer supported.
+
+!!! Security: close FVH FieldExistsQuery HTTP 500 oracle (CVE-2026-56096)
+-------------------------------------------------------------------------
+
+A stand-alone ``field:*`` query was forwarded through the FastVector highlighter (FVH); Lucene rewrote
+it to ``FieldExistsQuery`` and FVH crashed with HTTP 500, turning the response into a field-existence
+oracle on the indexed schema.
+
+The highlighter is switched to the Unified Highlighter with ``hl.offsetSource=ANALYSIS``,
+``hl.bs.type=WORD`` and ``hl.fragsizeIsMinimum=false``, closing the oracle while keeping the same soft
+fragment-size behaviour.
+
+!!! Recommendation: align existing Solr volumes with the new configset
+----------------------------------------------------------------------
+
+The ``ext_solr_11_2_0_elts`` configset now sets the Unified Highlighter as default on both the
+``/select`` and ``/browse`` request handlers. Solr volumes created from older configsets default to
+the legacy highlighter and remain vulnerable to the ``FieldExistsQuery`` HTTP 500 oracle when queried
+directly (bypassing EXT:solr). Run the bundled migration script against the existing configset to
+align the defaults; the script is idempotent and writes a ``solrconfig.xml.Backup-SST-235567`` backup
+next to the modified file:
+
+*   ``Docker/SolrServer/docker-entrypoint-initdb.d-as-sudo/fix-SST-235567-2026050810000025-highlighter-defaults.sh``
+
+EXT:solr itself enforces the Unified Highlighter unconditionally in PHP, so this configset alignment
+is a defence-in-depth measure for clients that query Solr directly.
+
+!!! New: TypoScript settings for query-syntax handling
+------------------------------------------------------
+
+Two new TypoScript settings govern how user input on ``tx_solr[q]`` is parsed:
+
+* ``plugin.tx_solr.search.query.userFields`` — whitelist of fields a Solr field-selector (``field:value``) may target.
+  By default derived from ``query.queryFields``; selectors against other fields are now treated as literal terms and silently miss.
+  Sites that rely on selectors against non-``qf`` fields must extend the whitelist via a scalar override or the ``add`` / ``remove`` sub-keys.
+* ``plugin.tx_solr.search.query.allowSolrOperatorSyntax`` — toggle for operator-syntax passthrough.
+  Default ``1`` keeps the documented ``+ - && || ! * ?`` UX functional; set to ``0`` for strict mode (additionally escapes ``| & ;``).
+  Selector, range and grouping characters (``: [ ] ( ) { } ^ " ~ \ /``) are always escaped regardless.
+
+See :ref:`configuration.reference.solrsearch` for full reference details.
+
+
+All Changes
+-----------
+(filled at release time)
+
+
 Apache Solr for TYPO3 11.2.7 ELTS
 =================================
 

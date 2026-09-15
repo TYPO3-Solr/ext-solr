@@ -126,6 +126,21 @@ Version 3.0 introduced a couple more magic keywords that get replaced:
 - **__all** Adds all domains as allowed sites
 - \* (asterisk character) Everything is allowed as siteHash (same as no siteHash check). This option should only be used when you need a search across multiple system and you know the impact of turning of the siteHash check.
 
+query.allowSolrOperatorSyntax
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.query.allowSolrOperatorSyntax
+:Default: 1
+:Options: 0,1
+:Since: 11.2.8
+
+Controls how much Solr/Lucene query syntax survives in ``tx_solr[q]``.
+Selector, range, grouping and metacharacters (``: [ ] ( ) { } ^ " ~ \ /``) are always escaped at the user-input boundary regardless of this setting, so field-targeted enumeration and range injection cannot reach Solr.
+
+* ``1`` (default) — the well-known Lucene operators ``+ - && || ! * ?`` pass through, so the documented wildcard and boolean operator UX (``apple*``, ``+foo -bar``) keeps working.
+* ``0`` — strict mode; the additional SolrJ specials ``| & ;`` are also escaped. ``+ - ! * ?`` and whitespace stay literal, so required/prohibited terms, ``NOT`` and the wildcard UX still function.
+
 query.getParameter
 ~~~~~~~~~~~~~~~~~~
 
@@ -159,6 +174,55 @@ Defines what fields to search in the index. Fields are defined as a comma separa
 The boost take influence on what score a document gets when searching and thus how documents are ranked and listed in the search results. A higher score will move documents up in the result listing. The boost is a multiplier for the original score value of a document for a search term.
 
 By default if a search term is found in the content field the documents gets scored / ranked higher as if a term was found in the title or keywords field. Although the default should provide a good setting, you can play around with the boost values to find the best ranking for your content.
+
+query.userFields
+~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.userFields
+:Default: (empty — derived from ``query.queryFields``)
+:Since: 11.2.8
+
+Whitelist of fields that a Solr field-selector (``field:value``) in ``tx_solr[q]`` may target.
+By default the whitelist is derived from ``query.queryFields`` — only fields listed in ``qf`` are addressable via selector.
+Selectors against fields outside the whitelist are treated as literal terms and silently miss.
+
+A scalar value replaces the derived whitelist with a whitespace-separated list of field names:
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.query.userFields = title content fileExtension
+
+Alternatively the ``add`` and ``remove`` sub-keys apply comma-separated deltas on top of the qf-derived base list (used only when the scalar value is empty):
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.query.userFields {
+        add = customField, fileExtension
+        remove = abstract
+    }
+
+query.userFields.add
+~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.userFields.add
+:Default: (empty)
+:Since: 11.2.8
+
+Comma-separated list of field names to add to the qf-derived user-field whitelist.
+Applied only when the scalar ``query.userFields`` value is empty.
+
+query.userFields.remove
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.userFields.remove
+:Default: (empty)
+:Since: 11.2.8
+
+Comma-separated list of field names to remove from the qf-derived user-field whitelist.
+Applied only when the scalar ``query.userFields`` value is empty.
 
 query.returnFields
 ~~~~~~~~~~~~~~~~~~
@@ -455,11 +519,12 @@ results.resultsHighlighting
 :TS Path: plugin.tx_solr.search.results.resultsHighlighting
 :Since: 1.0
 :Default: 0
-:See: `Apache Solr Wiki / FastVectorHighlighter <https://cwiki.apache.org/confluence/display/solr/FastVector+Highlighter>`_
+:See: `Apache Solr Reference Guide / Highlighting <https://solr.apache.org/guide/solr/9_10/query-guide/highlighting.html>`_
 
 En-/disables search term highlighting on the results page.
 
-Note:  The FastVectorHighlighter is used by default (Since 4.0) if fragmentSize is set to at least 18 (this is required by the FastVectorHighlighter to work).
+..  note::
+    Since 11.2.8 the Unified Highlighter is used unconditionally, regardless of fragmentSize. If Solr cannot generate a highlighted snippet for a field, it returns a leading-text default summary of approximately hl.snippets * fragmentSize characters.
 
 results.resultsHighlighting.highlightFields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -471,8 +536,8 @@ results.resultsHighlighting.highlightFields
 
 A comma-separated list of fields to highlight.
 
-Note: The highlighting in solr (based on FastVectorHighlighter requires a field datatype with **termVectors=on**, **termPositions=on** and **termOffsets=on** which is the case for the content field).
-If you add other fields here, make sure that you are using a datatype where this is configured.
+Note: The Unified Highlighter uses **hl.offsetSource=ANALYSIS**, so term vectors are not required.
+Highlighted fields must be stored, and their analysis should be compatible with the queried fields.
 
 results.resultsHighlighting.fragmentSize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1353,6 +1353,35 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Whitelist of fields a Solr field-selector (`field:value`) may target.
+     * Empty value defers to the edismax default, which is the `qf` field list.
+     *
+     * plugin.tx_solr.search.query.userFields
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSearchQueryUserFields(string $defaultIfEmpty = ''): string
+    {
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.userFields', $defaultIfEmpty);
+    }
+
+    /**
+     * Returns the userFields sub-key configuration (`add`, `remove`) used to
+     * derive the edismax `uf` list from the `qf` defaults when no scalar
+     * override is given.
+     *
+     * plugin.tx_solr.search.query.userFields.
+     *
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getSearchQueryUserFieldsConfiguration(array $defaultIfEmpty = []): array
+    {
+        return $this->getObjectByPathOrDefault('plugin.tx_solr.search.query.userFields.', $defaultIfEmpty);
+    }
+
+    /**
      * This method is used to check if a phrase search is enabled or not
      *
      * plugin.tx_solr.search.query.phrase = 1
@@ -1363,6 +1392,21 @@ class TypoScriptConfiguration
     public function getPhraseSearchIsEnabled(bool $defaultIfEmpty = false)
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.phrase', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
+     * Returns whether the well-known Lucene operators `+ - && || ! * ?` pass
+     * through `tx_solr[q]`. Default 1 — selector (`:`), range (`[ ]`) and
+     * grouping (`( ) { } ^ " ~ \ /`) characters are still escaped, so field
+     * enumeration and range injection cannot reach Solr; only wildcard and
+     * boolean operator syntax survives. Set to 0 for strict mode.
+     *
+     * plugin.tx_solr.search.query.allowSolrOperatorSyntax
+     */
+    public function getSearchQueryAllowSolrOperatorSyntax(string $defaultIfEmpty = '1'): bool
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.allowSolrOperatorSyntax', $defaultIfEmpty);
         return $this->getBool($result);
     }
 
