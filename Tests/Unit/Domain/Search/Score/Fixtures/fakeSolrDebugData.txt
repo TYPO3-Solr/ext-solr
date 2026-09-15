@@ -1,0 +1,47 @@
+98.444336 = sum of:
+  98.444336 = max of:
+    6.2762194 = weight(tagsH2H3:coach in 610) [SchemaSimilarity], result of:      6.2762194 = score(doc=610,freq=1.0 = termFreq=1.0
+), product of:
+        3.0 = boost
+        2.0920732 = idf, computed as log(1 + (docCount - docFreq + 0.5) / (docFreq + 0.5)) from:
+          29.0 = docFreq
+          238.0 = docCount
+        1.0 = tfNorm, computed as (freq * (k1 + 1)) / (freq + k1) from:
+          1.0 = termFreq=1.0
+          1.2 = parameter k1
+          0.0 = parameter b (norms omitted for field)
+    13.230293 = weight(tagsH1:coach in 610) [SchemaSimilarity], result of:
+      13.230293 = score(doc=610,freq=1.0 = termFreq=1.0
+), product of:
+        5.0 = boost
+        2.6460586 = idf, computed as log(1 + (docCount - docFreq + 0.5) / (docFreq + 0.5)) from:
+          30.0 = docFreq
+          429.0 = docCount
+        1.0 = tfNorm, computed as (freq * (k1 + 1)) / (freq + k1) from:
+          1.0 = termFreq=1.0
+          1.2 = parameter k1
+          0.0 = parameter b (norms omitted for field)
+    98.444336 = weight(content:coach in 610) [SchemaSimilarity], result of:
+      98.444336 = score(doc=610,freq=27.0 = termFreq=27.0
+), product of:
+        40.0 = boost
+        1.1881583 = idf, computed as log(1 + (docCount - docFreq + 0.5) / (docFreq + 0.5)) from:
+          503.0 = docFreq
+          1651.0 = docCount
+        2.0713642 = tfNorm, computed as (freq * (k1 + 1)) / (freq + k1 * (1 - b + b * fieldLength / avgFieldLength)) from:
+          27.0 = termFreq=27.0
+          1.2 = parameter k1
+          0.75 = parameter b
+          218.57965 = avgFieldLength
+          334.36734 = fieldLength
+    2.8561218 = weight(tagsInline:coach in 610) [SchemaSimilarity], result of:
+      2.8561218 = score(doc=610,freq=1.0 = termFreq=1.0
+), product of:
+        2.8561218 = idf, computed as log(1 + (docCount - docFreq + 0.5) / (docFreq + 0.5)) from:
+          16.0 = docFreq
+          286.0 = docCount
+        1.0 = tfNorm, computed as (freq * (k1 + 1)) / (freq + k1) from:
+          1.0 = termFreq=1.0
+          1.2 = parameter k1
+          0.0 = parameter b (norms omitted for field)
+",

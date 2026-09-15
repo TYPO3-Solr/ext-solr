@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
+>
+
+<f:section name="Document">
+
+	<div class="list-group-item search-result results-entry{f:if(condition:document.isElevated, then: ' results-elevated')}"
+			data-document-score="{document.score}"
+			data-document-id="{document.id}"
+			data-document-url="{document.url}"
+		>
+		<f:if condition="{document.isElevated}">
+			<div class="results-elevated-label"><f:translate key="sponsored" extensionName="solr"/></div>
+		</f:if>
+
+		<div class="row">
+			<div class="col-md-10">
+				<h3 class="results-topic"><a href="{s:uri.result.addSearchWordList(url:document.url, searchWords:resultSet.usedQuery.query)}">{document.title}</a></h3>
+			</div>
+			<div class="col-md-2">
+				<f:render partial="Result/RelevanceBar" section="RelevanceBar" arguments="{resultSet:resultSet, document:document}" />
+			</div>
+		</div>
+
+		<div class="results-teaser">
+			<p class="result-content">{s:document.highlightResult(resultSet:resultSet, document:document, fieldName:'content')}</p>
+			<f:if condition="{document.type} == 'tx_solr_file'">
+				<p>
+					<f:translate key="file_mimetype" extensionName="solr"/>: {document.fileMimeType}<br />
+					<f:translate key="file_referenced" extensionName="solr"/>:
+
+					<ul class="references">
+						<f:if condition="{document.fileReferenceUrl}">
+							<li><f:link.typolink title="{document.fileReferenceTitle}" parameter="{document.fileReferenceUrl}">{document.fileReferenceTitle}</f:link.typolink></li>
+						</f:if>
+						<f:if condition="{document.variants}">
+							<f:for each="{document.variants}" as="variant">
+								<li><f:link.typolink title="{variant.fileReferenceTitle}" parameter="{variant.fileReferenceUrl}">{variant.fileReferenceTitle}</f:link.typolink></li>
+							</f:for>
+						</f:if>
+					</ul>
+				</p>
+			</f:if>
+
+			<f:variable name="documentScoreAnalyze"><f:render partial="Debug/Explain" section="Explain" arguments="{document: document, resultSet: resultSet}" /></f:variable>
+			<f:if condition="{documentScoreAnalyze}">
+				<div class="query-debug alert alert-info" role="alert"><f:format.raw>{documentScoreAnalyze}</f:format.raw></div>
+			</f:if>
+		</div>
+	</div>
+
+</f:section>
+
+</html>

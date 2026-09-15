@@ -1,0 +1,25 @@
+plugin.tx_solr {
+  # cat=solr: basic/10/enable; type=boolean; label=Enable/disable Solr extension: EXT:solr should only be enabled for relevant sys_languages, to avoid unnecessary connections and overwritten contents.
+  enabled = 1
+
+  view {
+    templateRootPath =
+    partialRootPath =
+    layoutRootPath =
+  }
+
+  search {
+    targetPage = 0
+    results {
+      resultsPerPage = 10
+    }
+    faceting {
+      limit = 10
+
+      # cat=advanced ; type=options[index,assoc] ; label=Choose the style of the URL parameters
+      urlParameterStyle = index
+      # cat=advanced ; type=boolean ; label=Enable sorting or URL parameters
+      urlParameterSort = 0
+    }
+  }
+}

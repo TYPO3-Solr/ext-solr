@@ -1,0 +1,12 @@
+plugin.tx_solr.search.faceting = 1
+plugin.tx_solr.search.faceting.facets {
+    typeToggle {
+        label = Type Toggle
+        field = type
+        partialName = OptionsToggle
+    }
+}
+
+page.includeJSFooterlibs {
+    solr-options = EXT:solr/Resources/Public/JavaScript/facet_options_controller.js
+}

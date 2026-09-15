@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-ajaxify
+label: "Solr search - (Example) Ajaxify the search results"
+dependencies:
+  - apache-solr-for-typo3/solr

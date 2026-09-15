@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-facets-query-group
+label: "Solr search - (Example) QueryGroup facet on the created field"
+dependencies:
+  - apache-solr-for-typo3/solr

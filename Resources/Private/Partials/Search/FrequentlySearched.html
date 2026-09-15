@@ -1,0 +1,32 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
+>
+
+<f:section name="FrequentlySearched">
+
+<s:frequentlySearched>
+	<f:if condition="{frequentSearches}">
+		<div id="tx-solr-frequent-searches" class="secondaryContentSection card">
+			<div class="card-header">
+				<span class="bi bi-stars"></span>
+					<a data-bs-toggle="collapse" href="#frequendSearches">
+						<f:translate key="frequentSearches" extensionName="solr">Frequently searched</f:translate>
+				</a>
+			</div>
+
+			<ul class="list-group list-group-flush collapse show" id="frequendSearches">
+				<f:for each="{frequentSearches}" as="searchedForInfo">
+					<li class="list-group-item {searchedForInfo.class}">
+						<a href="{s:uri.search.startNewSearch(queryString: searchedForInfo.q)}" class="solr-ajaxified"><f:format.htmlentities>{searchedForInfo.q}</f:format.htmlentities></a>
+					</li>
+				</f:for>
+			</ul>
+		</div>
+	</f:if>
+</s:frequentlySearched>
+
+</f:section>
+
+</html>

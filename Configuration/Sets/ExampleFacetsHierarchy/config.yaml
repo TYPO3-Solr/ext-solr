@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-facets-hierarchy
+label: "Solr search - (Example) Hierarchy facet on the rootline field"
+dependencies:
+  - apache-solr-for-typo3/solr

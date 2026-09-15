@@ -1,0 +1,21 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
+>
+
+
+<f:section name="RelevanceBar">
+
+	<f:variable name="relevance">{s:document.relevance(resultSet:resultSet, document:document)}</f:variable>
+
+<div class="relevance hidden-xs">
+	<f:translate key="relevance" extensionName="solr"/>:
+	<div class="progress">
+		<div class="progress-bar" role="progressbar" style="width: {relevance}%;" aria-valuenow="{relevance}" aria-valuemin="0" aria-valuemax="100">{relevance}%</div>
+	</div>
+</div>
+
+</f:section>
+
+</html>

@@ -1,0 +1,4 @@
+page.includeCSS {
+	search = EXT:solr/Resources/Public/StyleSheets/Frontend/results.css
+	solr-loader = EXT:solr/Resources/Public/StyleSheets/Frontend/loader.css
+}

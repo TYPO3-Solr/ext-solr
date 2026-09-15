@@ -1,0 +1,9 @@
+{
+  "responseHeader":{
+    "status":0,
+    "QTime":0},
+  "wordSet":{
+    "initArgs":{"ignoreCase":false},
+    "initializedOn":"2016-12-05T15:13:58.370Z",
+    "updatedSinceInit":"2016-12-06T17:29:27.544Z",
+    "managedList":["badword"]}}

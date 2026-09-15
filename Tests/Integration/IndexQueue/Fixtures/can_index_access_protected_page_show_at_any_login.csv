@@ -1,0 +1,12 @@
+"fe_groups",
+,"uid","pid","title"
+,1,1,"group 1"
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title","subtitle","crdate","tstamp","fe_group"
+,2,1,0,1,"/any_login","any login page","",1449151779,1449151770,-2
+"tt_content",
+,"uid","pid","CType","header","fe_group"
+,11,"2","header","access restricted content for any login",0
+"tx_solr_indexqueue_item",
+,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors"
+,4711,1,"pages",2,"pages",1449151778,0,0,0,0,0

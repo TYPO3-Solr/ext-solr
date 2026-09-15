@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2015-03-30T11:42:09Z" target-language="de">
+    <header>
+      <generator>LFEditor</generator>
+    </header>
+    <body>
+      <!-- Index Administration -->
+      <!-- End: Index Maintenance -->
+      <!-- From Backend/locallang.xlf //-->
+      <!-- Backend Components -->
+      <!-- SiteSelector -->
+      <!-- CoreSelector -->
+      <!-- End: Backend Components -->
+      <!-- From ModuleAdministration/locallang.xlf //-->
+      <!-- From ModuleReports/locallang.xlf //-->
+      <!-- From ModuleScheduler/locallang.xlf //-->
+      <trans-unit id="reindex_title" xml:space="preserve" approved="yes">
+				<source>Force Re-Indexing of a site</source>
+			<target state="final">Re-Indexierung der Seite erzwingen</target></trans-unit>
+      <trans-unit id="reindex_description" xml:space="preserve" approved="yes">
+				<source>Purges the Solr Index and initializes the Index Queue of a site.</source>
+			<target state="final">Leert den solr index und initialisiert die Index Queue einer Seite.</target></trans-unit>
+      <trans-unit id="indexqueueworker_description" xml:space="preserve" approved="yes">
+				<source>Processes the items in the Index Queue and sends them to Solr.</source>
+			<target state="final">Verarbeitet einen Item in der Index Queue und sendet ihn an den Solr Server.</target></trans-unit>
+      <trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve" approved="yes">
+				<source>Number of documents to index</source>
+			<target state="final">Anzahl der zu indexierenden Dokumente</target></trans-unit>
+      <trans-unit id="field_host" xml:space="preserve" approved="yes">
+				<source>Solr Host</source>
+			<target state="final">Solr host</target></trans-unit>
+      <trans-unit id="field_path" xml:space="preserve" approved="yes">
+				<source>Solr Path</source>
+			<target state="final">Solr Pfad</target></trans-unit>
+      <trans-unit id="field_site" xml:space="preserve" approved="yes">
+				<source>Site</source>
+			<target state="final">Webseite</target></trans-unit>
+      <!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
+      <trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
+				<source>Search is currently not available.</source>
+			<target state="final">Die Suche steht im Moment nicht zur Verfügung.</target></trans-unit>
+      <trans-unit id="searchFailed" xml:space="preserve" approved="yes">
+				<source>We're sorry. The request you tried to make could not be processed.</source>
+			<target state="final">Es tut uns leid. Ihre Suchanfrage konnte nicht verarbeitet werden.</target></trans-unit>
+      <trans-unit id="searchWord" xml:space="preserve" approved="yes">
+				<source>Search Term</source>
+			<target state="final">Suchbegriff</target></trans-unit>
+      <trans-unit id="didYouMean" xml:space="preserve" approved="yes">
+				<source>Did you mean</source>
+			<target state="final">Meinten Sie</target></trans-unit>
+      <trans-unit id="submit" xml:space="preserve" approved="yes">
+				<source>Search</source>
+			<target state="final">Suchen</target></trans-unit>
+      <trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
+				<source>Sort by</source>
+			<target state="final">Sortieren nach</target></trans-unit>
+      <trans-unit id="faceting_narrowSearch" xml:space="preserve" approved="yes">
+				<source>Narrow Search</source>
+			<target state="final">Suchfilter</target></trans-unit>
+      <trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve" approved="yes">
+				<source>Search narrowed by</source>
+			<target state="final">Aktive Filter</target></trans-unit>
+      <trans-unit id="faceting_showMore" xml:space="preserve" approved="yes">
+				<source>Show more</source>
+			<target state="final">Mehr zeigen</target></trans-unit>
+      <trans-unit id="faceting_showFewer" xml:space="preserve" approved="yes">
+				<source>Show fewer</source>
+			<target state="final">Weniger zeigen</target></trans-unit>
+      <trans-unit id="faceting_removeAllFilters" xml:space="preserve" approved="yes">
+				<source>Remove all filters</source>
+			<target state="final">Alle Filter entfernen</target></trans-unit>
+      <trans-unit id="faceting_filter" xml:space="preserve" approved="yes">
+				<source>Filter</source>
+			<target state="final">Filtern</target></trans-unit>
+      <trans-unit id="results_range" xml:space="preserve" approved="yes">
+				<source>Displaying results %s to %s of %s.</source>
+			<target state="final">Zeige Ergebnisse %s bis %s von %s.</target></trans-unit>
+      <trans-unit id="results_found" xml:space="preserve" approved="yes">
+				<source>Found %s results in %s milliseconds.</source>
+			<target state="final">Es wurden %s Ergebnisse in %s Millisekunden gefunden.</target></trans-unit>
+      <trans-unit id="results_found.singular" xml:space="preserve" approved="yes">
+				<source>Found 1 result in %s milliseconds.</source>
+			<target state="final">Es wurde 1 Ergebnis in %s Millisekunden gefunden.</target></trans-unit>
+      <trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
+				<source>Searched for &quot;%s&quot;.</source>
+			<target state="final">Gesucht nach "%s".</target></trans-unit>
+      <trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
+				<source>Nothing found for &quot;%s&quot;.</source>
+			<target state="final">Nichts gefunden für "%s".</target></trans-unit>
+      <trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
+				<source>Showing results for &quot;%s&quot;.</source>
+			<target state="final">Ergebnisse für "%s".</target></trans-unit>
+      <trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
+				<source>Search instead for &quot;%s&quot;.</source>
+			<target state="final">Stattdessen suchen nach "%s".</target></trans-unit>
+      <trans-unit id="lastSearches" xml:space="preserve" approved="yes">
+				<source>Last searches</source>
+			<target state="final">Letzte Suchanfragen</target></trans-unit>
+      <trans-unit id="frequentSearches" xml:space="preserve" approved="yes">
+				<source>Frequent searches</source>
+			<target state="final">Häufige Suchanfragen</target></trans-unit>
+      <trans-unit id="relevance" xml:space="preserve" approved="yes">
+				<source>Relevance</source>
+			<target state="final">Relevanz</target></trans-unit>
+      <trans-unit id="file_mimetype" xml:space="preserve" approved="yes">
+				<source>File type</source>
+			<target state="final">Dateityp</target></trans-unit>
+      <trans-unit id="file_referenced" xml:space="preserve" approved="yes">
+				<source>Referenced at</source>
+			<target state="final">Verlinkt bei</target></trans-unit>
+      <trans-unit id="results_per_page" xml:space="preserve" approved="yes">
+				<source>Results per page:</source>
+			<target state="final">Ergebnisse pro Seite:</target></trans-unit>
+      <trans-unit id="error_errors" xml:space="preserve" approved="yes">
+				<source>We're sorry, there were some errors:</source>
+			<target state="final">Es tut uns leid, es gab einige Fehler:</target></trans-unit>
+      <trans-unit id="error_emptyQuery" xml:space="preserve" approved="yes">
+				<source>Please enter your search term in the box above.</source>
+			<target state="final">Bitte geben Sie ihr Suchwort in das Suchfeld ein.</target></trans-unit>
+      <trans-unit id="pagebrowser_first" xml:space="preserve" approved="yes">
+				<source>First</source>
+			<target state="final">Erste</target></trans-unit>
+      <trans-unit id="pagebrowser_prev" xml:space="preserve" approved="yes">
+				<source>Previous</source>
+			<target state="final">Vorherige</target></trans-unit>
+      <trans-unit id="pagebrowser_next" xml:space="preserve" approved="yes">
+				<source>Next</source>
+			<target state="final">Nächste</target></trans-unit>
+      <trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
+				<source>Last</source>
+			<target state="final">Letzte</target></trans-unit>
+      <trans-unit id="daterange_start" xml:space="preserve">
+				<source>start date</source>
+			<target state="final">Startdatum</target></trans-unit>
+      <trans-unit id="daterange_end" xml:space="preserve">
+				<source>end date</source>
+			<target state="final">Enddatum</target></trans-unit>
+      <trans-unit id="daterange_start_validation" xml:space="preserve">
+				<source>Bitte wählen Sie ein Startdatum zwischen ###MIN### und ###MAX###</source>
+			<target state="final">Enddatum</target></trans-unit>
+      <trans-unit id="daterange_end_validation" xml:space="preserve">
+				<source>Bitte wählen Sie ein Enddatum zwischen ###MIN### und ###MAX###</source>
+			<target state="final">Enddatum</target></trans-unit>
+      <!-- From locallang.xlf -->
+      <!-- From locallang_db.xlf -->
+      <trans-unit id="tt_content.CType_pi_frequentsearches" xml:space="preserve" approved="yes">
+				<source>Search: Frequent Searches</source>
+			<target state="final">Suche: Häufige Suchen</target></trans-unit>
+      <trans-unit id="tt_content.CType_pi_results" xml:space="preserve" approved="yes">
+				<source>Search: Form, Result, Additional Components</source>
+			<target state="final">Suche: Formular, Ergebnisse, weitere Komponenten</target></trans-unit>
+      <trans-unit id="tt_content.CType_pi_search" xml:space="preserve" approved="yes">
+				<source>Search: Form only</source>
+			<target state="final">Suche: Nur Suchformular</target></trans-unit>
+    </body>
+  </file>
+</xliff>

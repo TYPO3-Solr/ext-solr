@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-bootstrap-css
+label: "Solr search - Bootstrap CSS Framework"
+dependencies:
+  - apache-solr-for-typo3/solr

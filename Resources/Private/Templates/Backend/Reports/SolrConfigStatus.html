@@ -1,0 +1,36 @@
+<p>A <code>solrconfig.xml</code> different from the one provided with the extension was
+    detected.</p>
+<p>It is recommended to use the
+    <code>solrconfig.xml</code> file shipping with the Apache Solr for TYPO3
+    extension as it provides an optimized setup for the use of
+    Solr with TYPO3. A difference can occur when you update the
+    TYPO3 extension, but forget to update the <code>solrconfig.xml</code>
+    file on the Solr server. The Solr configuration sometimes
+    changes to accommodate changes or new features in Apache
+    Solr. Also make sure to restart the Tomcat server after
+    updating <code>solrconfig.xml</code>.</p>
+<p>Your Solr server is currently using a Solr configuration file named
+    <strong>{f:if(condition:solr.solrconfigName, then:solr.solrconfigName, else:'not set')}</strong>,
+    the recommended schema is called <strong>{recommendedVersion}</strong>. You can
+    find the recommended <code>solrconfig.xml</code> file in the extension's resources folder: <code>EXT:solr/Resources/Private/Solr/</code>.
+    While you're at it, please check whether you're using the current <code>schema.xml</code> file, too.</p>
+
+<table class="table table-condensed table-hover table-striped">
+    <thead>
+    <tr>
+        <td colspan="2">Affected Solr server</td>
+    </tr>
+    </thead>
+    <tr>
+        <th>Host</th>
+        <td>{solr.primaryEndpoint.host}</td>
+    </tr>
+    <tr>
+        <th>Path</th>
+        <td>{solr.corePath}</td>
+    </tr>
+    <tr>
+        <th>Port</th>
+        <td>{solr.primaryEndpoint.port}</td>
+    </tr>
+</table>

@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-filter-pages
+label: "Solr search - (Example) Filter to only show page results"
+dependencies:
+  - apache-solr-for-typo3/solr

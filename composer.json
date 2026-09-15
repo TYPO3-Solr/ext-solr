@@ -1,0 +1,206 @@
+{
+  "name": "apache-solr-for-typo3/solr",
+  "type": "typo3-cms-extension",
+  "description": "Apache Solr for TYPO3 - Apache Solr for TYPO3 is the enterprise search server you were looking for with special features such as Faceted Search or Synonym Support and incredibly fast response times of results within milliseconds.",
+  "license": "GPL-3.0-or-later",
+  "keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
+  "homepage": "https://www.typo3-solr.com",
+  "authors": [
+    {
+      "name": "dkd Internet Service GmbH",
+      "email": "info@dkd.de",
+      "homepage": "https://www.dkd.de"
+    }
+  ],
+  "support": {
+    "email": "info@dkd.de",
+    "issues": "https://github.com/TYPO3-Solr/ext-solr/issues",
+    "forum": "https://talk.typo3.org",
+    "slack": "https://typo3.slack.com/archives/C02FF05Q4",
+    "source": "https://github.com/TYPO3-Solr/ext-solr",
+    "docs": "https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/"
+  },
+  "require": {
+    "php": "^8.2",
+    "ext-dom": "*",
+    "ext-json": "*",
+    "ext-libxml": "*",
+    "ext-pdo": "*",
+    "ext-simplexml": "*",
+    "solarium/solarium": "7.0.0",
+    "typo3/cms-backend": "*",
+    "typo3/cms-core": "^v14.3.0",
+    "typo3/cms-extbase": "*",
+    "typo3/cms-fluid": "*",
+    "typo3/cms-frontend": "*",
+    "typo3/cms-reports": "*",
+    "typo3/cms-scheduler": "*",
+    "typo3/cms-tstemplate": "*"
+  },
+  "require-dev": {
+    "brianium/paratest": "^7.8.5",
+    "dg/bypass-finals": "^1.9",
+    "phpunit/phpunit": "^11.5.55",
+    "typo3/cms-fluid-styled-content": "*",
+    "typo3/cms-install": "*",
+    "typo3/coding-standards": "v0.8.0",
+    "typo3/testing-framework": "^9.5.0",
+    "phpstan/phpstan": "^2.1.34",
+    "phpstan/phpstan-phpunit": "^2.0.18"
+  },
+  "suggest": {
+    "typo3/cms-install": "Required only to run the \"Apache Solr Search\" plugin to content element upgrade wizard."
+  },
+  "replace": {
+    "apache-solr-for-typo3/solrfluid": "*",
+    "apache-solr-for-typo3/solrfluidgrouping": "*",
+    "typo3-ter/solr": "self.version",
+    "typo3-ter/solrfluid": "*",
+    "typo3-ter/solrfluidgrouping": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "ApacheSolrForTypo3\\Solr\\": "Classes/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ApacheSolrForTypo3\\Solr\\Tests\\": "Tests/",
+      "ApacheSolrForTypo3\\FakeExtension\\": "Tests/Integration/Fixtures/Extensions/fake_extension/Classes/",
+      "ApacheSolrForTypo3\\SolrFakeExtension2\\": "Tests/Integration/Fixtures/Extensions/fake_extension2/Classes/",
+      "ApacheSolrForTypo3\\SolrFakeExtension3\\": "Tests/Integration/Fixtures/Extensions/fake_extension3/Classes/",
+      "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms-core/Tests/"
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": true,
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin",
+    "sort-packages": true,
+    "preferred-install": {
+      "typo3/cms-core": "source",
+      "*": "dist"
+    }
+  },
+  "scripts": {
+    "info:solr-versions": [
+      "@composer config extra.TYPO3-Solr.version-matrix.Apache-Solr"
+    ],
+    "info:recommended-solr-version": [
+      "@composer config extra.TYPO3-Solr.version-matrix.Apache-Solr.0"
+    ],
+    "post-autoload-dump": [
+      "mkdir -p .Build/vendor/apache-solr-for-typo3",
+      "[ -L .Build/vendor/apache-solr-for-typo3/solr ] || ln -snvf ../../../. .Build/vendor/apache-solr-for-typo3/solr"
+    ],
+    "t3:docs:build": [
+      "rm -Rf Documentation-GENERATED-temp/",
+      "./Build/generate_documentation.sh"
+    ],
+    "t3:docs:build:prod": [
+      "BUILD_DOCS_FOR_PRODUCTION=1 $COMPOSER_BINARY t3:docs:build"
+    ],
+    "t3:docs:clean": [
+      "rm -Rf Documentation-GENERATED-temp/ $(readlink -f Documentation.HTML) Documentation.HTML"
+    ],
+    "extension-build": [
+      "@extension-build:clean",
+      "@composer req -d Resources/Private/Php/ComposerLibraries solarium/solarium:$(Build/Helpers/GET_LOCAL_PACKAGE_VERSION_CONSTRAINT.sh solarium/solarium)"
+    ],
+    "extension-build:clean": [
+      "rm -Rf Resources/Private/Php/ComposerLibraries/vendor Resources/Private/Php/ComposerLibraries/composer.lock",
+      "git checkout -- Resources/Private/Php/ComposerLibraries/composer.json"
+    ],
+    "ext:env": [
+      "@putenv EXT_ARCHIVE_DIR=.Build/archive"
+    ],
+    "ext:version": [
+      "echo ${EXT_VERSION:-$(git show HEAD:composer.json | Build/Helpers/GET_TER_BUILD_INPUTS.sh | sed -n 's/^version=//p')}"
+    ],
+    "ext:archive:path": [
+      "@ext:env",
+      "echo ${EXT_ARCHIVE_DIR}/$(git show HEAD:composer.json | Build/Helpers/GET_TER_BUILD_INPUTS.sh | sed -n 's/^key=//p')_${EXT_VERSION:-$(git show HEAD:composer.json | Build/Helpers/GET_TER_BUILD_INPUTS.sh | sed -n 's/^version=//p')}.zip"
+    ],
+    "ext:build:for-ter": [
+      "@ext:env",
+      "Build/Helpers/BUILD_TER_ZIP.sh"
+    ],
+    "ext:release:prepare": [
+      "Build/Helpers/PREPARE_RELEASE.sh"
+    ],
+    "tests:restore-git": "echo \"Retore composer.json to initial state:\" && git checkout composer.json",
+    "tests:env": [
+      "if [ -z ${TYPO3_VERSION+x} ]; then >&2 echo \"Can not proceed, because env var TYPO3_VERSION is not set\"; exit 1; else echo \"Setup test environment for TYPO3 ${TYPO3_VERSION}\"; fi",
+      "if echo $TYPO3_VERSION | grep -q \"dev\"; then $COMPOSER_BINARY config minimum-stability dev; fi"
+    ],
+    "tests:setup": [
+      "@tests:env",
+      "@composer req --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
+      "@tests:restore-git"
+    ],
+    "tests:setup:for-ddev-ter": [
+      "@extension-build",
+      "git checkout -- Resources/Private/Php/ComposerLibraries/composer.json"
+    ],
+    "tests:unit": [
+      "phpunit --config=Build/Test/UnitTests.xml"
+    ],
+    "tests:integration": [
+      "Composer\\Config::disableProcessTimeout",
+      "paratest --configuration=Build/Test/IntegrationTests.xml"
+    ],
+    "tests:phpstan": [
+      "phpstan analyze -c Build/Test/phpstan.neon"
+    ],
+    "tests:known-tests": [
+      "Composer\\Config::disableProcessTimeout",
+      "@php Build/Test/known-tests.php"
+    ],
+    "tests:known-tests:update": [
+      "Composer\\Config::disableProcessTimeout",
+      "@php Build/Test/known-tests.php --update"
+    ],
+    "t3:standards:fix": [
+      "php-cs-fixer fix"
+    ],
+    "tests:lint-xml": [
+      "echo \"Run XML Lint\"",
+      "if ! $($COMPOSER_BINARY config home)/vendor/bin/xmllint Resources/Private/Language/ --pattern='*.xlf' --exclude=.Build/*; then echo \"Some XML files are not valid\" && echo \"Please fix the files listed above\" && export EXIT_CODE=4; else echo \"No syntax errors! Great job!\"; fi"
+    ]
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-main": "14.0.x-dev"
+    },
+    "typo3/cms": {
+      "extension-key": "solr",
+      "version": "14.0.x-dev",
+      "Package": {
+        "providesPackages": {
+          "solarium/solarium": "Resources/Private/Php/ComposerLibraries/vendor",
+          "halaxa/json-machine": "Resources/Private/Php/ComposerLibraries/vendor"
+        }
+      },
+      "web-dir": ".Build/Web"
+    },
+    "TYPO3-Solr": {
+      "version-matrix": {
+        "ext-tika": "^14.0",
+        "ext-solrfal": "^14.0",
+        "ext-solrconsole": "^14.0",
+        "ext-solrdebugtools": "^14.0",
+        "Apache-Solr": [
+          "10.0.0"
+        ],
+        "configset": "ext_solr_14_0_0"
+      },
+      "ext-solrfal": {
+      },
+      "stack-for-ci": {
+        "sclable/xml-lint": "*"
+      }
+    }
+  }
+}

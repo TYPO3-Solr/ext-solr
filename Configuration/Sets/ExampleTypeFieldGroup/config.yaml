@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-type-field-group
+label: "Solr search - (Example) Fieldgroup on type field"
+dependencies:
+  - apache-solr-for-typo3/solr

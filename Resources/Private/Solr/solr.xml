@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<solr>
+	<int name="maxBooleanClauses">${solr.max.booleanClauses:1024}</int>
+	<str name="modules">analysis-extras,langid,language-models,scripting,clustering,extraction,${solr.modules:}</str>
+	<str name="allowPaths">${solr.security.allow.paths:}</str>
+
+	<!-- TYPO3 Plugins -->
+	<str name="sharedLib">typo3lib/</str>
+</solr>

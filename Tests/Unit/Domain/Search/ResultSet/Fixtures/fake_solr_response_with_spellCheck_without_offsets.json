@@ -1,0 +1,28 @@
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 5,
+        "params": {
+            "spellcheck": "true",
+            "spellcheck.collate": "false",
+            "json.nl": "flat",
+            "q": "hello formuller"
+        }
+    },
+    "response": {
+        "numFound": 0,
+        "start": 0,
+        "maxScore": 0.0,
+        "docs": []
+    },
+    "spellcheck": {
+        "suggestions": [
+            "formuller", {
+                "numFound": 1,
+                "suggestion": [
+                    "formular"
+                ]
+            }
+        ]
+    }
+}

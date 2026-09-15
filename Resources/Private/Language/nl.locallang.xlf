@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2015-03-30T11:42:09Z" target-language="nl">
+    <header>
+      <generator>LFEditor</generator>
+    </header>
+    <body>
+      <!-- Index Administration -->
+      <!-- End: Index Maintenance -->
+      <!-- From Backend/locallang.xlf //-->
+      <!-- Backend Components -->
+      <!-- SiteSelector -->
+      <!-- CoreSelector -->
+      <!-- End: Backend Components -->
+      <!-- From ModuleAdministration/locallang.xlf //-->
+      <!-- From ModuleReports/locallang.xlf //-->
+      <!-- From ModuleScheduler/locallang.xlf //-->
+      <trans-unit id="reindex_title" xml:space="preserve" approved="yes">
+				<source>Force Re-Indexing of a site</source>
+			<target state="final">Forceer herindexering van een website</target></trans-unit>
+      <trans-unit id="reindex_description" xml:space="preserve" approved="yes">
+				<source>Purges the Solr Index and initializes the Index Queue of a site.</source>
+			<target state="final">Leegt de Solr index en initialiseert de Index Wachtrij van een website.</target></trans-unit>
+      <trans-unit id="indexqueueworker_title" xml:space="preserve" approved="yes">
+				<source>Index Queue Worker</source>
+			<target state="final">Index Wachtrij Taak</target></trans-unit>
+      <trans-unit id="indexqueueworker_description" xml:space="preserve" approved="yes">
+				<source>Processes the items in the Index Queue and sends them to Solr.</source>
+			<target state="final">Verwerkt de documenten in de Index Wachtrij en verstuurt deze naar Solr.</target></trans-unit>
+      <trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve" approved="yes">
+				<source>Number of documents to index</source>
+			<target state="final">Aantal te indexeren documenten</target></trans-unit>
+      <trans-unit id="field_host" xml:space="preserve" approved="yes">
+				<source>Solr Host</source>
+			<target state="final">Solr host</target></trans-unit>
+      <trans-unit id="field_port" xml:space="preserve" approved="yes">
+				<source>Solr Port</source>
+			<target state="final">Solr poort</target></trans-unit>
+      <trans-unit id="field_path" xml:space="preserve" approved="yes">
+				<source>Solr Path</source>
+			<target state="final">Solr pad</target></trans-unit>
+      <trans-unit id="field_server" xml:space="preserve" approved="yes">
+				<source>Solr Server</source>
+			<target state="final">Solr server</target></trans-unit>
+      <trans-unit id="field_site" xml:space="preserve" approved="yes">
+				<source>Site</source>
+			<target state="final">Website</target></trans-unit>
+      <!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
+      <trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
+				<source>Search is currently not available.</source>
+			<target state="final">Zoeken is op dit moment niet beschikbaar.</target></trans-unit>
+      <trans-unit id="searchFailed" xml:space="preserve" approved="yes">
+				<source>We're sorry. The request you tried to make could not be processed.</source>
+			<target state="final">Het spijt ons. Uw verzoek kon niet worden verwerkt.</target></trans-unit>
+      <trans-unit id="searchWord" xml:space="preserve" approved="yes">
+				<source>Search Term</source>
+			<target state="final">Zoekwoord</target></trans-unit>
+      <trans-unit id="didYouMean" xml:space="preserve" approved="yes">
+				<source>Did you mean</source>
+			<target state="final">Bedoelde u</target></trans-unit>
+      <trans-unit id="submit" xml:space="preserve" approved="yes">
+				<source>Search</source>
+			<target state="final">Zoek</target></trans-unit>
+      <trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
+				<source>Sort by</source>
+			<target state="final">Sorteer op</target></trans-unit>
+      <trans-unit id="faceting_narrowSearch" xml:space="preserve" approved="yes">
+				<source>Narrow Search</source>
+			<target state="final">Resultaat verfijnen</target></trans-unit>
+      <trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve" approved="yes">
+				<source>Search narrowed by</source>
+			<target state="final">Resultaat verfijnd op</target></trans-unit>
+      <trans-unit id="faceting_showMore" xml:space="preserve" approved="yes">
+				<source>Show more</source>
+			<target state="final">Toon meer</target></trans-unit>
+      <trans-unit id="faceting_showFewer" xml:space="preserve" approved="yes">
+				<source>Show fewer</source>
+			<target state="final">Toon minder</target></trans-unit>
+      <trans-unit id="faceting_removeAllFilters" xml:space="preserve" approved="yes">
+				<source>Remove all filters</source>
+			<target state="final">Verwijder alle filters</target></trans-unit>
+      <trans-unit id="results_range" xml:space="preserve" approved="yes">
+				<source>Displaying results %s to %s of %s.</source>
+			<target state="final">Resultaat %s tot %s van %s.</target></trans-unit>
+      <trans-unit id="results_found" xml:space="preserve" approved="yes">
+				<source>Found %s results in %s milliseconds.</source>
+			<target state="final">Gevonden: %s resultaten in %s milliseconden.</target></trans-unit>
+      <trans-unit id="results_found.singular" xml:space="preserve" approved="yes">
+				<source>Found 1 result in %s milliseconds.</source>
+			<target state="final">Gevonden: 1 resultaten in %s milliseconden.</target></trans-unit>
+      <trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
+				<source>Searched for &quot;%s&quot;.</source>
+			<target state="final">Gezocht naar "%s".</target></trans-unit>
+      <trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
+				<source>Nothing found for &quot;%s&quot;.</source>
+			<target state="final">Niets gevonden voor "%s".</target></trans-unit>
+      <trans-unit id="lastSearches" xml:space="preserve" approved="yes">
+				<source>Last searches</source>
+			<target state="final">Laatste zoekopdrachten</target></trans-unit>
+      <trans-unit id="frequentSearches" xml:space="preserve" approved="yes">
+				<source>Frequent searches</source>
+			<target state="final">Vaak gezocht</target></trans-unit>
+      <trans-unit id="relevance" xml:space="preserve" approved="yes">
+				<source>Relevance</source>
+			<target state="final">Relevantie</target></trans-unit>
+      <trans-unit id="file_mimetype" xml:space="preserve" approved="yes">
+				<source>File type</source>
+			<target state="final">Bestandstype</target></trans-unit>
+      <trans-unit id="file_referenced" xml:space="preserve" approved="yes">
+				<source>Referenced at</source>
+			<target state="final">Geplaatst op</target></trans-unit>
+      <trans-unit id="results_per_page" xml:space="preserve" approved="yes">
+				<source>Results per page:</source>
+			<target state="final">Resultaten per pagina:</target></trans-unit>
+      <trans-unit id="pagebrowser_first" xml:space="preserve" approved="yes">
+				<source>First</source>
+			<target state="final">Eerste</target></trans-unit>
+      <trans-unit id="pagebrowser_prev" xml:space="preserve" approved="yes">
+				<source>Previous</source>
+			<target state="final">Vorige</target></trans-unit>
+      <trans-unit id="pagebrowser_next" xml:space="preserve" approved="yes">
+				<source>Next</source>
+			<target state="final">Volgende</target></trans-unit>
+      <trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
+				<source>Last</source>
+			<target state="final">Laatste</target></trans-unit>
+      <!-- From locallang.xlf -->
+      <!-- From locallang_db.xlf -->
+    </body>
+  </file>
+</xliff>

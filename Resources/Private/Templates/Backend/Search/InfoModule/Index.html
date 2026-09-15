@@ -1,0 +1,375 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+<f:layout name="Backend/WithPageTree"/>
+
+<f:section name="Main">
+    <f:be.pageRenderer includeCssFiles="{0: 'EXT:solr/Resources/Public/StyleSheets/Backend/InfoModule.css'}"/>
+
+    <div role="tabpanel">
+        <ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
+            <li role="presentation" class="t3js-tabmenu-item nav-item">
+                <a href="#connections-tab" class="nav-link{f:if(condition: '{activeTabId} == 0', then: ' active')}" title="" aria-controls="tab-1" role="tab" data-bs-toggle="tab">
+                    Connections
+                </a>
+            </li>
+            <li role="presentation" class="t3js-tabmenu-item nav-item ">
+                <a href="#statistics-tab" class="nav-link{f:if(condition: '{activeTabId} == 1', then: ' active')}" title="" aria-controls="tab-3" role="tab" data-bs-toggle="tab">
+                    Statistics
+                </a>
+            </li>
+            <li role="presentation" class="t3js-tabmenu-item nav-item ">
+                <a href="#index_fields-tab" class="nav-link{f:if(condition: '{activeTabId} == 2', then: ' active')}" title="" aria-controls="tab-2" role="tab" data-bs-toggle="tab">
+                    Index Fields
+                </a>
+            </li>
+            <li role="presentation" class="t3js-tabmenu-item nav-item">
+                <a href="#index_inspector-tab" class="nav-link{f:if(condition: '{activeTabId} == 3', then: ' active')}" title="" aria-controls="tab-2" role="tab" data-bs-toggle="tab">
+                    Index Documents
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 0', then: ' active')}" id="connections-tab">
+                <div class="panel panel-tab">
+                    <div class="panel-body">
+                        <f:render section="ConnectionInfos" arguments="{_all}"/>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 1', then: ' active')}" id="statistics-tab">
+                <div class="panel panel-tab">
+                    <div class="panel-body">
+                        <f:render section="Statistics" arguments="{_all}"/>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 2', then: ' active')}" id="index_fields-tab">
+                <div class="panel panel-tab">
+                    <div class="panel-body">
+                        <f:render section="IndexFields" arguments="{_all}"/>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane{f:if(condition: '{activeTabId} == 3', then: ' active')}" id="index_inspector-tab">
+                <div class="panel panel-tab">
+                    <div class="panel-body">
+                        <f:render section="IndexInspector" arguments="{_all}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</f:section>
+
+<f:comment><!-- Sections --></f:comment>
+
+<f:section name="ConnectionInfos">
+    <h2>Site: {site.label}</h2>
+
+    <f:if condition="{connectedHosts}">
+        <f:be.infobox title="Following Apache Solr servers have been contacted:" state="0">
+            <ul>
+                <f:for each="{connectedHosts}" as="connectedHost">
+                    <li>{connectedHost}</li>
+                </f:for>
+            </ul>
+        </f:be.infobox>
+    </f:if>
+
+    <f:if condition="{missingHosts}">
+        <f:be.infobox title="Unable to contact following Apache Solr servers:" state="2">
+            <ul>
+                <f:for each="{missingHosts}" as="missingHost">
+                    <li>{missingHost}</li>
+                </f:for>
+            </ul>
+        </f:be.infobox>
+    </f:if>
+
+    <f:if condition="{invalidPaths}">
+        <f:be.infobox title="Following paths are not valid:" state="1">
+            <ul>
+                <f:for each="{invalidPaths}" as="invalidPath">
+                    <li>{invalidPath}</li>
+                </f:for>
+            </ul>
+            <p>Path should not contain the characters "*, ?, <, >, |, :, or #"!</p>
+        </f:be.infobox>
+    </f:if>
+
+    <hr class="double" />
+    Used domain: {site.domain}
+
+    <hr class="double" />
+    API key: {apiKey}
+
+    <hr class="double" />
+
+    No solr server running? You can use <strong><a href="http://www.hosted-solr.com/" target="_blank">hosted-solr.com</a></strong> to setup a solr core with just a few clicks.
+</f:section>
+
+<f:section name="Statistics">
+    <f:be.pageRenderer
+        includeJavaScriptModules="{
+            0: '@apache-solr-for-typo3/solr/SearchStatistics.js'
+        }"
+    />
+
+	<div class="row">
+		<div class="col-md-12">
+			<f:form action="index" object="{statisticsFilter}" name="statisticsFilter">
+				<div class="form-row">
+					<div class="form-group">
+						<label for="statisticsStartDate" class="form-label">{f:translate(key: 'solr.backend.search_statistics_module.filter.start')}</label>
+						<div class="input-group">
+							<f:form.textfield
+								property="startDate"
+								value="{f:format.date(format:'c', date: '{statisticsFilter.startDate}')}"
+								id="statisticsStartDate"
+								additionalAttributes="{'autocomplete': 'off'}"
+								class="form-control form-control-clearable t3js-datetimepicker t3js-clearable"
+								data="{date-type: 'datetime'}"
+							/>
+							<label class="btn btn-default" for="statisticsStartDate">
+								<core:icon identifier="actions-calendar" />
+							</label>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="statisticsEndDate" class="form-label">{f:translate(key: 'solr.backend.search_statistics_module.filter.end')}</label>
+						<div class="input-group">
+							<f:form.textfield
+								property="endDate"
+								value="{f:format.date(format:'c', date: '{statisticsFilter.endDate}')}"
+								id="statisticsEndDate"
+								additionalAttributes="{'autocomplete': 'off'}"
+								class="form-control form-control-clearable t3js-datetimepicker t3js-clearable"
+								data="{date-type: 'datetime'}"
+							/>
+							<label class="btn btn-default" for="statisticsEndDate">
+								<core:icon identifier="actions-calendar" />
+							</label>
+						</div>
+					</div>
+					<div class="form-group align-self-end">
+						<f:form.button type="submit" name="operation" value="filter" class="btn btn-default">{f:translate(key: 'solr.backend.search_statistics_module.filter')}</f:form.button>
+						<f:form.button type="submit" name="operation" value="reset-filters" class="btn btn-link">{f:translate(key: 'solr.backend.search_statistics_module.filter.reset')}</f:form.button>
+					</div>
+				</div>
+				<f:form.hidden name="activeTabId" value="1" />
+			</f:form>
+		</div>
+	</div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <canvas id="queriesOverTime" data-query-labels="{queriesChartLabels}" data-query-data="{queriesChartData}"></canvas>
+        </div>
+    </div>
+
+    <f:if condition="{top_search_phrases}">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>
+									<f:format.printf arguments="{0: '{topHitsLimit}'}">
+										<f:translate key="solr.backend.search_statistics_module.top_search_phrases"/>
+									</f:format.printf>
+                </h2>
+
+                <ul>
+                    <f:for each="{top_search_phrases}" as="phrase">
+                        <li>
+                            {phrase.keywords} ({phrase.count})
+                        </li>
+                    </f:for>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="section-divider" />
+    </f:if>
+
+    <f:if condition="{top_search_phrases_without_hits}">
+        <div class="row section-with-header">
+            <div class="col-md-12">
+                <h2>
+									<f:format.printf arguments="{0: '{noHitsLimit}'}">
+										<f:translate key="solr.backend.search_statistics_module.top_search_phrases_without_hits"/>
+									</f:format.printf>
+                </h2>
+
+                <ul>
+                    <f:for each="{top_search_phrases_without_hits}" as="phrase">
+                        <li>
+                            {phrase.keywords} ({phrase.count})
+                        </li>
+                    </f:for>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="section-divider" />
+    </f:if>
+
+    <div class="row section-with-header">
+        <div class="col-md-12">
+            <h2>
+                <f:translate key="solr.backend.search_statistics_module.search_phrases_header"/>
+            </h2>
+
+            <f:if condition="{search_phrases_statistics}">
+                <f:then>
+                    <table class="table table-condensed table-hover table-striped">
+                        <thead>
+                        <tr class="t3-row-header">
+                            <th class="nowrap">&nbsp;</th>
+                            <th>
+                                <f:translate key="solr.backend.search_statistics_module.item_phrase"/>
+                            </th>
+                            <th>
+                                <f:translate key="solr.backend.search_statistics_module.item_count"/>
+                            </th>
+                            <th>
+                                <f:translate key="solr.backend.search_statistics_module.results"/>
+                            </th>
+                            <th>
+                                <f:translate key="solr.backend.search_statistics_module.percentage"/>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <f:for each="{search_phrases_statistics}" as="item" iteration="i">
+                            <tr>
+                                <td class="nowrap"><strong>{i.cycle}.</strong></td>
+                                <td>{item.keywords}</td>
+                                <td>{item.count}</td>
+                                <td>{item.hits -> f:format.number(decimals: 1)}</td>
+                                <td>{item.percent -> f:format.number(decimals: 1)}%</td>
+                            </tr>
+                        </f:for>
+                        </tbody>
+                    </table>
+                </f:then>
+                <f:else>
+                    <f:be.infobox state="2">
+                        <f:translate key="solr.backend.search_statistics_module.no_records_found"/>
+                    </f:be.infobox>
+                </f:else>
+            </f:if>
+        </div>
+    </div>
+</f:section>
+
+<f:section name="IndexFields">
+    <div class="panel-group" id="index-fields_accordion">
+        <f:for each="{indexFieldsInfoByCorePaths}" as="indexFieldsInfoForCore" iteration="iterator">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <f:if condition="{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}">
+                            <f:then>
+                                <a data-bs-toggle="collapse" data-bs-parent="#index-fields_accordion" href="#collapse-core{iterator.index}">{indexFieldsInfoForCore.corePath}</a>
+                                <a href="#collapse-core{iterator.index}" title="Collapse table" class="pull-right" data-bs-toggle="collapse">
+                                    <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                                </a>
+                            </f:then>
+                            <f:else>
+                                <a>{indexFieldsInfoForCore.corePath} is empty!</a>
+                            </f:else>
+                        </f:if>
+                    </h4>
+                </div>
+                <div id="collapse-core{iterator.index}" class="panel-collapse collapse {f:if(condition: '{iterator.isFirst}', then: 'in')}">
+                    <div class="panel-body">
+                        <f:render partial="Backend/ApacheSolr/FieldTypesForSingleCore" arguments="{indexFieldsInfoForCore: indexFieldsInfoForCore}"/>
+                    </div>
+                </div>
+            </div>
+        </f:for>
+    </div>
+</f:section>
+
+
+<f:section name="IndexInspector">
+    <div class="panel-group" id="index-inspector_accordion">
+
+
+        <f:for each="{indexInspectorDocumentsByLanguageAndType}" as="indexInspectorDocumentsByType" key="language" iteration="currentCore">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <a href="#panel-group3document-core-{currentCore.index}" data-bs-toggle="collapse">{indexInspectorDocumentsByType.core.corepath}</a>
+                        <a href="#panel-group3document-core-{currentCore.index}" title="Collapse table" class="pull-right" data-bs-toggle="collapse">
+                            <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                        </a>
+                    </h3>
+                </div>
+
+                <div id="panel-group3document-core-{currentCore.index}" class="panel-collapse collapse {f:if(condition: '{iterator.isFirst}', then: 'in')}">
+                    <div class="panel-body">
+                        <f:for each="{indexInspectorDocumentsByType.documents}" as="documents" key="documentType">
+                            <f:if condition="{documents}"> <f:comment><!-- Don't show emty panel groups if array with documents is empty. --></f:comment>
+                                <f:render section="PanelGroupForDocumentType" arguments="{_all}"/>
+                            </f:if>
+                        </f:for>
+                    </div>
+                </div>
+            </div>
+        </f:for>
+    </div>
+
+    <f:section name="PanelGroupForDocumentType">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" data-bs-toggle="collapse">Type: {documentType} ({f:count(subject: documents)})</a>
+                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" title="Collapse table" class="pull-right" data-bs-toggle="collapse">
+                        <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                    </a>
+                </h3>
+            </div>
+            <div id="panel-group4document-type-{currentCore.index}-{documentType}" class="panel-collapse collapse {f:if(condition: '{f:count(subject: documentsByType)} < 2', then: 'in', else: '')}">
+                <div class="panel-body">
+                    <div class="panel-group">
+                        <table class="table table-striped table-condensed">
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Url</th>
+                                <th>Created</th>
+                                <th>Indexed</th>
+                                <th>Actions</th>
+
+                            </tr>
+                            <f:for each="{documents}" as="document">
+                                <tr>
+                                    <td>{document.uid}</td>
+                                    <td><f:format.crop maxCharacters="20">{document.title}</f:format.crop></td>
+                                    <td><f:format.crop maxCharacters="40">{document.url}</f:format.crop></td>
+                                    <td><f:format.date format="d.m.Y H:i:s">{document.created}</f:format.date></td>
+                                    <td><f:format.date format="d.m.Y H:i:s">{document.indexed}</f:format.date></td>
+
+                                    <td>
+                                        <span class="btn btn-default">
+                                            <f:link.action action="documentsDetails" arguments="{uid: document.uid, type: document.type, languageUid: language, selectedPageUID: selectedPageUID}" title="Show details">
+                                                <core:icon identifier="actions-document-view" />
+                                            </f:link.action>
+                                        </span>
+                                        <solr:backend.security.ifHasAccessToModule extension="Solr" main="searchbackend" sub="indexqueue">
+                                            <span class="btn btn-default">
+                                                <f:be.link route="searchbackend_indexqueue.Backend\Search\IndexQueueModule_requeueDocument" parameters="{uid: document.uid, type: document.type}">
+                                                    <core:icon identifier="actions-refresh" />
+                                                </f:be.link>
+                                            </span>
+                                        </solr:backend.security.ifHasAccessToModule>
+                                    </td>
+                                </tr>
+                            </f:for>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </f:section>
+</f:section>

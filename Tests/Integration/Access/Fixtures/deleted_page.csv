@@ -1,0 +1,4 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","hidden","deleted","slug","extendToSubpages","title","fe_group","tstamp"
+,1,0,1,1,0,0,"/",1,"Root page visible but extended to subpages",,1007007007
+,10,1,0,1,0,1,"/deleted",0,"Deleted",4711,1007007007

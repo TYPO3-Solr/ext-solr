@@ -1,0 +1,21 @@
+"pages",,,,,,,
+,"uid","pid","is_siteroot","doktype","hidden","slug","title"
+# 100% matching
+,2,1,0,1,0,"/awesome-trigram-phrase-search","Awesome Trigram Phrase Search"
+# trigram phrase slop = 0
+,3,1,0,1,0,"/dump-sentence","This is some dump sentence to match Awesome Trigram Phrase"
+,4,1,0,1,0,"/match-trigram-phrase-search","This is some dump sentence to match Trigram Phrase Search"
+# trigram phrase slop = 1
+,5,1,0,1,0,"/slop-1-trigram-phrase","This is some dump sentence to match slop 1 Awesome gag Trigram Phrase"
+,6,1,0,1,0,"/slop-1-trigram-phrase-gag-search","This is some dump sentence to match slop 1 Trigram Phrase gag Search"
+# trigram phrase slop = 2
+,7,1,0,1,0,"/slop-2-trigram-gag-gag-phrase","This is some dump sentence to match slop 2 Awesome gag gag Trigram Phrase"
+,8,1,0,1,0,"/slop-2-phrase-gag-gag-search","This is some dump sentence to match slop 2 Trigram Phrase gag gag Search"
+,9,1,0,1,0,"/no-docs-match","This is some dump sentence to match no docs"
+,10,1,0,1,0,"/no-match","This is some dump sentence to match nothing"
+,11,1,0,1,0,"/bphrase-disabled","To disable BPhrase set it to 0."
+,12,1,0,1,0,"/match-phrase-only","This is some dump sentence to match Phrase only"
+,13,1,0,1,0,"/match-search-only","This is some dump sentence to match Search only"
+,14,1,0,1,0,"/match-trigram-only","This is some dump sentence to match Trigram only"
+,15,1,0,1,0,"/match-awesome-only","This is some dump sentence to match Awesome only"
+,16,1,0,1,0,"/trigram-gag-gag-gag-gag-phrase","Trigram gag gag gag gag Phrase gag gag gag gag Search is fascinating feature."

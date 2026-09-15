@@ -1,0 +1,4 @@
+mod.wizards.newContentElement.wizardItems {
+  # CATEGORIES
+  search.header = LLL:EXT:solr/Resources/Private/Language/locallang.xlf:plugin_results
+}

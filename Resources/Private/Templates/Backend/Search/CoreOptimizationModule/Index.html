@@ -1,0 +1,184 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+{namespace core=TYPO3\CMS\Core\ViewHelpers}
+
+<f:layout name="Backend/WithPageTree"/>
+
+<f:section name="Main">
+
+    <div role="tabpanel">
+        <ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
+            <li role="presentation" class="t3js-tabmenu-item nav-item">
+                <a href="#synonyms-tab" class="nav-link active" title="" aria-controls="synonyms-tab" role="tab" data-bs-toggle="tab">
+                    Synonyms
+                </a>
+            </li>
+            <li role="presentation" class="t3js-tabmenu-item nav-item ">
+                <a href="#stopwords-tab" class="nav-link" title="" aria-controls="stopwords-tab" role="tab" data-bs-toggle="tab">
+                    Stop Words
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="synonyms-tab">
+                <div class="panel panel-tab">
+                    <div class="panel-body">
+
+                        <f:render section="Synonyms" arguments="{_all}"/>
+
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="stopwords-tab">
+                <div class="panel panel-tab">
+                    <div class="panel-body">
+
+                        <f:render section="StopWords" arguments="{_all}"/>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</f:section>
+
+<f:section name="Synonyms">
+	By defining synonyms you can allow to find documents by words that do not occur in the documents but have the same meaning:<br/>
+	<b>Note:</b> The word that you want replace with a synonym needs to appear on <b>both</b> sides when you want to find it with the term itself later!<br/>
+		Example:<br />
+	<ul>
+		<li><b>"smartphone" => "smartphone, cellphone, mobile, mobilephone"</b>
+			<ul>
+				<li>will match <b>"smartphone, cellphone, mobile, mobilephone"</b></li>
+				<li>And when "smartphone" were missing on the right side, then you could not find the documents with "smartphone" anymore!</li>
+			</ul>
+		</li>
+	</ul>
+	<b>Note: The changes do not apply on the fly, you need to reindex all the pages with occurrences of changed synonyms.</b>
+
+    <f:if condition="{synonyms}">
+        <f:then>
+            <h3>Manage Synonyms</h3>
+            <table class="table table-condensed table-hover table-striped">
+                <thead>
+                <tr class="t3-row-header">
+                    <th>Base Word</th><th>Synonyms</th>
+                    <th>
+                        <f:link.action action="deleteAllSynonyms" title="Delete all synonyms" class="btn btn-default btn-sm">
+                            <core:icon identifier="actions-edit-delete"/>
+                        </f:link.action>
+                        <f:link.action action="exportSynonyms" title="Export all synonyms" class="btn btn-default btn-sm">
+                            <core:icon identifier="actions-document-export-csv"/>
+                        </f:link.action>
+                        </th>
+                </tr>
+                </thead>
+                <tbody>
+                <f:for each="{synonyms}" key="baseWord" as="synonymList">
+                    <tr>
+                        <td>{baseWord}</td>
+                        <td>{synonymList}</td>
+                        <td>
+                            <f:link.action action="deleteSynonyms" arguments="{baseWord:'{baseWord}'}" title="Remove Synonym Mapping"><core:icon identifier="actions-edit-delete"/></f:link.action>
+                        </td>
+                    </tr>
+                </f:for>
+                </tbody>
+            </table>
+        </f:then>
+        <f:else>
+            <f:be.infobox state="-1">
+                No synonyms configured yet.
+            </f:be.infobox>
+        </f:else>
+    </f:if>
+
+    <h3>Add Synonyms (lowercase)</h3>
+    <div class="section">
+        <f:form action="addSynonyms" id="add-synonyms">
+            <div class="form-group">
+                <label for="baseWord">Base Word</label>
+                <f:form.textfield id="baseWord" name="baseWord" class="form-control" />
+                <span>f.e. iphone</span>
+            </div>
+            <div class="form-group">
+                <label for="synonyms">Synonyms</label>
+                <f:form.textfield id="synonyms" name="synonyms" class="form-control" />
+                <span>comma-separated; f.e. smartphone, cellphone</span>
+            </div>
+            <div class="form-group">
+                <f:form.checkbox id="overrideExistingSingle" name="overrideExisting" value="1" />
+                <label for="overrideExistingSingle"> Override, if synonym already exists</label>
+            </div>
+            <div class="submit">
+                <f:form.submit value="Add Synonyms" class="btn btn-sm btn-default"/>
+            </div>
+        </f:form>
+    </div>
+    <h3>Upload Synonym List</h3>
+    <div class="section">
+        <f:form action="importSynonymList" id="upload-synonyms" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <f:form.upload id="synonymFileUpload" name="synonymFileUpload" />
+            </div>
+            <div class="form-group">
+                <f:form.checkbox id="overrideExisting" name="overrideExisting" value="1" />
+                <label for="overrideExisting"> Override synonym, if synonym already exists</label>
+            </div>
+            <div class="form-group">
+                <f:form.checkbox id="deleteSynonymsBefore" name="deleteSynonymsBefore" value="1" />
+                <label for="deleteSynonymsBefore"> Replace complete synonym list</label>
+            </div>
+            <div class="submit">
+                <f:form.submit value="Upload file" class="btn btn-sm btn-default"/>
+            </div>
+        </f:form>
+    </div>
+</f:section>
+
+<f:section name="StopWords">
+	<p>	Stop words allow you to specify a list of words that will be discarded during indexing.<br/>
+		Usually they are very small and very common words (such as "the" and "and") that often have <br/>
+		little bearing on whether a document is a good match or not.<br/>
+		The format is one word per line.</p>
+
+    <h3>Stop Word List (one per line, lowercase)</h3>
+    <div class="section section-with-header">
+        <div class="row">
+            <div class="col-md-12">
+                <f:if condition="{stopWordsCount} == 0">
+                    <f:be.infobox state="-1">
+                        The stop word list is empty.
+                    </f:be.infobox>
+                </f:if>
+
+                <f:form action="saveStopWords" id="edit-stopwords">
+                    <f:form.textarea name="stopWords" rows="20" cols="50" style="width: auto;" value="{stopWords}"/>
+                    <div class="submit">
+                        <f:form.submit value="Save Stop Word List" class="btn btn-sm btn-default"/>
+                        <f:if condition="{stopWordsCount} > 0">
+                            <f:link.action action="exportStopWords" title="Export StopWords" class="btn btn-default btn-sm">
+                                <core:icon identifier="actions-document-export-csv"/>
+                            </f:link.action>
+                        </f:if>
+                    </div>
+                </f:form>
+            </div>
+        </div>
+    </div>
+
+    <h3>Upload StopWords List</h3>
+    <div class="section section-with-header">
+        <f:form action="importStopWordList" id="upload-stopwords" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <f:form.upload id="stopwordsFileUpload" name="stopwordsFileUpload" />
+            </div>
+            <div class="form-group">
+                <f:form.checkbox id="replaceStopwords" name="replaceStopwords" value="1" checked="1"/>
+                <label for="replaceStopwords"> Override complete list</label>
+            </div>
+            <div class="submit">
+                <f:form.submit value="Upload file" class="btn btn-sm btn-default"/>
+            </div>
+        </f:form>
+    </div>
+</f:section>

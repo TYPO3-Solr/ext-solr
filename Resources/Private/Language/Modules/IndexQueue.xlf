@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en">
+  <file id="f1">
+    <unit id="title">
+      <segment state="final">
+        <source>Index Queue</source>
+      </segment>
+    </unit>
+    <unit id="short_description">
+      <segment state="final">
+        <source>Allows to check the status of the index queue</source>
+      </segment>
+    </unit>
+    <unit id="description">
+      <segment state="final">
+        <source>This module allows you to check the state of the index queue and reQueue items.</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

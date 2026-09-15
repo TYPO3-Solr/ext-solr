@@ -1,0 +1,10 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title","fe_group","module"
+,2,1,0,1,"/alpha","markeralpha235567",,""
+,3,1,0,1,"/beta","markerbeta235567",,""
+,4,1,0,1,"/gamma","markergamma235567",,""
+"tt_content",
+,"uid","pid","colPos","CType","header","bodytext","fe_group","sorting"
+,201,2,0,"text","alpha header","body of the alpha test page; unique token bodyalpha235567",0,10
+,301,3,0,"text","beta header","body of the beta test page; unique token bodybeta235567",0,10
+,401,4,0,"text","gamma header","body of the gamma test page; unique token bodygamma235567",0,10

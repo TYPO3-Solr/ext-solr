@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-facets-options-single-mode
+label: "Solr search - (Example) Options with singlemode (only one option at a time)"
+dependencies:
+  - apache-solr-for-typo3/solr

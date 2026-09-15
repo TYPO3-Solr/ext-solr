@@ -1,0 +1,9 @@
+"tx_solr_indexqueue_item",
+,"uid","root","item_type","item_uid","indexing_configuration","has_indexing_properties","indexing_priority","errors","pages_mountidentifier","changed","indexed"
+,4711,1,"pages",1,"pages",0,0,,,1449151778,0
+,4712,2,"pages",2,"pages",0,0,,,1449151778,0
+,4713,3,"pages",1,"pages",0,0,,,1449151778,0
+# News Records that should stay untouched
+,4714,1,"tx_news_domain_model_news",1,"news",0,0,,,1449151778,0
+,4715,2,"tx_news_domain_model_news",1,"news",0,0,,,1449151778,0
+,4716,3,"tx_news_domain_model_news",1,"news",0,0,,,1449151778,0

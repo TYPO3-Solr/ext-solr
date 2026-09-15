@@ -1,0 +1,5 @@
+..  attention::
+
+     You are on docs for EXT:solr |release| version.
+     This file may be outdated if you are on wrong release "branch" version.
+     To get the most recent changelog, please choose on the top left dropdown menu the version you are looking for.

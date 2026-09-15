@@ -1,0 +1,22 @@
+<f:if condition="{showSelectOtherPage}">
+	<f:then>
+		<f:be.infobox title="No site could be found." state="2">
+			<p>Please choose other page in the page tree, which has solr configured.</p>
+		</f:be.infobox>
+	</f:then>
+
+	<f:else>
+		<p>When all of these steps are done check this module again.</p>
+
+		<f:be.infobox title="There is no site configured for your solr extension!" state="2">
+			<p>Please check the following:</p>
+			<p>If you want to use solr with the TYPO3 site configuration:</p>
+
+			<ul>
+				<li>Your site has a page, marked as root page.</li>
+				<li>Configure EXT:solr with the TYPO3 site module.</li>
+				<li>Check the reports module if any solr error is shown.</li>
+			</ul>
+		</f:be.infobox>
+	</f:else>
+</f:if>

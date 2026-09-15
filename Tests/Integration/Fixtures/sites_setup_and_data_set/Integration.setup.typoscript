@@ -1,0 +1,21 @@
+page = PAGE
+page.typeNum = 0
+page.bodyTag = <body>
+
+# very simple rendering
+page.10 = CONTENT
+page.10 {
+  table = tt_content
+  select.orderBy = sorting
+  select.where = colPos=0
+  renderObj = COA
+  renderObj {
+    10 = TEXT
+    10.field = bodytext
+  }
+}
+
+page.10.wrap = <!--TYPO3SEARCH_begin-->|<!--TYPO3SEARCH_end-->
+
+@import 'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript'
+@import 'EXT:solr/Configuration/TypoScript/Solr/setup.typoscript'

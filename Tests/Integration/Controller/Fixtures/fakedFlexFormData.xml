@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3FlexForms>
+    <data>
+        <sheet index="sDEF">
+            <language index="lDEF">
+                <field index="search.targetPage">
+                    <value index="vDEF"></value>
+                </field>
+            </language>
+        </sheet>
+        <sheet index="sQuery">
+            <language index="lDEF">
+                <field index="search.initializeWithEmptyQuery">
+                    <value index="vDEF">1</value>
+                </field>
+                <field index="search.showResultsOfInitialEmptyQuery">
+                    <value index="vDEF">1</value>
+                </field>
+                <field index="search.initializeWithQuery">
+                    <value index="vDEF">hot</value>
+                </field>
+                <field index="search.showResultsOfInitialQuery">
+                    <value index="vDEF">0</value>
+                </field>
+                <field index="search.query.filter">
+                    <el index="el">
+                        <section index="1">
+                            <itemType index="field">
+                                <el>
+                                    <field index="field">
+                                        <value index="vDEF">subTitle</value>
+                                    </field>
+                                    <field index="value">
+                                        <value index="vDEF">men</value>
+                                    </field>
+                                </el>
+                            </itemType>
+                            <itemType index="_TOGGLE">0</itemType>
+                        </section>
+                    </el>
+                </field>
+                <field index="search.query.sortBy">
+                    <value index="vDEF">title asc</value>
+                </field>
+                <field index="search.results.resultsPerPage">
+                    <value index="vDEF">50</value>
+                </field>
+                <field index="search.query.boostFunction">
+                    <value index="vDEF"></value>
+                </field>
+                <field index="search.query.boostQuery">
+                    <value index="vDEF"></value>
+                </field>
+            </language>
+        </sheet>
+    </data>
+</T3FlexForms>

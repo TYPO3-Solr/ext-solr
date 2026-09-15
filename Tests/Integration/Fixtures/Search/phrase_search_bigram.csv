@@ -1,0 +1,21 @@
+"pages",,,,,,,
+,"uid","pid","is_siteroot","doktype","hidden","slug","title"
+# 100% matching
+,2,1,0,1,0,"/bigram-phrase-search","Bigram Phrase Search"
+# bigram phrase slop = 0
+,3,1,0,1,0,"/dump-sentence","This is some dump sentence to match Bigram Phrase"
+,4,1,0,1,0,"/match-phrase-search","This is some dump sentence to match Phrase Search"
+# bigram phrase slop = 1
+,5,1,0,1,0,"/slop-1-bigram-gag-phrase","This is some dump sentence to match slop 1 Bigram gag Phrase"
+,6,1,0,1,0,"/slop-1-phrase-gag-search","This is some dump sentence to match slop 1 Phrase gag Search"
+# bigram phrase slop = 2
+,7,1,0,1,0,"/slop-2-bigram-gag-gag-phrase","This is some dump sentence to match slop 2 Bigram gag gag Phrase"
+,8,1,0,1,0,"/slop-2-phrase-gag-gag-search","This is some dump sentence to match slop 2 Phrase gag gag Search"
+,9,1,0,1,0,"/no-docs-match","This is some dump sentence to match no docs"
+,10,1,0,1,0,"/no-match","This is some dump sentence to match nothing"
+,11,1,0,1,0,"/bphrase-disabled","To disable BPhrase set it to 0."
+,12,1,0,1,0,"/match-phrase-only","This is some dump sentence to match Phrase only"
+,13,1,0,1,0,"/match-search-only","This is some dump sentence to match Search only"
+,14,1,0,1,0,"/match-bigram-only","This is some dump sentence to match Bigram only"
+,15,1,0,1,0,"/implicit-bigram-phrase-pf2","Implicit Bigram gag gag gag gag Phrase gag gag gag gag searches in pf2 fields."
+,16,1,0,1,0,"/bigram-gag-gag-gag-gag-phrase","Bigram gag gag gag gag Phrase gag gag gag gag Search is fascinating feature."

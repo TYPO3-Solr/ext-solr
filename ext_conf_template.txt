@@ -1,0 +1,29 @@
+# customcategory=Monitoring=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.category.monitoring
+# customcategory=Routes=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.category.routeEnhancer
+
+# cat=basic/enable/a0; type=string; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.pluginNamespaces
+pluginNamespaces = tx_solr
+
+# cat=basic/enable/a1; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.includeGlobalQParameterInCacheHash
+includeGlobalQParameterInCacheHash = 0
+
+# cat=basic/enable/b1; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.useConfigurationFromClosestTemplate
+useConfigurationFromClosestTemplate = 0
+
+# cat=Monitoring/enable/c1; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.useConfigurationTrackRecordsOutsideSiteroot
+useConfigurationTrackRecordsOutsideSiteroot = 1
+
+# cat=Monitoring/enable/c2; type=string; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.useConfigurationMonitorTables
+useConfigurationMonitorTables =
+
+# cat=Monitoring/enable/c3; type=options[LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.0=0,LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.1=1,LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.2=2]; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType
+monitoringType = 0
+
+# cat=Routes/enable/d; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.enableRouteEnhancer
+enableRouteEnhancer = 0
+
+# cat=advanced/enable/e; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.allowSelfSignedCertificates
+allowSelfSignedCertificates = 0
+
+# cat=advanced/enable/f; type=boolean; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.enablePostBigRequest
+enablePostBigRequest = 0

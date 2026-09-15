@@ -1,0 +1,13 @@
+<html
+	xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+	data-namespace-typo3-fluid="true">
+
+<f:if condition="{indexQueueItem.errors}">
+	<h1><f:translate key="solr.backend.index_queue_module.error_details"/> (uid: <code>{indexQueueItem.indexQueueUid}</code>, type: <code>{indexQueueItem.type}</code>):</h1>
+    <pre class="alert alert-danger">{indexQueueItem.errors}</pre>
+
+    <f:link.action class="btn btn-default">
+			{core:icon(identifier:'actions-view-go-back')} <f:translate key="solr.backend.index_queue_module.back"/>
+    </f:link.action>
+</f:if>
+</html>

@@ -1,0 +1,133 @@
+.. _conf-tx-solr-settings:
+
+Extension Configuration
+=======================
+
+The following settings can be defined in the "Settings":>"Extension Configuration":>"solr"
+
+Basic
+-----
+
+
+.. figure:: /Images/Backend/extensionconfiguration-basic.png
+
+pluginNamespaces
+~~~~~~~~~~~~~~~~
+
+:Type: String
+:Since: 11.1
+:Default: tx_solr
+
+A list of white listed plugin namespaces (Required by cacheHash/excludedParameters and plugin flex form).
+
+..  note::
+    This list only is available in Plugin -> Options -> Plugin Namespace.
+
+includeGlobalQParameterInCacheHash
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:Since: 11.1
+:Default: 0
+
+Include/Exclude global q parameter in/from cacheHash.
+
+useConfigurationFromClosestTemplate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:Since: 6.1
+:Default: 0
+
+When this setting is active the closest page with a TypoScript template will be used to fetch the configuration.
+This improves the performance but limits also the possibilities. E.g. conditions can not be used that are related to a certain page.
+
+
+Monitoring
+----------
+
+.. figure:: /Images/Backend/extensionconfiguration-monitoring.png
+
+useConfigurationTrackRecordsOutsideSiteroot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:Since: 6.1
+:Default: 1
+
+A common scenario is to have a site and a storage folder for records parallel to it
+on the same level (f.e.)
+If you don't want this behaviour - it should be set to false.
+
+useConfigurationMonitorTables
+-----------------------------
+
+:Type: String
+:Since: 6.1
+:Default:
+
+Monitor tables - explicitly monitor these (still requires TypoScript configuration)
+
+monitoringType
+~~~~~~~~~~~~~~
+
+:Type: Int
+:Since: 11.2
+:Default: 0
+
+Defines how data updates should be monitored
+
+By default (=0) recognized updates will be processed directly and the Solr index queue will be directly updated, also
+the Solr index where appropriate. As in huge instances the monitoring can slow down the TYPO3 backend, two more monitoring
+options are available:
+
+- 1: Delayed: Record update events will be queue and processed later, the scheduler task "Event Queue Worker" is required for processing.
+- 2: No monitoring: Monitoring is completely disabled, please note that you have to take care of Solr index updates yourself.
+
+Route Enhancer
+--------------
+
+.. figure:: /Images/Backend/extensionconfiguration-routeenhancer.png
+
+enableRouteEnhancer
+~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:Since: 12.0
+:Default: 0
+
+To use the EXT:solr possibility to create speaking URLs for Solr facets, activate this option.
+
+As this feature requires additional configuration and costly processing, it's disabled by default.
+
+Advanced
+--------
+
+.. figure:: /Images/Backend/extensionconfiguration-advanced.png
+
+allowSelfSignedCertificates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:Since: 6.1
+:Default: 0
+
+Can be used to allow self signed certificates - when using the SSL protocol.
+
+enablePostBigRequest
+~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:Since: 14.0
+:Default: 0
+
+When enabled, long Solr GET requests are converted to POST so they no longer hit
+the web server's URI length limit (HTTP 414). Useful for installations with many
+or large facets that produce long query strings.
+
+..  note::
+    Enabling this is **not recommended** by default. Apache Solr does not cache
+    POST requests, so converting requests to POST reduces the effectiveness of
+    Solr's query result cache. Only enable this if you actually run into HTTP 414
+    errors that cannot be solved by increasing the web server's URI length limit.
+

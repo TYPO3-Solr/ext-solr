@@ -1,0 +1,8 @@
+You need to set <code>config.index_enable = 1</code> to allow page indexing.
+The following sites were found with indexing disabled:
+
+<ul>
+<f:for each="{pages}" as="page">
+    <li>[{page.uid}] {page.title}</li>
+</f:for>
+</ul>

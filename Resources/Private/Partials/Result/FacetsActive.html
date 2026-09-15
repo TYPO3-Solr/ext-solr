@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
+>
+
+<f:section name="FacetsActive">
+	<f:if condition="{resultSet.facets.used -> f:count()}">
+		<div id="tx-solr-facets-in-use">
+			<p><f:translate key="faceting_resultsNarrowedBy" extensionName="solr">Narrowed by</f:translate>:</p>
+			<f:for each="{resultSet.facets.used}" as="facet">
+				<f:for each="{facet.allFacetItems.selected}" as="item">
+					<a href="{s:uri.facet.removeFacetItem(facet: facet, facetItem: item)}" class="facet remove-facet-option solr-ajaxified btn btn-light btn-sm">
+						{facet.label}: {item.label}
+						<span class="bi bi-trash"></span>
+					</a>
+				</f:for>
+			</f:for>
+			<a href="{s:uri.facet.removeAllFacets()}" class="solr-ajaxified btn btn-dark btn-sm">
+				<f:translate key="faceting_removeAllFilters" extensionName="solr">Remove all filters</f:translate>
+				<span class="bi bi-trash"></span>
+			</a>
+		</div>
+	</f:if>
+</f:section>
+
+</html>

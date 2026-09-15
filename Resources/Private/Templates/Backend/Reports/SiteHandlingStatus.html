@@ -1,0 +1,7 @@
+<table class="table table-condensed table-hover table-striped">
+    <f:for each="{validationResults}" as="validationResult">
+        <tr {f:render(section: 'CSSClassesFor', arguments:{validationResult: validationResult, forTag: 'tr'})}><th {f:render(section: 'CSSClassesFor', arguments:{validationResult: validationResult, forTag: 'th'})} >{validationResult.label}</th><td {f:render(section: 'CSSClassesFor', arguments:{validationResult: validationResult, forTag: 'td'})}>{validationResult.message}</td></tr>
+    </f:for>
+</table>
+
+<f:section name="CSSClassesFor"><f:if condition="{validationResult.CSSClassesFor.{forTag}}">class="{validationResult.CSSClassesFor.{forTag}}"</f:if></f:section>

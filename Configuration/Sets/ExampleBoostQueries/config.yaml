@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-boost-queries
+label: "Solr search - (Example) Boost more recent results"
+dependencies:
+  - apache-solr-for-typo3/solr

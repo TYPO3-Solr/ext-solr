@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-facets-options-toggle
+label: "Solr search - (Example) Options with on/off toggle"
+dependencies:
+  - apache-solr-for-typo3/solr

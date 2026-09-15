@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-facets-options-prefix-grouped
+label: "Solr search - (Example) Options grouped by prefix"
+dependencies:
+  - apache-solr-for-typo3/solr

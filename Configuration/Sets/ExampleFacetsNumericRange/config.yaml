@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-numeric-range
+label: "Solr search - (Example) NumericRange facet with slider on pid field"
+dependencies:
+  - apache-solr-for-typo3/solr

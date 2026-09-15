@@ -1,0 +1,35 @@
+services:
+  ######################################
+  # CI
+  ######################################
+  ci:
+    restart: 'no'
+    tty: true
+    build:
+      context: ../../
+      dockerfile: ./Docker/Ci/Dockerfile
+      args:
+        PHP_VERSION: 8.2
+    working_dir: /ext-solr
+    env_file:
+      - environment.yml
+
+  db:
+    restart: 'no'
+    tty: true
+    build:
+      context: ../../
+      dockerfile: ./Docker/Ci/DockerfileMariaDb
+    environment:
+      - MYSQL_ROOT_PASSWORD=joh316
+      - MYSQL_DATABASE=typo3
+      - MYSQL_USER=typo3
+      - MYSQL_PASSWORD=typo3
+
+  t3docmake:
+    image: t3docs/render-documentation:latest
+    restart: 'no'
+    volumes:
+      - ../../:/PROJECT:ro
+      - ../../.Build/Documentation-GENERATED-temp:/RESULT
+    command: makehtml

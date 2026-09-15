@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-pid-query-group
+label: "Solr search - (Example) Querygroup on pid field"
+dependencies:
+  - apache-solr-for-typo3/solr

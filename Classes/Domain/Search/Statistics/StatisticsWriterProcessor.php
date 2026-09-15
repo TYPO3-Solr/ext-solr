@@ -1,0 +1,161 @@
+<?php
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
+
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
+use Doctrine\DBAL\Exception as DBALException;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\NormalizedParams;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\IpAnonymizationUtility;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+
+/**
+ * Writes statistics after searches have been conducted.
+ */
+class StatisticsWriterProcessor
+{
+    protected StatisticsRepository $statisticsRepository;
+
+    protected SiteRepository $siteRepository;
+
+    public function __construct(
+        ?StatisticsRepository $statisticsRepository = null,
+        ?SiteRepository $siteRepository = null,
+    ) {
+        $this->statisticsRepository = $statisticsRepository ?? GeneralUtility::makeInstance(StatisticsRepository::class);
+        $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
+    }
+
+    /**
+     * Writes the statistics to statistics table.
+     *
+     * @throws AspectNotFoundException
+     * @throws DBALException
+     * @throws InvalidArgumentException
+     * @throws SiteNotFoundException
+     */
+    public function process(SearchResultSet $resultSet): SearchResultSet
+    {
+        if (GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('backend.user', 'isLoggedIn', false)) {
+            // do not track searches performed via Admin Panel preview (fixes #3472)
+            return $resultSet;
+        }
+
+        $searchRequest = $resultSet->getUsedSearchRequest();
+        $response = $resultSet->getResponse();
+        $configuration = $searchRequest->getContextTypoScriptConfiguration();
+        $keywords = $this->getProcessedKeywords($resultSet->getUsedQuery(), $configuration->getSearchFrequentSearchesUseLowercaseKeywords());
+
+        if (empty($keywords)) {
+            // do not track empty queries
+            return $resultSet;
+        }
+
+        $filters = $searchRequest->getActiveFacets();
+        $sorting = $this->sanitizeString($searchRequest->getSorting());
+        $page = (int)$searchRequest->getPage();
+        $ipMaskLength = $configuration->getStatisticsAnonymizeIP();
+
+        $serverRequest = $this->getServerRequest();
+        $pageId = $serverRequest->getAttribute('routing')->getPageId();
+        $siteLanguage = $serverRequest->getAttribute('language');
+        /** @var FrontendUserAuthentication $frontendUser */
+        $frontendUser = $serverRequest->getAttribute('frontend.user');
+        $root_pid = $this->siteRepository->getSiteByPageId($pageId)->getRootPageId();
+        $statisticData = [
+            'pid' => $pageId,
+            'root_pid' => $root_pid,
+            'tstamp' => $this->getTime(),
+            'language' => $siteLanguage->getLanguageId(),
+            // @extensionScannerIgnoreLine
+            'num_found' => $resultSet->getAllResultCount(),
+            'suggestions_shown' => is_object($response->spellcheck->suggestions ?? null) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,
+            // @extensionScannerIgnoreLine
+            'time_total' => $response->debug->timing->time ?? 0,
+            // @extensionScannerIgnoreLine
+            'time_preparation' => $response->debug->timing->prepare->time ?? 0,
+            // @extensionScannerIgnoreLine
+            'time_processing' => $response->debug->timing->process->time ?? 0,
+            /** @phpstan-ignore nullCoalesce.expr */
+            'feuser_id' => isset($frontendUser->user) ? (int)$frontendUser->user['uid'] ?? 0 : 0,
+            'ip' => IpAnonymizationUtility::anonymizeIp($this->getUserIp(), $ipMaskLength),
+            'page' => $page,
+            'keywords' => $keywords,
+            'filters' => serialize($filters),
+            'sorting' => $sorting,
+            'parameters' => isset($response->responseHeader->params) ? serialize($response->responseHeader->params) : '',
+        ];
+
+        $this->statisticsRepository->saveStatisticsRecord($statisticData);
+
+        return $resultSet;
+    }
+
+    protected function getProcessedKeywords(
+        Query $query,
+        bool $lowerCaseQuery = false,
+    ): string {
+        $keywords = $query->getQuery();
+        $keywords = $this->sanitizeString($keywords);
+        // Ensure string does not exceed database field length
+        $keywords = mb_substr($keywords, 0, 128, 'UTF-8');
+        if ($lowerCaseQuery) {
+            $keywords = mb_strtolower($keywords);
+        }
+
+        return $keywords;
+    }
+
+    /**
+     * Sanitizes a string
+     */
+    protected function sanitizeString(string $string): string
+    {
+        // clean content
+        $string = HtmlContentExtractor::cleanContent($string);
+        $string = htmlspecialchars(strip_tags($string), ENT_QUOTES); // after entity decoding we might have tags again
+        return trim($string);
+    }
+
+    protected function getServerRequest(): ?ServerRequestInterface
+    {
+        return $GLOBALS['TYPO3_REQUEST'] ?? null;
+    }
+
+    protected function getUserIp(): string
+    {
+        $normalizedParams = $this->getServerRequest()?->getAttribute('normalizedParams');
+        return $normalizedParams instanceof NormalizedParams ? $normalizedParams->getRemoteAddress() : '';
+    }
+
+    /**
+     * Returns timestamp from TYPO3 core date aspect
+     *
+     * @throws AspectNotFoundException
+     */
+    protected function getTime(): int
+    {
+        return GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp');
+    }
+}

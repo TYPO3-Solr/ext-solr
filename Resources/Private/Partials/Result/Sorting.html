@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
+>
+
+<f:section name="Sorting">
+	<div id="tx-solr-sorting" class="secondaryContentSection">
+
+
+		<div class="dropdown">
+			<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+				<span class="bi bi-arrow-down-up"></span>
+				<f:translate key="sorting_sortBy" extensionName="solr">Sorting</f:translate>
+			</a>
+
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+				<f:for each="{resultSet.sortings}" as="sorting">
+					<li>
+						<f:if condition="{sorting.isResetOption}">
+							<f:then>
+									<a
+										class="dropdown-item solr-ajaxified {f:if(condition: '{sorting.selected}', then: 'active')}"
+										href="{s:uri.sorting.removeSorting()}"
+									>{sorting.label}</a>
+							</f:then>
+
+							<f:else>
+								<f:if condition="{sorting.selected}">
+									<f:then>
+										<a
+											class="dropdown-item solr-ajaxified active d-flex justify-content-between"
+											href="{s:uri.sorting.setSorting(sortingName: sorting.name, sortingDirection: sorting.oppositeDirection)}"
+										>
+											{sorting.label}
+											<span class="bi bi-sort-{f:if(condition: '{sorting.isAscDirection}', then: 'up', else: 'down')}"></span>
+										</a>
+									</f:then>
+
+									<f:else>
+											<a
+												class="dropdown-item solr-ajaxified"
+												href="{s:uri.sorting.setSorting(sortingName: sorting.name, sortingDirection: sorting.direction)}"
+											>{sorting.label}</a>
+									</f:else>
+								</f:if>
+							</f:else>
+						</f:if>
+					</li>
+				</f:for>
+			</ul>
+		</div>
+	</div>
+</f:section>
+
+</html>

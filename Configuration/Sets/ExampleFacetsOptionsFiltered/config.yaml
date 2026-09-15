@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-example-facets-options-filtered
+label: "Solr search - (Example) Options filterable by option value"
+dependencies:
+  - apache-solr-for-typo3/solr

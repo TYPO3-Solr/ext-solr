@@ -1,0 +1,4 @@
+name: apache-solr-for-typo3/solr-stylesheets
+label: "Solr search - Default Stylesheets"
+dependencies:
+  - apache-solr-for-typo3/solr

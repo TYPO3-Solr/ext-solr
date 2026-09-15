@@ -1,0 +1,89 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 10,
+    "params": {
+      "df": "content",
+      "ps": "15",
+      "spellcheck.dictionary": [
+        "default",
+        "wordbreak"
+      ],
+      "hl": "true",
+      "echoParams": "all",
+      "indent": "true",
+      "fl": "*,score",
+      "hl.requireFieldMatch": "true",
+      "hl.fragsize": "200",
+      "fq": [
+        "{!collapse field=variantId}",
+        "siteHash:\"31c20e448477ffc7544f4d1d0b17ea48c06a3a48\"",
+        "{!typo3access}-1,0",
+        "(type_stringS:\"page\")"
+      ],
+      "spellcheck.maxCollationTries": "1",
+      "hl.simple.pre": "<span class=\"results-highlight\">",
+      "hl.useFastVectorHighlighter": "true",
+      "defType": "edismax",
+      "hl.mergeContiguous": "true",
+      "expand.rows": "10",
+      "qf": "content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline description^4.0 abstract subtitle navtitle author",
+      "hl.fl": "content",
+      "wt": "json",
+      "f.content.hl.alternateField": "content",
+      "hl.tag.pre": "<span class=\"results-highlight\">",
+      "mm": "2<-35%",
+      "json.nl": "flat",
+      "start": "0",
+      "hl.tag.post": "</span>",
+      "rows": "0",
+      "f.content.hl.maxAlternateFieldLength": "200",
+      "spellcheck.extendedResults": "false",
+      "hl.snippets": "3",
+      "facet.limit": "100",
+      "json.facet": "{\"type\":{\"type\":\"terms\",\"field\":\"type\",\"limit\":100,\"mincount\":1,\"domain\":{\"excludeTags\":\"type,category_stringM\"}},\"category_stringM\":{\"type\":\"terms\",\"field\":\"category_stringM\",\"limit\":100,\"mincount\":1,\"domain\":{\"excludeTags\":\"type,category_stringM\"}}}",
+      "q": "*",
+      "expand": "true",
+      "enableElevation": "false",
+      "hl.simple.post": "</span>",
+      "spellcheck": "true",
+      "pf": "content^2.0",
+      "spellcheck.onlyMorePopular": "false",
+      "facet.mincount": "1",
+      "spellcheck.count": "1",
+      "facet": "true",
+      "debugQuery": "false",
+      "facet.sort": "count",
+      "spellcheck.collate": "true"
+    }
+  },
+  "response": {
+    "numFound": 42,
+    "start": 0,
+    "maxScore": 1.0,
+    "docs": []
+  },
+  "facet_counts": {
+    "facet_queries": {},
+    "facet_fields": {},
+    "facet_ranges": {},
+    "facet_intervals": {},
+    "facet_heatmaps": {}
+  },
+  "facets": {
+    "count": 5,
+    "type": {
+      "buckets": [
+        {
+          "val": "pages",
+          "count": 5
+        }
+      ]
+    },
+    "category_stringM": {
+      "buckets": []
+    }
+  },
+  "highlighting": {},
+  "expanded": {}
+}

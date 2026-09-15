@@ -1,0 +1,33 @@
+name: daily
+run-name: "Trigger daily builds on supported branches."
+
+on:
+  # Run tests daily at 19:23 to get TYPO3 changes and fix them immediately.
+  schedule:
+    - cron: '23 19 * * *'
+
+jobs:
+  trigger-build:
+    name: "Trigger build on release branches"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    permissions:
+      actions: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - name: Remote-Workflow on release-13.1.x
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run .github/workflows/ci.yml \
+            --ref release-13.1.x \
+            -f purpose="Test EXT:solr on release-13.1.x with the current state of TYPO3 13 to identify potential new issues."
+
+      - name: Remote-Workflow on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run .github/workflows/ci.yml \
+            --ref main \
+            -f purpose="Test EXT:solr on main with the current state of TYPO3 14 to identify potential new issues."

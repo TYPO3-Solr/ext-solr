@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
+>
+
+<f:section name="PerPage">
+	<div id="results-per-page">
+		<form method="post" action="{s:uri.search.currentSearch()}">
+			<div class="input-group">
+				<label class="me-1"><f:translate key="results_per_page" extensionName="solr">Per page:</f:translate></label>
+				<select name="{resultSet.usedSearchRequest.argumentNameSpace}[resultsPerPage]" onchange="this.form.submit()" class="form-select">
+					<f:for each="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchResultsPerPageSwitchOptionsAsArray}" as="availablePerPage">
+						<f:if condition="{availablePerPage}=={resultSet.usedResultsPerPage}">
+							<f:then><option selected="selected" value="{availablePerPage}">{availablePerPage}</option></f:then>
+							<f:else><option value="{availablePerPage}">{availablePerPage}</option></f:else>
+						</f:if>
+					</f:for>
+				</select>
+			</div>
+		</form>
+	</div>
+</f:section>
+
+</html>

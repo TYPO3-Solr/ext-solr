@@ -1,0 +1,15 @@
+plugin.tx_solr {
+  search {
+    grouping = 1
+    grouping {
+      numberOfGroups = 5
+      numberOfResultsPerGroup = 5
+      allowGetParameterSwitch = 0
+      groups {
+        typeGroup {
+          field = type
+        }
+      }
+    }
+  }
+}
