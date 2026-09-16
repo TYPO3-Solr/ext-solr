@@ -41,6 +41,7 @@ class SolrAdminService extends AbstractSolrService
     public const LUKE_SERVLET = 'admin/luke';
     public const SYSTEM_SERVLET = 'admin/system';
     public const CORES_SERVLET = '../admin/cores';
+    public const COLLECTIONS_SERVLET = '../admin/collections';
     public const FILE_SERVLET = 'admin/file';
     public const SCHEMA_SERVLET = 'schema';
     public const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
@@ -203,6 +204,23 @@ class SolrAdminService extends AbstractSolrService
     }
 
     /**
+     * Gets the Solr server's mode.
+     */
+    public function getSolrServerMode(): string
+    {
+        $systemInformation = $this->getSystemInformation();
+        return $systemInformation->mode ?? '';
+    }
+
+    /**
+     * Check if solr server is running in cloud mode.
+     */
+    public function isSolrCloudMode(): bool
+    {
+        return $this->getSolrServerMode() === 'solrcloud';
+    }
+
+    /**
      * Reloads the current core
      */
     public function reloadCore(): ResponseAdapter
@@ -215,7 +233,11 @@ class SolrAdminService extends AbstractSolrService
      */
     public function reloadCoreByName(string $coreName): ResponseAdapter
     {
-        $coreAdminReloadUrl = $this->_constructUrl(self::CORES_SERVLET) . '?action=reload&core=' . $coreName;
+        if ($this->isSolrCloudMode()) {
+            $coreAdminReloadUrl = $this->_constructUrl(self::COLLECTIONS_SERVLET) . '?action=reload&name=' . $coreName;
+        } else {
+            $coreAdminReloadUrl = $this->_constructUrl(self::CORES_SERVLET) . '?action=reload&core=' . $coreName;
+        }
         return $this->_sendRawGet($coreAdminReloadUrl);
     }
 
