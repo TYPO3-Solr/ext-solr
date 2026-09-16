@@ -114,6 +114,19 @@ restricted or foreign-site document is excluded the same way it already is from 
 ``detailAction`` responds with a plain 404 status when the lookup then finds nothing, indistinguishable
 from a genuinely unknown documentId.
 
+!!! Security: rootline cache no longer stores forged access restrictions (CVE-2026-56092)
+-----------------------------------------------------------------------------------------
+
+During an indexer sub-request, ``UserGroupDetector`` forged empty ``fe_group``/``extendToSubpages``
+values onto every ``pages`` record it saw, via a ``getPageOverlay`` hook that TYPO3's
+``RootlineUtility`` persisted into the shared, persistent ``rootline`` cache for translated page
+views. A subsequent anonymous visitor of a page that inherits its access restriction from an
+ancestor via ``extendToSubpages`` could read that cache entry and reach an otherwise
+access-restricted page tree.
+
+The forging hook is removed; the indexer's own access bypass (needed so it can read restricted
+records at all) continues to work through its other, non-cached hooks.
+
 
 All Changes
 -----------

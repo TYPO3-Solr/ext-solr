@@ -33,7 +33,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageHookInterface;
-use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
 
 /**
  * The UserGroupDetector is responsible to identify the fe_group references on records that are visible on the page (not the page itself).
@@ -43,8 +42,7 @@ use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
 class UserGroupDetector extends AbstractFrontendHelper implements
     SingletonInterface,
     ContentObjectPostInitHookInterface,
-    PageRepositoryGetPageHookInterface,
-    PageRepositoryGetPageOverlayHookInterface
+    PageRepositoryGetPageHookInterface
 {
 
     /**
@@ -87,7 +85,6 @@ class UserGroupDetector extends AbstractFrontendHelper implements
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = UserGroupDetector::class . '->checkEnableFields';
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__] = UserGroupDetector::class;
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__] = UserGroupDetector::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__] = UserGroupDetector::class;
     }
@@ -147,25 +144,6 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     ) {
         $disableGroupAccessCheck = true;
         $parentObject->where_groupAccess = ''; // just to be on the safe side
-    }
-
-    /**
-     * Modifies page records so that when checking for access through fe groups
-     * no groups or extendToSubpages flag is found and thus access is granted.
-     *
-     * @param array $pageRecord Page record
-     * @param int $languageUid Overlay language ID
-     * @param PageRepository $parentObject Parent \TYPO3\CMS\Frontend\Page\PageRepository object
-     */
-    public function getPageOverlay_preProcess(
-        &$pageRecord,
-        &$languageUid,
-        PageRepository $parentObject
-    ) {
-        if (is_array($pageRecord)) {
-            $pageRecord['fe_group'] = '';
-            $pageRecord['extendToSubpages'] = '0';
-        }
     }
 
     // execution
