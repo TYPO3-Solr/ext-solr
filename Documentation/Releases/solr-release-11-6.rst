@@ -7,6 +7,27 @@ Releases 11.6
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 11.6.7
+==============
+
+Restores the highlighting teaser for non-matching results, fixes a frontend crash from an emptied
+filter section in the plugin FlexForm, and adds a Docker HEALTHCHECK to the bundled Solr image.
+
+!!! Last release for TYPO3 11 LTS
+---------------------------------
+
+This is the last planned release on this branch. EXT:solr no longer supports TYPO3 11 LTS after
+``11.6.7``.
+
+All Changes
+-----------
+
+*   [BUGFIX] Ignore an emptied filter section in the plugin FlexForm by @dkd-kaehm in `#4789 <https://github.com/TYPO3-Solr/ext-solr/pull/4789>`_
+*   [BUGFIX] Restore teaser for results without a match in the highlighted field by @dkd-kaehm in `#4752 <https://github.com/TYPO3-Solr/ext-solr/pull/4752>`_
+*   [DOCS] Update highlighting reference for the Unified Highlighter by @dkd-kaehm in `#4752 <https://github.com/TYPO3-Solr/ext-solr/pull/4752>`_
+*   [FEATURE] Add HEALTHCHECK to Dockerfile (`9dbb76194 <https://github.com/TYPO3-Solr/ext-solr/commit/9dbb76194>`_)
+
+
 Release 11.6.6 ELTS
 ===================
 
