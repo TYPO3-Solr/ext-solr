@@ -3,25 +3,19 @@
 PRODUCTION_DOCS_PATH="Resources/Public/Documentation"
 
 if [[ "$IS_DDEV_PROJECT" == 1 || "$IS_DDEV_PROJECT" == "true" ]]; then
-  >&2 echo "Can not run inside ddev container. Please use this command on host only."
-  exit 1
+  RENDER_CMD="guides"
+else
+  if ! command -v docker &> /dev/null; then
+    >&2 echo "Docker is not installed on system, please install docker on your host to proceed."
+    exit 1
+  fi
+  RENDER_CMD="docker run --rm --pull always -v $(pwd):/project -t ghcr.io/typo3-documentation/render-guides:latest"
 fi
 
-if ! command -v docker &> /dev/null; then
-  >&2 echo "Docker is not installed on system, please install docker on your host to proceed."
-  exit 1
-fi
-
-# @todo: Don't run the command twice: https://github.com/phpDocumentor/guides/issues/1188
-if ! docker run --rm --pull always -v "$(pwd)":/project -t ghcr.io/typo3-documentation/render-guides:latest \
-    --config=Documentation \
-    --fail-on-error "$@" \
-  || ! docker run --rm --pull always -v "$(pwd)":/project -t ghcr.io/typo3-documentation/render-guides:latest \
-    --config=Documentation \
-    --fail-on-log "$@"
+if ! $RENDER_CMD --config=Documentation --fail-on-log "$@"
 then
-  echo "Something went wrong on rendering the docs. Please check the output and affected documentation files of EXT:solr and fix them."
-  exit 1;
+  >&2 echo "Something went wrong on rendering the docs. Please check the output and affected documentation files of EXT:solr and fix them."
+  exit 1
 else
   echo "Great job, the documentation is fine."
 fi

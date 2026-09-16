@@ -6,6 +6,26 @@ Releases 12.1
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+Release 12.1.5
+==============
+
+Restores the highlighting teaser for non-matching results and fixes a frontend crash from an
+emptied filter section in the plugin FlexForm.
+
+!!! Last release for TYPO3 12 LTS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is the last planned release on this branch. EXT:solr no longer supports TYPO3 12 LTS after
+``12.1.5``.
+
+All Changes
+~~~~~~~~~~~
+
+*   [BUGFIX] Ignore an emptied filter section in the plugin FlexForm by @dkd-kaehm in `#4788 <https://github.com/TYPO3-Solr/ext-solr/pull/4788>`_
+*   [BUGFIX] Restore teaser for results without a match in the highlighted field by @dkd-kaehm in `#4778 <https://github.com/TYPO3-Solr/ext-solr/pull/4778>`_
+*   [DOCS] Update highlighting reference for the Unified Highlighter by @dkd-kaehm in `#4778 <https://github.com/TYPO3-Solr/ext-solr/pull/4778>`_
+
+
 Release 12.1.4
 ==============
 
