@@ -91,6 +91,37 @@ final class ConfigurationServiceTest extends SetUpUnitTestCase
         self::assertEquals([$filterField . ':' . $expectedFilterString], $filters);
     }
 
+    public static function emptyFilterSectionDataProvider(): Traversable
+    {
+        // An emptied filter section keeps the indentation of the FlexForm and is
+        // parsed as a whitespace string, which empty() does not catch, see #4784
+        yield 'section emptied in the backend' => ["\n                    "];
+        yield 'section without whitespace' => [''];
+        yield 'section not set at all' => [null];
+    }
+
+    #[DataProvider('emptyFilterSectionDataProvider')]
+    #[Test]
+    public function emptyFilterSectionIsIgnored(?string $filters): void
+    {
+        $fakeFlexFormArrayData = [
+            'search' => [
+                'query' => [
+                    'filter' => $filters,
+                ],
+            ],
+        ];
+
+        self::assertSame(
+            [],
+            $this->callInaccessibleMethod(
+                new ConfigurationService(),
+                'getFilterFromFlexForm',
+                $fakeFlexFormArrayData,
+            ),
+        );
+    }
+
     public static function overrideFilterDataProvider(): Traversable
     {
         yield ['id', 4711, 'id:4711'];
