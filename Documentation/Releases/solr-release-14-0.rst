@@ -4,6 +4,25 @@
 Releases 14.0
 =============
 
+Release 14.0.2
+==============
+
+Adds the ``allowedValues`` facet option and fixes a frontend crash from an emptied filter section
+in the plugin FlexForm.
+
+All Changes
+-----------
+
+*   [FEATURE] Add facet option ``allowedValues`` — an allow-list counterpart to the existing
+    ``excludeValues`` ban-list; include filters first, then exclude removes from that set by @kitzberger in `#4725 <https://github.com/TYPO3-Solr/ext-solr/pull/4725>`_
+*   [BUGFIX] Ignore an emptied filter section in the plugin FlexForm — removing the last row of
+    the plugin's "Query > Filter" section left the frontend crashing with a fatal error by @audef1 in `#4785 <https://github.com/TYPO3-Solr/ext-solr/pull/4785>`_
+*   [TASK] Derive the release label from the extension key, so add-ons reusing
+    :file:`PREPARE_RELEASE.sh` stamp their own bug-report line instead of EXT:solr's by @dkd-kaehm in `#4780 <https://github.com/TYPO3-Solr/ext-solr/pull/4780>`_
+*   [TASK] Make the previous TYPO3 10 ELTS state of EXT:solr 11.2.x public again by @dkd-kaehm in `#4776 <https://github.com/TYPO3-Solr/ext-solr/pull/4776>`_
+*   [TASK] Enable render-guides inside DDEV via symlinks in ``/var/www/html/bin`` by @dkd-kaehm in `#4774 <https://github.com/TYPO3-Solr/ext-solr/pull/4774>`_
+
+
 Release 14.0.1
 ==============
 
