@@ -107,6 +107,9 @@
       "git archive HEAD . -o .Build/archive/solr.zip",
       "git reset HEAD~1 --hard"
     ],
+    "ext:release:prepare": [
+      "Build/Helpers/PREPARE_RELEASE.sh"
+    ],
     "t3:docs:build": [
       "rm -Rf Documentation-GENERATED-temp/",
       "./Build/generate_documentation.sh"
