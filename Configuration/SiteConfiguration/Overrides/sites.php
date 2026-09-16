@@ -87,6 +87,23 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_use_write_connection'] = 
     'displayCond' => 'FIELD:solr_enabled_read:=:1',
 ];
 
+$GLOBALS['SiteConfiguration']['site']['columns']['solr_skip_hooks'] = [
+    'label' => 'Disable TYPO3 hooks for this site',
+    'config' => [
+        'type' => 'check',
+        'renderType' => 'checkboxToggle',
+        'default' => 0,
+        'items' => [
+            [
+                'label' => '',
+                'labelChecked' => '',
+                'labelUnchecked' => '',
+            ],
+        ],
+    ],
+    'displayCond' => 'FIELD:solr_enabled_read:=:1',
+];
+
 // write TCA
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_write'] = $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_read'];
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_write']['displayCond'] = 'FIELD:solr_use_write_connection:=:1';
@@ -106,7 +123,7 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_write']['displayCond
 $GLOBALS['SiteConfiguration']['site']['palettes']['solr_read']['showitem'] = 'solr_scheme_read, solr_port_read, --linebreak--, solr_host_read, solr_path_read';
 $GLOBALS['SiteConfiguration']['site']['palettes']['solr_write']['showitem'] = 'solr_scheme_write, solr_port_write, --linebreak--, solr_host_write, solr_path_write';
 
-$GLOBALS['SiteConfiguration']['site']['types']['0']['showitem'] .= ',--div--;Solr,solr_enabled_read,--palette--;;solr_read, solr_use_write_connection,--palette--;;solr_write';
+$GLOBALS['SiteConfiguration']['site']['types']['0']['showitem'] .= ',--div--;Solr,solr_enabled_read,--palette--;;solr_read, solr_use_write_connection,--palette--;;solr_write,solr_skip_hooks';
 
 /**
  * Language specific core configuration

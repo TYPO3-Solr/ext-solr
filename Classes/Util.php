@@ -25,8 +25,11 @@ use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Utility class for tx_solr
@@ -132,6 +135,34 @@ class Util
         }
 
         return $isWorkspaceRecord;
+    }
+
+    public static function skipHooksForRecord(
+        string $table,
+        int $uid,
+        ?int $pid
+    ): bool {
+        if (is_null($pid) && MathUtility::canBeInterpretedAsInteger($uid)) {
+            $recordInfo = BackendUtility::getRecord($table, $uid, 'pid');
+            if (!is_null($recordInfo)) {
+                $pid = $recordInfo['pid'] ?? null;
+            }
+        }
+
+        if (!is_null($pid)) {
+            /** @var SiteFinder $siteFinder */
+            $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+            try {
+                $site = $siteFinder->getSiteByPageId($pid);
+            } catch (SiteNotFoundException) {
+                return false;
+            }
+            if ((bool)($site->getConfiguration()['solr_skip_hooks'] ?? false)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
