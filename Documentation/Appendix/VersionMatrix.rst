@@ -11,9 +11,8 @@ List of EXT:solr versions and the matching versions of Apache Solr and TYPO3 tha
 =========  =============  =============  =================  ====================  =======================  ===============  =================
 TYPO3      EXT:solr (↻)   EXT:tika (↻)   EXT:solrfal ($)    EXT:solrconsole ($)   EXT:solrdebugtools ($)   Apache Solr      Configset
 =========  =============  =============  =================  ====================  =======================  ===============  =================
-14.3       14.0           14.0           14.0               Ø                     Ø                        10.0.0¹           ext_solr_14_0_0
+14.3       14.0           14.0           14.0               14.0.0                14.0.0                   10.0.0¹           ext_solr_14_0_0
 13.4       13.1           13.1           13.0               13.0                  13.0                     9.10.1¹           ext_solr_13_1_0
-12.4       12.1           12.1           12.0               12.0                  12.0                     9.10.1¹           ext_solr_12_1_0
 =========  =============  =============  =================  ====================  =======================  ===============  =================
 
 | $ - Funding contribution extensions. See: https://www.typo3-solr.com/solr-for-typo3/open-source-version/
@@ -31,38 +30,25 @@ TYPO3      EXT:solr (↻)   EXT:tika (↻)   EXT:solrfal ($)    EXT:solrconsole 
     | via Composer or as a ZIP file attachment on GitHub `release <https://github.com/TYPO3-Solr/ext-solr/releases>`_ page.
 
 
-Extended Long Term Support (ELTS)
----------------------------------
-
-Since January 2022, we have been following the TYPO3 release cycles and actively support the last two TYPO3 versions; in addition, we offer ELTS support for
-selected older versions. The following table illustrates the offers and available and upcoming versions:
-
-===========  ============  ==========  ===============  ===================  ======================  ===============  ====================
-TYPO3 ELTS   EXT:solr ($)  EXT:tika    EXT:solrfal ($)  EXT:solrconsole ($)  EXT:solrdebugtools ($)  Apache Solr      Configset
-===========  ============  ==========  ===============  ===================  ======================  ===============  ====================
-11.5         11.6.5+       11.0        11.0             11.0                 11.0                    9.10.1¹          ext_solr_11_6_0_elts
-10.4         11.2.7+       10.0        10.0             10.0                 10.0                    9.10.1¹          ext_solr_11_2_0_elts
-===========  ============  ==========  ===============  ===================  ======================  ===============  ====================
-
-Our Apache Solr for TYPO3 EB-partners newsletter will keep you updated!
-
-| $ - Funding contribution extensions as ELTS. See: ELTS on https://shop.dkd.de/produkte/apache-solr-fuer-typo3/
-| ELTS - In Extended  program. See: https://typo3.com/services/extended-support-elts
-| Ø - not yet available
-| ¹ - recommended Apache Solr version, check version matrix in composer.json (`composer info:solr-versions`) for full list
-
 No longer supported versions
 ----------------------------
+
+..  note::
+    On September 16, 2026, we released the following versions one last time, addressing the security vulnerabilities of 2026:
+
+    *   11.2.8 (TYPO3 10 ELTS)
+    *   11.6.7 (TYPO3 11 ELTS)
+    *   12.1.5 (TYPO3 12 ELTS)
+
 
 =========  ==========  =========  ===========  ===============  ==================  ===========  ===========  ======================================
 TYPO3      EXT:solr    EXT:tika   EXT:solrfal  EXT:solrconsole  EXT:solrdebugtools  EXT:solrmlt  Apache Solr  Configset
 =========  ==========  =========  ===========  ===============  ==================  ===========  ===========  ======================================
-13.4       13.0        -          -            -                -                   -            9.8.1        ext_solr_13_0_0
-12.4       12.0        -          -            -                -                   -            9.8.1        ext_solr_13_0_0
-11.5       11.6.0      11.0       11.0         11.0             11.0                N/A          9.7          ext_solr_11_6_0
-11.5       11.5.0-7    11.0       11.0         11.0             11.0                N/A          8.11         ext_solr_11_5_0
-10.4       11.2.0-3    10.0       10.0         10.0             10.0                10.0         8.11         ext_solr_11_2_0
-10.4       11.2.0-3    10.0       10.0         10.0             10.0                10.0         8.11         ext_solr_11_2_0
+13.4       13.0        -          -            -                -                   -            9.10.1       ext_solr_13_0_0
+12.4       12.0-1      -          -            -                -                   -            9.10.1       ext_solr_12_0_0, ext_solr_12_1_0
+11.5       11.6        11.0       11.0         11.0             11.0                N/A          9.10.1       ext_solr_11_6_0, ext_solr_11_6_0_elts
+11.5       11.5        11.0       11.0         11.0             11.0                N/A          8.11         ext_solr_11_5_0
+10.4       11.2        10.0       10.0         10.0             10.0                10.0         8.11         ext_solr_11_2_0, ext_solr_11_2_0_elts
 10.4       11.1        10.0       10.0         10.0             10.0                10.0         8.9          ext_solr_11_1_0
 9.5-10.4   11.0.0-9    6.0.0-3    8.0.0-1      4.0.0-1          1.1.2               3.1          8.5          ext_solr_11_0_0, ext_solr_11_0_0_elts
 =========  ==========  =========  ===========  ===============  ==================  ===========  ===========  ======================================
