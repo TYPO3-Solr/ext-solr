@@ -6,6 +6,23 @@ Releases 13.1
 
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
+
+Release 13.1.5
+==============
+
+Fixes a memory leak that could crash long-running Index Queue Worker runs, restores the
+highlighting teaser for non-matching results, and fixes a frontend crash from an emptied filter
+section in the plugin FlexForm.
+
+All Changes
+~~~~~~~~~~~
+
+*   [BUGFIX] Limit TSFE cache growth during indexing by @SvenJuergens in `#4709 <https://github.com/TYPO3-Solr/ext-solr/pull/4709>`_
+*   [BUGFIX] Ignore an emptied filter section in the plugin FlexForm by @dkd-kaehm in `#4787 <https://github.com/TYPO3-Solr/ext-solr/pull/4787>`_
+*   [BUGFIX] Restore teaser for results without a match in the highlighted field by @peratoner-louis in `#4749 <https://github.com/TYPO3-Solr/ext-solr/pull/4749>`_
+*   [DOCS] Update highlighting reference for the Unified Highlighter by @peratoner-louis in `#4749 <https://github.com/TYPO3-Solr/ext-solr/pull/4749>`_
+*   [DOCS] Expand multi-value cObjs section with an example by @thomasrawiel in `#4753 <https://github.com/TYPO3-Solr/ext-solr/pull/4753>`_
+
 Release 13.1.4
 ==============
 
@@ -13,7 +30,7 @@ This is a security release for TYPO3 13 LTS.
 
 
 !!! Recommendation: align existing Solr volumes with the new configset
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``ext_solr_13_1_0`` configset now sets the Unified Highlighter as default on both the ``/select`` and ``/browse`` request handlers.
 Solr volumes created from older configsets default to the legacy highlighter and remain vulnerable to the ``FieldExistsQuery`` HTTP 500 oracle
@@ -28,7 +45,7 @@ for clients that query Solr directly.
 
 
 !!! New: TypoScript settings for query-syntax handling
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Two new TypoScript settings govern how user input on ``tx_solr[q]`` is parsed:
 
@@ -43,7 +60,7 @@ See :ref:`configuration.reference.solrsearch` for full reference details.
 
 
 !!! Breaking: multi-value cObjs now use JSON transport
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``SOLR_MULTIVALUE``, ``SOLR_RELATION`` and ``SOLR_CLASSIFICATION`` content objects now return their
 multi-value payload as ``json_encode($array)`` instead of ``serialize($array)``, and the indexer decodes
