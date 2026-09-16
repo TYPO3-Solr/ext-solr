@@ -122,7 +122,10 @@ class ConfigurationService
         $filterConfiguration = [];
         $filters = ObjectAccess::getPropertyPath($flexFormConfiguration, 'search.query.filter');
 
-        if (empty($filters)) {
+        // A filter section the editor emptied again keeps its indentation and is
+        // therefore parsed as a whitespace string instead of an array. empty()
+        // does not catch that, so the type is checked explicitly.
+        if (!is_array($filters) || $filters === []) {
             return $filterConfiguration;
         }
 

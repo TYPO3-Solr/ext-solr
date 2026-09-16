@@ -70,4 +70,42 @@ class ConfigurationServiceTest extends UnitTest
         // the filter should be overwritten by the flexform
         self::assertEquals([$expectedFilterString], $typoScriptConfiguration->getSearchQueryFilterConfiguration());
     }
+
+    /**
+     * @return array
+     */
+    public function emptyFilterSectionDataProvider()
+    {
+        // An emptied filter section keeps the indentation of the FlexForm and is
+        // parsed as a whitespace string, which empty() does not catch, see #4784
+        return [
+            'section emptied in the backend' => ["\n                    "],
+            'section without whitespace' => [''],
+            'section not set at all' => [null],
+        ];
+    }
+
+    /**
+     * @dataProvider emptyFilterSectionDataProvider
+     * @test
+     */
+    public function emptyFilterSectionIsIgnored($filters)
+    {
+        $fakeFlexFormArrayData = [
+            'search' => [
+                'query' => [
+                    'filter' => $filters,
+                ],
+            ],
+        ];
+
+        self::assertSame(
+            [],
+            $this->callInaccessibleMethod(
+                new ConfigurationService(),
+                'getFilterFromFlexForm',
+                $fakeFlexFormArrayData,
+            ),
+        );
+    }
 }
