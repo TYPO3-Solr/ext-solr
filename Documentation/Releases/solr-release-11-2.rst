@@ -5,8 +5,8 @@
 Apache Solr for TYPO3 11.2
 ==========================
 
-Apache Solr for TYPO3 11.2.8 ELTS
-=================================
+Apache Solr for TYPO3 11.2.8
+============================
 
 This is a security release for TYPO3 10.4 ELTS.
 
@@ -128,9 +128,21 @@ The forging hook is removed; the indexer's own access bypass (needed so it can r
 records at all) continues to work through its other, non-cached hooks.
 
 
+!!! Last release for TYPO3 10.4 ELTS
+------------------------------------
+
+This is the last planned release on this branch. EXT:solr no longer supports TYPO3 10.4 ELTS
+after ``11.2.8``.
+
 All Changes
 -----------
-(filled at release time)
+
+*   [SECURITY] Fix CVE-2026-56096 — close FVH FieldExistsQuery HTTP 500 oracle by @dkd-kaehm in `#4777 <https://github.com/TYPO3-Solr/ext-solr/pull/4777>`_
+*   [SECURITY] Fix CVE-2026-56092 — Stop rootline cache poisoning via forged fe_group/extendToSubpages by @dkd-kaehm in `#4777 <https://github.com/TYPO3-Solr/ext-solr/pull/4777>`_
+*   [SECURITY] Fix CVE-2026-56093 — Enforce siteHash and access filters in detailAction lookup by @dkd-kaehm in `#4777 <https://github.com/TYPO3-Solr/ext-solr/pull/4777>`_
+*   [SECURITY] Fix CVE-2026-56094 — Prevent request additionalFilters from preempting siteHash filter by @dkd-kaehm in `#4777 <https://github.com/TYPO3-Solr/ext-solr/pull/4777>`_
+*   [FEATURE] Add HEALTHCHECK to Dockerfile by @dkd-kaehm in `#4777 <https://github.com/TYPO3-Solr/ext-solr/pull/4777>`_
+*   [BUGFIX] Ignore an emptied filter section in the plugin FlexForm by @dkd-kaehm in `#4790 <https://github.com/TYPO3-Solr/ext-solr/pull/4790>`_
 
 
 Apache Solr for TYPO3 11.2.7 ELTS
