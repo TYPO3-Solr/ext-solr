@@ -90,6 +90,9 @@
       "mkdir -p .Build/vendor/apache-solr-for-typo3",
       "[ -L .Build/vendor/apache-solr-for-typo3/solr ] || ln -snvf ../../../. .Build/vendor/apache-solr-for-typo3/solr"
     ],
+    "ext:release:prepare": [
+      "Build/Helpers/PREPARE_RELEASE.sh"
+    ],
     "t3:docs:build": [
       "rm -Rf Documentation-GENERATED-temp/",
       "./Build/generate_documentation.sh"
