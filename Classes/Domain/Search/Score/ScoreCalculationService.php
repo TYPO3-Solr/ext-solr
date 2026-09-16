@@ -15,20 +15,31 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Score;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Provides the functionality to calculate scores and renders them in a minimalistic template.
  */
 class ScoreCalculationService
 {
+    private array $fieldBoostMapping;
+
     /**
      * Renders an overview in HTML of how the score for a certain document has been calculated by Apache Solr using debug data.
      *
      * @param string $solrDebugData debug data from the solr response
+     * @param string $queryFields
      * @return string The HTML showing the score analysis
      */
     public function getRenderedScores(string $solrDebugData, string $queryFields): string
     {
-        $highScores = $this->parseScores($solrDebugData, $queryFields);
+        foreach (GeneralUtility::trimExplode(',', $queryFields, true) as $queryField) {
+            list($field, $boost) = explode('^', $queryField);
+            $this->fieldBoostMapping[$field] = (float)$boost;
+        }
+
+        $solrDebugArray = explode(PHP_EOL, trim($solrDebugData));
+        $highScores = $this->parseScores($solrDebugArray);
         return $this->render($highScores);
     }
 
@@ -38,71 +49,122 @@ class ScoreCalculationService
     public function render(array $highScores): string
     {
         $scores = [];
-        $totalScore = 0;
+
+        $content = '<table class="table">'
+            . '<thead><tr><th>Score</th><th>Field</th><th>Boost</th><th>Search term</th></tr></thead>'
+            . '<tbody>';
 
         foreach ($highScores as $highScore) {
-            /** @var Score $highScore */
-            $scores[] =
-                '<td>+ ' . htmlspecialchars(number_format($highScore->getScore(), 9)) . '</td>'
-                . '<td>' . htmlspecialchars($highScore->getFieldName()) . '</td>'
-                . '<td>' . htmlspecialchars(number_format($highScore->getBoost(), 9)) . '</td>';
-            $totalScore += $highScore->getScore();
+            $content .= $this->renderRow($highScore['node'], $level = 0, null);
+            foreach ($highScore['children'] ?? [] as $child) {
+                $content .= $this->renderRow($child['node'], $level = 1, $highScore['node']);
+                foreach ($child['children'] ?? [] as $grandchild) {
+                    $content .= $this->renderRow($grandchild['node'], $level = 2, $child['node']);
+                    foreach ($grandchild['children'] ?? [] as $greatgrandchild) {
+                        $content .= $this->renderRow($greatgrandchild['node'], $level = 3, $grandchild['node']);
+                    }
+                }
+            }
         }
 
-        return '<table class="table">'
-            . '<thead><tr><th>Score</th><th>Field</th><th>Boost</th></tr></thead>'
-            . '<tbody><tr>' . implode('</tr><tr>', $scores) . '</tbody></tr>'
-            . '<tfoot><tr><td colspan="3">= ' . $totalScore . ' (Inaccurate analysis! Not all parts of the score have been taken into account.)</td></tr></tfoot>'
+        $content .= '</tbody>'
             . '</table>';
+
+        return $content;
+    }
+
+    private function renderRow($node, $level, $parent)
+    {
+        $style = '';
+        if ($parent?->getFieldName() === 'max of') {
+            if ($parent->getScore() != $node->getScore()) {
+                $style = 'color:gray';
+            }
+        }
+        $pad = str_repeat('&nbsp', $level * 7);
+        return '<tr>'
+                . '<td style="' . $style . '">' . $pad . '+&nbsp;' . number_format($node->getScore(), 2) . '</td>'
+                . '<td style="' . $style . '">' . htmlspecialchars($node->getFieldName()) . '</td>'
+                . '<td style="' . $style . '">' . htmlspecialchars($node->getBoost()) . '</td>'
+                . '<td style="' . $style . '">' . htmlspecialchars($node->getSearchTerm()) . '</td>'
+                .'</tr>';
     }
 
     /**
-     * Parses the debugData and the queryFields into an array of score objects.
-     *
-     * @return Score[] array of Score
+     * Recursively turns an array of indented lines into a hierarchical array.
      */
-    public function parseScores(string $debugData, string $queryFields): array
+    private function parseScores(array &$lines = [], int $depth = 0, int $failsafe = 0): array
     {
-        $highScores = [];
+        if ($failsafe >= 1000) {
+            die('failsafe');
+        }
 
-        /* TODO Provide better parsing
-         *
-         * parsing could be done line by line,
-         * 		* recording indentation level
-         * 		* replacing abbreviations
-         * 		* replacing phrases like "product of" by mathematical symbols (* or x)
-         * 		* ...
-         */
+        $result = [];
+        while ($line = current($lines)) {
+            $indentation = strlen($line) - strlen(ltrim($line));
+            $currentDepth = (int)($indentation / 2);
 
-        // matches search term weights, ex: 0.42218783 = (MATCH) weight(content:iPod^40.0 in 43), product of:
-        $pattern = '/(.*) = weight\(([^ \)]*)/';
-        $scoreMatches = [];
-        preg_match_all($pattern, $debugData, $scoreMatches);
-
-        foreach ($scoreMatches[0] as $key => $value) {
-            // split field from search term
-            [$field, $searchTerm] = explode(':', $scoreMatches[2][$key]);
-
-            $currentScoreValue = (float)$scoreMatches[1][$key];
-
-            $scoreWasSetForFieldBefore = isset($highScores[$field]);
-            $scoreIsHigher = false;
-            if ($scoreWasSetForFieldBefore) {
-                /** @var Score $previousScore */
-                $previousScore = $highScores[$field];
-                $scoreIsHigher = $previousScore->getScore() < $currentScoreValue;
+            if ($currentDepth < $depth) {
+                // that's the next parent already!
+                break;
             }
 
-            // keep track of the highest score per search term
-            if (!$scoreWasSetForFieldBefore || $scoreIsHigher) {
-                $pattern = '/' . preg_quote($field, '/') . '\^([\d.]*)/';
-                $boostMatches = [];
-                preg_match_all($pattern, $queryFields, $boostMatches);
-                $boost = (float)($boostMatches[1][0] ?? 0);
-                $highScores[$field] = new Score($boost, $field, $currentScoreValue, $searchTerm);
+            if ($currentDepth == $depth) {
+                // that's a sibling
+                array_shift($lines);
+            }
+
+            if ($currentDepth >= $depth) {
+                // that's the first kid
+                $result[] = [
+                    'node' => $this->parseLine(trim($line)),
+                    'children' => $this->parseScores($lines, $depth+1, $failsafe++),
+                ];
             }
         }
 
-        return $highScores;
+        return $result;
+    }
+
+    /**
+     * Parses a single line of score debugging output and
+     * transforms it into a Score object.
+     */
+    private function parseLine(string $line): ?Score
+    {
+        if (preg_match('/(\d+\.\d+) = weight\((.*)\)/', $line, $weightMatch)) {
+            $score = (float)$weightMatch[1];
+            $field = '';
+            $boost = 0.0;
+            $searchTerm = '??';
+            if (preg_match('/(\w+):(\w+)/', $weightMatch[2], $match)) {
+                $field = $match[1];
+                $boost = $this->fieldBoostMapping[$field] ?? 0.0;
+                $searchTerm = $match[2];
+            } elseif (preg_match('/(\w+):"([\w\ ]+)"/', $weightMatch[2], $match)) {
+                $field = $match[1];
+                $boost = $this->fieldBoostMapping[$field] ?? 0.0;
+                $searchTerm = $match[2];
+            }
+            $score = new Score($boost, $field, $score, $searchTerm);
+        } elseif (preg_match('/(\d+\.\d+) = sum of:/', $line, $match)) {
+            $score = (float)$match[1];
+            $score = new Score(0.0, 'sum of', $score, '');
+        } elseif (preg_match('/(\d+\.\d+) = max of:/', $line, $match)) {
+            $score = (float)$match[1];
+            $score = new Score(0.0, 'max of', $score, '');
+        } elseif (preg_match('/(\d+\.\d+) = FunctionQuery\((.*)\),/', $line, $match)) {
+            $score = (float)$match[1];
+            $function = $match[2];
+            $score = new Score(0.0, 'boostFunction', $score, $function);
+        } elseif (preg_match('/(\d+\.\d+) = (.*)/', $line, $match)) {
+            $score = (float)$match[1];
+            $misc = $match[2];
+            $score = new Score(0.0, '', $score, $misc);
+        } else {
+            $score = null;
+        }
+
+        return $score;
     }
 }
