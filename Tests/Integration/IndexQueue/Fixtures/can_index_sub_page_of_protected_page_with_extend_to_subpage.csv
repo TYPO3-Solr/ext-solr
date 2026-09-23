@@ -9,5 +9,5 @@
 ,"uid","pid","CType","header","fe_group","sorting"
 ,10,3,"header",public content of protected page,0,10
 "tx_solr_indexqueue_item",
-,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors"
-,4711,1,"pages",3,"pages",1449151778,0,0,0,0,0
+,"uid","root","item_type","item_uid","indexing_configuration","changed","has_indexing_properties","indexing_priority","indexed","errors"
+,4711,1,"pages",3,"pages",1449151778,0,0,0,0
