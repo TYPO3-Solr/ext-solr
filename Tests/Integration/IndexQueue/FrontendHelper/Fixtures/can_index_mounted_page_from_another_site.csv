@@ -17,8 +17,8 @@
 ,"uid","pid","colPos","CType","bodytext"
 ,99,24,0,"text","Some Lorem Ipsum conteint!"
 "tx_solr_indexqueue_item",
-,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors","pages_mountidentifier"
-,4711,1,"pages",24,"pages",1449151778,0,1,0,0,0,"24-14-1"
+,"uid","root","item_type","item_uid","indexing_configuration","changed","has_indexing_properties","indexing_priority","indexed","errors","pages_mountidentifier"
+,4711,1,"pages",24,"pages",1449151778,1,0,0,0,"24-14-1"
 "tx_solr_indexqueue_indexing_property",
 ,"uid","root","item_id","property_key","property_value"
 ,1,1,4711,"mountPageSource",24
