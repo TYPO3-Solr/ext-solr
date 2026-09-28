@@ -4,19 +4,19 @@
     <unit id="title">
       <segment state="final">
         <source>Index Administration</source>
-        <target>Index Administration</target>
+        <target>Administration de l'index</target>
       </segment>
     </unit>
     <unit id="short_description">
       <segment state="final">
         <source>Administrate your solr system</source>
-        <target>Administrate your solr system</target>
+        <target>Administrer votre système Solr</target>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
         <source>This module allows you to do admin operations on the index (e.g. clear the index queue or clean the solr server).</source>
-        <target>This module allows you to do admin operations on the index (e.g. clear the index queue or clean the solr server).</target>
+        <target>Ce module permet d'effectuer des opérations d'administration sur l'index (par exemple vider la file d'indexation ou nettoyer le serveur Solr).</target>
       </segment>
     </unit>
   </file>
