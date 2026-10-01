@@ -4,19 +4,19 @@
     <unit id="title">
       <segment state="final">
         <source>Index Queue</source>
-        <target>Index Queue</target>
+        <target>File d'indexation</target>
       </segment>
     </unit>
     <unit id="short_description">
       <segment state="final">
         <source>Allows to check the status of the index queue</source>
-        <target>Allows to check the status of the index queue</target>
+        <target>Permet de vérifier l'état de la file d'indexation</target>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
         <source>This module allows you to check the state of the index queue and reQueue items.</source>
-        <target>This module allows you to check the state of the index queue and reQueue items.</target>
+        <target>Ce module permet de vérifier l'état de la file d'indexation et de remettre des éléments en file d'attente.</target>
       </segment>
     </unit>
   </file>
