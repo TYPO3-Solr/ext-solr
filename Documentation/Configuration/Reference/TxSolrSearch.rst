@@ -188,24 +188,6 @@ Selector, range, grouping and metacharacters (``: [ ] ( ) { } ^ " ~ \ /``) are a
 * ``1`` (default) — the well-known Lucene operators ``+ - && || ! * ?`` pass through, so the documented wildcard and boolean operator UX (``apple*``, ``+foo -bar``) keeps working.
 * ``0`` — strict mode; the additional SolrJ specials ``| & ;`` are also escaped. ``+ - ! * ?`` and whitespace stay literal, so required/prohibited terms, ``NOT`` and the wildcard UX still function.
 
-query.getParameter
-~~~~~~~~~~~~~~~~~~
-
-:Type: String
-:TS Path: plugin.tx_solr.search.query.getParameter
-:Since: 2.2
-:Default: tx_solr|q
-
-The GET query parameter name used in URLs. Useful for cases f.e. when a website tracking tool does not support the default array GET parameters.
-
-The option expects a string, you can also define an array in the form of arrayName|arrayKey.
-
-Example:
-
-.. code-block:: typoscript
-
-    plugin.tx_solr.search.query.getParameter = q
-
 
 query.queryFields (query.fields)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
