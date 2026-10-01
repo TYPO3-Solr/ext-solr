@@ -216,7 +216,7 @@ class SearchControllerTest extends IntegrationTestBase
         // Issue #4659: the suggestion link must rebuild the full query including the correct terms,
         // not drop them in favour of the corrected word alone.
         self::assertMatchesRegularExpression(
-            '/q=men[^"\'<>]*shoes/',
+            '/(q|%5Bq%5D)=men[^"\'<>]*shoes/',
             $resultPage,
             'The "did you mean" link must keep the correct term "men" alongside the corrected "shoes".',
         );
