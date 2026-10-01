@@ -71,14 +71,14 @@
 					<f:then>
 						<f:translate key="didYouMean" extensionName="solr">Did you mean</f:translate>
 						<f:for each="{resultSet.spellCheckingCollations}" as="collation">
-							<f:link.page additionalParams="{q: collation}">{collation}</f:link.page>
+							<a href="{s:uri.search.startNewSearch(queryString: collation)}">{collation}</a>
 						</f:for> ?
 					</f:then>
 					<f:else>
 						<f:if condition="{resultSet.hasSpellCheckingSuggestions}">
 							<f:translate key="didYouMean" extensionName="solr">Did you mean</f:translate>
 							<f:for each="{resultSet.spellCheckingSuggestions}" as="suggestion">
-								<f:link.page additionalParams="{q: suggestion.fullQuery}">{suggestion.fullQuery}</f:link.page>
+								<a href="{s:uri.search.startNewSearch(queryString: suggestion.fullQuery)}">{suggestion.fullQuery}</a>
 							</f:for> ?
 						</f:if>
 					</f:else>
