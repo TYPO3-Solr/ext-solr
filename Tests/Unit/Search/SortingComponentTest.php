@@ -106,6 +106,28 @@ final class SortingComponentTest extends SetUpUnitTestCase
     }
 
     #[Test]
+    public function unknownSortingOptionFromUrlKeepsConfiguredSorting(): void
+    {
+        $configuration = $this->createMock(TypoScriptConfiguration::class);
+        $configuration->method('getSearchConfiguration')->willReturn([
+            'query.' => [
+                'sortBy' => 'price desc',
+            ],
+            'sorting' => 1,
+            'sorting.' => [
+                'options.' => [
+                    'relevance.' => ['field' => 'relevance', 'label' => 'Title'],
+                    'title.' => ['field' => 'sortTitle', 'label' => 'Title'],
+                ],
+            ],
+        ]);
+        $event = new AfterSearchQueryHasBeenPreparedEvent($this->query, $this->searchRequestMock, $this->createMock(Search::class), $configuration);
+        $this->searchRequestMock->expects(self::any())->method('getArguments')->willReturn(['sort' => 'type asc']);
+        $this->sortingComponent->__invoke($event);
+        self::assertSame(['price' => 'desc'], $event->getQuery()->getSorts(), 'Configured sorting should be kept for an unknown sorting option');
+    }
+
+    #[Test]
     public function sortByIsApplied(): void
     {
         $configuration = $this->createMock(TypoScriptConfiguration::class);
