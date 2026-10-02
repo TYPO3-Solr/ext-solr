@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingHelper;
 use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -57,10 +58,18 @@ class SortingComponent
             return;
         }
 
+        $sortHelper = GeneralUtility::makeInstance(SortingHelper::class, $searchConfiguration['sorting.']['options.'] ?? []);
+        try {
+            $sortFields = $sortHelper->getSortFieldFromUrlParameter($arguments['sort']);
+        } catch (InvalidArgumentException) {
+            // The sorting refers to an option that is not configured (e.g. an outdated
+            // link or a manipulated URL). Keep the configured initial sorting, as for
+            // sortings that do not match the expected format.
+            return;
+        }
+
         // a passed sorting has always priority an overwrites the configured initial sorting
         $query->clearSorts();
-        $sortHelper = GeneralUtility::makeInstance(SortingHelper::class, $searchConfiguration['sorting.']['options.'] ?? []);
-        $sortFields = $sortHelper->getSortFieldFromUrlParameter($arguments['sort']);
         $this->queryBuilder->useSortings(Sortings::fromString($sortFields));
         $query = $this->queryBuilder->getQuery();
         $event->setQuery($query);
