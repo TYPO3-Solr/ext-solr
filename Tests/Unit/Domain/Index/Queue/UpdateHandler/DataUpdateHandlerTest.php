@@ -539,6 +539,64 @@ final class DataUpdateHandlerTest extends SetUpUpdateHandler
     }
 
     /**
+     * Tests if a record of a non-translatable table (no sys_language_uid column)
+     * is processed on a site with free content mode languages
+     */
+    #[Test]
+    public function handleRecordUpdateTriggersNonTranslatableRecordProcessingInFreeContentMode(): void
+    {
+        $this->initRootPageResolverForValidDummyRootPage();
+        $siteMock = $this->initSiteForDummyConfiguration(self::DUMMY_PAGE_ID);
+        $siteMock->method('hasFreeContentModeLanguages')->willReturn(true);
+        $siteMock->method('getFreeContentModeLanguages')->willReturn([1]);
+        $dummyRecord = [
+            'uid' => 789,
+            'pid' => self::DUMMY_PAGE_ID,
+        ];
+
+        $this->typoScriptConfigurationMock
+            ->expects(self::once())
+            ->method('getIndexQueueIsMonitoredTable')
+            ->with('tx_foo_bar')
+            ->willReturn(true);
+
+        $this->recordServiceMock
+            ->expects(self::once())
+            ->method('getRecord')
+            ->with(
+                'tx_foo_bar',
+                $dummyRecord['uid'],
+                $this->typoScriptConfigurationMock,
+            )
+            ->willReturn($dummyRecord);
+
+        $this->tcaServiceMock
+            ->expects(self::once())
+            ->method('getTranslationOriginalUidIfTranslated')
+            ->with(
+                'tx_foo_bar',
+                $dummyRecord,
+                $dummyRecord['uid'],
+            )
+            ->willReturn($dummyRecord['uid']);
+
+        $this->tcaServiceMock
+            ->expects(self::once())
+            ->method('isEnabledRecord')
+            ->willReturn(true);
+
+        $this->indexQueueMock
+            ->expects(self::once())
+            ->method('updateItem')
+            ->with(
+                'tx_foo_bar',
+                $dummyRecord['uid'],
+            );
+
+        $this->dataUpdateHandler->handleRecordUpdate($dummyRecord['uid'], 'tx_foo_bar');
+    }
+
+    /**
      * Tests if the processing of a record that couldn't be found in database
      * triggers the removal from index and queue
      */
