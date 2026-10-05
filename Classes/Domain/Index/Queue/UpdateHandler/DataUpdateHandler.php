@@ -445,7 +445,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
             }
 
             // The pages localized record can not consist without l10n_parent, so apply "free-content-mode" on records only.
-            if ($recordTable === 'pages' || !$site->hasFreeContentModeLanguages() || !in_array($record['sys_language_uid'], $site->getFreeContentModeLanguages())) {
+            if ($recordTable === 'pages' || !$site->hasFreeContentModeLanguages() || !in_array($record['sys_language_uid'] ?? 0, $site->getFreeContentModeLanguages())) {
                 $recordUid = $this->tcaService->getTranslationOriginalUidIfTranslated($recordTable, $record, $recordUid);
             }
 
