@@ -194,6 +194,30 @@ final class AbstractIndexerTest extends SetUpUnitTestCase
         ];
     }
 
+    public static function longFieldValueDataProvider(): Generator
+    {
+        yield 'integer, as delivered by a plain mapping of an int column' => [1735689600, '1735689600'];
+        yield 'numeric string' => ['1735689600', '1735689600'];
+        yield 'negative integer' => [-42, '-42'];
+        yield 'string with non-numeric characters' => ['12a3', '123'];
+        yield 'string without digits' => ['abc', null];
+    }
+
+    /**
+     * Long fields get their value through preg_replace(), which must not fail for integers
+     */
+    #[DataProvider('longFieldValueDataProvider')]
+    #[Test]
+    public function ensureFieldValueTypeAcceptsIntegerForLongField(mixed $value, ?string $expectedValue): void
+    {
+        $subject = $this->getAccessibleMock(AbstractIndexer::class, []);
+
+        self::assertSame(
+            $expectedValue,
+            $this->callInaccessibleMethod($subject, 'ensureFieldValueType', $value, 'long'),
+        );
+    }
+
     #[Test]
     #[DataProvider('vectorSearchDataProvider')]
     public function canEnrichVectorContent(

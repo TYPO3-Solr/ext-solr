@@ -241,7 +241,7 @@ abstract class AbstractIndexer
                 // <insert PHP rant here>
             case 'tLong':
                 // remove anything that's not a number or negative/minus sign
-                $value = preg_replace('/[^0-9\\-]/', '', $value);
+                $value = preg_replace('/[^0-9\\-]/', '', (string)$value);
                 if (trim($value) === '') {
                     $value = null;
                 }
