@@ -59,7 +59,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     protected function parseSortingIntoObjects(SearchResultSet $resultSet): SearchResultSet
     {
         $configuration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration();
-        $activeSortings = $resultSet->getUsedSearchRequest()->getSeperatedSortings();
+        $activeSortings = $resultSet->getUsedSearchRequest()->getSeparatedSortings();
         $hasSorting = $resultSet->getUsedSearchRequest()->getHasSorting();
 
         // no configuration available

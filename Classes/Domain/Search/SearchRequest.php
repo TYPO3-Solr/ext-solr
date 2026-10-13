@@ -264,17 +264,36 @@ class SearchRequest
     }
 
     /**
-     * Returns all sortings in the sorting string e.g. ['title' => 'asc', 'relevance' => 'desc']
+     * @see {@link SearchRequest::getSeparatedSortings}
+     *
+     * @deprecated The method SearchRequest::getSeperatedSortings() is deprecated and will be removed in version 14.1.x+. Use SearchRequest::getSeparatedSortings() instead.
      */
     public function getSeperatedSortings(): array
+    {
+        trigger_error(
+            'The method SearchRequest::getSeperatedSortings() is deprecated and will be removed in version 14.1.x+.' .
+            'Use SearchRequest::getSeparatedSortings() instead.',
+            E_USER_DEPRECATED,
+        );
+        return $this->getSeparatedSortings();
+    }
+
+    /**
+     * Returns all sortings in the sorting string e.g. ['title' => 'asc', 'relevance' => 'desc']
+     */
+    public function getSeparatedSortings(): array
     {
         $parsedSortings = [];
         $explodedSortings = GeneralUtility::trimExplode(',', $this->getSorting(), true);
 
         foreach ($explodedSortings as $sorting) {
-            $sortingSeperated = explode(' ', $sorting);
-            if (count($sortingSeperated) === 2) {
-                $parsedSortings[$sortingSeperated[0]] = $sortingSeperated[1];
+            $sortingSeparated = explode(' ', $sorting);
+            if (count($sortingSeparated) === 2) {
+                $direction = mb_strtolower(trim($sortingSeparated[1]));
+                if (!in_array($direction, ['asc', 'desc'], true)) {
+                    continue;
+                }
+                $parsedSortings[$sortingSeparated[0]] = $direction;
             }
         }
 
