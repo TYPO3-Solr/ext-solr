@@ -32,7 +32,6 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\Routing\PageArguments;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -48,19 +47,17 @@ use TYPO3\CMS\Frontend\Page\PageInformation;
  * for use in contexts where frontend capabilities are needed but no actual
  * frontend request exists (e.g., indexing, backend modules, CLI commands).
  */
-class FrontendAwareEnvironment implements SingletonInterface
+class FrontendAwareEnvironment
 {
     /**
      * @var ServerRequest[]
      */
     protected array $serverRequestCache = [];
 
-    protected SiteFinder $siteFinder;
-
-    public function __construct(?SiteFinder $siteFinder = null)
-    {
-        $this->siteFinder = $siteFinder ?? GeneralUtility::makeInstance(SiteFinder::class);
-    }
+    public function __construct(
+        protected SiteFinder $siteFinder,
+        protected ConfigurationManager $configurationManager,
+    ) {}
 
     /**
      * Initializes the simulated frontend environment for a given page ID and language.
@@ -105,7 +102,6 @@ class FrontendAwareEnvironment implements SingletonInterface
         $pageInformation->setLocalRootLine($rootLine);
 
         $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, '0', []);
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
 
         $serverRequest = GeneralUtility::makeInstance(ServerRequest::class)
             ->withAttribute('site', $site)
@@ -117,17 +113,13 @@ class FrontendAwareEnvironment implements SingletonInterface
 
         $serverRequest = $serverRequest->withAttribute(
             'frontend.typoscript',
-            $configurationManager->getCoreTypoScriptFrontendByRequest($serverRequest),
+            $this->configurationManager->getCoreTypoScriptFrontendByRequest($serverRequest),
         );
 
         // Configure visibility aspect for indexing (hide hidden elements)
         $context->setAspect(
             'visibility',
-            GeneralUtility::makeInstance(
-                VisibilityAspect::class,
-                false,
-                false,
-            ),
+            new VisibilityAspect(false, false),
         );
 
         // Set up frontend user with appropriate access rights
@@ -185,8 +177,10 @@ class FrontendAwareEnvironment implements SingletonInterface
      *
      * @param int ...$languageFallbackChain
      */
-    public function getServerRequestByPageIdAndLanguageFallbackChain(int $pageId, int ...$languageFallbackChain): ?ServerRequest
-    {
+    public function getServerRequestByPageIdAndLanguageFallbackChain(
+        int $pageId,
+        int ...$languageFallbackChain,
+    ): ?ServerRequest {
         foreach ($languageFallbackChain as $languageId) {
             try {
                 $request = $this->getServerRequestByPageIdAndLanguageId($pageId, $languageId);
@@ -213,26 +207,16 @@ class FrontendAwareEnvironment implements SingletonInterface
         } catch (Throwable) {
             return null;
         }
+
         $availableLanguageIds = array_map(static function ($siteLanguage) {
             return $siteLanguage->getLanguageId();
         }, $typo3Site->getLanguages());
 
-        if (empty($availableLanguageIds)) {
+        if ($availableLanguageIds === []) {
             return null;
         }
-        return $this->getServerRequestByPageIdAndLanguageFallbackChain($pageId, ...$availableLanguageIds);
-    }
 
-    /**
-     * Returns the page ID from a ServerRequest.
-     *
-     * Convenience method to extract the page ID from the PageInformation attribute.
-     */
-    public function getPageIdFromRequest(ServerRequest $request): int
-    {
-        /** @var PageInformation|null $pageInformation */
-        $pageInformation = $request->getAttribute('frontend.page.information');
-        return $pageInformation?->getId() ?? 0;
+        return $this->getServerRequestByPageIdAndLanguageFallbackChain($pageId, ...$availableLanguageIds);
     }
 
     /**
@@ -282,6 +266,7 @@ class FrontendAwareEnvironment implements SingletonInterface
         $pageRecord = BackendUtility::getRecord('pages', $pidToUse);
         $isSpacerOrSysfolder = ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SPACER
             || ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SYSFOLDER;
+
         if ($isSpacerOrSysfolder === false && $this->isPageAvailable($pageRecord)) {
             return $pidToUse;
         }
