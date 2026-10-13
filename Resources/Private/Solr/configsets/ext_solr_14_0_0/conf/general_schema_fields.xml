@@ -196,6 +196,12 @@
 	<dynamicField name="*_stringCollatedS" type="string_collated" indexed="true" stored="true" docValues="true" multiValued="false" />
 	<dynamicField name="*_stringCollatedM" type="string_collated" indexed="true" stored="true" docValues="true" multiValued="true" />
 
+    <!--
+        Dynamic field for case-insensitive sorting: #4089
+    -->
+    <dynamicField name="*_stringLowerCaseS" type="stringLowerCase" indexed="true" stored="true" multiValued="false" />
+    <dynamicField name="*_stringLowerCaseM" type="stringLowerCase" indexed="true" stored="true" multiValued="true" />
+
 	<dynamicField name="*_boolS"     type="boolean"   indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_boolM"     type="boolean"   indexed="true" stored="true" multiValued="true" />
 
