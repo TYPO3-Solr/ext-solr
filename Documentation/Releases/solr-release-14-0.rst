@@ -4,6 +4,16 @@
 Releases 14.0
 =============
 
+Release 14.0.3
+==============
+
+All Changes
+-----------
+
+*   [FEATURE] Add ``_stringLowerCaseS`` + ``_stringLowerCaseM`` dynamic fields by Rafael Kähm in `#4810 <https://github.com/TYPO3-Solr/ext-solr/pull/4810>`_
+    To keep the things simple, we'll avoid adding that feature as breaking change in proper schema change.
+    So if you really want that feature, please apply the changes on your Apache Solr Server manually.
+
 Release 14.0.2
 ==============
 
