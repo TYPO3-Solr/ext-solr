@@ -17,6 +17,13 @@
 	-->
 	<fieldType name="string"  class="solr.StrField"  sortMissingLast="true" omitNorms="true" useDocValuesAsStored="false" />
 
+    <fieldType name="stringLowerCase" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+        <analyzer>
+            <tokenizer name="keyword"/>
+            <filter name="lowercase"/>
+        </analyzer>
+    </fieldType>
+
 	<!-- boolean type: "true" or "false" -->
 	<fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>
 	<!--Binary data type. The data should be sent/retrieved in as Base64 encoded Strings -->

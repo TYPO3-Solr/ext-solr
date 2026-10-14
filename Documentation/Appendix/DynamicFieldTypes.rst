@@ -14,13 +14,15 @@ create a field for storing a title you would name it title_stringS. We suggest y
 
 We've predefined the following dynamic fields:
 
-======================  ===================================  ==========  ===============================================
+======================  ===================================  ==========  =============================================================================================
 Extension               Type                                 Multivalue  Comment
-======================  ===================================  ==========  ===============================================
+======================  ===================================  ==========  =============================================================================================
 \*_stringS              String                               No
 \*_stringM              String                               Yes
 \*_stringCollatedS      string_collated                      No
 \*_stringCollatedM      string_collated                      Yes
+\*_stringLowerCaseS     String                               No          Note: available since 14.1.0(or by manual applying)
+\*_stringLowerCaseM     String                               Yes         Note: available since 14.1.0(or by manual applying)
 \*_binS                 binary                               No          Stored but not indexed
 \*_binM                 binary                               Yes         Stored but not indexed
 \*_boolS                Boolean                              No
