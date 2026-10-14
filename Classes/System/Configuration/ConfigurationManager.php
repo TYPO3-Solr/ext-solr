@@ -80,12 +80,12 @@ class ConfigurationManager implements SingletonInterface
         if ($fullConfig === null) {
             $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('hash');
             $cacheIdentifier = $pageId . '_' . ($request->getAttribute('language')?->getLanguageId() ?? 0);
-            if (!$cache->has($cacheIdentifier)) {
+            // Single get(): the entry can expire or be flushed between has() and get()
+            $fullConfig = $cache->get($cacheIdentifier);
+            if (!is_array($fullConfig)) {
                 // Fallback to full TypoScript configuration
                 $fullConfig = $this->getCoreTypoScriptFrontendByRequest($request)->getSetupArray();
                 $cache->set($cacheIdentifier, $fullConfig);
-            } else {
-                $fullConfig = $cache->get($cacheIdentifier);
             }
         }
         return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $fullConfig, $pageId);

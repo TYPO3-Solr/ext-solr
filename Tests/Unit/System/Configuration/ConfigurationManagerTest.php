@@ -20,6 +20,11 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class ConfigurationManagerTest extends SetUpUnitTestCase
 {
@@ -54,5 +59,54 @@ final class ConfigurationManagerTest extends SetUpUnitTestCase
         $result = $manager->getTypoScriptConfiguration(999);
 
         self::assertSame($expectedConfiguration, $result);
+    }
+
+    #[Test]
+    public function getTypoScriptFromRequestRebuildsConfigurationWhenCacheEntryVanishedAfterHasCheck(): void
+    {
+        $setup = ['plugin.' => ['tx_solr.' => ['enabled' => '1']]];
+
+        // has() still sees the entry, but it expires or is flushed before get() reads it
+        $cache = $this->createMock(FrontendInterface::class);
+        $cache->method('has')->with('42_0')->willReturn(true);
+        $cache->method('get')->with('42_0')->willReturn(false);
+        $cache->expects(self::once())->method('set')->with('42_0', $setup);
+        $cacheManager = $this->createMock(CacheManager::class);
+        $cacheManager->method('getCache')->with('hash')->willReturn($cache);
+        GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager);
+
+        $frontendTypoScript = $this->createMock(FrontendTypoScript::class);
+        $frontendTypoScript->method('getSetupArray')->willReturn($setup);
+        $manager = $this->createPartialMock(ConfigurationManager::class, ['getCoreTypoScriptFrontendByRequest']);
+        $manager->expects(self::once())
+            ->method('getCoreTypoScriptFrontendByRequest')
+            ->willReturn($frontendTypoScript);
+
+        $request = (new ServerRequest('https://example.com/', 'GET'))->withQueryParams(['id' => 42]);
+        $result = $manager->getTypoScriptFromRequest($request);
+
+        self::assertSame('1', $result->getValueByPath('plugin.tx_solr.enabled'));
+    }
+
+    #[Test]
+    public function getTypoScriptFromRequestUsesCachedConfiguration(): void
+    {
+        $setup = ['plugin.' => ['tx_solr.' => ['enabled' => '1']]];
+
+        $cache = $this->createMock(FrontendInterface::class);
+        $cache->method('has')->with('42_0')->willReturn(true);
+        $cache->method('get')->with('42_0')->willReturn($setup);
+        $cache->expects(self::never())->method('set');
+        $cacheManager = $this->createMock(CacheManager::class);
+        $cacheManager->method('getCache')->with('hash')->willReturn($cache);
+        GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager);
+
+        $manager = $this->createPartialMock(ConfigurationManager::class, ['getCoreTypoScriptFrontendByRequest']);
+        $manager->expects(self::never())->method('getCoreTypoScriptFrontendByRequest');
+
+        $request = (new ServerRequest('https://example.com/', 'GET'))->withQueryParams(['id' => 42]);
+        $result = $manager->getTypoScriptFromRequest($request);
+
+        self::assertSame('1', $result->getValueByPath('plugin.tx_solr.enabled'));
     }
 }
