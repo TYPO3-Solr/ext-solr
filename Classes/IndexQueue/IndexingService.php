@@ -484,11 +484,17 @@ readonly class IndexingService
             $serverParams,
         );
 
+        $normalizedParams = new NormalizedParams(
+            $serverParams,
+            $GLOBALS['TYPO3_CONF_VARS']['SYS'],
+            Environment::getPublicPath() . '/index.php',
+            Environment::getPublicPath(),
+        );
         return $request
             ->withUri($uri)
             ->withAttribute('site', $site)
             ->withAttribute('language', $siteLanguage)
-            ->withAttribute('normalizedParams', NormalizedParams::createFromServerParams($serverParams));
+            ->withAttribute('normalizedParams', $normalizedParams);
     }
 
     /**
