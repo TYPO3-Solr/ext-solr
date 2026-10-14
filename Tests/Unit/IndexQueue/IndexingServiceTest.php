@@ -27,8 +27,14 @@ use PHPUnit\Framework\Attributes\Test;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionMethod;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Http\NormalizedParams;
+use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Routing\RouterInterface;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Frontend\Http\Application as FrontendApplication;
+
+use function PHPUnit\Framework\assertSame;
 
 /**
  * Testcase for the service that runs one indexing sub-request per queue item
@@ -72,5 +78,41 @@ final class IndexingServiceTest extends SetUpUnitTestCase
         );
 
         return (new ReflectionMethod($indexingService, 'resolvePageUid'))->invoke($indexingService, $item);
+    }
+
+    #[Test]
+    public function buildsSubRequestWithWebsPublicScriptPath(): void
+    {
+        $item = $this->createMock(Item::class);
+        $item->method('getType')->willReturn('pages');
+        $item->method('getRecordUid')->willReturn(12);
+        $item->method('getRootPageUid')->willReturn(1);
+        $item->method('hasIndexingProperty')->with('isMountedPage')->willReturn(false);
+
+        $indexingService = new IndexingService(
+            $this->createMock(FrontendApplication::class),
+            $this->createMock(ConnectionManager::class),
+            $this->createMock(PagesRepository::class),
+            $this->createMock(SolrLogManager::class),
+            $siteFindeMock = $this->createMock(SiteFinder::class),
+            $this->createMock(Context::class),
+            $this->createMock(EventDispatcherInterface::class),
+        );
+
+        $siteFindeMock->method('getSiteByPageId')->willReturn(
+            $siteMock = $this->createMock(Site::class),
+        );
+        $siteMock->method('getRouter')->willReturn(
+            $routerMock = $this->createMock(RouterInterface::class),
+        );
+        $expectedSiteUrl = 'https://some-branch-slug-14-0-x-with-some-bugfix-fixing-some-bad-stuff.local.example.com/';
+        $routerMock->method('generateUri')->willReturn(
+            new Uri($expectedSiteUrl),
+        );
+        $subRequestObject = (new ReflectionMethod($indexingService, 'buildServerRequest'))->invoke($indexingService, $item, 0);
+
+        /** @var NormalizedParams $normalizedParams */
+        $normalizedParams = $subRequestObject->getAttribute('normalizedParams');
+        self:assertSame($expectedSiteUrl, $normalizedParams->getSiteUrl());
     }
 }
