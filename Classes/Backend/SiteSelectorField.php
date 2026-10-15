@@ -17,7 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Backend;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,7 +28,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SiteSelectorField
 {
     /**
-     * Creates a dropdown selector of available TYPO3 sites with Solr configured.
+     * Creates a dropdown selector of available TYPO3 sites.
+     *
+     * Uses SiteFinder::getAllSites() instead of SiteRepository::getAvailableSites()
+     * to avoid initializing a full TSFE (including frontend TypoScript AST) for
+     * every site. The dropdown only needs root page IDs and labels, not Solr
+     * configuration. Validation of Solr-enabled sites happens on save via
+     * validateAdditionalFields().
      *
      * @param string $selectorName Name to be used in the selects name attribute
      * @param Site|null $selectedSite Optional, currently selected site
@@ -41,19 +47,20 @@ class SiteSelectorField
         string $selectorName,
         ?Site $selectedSite = null,
     ): string {
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        $selectedRootPageId = $selectedSite?->getRootPageId();
 
-        $sites = $siteRepository->getAvailableSites();
         $selector = '<select name="' . htmlspecialchars($selectorName) . '" class="form-control">';
 
-        foreach ($sites as $site) {
+        foreach ($siteFinder->getAllSites() as $site) {
+            $rootPageId = $site->getRootPageId();
             $selectedAttribute = '';
-            if ($selectedSite !== null && $site->getRootPageId() === $selectedSite->getRootPageId()) {
+            if ($selectedRootPageId !== null && $rootPageId === $selectedRootPageId) {
                 $selectedAttribute = ' selected="selected"';
             }
 
-            $selector .= '<option value="' . htmlspecialchars((string)$site->getRootPageId()) . '"' . $selectedAttribute . '>'
-                . htmlspecialchars($site->getLabel())
+            $selector .= '<option value="' . htmlspecialchars((string)$rootPageId) . '"' . $selectedAttribute . '>'
+                . htmlspecialchars($site->getIdentifier())
                 . '</option>';
         }
 
