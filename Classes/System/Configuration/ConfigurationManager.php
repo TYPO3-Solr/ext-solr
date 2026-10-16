@@ -24,6 +24,7 @@ use RuntimeException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -50,6 +51,10 @@ use TYPO3\CMS\Frontend\Page\PageInformation;
  */
 class ConfigurationManager implements SingletonInterface
 {
+    public function __construct(
+        protected readonly ?PhpFrontend $typoScriptCache = null,
+    ) {}
+
     /**
      * @throws DBALException
      * @throws JsonException
@@ -191,7 +196,7 @@ class ConfigurationManager implements SingletonInterface
             $typo3Site,
             $sysTemplateRows,
             $expressionMatcherVariables,
-            null,
+            $this->typoScriptCache,
         );
         return $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
             true,
@@ -200,7 +205,7 @@ class ConfigurationManager implements SingletonInterface
             $sysTemplateRows,
             $expressionMatcherVariables,
             '0',
-            null,
+            $this->typoScriptCache,
             null,
         );
     }

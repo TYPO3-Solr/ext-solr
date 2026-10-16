@@ -40,6 +40,11 @@ services:
     autowire: true
     tags: ['backend.controller']
 
+  ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager:
+    public: true
+    arguments:
+      $typoScriptCache: '@cache.typoscript'
+
   ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder:
     public: true
     autowire: true
