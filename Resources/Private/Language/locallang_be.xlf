@@ -15,6 +15,9 @@
 			<trans-unit id="extConf.enableRouteEnhancer" resname="extConf.enableRouteEnhancer">
 				<source>Enable route enhancer: If you want to use speaking URLs for Solr facets, you have to enable this option, otherwise the required Middleware is not active and the route enhancer has no effect.</source>
 			</trans-unit>
+			<trans-unit id="extConf.enableIndexingTypoScriptCache" resname="extConf.enableIndexingTypoScriptCache">
+				<source>Cache TypoScript for indexing (experimental): Caches the TypoScript that is built for every indexed item and language in the dedicated cache "solr_indexing_typoscript", which is cleared together with the frontend caches. Speeds up record indexing considerably. Disabled by default.</source>
+			</trans-unit>
 			<trans-unit id="extConf.includeGlobalQParameterInCacheHash" resname="extConf.includeGlobalQParameterInCacheHash">
 				<source>Include/Exclude global q parameter in/from cacheHash.</source>
 			</trans-unit>
