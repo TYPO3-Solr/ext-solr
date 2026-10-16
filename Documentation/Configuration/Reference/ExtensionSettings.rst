@@ -127,3 +127,25 @@ The setting is deprecated by introduction: to be removed on EXT:solr 13.1.x+
 - 0: Domain(Deprecated): Legacy site hash strategy by domain used up to 13.0.x as default, will be removed on EXT:solr 13.1.x.
 - 1: Site Identifier(will be default on 13.1.x+): The new hash strategy by site-identifier.
 
+enableIndexingTypoScriptCache
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:Since: 13.1.6
+:Default: 0
+
+**Experimental.** When enabled, the TypoScript that EXT:solr builds outside a
+frontend request, e.g. for every item and language while indexing records, is
+cached in the dedicated cache ``solr_indexing_typoscript`` instead of being
+parsed again each time. This speeds up record indexing considerably, especially
+on sites with many languages.
+
+The cache is separate from the core ``typoscript`` cache on purpose: TypoScript
+built without a frontend request does not dispatch
+``ModifyTypoScriptConfigEvent``, so it must not end up in the cache entries the
+frontend reads.
+
+The cache belongs to the cache group ``pages`` and is therefore flushed together
+with the core TypoScript cache, e.g. by "Flush frontend caches" or
+``vendor/bin/typo3 cache:flush``.
+

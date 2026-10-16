@@ -168,6 +168,18 @@ class ExtensionConfiguration
         return (int)$this->getConfigurationOrDefaultValue('siteHashStrategy', 0);
     }
 
+    /**
+     * Get configuration for enableIndexingTypoScriptCache
+     *
+     * When enabled, TypoScript built outside a frontend request (e.g. while indexing records)
+     * is cached in the dedicated "solr_indexing_typoscript" cache instead of being parsed again
+     * for every item and language. Disabled by default (experimental).
+     */
+    public function getIsIndexingTypoScriptCacheEnabled(): bool
+    {
+        return (bool)$this->getConfigurationOrDefaultValue('enableIndexingTypoScriptCache', false);
+    }
+
     protected function getConfigurationOrDefaultValue(string $key, mixed $defaultValue = null): mixed
     {
         return $this->configuration[$key] ?? $defaultValue;
