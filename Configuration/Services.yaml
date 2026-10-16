@@ -54,6 +54,11 @@ services:
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
     arguments: ['tx_solr']
 
+  ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager:
+    public: true
+    arguments:
+      $typoScriptCache: '@cache.typoscript'
+
   ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder:
     public: true
     autowire: true
