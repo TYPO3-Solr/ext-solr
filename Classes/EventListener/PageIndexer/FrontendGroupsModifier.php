@@ -85,6 +85,28 @@ final readonly class FrontendGroupsModifier
         ) {
             $groups[] = (int)$instructions->getParameter('pageUserGroup');
         }
+
+        // Mixed-content pages: restrict the faked render groups to the current
+        // content-access variant, so a public (c:0) variant of a page-restricted page
+        // does not render - and thus index - content restricted to a subset of the page
+        // groups. The stored access tag comes from the accessRootline, not from these
+        // faked groups, so trimming changes only which content is rendered into the
+        // document, never which groups may find it.
+        $contentRestrictedGroups = array_values(array_filter(
+            (array)($instructions->getParameter('contentRestrictedGroups') ?? []),
+            static fn(int $group): bool => $group > 0,
+        ));
+        if ($contentRestrictedGroups !== []) {
+            $currentUserGroup = $instructions->getUserGroup();
+            $groups = array_values(array_filter(
+                $groups,
+                static fn(int $group): bool => !in_array($group, $contentRestrictedGroups, true),
+            ));
+            if ($currentUserGroup > 0 && !in_array($currentUserGroup, $groups, true)) {
+                $groups[] = $currentUserGroup;
+            }
+        }
+
         $groupData = [];
         foreach ($groups as $groupUid) {
             if (in_array($groupUid, [-2, -1])) {
