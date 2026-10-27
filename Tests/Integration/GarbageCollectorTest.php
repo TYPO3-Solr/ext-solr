@@ -28,6 +28,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Traversable;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -683,6 +684,117 @@ final class GarbageCollectorTest extends IntegrationTestBase
             'expectedDocumentCountDe' => 1,
             'expectedItemsToReindex' => 1,
         ];
+    }
+
+    /**
+     * @see https://github.com/TYPO3-Solr/ext-solr/issues/4348
+     */
+    #[Test]
+    #[DataProvider('monitoringTypeDataProvider')]
+    public function canRemoveDefaultLanguageDocumentWhenPageIsHiddenInDefaultLanguage(int $monitoringType): void
+    {
+        $this->setExtensionsMonitoringType($monitoringType);
+        $this->prepareIndexedPageWithTranslation();
+
+        $this->updatePagesAndCollectGarbage(['pages' => [2 => ['l18n_cfg' => 1]]], $monitoringType);
+
+        self::assertSolrContainsDocumentCount(0, 'Default language document of page hidden in default language was not removed', 'core_en');
+        self::assertSolrContainsDocumentCount(1, 'Translation document of page hidden in default language was removed', 'core_de');
+        $this->assertIndexQueueContainsItemAmount(1);
+
+        // re-indexing must not bring the default language document back
+        self::assertTrue($this->indexQueuedItems(1), 'Page hidden in default language failed to be re-indexed.');
+        $this->waitToBeVisibleInSolr();
+        $this->waitToBeVisibleInSolr('core_de');
+        self::assertSolrContainsDocumentCount(0, 'Default language document was re-indexed', 'core_en');
+        self::assertSolrContainsDocumentCount(1, 'Translation document was not re-indexed', 'core_de');
+    }
+
+    #[Test]
+    #[DataProvider('monitoringTypeDataProvider')]
+    public function canReindexDefaultLanguageDocumentWhenPageIsNoLongerHiddenInDefaultLanguage(int $monitoringType): void
+    {
+        $this->setExtensionsMonitoringType($monitoringType);
+        $this->prepareIndexedPageWithTranslation('page_with_translation_hidden_in_default_language.csv', 0);
+
+        $this->updatePagesAndCollectGarbage(['pages' => [2 => ['l18n_cfg' => 0]]], $monitoringType);
+        $this->assertIndexQueueContainsItemAmount(1);
+
+        self::assertTrue($this->indexQueuedItems(1), 'Page visible in default language again failed to be re-indexed.');
+        $this->waitToBeVisibleInSolr();
+        $this->waitToBeVisibleInSolr('core_de');
+        self::assertSolrContainsDocumentCount(1, 'Default language document was not re-indexed', 'core_en');
+        self::assertSolrContainsDocumentCount(1, 'Translation document was removed', 'core_de');
+    }
+
+    #[Test]
+    #[DataProvider('keepsDefaultLanguageDocumentOfPageVisibleInDefaultLanguageDataProvider')]
+    public function keepsDefaultLanguageDocumentOfPageVisibleInDefaultLanguage(int $monitoringType, array $dataMap): void
+    {
+        $this->setExtensionsMonitoringType($monitoringType);
+        $this->prepareIndexedPageWithTranslation();
+
+        $this->updatePagesAndCollectGarbage($dataMap, $monitoringType);
+
+        self::assertSolrContainsDocumentCount(1, 'Default language document was removed', 'core_en');
+        self::assertSolrContainsDocumentCount(1, 'Translation document was removed', 'core_de');
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
+
+    public static function monitoringTypeDataProvider(): Traversable
+    {
+        yield 'immediate processing' => ['monitoringType' => 0];
+        yield 'delayed processing' => ['monitoringType' => 1];
+    }
+
+    public static function keepsDefaultLanguageDocumentOfPageVisibleInDefaultLanguageDataProvider(): Traversable
+    {
+        foreach (self::monitoringTypeDataProvider() as $mode => ['monitoringType' => $monitoringType]) {
+            yield 'translation-only change (' . $mode . ')' => [
+                'monitoringType' => $monitoringType,
+                'dataMap' => ['pages' => [3 => ['title' => 'Changed page in german']]],
+            ];
+            // l18n_cfg & 2 is "Hide page if no translation for current language exists", not the default language flag
+            yield 'hide page if no translation exists (' . $mode . ')' => [
+                'monitoringType' => $monitoringType,
+                'dataMap' => ['pages' => [2 => ['l18n_cfg' => 2]]],
+            ];
+        }
+    }
+
+    /**
+     * Indexes page 2 in the default language core and its translation 3 in the german core.
+     */
+    protected function prepareIndexedPageWithTranslation(
+        string $fixture = 'page_with_translation.csv',
+        int $expectedDocumentCountEn = 1,
+    ): void {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture);
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
+        $this->assertEmptyEventQueue();
+
+        self::assertTrue($this->indexQueuedItems(1), 'Page with translation failed to be indexed.');
+        $this->waitToBeVisibleInSolr();
+        $this->waitToBeVisibleInSolr('core_de');
+        self::assertSolrContainsDocumentCount($expectedDocumentCountEn, 'Initial number of documents in english index not as expected', 'core_en');
+        self::assertSolrContainsDocumentCount(1, 'Initial number of documents in german index not as expected', 'core_de');
+    }
+
+    protected function updatePagesAndCollectGarbage(array $dataMap, int $monitoringType): void
+    {
+        $this->dataHandler->start($dataMap, [], $this->backendUser);
+        $this->dataHandler->process_datamap();
+
+        if ($monitoringType === 1) {
+            $this->assertIndexQueueContainsItemAmount(1);
+            $this->processEventQueue();
+            $this->assertEmptyEventQueue();
+        }
+        $this->waitToBeVisibleInSolr();
+        $this->waitToBeVisibleInSolr('core_de');
+        // Editing and indexing run in separate processes in production, the page state cached by the
+        // initial indexing must not leak into the next indexing run.
+        GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime')->flush();
     }
 
     #[Test]
