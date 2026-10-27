@@ -1,0 +1,7 @@
+"pages",
+,"uid","pid","tstamp","hidden","doktype","slug","title","l18n_cfg","sys_language_uid","l10n_parent"
+,2,1,1736145035,0,1,"/page","Page in default language",0,0,0
+,3,1,1736145035,0,1,"/seite","Page in german",0,1,2
+"tx_solr_indexqueue_item"
+,"uid","root","item_type","item_uid","indexing_configuration","changed","errors"
+,1,1,"pages",2,"pages",1736145035,""

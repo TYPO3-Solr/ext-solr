@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\PageStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\StrategyFactory;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use Doctrine\DBAL\Exception as DBALException;
@@ -26,6 +27,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
 
@@ -133,6 +135,7 @@ class GarbageHandler extends AbstractUpdateHandler
             return;
         }
 
+        $fullRecord = null;
         if ($table === 'pages') {
             // We need to get the full record to find out if this is a page translation
             $fullRecord = $this->getRecord('pages', $uid);
@@ -141,6 +144,10 @@ class GarbageHandler extends AbstractUpdateHandler
                 $uidForRecursiveTriggers = (int)$fullRecord['l10n_parent'];
             }
             $this->deleteSubEntriesWhenRecursiveTriggerIsRecognized($table, $uidForRecursiveTriggers, $updatedFields);
+            // A page hidden in default language stays indexable in its translations only.
+            if ($this->isPageHiddenInDefaultLanguage($fullRecord)) {
+                GeneralUtility::makeInstance(PageStrategy::class)->removeGarbageOfDefaultLanguage($uid);
+            }
         }
 
         $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
@@ -150,6 +157,15 @@ class GarbageHandler extends AbstractUpdateHandler
         }
 
         $this->collectGarbage($table, $uid);
+    }
+
+    protected function isPageHiddenInDefaultLanguage(?array $pageRecord): bool
+    {
+        if ($pageRecord === null || (int)($pageRecord['sys_language_uid'] ?? 0) !== 0) {
+            return false;
+        }
+
+        return (new PageTranslationVisibility((int)($pageRecord['l18n_cfg'] ?? 0)))->shouldBeHiddenInDefaultLanguage();
     }
 
     /**

@@ -47,6 +47,17 @@ class PageStrategy extends AbstractStrategy
     }
 
     /**
+     * Removes the documents of a page in the default language only, e.g. when
+     * "Hide default language of page" (l18n_cfg & 1) was enabled. Translations stay in the index.
+     *
+     * @throws DBALException
+     */
+    public function removeGarbageOfDefaultLanguage(int $uid): void
+    {
+        $this->deleteIndexDocumentsInLanguage('pages', $uid, 0);
+    }
+
+    /**
      * Deletes a page from Solr and updates the item in the index queue
      * The MountPagesUpdater takes care of mounted pages
      *

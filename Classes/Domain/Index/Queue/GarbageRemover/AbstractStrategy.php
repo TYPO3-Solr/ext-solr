@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
+use ApacheSolrForTypo3\Solr\IndexQueue\ItemInterface;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -106,7 +107,6 @@ abstract class AbstractStrategy
     /**
      * Deletes index documents for a given record identification.
      *
-     *
      * @throws DBALException
      */
     protected function deleteIndexDocuments(string $table, int $uid, int $language = 0): void
@@ -118,6 +118,59 @@ abstract class AbstractStrategy
         }
 
         // record can be indexed for multiple sites
+        foreach ($this->getSitesOfQueueItems($indexQueueItems) as $site) {
+            // a site can have multiple connections (cores / languages)
+            $solrConnections = $this->connectionManager->getConnectionsBySite($site);
+            if ($language > 0 && isset($solrConnections[$language])) {
+                $solrConnections = [$language => $solrConnections[$language]];
+            }
+            $this->deleteRecordInAllSolrConnections(
+                $table,
+                $uid,
+                $solrConnections,
+                $site->getSiteHash(),
+                $site->getSolrConfiguration()->getEnableCommits(),
+            );
+        }
+    }
+
+    /**
+     * Unlike deleteIndexDocuments(), language 0 means the default language and not all languages.
+     *
+     * @throws DBALException
+     */
+    protected function deleteIndexDocumentsInLanguage(string $table, int $uid, int $language): void
+    {
+        $indexQueueItems = $this->queue->getItems($table, $uid);
+        $sites = $indexQueueItems === []
+            ? $this->siteRepository->getAvailableSites()
+            : $this->getSitesOfQueueItems($indexQueueItems);
+
+        foreach ($sites as $site) {
+            $solrConnections = $this->connectionManager->getConnectionsBySite($site);
+            if (!isset($solrConnections[$language])) {
+                continue;
+            }
+            $this->deleteRecordInAllSolrConnections(
+                $table,
+                $uid,
+                [$language => $solrConnections[$language]],
+                $site->getSiteHash(),
+                $site->getSolrConfiguration()->getEnableCommits(),
+            );
+        }
+    }
+
+    /**
+     * Returns the sites of the given queue items, keyed by root page id.
+     * Queue items whose site does not exist anymore are removed from the queue.
+     *
+     * @param ItemInterface[] $indexQueueItems
+     * @return Site[]
+     */
+    protected function getSitesOfQueueItems(array $indexQueueItems): array
+    {
+        $sites = [];
         foreach ($indexQueueItems as $indexQueueItem) {
             try {
                 $site = $indexQueueItem->getSite();
@@ -129,16 +182,9 @@ abstract class AbstractStrategy
                 $this->queue->deleteItem($indexQueueItem->getType(), $indexQueueItem->getIndexQueueUid());
                 continue;
             }
-
-            $enableCommitsSetting = $site->getSolrConfiguration()->getEnableCommits();
-            $siteHash = $site->getSiteHash();
-            // a site can have multiple connections (cores / languages)
-            $solrConnections = $this->connectionManager->getConnectionsBySite($site);
-            if ($language > 0 && isset($solrConnections[$language])) {
-                $solrConnections = [$language => $solrConnections[$language]];
-            }
-            $this->deleteRecordInAllSolrConnections($table, $uid, $solrConnections, $siteHash, $enableCommitsSetting);
+            $sites[$site->getRootPageId()] = $site;
         }
+        return $sites;
     }
 
     protected function deleteRecordInAllSites(string $table, int $uid): void
