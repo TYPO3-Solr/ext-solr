@@ -1,0 +1,4 @@
+"pages",
+# Mount point created in workspace 1 and not yet published
+,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title","tstamp","t3ver_wsid","t3ver_state"
+,15,1,0,7,24,1,"/mount-point-in-workspace","Mount Point in Workspace",1007007007,1,1
