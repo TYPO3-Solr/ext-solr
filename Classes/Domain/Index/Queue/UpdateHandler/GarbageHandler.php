@@ -20,13 +20,17 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\PageStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\StrategyFactory;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\ParameterType;
 use InvalidArgumentException;
+use JsonException;
+use Psr\Log\LogLevel;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
@@ -93,10 +97,7 @@ class GarbageHandler extends AbstractUpdateHandler
      * document have to be removed from Solr. Reindexing is taken
      * care of by the DataUpdateHandler.
      *
-     * @param int $uid
-     * @param int|null $previousParentId
      * @throws DBALException
-     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function handlePageMovement(int $uid, ?int $previousParentId = null): void
     {
@@ -118,8 +119,13 @@ class GarbageHandler extends AbstractUpdateHandler
     /**
      * Performs record garbage check
      *
-     * @throws DBALException
      * @throws AspectNotFoundException
+     * @throws DBALException
+     * @throws InvalidConnectionException
+     * @throws JsonException
+     * @throws NoSuchCacheException
+     * @throws SiteNotFoundException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function performRecordGarbageCheck(
         int $uid,
@@ -135,7 +141,6 @@ class GarbageHandler extends AbstractUpdateHandler
             return;
         }
 
-        $fullRecord = null;
         if ($table === 'pages') {
             // We need to get the full record to find out if this is a page translation
             $fullRecord = $this->getRecord('pages', $uid);
@@ -195,6 +200,8 @@ class GarbageHandler extends AbstractUpdateHandler
      *
      * @throws AspectNotFoundException
      * @throws DBALException
+     * @throws JsonException
+     * @throws NoSuchCacheException
      */
     protected function getIsGarbageRecord(string $table, array $record, bool $frontendGroupsRemoved): bool
     {
@@ -210,6 +217,8 @@ class GarbageHandler extends AbstractUpdateHandler
      * Currently, standard pages and mount pages can be indexed.
      *
      * @throws DBALException
+     * @throws JsonException
+     * @throws NoSuchCacheException
      */
     protected function isIndexablePageType(array $record): bool
     {
@@ -291,7 +300,7 @@ class GarbageHandler extends AbstractUpdateHandler
             $row = $queryBuilder
                 ->select(...GeneralUtility::trimExplode(',', $garbageCollectionRelevantFields, true))
                 ->from($table)
-                ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \Doctrine\DBAL\ParameterType::INTEGER)))
+                ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, ParameterType::INTEGER)))
                 ->executeQuery()
                 ->fetchAssociative();
         } catch (Throwable) {

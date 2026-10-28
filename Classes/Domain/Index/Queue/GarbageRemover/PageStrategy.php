@@ -17,10 +17,13 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -32,6 +35,9 @@ class PageStrategy extends AbstractStrategy
      * Removes the garbage of a page record.
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
      * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function removeGarbageOfByStrategy(string $table, int $uid): void
@@ -51,6 +57,9 @@ class PageStrategy extends AbstractStrategy
      * "Hide default language of page" (l18n_cfg & 1) was enabled. Translations stay in the index.
      *
      * @throws DBALException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function removeGarbageOfDefaultLanguage(int $uid): void
     {
@@ -62,6 +71,8 @@ class PageStrategy extends AbstractStrategy
      * The MountPagesUpdater takes care of mounted pages
      *
      * @throws DBALException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
      * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function deleteInSolrAndUpdateIndexQueue(string $table, int $uid): void
@@ -75,10 +86,12 @@ class PageStrategy extends AbstractStrategy
     }
 
     /**
-     * Determines the relevant page id for a content element update. Deletes the page from solr and requeues the
+     * Determines the relevant page id for a content element update. Deletes the page from solr and re-queues the
      * page for a reindex.
      *
      * @throws DBALException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
      * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function collectPageGarbageByContentChange(int $ttContentUid): void
@@ -91,6 +104,10 @@ class PageStrategy extends AbstractStrategy
      * When a page was changed it is removed from the index and index queue.
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function collectPageGarbageByPageChange(int $uid): void
     {
@@ -104,6 +121,12 @@ class PageStrategy extends AbstractStrategy
         $this->collectMountPointGarbage($page);
     }
 
+    /**
+     * @throws DBALException
+     * @throws InvalidArgumentException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
+     */
     protected function collectMountPointGarbage(?array $page): void
     {
         if ($page === null || (int)$page['doktype'] !== PageRepository::DOKTYPE_MOUNTPOINT) {
