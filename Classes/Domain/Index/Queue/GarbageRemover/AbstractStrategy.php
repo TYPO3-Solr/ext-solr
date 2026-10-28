@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializat
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\ItemInterface;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -30,6 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Traits\SkipRecordByRootlineConfigurationTrait;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
 
@@ -59,7 +61,7 @@ abstract class AbstractStrategy
     }
 
     /**
-     * Call's the removal of the strategy and afterwards the garbage-collector post-processing hook.
+     * Calls the removal of the strategy and afterward the garbage-collector post-processing hook.
      */
     public function removeGarbageOf(string $table, int $uid): void
     {
@@ -69,7 +71,7 @@ abstract class AbstractStrategy
 
     /**
      * An implementation of the GarbageCollection strategy is responsible to remove the garbage from
-     * the indexqueue and from the solr server.
+     * the index-queue and from the solr server.
      */
     abstract protected function removeGarbageOfByStrategy(string $table, int $uid): void;
 
@@ -77,6 +79,9 @@ abstract class AbstractStrategy
      * Deletes a document from solr and from the index queue.
      *
      * @throws DBALException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function deleteInSolrAndRemoveFromIndexQueue(string $table, int $uid): void
     {
@@ -88,6 +93,8 @@ abstract class AbstractStrategy
      * Deletes a document from solr and updates the item in the index queue (e.g. on page content updates).
      *
      * @throws DBALException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
      * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function deleteInSolrAndUpdateIndexQueue(string $table, int $uid): void
@@ -108,6 +115,9 @@ abstract class AbstractStrategy
      * Deletes index documents for a given record identification.
      *
      * @throws DBALException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function deleteIndexDocuments(string $table, int $uid, int $language = 0): void
     {
@@ -138,6 +148,9 @@ abstract class AbstractStrategy
      * Unlike deleteIndexDocuments(), language 0 means the default language and not all languages.
      *
      * @throws DBALException
+     * @throws InvalidConnectionException
+     * @throws SiteNotFoundException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function deleteIndexDocumentsInLanguage(string $table, int $uid, int $language): void
     {
@@ -167,6 +180,11 @@ abstract class AbstractStrategy
      *
      * @param ItemInterface[] $indexQueueItems
      * @return Site[]
+     *
+     * @throws DBALException
+     * @throws SiteNotFoundException
+     *
+     * @noinspection PhpDocRedundantThrowsInspection Item::getSite() throws SiteNotFoundException
      */
     protected function getSitesOfQueueItems(array $indexQueueItems): array
     {
@@ -174,7 +192,7 @@ abstract class AbstractStrategy
         foreach ($indexQueueItems as $indexQueueItem) {
             try {
                 $site = $indexQueueItem->getSite();
-            } catch (InvalidArgumentException) {
+            } /** @noinspection PhpRedundantCatchClauseInspection Item::getSite() throws it if the site root is missing, see #3500 */ catch (InvalidArgumentException) {
                 $site = null;
             }
 
@@ -187,6 +205,12 @@ abstract class AbstractStrategy
         return $sites;
     }
 
+    /**
+     * Deletes the record's documents in all sites.
+     *
+     * @throws InvalidConnectionException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     */
     protected function deleteRecordInAllSites(string $table, int $uid): void
     {
         $sites = $this->siteRepository->getAvailableSites();
@@ -214,14 +238,14 @@ abstract class AbstractStrategy
     ): void {
         foreach ($solrConnections as $solr) {
             $query = 'type:' . $table . ' AND uid:' . $uid . ' AND siteHash:' . $siteHash;
-            if (!$this->sendDeleteQuery($solr, $query, $enableCommitsSetting)) {
-                continue;
-            }
+            $this->sendDeleteQuery($solr, $query, $enableCommitsSetting);
         }
     }
 
     /**
      * Deletes indexed mounted pages in all solr connections from that site.
+     *
+     * @throws InvalidConnectionException
      */
     protected function deleteMountedPagesInAllSolrConnections(
         Site $site,
@@ -232,9 +256,7 @@ abstract class AbstractStrategy
             $query = 'type:pages'
                 . ' AND id:*/pages/*/' . $mountPointIdentifier . '/*'
                 . ' AND siteHash:' . $site->getSiteHash();
-            if (!$this->sendDeleteQuery($solr, $query, $site->getSolrConfiguration()->getEnableCommits())) {
-                continue;
-            }
+            $this->sendDeleteQuery($solr, $query, $site->getSolrConfiguration()->getEnableCommits());
         }
     }
 
@@ -263,7 +285,7 @@ abstract class AbstractStrategy
             $connection->getWriteService()->commit(false, false);
         }
 
-        return $success;
+        return true;
     }
 
     /**
