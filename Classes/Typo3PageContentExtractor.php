@@ -90,7 +90,8 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
 
         $doc = new DOMDocument('1.0', 'UTF-8');
         libxml_use_internal_errors(true);
-        $doc->loadHTML('<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . $indexableContent);
+        // Not an XML declaration as encoding hint: it is no HTML, libxml2 >= 2.14 returns it as a bogus comment.
+        $doc->loadHTML('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $indexableContent);
         $xpath = new DOMXPath($doc);
         foreach ($excludeClasses as $excludePart) {
             $elements = $xpath->query("//*[contains(@class,'" . $excludePart . "')]");
@@ -103,9 +104,9 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
             }
         }
         $html = $doc->saveHTML($doc->documentElement->parentNode);
-        // remove XML-Preamble, newlines and doctype
-        $html = preg_replace('/(<\?xml[^>]+\?>|\r?\n|<!DOCTYPE.+?>)/imS', '', $html);
-        return str_replace(['<html>', '</html>', '<body>', '</body>'], ['', '', '', ''], $html);
+        // remove the encoding hint, newlines and doctype
+        $html = preg_replace('/(<meta http-equiv="Content-Type"[^>]*>|\r?\n|<!DOCTYPE.+?>)/imS', '', $html);
+        return str_replace(['<html>', '</html>', '<head>', '</head>', '<body>', '</body>'], '', $html);
     }
 
     /**
