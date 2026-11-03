@@ -34,7 +34,7 @@ class TextToVectorModelStoreStatus extends AbstractSolrStatus
      * Class name of the knn_text_to_vector query parser
      */
     private const TTV_QUERY_PARSER_CLASS_NAME =
-        'org.apache.solr.languagemodels.textvectorisation.search.TextToVectorQParserPlugin';
+        'org.apache.solr.languagemodels.search.TextToVectorQParserPlugin';
 
     /**
      * Checks the status of the vector plugin and store
