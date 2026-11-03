@@ -9,7 +9,7 @@ on:
 jobs:
   trigger-build:
     name: "Trigger build on release branches"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     permissions:
       actions: write

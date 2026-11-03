@@ -34,7 +34,7 @@ env:
 jobs:
   ci_bootstrapping:
     name: "Build and test docker image + Collect build matrix"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.collect_build_matrix.outputs.matrix }}
     steps:
@@ -99,7 +99,7 @@ jobs:
 
   test_documentation:
     name: test Documentation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       # Workaround for issue with actions/checkout "wrong PR commit checkout". See: ci_bootstrapping job
       - name: Checkout current state of Pull Request
@@ -120,7 +120,7 @@ jobs:
           Build/generate_documentation.sh --no-progress
 
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: ci_bootstrapping
     continue-on-error: ${{ contains(matrix.TYPO3, '-dev') }}
     strategy:
@@ -222,7 +222,7 @@ jobs:
         startsWith(github.ref, 'refs/heads/release-') ||
         startsWith(github.ref, 'refs/tags/')
       )
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       DOCKER_PLATFORMS:  "linux/amd64,linux/arm64,linux/ppc64le"
       DOCKER_HUB_IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/ext-solr"
@@ -294,7 +294,7 @@ jobs:
     name: Publish ${{ github.ref_name }}
     needs: tests
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
     steps:
