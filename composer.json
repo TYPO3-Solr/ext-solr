@@ -195,7 +195,7 @@
         "ext-solrconsole": "^14.0",
         "ext-solrdebugtools": "^14.0",
         "Apache-Solr": [
-          "10.0.0"
+          "10.1.0"
         ],
         "configset": "ext_solr_14_0_0"
       },
