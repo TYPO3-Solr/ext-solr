@@ -473,9 +473,9 @@
 		<processor class="solr.RunUpdateProcessorFactory"/>
 	</updateRequestProcessorChain>
 
-	<queryParser name="knn_text_to_vector" class="org.apache.solr.languagemodels.textvectorisation.search.TextToVectorQParserPlugin"/>
+	<queryParser name="knn_text_to_vector" class="org.apache.solr.languagemodels.search.TextToVectorQParserPlugin"/>
 	<updateRequestProcessorChain name="textToVector">
-		<processor class="solr.languagemodels.textvectorisation.update.processor.TextToVectorUpdateProcessorFactory">
+		<processor class="solr.languagemodels.update.processor.factory.TextToVectorUpdateProcessorFactory">
 			<str name="inputField">vectorContent</str>
 			<str name="outputField">vector</str>
 			<str name="model">language-models</str>

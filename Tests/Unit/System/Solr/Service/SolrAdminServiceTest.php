@@ -74,7 +74,7 @@ final class SolrAdminServiceTest extends SetUpUnitTestCase
     public function getSystemInformation(): void
     {
         $fakeSystemInformationResponse = $this->createMock(ResponseAdapter::class);
-        $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/system?wt=json', $fakeSystemInformationResponse);
+        $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/../admin/info/system?wt=json', $fakeSystemInformationResponse);
         $result = $this->adminService->getSystemInformation();
         self::assertSame($fakeSystemInformationResponse, $result, 'Could not get expected result from getSystemInformation');
     }
@@ -89,7 +89,7 @@ final class SolrAdminServiceTest extends SetUpUnitTestCase
             json_encode($fakeRawResponse),
             200,
         );
-        $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/system?wt=json', $fakeSystemInformationResponse);
+        $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/../admin/info/system?wt=json', $fakeSystemInformationResponse);
         $result = $this->adminService->getSolrServerVersion();
         self::assertSame('6.2.1', $result, 'Can not get solr version from faked response');
     }
