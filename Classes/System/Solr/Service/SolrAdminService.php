@@ -39,7 +39,7 @@ class SolrAdminService extends AbstractSolrService
 {
     public const CONFIG_SERVLET = 'config';
     public const LUKE_SERVLET = 'admin/luke';
-    public const SYSTEM_SERVLET = 'admin/system';
+    public const SYSTEM_SERVLET = '../admin/info/system';
     public const CORES_SERVLET = '../admin/cores';
     public const FILE_SERVLET = 'admin/file';
     public const SCHEMA_SERVLET = 'schema';
@@ -89,7 +89,7 @@ class SolrAdminService extends AbstractSolrService
     }
 
     /**
-     * Call the /admin/system servlet and retrieve system information about Solr
+     * Call the node-level /admin/info/system servlet; Solr 10.1 no longer serves it per core
      */
     public function system(): ResponseAdapter
     {
