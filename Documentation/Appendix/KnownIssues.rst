@@ -8,7 +8,7 @@ Text embedding failure
 
 EXT:solr 13.1 introduced an initial vector search option, but further improvements and features are planned and in progress.
 
-A weak point of the vector search feature is the error handling, if the required llm is not defined or the embedding fails, indexing and/or search will be impaired.
+A weak point of the vector search feature is the error handling, if the required llm "language-models" is not defined or the embedding fails, indexing and/or search will be impaired.
 
 Indexing
 ~~~~~~~~
