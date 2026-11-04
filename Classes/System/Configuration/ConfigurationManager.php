@@ -24,6 +24,7 @@ use RuntimeException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -50,6 +51,15 @@ use TYPO3\CMS\Frontend\Page\PageInformation;
  */
 class ConfigurationManager implements SingletonInterface
 {
+    /**
+     * @param PhpFrontend|null $typoScriptCache Dedicated cache for TypoScript built outside a frontend request,
+     *                                          used only if enabled via the "enableIndexingTypoScriptCache" extension setting
+     */
+    public function __construct(
+        protected readonly ?PhpFrontend $typoScriptCache = null,
+        protected ?ExtensionConfiguration $extensionConfiguration = null,
+    ) {}
+
     /**
      * @throws DBALException
      * @throws JsonException
@@ -187,11 +197,12 @@ class ConfigurationManager implements SingletonInterface
         if ($site instanceof Site) {
             $expressionMatcherVariables['site'] = $site;
         }
+        $typoScriptCache = $this->getIndexingTypoScriptCache();
         $frontendTypoScript = $frontendTypoScriptFactory->createSettingsAndSetupConditions(
             $typo3Site,
             $sysTemplateRows,
             $expressionMatcherVariables,
-            null,
+            $typoScriptCache,
         );
         return $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
             true,
@@ -200,9 +211,27 @@ class ConfigurationManager implements SingletonInterface
             $sysTemplateRows,
             $expressionMatcherVariables,
             '0',
-            null,
+            $typoScriptCache,
             null,
         );
+    }
+
+    /**
+     * The TypoScript built here has no frontend request, so ModifyTypoScriptConfigEvent is not dispatched.
+     * It must therefore never be written to the core "typoscript" cache, where the frontend would pick
+     * up the unmodified "config." from. The dedicated cache is cleared together with the core cache
+     * (cache group "pages").
+     */
+    protected function getIndexingTypoScriptCache(): ?PhpFrontend
+    {
+        if ($this->typoScriptCache === null) {
+            return null;
+        }
+        $this->extensionConfiguration ??= GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        if (!$this->extensionConfiguration->getIsIndexingTypoScriptCacheEnabled()) {
+            return null;
+        }
+        return $this->typoScriptCache;
     }
 
     protected function fetchPageRecord(int $pageId): ?array
