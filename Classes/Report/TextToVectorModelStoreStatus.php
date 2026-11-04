@@ -75,18 +75,18 @@ class TextToVectorModelStoreStatus extends AbstractSolrStatus
             ];
 
             $models = $adminService->getVectorModelStore();
-            if (!isset($models['llm'])) {
+            if (!isset($models['language-models'])) {
                 $configuredModels[] = [
                     'baseUrl' => $endpoint,
                     'status' => ContextualFeedbackSeverity::WARNING,
                 ];
                 $missingModelConfigurations++;
             } else {
-                $modelParams = (array)$models['llm']['params'];
+                $modelParams = (array)$models['language-models']['params'];
                 $configuredModels[] = [
                     'baseUrl' => $endpoint,
                     'status' => ContextualFeedbackSeverity::OK,
-                    'class' => $models['llm']['class'] ?? '',
+                    'class' => $models['language-models']['class'] ?? '',
                     'modelBaseUrl' => $modelParams['baseUrl'] ?? '',
                     'modelName' => $modelParams['modelName'] ?? '',
                 ];
