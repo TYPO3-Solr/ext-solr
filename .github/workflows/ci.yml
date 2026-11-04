@@ -133,6 +133,8 @@ jobs:
       TYPO3_VERSION: ${{ matrix.TYPO3 }}
       PARATEST: 'on'
       TYPO3_SOLR_ENABLED_CORES: 'english german danish'
+      # Static analysis runs once: lowest supported PHP, stable TYPO3, main runner image.
+      RUN_STATIC_ANALYSIS: ${{ matrix.PHP == '8.2' && matrix.TYPO3 == '14' && matrix.OS == 'ubuntu-26.04' }}
 
     name: TYPO3 ${{ matrix.TYPO3 }} on PHP ${{ matrix.PHP }}${{ matrix.OS != 'ubuntu-26.04' && format(' ({0})', matrix.OS) || '' }}
     steps:
@@ -193,14 +195,57 @@ jobs:
           tools: composer:v2
       -
         name: CI-Bootstrap
+        id: ci-bootstrap
         run: |
           ./Build/Test/bootstrap.sh --skip-solr-install
           echo "Current Size of EXT:Solr build Artefacts before run: " \
             && sudo du -sh "${{ env.CI_BUILD_DIRECTORY }}"
+      # Each check runs even if a previous one failed, to report all problems at once.
       -
-        name: CI-Build
+        name: 'PHP Lint'
+        if: ${{ !cancelled() && steps.ci-bootstrap.outcome == 'success' && env.RUN_STATIC_ANALYSIS == 'true' }}
         run: |
-          ./Build/Test/cibuild.sh
+          composer tests:lint-php
+      -
+        name: 'Coding standards'
+        if: ${{ !cancelled() && steps.ci-bootstrap.outcome == 'success' && env.RUN_STATIC_ANALYSIS == 'true' }}
+        run: |
+          composer t3:standards:fix -- --diff --verbose --dry-run --show-progress=none
+      -
+        name: 'XML Lint'
+        if: ${{ !cancelled() && steps.ci-bootstrap.outcome == 'success' && env.RUN_STATIC_ANALYSIS == 'true' }}
+        run: |
+          composer tests:lint-xml
+      -
+        name: 'PHPStan'
+        if: ${{ !cancelled() && steps.ci-bootstrap.outcome == 'success' && env.RUN_STATIC_ANALYSIS == 'true' }}
+        run: |
+          composer tests:phpstan -- --no-progress
+      -
+        name: 'No test case lost'
+        if: ${{ !cancelled() && steps.ci-bootstrap.outcome == 'success' }}
+        run: |
+          composer tests:known-tests
+      -
+        name: 'Unit tests'
+        if: ${{ !cancelled() && steps.ci-bootstrap.outcome == 'success' }}
+        run: |
+          composer tests:unit
+      -
+        name: 'Integration tests'
+        if: ${{ !cancelled() && steps.ci-bootstrap.outcome == 'success' }}
+        # The TYPO3 testing framework reads these lowerCamelCase names.
+        env:
+          typo3DatabaseName: ${{ env.TYPO3_DATABASE_NAME }}
+          typo3DatabaseHost: ${{ env.TYPO3_DATABASE_HOST }}
+          typo3DatabaseUsername: ${{ env.TYPO3_DATABASE_USERNAME }}
+          typo3DatabasePassword: ${{ env.TYPO3_DATABASE_PASSWORD }}
+        run: |
+          composer tests:integration
+      -
+        name: 'Build artefacts size'
+        if: ${{ !cancelled() }}
+        run: |
           echo "Current Size of EXT:Solr build Artefacts after run: " \
             && sudo du -sh "${{ env.CI_BUILD_DIRECTORY }}" \
             && sudo du -sh ${{ env.CI_BUILD_DIRECTORY }}/*

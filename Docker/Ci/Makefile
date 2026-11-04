@@ -17,7 +17,11 @@ bootstrap:
 	docker-compose exec ci /bin/bash -i "./Build/Test/bootstrap.sh"
 
 test: up bootstrap
-	docker-compose exec ci /bin/bash -i "./Build/Test/cibuild.sh"
+	docker-compose exec ci /bin/bash -i -c "composer tests:lint-php; composer t3:standards:fix -- --diff --dry-run; \
+		composer tests:lint-xml; composer tests:phpstan; composer tests:known-tests; composer tests:unit; \
+		typo3DatabaseName=\$$TYPO3_DATABASE_NAME typo3DatabaseHost=\$$TYPO3_DATABASE_HOST \
+		typo3DatabaseUsername=\$$TYPO3_DATABASE_USERNAME typo3DatabasePassword=\$$TYPO3_DATABASE_PASSWORD \
+		composer tests:integration"
 
 down:
 	docker-compose down
