@@ -42,13 +42,18 @@ Afterwards you can run the ci suite in your shell
 Running the ci Suite
 ====================
 
-When the test environment was boostrapped correctly you can start the test runner:
+When the test environment was boostrapped correctly you can run the same checks as the CI does:
 
 .. code-block:: bash
 
-    ./Build/Test/cibuild.sh
+    composer tests:lint-php
+    composer t3:standards:fix -- --diff --dry-run
+    composer tests:lint-xml
+    composer tests:phpstan
+    composer tests:unit
+    typo3DatabaseName=$TYPO3_DATABASE_NAME typo3DatabaseHost=$TYPO3_DATABASE_HOST \
+      typo3DatabaseUsername=$TYPO3_DATABASE_USERNAME typo3DatabasePassword=$TYPO3_DATABASE_PASSWORD \
+      composer tests:integration
 
-When everything is configured correctly all tests should run through and you should get a green bar:
-
-.. image:: /Images/Development/ci_build.png
+The integration tests need the database settings in the lowerCamelCase names the TYPO3 testing framework reads.
 
