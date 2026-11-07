@@ -62,6 +62,18 @@ final class SearchTermClustererTest extends SetUpUnitTestCase
         self::assertSame([['contact@0', 'contact form@0']], self::themes([self::group('contact', 10), self::group('contact form', 4)]));
     }
 
+    /**
+     * A product name in a long question is no theme: the question asks something else.
+     */
+    #[Test]
+    public function findsTheThemeAsAWholeWordOnlyInShortSearches(): void
+    {
+        self::assertSame(
+            [['typo3@0', 'typo3 templates@0'], ['wie kann ich in typo3 eine sitemap erstellen@0']],
+            self::themes([self::group('typo3', 26), self::group('wie kann ich in typo3 eine sitemap erstellen', 18), self::group('typo3 templates', 4)]),
+        );
+    }
+
     #[Test]
     public function needsFiveCharactersForATheme(): void
     {

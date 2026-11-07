@@ -25,11 +25,14 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics\Phrases;
  * Matches, compared with umlauts as their base letters:
  * - the same term;
  * - a typo: one edit from 5 characters on, two from 9 on (the shorter term counts);
- * - a theme of 5 or more characters at the start of the term or as a whole word in it.
+ * - a theme of 5 or more characters at the start of the term or as a whole word
+ *   in it, if the term has at most three words: in a longer question a word like
+ *   "typo3" names the product, not what is asked.
  */
 final class SearchTermClusterer
 {
     private const MINIMUM_THEME_LENGTH = 5;
+    private const MAXIMUM_WORDS_FOR_LONGER_FORMS = 3;
     private const ONE_TYPO_LENGTH = 5;
     private const TWO_TYPOS_LENGTH = 9;
     /**
@@ -86,15 +89,18 @@ final class SearchTermClusterer
         }
 
         $characters = mb_str_split($term, 1, 'UTF-8');
-        for ($length = self::MINIMUM_THEME_LENGTH; $length < count($characters); $length++) {
-            $prefix = implode('', array_slice($characters, 0, $length));
-            if (isset($leads[$prefix])) {
-                $candidates[] = $leads[$prefix];
+        $words = preg_split('/[\s\-]+/u', $term) ?: [];
+        if (count($words) <= self::MAXIMUM_WORDS_FOR_LONGER_FORMS) {
+            for ($length = self::MINIMUM_THEME_LENGTH; $length < count($characters); $length++) {
+                $prefix = implode('', array_slice($characters, 0, $length));
+                if (isset($leads[$prefix])) {
+                    $candidates[] = $leads[$prefix];
+                }
             }
-        }
-        foreach (preg_split('/[\s\-]+/u', $term) ?: [] as $word) {
-            if (mb_strlen($word, 'UTF-8') >= self::MINIMUM_THEME_LENGTH && isset($leads[$word])) {
-                $candidates[] = $leads[$word];
+            foreach ($words as $word) {
+                if (mb_strlen($word, 'UTF-8') >= self::MINIMUM_THEME_LENGTH && isset($leads[$word])) {
+                    $candidates[] = $leads[$word];
+                }
             }
         }
 
