@@ -93,6 +93,33 @@ final class SearchTermClustererTest extends SetUpUnitTestCase
         self::assertSame([['abcde@0'], ['abcdf@0']], self::themes([self::group('abcde', 1), self::group('abcdf', 1)]));
     }
 
+    /**
+     * Visitors of AI search type whole questions; keywords hold up to 128 characters.
+     */
+    #[Test]
+    public function clustersLongQuestionsQuicklyAndWithLittleMemory(): void
+    {
+        mt_srand(11);
+        $groups = [];
+        for ($i = 0; $i < 2000; $i++) {
+            $question = 'wie kann ich in typo3 ' . $i . ' ';
+            while (mb_strlen($question) < 126) {
+                $question .= ['größe ', 'ändern ', 'seite ', '🙂 ', 'inhalt '][mt_rand(0, 4)];
+            }
+            $groups[] = self::group(mb_substr($question, 0, 128), 2);
+        }
+
+        memory_reset_peak_usage();
+        $before = memory_get_usage();
+        $start = hrtime(true);
+        $themes = (new SearchTermClusterer())->cluster($groups);
+        $seconds = (hrtime(true) - $start) / 1e9;
+
+        self::assertLessThan(2.0, $seconds);
+        self::assertLessThan(64 * 1024 * 1024, memory_get_peak_usage() - $before);
+        self::assertSame(2000, array_sum(array_map('count', $themes)));
+    }
+
     #[Test]
     public function clustersTwentyThousandTermsInUnderTwoSeconds(): void
     {

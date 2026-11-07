@@ -28,8 +28,8 @@ final class StatisticsFilterDto
     private int $limit = 0;
     private bool $mergeSimilar = true;
 
-    /** @var list<int> */
-    private array $allowedLanguageIds = [];
+    /** @var list<int>|null null: languages are not restricted (callers that set none) */
+    private ?array $allowedLanguageIds = null;
 
     public function __construct()
     {
@@ -138,7 +138,16 @@ final class StatisticsFilterDto
      */
     public function getLanguageIds(): array
     {
-        return in_array($this->languageId, $this->allowedLanguageIds, true) ? [$this->languageId] : $this->allowedLanguageIds;
+        $allowed = $this->allowedLanguageIds ?? [];
+        return in_array($this->languageId, $allowed, true) ? [$this->languageId] : $allowed;
+    }
+
+    /**
+     * Languages were restricted, and the editor may access none of them
+     */
+    public function hasNoAllowedLanguage(): bool
+    {
+        return $this->allowedLanguageIds === [];
     }
 
     public function isMergeSimilar(): bool

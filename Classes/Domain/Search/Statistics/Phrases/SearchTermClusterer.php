@@ -24,7 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics\Phrases;
  *
  * Matches, compared with umlauts as their base letters:
  * - the same term;
- * - a typo: one edit from 5 characters on, two from 9 on (the shorter term counts);
+ * - a typo: one edit from 5 characters on, two from 9 on, none above 20 (the
+ *   shorter term counts): typos matter in keywords, and the deletion variants of
+ *   long questions would fill the memory;
  * - a theme of 5 or more characters at the start of the term or as a whole word
  *   in it, if the term has at most three words: in a longer question a word like
  *   "typo3" names the product, not what is asked.
@@ -35,6 +37,7 @@ final class SearchTermClusterer
     private const MAXIMUM_WORDS_FOR_LONGER_FORMS = 3;
     private const ONE_TYPO_LENGTH = 5;
     private const TWO_TYPOS_LENGTH = 9;
+    private const MAXIMUM_TYPO_LENGTH = 20;
     /**
      * Only terms searched at least this often lead a theme
      */
@@ -121,6 +124,7 @@ final class SearchTermClusterer
     private static function maximumTypos(int $length): int
     {
         return match (true) {
+            $length > self::MAXIMUM_TYPO_LENGTH => 0,
             $length >= self::TWO_TYPOS_LENGTH => 2,
             $length >= self::ONE_TYPO_LENGTH => 1,
             default => 0,

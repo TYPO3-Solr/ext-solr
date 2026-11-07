@@ -188,6 +188,31 @@ final class StatisticsRepositoryTest extends IntegrationTestBase
         self::assertSame(4, $repository->countSearches($filter->setLanguageId(0), $filter->getQueriesStartDate()));
     }
 
+    /**
+     * An editor without access to any language of the site sees no statistics,
+     * not those of all languages.
+     */
+    #[Test]
+    public function countsNothingWithoutAnAllowedLanguage(): void
+    {
+        $filter = $this->languageFilter([]);
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+
+        self::assertSame([], $repository->findSearchTermCounts($filter, $filter->getQueriesStartDate()));
+        self::assertSame(0, $repository->countSearches($filter, $filter->getQueriesStartDate()));
+        self::assertSame([], $repository->getQueriesOverTime($filter, 86400));
+    }
+
+    #[Test]
+    public function countsAllLanguagesWhenNoLanguagesWereGiven(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics_languages.csv');
+        $filter = self::getFilterDto(1, 1471203378);
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+
+        self::assertSame(7, $repository->countSearches($filter, $filter->getQueriesStartDate()));
+    }
+
     #[Test]
     public function queriesOverTimeOnlyCountTheGivenLanguages(): void
     {

@@ -246,10 +246,15 @@ class StatisticsRepository extends AbstractRepository
     }
 
     /**
-     * Without allowed languages (callers that set none) every language counts.
+     * Without allowed languages (callers that set none) every language counts;
+     * with an empty set of allowed languages none does.
      */
     private function restrictToLanguages(QueryBuilder $queryBuilder, StatisticsFilterDto $filter): void
     {
+        if ($filter->hasNoAllowedLanguage()) {
+            $queryBuilder->andWhere('1 = 0');
+            return;
+        }
         $languageIds = $filter->getLanguageIds();
         if ($languageIds !== []) {
             $queryBuilder->andWhere(
