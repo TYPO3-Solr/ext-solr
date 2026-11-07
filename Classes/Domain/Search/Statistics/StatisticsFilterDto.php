@@ -8,6 +8,9 @@ use DateTime;
 
 final class StatisticsFilterDto
 {
+    public const LIMIT_OPTIONS = [5, 10, 25, 50];
+    public const ALL_LANGUAGES = -1;
+
     /** typoscript constants */
     private int $siteRootPageId = 0;
     private int $topHitsLimit = 5;
@@ -20,6 +23,13 @@ final class StatisticsFilterDto
     /** Override properties */
     private ?DateTime $startDate = null;
     private ?DateTime $endDate = null;
+    private int $languageId = self::ALL_LANGUAGES;
+    /** 0 while the editor has not chosen one: TypoScript decides */
+    private int $limit = 0;
+    private bool $mergeSimilar = true;
+
+    /** @var list<int> */
+    private array $allowedLanguageIds = [];
 
     public function __construct()
     {
@@ -79,12 +89,67 @@ final class StatisticsFilterDto
 
     public function getTopHitsLimit(): int
     {
-        return $this->topHitsLimit;
+        return $this->getLimit() ?: $this->topHitsLimit;
     }
 
     public function getNoHitsLimit(): int
     {
-        return $this->noHitsLimit;
+        return $this->getLimit() ?: $this->noHitsLimit;
+    }
+
+    /**
+     * The limit chosen for both top lists, 0 when none or one that is no option was chosen
+     */
+    public function getLimit(): int
+    {
+        return in_array($this->limit, self::LIMIT_OPTIONS, true) ? $this->limit : 0;
+    }
+
+    public function setLimit(int $limit): StatisticsFilterDto
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    public function getLanguageId(): int
+    {
+        return $this->languageId;
+    }
+
+    public function setLanguageId(int $languageId): StatisticsFilterDto
+    {
+        $this->languageId = $languageId;
+        return $this;
+    }
+
+    /**
+     * @param list<int> $allowedLanguageIds languages the editor may see
+     */
+    public function setAllowedLanguageIds(array $allowedLanguageIds): StatisticsFilterDto
+    {
+        $this->allowedLanguageIds = $allowedLanguageIds;
+        return $this;
+    }
+
+    /**
+     * The languages to count: the chosen one if the editor may see it, otherwise all they may see
+     *
+     * @return list<int>
+     */
+    public function getLanguageIds(): array
+    {
+        return in_array($this->languageId, $this->allowedLanguageIds, true) ? [$this->languageId] : $this->allowedLanguageIds;
+    }
+
+    public function isMergeSimilar(): bool
+    {
+        return $this->mergeSimilar;
+    }
+
+    public function setMergeSimilar(bool $mergeSimilar): StatisticsFilterDto
+    {
+        $this->mergeSimilar = $mergeSimilar;
+        return $this;
     }
 
     public function getQueriesLimit(): int
