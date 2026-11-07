@@ -27,12 +27,18 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 
 /**
  * Info Module
  */
 class InfoModuleController extends AbstractModuleController
 {
+    /**
+     * Local date and time without a time zone, the format the date pickers of the statistics filter read and send.
+     */
+    public const STATISTICS_FILTER_DATE_FORMAT = 'Y-m-d\\TH:i:s';
+
     protected ApacheSolrDocumentRepository $apacheSolrDocumentRepository;
 
     /**
@@ -42,6 +48,25 @@ class InfoModuleController extends AbstractModuleController
     {
         parent::initializeAction();
         $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(ApacheSolrDocumentRepository::class);
+    }
+
+    /**
+     * The date pickers of the statistics filter send local date and time
+     * without a time zone, Extbase expects one by default.
+     */
+    public function initializeIndexAction(): void
+    {
+        if (!$this->arguments->hasArgument('statisticsFilter')) {
+            return;
+        }
+        $configuration = $this->arguments->getArgument('statisticsFilter')->getPropertyMappingConfiguration();
+        foreach (['startDate', 'endDate'] as $property) {
+            $configuration->forProperty($property)->setTypeConverterOption(
+                DateTimeConverter::class,
+                DateTimeConverter::CONFIGURATION_DATE_FORMAT,
+                self::STATISTICS_FILTER_DATE_FORMAT,
+            );
+        }
     }
 
     /**
