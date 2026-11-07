@@ -73,7 +73,7 @@ final class SearchPhraseStatisticsTest extends SetUpUnitTestCase
         self::assertEqualsWithDelta(2.90, $phrases[0]->percent, 0.01);
         self::assertSame(['kontakt', 'kontaktformular', 'kontackt'], self::labels($phrases[0]->variants));
         self::assertSame(12, $phrases[0]->variants[2]->count);
-        self::assertFalse($phrases[1]->hasVariants());
+        self::assertFalse($phrases[1]->isTheme());
     }
 
     #[Test]
@@ -99,7 +99,7 @@ final class SearchPhraseStatisticsTest extends SetUpUnitTestCase
         $phrases = $this->statistics(self::CONTACT_ROWS, 4520)->getAll(self::filter()->setMergeSimilar(false))->phrases;
 
         self::assertCount(4, $phrases);
-        self::assertSame([], array_filter($phrases, static fn(SearchPhrase $phrase): bool => $phrase->hasVariants()));
+        self::assertSame([], array_filter($phrases, static fn(SearchPhrase $phrase): bool => $phrase->isTheme()));
     }
 
     #[Test]

@@ -35,7 +35,10 @@ final readonly class SearchPhrase
         public array $variants = [],
     ) {}
 
-    public function hasVariants(): bool
+    /**
+     * Not named hasVariants(): Fluid would call it for {phrase.variants}.
+     */
+    public function isTheme(): bool
     {
         return $this->variants !== [];
     }

@@ -29,6 +29,17 @@ Statistics
 The **Search Statistics** module allows you to see Top Search Phrases with and without results. In addition it possible to see a
 complete listing with hits etc. ranked by Top search keywords.
 
+The filter narrows the statistics to a period and a language; only languages the editor may access are offered,
+and "All languages" adds a language column. "Top entries" sets how many search phrases both top lists show
+(5, 10, 25 or 50; by default the TypoScript settings ``plugin.tx_solr.statistics.topHits.limit`` and
+``noHits.limit``).
+
+Spellings of the same search are counted as one phrase: upper and lower case, HTML entities and escaped
+characters such as ``price\: 10``. With "Merge similar searches" (on by default), typos and longer forms
+within one language are grouped into a theme named after its most searched phrase, for example "kontakt" with
+"kontackt" and "kontaktformular". Expand a theme to see its phrases with their own numbers. Percentages refer
+to all searches in the chosen period and languages.
+
 .. image:: /Images/Backend/solr-backend-module_Info-Statistics.png
 
 
