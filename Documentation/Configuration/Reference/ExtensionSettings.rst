@@ -131,3 +131,25 @@ or large facets that produce long query strings.
     Solr's query result cache. Only enable this if you actually run into HTTP 414
     errors that cannot be solved by increasing the web server's URI length limit.
 
+enableIndexingTypoScriptCache
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:Since: 14.0
+:Default: 0
+
+**Experimental.** When enabled, the TypoScript that EXT:solr builds outside a
+frontend request, e.g. for every item and language while indexing records, is
+cached in the dedicated cache ``solr_indexing_typoscript`` instead of being
+parsed again each time. This speeds up record indexing considerably, especially
+on sites with many languages.
+
+The cache is separate from the core ``typoscript`` cache on purpose: TypoScript
+built without a frontend request does not dispatch
+``ModifyTypoScriptConfigEvent``, so it must not end up in the cache entries the
+frontend reads.
+
+The cache belongs to the cache group ``pages`` and is therefore flushed together
+with the core TypoScript cache, e.g. by "Flush frontend caches" or
+``vendor/bin/typo3 cache:flush``.
+
