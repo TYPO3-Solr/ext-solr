@@ -742,11 +742,11 @@ Details about the configuration can be found in the `Apache Solr Reference Guide
 Uploading a model
 ~~~~~~~~~~~~~~~~~
 
-Store the model details in a local JSON file, e.g. `llm.json`, and upload the definition using cURL:
+Store the model details in a local JSON file, e.g. `language-models.json`, and upload the definition using cURL:
 
 ..  code-block:: shell
 
-    curl -XPUT 'http://solr-ddev-site.ddev.site:8983/solr/core_en/schema/text-to-vector-model-store' --data-binary "@llm.json" -H 'Content-type:application/json'
+    curl -XPUT 'http://solr-ddev-site.ddev.site:8983/solr/core_en/schema/text-to-vector-model-store' --data-binary "@language-models.json" -H 'Content-type:application/json'
 
 
 The JSON file could look like this:
@@ -755,7 +755,7 @@ The JSON file could look like this:
 
     {
       "class": "dev.langchain4j.model.openai.OpenAiEmbeddingModel",
-      "name": "llm",
+      "name": "language-models",
       "params": {
         "baseUrl": "https://api.openai.com/v1",
         "apiKey": "apiKey-openAI",

@@ -325,7 +325,7 @@ final class QueryBuilderTest extends SetUpUnitTestCase
         );
         self::assertCount(2, $query->getFilterQueries());
         self::assertSame(
-            '{!knn_text_to_vector model=llm f=vector topK=10}vector search term',
+            '{!knn_text_to_vector model=language-models f=vector topK=10}vector search term',
             $query->getParams()['q_vector'],
         );
         self::assertSame(['content', '$q_vector'], $query->getFields());
