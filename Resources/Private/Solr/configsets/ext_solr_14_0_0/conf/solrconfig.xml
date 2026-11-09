@@ -478,7 +478,7 @@
 		<processor class="solr.languagemodels.textvectorisation.update.processor.TextToVectorUpdateProcessorFactory">
 			<str name="inputField">vectorContent</str>
 			<str name="outputField">vector</str>
-			<str name="model">language-models</str>
+			<str name="model">llm</str>
 		</processor>
 		<processor class="solr.LogUpdateProcessorFactory"/>
 		<processor class="solr.RunUpdateProcessorFactory"/>
