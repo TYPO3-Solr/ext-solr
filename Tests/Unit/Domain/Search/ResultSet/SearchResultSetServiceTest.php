@@ -274,6 +274,62 @@ final class SearchResultSetServiceTest extends SetUpUnitTestCase
         self::assertSame(['hello formular', 'hello formula'], $candidates);
     }
 
+    #[Test]
+    public function autoCorrectionDoesNotRecurseWhenCorrectedQueryAgainYieldsNoResultsWithSuggestions(): void
+    {
+        // Every search returns zero results together with a spellchecking suggestion,
+        // so an auto-corrected search would trigger the next auto-correction endlessly (#2962).
+        $typoScriptConfiguration = new TypoScriptConfiguration([
+            'plugin.' => [
+                'tx_solr.' => [
+                    'search.' => [
+                        'spellchecking' => 1,
+                        'spellchecking.' => [
+                            'searchUsingSpellCheckerSuggestion' => 1,
+                            'numberOfSuggestionsToTry' => 1,
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $queryBuilderMock = $this->createMock(QueryBuilder::class);
+        $queryBuilderMock->method('buildSearchQuery')->willReturn($this->createMock(Query::class));
+
+        /** @var SearchResultSetService|MockObject $searchResultSetService */
+        $searchResultSetService = $this->getMockBuilder(SearchResultSetService::class)
+            ->onlyMethods(['doASearch'])
+            ->setConstructorArgs([
+                $typoScriptConfiguration,
+                $this->createMock(Search::class),
+                $this->createMock(SolrLogManager::class),
+                $this->createMock(SearchResultBuilder::class),
+                $queryBuilderMock,
+                $this->eventDispatcher,
+            ])->getMock();
+
+        $numberOfSearches = 0;
+        $searchResultSetService->method('doASearch')->willReturnCallback(
+            function () use (&$numberOfSearches): ResponseAdapter {
+                if (++$numberOfSearches > 10) {
+                    self::fail('Auto-correction recurses endlessly');
+                }
+                return $this->getFakeApacheSolrResponse('fake_solr_response_with_spellCheck.json');
+            },
+        );
+
+        $searchRequest = $this->createMock(SearchRequest::class);
+        $searchRequest->method('getRawUserQuery')->willReturn('tipo3');
+        $searchRequest->method('getResultsPerPage')->willReturn(10);
+        $searchRequest->method('getAdditionalFilters')->willReturn([]);
+        $searchRequest->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
+
+        $searchResultSet = $searchResultSetService->search($searchRequest);
+
+        self::assertSame(2, $numberOfSearches, 'Expected the initial search and one corrected search only');
+        self::assertFalse($searchResultSet->getIsAutoCorrected());
+    }
+
     /**
      * @return string[]
      */

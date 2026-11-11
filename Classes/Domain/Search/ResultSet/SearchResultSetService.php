@@ -54,6 +54,12 @@ class SearchResultSetService
 
     protected ?bool $isSolrAvailable = null;
 
+    /**
+     * Set while the searches of an auto-correction are running, so that these
+     * searches do not trigger another auto-correction (see #2962).
+     */
+    protected bool $isAutoCorrecting = false;
+
     protected TypoScriptConfiguration $typoScriptConfiguration;
 
     protected SolrLogManager $logger;
@@ -245,6 +251,11 @@ class SearchResultSetService
             return $searchResultSet;
         }
 
+        // the search is already a corrected search, do not correct the correction
+        if ($this->isAutoCorrecting) {
+            return $searchResultSet;
+        }
+
         // if more as zero results
         if ($searchResultSet->getAllResultCount() > 0) {
             return $searchResultSet;
@@ -271,23 +282,28 @@ class SearchResultSetService
         $maximumRuns = $this->typoScriptConfiguration->getSearchSpellcheckingNumberOfSuggestionsToTry();
         $runs = 0;
 
-        foreach ($corrections as $correction) {
-            $runs++;
+        $this->isAutoCorrecting = true;
+        try {
+            foreach ($corrections as $correction) {
+                $runs++;
 
-            $initialQuery = $searchRequest->getRawUserQuery();
+                $initialQuery = $searchRequest->getRawUserQuery();
 
-            $searchRequest->setRawQueryString($correction);
-            $searchResultSet = $this->search($searchRequest);
-            if ($searchResultSet->getAllResultCount() > 0) {
-                $searchResultSet->setIsAutoCorrected(true);
-                $searchResultSet->setCorrectedQueryString($correction);
-                $searchResultSet->setInitialQueryString($initialQuery);
-                break;
+                $searchRequest->setRawQueryString($correction);
+                $searchResultSet = $this->search($searchRequest);
+                if ($searchResultSet->getAllResultCount() > 0) {
+                    $searchResultSet->setIsAutoCorrected(true);
+                    $searchResultSet->setCorrectedQueryString($correction);
+                    $searchResultSet->setInitialQueryString($initialQuery);
+                    break;
+                }
+
+                if ($runs > $maximumRuns) {
+                    break;
+                }
             }
-
-            if ($runs > $maximumRuns) {
-                break;
-            }
+        } finally {
+            $this->isAutoCorrecting = false;
         }
         return $searchResultSet;
     }
