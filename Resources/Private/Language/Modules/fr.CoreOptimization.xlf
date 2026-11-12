@@ -4,19 +4,19 @@
     <unit id="title">
       <segment state="final">
         <source>Core Optimization</source>
-        <target>Core Optimization</target>
+        <target>Optimisation des cores</target>
       </segment>
     </unit>
     <unit id="short_description">
       <segment state="final">
         <source>Maintain synonyms and stopwords</source>
-        <target>Maintain synonyms and stopwords</target>
+        <target>Gérer les synonymes et les mots vides</target>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
         <source>This module allows you to optimize the cores, you can maintain synonyms and stopwords to improve the search results.</source>
-        <target>This module allows you to optimize the cores, you can maintain synonyms and stopwords to improve the search results.</target>
+        <target>Ce module permet d'optimiser les cores : vous pouvez y gérer les synonymes et les mots vides afin d'améliorer les résultats de recherche.</target>
       </segment>
     </unit>
   </file>
