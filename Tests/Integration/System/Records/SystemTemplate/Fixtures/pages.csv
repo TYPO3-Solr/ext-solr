@@ -1,0 +1,6 @@
+"pages"
+,"uid","pid","doktype","title"
+,1,0,1,"EXT:solr Test"
+,100,1,1,""
+,33,100,1,"Page with sys_template",
+,8657,33,1,"Entry Point for rootline"
