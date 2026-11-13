@@ -137,6 +137,9 @@ class PageStrategy extends AbstractStrategy
             ->getTranslationOriginalUidIfTranslated('pages', $page, $page['uid']);
 
         $site = $this->siteRepository->getSiteByPageId($page['pid']);
+        if ($site === null) {
+            return;
+        }
         $itemUids = array_map(
             static function (array $item): int {
                 return (int)$item['uid'];

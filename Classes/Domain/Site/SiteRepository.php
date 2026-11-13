@@ -213,7 +213,7 @@ class SiteRepository
             try {
                 $rootPageId = $typo3Site->getRootPageId();
                 $typo3ManagedSolrSite = $this->buildSite($rootPageId);
-                if ($typo3ManagedSolrSite->isEnabled()) {
+                if ($typo3ManagedSolrSite?->isEnabled()) {
                     yield $rootPageId => $typo3ManagedSolrSite;
                 }
             } catch (Throwable $e) {
@@ -296,10 +296,16 @@ class SiteRepository
             return null;
         }
 
-        $siteHash = $this->getSiteHash($typo3Site);
         $availableLanguages = $typo3Site->getLanguages();
-        $defaultLanguage = reset($availableLanguages)->getLanguageId();
+        if ($availableLanguages === []) {
+            // All languages of the site are disabled (e.g. a site prepared but not live yet).
+            // Without an enabled language there is nothing to index or search.
+            return null;
+        }
+        $firstLanguage = reset($availableLanguages);
+        $defaultLanguage = $firstLanguage->getLanguageId();
         $availableLanguageIds = array_keys($availableLanguages);
+        $siteHash = $this->getSiteHash($typo3Site);
         $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
 
         // Try to get first instantiable TSFE for one of site languages, to get TypoScript with `plugin.tx_solr.index.*`,
@@ -309,14 +315,10 @@ class SiteRepository
         // so the rest of the steps in this method are not necessary, and therefore the null will be returned.
         $solrConnectionConfigurations = [];
 
-        $firstLanguage = null;
         foreach ($availableLanguageIds as $languageUid) {
             $solrConnection = SiteUtility::getSolrConnectionConfiguration($typo3Site, $languageUid);
             if ($solrConnection !== null) {
                 $solrConnectionConfigurations[$languageUid] = $solrConnection;
-            }
-            if ($firstLanguage === null) {
-                $firstLanguage = $typo3Site->getLanguageById($languageUid);
             }
         }
 
