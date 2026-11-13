@@ -38,8 +38,19 @@ if [ "${SOLR_MODE:-user-managed}" == "cloud" ]; then
       fi
 
       if [[ "${UPLOADED_CONFIGSETS}" != *" ${CONFIGSET} "* ]]; then
+        # The schemas name the managed stopwords/synonyms after ${solr.core.name}. In SolrCloud this is
+        # the replica name (e.g. core_en_shard1_replica_n1), so every replica would get its own lists
+        # and the shipped defaults (_schema_analysis_*_core_en.json) would not be found.
+        # Name them after the collection instead, which is the core name in user-managed mode.
+        # ${solr.core.collection} is not defined in user-managed mode, so only the uploaded copy is changed.
+        CLOUD_CONFIGSET_DIR="$(mktemp -d)/${CONFIGSET}"
+        cp -r "/var/solr/data/configsets/${CONFIGSET}" "${CLOUD_CONFIGSET_DIR}"
+        find "${CLOUD_CONFIGSET_DIR}/conf" -name schema.xml \
+          -exec sed -i 's/managed="${solr.core.name}"/managed="${solr.core.collection}"/g' {} +
+
         echo "SolrCloud: uploading config set ${CONFIGSET}"
-        solr zk upconfig --conf-name "${CONFIGSET}" --conf-dir "/var/solr/data/configsets/${CONFIGSET}" --zk-host "${ZK_HOST}"
+        solr zk upconfig --conf-name "${CONFIGSET}" --conf-dir "${CLOUD_CONFIGSET_DIR}" --zk-host "${ZK_HOST}"
+        rm -rf "${CLOUD_CONFIGSET_DIR}"
         UPLOADED_CONFIGSETS="${UPLOADED_CONFIGSETS}${CONFIGSET} "
       fi
 
