@@ -3,8 +3,10 @@
     "OS": [ "ubuntu-26.04" ],
     "PHP": [ "8.2", "8.3", "8.4", "8.5" ],
     "TYPO3": [ "14", "14.3.x-dev" ],
+    "SOLR_MODE": [ "user-managed" ],
     "include": [
-      { "OS": "ubuntu-24.04", "PHP": "8.2", "TYPO3": "14" }
+      { "OS": "ubuntu-24.04", "PHP": "8.2", "TYPO3": "14", "SOLR_MODE": "user-managed" },
+      { "OS": "ubuntu-26.04", "PHP": "8.5", "TYPO3": "14", "SOLR_MODE": "cloud" }
     ]
   }
 }

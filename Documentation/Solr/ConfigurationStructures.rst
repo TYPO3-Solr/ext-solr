@@ -73,3 +73,45 @@ When you want to install Solr on your system in another way the following steps 
 
 *Hint:* Apache Solr ships an install script in newer version that might cover your requirements for production
 ($SOLR_HOME/bin/install_solr_service.sh). We don't use it in EXT:solr because there are currently problems when using it with Ubuntu Xenial (16.04)
+
+=========
+SolrCloud
+=========
+
+EXT:solr also works with Solr running in SolrCloud mode, which is the default since Apache Solr 10. Instead of cores,
+create one collection per language, named like the core it replaces (e.g. ``core_en``), from the EXT:solr configSet.
+Pass the language schema as core property when creating the collection, e.g.
+``property.schema=english/schema.xml``.
+
+Adapt the configSet once before uploading it to ZooKeeper. The stop word and synonym lists are identified by the
+core name, set by ``managed="${solr.core.name}"`` in the schemata. In SolrCloud, every replica is a separate core
+with its own name, e.g. ``core_en_shard1_replica_n1``. Without the change:
+
+* every replica gets its own lists
+* changes made in the TYPO3 backend only reach one replica
+* the shipped default stop words are not loaded
+
+The following commands identify the lists by the collection name instead:
+
+.. code-block:: bash
+
+    cp -r Resources/Private/Solr/configsets/ext_solr_<release> /tmp/ext_solr_<release>
+    find /tmp/ext_solr_<release>/conf -name schema.xml \
+      -exec sed -i 's/managed="${solr.core.name}"/managed="${solr.core.collection}"/g' {} +
+    bin/solr zk upconfig --conf-name ext_solr_<release> --conf-dir /tmp/ext_solr_<release> --zk-host <zookeeper>
+
+Do not use the adapted configSet in user-managed (standalone) mode, because ``solr.core.collection`` is not defined there.
+
+The configSet in ZooKeeper is shared by all Solr nodes, but two parts of the EXT:solr setup are read from the local
+disk of each node. Copy both from ``Resources/Private/Solr/`` to the Solr home directory of **every** Solr node. The
+Solr home is ``/var/solr/data`` for the official Docker image and the Solr service installer; it is set by
+``SOLR_HOME``.
+
+* ``typo3lib/``: contains the access filter plugin (jar file). The configSet registers it as query parser
+  ``typo3access`` in ``solrconfig.xml``. Without the jar, the collections cannot be loaded on that node.
+* ``solr.xml``: loads the jar files from ``typo3lib/`` (``sharedLib``), enables the Solr modules used by the
+  configSet and contains the ``<solrcloud>`` section, which Solr requires in SolrCloud mode. Since Apache Solr 9,
+  ``solr.xml`` is not read from ZooKeeper anymore.
+
+Restart the Solr nodes after copying the files. Repeat these steps on every new node before adding it to the cluster,
+and on all nodes when updating EXT:solr to a release with a new configSet.

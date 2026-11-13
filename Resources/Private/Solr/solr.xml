@@ -6,4 +6,13 @@
 
 	<!-- TYPO3 Plugins -->
 	<str name="sharedLib">typo3lib/</str>
+
+	<!-- Only used in SolrCloud mode -->
+	<solrcloud>
+		<str name="host">${solr.host.advertise:}</str>
+		<int name="hostPort">${solr.port.advertise:0}</int>
+		<int name="zkClientTimeout">${zkClientTimeout:30000}</int>
+		<int name="distribUpdateSoTimeout">${distribUpdateSoTimeout:600000}</int>
+		<int name="distribUpdateConnTimeout">${distribUpdateConnTimeout:60000}</int>
+	</solrcloud>
 </solr>
