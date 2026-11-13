@@ -11,6 +11,10 @@ then
 
   for CORE_to_ENABLE in ${TYPO3_SOLR_ENABLED_CORES}
   do
+    # Already converted into a SolrCloud collection manifest on a previous start (SOLR_MODE=cloud)
+    if [ -f "/var/solr/data/cores/${CORE_to_ENABLE}/core.properties_cloud" ]; then
+      continue
+    fi
     echo "Enable core ${CORE_to_ENABLE}"
     mv "/var/solr/data/cores/${CORE_to_ENABLE}/core.properties_disabled" "/var/solr/data/cores/${CORE_to_ENABLE}/core.properties"
   done

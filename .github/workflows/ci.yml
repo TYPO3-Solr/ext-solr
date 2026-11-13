@@ -122,7 +122,8 @@ jobs:
   tests:
     runs-on: ${{ matrix.OS }}
     needs: ci_bootstrapping
-    continue-on-error: ${{ contains(matrix.TYPO3, '-dev') }}
+    # SolrCloud support is new, do not block the build until the cloud job is known to be stable.
+    continue-on-error: ${{ contains(matrix.TYPO3, '-dev') || matrix.SOLR_MODE == 'cloud' }}
     strategy:
       matrix: ${{ fromJson(needs.ci_bootstrapping.outputs.matrix) }}
     env:
@@ -132,11 +133,12 @@ jobs:
       TYPO3_DATABASE_PASSWORD: 'root'
       TYPO3_VERSION: ${{ matrix.TYPO3 }}
       PARATEST: 'on'
+      SOLR_MODE: ${{ matrix.SOLR_MODE }}
       TYPO3_SOLR_ENABLED_CORES: 'english german danish'
       # Static analysis runs once: lowest supported PHP, stable TYPO3, main runner image.
-      RUN_STATIC_ANALYSIS: ${{ matrix.PHP == '8.2' && matrix.TYPO3 == '14' && matrix.OS == 'ubuntu-26.04' }}
+      RUN_STATIC_ANALYSIS: ${{ matrix.PHP == '8.2' && matrix.TYPO3 == '14' && matrix.OS == 'ubuntu-26.04' && matrix.SOLR_MODE == 'user-managed' }}
 
-    name: TYPO3 ${{ matrix.TYPO3 }} on PHP ${{ matrix.PHP }}${{ matrix.OS != 'ubuntu-26.04' && format(' ({0})', matrix.OS) || '' }}
+    name: TYPO3 ${{ matrix.TYPO3 }} on PHP ${{ matrix.PHP }}${{ matrix.OS != 'ubuntu-26.04' && format(' ({0})', matrix.OS) || '' }}${{ matrix.SOLR_MODE == 'cloud' && ' (SolrCloud)' || '' }}
     steps:
       # Workaround for issue with actions/checkout "wrong PR commit checkout". See: ci_bootstrapping job
       -
@@ -182,6 +184,7 @@ jobs:
           docker volume create --name "$LOCAL_VOLUME_NAME" --opt type=none --opt device="$LOCAL_VOLUME_PATH" --opt o=bind
           docker run --rm --name="$LOCAL_CONTAINER_NAME" -d -p 127.0.0.1:8983:8983 \
             -e PARATEST=${{ env.PARATEST }} \
+            -e SOLR_MODE=${{ env.SOLR_MODE }} \
             -e TYPO3_SOLR_ENABLED_CORES="${{ env.TYPO3_SOLR_ENABLED_CORES }}" \
             -v "$LOCAL_VOLUME_NAME":"/var/solr" "$LOCAL_IMAGE_NAME"
           docker ps
@@ -231,6 +234,16 @@ jobs:
         if: ${{ !cancelled() && steps.ci-bootstrap.outcome == 'success' }}
         run: |
           composer tests:unit
+      -
+        name: 'Wait for Solr'
+        if: ${{ !cancelled() && steps.ci-bootstrap.outcome == 'success' }}
+        run: |
+          for i in $(seq 1 60); do
+            docker exec "$LOCAL_CONTAINER_NAME" /usr/local/bin/healthcheck.sh && exit 0
+            sleep 5
+          done
+          docker logs "$LOCAL_CONTAINER_NAME" 2>&1 | tail -100
+          exit 1
       -
         name: 'Integration tests'
         if: ${{ !cancelled() && steps.ci-bootstrap.outcome == 'success' }}

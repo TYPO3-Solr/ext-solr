@@ -16,3 +16,19 @@ Usage:
 .. code-block::  bash
 
     docker run -e 'TYPO3_SOLR_ENABLED_CORES=english german' -it typo3solr/ext-solr
+
+Run Solr in SolrCloud mode
+--------------------------
+
+By default the container runs Solr in user-managed (standalone) mode. With ``SOLR_MODE=cloud`` it starts a single
+SolrCloud node with embedded ZooKeeper instead. The enabled cores are created as collections with the same name,
+config set and schema, so EXT:solr can connect to them the same way as to the cores in user-managed mode.
+
+This is meant for development and testing. For production, set up a SolrCloud cluster with an external ZooKeeper
+ensemble as described in the Apache Solr documentation.
+
+Usage:
+
+.. code-block::  bash
+
+    docker run -e 'SOLR_MODE=cloud' -e 'TYPO3_SOLR_ENABLED_CORES=english german' -it typo3solr/ext-solr
