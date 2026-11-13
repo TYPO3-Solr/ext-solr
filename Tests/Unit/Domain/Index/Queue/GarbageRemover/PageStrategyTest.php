@@ -27,8 +27,11 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\AccessibleObjectInterface;
 
 /**
@@ -39,6 +42,7 @@ final class PageStrategyTest extends AbstractStrategyTestBase
     protected QueueInterface|MockObject $queueMock;
     protected ConnectionManager|MockObject $connectionManagerMock;
     protected SiteRepository|MockObject $siteRepositoryMock;
+    protected QueueItemRepository|MockObject $queueItemRepositoryMock;
     // $subject is typed as AbstractStrategy by the base class, which hides the PageStrategy API
     protected PageStrategy&AccessibleObjectInterface $pageStrategy;
 
@@ -48,6 +52,7 @@ final class PageStrategyTest extends AbstractStrategyTestBase
         $this->queueMock = $this->createMock(QueueInterface::class);
         $this->connectionManagerMock = $this->createMock(ConnectionManager::class);
         $this->siteRepositoryMock = $this->createMock(SiteRepository::class);
+        $this->queueItemRepositoryMock = $this->createMock(QueueItemRepository::class);
         $this->subject = $this->pageStrategy = $this->getAccessibleMock(
             PageStrategy::class,
             null,
@@ -55,7 +60,7 @@ final class PageStrategyTest extends AbstractStrategyTestBase
                 $this->queueMock,
                 $this->connectionManagerMock,
                 $this->siteRepositoryMock,
-                $this->createMock(QueueItemRepository::class),
+                $this->queueItemRepositoryMock,
             ],
         );
     }
@@ -203,6 +208,24 @@ final class PageStrategyTest extends AbstractStrategyTestBase
         ]);
 
         $this->subject->_call('deleteIndexDocumentsInLanguage', 'pages', 42, 2);
+    }
+
+    #[Test]
+    public function collectMountPointGarbageSkipsMountPointOfSiteThatCanNotBeBuilt(): void
+    {
+        $tcaServiceMock = $this->createMock(TCAService::class);
+        $tcaServiceMock->method('getTranslationOriginalUidIfTranslated')->willReturn(42);
+        GeneralUtility::addInstance(TCAService::class, $tcaServiceMock);
+
+        // e.g. all languages of the site are disabled
+        $this->siteRepositoryMock->expects(self::once())->method('getSiteByPageId')->with(1)->willReturn(null);
+        $this->queueItemRepositoryMock->expects(self::never())->method('findAllIndexQueueItemsByRootPidAndMountIdentifier');
+        $this->connectionManagerMock->expects(self::never())->method('getConnectionsBySite');
+
+        $this->subject->_call(
+            'collectMountPointGarbage',
+            ['uid' => 42, 'pid' => 1, 'doktype' => PageRepository::DOKTYPE_MOUNTPOINT, 'mount_pid' => 7],
+        );
     }
 
     protected function getSiteMock(int $rootPageId, string $siteHash): Site|MockObject
