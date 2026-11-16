@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
@@ -33,6 +34,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionMethod;
+use RuntimeException;
 use Solarium\Component\Grouping;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -272,6 +274,77 @@ final class SearchResultSetServiceTest extends SetUpUnitTestCase
         $candidates = $this->invokeCollectAutoCorrectionCandidates($resultSet);
 
         self::assertSame(['hello formular', 'hello formula'], $candidates);
+    }
+
+    #[Test]
+    public function autoCorrectionRetriesOnceWithTheUnescapedCorrection(): void
+    {
+        $typoScriptConfiguration = new TypoScriptConfiguration([
+            'plugin.' => [
+                'tx_solr.' => [
+                    'search.' => [
+                        'spellchecking' => 1,
+                        'spellchecking.' => [
+                            'searchUsingSpellCheckerSuggestion' => 1,
+                            'numberOfSuggestionsToTry' => 1,
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $queryBuilderMock = $this->createMock(QueryBuilder::class);
+        $queryBuilderMock->method('buildSearchQuery')->willReturn($this->createMock(Query::class));
+
+        /** @var SearchResultSetService|MockObject $searchResultSetService */
+        $searchResultSetService = $this->getMockBuilder(SearchResultSetService::class)
+            ->onlyMethods(['doASearch'])
+            ->setConstructorArgs([
+                $typoScriptConfiguration,
+                $this->createMock(Search::class),
+                $this->createMock(SolrLogManager::class),
+                $this->createMock(SearchResultBuilder::class),
+                $queryBuilderMock,
+                $this->eventDispatcher,
+            ])->getMock();
+
+        // Every search finds nothing, and the spellchecker always has a correction for the first term.
+        // Like a real Solr response, the echoed "q" parameter is the escaped query.
+        $usedQueries = [];
+        $searchResultSetService->method('doASearch')->willReturnCallback(
+            static function (Query $query, SearchRequest $searchRequest) use (&$usedQueries): ResponseAdapter {
+                $rawQuery = $searchRequest->getRawUserQuery();
+                $usedQueries[] = $rawQuery;
+                if (count($usedQueries) > 20) {
+                    throw new RuntimeException('Auto-correction does not terminate, queries used: ' . implode(' | ', array_map('strlen', $usedQueries)), 1794812736);
+                }
+                $escapedQuery = (string)EscapeService::escape($rawQuery);
+                $firstTerm = strtok($escapedQuery, ' ');
+                $correction = $firstTerm === 'formular' ? 'formula' : 'formular';
+                return new ResponseAdapter((string)json_encode([
+                    'responseHeader' => ['status' => 0, 'params' => ['q' => $escapedQuery, 'json.nl' => 'flat']],
+                    'response' => ['numFound' => 0, 'start' => 0, 'docs' => []],
+                    'spellcheck' => [
+                        'suggestions' => [
+                            $firstTerm,
+                            ['numFound' => 1, 'startOffset' => 0, 'endOffset' => strlen($firstTerm), 'suggestion' => [$correction]],
+                        ],
+                        'collations' => ['collation', $correction . substr($escapedQuery, strlen($firstTerm))],
+                    ],
+                ]));
+            },
+        );
+
+        $searchRequest = new SearchRequest([], 0, 0, $typoScriptConfiguration);
+        $searchRequest->setRawQueryString('formuller https://example.org/path');
+
+        $searchResultSetService->search($searchRequest);
+
+        self::assertSame(
+            ['formuller https://example.org/path', 'formular https://example.org/path'],
+            $usedQueries,
+            'The zero-hit query must be retried exactly once, with the correction in the form the user typed it.',
+        );
     }
 
     /**

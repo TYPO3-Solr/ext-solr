@@ -105,4 +105,24 @@ final class EscapeHelperTest extends SetUpUnitTestCase
         $output = EscapeService::escape($input, false);
         self::assertSame($expectedOutput, $output, 'Strict-mode escape did not produce expected output');
     }
+
+    #[DataProvider('escapeQueryDataProvider')]
+    #[Test]
+    public function unescapeRevertsEscapeWhenOperatorSyntaxIsAllowed($input, $expectedOutput): void
+    {
+        self::assertSame((string)$input, EscapeService::unescape((string)EscapeService::escape($input, true)));
+    }
+
+    #[DataProvider('escapeQueryWithoutOperatorSyntaxDataProvider')]
+    #[Test]
+    public function unescapeRevertsEscapeWithoutOperatorSyntax($input, $expectedOutput): void
+    {
+        self::assertSame((string)$input, EscapeService::unescape((string)EscapeService::escape($input, false)));
+    }
+
+    #[Test]
+    public function unescapeRevertsAnEscapedBackslash(): void
+    {
+        self::assertSame('C:\\temp', EscapeService::unescape((string)EscapeService::escape('C:\\temp')));
+    }
 }

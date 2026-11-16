@@ -54,6 +54,12 @@ class SearchResultSetService
 
     protected ?bool $isSolrAvailable = null;
 
+    /**
+     * Set while the corrections of a zero-hit search are tried, so that a correction
+     * which finds nothing either does not start another round of corrections.
+     */
+    protected bool $isPerformingAutoCorrection = false;
+
     protected TypoScriptConfiguration $typoScriptConfiguration;
 
     protected SolrLogManager $logger;
@@ -240,8 +246,10 @@ class SearchResultSetService
      */
     protected function getAutoCorrection(SearchResultSet $searchResultSet): SearchResultSet
     {
-        // no secondary search configured
-        if (!$this->typoScriptConfiguration->getSearchSpellcheckingSearchUsingSpellCheckerSuggestion()) {
+        // no secondary search configured, or we are already inside one
+        if ($this->isPerformingAutoCorrection
+            || !$this->typoScriptConfiguration->getSearchSpellcheckingSearchUsingSpellCheckerSuggestion()
+        ) {
             return $searchResultSet;
         }
 
@@ -271,23 +279,28 @@ class SearchResultSetService
         $maximumRuns = $this->typoScriptConfiguration->getSearchSpellcheckingNumberOfSuggestionsToTry();
         $runs = 0;
 
-        foreach ($corrections as $correction) {
-            $runs++;
+        $this->isPerformingAutoCorrection = true;
+        try {
+            foreach ($corrections as $correction) {
+                $runs++;
 
-            $initialQuery = $searchRequest->getRawUserQuery();
+                $initialQuery = $searchRequest->getRawUserQuery();
 
-            $searchRequest->setRawQueryString($correction);
-            $searchResultSet = $this->search($searchRequest);
-            if ($searchResultSet->getAllResultCount() > 0) {
-                $searchResultSet->setIsAutoCorrected(true);
-                $searchResultSet->setCorrectedQueryString($correction);
-                $searchResultSet->setInitialQueryString($initialQuery);
-                break;
+                $searchRequest->setRawQueryString($correction);
+                $searchResultSet = $this->search($searchRequest);
+                if ($searchResultSet->getAllResultCount() > 0) {
+                    $searchResultSet->setIsAutoCorrected(true);
+                    $searchResultSet->setCorrectedQueryString($correction);
+                    $searchResultSet->setInitialQueryString($initialQuery);
+                    break;
+                }
+
+                if ($runs > $maximumRuns) {
+                    break;
+                }
             }
-
-            if ($runs > $maximumRuns) {
-                break;
-            }
+        } finally {
+            $this->isPerformingAutoCorrection = false;
         }
         return $searchResultSet;
     }

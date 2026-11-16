@@ -123,6 +123,23 @@ final class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     }
 
     #[Test]
+    public function spellCheckingCorrectionsAreReturnedWithoutTheEscapingOfTheQueryParameter(): void
+    {
+        // Solr echoes the escaped query as "q" and builds collations and offsets from it.
+        // The corrections are used as raw user queries again, so they must not carry the escaping,
+        // otherwise every further search escapes the escape characters once more.
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_spellCheck_escaped_query.json');
+
+        $processor = new ResultSetReconstitutionProcessor();
+        $processor->process($searchResultSet);
+
+        self::assertSame(['formular https://example.org/path'], $searchResultSet->getSpellCheckingCollations());
+        $suggestions = array_values($searchResultSet->getSpellCheckingSuggestions());
+        self::assertCount(1, $suggestions);
+        self::assertSame('formular https://example.org/path', $suggestions[0]->getFullQuery());
+    }
+
+    #[Test]
     public function spellCheckingSuggestionFullQueryFallsBackToWordReplacementWhenOffsetsMissing(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_spellCheck_without_offsets.json');
