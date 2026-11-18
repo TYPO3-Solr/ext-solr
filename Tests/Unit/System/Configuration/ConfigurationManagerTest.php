@@ -17,12 +17,15 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -59,6 +62,38 @@ final class ConfigurationManagerTest extends SetUpUnitTestCase
         $result = $manager->getTypoScriptConfiguration(999);
 
         self::assertSame($expectedConfiguration, $result);
+    }
+
+    #[Test]
+    public function getTypoScriptConfigurationIsEmptyForAPageOutsideEverySite(): void
+    {
+        $GLOBALS['TYPO3_REQUEST'] = $this->createMock(ServerRequestInterface::class);
+
+        $manager = $this->createPartialMock(
+            ConfigurationManager::class,
+            ['fetchPageRecord', 'getTypoScriptFromRequest'],
+        );
+
+        // Simulate a page that exists, but was moved outside every site, or the root page 0
+        $manager->method('fetchPageRecord')
+            ->with(20)
+            ->willReturn(['uid' => 20, 'pid' => 0]);
+        // Drops the generic SiteFinder mocks queued by setUp(), so this one is the next to be handed out
+        GeneralUtility::purgeInstances();
+        $siteFinder = $this->createMock(SiteFinder::class);
+        $siteFinder->method('getSiteByPageId')
+            ->with(20)
+            ->willThrowException(new SiteNotFoundException('No site found in root line of page 20', 1521716622));
+        GeneralUtility::addInstance(SiteFinder::class, $siteFinder);
+        // The empty configuration resolves its own ContentObjectService, which the purge dropped as well
+        GeneralUtility::addInstance(ContentObjectService::class, $this->createMock(ContentObjectService::class));
+
+        // The page has no site, so the request of an unrelated site must not decide about it
+        $manager->expects(self::never())->method('getTypoScriptFromRequest');
+
+        $result = $manager->getTypoScriptConfiguration(20);
+
+        self::assertSame('none', $result->getValueByPathOrDefaultValue('plugin.tx_solr.enabled', 'none'));
     }
 
     #[Test]

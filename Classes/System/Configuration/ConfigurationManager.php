@@ -92,6 +92,18 @@ class ConfigurationManager implements SingletonInterface
     }
 
     /**
+     * A page outside every site, or the root page 0, has no site to read the TypoScript from.
+     */
+    protected function findSiteByPageId(int $pageId): ?Site
+    {
+        try {
+            return GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($pageId);
+        } catch (SiteNotFoundException) {
+            return null;
+        }
+    }
+
+    /**
      * Retrieves the TypoScriptConfiguration object from configuration array, pageId, languageId and TypoScript
      * path that is used in the current context.
      *
@@ -104,8 +116,11 @@ class ConfigurationManager implements SingletonInterface
     {
         $contextPageRecord = $contextPageId !== null ? $this->fetchPageRecord($contextPageId) : null;
         if ($contextPageRecord !== null) {
-            $site = GeneralUtility::makeInstance(SiteFinder::class)
-                ->getSiteByPageId($contextPageId);
+            $site = $this->findSiteByPageId($contextPageId);
+            if ($site === null) {
+                // The page belongs to no site: nothing on it is monitored or indexed
+                return new TypoScriptConfiguration([]);
+            }
             $language = $site->getLanguageById($contextLanguageId);
             // @todo: Storage-Folder can not be used to get TypoScript Config!!!
             $uri = $site->getRouter()->generateUri($contextPageId, ['_language' => $language]);
