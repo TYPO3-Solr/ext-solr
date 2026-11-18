@@ -99,6 +99,11 @@ class MountPagesUpdater
         $siteRepository = $this->getSiteRepository();
         $mountingSite = $siteRepository->getSiteByPageId($mountProperties['mountPageDestination']);
 
+        if (!$mountingSite) {
+            // Indexing is not enabled for this site. See https://github.com/TYPO3-Solr/ext-solr/issues/4337
+            return;
+        }
+
         $pageInitializer = $this->getPageInitializer();
         $pageInitializer->setSite($mountingSite);
         $pageInitializer->setIndexingConfigurationName('pages');
