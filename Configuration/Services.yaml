@@ -54,6 +54,16 @@ services:
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
     arguments: ['tx_solr']
 
+  cache.solr_indexing_typoscript:
+    class: TYPO3\CMS\Core\Cache\Frontend\PhpFrontend
+    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
+    arguments: ['solr_indexing_typoscript']
+
+  ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager:
+    public: true
+    arguments:
+      $typoScriptCache: '@cache.solr_indexing_typoscript'
+
   ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder:
     public: true
     autowire: true

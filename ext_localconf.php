@@ -23,7 +23,9 @@ use ApacheSolrForTypo3\Solr\Task\OptimizeIndexTaskAdditionalFieldProvider;
 use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use ApacheSolrForTypo3\Solr\Task\ReIndexTaskAdditionalFieldProvider;
 use Psr\Log\LogLevel;
+use TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend;
 use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
+use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Log\Writer\FileWriter;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -115,6 +117,13 @@ use TYPO3\CMS\Scheduler\Task\TableGarbageCollectionTask;
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr_configuration']['groups'])) {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr_configuration']['groups'] = ['all'];
     }
+
+    // TypoScript built outside a frontend request, e.g. while indexing (opt-in, see extension setting
+    // "enableIndexingTypoScriptCache"). Same setup as the core "typoscript" cache and flushed together with it.
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['solr_indexing_typoscript'] ??= [];
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['solr_indexing_typoscript']['frontend'] ??= PhpFrontend::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['solr_indexing_typoscript']['backend'] ??= SimpleFileBackend::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['solr_indexing_typoscript']['groups'] ??= ['pages'];
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
     /** @var ExtensionConfiguration $extensionConfiguration */

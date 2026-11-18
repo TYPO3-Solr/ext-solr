@@ -18,6 +18,9 @@
 			<trans-unit id="extConf.enablePostBigRequest" resname="extConf.enablePostBigRequest">
 				<source>Convert long Solr GET requests to POST: Required if you hit HTTP 414 (URI too long), e.g. with many or large facets. Note that Apache Solr does not cache POST requests, so enabling this can reduce cache effectiveness. Disabled by default.</source>
 			</trans-unit>
+			<trans-unit id="extConf.enableIndexingTypoScriptCache" resname="extConf.enableIndexingTypoScriptCache">
+				<source>Cache TypoScript for indexing (experimental): Caches the TypoScript that is built for every indexed item and language in the dedicated cache "solr_indexing_typoscript", which is cleared together with the frontend caches. Speeds up record indexing considerably. Disabled by default.</source>
+			</trans-unit>
 			<trans-unit id="extConf.includeGlobalQParameterInCacheHash" resname="extConf.includeGlobalQParameterInCacheHash">
 				<source>Include/Exclude global q parameter in/from cacheHash.</source>
 			</trans-unit>
