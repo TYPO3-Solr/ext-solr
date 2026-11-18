@@ -154,7 +154,7 @@ class QueryBuilder extends AbstractQueryBuilder
 
         $this->queryToBuild->addParam(
             'q_vector',
-            '{!knn_text_to_vector model=llm f=vector topK=' . $topK . '}' . $rawQuery,
+            '{!knn_text_to_vector model=language-models f=vector topK=' . $topK . '}' . $rawQuery,
         );
 
         return $this;
