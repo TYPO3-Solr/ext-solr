@@ -174,6 +174,31 @@ final class SolrAdminServiceTest extends IntegrationTestBase
     }
 
     #[Test]
+    public function canGetModelFromVectorModelStore(): void
+    {
+        $this->removeTextToVectorModel('integration_test_model');
+        $this->addTextToVectorModel([
+            'class' => 'dev.langchain4j.model.openai.OpenAiEmbeddingModel',
+            'name' => 'integration_test_model',
+            'params' => [
+                'baseUrl' => 'http://localhost:1/v1',
+                'apiKey' => 'not-used-by-the-store',
+                'modelName' => 'text-embedding-3-small',
+            ],
+        ]);
+
+        try {
+            $models = $this->solrAdminService->getVectorModelStore();
+        } finally {
+            $this->removeTextToVectorModel('integration_test_model');
+        }
+
+        self::assertArrayHasKey('integration_test_model', $models);
+        self::assertSame('dev.langchain4j.model.openai.OpenAiEmbeddingModel', $models['integration_test_model']['class']);
+        self::assertSame('text-embedding-3-small', $models['integration_test_model']['params']->modelName);
+    }
+
+    #[Test]
     public function canReloadCore(): void
     {
         $result = $this->solrAdminService->reloadCore();

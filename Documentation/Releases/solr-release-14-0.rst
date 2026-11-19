@@ -7,9 +7,41 @@ Releases 14.0
 Release 14.0.3
 ==============
 
+Apache Solr 10.1.0
+------------------
+
+Apache Solr 10.1.0 moved the language-models classes to other packages, without mentioning it in its upgrade notes.
+The configset :file:`ext_solr_14_0_0` uses the new class names and therefore requires Apache Solr 10.1.0.
+A core with the old class names does not load on Apache Solr 10.1.0, and a core with the new ones does not load on Apache Solr 10.0.
+
+**Docker image:** nothing to do. On container start, configsets persisted by Apache Solr 10.0 are migrated,
+and the original is kept as :file:`solrconfig.xml.Backup-Solr-10.0`.
+
+**Own Apache Solr server:** upgrade it to Apache Solr 10.1.0 and replace the two class names in the :file:`solrconfig.xml` of every EXT:solr configset or core:
+
+=====================================================================================================  ===================================================================================================
+Apache Solr 10.0                                                                                       Apache Solr 10.1
+=====================================================================================================  ===================================================================================================
+:code:`org.apache.solr.languagemodels.textvectorisation.search.TextToVectorQParserPlugin`               :code:`org.apache.solr.languagemodels.search.TextToVectorQParserPlugin`
+:code:`solr.languagemodels.textvectorisation.update.processor.TextToVectorUpdateProcessorFactory`       :code:`solr.languagemodels.update.processor.factory.TextToVectorUpdateProcessorFactory`
+=====================================================================================================  ===================================================================================================
+
+With GNU sed, for example:
+
+.. code-block:: bash
+
+   sed -i -E \
+     -e 's/languagemodels\.textvectorisation\.update\.processor\.TextToVectorUpdateProcessorFactory/languagemodels.update.processor.factory.TextToVectorUpdateProcessorFactory/g' \
+     -e 's/languagemodels\.textvectorisation\.search\.TextToVectorQParserPlugin/languagemodels.search.TextToVectorQParserPlugin/g' \
+     <solr-home>/configsets/ext_solr_14_0_0/conf/solrconfig.xml
+
+Then restart Apache Solr. Customized :file:`solrconfig.xml` files keep their other changes.
+
 All Changes
 -----------
 
+*   [TASK] Update to Apache Solr 10.1.0 by @dkd-kaehm in `#4835 <https://github.com/TYPO3-Solr/ext-solr/pull/4835>`_
+    Requires changes on own Apache Solr servers, see `Apache Solr 10.1.0`_ above.
 *   [FEATURE] Add ``_stringLowerCaseS`` + ``_stringLowerCaseM`` dynamic fields by Rafael Kähm in `#4810 <https://github.com/TYPO3-Solr/ext-solr/pull/4810>`_
     To keep the things simple, we'll avoid adding that feature as breaking change in proper schema change.
     So if you really want that feature, please apply the changes on your Apache Solr Server manually.

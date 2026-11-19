@@ -209,6 +209,43 @@ abstract class IntegrationTestBase extends FunctionalTestCase
     }
 
     /**
+     * The model store file is shared by all cores of the configset, but each core keeps its own copy in
+     * memory. A model is therefore only visible on the cores it was added through, until they get reloaded.
+     *
+     * @param array<string, mixed> $model
+     * @throws InvalidArgumentException
+     */
+    protected function addTextToVectorModel(array $model, string $coreName = 'core_en'): void
+    {
+        $this->validateTestCoreName($coreName);
+        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        $response = $requestFactory->request(
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $this->resolveCoreName($coreName) . '/schema/text-to-vector-model-store',
+            'PUT',
+            [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode($model, JSON_THROW_ON_ERROR),
+            ],
+        );
+        self::assertSame(200, $response->getStatusCode(), 'Could not add text-to-vector model to ' . $coreName);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function removeTextToVectorModel(string $modelName, string $coreName = 'core_en'): void
+    {
+        $this->validateTestCoreName($coreName);
+        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        // A model that does not exist answers with 404, which is fine for cleaning up.
+        $requestFactory->request(
+            $this->getSolrConnectionUriAuthority() . '/solr/' . $this->resolveCoreName($coreName) . '/schema/text-to-vector-model-store/' . $modelName,
+            'DELETE',
+            ['http_errors' => false],
+        );
+    }
+
+    /**
      * @throws InvalidArgumentException
      */
     protected function validateTestCoreName(string $coreName): void
