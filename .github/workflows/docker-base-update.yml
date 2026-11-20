@@ -1,0 +1,97 @@
+name: Docker base image update
+run-name: "Check docker base images of EXT:solr releases"
+
+# Docker Hub rebuilds the official solr images under the same tags whenever their Java or Ubuntu base gets fixed.
+# This rebuilds the newest release of every maintained branch on top of them, through docker-publish.yml of that branch.
+# The dev images for two last supported branches are rebuilt by daily_cron.yml.
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: docker-base-update
+
+jobs:
+  check-base-images:
+    name: Check base images of the released docker images
+    if: github.repository == 'TYPO3-Solr/ext-solr'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      DOCKER_HUB_IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/ext-solr"
+      DOCKER_PLATFORMS: "linux/amd64 linux/arm64 linux/ppc64le"
+      # Maintained branches and the version prefix of their releases.
+      RELEASE_LINES: |
+        main 14
+        release-13.1.x 13.1
+        release-12.1.x 12.1
+        release-11.6.x 11.6
+        release-11.2.x 11.2
+    steps:
+      - name: Collect newest releases and their base images
+        run: |
+          while read -r BRANCH PREFIX; do
+            [[ -n "$BRANCH" ]] || continue
+            TAG=$(git ls-remote --tags --refs "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git" "refs/tags/${PREFIX}.*" \
+              | sed 's#.*refs/tags/##' | { grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' || true; } | sort -V | tail -n1)
+            if [[ -z "$TAG" ]]; then
+              echo "::warning::No release found for ${BRANCH}"
+              continue
+            fi
+            BASE_IMAGE=$(gh api -H 'Accept: application/vnd.github.raw' \
+              "repos/$GITHUB_REPOSITORY/contents/Docker/SolrServer/Dockerfile?ref=refs/tags/$TAG" \
+              | awk '/^FROM /{print $2; exit}')
+            echo "$BRANCH $TAG $BASE_IMAGE" | tee -a releases.txt
+          done <<< "$RELEASE_LINES"
+
+      # An image is up to date, if it starts with all layers of its base image on every platform.
+      # The layers come from the Docker Hub API, which does not count against the pull rate limit of the registry.
+      - name: Rebuild releases on outdated base images
+        run: |
+          mkdir -p images
+          fetchImages () {
+            local REPOSITORY="${1%%:*}"
+            [[ "$REPOSITORY" == */* ]] || REPOSITORY="library/$REPOSITORY"
+            curl -fsSL "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags/${1##*:}/images" > "$2"
+            # An unknown tag has no images, not a 404.
+            jq -e 'length > 0' "$2" > /dev/null
+          }
+          layersOf () {
+            jq -c --arg architecture "${2#linux/}" \
+              '[.[] | select(.os == "linux" and .architecture == $architecture) | .layers[] | .digest // empty]' "$1"
+          }
+          while read -r BRANCH TAG BASE_IMAGE; do
+            if ! fetchImages "$DOCKER_HUB_IMAGE_NAME:$TAG" images/image.json; then
+              echo "::warning::${DOCKER_HUB_IMAGE_NAME}:${TAG} is not published yet"
+              continue
+            fi
+            BASE_IMAGES="images/${BASE_IMAGE//[:\/]/_}.json"
+            if [[ ! -s "$BASE_IMAGES" ]] && ! fetchImages "$BASE_IMAGE" "$BASE_IMAGES"; then
+              >&2 echo "Base image ${BASE_IMAGE} of ${TAG} not found on Docker Hub"
+              exit 1
+            fi
+            OUTDATED=""
+            for PLATFORM in $DOCKER_PLATFORMS; do
+              BASE_LAYERS=$(layersOf "$BASE_IMAGES" "$PLATFORM")
+              if [[ "$BASE_LAYERS" == "[]" ]]; then
+                >&2 echo "No ${PLATFORM} layers found for ${BASE_IMAGE}"
+                exit 1
+              fi
+              if ! jq -en --argjson base "$BASE_LAYERS" --argjson image "$(layersOf images/image.json "$PLATFORM")" \
+                  '$image[0:($base | length)] == $base' > /dev/null; then
+                OUTDATED+=" $PLATFORM"
+              fi
+            done
+            if [[ -z "$OUTDATED" ]]; then
+              echo "${TAG} is up to date with ${BASE_IMAGE}"
+              continue
+            fi
+            echo "${TAG} is outdated on${OUTDATED}, rebuilding it on ${BRANCH}"
+            gh workflow run docker-publish.yml --ref "$BRANCH" -f release_tag="$TAG"
+          done < releases.txt
