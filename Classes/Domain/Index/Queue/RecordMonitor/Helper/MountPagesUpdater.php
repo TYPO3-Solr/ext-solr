@@ -80,6 +80,9 @@ class MountPagesUpdater
     public function updateMountPoint(int $mountPointId): void
     {
         $mountingSite = $this->getSiteRepository()->getSiteByPageId($mountPointId);
+        if ($mountingSite === null) {
+            return;
+        }
         $pageInitializer = $this->getPageInitializer();
         $pageInitializer->setSite($mountingSite);
         $pageInitializer->setIndexingConfigurationName('pages');
@@ -98,6 +101,9 @@ class MountPagesUpdater
     {
         $siteRepository = $this->getSiteRepository();
         $mountingSite = $siteRepository->getSiteByPageId($mountProperties['mountPageDestination']);
+        if ($mountingSite === null) {
+            return;
+        }
 
         $pageInitializer = $this->getPageInitializer();
         $pageInitializer->setSite($mountingSite);
