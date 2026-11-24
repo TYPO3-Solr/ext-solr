@@ -15,3 +15,5 @@
 # unrelated words to the same base word.
 
 TYPO3
+typo3
+Typo3
