@@ -394,6 +394,27 @@
 			<trans-unit id="solr.backend.search_statistics_module.filter.end" xml:space="preserve">
 				<source>End</source>
 			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.filter.language" xml:space="preserve">
+				<source>Language</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.filter.language.all" xml:space="preserve">
+				<source>All languages</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.filter.limit" xml:space="preserve">
+				<source>Top entries</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.filter.limit.default" xml:space="preserve">
+				<source>Default</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.filter.merge_similar" xml:space="preserve">
+				<source>Merge similar searches</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.item_language" xml:space="preserve">
+				<source>Language</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.truncated" xml:space="preserve">
+				<source>Only the %d most frequent search terms of this period are evaluated.</source>
+			</trans-unit>
 
 		</body>
 	</file>

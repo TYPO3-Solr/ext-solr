@@ -17,13 +17,19 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository as ApacheSolrDocumentRepository;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\Phrases\SearchPhraseStatistics;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\Phrases\SearchTermClusterer;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\Phrases\SearchTermGrouper;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\Phrases\SearchTermNormalizer;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsFilterDto;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsLanguages;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -165,23 +171,31 @@ class InfoModuleController extends AbstractModuleController
      */
     protected function collectStatistics(?StatisticsFilterDto $statisticsFilterDto, string $operation): void
     {
-        $statisticsFilter = $this->getStatisticsFilter($statisticsFilterDto, $operation);
+        /** @var BackendUserAuthentication $backendUser */
+        $backendUser = $GLOBALS['BE_USER'];
+        $languages = GeneralUtility::makeInstance(StatisticsLanguages::class)
+            ->forSite($this->selectedSite->getTypo3SiteObject(), $backendUser);
+        $statisticsFilter = $this->getStatisticsFilter($statisticsFilterDto, $operation)
+            ->setAllowedLanguageIds(array_keys($languages));
 
         /** @var StatisticsRepository $statisticsRepository */
         $statisticsRepository = GeneralUtility::makeInstance(StatisticsRepository::class);
+        $phraseStatistics = new SearchPhraseStatistics(
+            $statisticsRepository,
+            new SearchTermGrouper(new SearchTermNormalizer()),
+            new SearchTermClusterer(),
+        );
 
-        $this->moduleTemplate->assign(
-            'top_search_phrases',
-            $statisticsRepository->getTopKeyWordsWithHits($statisticsFilter),
-        );
-        $this->moduleTemplate->assign(
-            'top_search_phrases_without_hits',
-            $statisticsRepository->getTopKeyWordsWithoutHits($statisticsFilter),
-        );
-        $this->moduleTemplate->assign(
-            'search_phrases_statistics',
-            $statisticsRepository->getSearchStatistics($statisticsFilter),
-        );
+        $this->moduleTemplate->assignMultiple([
+            'top_search_phrases' => $phraseStatistics->getTopWithHits($statisticsFilter),
+            'top_search_phrases_without_hits' => $phraseStatistics->getTopWithoutHits($statisticsFilter),
+            'search_phrases_statistics' => $phraseStatistics->getAll($statisticsFilter),
+            'statisticsLanguages' => $languages,
+            'maximumTerms' => StatisticsRepository::MAXIMUM_TERMS,
+            'limitOptions' => array_combine(StatisticsFilterDto::LIMIT_OPTIONS, StatisticsFilterDto::LIMIT_OPTIONS),
+            // A language column only helps when several languages are listed together.
+            'showLanguageColumn' => count($statisticsFilter->getLanguageIds()) > 1,
+        ]);
 
         $labels = [];
         $data = [];

@@ -125,6 +125,103 @@ final class StatisticsRepositoryTest extends IntegrationTestBase
         self::assertEquals(5, $repository->countByRootPageId(1), 'Does not contain shortly inserted statistic record.');
     }
 
+    /**
+     * @param list<int> $languageIds
+     */
+    private function languageFilter(array $languageIds): StatisticsFilterDto
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics_languages.csv');
+        return self::getFilterDto(1, 1471203378)->setAllowedLanguageIds($languageIds);
+    }
+
+    /**
+     * Case-insensitive collations group "News" and "news", others do not:
+     * only the sums are the same on every database.
+     */
+    #[Test]
+    public function findSearchTermCountsSumsSearchesPerTermAndLanguage(): void
+    {
+        $filter = $this->languageFilter([0, 2]);
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+
+        $rows = $repository->findSearchTermCounts($filter, $filter->getQueriesStartDate());
+
+        self::assertSame(7, array_sum(array_column($rows, 'count')));
+        self::assertSame(2, array_sum(array_column($rows, 'countWithoutHits')));
+        self::assertSame(22, array_sum(array_column($rows, 'hitsSum')));
+        $languages = array_values(array_unique(array_column($rows, 'language')));
+        sort($languages);
+        self::assertSame([0, 2], $languages);
+    }
+
+    #[Test]
+    public function findSearchTermCountsOnlyCountsTheGivenLanguages(): void
+    {
+        $filter = $this->languageFilter([0, 2])->setLanguageId(2);
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+
+        $rows = $repository->findSearchTermCounts($filter, $filter->getQueriesStartDate());
+
+        self::assertSame(3, array_sum(array_column($rows, 'count')));
+        self::assertSame([2], array_values(array_unique(array_column($rows, 'language'))));
+    }
+
+    #[Test]
+    public function findSearchTermCountsReturnsTheMostFrequentTermsUpToTheMaximum(): void
+    {
+        $filter = $this->languageFilter([0, 2])->setLanguageId(0);
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+
+        $rows = $repository->findSearchTermCounts($filter, $filter->getQueriesStartDate(), 1);
+
+        self::assertCount(1, $rows);
+        self::assertGreaterThanOrEqual(3, $rows[0]['count']);
+    }
+
+    #[Test]
+    public function countSearchesCountsThePeriodSiteAndLanguages(): void
+    {
+        $filter = $this->languageFilter([0, 2]);
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+
+        self::assertSame(7, $repository->countSearches($filter, $filter->getQueriesStartDate()));
+        self::assertSame(4, $repository->countSearches($filter->setLanguageId(0), $filter->getQueriesStartDate()));
+    }
+
+    /**
+     * An editor without access to any language of the site sees no statistics,
+     * not those of all languages.
+     */
+    #[Test]
+    public function countsNothingWithoutAnAllowedLanguage(): void
+    {
+        $filter = $this->languageFilter([]);
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+
+        self::assertSame([], $repository->findSearchTermCounts($filter, $filter->getQueriesStartDate()));
+        self::assertSame(0, $repository->countSearches($filter, $filter->getQueriesStartDate()));
+        self::assertSame([], $repository->getQueriesOverTime($filter, 86400));
+    }
+
+    #[Test]
+    public function countsAllLanguagesWhenNoLanguagesWereGiven(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics_languages.csv');
+        $filter = self::getFilterDto(1, 1471203378);
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+
+        self::assertSame(7, $repository->countSearches($filter, $filter->getQueriesStartDate()));
+    }
+
+    #[Test]
+    public function queriesOverTimeOnlyCountTheGivenLanguages(): void
+    {
+        $filter = $this->languageFilter([0, 2])->setLanguageId(2);
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+
+        self::assertSame(3, array_sum(array_map('intval', array_column($repository->getQueriesOverTime($filter, 86400), 'numQueries'))));
+    }
+
     protected static function getFilterDto(int $rootPageId, int $sinceTimestamp): StatisticsFilterDto
     {
         $startDate = DateTime::createFromFormat('U', (string)$sinceTimestamp);

@@ -32,6 +32,51 @@ final class InfoModuleControllerTest extends IntegrationTestBase
      * The date pickers of the statistics filter send local date and time
      * without a time zone.
      */
+    /**
+     * An unticked checkbox sends its hidden empty value.
+     */
+    #[Test]
+    public function mapsLanguageLimitAndAnUntickedMergeSwitch(): void
+    {
+        $filter = $this->mapStatisticsFilter(['languageId' => '2', 'limit' => '9999', 'mergeSimilar' => '']);
+
+        $filter->setAllowedLanguageIds([0, 2])->setFromTypoScriptConstants(['topHits.' => ['limit' => 7]]);
+        self::assertSame([2], $filter->getLanguageIds());
+        self::assertSame(7, $filter->getTopHitsLimit());
+        self::assertFalse($filter->isMergeSimilar());
+    }
+
+    #[Test]
+    public function mapsATickedMergeSwitchAndAChosenLimit(): void
+    {
+        $filter = $this->mapStatisticsFilter(['languageId' => '-1', 'limit' => '25', 'mergeSimilar' => '1']);
+
+        self::assertSame(25, $filter->getTopHitsLimit());
+        self::assertTrue($filter->isMergeSimilar());
+        self::assertSame(StatisticsFilterDto::ALL_LANGUAGES, $filter->getLanguageId());
+    }
+
+    /**
+     * @param array<string, string> $formValues
+     */
+    private function mapStatisticsFilter(array $formValues): StatisticsFilterDto
+    {
+        $arguments = new Arguments();
+        $argument = $arguments->addNewArgument('statisticsFilter', StatisticsFilterDto::class);
+        $controller = (new ReflectionClass(InfoModuleController::class))->newInstanceWithoutConstructor();
+        (new ReflectionProperty($controller, 'arguments'))->setValue($controller, $arguments);
+        $controller->initializeIndexAction();
+        $configuration = $argument->getPropertyMappingConfiguration();
+        $configuration->allowAllProperties();
+
+        $propertyMapper = $this->get(PropertyMapper::class);
+        $filter = $propertyMapper->convert($formValues, StatisticsFilterDto::class, $configuration);
+
+        self::assertFalse($propertyMapper->getMessages()->hasErrors(), (string)json_encode($propertyMapper->getMessages()->getFlattenedErrors()));
+        self::assertInstanceOf(StatisticsFilterDto::class, $filter);
+        return $filter;
+    }
+
     #[Test]
     public function mapsTheDatesTheStatisticsFilterSends(): void
     {

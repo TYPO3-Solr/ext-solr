@@ -152,6 +152,37 @@
 							</label>
 						</div>
 					</div>
+					<div class="form-group">
+						<label for="statisticsLanguage" class="form-label">{f:translate(key: 'solr.backend.search_statistics_module.filter.language')}</label>
+						<f:form.select
+							property="languageId"
+							id="statisticsLanguage"
+							options="{statisticsLanguages}"
+							prependOptionValue="-1"
+							prependOptionLabel="{f:translate(key: 'solr.backend.search_statistics_module.filter.language.all')}"
+							class="form-select"
+						/>
+					</div>
+
+					<div class="form-group">
+						<label for="statisticsLimit" class="form-label">{f:translate(key: 'solr.backend.search_statistics_module.filter.limit')}</label>
+						<f:form.select
+							property="limit"
+							id="statisticsLimit"
+							options="{limitOptions}"
+							prependOptionValue="0"
+							prependOptionLabel="{f:translate(key: 'solr.backend.search_statistics_module.filter.limit.default')}"
+							class="form-select"
+						/>
+					</div>
+
+					<div class="form-group align-self-end">
+						<div class="form-check">
+							<f:form.checkbox property="mergeSimilar" value="1" id="statisticsMergeSimilar" class="form-check-input" />
+							<label for="statisticsMergeSimilar" class="form-check-label">{f:translate(key: 'solr.backend.search_statistics_module.filter.merge_similar')}</label>
+						</div>
+					</div>
+
 					<div class="form-group align-self-end">
 						<f:form.button type="submit" name="operation" value="filter" class="btn btn-default">{f:translate(key: 'solr.backend.search_statistics_module.filter')}</f:form.button>
 						<f:form.button type="submit" name="operation" value="reset-filters" class="btn btn-link">{f:translate(key: 'solr.backend.search_statistics_module.filter.reset')}</f:form.button>
@@ -168,7 +199,7 @@
         </div>
     </div>
 
-    <f:if condition="{top_search_phrases}">
+    <f:if condition="{top_search_phrases.phrases}">
         <div class="row">
             <div class="col-md-12">
                 <h2>
@@ -178,9 +209,9 @@
                 </h2>
 
                 <ul>
-                    <f:for each="{top_search_phrases}" as="phrase">
+                    <f:for each="{top_search_phrases.phrases}" as="phrase">
                         <li>
-                            {phrase.keywords} ({phrase.count})
+                            <f:render section="TopPhrase" arguments="{phrase: phrase, statisticsLanguages: statisticsLanguages, showLanguageColumn: showLanguageColumn}" />
                         </li>
                     </f:for>
                 </ul>
@@ -190,7 +221,7 @@
         <hr class="section-divider" />
     </f:if>
 
-    <f:if condition="{top_search_phrases_without_hits}">
+    <f:if condition="{top_search_phrases_without_hits.phrases}">
         <div class="row section-with-header">
             <div class="col-md-12">
                 <h2>
@@ -200,9 +231,9 @@
                 </h2>
 
                 <ul>
-                    <f:for each="{top_search_phrases_without_hits}" as="phrase">
+                    <f:for each="{top_search_phrases_without_hits.phrases}" as="phrase">
                         <li>
-                            {phrase.keywords} ({phrase.count})
+                            <f:render section="TopPhrase" arguments="{phrase: phrase, statisticsLanguages: statisticsLanguages, showLanguageColumn: showLanguageColumn}" />
                         </li>
                     </f:for>
                 </ul>
@@ -218,7 +249,14 @@
                 <f:translate key="solr.backend.search_statistics_module.search_phrases_header"/>
             </h2>
 
-            <f:if condition="{search_phrases_statistics}">
+            <f:if condition="{search_phrases_statistics.truncated}">
+                <f:be.infobox state="-1">
+                    <f:format.printf arguments="{0: '{maximumTerms}'}">
+                        <f:translate key="solr.backend.search_statistics_module.truncated"/>
+                    </f:format.printf>
+                </f:be.infobox>
+            </f:if>
+            <f:if condition="{search_phrases_statistics.phrases}">
                 <f:then>
                     <table class="table table-condensed table-hover table-striped">
                         <thead>
@@ -227,6 +265,11 @@
                             <th>
                                 <f:translate key="solr.backend.search_statistics_module.item_phrase"/>
                             </th>
+                            <f:if condition="{showLanguageColumn}">
+                                <th>
+                                    <f:translate key="solr.backend.search_statistics_module.item_language"/>
+                                </th>
+                            </f:if>
                             <th>
                                 <f:translate key="solr.backend.search_statistics_module.item_count"/>
                             </th>
@@ -239,12 +282,29 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <f:for each="{search_phrases_statistics}" as="item" iteration="i">
+                        <f:for each="{search_phrases_statistics.phrases}" as="item" iteration="i">
                             <tr>
                                 <td class="nowrap"><strong>{i.cycle}.</strong></td>
-                                <td>{item.keywords}</td>
+                                <td>
+                                    <f:if condition="{item.variants}">
+                                        <f:then>
+                                            <details>
+                                                <summary>{item.label}</summary>
+                                                <ul class="list-unstyled ms-3 mb-0">
+                                                    <f:for each="{item.variants}" as="variant">
+                                                        <li>{variant.label} ({variant.count}, Ø {variant.averageHits -> f:format.number(decimals: 1)})</li>
+                                                    </f:for>
+                                                </ul>
+                                            </details>
+                                        </f:then>
+                                        <f:else>{item.label}</f:else>
+                                    </f:if>
+                                </td>
+                                <f:if condition="{showLanguageColumn}">
+                                    <td>{statisticsLanguages.{item.languageId}}</td>
+                                </f:if>
                                 <td>{item.count}</td>
-                                <td>{item.hits -> f:format.number(decimals: 1)}</td>
+                                <td>{item.averageHits -> f:format.number(decimals: 1)}</td>
                                 <td>{item.percent -> f:format.number(decimals: 1)}%</td>
                             </tr>
                         </f:for>
@@ -373,4 +433,20 @@
             </div>
         </div>
     </f:section>
+</f:section>
+
+<f:section name="TopPhrase">
+    <f:if condition="{phrase.variants}">
+        <f:then>
+            <details>
+                <summary>{phrase.label} ({phrase.count}<f:if condition="{showLanguageColumn}">, {statisticsLanguages.{phrase.languageId}}</f:if>)</summary>
+                <ul class="list-unstyled ms-3 mb-0">
+                    <f:for each="{phrase.variants}" as="variant">
+                        <li>{variant.label} ({variant.count})</li>
+                    </f:for>
+                </ul>
+            </details>
+        </f:then>
+        <f:else>{phrase.label} ({phrase.count}<f:if condition="{showLanguageColumn}">, {statisticsLanguages.{phrase.languageId}}</f:if>)</f:else>
+    </f:if>
 </f:section>
