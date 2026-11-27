@@ -32,6 +32,14 @@ class SolrWriteService extends AbstractSolrService
     /**
      * Performs a content and meta data extraction request.
      *
+     * Apache Solr 9.11 removed the in-process Tika backend, and the
+     * `/update/extract` handler was dropped from the EXT:solr configsets.
+     * The method is kept to avoid fatal errors in a patch release, but
+     * requests fail unless the Solr server provides an extract handler
+     * configured with a Tika Server.
+     *
+     * @deprecated since EXT:solr 13.1.6, removed in EXT:solr 14. Use EXT:tika with a Tika Server or Tika app.
+     *
      * @param Query $query An extraction query
      * @return array An array containing the extracted content [0] and metadata [1]
      */

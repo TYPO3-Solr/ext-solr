@@ -7,6 +7,38 @@ Releases 13.1
 ..  include:: HintAboutOutdatedChangelog.rst.txt
 
 
+Release 13.1.6
+==============
+
+This is a security release for TYPO3 13 LTS.
+
+!!! Upgrade to Apache Solr 9.11.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Apache Solr 9.11.0 fixes several security issues, please upgrade your Apache Solr instance!
+
+*   CVE-2026-86312: Apache Solr: Ping health-check endpoint could trigger unintended functionality
+*   CVE-2026-53672: Apache Solr: Zookeeper endpoint authorization bypass discloses security.json
+
+If you cannot upgrade immediately, restrict access to the ``/admin/ping`` endpoint to a trusted role
+in your authorization configuration, and assign the ``zk-read`` permission only to users who may read
+``security.json``.
+
+!!! Solr Cell (``/update/extract``) removed from the configset
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Apache Solr 9.11 removed the in-process Tika extraction backend (SOLR-17961). The ``/update/extract``
+request handler now needs an external Tika Server and fails without one. The handler has therefore been
+removed from the ``ext_solr_13_1_0`` configset.
+
+``SolrWriteService->extractByQuery()`` is deprecated and returns an error response with the shipped
+configset. It will be removed in EXT:solr 14.
+
+..  warning::
+    Users relying on Solr Cell, for example through EXT:tika, must switch EXT:tika to a Tika Server
+    or Tika app. Existing Solr volumes keep the old handler definition, but it fails on use with
+    Apache Solr 9.11.
+
 Release 13.1.5
 ==============
 
