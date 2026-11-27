@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
@@ -128,6 +129,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
         }
 
         $originalQuery = $this->resolveOriginalQuery($resultSet);
+        $originalQueryIsEscaped = $this->getEscapedQueryFromResponse($resultSet) !== null;
 
         $misspelledTerm = '';
         foreach ($response->spellcheck->suggestions as $suggestionData) {
@@ -150,14 +152,15 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             }
 
             foreach ($suggestionData->suggestion as $suggestedTerm) {
-                $suggestion = $this->createSuggestionFromResponseFragment($suggestionData, $suggestedTerm, $misspelledTerm, $originalQuery);
+                $suggestion = $this->createSuggestionFromResponseFragment($suggestionData, $suggestedTerm, $misspelledTerm, $originalQuery, $originalQueryIsEscaped);
                 //add it to the resultSet
                 $resultSet->addSpellCheckingSuggestion($suggestion);
             }
         }
 
         foreach ($this->extractCollations($response->spellcheck->collations ?? []) as $collation) {
-            $resultSet->addSpellCheckingCollation($collation);
+            // Collations are built from the escaped "q" parameter, see unescape().
+            $resultSet->addSpellCheckingCollation(EscapeService::unescape($collation));
         }
 
         return $resultSet;
@@ -206,6 +209,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
         string $suggestedTerm,
         string $misspelledTerm,
         string $originalQuery,
+        bool $originalQueryIsEscaped = false,
     ): Suggestion {
         $numFound = (int)($suggestionData->numFound ?? 0);
         $startOffset = (int)($suggestionData->startOffset ?? 0);
@@ -218,6 +222,11 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             $startOffset,
             $endOffset,
         );
+        if ($originalQueryIsEscaped) {
+            // The offsets refer to the escaped query, so the replacement has to happen there.
+            // The result is handed back as a raw user query and would otherwise be escaped a second time.
+            $fullQuery = EscapeService::unescape($fullQuery);
+        }
 
         // by now we avoid to use GeneralUtility::makeInstance, since we only create a value object
         // and the usage might be an overhead.
@@ -233,14 +242,22 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
      */
     private function resolveOriginalQuery(SearchResultSet $resultSet): string
     {
-        $response = $resultSet->getResponse();
-        $paramsQuery = $response->responseHeader->params->q ?? null;
-        if (is_string($paramsQuery) && $paramsQuery !== '') {
+        $paramsQuery = $this->getEscapedQueryFromResponse($resultSet);
+        if ($paramsQuery !== null) {
             return $paramsQuery;
         }
 
         $searchRequest = $resultSet->getUsedSearchRequest();
         return $searchRequest !== null ? $searchRequest->getRawUserQuery() : '';
+    }
+
+    /**
+     * Returns the "q" parameter echoed by Solr. It is the escaped user query, see QueryBuilder::buildSearchQuery().
+     */
+    private function getEscapedQueryFromResponse(SearchResultSet $resultSet): ?string
+    {
+        $paramsQuery = $resultSet->getResponse()->responseHeader->params->q ?? null;
+        return is_string($paramsQuery) && $paramsQuery !== '' ? $paramsQuery : null;
     }
 
     /**

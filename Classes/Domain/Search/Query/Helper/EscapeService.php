@@ -52,6 +52,18 @@ class EscapeService
     }
 
     /**
+     * Reverts escape(): every escaping step only ever puts a backslash in front of a
+     * character, so dropping the backslash restores the string as the user typed it.
+     *
+     * Needed for strings that Solr derives from the escaped "q" parameter, e.g. spellcheck
+     * collations, before they are handed back as a raw user query.
+     */
+    public static function unescape(string $string): string
+    {
+        return (string)preg_replace('/\\\\(.)/su', '$1', $string);
+    }
+
+    /**
      * Applies trim and htmlspecialchars on the querystring to use it as output.
      */
     public static function clean(string $string): string
