@@ -129,13 +129,49 @@ final class AccessProtectedContentTest extends IntegrationTestBase
             'fixture' => 'can_index_access_protected_page',
             'expectedNumFound' => 1,
             'expectedAccessFieldValues' => [
-                '2:1/c:1',
+                // public content on a restricted page keeps the c:0 content variant; the page
+                // access element ("2:1") alone restricts the document (consistent with the
+                // "page protected by extend to subpages" case below, which is c:0, too).
+                '2:1/c:0',
             ],
             'expectedContents' => [
                 'public content of protected page',
             ],
             'expectedNumFoundAnonymousUser' => 0,
             'userGroupToCheckAccessFilter' => '0,1',
+            'expectedNumFoundLoggedInUser' => 1,
+        ];
+
+        // A page restricted to several groups ("1,2") whose content is public must be findable
+        // by *each* of its groups. Before the fix the page's fe_group was cast with (int), so
+        // only "c:1" was written and group-2-only users lost the page. Now c:0 is kept and the
+        // page access element ("2:1,2", OR semantics) grants both groups.
+        yield 'page restricted to multiple groups, first group finds it' => [
+            'fixture' => 'can_index_multi_group_access_protected_page',
+            'expectedNumFound' => 1,
+            'expectedAccessFieldValues' => [
+                '2:1,2/c:0',
+            ],
+            'expectedContents' => [
+                'public content of protected page',
+            ],
+            'expectedNumFoundAnonymousUser' => 0,
+            'userGroupToCheckAccessFilter' => '0,1',
+            'expectedNumFoundLoggedInUser' => 1,
+        ];
+
+        yield 'page restricted to multiple groups, second group finds it' => [
+            'fixture' => 'can_index_multi_group_access_protected_page',
+            'expectedNumFound' => 1,
+            'expectedAccessFieldValues' => [
+                '2:1,2/c:0',
+            ],
+            'expectedContents' => [
+                'public content of protected page',
+            ],
+            'expectedNumFoundAnonymousUser' => 0,
+            // the second (previously dropped) group must find the page, too
+            'userGroupToCheckAccessFilter' => '0,2',
             'expectedNumFoundLoggedInUser' => 1,
         ];
 
