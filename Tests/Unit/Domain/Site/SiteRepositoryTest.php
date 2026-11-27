@@ -25,6 +25,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use ReflectionMethod;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -61,7 +62,7 @@ final class SiteRepositoryTest extends SetUpUnitTestCase
                 GeneralUtility::makeInstance(FrontendEnvironment::class),
                 new NoopEventDispatcher(),
             ])
-            ->onlyMethods(['buildSite'])
+            ->onlyMethods(['buildSite', 'getSiteHash'])
             ->getMock();
         parent::setUp();
     }
@@ -142,6 +143,31 @@ final class SiteRepositoryTest extends SetUpUnitTestCase
         $siteOne = $this->siteRepository->getFirstAvailableSite();
         $connections = $siteOne->getAllSolrConnectionConfigurations();
         self::assertEquals([0, 2, 5], array_keys($connections), 'Could not get languages for site');
+    }
+
+    #[Test]
+    public function buildTypo3ManagedSiteReturnsNullIfAllSiteLanguagesAreDisabled(): void
+    {
+        $typo3SiteMock = $this->createMock(CoreSite::class);
+        // Site::getLanguages() only returns enabled languages
+        $typo3SiteMock->expects(self::any())->method('getLanguages')->willReturn([]);
+        $this->siteFinderMock->expects(self::once())->method('getSiteByPageId')->with(4711)->willReturn($typo3SiteMock);
+
+        $buildTypo3ManagedSite = new ReflectionMethod(SiteRepository::class, 'buildTypo3ManagedSite');
+        self::assertNull($buildTypo3ManagedSite->invoke($this->siteRepository, ['uid' => 4711]));
+    }
+
+    #[Test]
+    public function getAvailableSitesSkipsSitesThatCanNotBeBuilt(): void
+    {
+        $this->fakeEmptyCache();
+        $this->fakeSitesInTYPO3Systems([$this->getSiteMock(123, [0]), $this->getSiteMock(234, [0])]);
+
+        // site 234 can not be built, e.g. because all of its languages are disabled
+        $this->assertThatSitesAreCreatedWithPageIds([123], [0 => ['language' => 0]]);
+
+        $sites = $this->siteRepository->getAvailableSites(true);
+        self::assertSame([123], array_keys($sites));
     }
 
     protected function fakeEmptyCache(): void
