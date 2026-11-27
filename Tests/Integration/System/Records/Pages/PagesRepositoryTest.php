@@ -81,4 +81,17 @@ final class PagesRepositoryTest extends IntegrationTestBase
         $result = $this->repository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds(25, $rootLine);
         self::assertSame($expectedResult, $result);
     }
+
+    #[Test]
+    public function canNotFindMountPointPagesThatOnlyExistInAWorkspace(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_find_mount_pages_in_rootline.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/mount_page_in_workspace.csv');
+
+        $result = $this->repository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds(24);
+        self::assertSame([14], array_column($result, 'uid'));
+
+        $result = $this->repository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds(25, [24, 20]);
+        self::assertSame([14, 34], array_column($result, 'uid'));
+    }
 }
