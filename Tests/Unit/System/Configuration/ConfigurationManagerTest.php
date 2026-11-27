@@ -16,12 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -108,5 +110,40 @@ class ConfigurationManagerTest extends SetUpUnitTestCase
         $result = $manager->getTypoScriptFromRequest($request);
 
         self::assertSame('1', $result->getValueByPath('plugin.tx_solr.enabled'));
+    }
+
+    #[Test]
+    public function indexingTypoScriptCacheIsNotUsedByDefault(): void
+    {
+        $manager = $this->getConfigurationManagerExposingIndexingTypoScriptCache(
+            $this->createMock(PhpFrontend::class),
+            new ExtensionConfiguration(['enableIndexingTypoScriptCache' => 0]),
+        );
+
+        self::assertNull($manager->exposeIndexingTypoScriptCache());
+    }
+
+    #[Test]
+    public function indexingTypoScriptCacheIsUsedIfEnabled(): void
+    {
+        $cache = $this->createMock(PhpFrontend::class);
+        $manager = $this->getConfigurationManagerExposingIndexingTypoScriptCache(
+            $cache,
+            new ExtensionConfiguration(['enableIndexingTypoScriptCache' => 1]),
+        );
+
+        self::assertSame($cache, $manager->exposeIndexingTypoScriptCache());
+    }
+
+    private function getConfigurationManagerExposingIndexingTypoScriptCache(
+        PhpFrontend $cache,
+        ExtensionConfiguration $extensionConfiguration,
+    ): object {
+        return new class ($cache, $extensionConfiguration) extends ConfigurationManager {
+            public function exposeIndexingTypoScriptCache(): ?PhpFrontend
+            {
+                return $this->getIndexingTypoScriptCache();
+            }
+        };
     }
 }

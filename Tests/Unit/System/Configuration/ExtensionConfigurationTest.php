@@ -128,4 +128,15 @@ class ExtensionConfigurationTest extends SetUpUnitTestCase
         );
         self::assertTrue($configurationUseConfigurationAllowSelfSignedCertificates->getIsSelfSignedCertificatesEnabled());
     }
+
+    #[Test]
+    public function testGetIsIndexingTypoScriptCacheEnabled(): void
+    {
+        $defaultConfiguration = new ExtensionConfiguration();
+        self::assertFalse($defaultConfiguration->getIsIndexingTypoScriptCacheEnabled());
+        $configurationWithIndexingTypoScriptCache = new ExtensionConfiguration(
+            ['enableIndexingTypoScriptCache' => 1],
+        );
+        self::assertTrue($configurationWithIndexingTypoScriptCache->getIsIndexingTypoScriptCacheEnabled());
+    }
 }
