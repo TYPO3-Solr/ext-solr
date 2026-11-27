@@ -4,19 +4,19 @@
     <unit id="title">
       <segment state="final">
         <source>Info</source>
-        <target>Info</target>
+        <target>Informations</target>
       </segment>
     </unit>
     <unit id="short_description">
       <segment state="final">
         <source>Get information from your search usage and data</source>
-        <target>Get information from your search usage and data</target>
+        <target>Informations sur l'utilisation et les données de votre recherche</target>
       </segment>
     </unit>
     <unit id="description">
       <segment state="final">
         <source>This module allows you to get information (statistics, used fields, connection details) from the core.</source>
-        <target>This module allows you to get information (statistics, used fields, connection details) from the core.</target>
+        <target>Ce module permet d'obtenir des informations sur le core (statistiques, champs utilisés, détails de connexion).</target>
       </segment>
     </unit>
   </file>
