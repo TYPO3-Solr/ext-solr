@@ -19,8 +19,11 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use Doctrine\DBAL\Exception as DBALException;
+use InvalidArgumentException;
 use JsonException;
+use Psr\Log\LogLevel;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -40,6 +43,9 @@ class FrontendEnvironment implements SingletonInterface
      * Check whether the page record is within the configured allowed pages types(doktype) for indexing.
      * Uses TypoScript: plugin.tx_solr.index.queue.<queue name>.allowedPageTypes
      *
+     * A page that does not exist (any more) or whose language does not exist on its site can not be
+     * indexed, so false is returned for it.
+     *
      * @throws DBALException
      * @throws JsonException
      * @throws NoSuchCacheException
@@ -50,7 +56,10 @@ class FrontendEnvironment implements SingletonInterface
         ?string $configurationName = null,
     ): bool {
         // $pageRecord could come from DataHandler and with all columns. So we want to fetch it again.
-        $pageRecord = BackendUtility::getRecord('pages', $pageRecord['uid']);
+        $pageRecord = BackendUtility::getRecord('pages', (int)($pageRecord['uid'] ?? 0));
+        if ($pageRecord === null) {
+            return false;
+        }
         $rootPageRecordUid = $pageRecord['uid'];
         if (isset($pageRecord['sys_language_uid'])
             && (int)$pageRecord['sys_language_uid'] > 0
@@ -66,7 +75,29 @@ class FrontendEnvironment implements SingletonInterface
             $languageId = 0;
         }
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        $configuration = $configurationManager->getTypoScriptConfiguration($rootPageRecordUid, $languageId);
+        try {
+            $configuration = $configurationManager->getTypoScriptConfiguration($rootPageRecordUid, $languageId);
+        } catch (InvalidArgumentException $e) {
+            // Thrown by Site::getLanguageById() if the language of the page does not exist on its site,
+            // e.g. because it was removed from the site configuration
+            if ($e->getCode() !== 1522960188) {
+                throw $e;
+            }
+            GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__)->log(
+                LogLevel::WARNING,
+                'Language ' . $languageId . ' of page ' . $pageRecord['uid'] . ' does not exist on its site',
+                [
+                    'pageUid' => $pageRecord['uid'],
+                    'languageId' => $languageId,
+                    'error' => [
+                        'code' => $e->getCode(),
+                        'file' => $e->getFile() . ':' . $e->getLine(),
+                        'message' => $e->getMessage(),
+                    ],
+                ],
+            );
+            return false;
+        }
         if ($configurationName !== null) {
             $allowedPageTypes = $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
         } else {
