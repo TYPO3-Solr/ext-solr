@@ -14,8 +14,14 @@ if ! curl -sf "${SOLR_URL}/admin/cores?action=STATUS" > /dev/null; then
     exit 1
 fi
 
+# In SolrCloud mode the cores are created as collections, see zz_solrcloud-collections.sh
+if [ "${SOLR_MODE:-user-managed}" == "cloud" ]; then
+    ENABLED_CORE_PROP_FILES="/var/solr/data/cores/*/core.properties_cloud"
+else
+    ENABLED_CORE_PROP_FILES="/var/solr/data/cores/*/core.properties"
+fi
+
 # Find all cores by checking for core.properties files
-ENABLED_CORE_PROP_FILES="/var/solr/data/cores/*/core.properties"
 FOUND_CORES=false
 
 for core_properties in $ENABLED_CORE_PROP_FILES; do

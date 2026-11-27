@@ -18,6 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Service;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\Client;
@@ -94,6 +96,47 @@ final class SolrAdminServiceTest extends SetUpUnitTestCase
         self::assertSame('6.2.1', $result, 'Can not get solr version from faked response');
     }
 
+    public static function solrServerModeDataProvider(): Generator
+    {
+        yield 'standalone' => ['std', 'std', false];
+        yield 'solrcloud' => ['solrcloud', 'solrcloud', true];
+        yield 'mode missing' => [null, '', false];
+    }
+
+    #[DataProvider('solrServerModeDataProvider')]
+    #[Test]
+    public function getSolrServerModeAndIsSolrCloudMode(?string $mode, string $expectedMode, bool $expectedIsCloud): void
+    {
+        $this->assertGetRequestIsTriggered(
+            'http://localhost:8983/solr/core_en/admin/system?wt=json',
+            $this->createFakeSystemInformationResponse($mode),
+        );
+        self::assertSame($expectedMode, $this->adminService->getSolrServerMode());
+        self::assertSame($expectedIsCloud, $this->adminService->isSolrCloudMode());
+    }
+
+    #[Test]
+    public function reloadCoreUsesCoreAdminApiInStandaloneMode(): void
+    {
+        $reloadResponse = new ResponseAdapter('{}', 200);
+        $this->adminService->expects(self::exactly(2))->method('_sendRawGet')->willReturnMap([
+            ['http://localhost:8983/solr/core_en/admin/system?wt=json', $this->createFakeSystemInformationResponse('std')],
+            ['http://localhost:8983/solr/core_en/../admin/cores?action=reload&core=core_en', $reloadResponse],
+        ]);
+        self::assertSame($reloadResponse, $this->adminService->reloadCore());
+    }
+
+    #[Test]
+    public function reloadCoreUsesCollectionsApiInSolrCloudMode(): void
+    {
+        $reloadResponse = new ResponseAdapter('{}', 200);
+        $this->adminService->expects(self::exactly(2))->method('_sendRawGet')->willReturnMap([
+            ['http://localhost:8983/solr/core_en/admin/system?wt=json', $this->createFakeSystemInformationResponse('solrcloud')],
+            ['http://localhost:8983/solr/core_en/../admin/collections?action=reload&name=core_en', $reloadResponse],
+        ]);
+        self::assertSame($reloadResponse, $this->adminService->reloadCore());
+    }
+
     #[Test]
     public function canGetSolrConfigNameFromFakedXmlResponse(): void
     {
@@ -104,6 +147,16 @@ final class SolrAdminServiceTest extends SetUpUnitTestCase
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/file?file=solrconfig.xml', $fakedSolrConfigResponse);
         $expectedSchemaVersion = 'tx_solr-9-9-9--20221020';
         self::assertSame($expectedSchemaVersion, $this->adminService->getSolrconfigName(), 'SolrAdminService could not parse the solrconfig version as expected');
+    }
+
+    protected function createFakeSystemInformationResponse(?string $mode): ResponseAdapter
+    {
+        $fakeRawResponse = new stdClass();
+        $fakeRawResponse->responseHeader = new stdClass();
+        if ($mode !== null) {
+            $fakeRawResponse->mode = $mode;
+        }
+        return new ResponseAdapter(json_encode($fakeRawResponse), 200);
     }
 
     protected function assertGetRequestIsTriggered(string $url, mixed $fakeResponse): void

@@ -20,11 +20,13 @@ USER solr
 COPY --chown=solr:solr Resources/Private/Solr/ /var/solr/data
 RUN mkdir -p /var/solr/data/data
 
-# Copy the healthcheck script
+# Copy the healthcheck and start scripts
 COPY --chown=solr:solr Docker/SolrServer/healthcheck.sh /usr/local/bin/healthcheck.sh
+COPY --chown=solr:solr Docker/SolrServer/typo3-solr-foreground.sh /usr/local/bin/typo3-solr-foreground
 
 # Add HEALTHCHECK instruction
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD /usr/local/bin/healthcheck.sh
 
-CMD ["solr-foreground", "--user-managed"]
+# SOLR_MODE=user-managed (default) or SOLR_MODE=cloud, see typo3-solr-foreground.sh
+CMD ["typo3-solr-foreground"]
